@@ -7,18 +7,16 @@ Hypothesis property):
 
 * the index only grows: the new document is the old one plus one record, in
   canonical form;
-* after the edit the engine matrix lists exactly the certified variants, and
-  nothing else in ci.yml changes;
+* the commit touches nothing under .github/: CI's engine matrix is the
+  index's certified variants, as each hand-built results PR's matrix was;
 * the paragraph states every nonzero flag count and no zero one;
-* a commit touches the extracted results and the five edits, nothing else;
+* a commit touches the extracted results and the four edits, nothing else;
 * every committed result file has the blob replay-state holds;
 * the same request on the same main pushes nothing the second time.
 """
 
 import ast
-import contextlib
 import copy
-import difflib
 import functools
 import hashlib
 import importlib.metadata
@@ -159,7 +157,6 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "private-key": "${{ secrets.APP_PRIVATE_KEY }}",
         "permission-contents": "write",
         "permission-pull-requests": "write",
-        "permission-workflows": "write",
     }
     steps = [*build_job["steps"], *propose_job["steps"]]
     assert [step for step in steps if "secrets." in json.dumps(step)] == [token]
@@ -608,7 +605,7 @@ def test_the_control_environment_installs_what_the_builder_imports():
     assert scan.dynamic == []
     assert not set(scan.third_party) & RELEASE, scan.third_party
     needed = {{"yaml": "pyyaml"}.get(name, name) for name in scan.third_party}
-    assert needed == {"jsonschema", "rfc8785", "pyyaml"}, scan.third_party
+    assert needed == {"jsonschema", "rfc8785"}, scan.third_party
     assert installed == needed, sorted(installed ^ needed)
     # What the scan reached is what those paths run, and no more.
     assert set(scan.modules) == {
@@ -813,7 +810,7 @@ def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
     assert control.returncode == 0, control.stderr
     assert control.stdout.splitlines() == [
         "json imported",
-        "yaml imported",
+        "yaml refused",
         "jsonschema imported",
         "referencing imported",
         "rfc8785 imported",
@@ -950,161 +947,49 @@ def test_appending_a_record_reproduces_the_committed_index(variant_id):
 
 
 # The ci.yml each hand-built results PR edited, byte for byte: #188 (6.4.1)
-# edited e796ffb5^'s and #190 (6.5.0) f4164f20^'s. CI's shallow checkout has
-# no history, so the files are committed; their git blob ids pin them to
-# those commits (`git rev-parse e796ffb5^:.github/workflows/ci.yml`).
+# edited e796ffb5^'s and #190 (6.5.0) f4164f20^'s, each appending its variant
+# to the hand-kept engine matrix. CI's shallow checkout has no history, so
+# the files are committed; their git blob ids pin them to those commits
+# (`git rev-parse e796ffb5^:.github/workflows/ci.yml`).
 RESULTS_PR_FIXTURES = ROOT / "tests/fixtures/uk_replay/results_pr"
 HAND_EDITED = {
     PE641: ("ci_before_188.yml", "9a5decd648be594e644443d0ddf020407ced5d03"),
     PE650: ("ci_before_190.yml", "454624d30c1a3e9477a4e0b4a49408e104ff0d2c"),
 }
-# f4164f20:.github/workflows/ci.yml, #190's result. #188's result (#190's
-# input) also changed the determinism step, so only its matrix hunk is ours.
-AFTER_190 = "29f7a1b88bb05de435e7174e5ad630c24cb87492"
-SYNTHETIC = "pe9.9.9_uk9.9.9_x"
+_lister_spec = importlib.util.spec_from_file_location(
+    "uk_replay_engine_matrix", ROOT / ".github/scripts/uk_replay_engine_matrix.py"
+)
+lister = importlib.util.module_from_spec(_lister_spec)
+_lister_spec.loader.exec_module(lister)
 
 
 def git_blob(data):
     return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
 
 
-def hand_edited(variant_id):
-    """The ci.yml the hand-built results PR for ``variant_id`` edited, and
-    the certified variants once it merged (append order)."""
+@pytest.mark.parametrize("variant_id", [PE641, PE650])
+def test_the_lister_gives_the_matrix_each_hand_built_results_pr_wrote(variant_id):
+    # Differential: #188 and #190 appended their variant to a hand-kept
+    # matrix, which then had to list exactly the certified variants. On the
+    # index as each left it, CI's lister gives that matrix, so the results
+    # pull request no longer edits ci.yml.
     name, blob = HAND_EDITED[variant_id]
     data = (RESULTS_PR_FIXTURES / name).read_bytes()
     assert git_blob(data) == blob, name
-    certified = [
-        v["variant_id"]
-        for v in rv.load_document()["variants"]
-        if v["status"] == "certified"
-    ]
-    return data.decode(), certified[: certified.index(variant_id) + 1]
+    hand = yaml.safe_load(data)["jobs"]["replay-engine"]["strategy"]["matrix"]
+    document = rv.load_document()
+    ids = [v["variant_id"] for v in document["variants"]]
+    then = {**document, "variants": document["variants"][: ids.index(variant_id) + 1]}
+    assert lister.certified_ids(then) == [*hand["variant"], variant_id]
 
 
-@contextlib.contextmanager
-def without_yaml():
-    """``import yaml`` fails, as under the propose job's python3 -I -S."""
-    saved = sys.modules.get("yaml")
-    sys.modules["yaml"] = None
-    try:
-        yield
-    finally:
-        if saved is None:
-            del sys.modules["yaml"]
-        else:
-            sys.modules["yaml"] = saved
-
-
-def changes(before, after):
-    """Each change from ``before`` to ``after``: (tag, first line, last
-    line, the new lines)."""
-    old, new = before.splitlines(True), after.splitlines(True)
-    matcher = difflib.SequenceMatcher(None, old, new, autojunk=False)
-    return [
-        (tag, i1, i2, tuple(new[j1:j2]))
-        for tag, i1, i2, j1, j2 in matcher.get_opcodes()
-        if tag != "equal"
-    ]
-
-
-@pytest.mark.parametrize("variant_id", [PE641, PE650])
-def test_the_stdlib_matrix_edit_is_the_hand_built_one(variant_id):
-    # Review of 78e080c6 (3): on the bytes #188 and #190 edited, the propose
-    # job's edit, with no yaml importable, is the matrix edit each made by
-    # hand. (The strict edit returns the same text once its YAML checks
-    # pass; that agreement holds by construction.)
-    text, certified = hand_edited(variant_id)
-    with without_yaml():
-        lean = builder.add_matrix_variant(text, variant_id, certified, strict=False)
-        with pytest.raises(ImportError):
-            builder.add_matrix_variant(text, variant_id, certified)
-    if variant_id == PE650:
-        assert git_blob(lean.encode()) == AFTER_190
-    else:
-        after = (RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]).read_text()
-        ours = changes(text, lean)
-        assert ours == [("insert", 85, 85, (f"          - {PE641}\n",))]
-        assert ours[0] in changes(text, after)
-        assert len(changes(text, after)) == 2
-    assert builder.add_matrix_variant(text, variant_id, certified) == lean
-
-
-def test_the_propose_jobs_interpreter_makes_the_hand_built_edit():
-    # python3 -I -S, as the propose job runs the builder: no site-packages,
-    # so nothing but the standard library can be imported.
-    text, certified = hand_edited(PE650)
-    code = (
-        "import hashlib, sys\n"
-        "sys.path.insert(0, sys.argv[1])\n"
-        "from pipeline import uk_replay_results_pr as builder\n"
-        "text = open(sys.argv[2]).read()\n"
-        "edited = builder.add_matrix_variant(\n"
-        "    text, sys.argv[3], sys.argv[4:], strict=False\n"
-        ").encode()\n"
-        "print(hashlib.sha1(b'blob %d\\0' % len(edited) + edited).hexdigest())\n"
-    )
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-I",
-            "-S",
-            "-c",
-            code,
-            str(ROOT),
-            str(RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]),
-            PE650,
-            *certified,
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert result.returncode == 0, result.stderr
-    assert result.stdout == f"{AFTER_190}\n"
-
-
-@settings(max_examples=200, deadline=None)
-@given(
-    st.sampled_from([PE641, PE650]),
-    st.data(),
-)
-def test_the_stdlib_list_check_alone_refuses_a_wrong_matrix(variant_id, data):
-    # The propose job skips the YAML checks, so its list check must refuse
-    # by itself: the real file with its matrix listing anything other than
-    # the certified variants before this one is refused.
-    text, certified = hand_edited(variant_id)
-    block = "".join(f"          - {v}\n" for v in certified[:-1])
-    assert text.count(block) == 1
-    listed = data.draw(
-        st.one_of(
-            st.just(certified[:-1]),
-            st.lists(st.sampled_from([*certified, SYNTHETIC]), max_size=6),
-        )
-    )
-    edited = text.replace(block, "".join(f"          - {v}\n" for v in listed), 1)
-    with without_yaml():
-        if listed == certified[:-1]:
-            builder.add_matrix_variant(edited, variant_id, certified, strict=False)
-        else:
-            with pytest.raises(builder.Refused):
-                builder.add_matrix_variant(edited, variant_id, certified, strict=False)
-
-
-def test_the_matrix_edit_reproduces_the_committed_ci_workflow():
-    text = (ROOT / builder.CI).read_text()
-    line = f"          - {PE650}\n"
-    assert text.count(line) == 1
-    certified = [
-        v["variant_id"]
-        for v in rv.load_document()["variants"]
-        if v["status"] == "certified"
-    ]
-    assert builder.add_matrix_variant(text.replace(line, ""), PE650, certified) == text
-    with pytest.raises(builder.Refused, match="every certified variant"):
-        builder.add_matrix_variant(text.replace(line, ""), PE650, certified[:-1])
-    with pytest.raises(builder.Refused, match="exactly one"):
-        builder.add_matrix_variant(text + text, PE650, certified)
+def test_a_results_commit_never_needs_the_workflows_permission():
+    # The builder edits no workflow and no script a workflow runs, and the
+    # App token it pushes with has no workflows permission.
+    assert not [path for path in builder.EDITED if path.startswith(".github/")]
+    assert not hasattr(builder, "CI") and not hasattr(builder, "add_matrix_variant")
+    token = yaml.safe_load(WORKFLOW.read_text())["jobs"]["propose"]["steps"][2]
+    assert not [key for key in token["with"] if "workflow" in key]
 
 
 def test_the_test_edits_move_newest_and_extend_committed():
@@ -1253,27 +1138,6 @@ def test_the_index_only_grows_by_one_record_in_canonical_form(existing, record, 
     }
 
 
-variant_ids = st.from_regex(
-    r"pe[0-9]\.[0-9]{1,2}\.[0-9]_[a-z0-9.-]{1,12}", fullmatch=True
-)
-
-
-@settings(max_examples=100, deadline=None)
-@given(st.lists(variant_ids, min_size=1, max_size=6, unique=True), variant_ids)
-def test_the_matrix_gains_exactly_the_new_variant(existing, new):
-    if new in existing:
-        return
-    text = (
-        "on:\n  push:\njobs:\n  replay-engine:\n    strategy:\n      matrix:\n"
-        "        variant:\n"
-        + "".join(f"          - {v}\n" for v in existing)
-        + "    steps:\n      - run: echo\n"
-    )
-    edited = builder.add_matrix_variant(text, new, [*existing, new])
-    matrix = yaml.safe_load(edited)["jobs"]["replay-engine"]["strategy"]["matrix"]
-    assert matrix["variant"] == [*existing, new]
-
-
 EXTRACTED = [
     "results/uk/replays/v/a.json",
     "results/uk/replays/diffs/b__v/DIFF.json",
@@ -1287,7 +1151,13 @@ EXTRACTED = [
     st.sets(st.sampled_from(builder.EDITED)),
     st.sets(
         st.sampled_from(
-            ["README.md", "results/uk/replays/w/a.json", "results/uk/events/x.json"]
+            [
+                "README.md",
+                "results/uk/replays/w/a.json",
+                "results/uk/events/x.json",
+                ".github/workflows/ci.yml",
+                ".github/scripts/uk_replay_engine_matrix.py",
+            ]
         )
     ),
 )
@@ -1305,6 +1175,21 @@ def test_a_commit_touches_the_results_and_the_edits_only(extracted, edited, othe
     else:
         with pytest.raises(builder.Refused):
             builder.scope(plan, changed)
+
+
+@settings(max_examples=100, deadline=None)
+@given(
+    st.from_regex(
+        r"\.github/[A-Za-z0-9_.-]{1,12}(/[A-Za-z0-9_.-]{1,12}){0,2}", fullmatch=True
+    )
+)
+def test_a_commit_never_touches_github_even_inside_its_own_trees(path):
+    # Defence in depth: the token has no workflows permission and nothing
+    # under .github/ is a result, so even a plan whose trees lay there is
+    # refused (check pins them under results/ and docs/ first).
+    plan = {"paths": {"namespace": ".github", "diff": None, "requirements": path}}
+    with pytest.raises(builder.Refused, match="touches .github/"):
+        builder.scope(plan, [*builder.EDITED, path])
 
 
 # --- the whole builder on a local bare remote ----------------------------------
@@ -1878,10 +1763,16 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
             "2.122.2 and certified for 2.130.1."
         ),
     }
-    ci = yaml.safe_load(git(remote.remote, "show", f"{head}:{builder.CI}"))
-    assert ci["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"] == [
-        v["variant_id"] for v in document["variants"] if v["status"] == "certified"
+    # CI replays the new variant from the index alone: the lister, on the
+    # pushed index, ends with it, and nothing under .github/ changed.
+    assert lister.certified_ids(document) == [
+        *lister.certified_ids(original),
+        record["variant_id"],
     ]
+    assert not [path for path in changed if path.startswith(".github/")]
+    assert git(remote.remote, "rev-parse", f"{head}:.github") == git(
+        remote.remote, "rev-parse", "main:.github"
+    )
     for name in builder.NEWEST_TESTS:
         assert f'NEWEST = "{record["variant_id"]}"' in git(
             remote.remote, "show", f"{head}:{name}"
@@ -2043,6 +1934,83 @@ def test_the_push_never_overwrites_a_branch_that_moved_after_it_was_read(remote)
         git(remote.remote, "log", "-1", "--format=%s", branch) == "Pushed mid-propose"
     )
     assert ["pr", "edit"] not in [call[:2] for call in remote.gh_calls()]
+    # A refused push whose range changes no workflow gets no workflows hint.
+    assert ".github/workflows" not in result.stderr
+
+
+# GitHub without the workflows permission, read as strictly as it might be
+# read: a bot branch update is refused when its new commits, or the change
+# from the old tip to the new one, touch .github/workflows. GitHub documents
+# the permission, not which commits it inspects.
+WITHOUT_WORKFLOWS = """#!/bin/sh
+zero=0000000000000000000000000000000000000000
+while read -r old new ref; do
+  case "$ref" in refs/heads/uk-replay-results/*) ;; *) continue ;; esac
+  if [ "$old" = "$zero" ]; then
+    touched=$(git rev-list "$new" --not --all | while read -r commit; do
+      git diff-tree --no-commit-id --name-only -r "$commit" -- .github/workflows
+    done)
+  else
+    touched=$(git diff --name-only "$old" "$new" -- .github/workflows
+      git log --format= --name-only "$old..$new" -- .github/workflows)
+  fi
+  if [ -n "$touched" ]; then
+    echo "refusing to allow a GitHub App to create or update workflow without workflows permission" >&2
+    exit 1
+  fi
+done
+"""
+
+
+def test_without_workflows_a_rebuild_over_mains_workflow_change_says_what_to_do(
+    remote,
+):
+    hook = remote.remote / "hooks/pre-receive"
+    hook.write_text(WITHOUT_WORKFLOWS)
+    hook.chmod(0o755)
+    rid, record, _ = remote.certify()
+    # The first push is the bot's commit alone, which touches no workflow.
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    # A rebuild over main's other changes is still pushed.
+    move_main(remote)
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 0, result.stdout + result.stderr
+    rebuilt = remote.branch(record)
+    assert git(remote.remote, "rev-parse", f"{rebuilt}^") == git(
+        remote.remote, "rev-parse", "main"
+    )
+    # Main changes a workflow: the rebuild is refused, the run says why and
+    # what to do, and the branch and its pull request are left as they were.
+    workflow = remote.seed / ".github/workflows/ci.yml"
+    workflow.write_text(workflow.read_text() + "# main changes a workflow\n")
+    git(remote.seed, "commit", "-qam", "Main changes a workflow")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "refusing to allow a GitHub App" in result.stderr
+    assert "Main has changed .github/workflows since the branch was built" in (
+        result.stderr
+    )
+    assert "close the pull request, delete the branch and run this workflow again" in (
+        result.stderr
+    )
+    assert remote.branch(record) == rebuilt
+    assert remote.gh_calls() == []
+    # The way out: with the branch deleted, the run pushes a new one, which
+    # holds only the bot's commit on the new main.
+    branch = f"refs/heads/{builder.BRANCH_PREFIX}{record['variant_id']}"
+    git(remote.remote, "update-ref", "-d", branch)
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    fresh = remote.branch(record)
+    assert git(remote.remote, "rev-parse", f"{fresh}^") == git(
+        remote.remote, "rev-parse", "main"
+    )
+    assert [call[:2] for call in remote.gh_calls()] == [
+        ["pr", "list"],
+        ["pr", "create"],
+    ]
 
 
 def test_the_push_hands_git_the_token_only_through_gh(tmp_path):

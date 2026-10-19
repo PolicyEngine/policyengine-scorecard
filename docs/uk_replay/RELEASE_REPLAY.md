@@ -830,7 +830,7 @@ runs only the default branch's code.
 | Job | Authority and inputs |
 |---|---|
 | `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
-| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
+| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write` and `pull-requests: write`, to push that commit and open the pull request. |
 
 Neither job holds a dataset token, and neither installs, imports or runs
 release or candidate code; both read only committed public results from
@@ -844,19 +844,29 @@ The tree comparison catches an honest build job whose commit diverges; the
 job's word, checked only for shape. CI on the pull request runs the
 regeneration, both database builds and the drift check again.
 
-The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
-`ci.yml`, and only a token with `workflows` permission may push a change to a
-workflow file, which `GITHUB_TOKEN` can never hold. And a pull request opened
-with `GITHUB_TOKEN` starts no `pull_request` workflow
+The App token, not `GITHUB_TOKEN`, writes because a pull request opened with
+`GITHUB_TOKEN` starts no `pull_request` workflow
 ([GitHub documentation](https://docs.github.com/en/actions/concepts/security/github_token)),
 while checks from a `workflow_dispatch` run do not count for a pull request
 ([GitHub documentation](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)),
 so its pull request would never carry checks. The App's push and pull request
 start CI as any other pull request does.
 
+The token has no `workflows` permission, which an App needs to edit files in
+`.github/workflows`
+([GitHub documentation](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app)).
+The commit never touches `.github/`: CI's engine matrix is read from the
+variant index (see "Replay in CI"), and `scope` refuses a commit that touches
+anything outside the results and the four edits. So the token cannot push a
+workflow that reads a secret. It can still push to any branch of this
+repository, main included (main has no protection rule or ruleset), and the
+scripts and pipeline code that secret-holding jobs run live outside
+`.github/workflows`; without `workflows` it loses only the direct route.
+
 `.github/scripts/uk_replay_results_pr.sh` and
 `pipeline/uk_replay_results_pr.py` build the pull request as #188 (6.4.1) and
-#190 (6.5.0) were built by hand:
+#190 (6.5.0) were built by hand, less the `ci.yml` matrix entry each added,
+which CI now reads from the index:
 
 1. **Eligibility.** `STATUS.json` is `complete`; the receipt validates and is
    the one `STATUS.json` names; `REQUEST.json` hashes to the request id; and
@@ -888,20 +898,22 @@ start CI as any other pull request does.
    aggregates, and nothing is uploaded.
 3. **Edits.** `VARIANT.json` plus a `note` is appended to
    `data/uk/replay_variants.json` in canonical form
-   (`compute_uk_event.canonical_bytes`). The variant joins the
-   `replay-engine` matrix, which must then list exactly the certified
-   variants. `NEWEST` in `tests/test_uk_replay_qualify.py` and
+   (`compute_uk_event.canonical_bytes`). That is all CI needs to replay the
+   variant: the `replay-engine` matrix is the index's certified variants
+   (see "Replay in CI"), so no workflow changes. `NEWEST` in
+   `tests/test_uk_replay_qualify.py` and
    `tests/test_uk_replay_determinism.py` moves to it, and `COMMITTED` in
    `tests/test_uk_replay_variants.py` gains it. A paragraph under "Committed
    certified results" states the receipt's integrity, grid and diff-flag
    counts. Each edit checks the text it replaces and fails if the file has
-   another shape, and the commit may touch nothing else.
+   another shape, and the commit may touch nothing else, `.github/`
+   included.
 4. **Checks.** `uk_replay_qualify verify-sealed` (the new namespace, then
    every one), CI's `.github/scripts/uk_replay_regenerate.sh`, and two
    `scorecard_db.build_db` runs, which must agree on the content hash and
    leave no tracked-file drift.
 5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
-   standard library, skipping only the JSON Schema, RFC 8785 and YAML checks
+   standard library, skipping only the JSON Schema and RFC 8785 checks
    `build` made. Only when the tree matches is the App token minted. The
    commit, authored and committed as `github-actions[bot]` (the receiver's
    bot identity) with a `Replay-Request:` trailer and pushed with the App's
@@ -914,8 +926,14 @@ pushes nothing. A branch built on an older main is rebuilt and force-pushed,
 with a lease on the commit it read, only when it holds exactly one commit,
 authored and committed by the bot with this request's trailer; an added or
 amended commit is a person's, and the run fails and leaves the branch alone.
-Two certified requests built from the same main conflict in the index, the
-matrix and the tests: after the first merges, run the workflow again for the
+A rebuilt branch also carries main's commits since the branch was built.
+GitHub does not document whether it counts that as editing a workflow when
+one of those commits changed `.github/workflows`; if it refuses such a push
+for want of `workflows`, the run fails with an error that says so and the
+branch stays as it was. Close the pull request, delete its branch and run the
+workflow again: a new branch holds only the bot's commit.
+Two certified requests built from the same main conflict in the index and
+the tests: after the first merges, run the workflow again for the
 second, unless the second is the older release, which the version check then
 refuses. Nothing merges automatically. The pull request lands on the normal
 gates: CI and an independent review.
@@ -930,8 +948,21 @@ gates: CI and an independent review.
   every present namespace indexed as `replay_namespace` must have a receipt
   and manifest matching its bytes. The no-drift gate uses
   `git status --porcelain`, so newly generated untracked files fail too.
-* `replay engine`, for each certified variant in its CI matrix: installs
-  each variant's exact
+* `replay engine`, one leg for each certified variant. The
+  `certified replay variants` job lists the certified variants of
+  `data/uk/replay_variants.json` in index order, and that list is the
+  matrix (`.github/scripts/uk_replay_engine_matrix.py`: the standard library
+  under the runner's own Python, in a job with `contents: read` that checks
+  out only that script and the index). No workflow names a variant, so the
+  index is the only list a new variant joins. The job fails, and with it
+  every leg, rather than list fewer variants, when a record is not an
+  object, an id is not plain (letters, digits, `.`, `_` and `-`, starting
+  with a letter or digit, no `..`; CI puts ids in job names, environment
+  variables, shell commands and paths), a status is not `certified`,
+  `candidate` or `retired`, an id repeats, nothing is certified, or the
+  matrix would exceed GitHub's 256 jobs
+  ([GitHub limits](https://docs.github.com/en/actions/reference/limits)).
+  Each leg installs the variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
   premises byte for byte. Non-legacy variants also regenerate the re-verified
@@ -970,3 +1001,7 @@ Each has deterministic boundary cases and Hypothesis properties in
   output bytes.
 * **Sealed namespaces.** Every byte under a sealed namespace matches its
   receipt.
+* **Engine matrix.** For any index the lister accepts, CI's engine matrix is
+  exactly its certified ids in index order; one bad record refuses the whole
+  matrix; the lister's plain-id rule is the results pull request's on any
+  string; and no workflow names a variant.

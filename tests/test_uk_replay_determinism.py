@@ -201,12 +201,8 @@ def test_ci_compares_the_real_replay_through_the_module():
     run = steps["One real measure-year replays byte for byte"]["run"]
     assert "-m pipeline.uk_replay_determinism" in run
     assert "cmp " not in run
-    # Every certified replay-namespace variant is in the engine matrix.
-    document = json.loads((ROOT / "data/uk/replay_variants.json").read_text())
-    certified = [
-        v["variant_id"] for v in document["variants"] if v["status"] == "certified"
-    ]
-    assert ci["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"] == certified
+    # The engine matrix is every certified variant: CI lists them from the
+    # index (tests/test_uk_replay_engine_matrix.py).
 
 
 @pytest.mark.parametrize("variant", [NEWEST])
