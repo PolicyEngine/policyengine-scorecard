@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { claimCountry, decodeArchive, populationCounts } from "./populations";
+import {
+  claimCountry,
+  comparablePair,
+  decodeArchive,
+  populationCounts,
+} from "./populations";
 import type { PopulationRow, PopulationsFeed } from "./types";
 
 function row(id: string, value: number | null, history: boolean): PopulationRow {
@@ -85,3 +90,36 @@ describe("claim links", () => {
     expect(claimCountry([], "4290148a46a76bfa6ffa")).toBeNull();
   });
 });
+
+describe("comparable pair (issue #198)", () => {
+  const signed = (
+    external_value: number | null,
+    sign_relative_to_pe: PopulationRow["sign_relative_to_pe"],
+    external_value_pe_sign: number | null,
+  ) => ({ external_value, sign_relative_to_pe, external_value_pe_sign });
+
+  test("an unsigned reckoner magnitude compares absolute values", () => {
+    // HMRC: "Change personal allowance by 1%" = 1e9; PE revenue change -1.13e9
+    const pair = comparablePair(-1.13e9, signed(1e9, "magnitude", null));
+    expect(pair).toEqual([1.13e9, 1e9]);
+    expect((pair![0] / pair![1] - 1) * 100).toBeCloseTo(13, 5);
+  });
+
+  test("an opposite convention compares the re-signed published value", () => {
+    // positive = increase in borrowing: a 2.4bn cost is -2.4bn of revenue
+    expect(comparablePair(-1.1e9, signed(2.4e9, "opposite", -2.4e9))).toEqual([
+      -1.1e9, -2.4e9,
+    ]);
+  });
+
+  test("same compares as published; unknown falls back to the raw value", () => {
+    expect(comparablePair(5, signed(4, "same", 4))).toEqual([5, 4]);
+    expect(comparablePair(5, signed(-4, "unknown", null))).toEqual([5, -4]);
+  });
+
+  test("a missing value on either side has no pair", () => {
+    expect(comparablePair(null, signed(4, "same", 4))).toBeNull();
+    expect(comparablePair(5, signed(null, "same", null))).toBeNull();
+  });
+});
+
