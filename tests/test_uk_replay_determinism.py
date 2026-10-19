@@ -18,7 +18,7 @@ PRE_EVIDENCE = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
 POST_EVIDENCE = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 # The newest certified variant; the results pull request
 # (pipeline/uk_replay_results_pr.py) moves it to each newly certified one.
-NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.8.0_uk2.130.1_policyengine-uk-data-1.58.1"
 KEY = "autumn_budget_2024__private_school_vat_20pct"
 COMMITTED = (
     ROOT
