@@ -244,12 +244,34 @@ def test_one_bad_record_fails_the_whole_matrix(rows, corruption, position):
         matrix.certified_ids(document)
 
 
+# Plain ids on both sides of the length cap.
+long_ids = st.from_regex(r"[A-Za-z0-9][A-Za-z0-9._-]{110,130}", fullmatch=True)
+
+
 @settings(max_examples=300, deadline=None)
-@given(st.one_of(st.text(max_size=16), plain_ids))
+@given(st.one_of(st.text(max_size=16), plain_ids, long_ids))
 def test_the_plain_id_rule_is_the_results_pull_requests(variant_id):
     # Differential: CI's lister and the results pull request's check on a
     # new variant accept exactly the same ids.
     assert matrix.plain(variant_id) == builder.plain_variant_id(variant_id)
+
+
+def test_ids_stop_at_120_characters_and_the_output_stays_far_under_1_mb():
+    # Review of 6866605d (2): the count cap alone let one huge id exceed
+    # GitHub's 1 MB job output. Two ids joined by "__" name a release
+    # diff's directory, one path component of at most 255 bytes.
+    assert matrix.MAX_ID_LENGTH == builder.MAX_VARIANT_ID_LENGTH == 120
+    assert 2 * matrix.MAX_ID_LENGTH + len("__") <= 255
+    assert matrix.plain("a" * 120) and not matrix.plain("a" * 121)
+    longest = [
+        f"{i:03d}" + "x" * (matrix.MAX_ID_LENGTH - 3) for i in range(matrix.MAX_JOBS)
+    ]
+    ids = matrix.certified_ids(document_of([(v, "certified", {}) for v in longest]))
+    output = "variants=" + json.dumps(ids, separators=(",", ":"))
+    # GitHub sizes outputs as UTF-16.
+    assert len(output.encode("utf-16-le")) < 100_000 < 1_000_000
+    committed = max(len(v["variant_id"]) for v in rv.load_document()["variants"])
+    assert committed <= matrix.MAX_ID_LENGTH
 
 
 def test_the_document_and_matrix_limits_are_refused():

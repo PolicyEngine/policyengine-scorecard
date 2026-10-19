@@ -9,10 +9,11 @@ Standard library only, run with the runner's own Python (``python3 -I``) in
 a job that installs nothing. CI puts each id in a job name, an environment
 variable, shell commands and paths, so every id in the index must be plain:
 letters, digits, ``.``, ``_`` and ``-``, starting with a letter or digit,
-with no ``..`` (the rule the results pull request applies to a new variant).
-Anything the matrix cannot be built from fails the job rather than replay
-fewer variants: a record that is not an object, an unknown status, a repeated
-id, no certified variant, or more than GitHub's 256 jobs per matrix.
+with no ``..`` and at most 120 characters (the rule the results pull request
+applies to a new variant). Anything the matrix cannot be built from fails
+the job rather than replay fewer variants: a record that is not an object,
+an unknown status, a repeated id, no certified variant, or more than
+GitHub's 256 jobs per matrix.
 
     python3 -I .github/scripts/uk_replay_engine_matrix.py data/uk/replay_variants.json
 """
@@ -26,6 +27,12 @@ import sys
 # uk_replay_variants.STATUSES (a test checks).
 STATUSES = ("certified", "candidate", "retired")
 PLAIN_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+# The release diff's directory joins two ids with "__" in one path
+# component, which Linux file systems cap at 255 bytes. The cap also bounds
+# this job's output: 256 ids of 120 characters are about 63 KB as UTF-16,
+# far under GitHub's "Outputs can be a maximum of 1 MB per job".
+# https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+MAX_ID_LENGTH = 120
 # "A job matrix can generate a maximum of 256 jobs per workflow run."
 # https://docs.github.com/en/actions/reference/limits
 MAX_JOBS = 256
@@ -38,6 +45,7 @@ class MatrixError(Exception):
 def plain(variant_id: object) -> bool:
     return (
         isinstance(variant_id, str)
+        and len(variant_id) <= MAX_ID_LENGTH
         and PLAIN_ID.fullmatch(variant_id) is not None
         and ".." not in variant_id
     )

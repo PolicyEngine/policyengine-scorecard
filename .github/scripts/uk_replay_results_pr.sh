@@ -278,10 +278,12 @@ propose() {
       fi
       # The token has no workflows permission. This commit changes no
       # workflow, but the rebuilt branch also carries main's commits since
-      # $remote; if one changed .github/workflows, GitHub may refuse it.
+      # $remote; if one changed .github/workflows (even one main later
+      # reverted), GitHub may refuse it.
       if ! pushgit push -q --force-with-lease="refs/heads/$branch:$remote" \
         origin "HEAD:refs/heads/$branch"; then
-        if ! git -C "$TREE" diff --quiet "$remote" HEAD -- .github/workflows; then
+        if ! git -C "$TREE" diff --quiet "$remote" HEAD -- .github/workflows \
+          || [ -n "$(git -C "$TREE" log --format=%H "$remote..HEAD" -- .github/workflows)" ]; then
           echo "::error::$branch was not updated. Main has changed .github/workflows since the branch was built, and the App token has no workflows permission. If GitHub refused the push for that, close the pull request, delete the branch and run this workflow again: a new branch holds only the bot's commit" >&2
         fi
         exit 1

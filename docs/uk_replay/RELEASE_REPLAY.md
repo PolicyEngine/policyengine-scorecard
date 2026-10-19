@@ -928,7 +928,8 @@ authored and committed by the bot with this request's trailer; an added or
 amended commit is a person's, and the run fails and leaves the branch alone.
 A rebuilt branch also carries main's commits since the branch was built.
 GitHub does not document whether it counts that as editing a workflow when
-one of those commits changed `.github/workflows`; if it refuses such a push
+one of those commits changed `.github/workflows`, even a change main later
+reverted; if it refuses such a push
 for want of `workflows`, the run fails with an error that says so and the
 branch stays as it was. Close the pull request, delete its branch and run the
 workflow again: a new branch holds only the bot's commit.
@@ -957,8 +958,9 @@ gates: CI and an independent review.
   index is the only list a new variant joins. The job fails, and with it
   every leg, rather than list fewer variants, when a record is not an
   object, an id is not plain (letters, digits, `.`, `_` and `-`, starting
-  with a letter or digit, no `..`; CI puts ids in job names, environment
-  variables, shell commands and paths), a status is not `certified`,
+  with a letter or digit, no `..`, at most 120 characters; CI puts ids in
+  job names, environment variables, shell commands and paths, and two ids
+  joined by `__` name a release diff's directory), a status is not `certified`,
   `candidate` or `retired`, an id repeats, nothing is certified, or the
   matrix would exceed GitHub's 256 jobs
   ([GitHub limits](https://docs.github.com/en/actions/reference/limits)).

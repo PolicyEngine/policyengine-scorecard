@@ -2011,6 +2011,20 @@ def test_without_workflows_a_rebuild_over_mains_workflow_change_says_what_to_do(
         ["pr", "list"],
         ["pr", "create"],
     ]
+    # Review of 6866605d (1): a workflow change main then reverted leaves the
+    # tips' workflows equal, yet the range still carries it; the hint still
+    # names it. (Main also moves otherwise, or the tree would be the same.)
+    workflow.write_text(workflow.read_text() + "# a passing change\n")
+    git(remote.seed, "commit", "-qam", "Main changes a workflow again")
+    git(remote.seed, "revert", "--no-edit", "HEAD")
+    move_main(remote, "main moved after the revert\n")
+    assert not git(remote.remote, "diff", "--name-only", fresh, "main", "--", ".github")
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "Main has changed .github/workflows since the branch was built" in (
+        result.stderr
+    )
+    assert remote.branch(record) == fresh
 
 
 def test_the_push_hands_git_the_token_only_through_gh(tmp_path):

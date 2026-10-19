@@ -71,9 +71,12 @@ AXIOM = "axiom: n/a: replay results and the variant index; no policy encoding."
 NEWEST = re.compile(r'^NEWEST = "([^"\n]*)"$', re.M)
 COMMITTED = re.compile(r"^COMMITTED = \(\n((?:    [^\n]+,\n)+)\)$", re.M)
 # A variant id names a branch, paths and CI's matrix legs: plain characters,
-# no traversal (.github/scripts/uk_replay_engine_matrix.py applies the same
-# rule to every id in the index; a test checks they agree).
+# no traversal, and short enough that two ids joined by "__" (the release
+# diff's directory) fit one 255-byte path component.
+# .github/scripts/uk_replay_engine_matrix.py applies the same rule to every
+# id in the index; a test checks they agree.
 VARIANT_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+MAX_VARIANT_ID_LENGTH = 120
 WORDS = "zero one two three four five six seven eight nine ten".split()
 
 
@@ -132,6 +135,7 @@ def plain_variant_id(variant_id: object) -> bool:
     """An id that can name a branch, paths and a CI matrix leg."""
     return (
         isinstance(variant_id, str)
+        and len(variant_id) <= MAX_VARIANT_ID_LENGTH
         and VARIANT_ID.fullmatch(variant_id) is not None
         and ".." not in variant_id
     )
