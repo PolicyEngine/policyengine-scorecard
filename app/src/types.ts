@@ -197,6 +197,13 @@ export interface PopulationRow {
   reform_framework: string | null;
   reform_key: string;
   external_value: number | null;
+  /** The published value's sign against PolicyEngine's (issue #198). */
+  sign_relative_to_pe: SignRelation;
+  /** The rule that decided sign_relative_to_pe (scorecard_db/signs.py). */
+  sign_basis: string;
+  /** external_value in PolicyEngine's orientation; null for magnitude and
+   *  unknown rows. */
+  external_value_pe_sign: number | null;
   calibration_relationship: CalibrationRelationship;
   claim_baseline: string | null;
   /** Synthetic not_computed snapshot when results is empty. */
@@ -209,6 +216,11 @@ export interface PopulationRow {
   } | null;
 }
 
+/** How a published value's sign relates to PolicyEngine's (issue #198):
+ *  opposite means multiply by -1; magnitude means the value is unsigned
+ *  (its direction is in the label) and absolute values compare. */
+export type SignRelation = "same" | "opposite" | "magnitude" | "unknown";
+
 export interface PopulationsFeed {
   built: string;
   note: string;
@@ -217,6 +229,7 @@ export interface PopulationsFeed {
     multi_release_claims: number;
     by_source: Record<string, number>;
     by_latest_status: Record<string, number>;
+    by_sign_relative_to_pe?: Partial<Record<SignRelation, number>>;
     by_country?: Partial<Record<Country, PopulationCounts>>;
   };
   event_archives?: PopulationArchive[];

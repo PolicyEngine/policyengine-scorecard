@@ -31,6 +31,13 @@ entry. Ratios are raw pe/external with no pass/fail anywhere.
 concept_mismatch results carry their construction so the app can label, never
 grade.
 
+Every row also carries the published value's sign against PolicyEngine's
+(issue #198, scorecard_db/signs.py): sign_relative_to_pe (same | opposite |
+magnitude | unknown), the sign_basis rule that decided it, and
+external_value_pe_sign, the published value in that orientation (null for
+magnitude and unknown). The free-text conditions.sign_convention stays as
+the record.
+
 Also refreshes data/lanes.json via ingest_harvest.sync_lane_feed so the
 populace-reform-validation lane appears in mission control.
 
@@ -46,6 +53,7 @@ from datetime import date
 from hashlib import sha256
 from pathlib import Path
 
+from . import signs
 from .db import CURRENT_LAW_KEY, ScorecardDB
 from .ingest_harvest import sync_lane_feed
 
@@ -167,6 +175,7 @@ def export(
     rows = []
     by_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
+    by_sign: dict[str, int] = {}
     multi_release = 0
     archive_events: dict[str, tuple[str, str]] = {}
     for c in claims:
@@ -238,6 +247,17 @@ def export(
         by_source[c["source"]] = by_source.get(c["source"], 0) + 1
         eff = latest["status_effective"]
         by_status[eff] = by_status.get(eff, 0) + 1
+        # issue #198: the published value's sign against PolicyEngine's
+        relation, sign_basis = signs.classify(
+            {
+                "metric": c["metric"],
+                "conditions": conditions,
+                "latest": latest,
+                "country": conditions.get("country", "US"),
+                "source": c["source"],
+            }
+        )
+        by_sign[relation] = by_sign.get(relation, 0) + 1
         rows.append(
             {
                 "claim_id": c["claim_id"],
@@ -266,6 +286,11 @@ def export(
                 "reform_framework": reform.get("framework"),
                 "reform_key": c["reform_key"],
                 "external_value": c["value"],
+                "sign_relative_to_pe": relation,
+                "sign_basis": sign_basis,
+                "external_value_pe_sign": signs.external_value_pe_sign(
+                    c["value"], relation
+                ),
                 "calibration_relationship": c["calibration_relationship"],
                 "claim_baseline": labels.get(c["baseline_key"]),
                 "latest": {
@@ -358,6 +383,7 @@ def export(
             "multi_release_claims": multi_release,
             "by_source": dict(sorted(by_source.items())),
             "by_latest_status": dict(sorted(by_status.items())),
+            "by_sign_relative_to_pe": dict(sorted(by_sign.items())),
             "by_country": {
                 country: _counts(country_rows)
                 for country, country_rows in sorted(countries.items())

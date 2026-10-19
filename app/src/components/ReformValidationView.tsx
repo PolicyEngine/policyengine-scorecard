@@ -10,7 +10,11 @@ import {
   countryOf,
 } from "../types";
 import { sourceLabel } from "../sourceLabels";
-import { decodeArchive, populationCounts } from "../populations";
+import {
+  comparablePair,
+  decodeArchive,
+  populationCounts,
+} from "../populations";
 import { withBasePath } from "../basePath";
 import {
   LabeledSelect,
@@ -523,7 +527,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
                           {comparabilityFigure(
                             res.status_effective,
                             "—",
-                            () => ratioOf(res.value, row.external_value),
+                            () => ratioOf(res.value, row),
                           )}
                         </td>
                         <td className="fig break-all py-1 text-muted-foreground">
@@ -651,9 +655,9 @@ function fmtV(v: number | null, kind: string): string {
 }
 
 function fmtDiv(r: PopulationRow): string {
-  const pe = r.latest.value;
-  const ext = r.external_value;
-  if (pe === null || ext === null) return "";
+  const pair = comparablePair(r.latest.value, r);
+  if (pair === null) return "";
+  const [pe, ext] = pair;
   if (r.value_kind === "share") {
     const pp = (pe - ext) * 100;
     return `${pp >= 0 ? "+" : "−"}${Math.abs(pp).toFixed(1)}pp`;
@@ -663,7 +667,8 @@ function fmtDiv(r: PopulationRow): string {
   return `${pct >= 0 ? "+" : "−"}${Math.abs(pct).toFixed(0)}%`;
 }
 
-function ratioOf(pe: number | null, ext: number | null): string {
-  if (pe === null || ext === null || ext === 0) return "—";
-  return (pe / ext).toFixed(2);
+function ratioOf(pe: number | null, row: PopulationRow): string {
+  const pair = comparablePair(pe, row);
+  if (pair === null || pair[1] === 0) return "—";
+  return (pair[0] / pair[1]).toFixed(2);
 }
