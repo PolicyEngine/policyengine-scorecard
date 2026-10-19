@@ -234,7 +234,12 @@ def test_the_builder_runs_no_release_code_and_never_merges():
     # ::error::, ::notice:: or ::warning:: string with no command
     # substitution is set aside, never the rest of its line, and propose
     # holds no inline comment for a command to hide behind.
-    message = re.compile(r'"::(?:error|notice|warning)::(?:[^"$\\`]|\$(?!\())*"')
+    # A message is one whole shell word in double quotes, holding no other
+    # quote, backslash, backtick or command substitution, so nothing set
+    # aside can run (review of c5c17db7, 3).
+    message = re.compile(
+        r"""(?<![^\s])"::(?:error|notice|warning)::(?:[^"'$\\`]|\$(?!\())*"(?=[\s;]|$)"""
+    )
 
     def runs_pipeline_code(line):
         command = message.sub('""', line)
@@ -247,7 +252,9 @@ def test_the_builder_runs_no_release_code_and_never_merges():
     assert runs_pipeline_code('echo "::error::fine" >&2; builder check')
     assert runs_pipeline_code('echo "::notice::$(builder check)"')
     assert runs_pipeline_code("true # builder check")
-    assert not runs_pipeline_code('echo "::error::$branch: not this builder\'s" >&2')
+    assert runs_pipeline_code('echo ""::error::; builder check; : ""')
+    assert runs_pipeline_code("""echo 'x "::error::' ; builder check ; echo '" '""")
+    assert not runs_pipeline_code('echo "::error::$branch: not this builder" >&2')
     for line in propose.splitlines():
         if not line.lstrip().startswith("#"):
             assert not runs_pipeline_code(line), line
@@ -350,15 +357,35 @@ class ImportScan:
     reachable code imports its module; one in a function nothing reaches
     does not. Pipeline modules are followed however they are named:
     ``pipeline.x``, ``from pipeline import x``, a relative import, or the
-    bare sibling name some modules fall back to. A dynamic import in reached
-    code is recorded, since the scan cannot follow it."""
+    bare sibling name some modules fall back to.
 
-    DYNAMIC = {"__import__", "importlib.import_module", "import_module", "exec", "eval"}
+    Names resolve as Python scopes them: a module-level import binds a name
+    everywhere in its module, and one inside a function only in the code
+    that runs it. Where it cannot tell which code runs, it assumes all of it
+    can (review of c5c17db7, 4): a name bound to several things resolves to
+    all of them, and a pipeline module used as a value (assigned, passed,
+    given to ``getattr``) makes every function in it reachable.
+    Dynamic imports in reached code (``__import__``, ``exec``, ``eval``,
+    ``importlib``'s loaders and ``runpy``, however they are named) are
+    recorded, since it cannot follow them."""
+
+    DYNAMIC_NAMES = {"__import__", "exec", "eval"}
+    DYNAMIC_ATTRIBUTES = {
+        "__import__",
+        "import_module",
+        "module_from_spec",
+        "spec_from_file_location",
+        "exec_module",
+        "load_module",
+        "run_module",
+        "run_path",
+    }
 
     def __init__(self, root):
         self.root = Path(root)
         self.modules = {}
         self.reached = set()
+        self.escaped = set()
         self.third_party = {}
         self.dynamic = []
 
@@ -390,22 +417,7 @@ class ImportScan:
             for node in tree.body
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
         }
-        aliases = {}
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    bound = alias.asname or alias.name.split(".")[0]
-                    target = self.first_party(alias.name if alias.asname else bound)
-                    aliases[bound] = ("module", target) if target else None
-            elif isinstance(node, ast.ImportFrom):
-                base = self.first_party(self.absolute(name, node))
-                for alias in node.names:
-                    local = alias.asname or alias.name
-                    if base and self.source(f"{base}.{alias.name}"):
-                        aliases[local] = ("module", f"{base}.{alias.name}")
-                    else:
-                        aliases[local] = ("symbol", base, alias.name) if base else None
-        self.modules[name] = {"defs": defs, "aliases": aliases}
+        top_level = []
         for node in tree.body:
             main_block = (
                 isinstance(node, ast.If)
@@ -428,10 +440,34 @@ class ImportScan:
                 ]
             else:
                 parts = [node]
-            for part in parts:
-                if part is not None:
-                    self.walk(name, part)
+            top_level += [part for part in parts if part is not None]
+        aliases = self.bindings(name, [n for part in top_level for n in ast.walk(part)])
+        self.modules[name] = {"defs": defs, "aliases": aliases}
+        for part in top_level:
+            self.walk(name, part, {})
         return self.modules[name]
+
+    def bindings(self, module, nodes):
+        """What the pipeline imports among ``nodes`` bind each name to."""
+        found = {}
+        for node in nodes:
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    bound = alias.asname or alias.name.split(".")[0]
+                    target = self.first_party(alias.name if alias.asname else bound)
+                    if target:
+                        found.setdefault(bound, set()).add(("module", target))
+            elif isinstance(node, ast.ImportFrom):
+                base = self.first_party(self.absolute(module, node))
+                for alias in node.names:
+                    if base and self.source(f"{base}.{alias.name}"):
+                        binding = ("module", f"{base}.{alias.name}")
+                    elif base:
+                        binding = ("symbol", base, alias.name)
+                    else:
+                        continue
+                    found.setdefault(alias.asname or alias.name, set()).add(binding)
+        return found
 
     def reach(self, module, name):
         if (module, name) in self.reached:
@@ -439,23 +475,38 @@ class ImportScan:
         self.reached.add((module, name))
         found = self.module(module)["defs"].get(name)
         if found is not None:
-            self.walk(module, found)
+            self.walk(module, found, self.bindings(module, ast.walk(found)))
         elif self.source(f"{module}.{name}"):
             self.module(f"{module}.{name}")
 
-    def resolve(self, module, expr):
+    def escape(self, module):
+        """``module`` is used as a value: any of its code may run."""
+        if module in self.escaped or not self.source(module):
+            return
+        self.escaped.add(module)
+        for name in list(self.module(module)["defs"]):
+            self.reach(module, name)
+
+    def resolve(self, module, expr, local):
+        """Everything ``expr`` may name, given the function's own import
+        bindings ``local``: (kind, module[, name]) bindings."""
         if isinstance(expr, ast.Name):
             info = self.module(module)
+            found = set(info["aliases"].get(expr.id, ())) | local.get(expr.id, set())
             if expr.id in info["defs"]:
-                return ("symbol", module, expr.id)
-            return info["aliases"].get(expr.id)
+                found.add(("symbol", module, expr.id))
+            return found
         if isinstance(expr, ast.Attribute):
-            base = self.resolve(module, expr.value)
-            if base and base[0] == "module":
+            found = set()
+            for base in self.resolve(module, expr.value, local):
+                if base[0] != "module":
+                    continue
                 if self.source(f"{base[1]}.{expr.attr}"):
-                    return ("module", f"{base[1]}.{expr.attr}")
-                return ("symbol", base[1], expr.attr)
-        return None
+                    found.add(("module", f"{base[1]}.{expr.attr}"))
+                else:
+                    found.add(("symbol", base[1], expr.attr))
+            return found
+        return set()
 
     def imported(self, module, name, line):
         """An import of ``name`` ran in ``module``."""
@@ -467,9 +518,12 @@ class ImportScan:
         elif self.source(target):
             self.module(target)
 
-    def walk(self, module, root):
-        """Run ``root``, a node of ``module``."""
-        for node in ast.walk(root):
+    def walk(self, module, root, local):
+        """Run ``root``, a node of ``module``, where the imports of the
+        function it belongs to bind ``local``."""
+        nodes = list(ast.walk(root))
+        bases = {id(node.value) for node in nodes if isinstance(node, ast.Attribute)}
+        for node in nodes:
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     self.imported(module, alias.name, node.lineno)
@@ -480,21 +534,30 @@ class ImportScan:
                 for alias in node.names:
                     if target and self.source(f"{target}.{alias.name}"):
                         self.module(f"{target}.{alias.name}")
+                    if alias.name in self.DYNAMIC_ATTRIBUTES | self.DYNAMIC_NAMES:
+                        self.dynamic.append(f"{module}:{node.lineno} {alias.name}")
             elif isinstance(node, (ast.Name, ast.Attribute)) and isinstance(
                 node.ctx, ast.Load
             ):
-                found = self.resolve(module, node)
-                if found and found[0] == "symbol":
-                    self.reach(found[1], found[2])
-            if isinstance(node, ast.Call) and ast.unparse(node.func) in self.DYNAMIC:
-                self.dynamic.append(f"{module}:{node.lineno} {ast.unparse(node.func)}")
+                for found in self.resolve(module, node, local):
+                    if found[0] == "symbol":
+                        self.reach(found[1], found[2])
+                    elif id(node) not in bases:
+                        self.escape(found[1])
+                dynamic = (
+                    node.id in self.DYNAMIC_NAMES
+                    if isinstance(node, ast.Name)
+                    else node.attr in self.DYNAMIC_ATTRIBUTES
+                )
+                if dynamic:
+                    self.dynamic.append(f"{module}:{node.lineno} {ast.unparse(node)}")
 
     def entry(self, module, function, *, command=None):
         """Run ``function`` of ``module`` (after its top level). With
         ``command``, skip the other ``if args.command == "..."`` branches
         of its body; exactly one branch must run ``command``."""
         info = self.module(module)
-        branches = 0
+        branches, selected = 0, []
         for stmt in info["defs"][function].body:
             test = getattr(stmt, "test", None)
             chosen = None
@@ -508,9 +571,12 @@ class ImportScan:
                 if chosen != command:
                     continue
                 branches += 1
-            self.walk(module, stmt)
+            selected.append(stmt)
         if command is not None:
             assert branches == 1, (module, function, command, branches)
+        local = self.bindings(module, [n for stmt in selected for n in ast.walk(stmt)])
+        for stmt in selected:
+            self.walk(module, stmt, local)
 
 
 def control_line():
@@ -654,6 +720,63 @@ def test_the_import_scan_follows_what_runs_and_skips_what_nothing_reaches(tmp_pa
         ImportScan(tmp_path).entry("pipeline.entry", "main", command="missing")
 
 
+# What a call graph cannot see (review of c5c17db7, 4).
+SCAN_CONSERVATIVE = {
+    "entry.py": """
+from pipeline import live as handle
+from pipeline import loaders, passed
+
+
+def main(args):
+    handle.run()
+    chosen = passed
+    chosen.anything()
+    getattr(passed, "name")()
+    loaders.go()
+
+
+def unreachable():
+    from pipeline import dead as handle
+
+    return handle
+""",
+    "live.py": "def run():\n    import msgpack\n",
+    "dead.py": "def run():\n    import zmq\n",
+    "passed.py": "def one():\n    import lxml\n\n\ndef two():\n    import requests\n",
+    "loaders.py": """
+from importlib import import_module as load
+import importlib.util as util
+
+
+def go():
+    load("x")
+    util.spec_from_file_location("y", "y.py")
+    __import__("z")
+""",
+}
+
+
+def test_the_import_scan_assumes_the_worst_where_it_cannot_follow(tmp_path):
+    (tmp_path / "pipeline").mkdir()
+    for name, text in SCAN_CONSERVATIVE.items():
+        (tmp_path / "pipeline" / name).write_text(text)
+    scan = ImportScan(tmp_path)
+    scan.entry("pipeline.entry", "main")
+    # A function nothing reaches rebinding `handle` does not hide the live
+    # binding, and its own import never runs.
+    assert "msgpack" in scan.third_party and "zmq" not in scan.third_party
+    # A module used as a value (assigned, given to getattr) may run any of
+    # its functions.
+    assert scan.escaped == {"pipeline.passed"}
+    assert set(scan.third_party) == {"msgpack", "lxml", "requests"}
+    # Dynamic imports, however they are named.
+    assert {entry.split(" ", 1)[1] for entry in scan.dynamic} == {
+        "import_module",
+        "util.spec_from_file_location",
+        "__import__",
+    }
+
+
 def in_control(tmp_path, specs, *arguments, cwd):
     """``uv run --with SPEC... python -m ARGUMENTS`` through the test uv."""
     tools = tmp_path / "uv-bin"
@@ -680,7 +803,9 @@ def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
         "        print(name, 'refused')\n"
     )
     names = ["json", "yaml", "jsonschema", "referencing", "rfc8785", "numpy"]
-    names += ["hypothesis", "pytest"]
+    # packaging is loaded before the finder (the stub itself imports it), as
+    # a .pth file's import would be: it is refused all the same.
+    names += ["hypothesis", "pytest", "packaging"]
     for name in names:
         assert importlib.util.find_spec(name), f"the suite installs {name}"
     _, specs = control_line()
@@ -695,6 +820,7 @@ def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
         "numpy refused",
         "hypothesis refused",
         "pytest refused",
+        "packaging refused",
     ]
     bare = in_control(tmp_path, [], "probe", "json", "yaml", "jsonschema", cwd=tmp_path)
     assert bare.stdout.splitlines() == [
@@ -1336,8 +1462,10 @@ def terminal_status(directory, rid, receipt, commit, status="complete"):
 # everything the suite installs (numpy among it), so no test ran the build
 # job's checks with CONTROL's packages alone. This runs `uv run [--with
 # SPEC]... python -m MODULE ARGS` as uv does outside a project: only the
-# standard library, the specs and what they require, and the checkout's
-# own modules can be imported.
+# standard library, the specs and what they require on this interpreter
+# (markers evaluated, extras only where asked for), and the checkout's own
+# modules can be imported. It does not resolve versions: each package is
+# the version the suite installed, where uv would pick its own.
 UV_RUN = r'''"""uv run [--with SPEC]... python -m MODULE ARGS, in this interpreter
 with every package refused but the specs and what they require."""
 
@@ -1345,37 +1473,46 @@ import importlib.abc
 import importlib.metadata as metadata
 import json
 import os
-import re
 import runpy
 import sys
 from pathlib import Path
 
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+
 installed, specs = json.loads(Path(sys.argv[1]).read_text()), sys.argv[2].split()
-
-
-def normal(name):
-    return re.sub(r"[-_.]+", "-", name).lower()
-
-
-wanted, environment = list(specs), set()
+wanted, environment = [Requirement(spec) for spec in specs], {}
 while wanted:
-    name = normal(re.match(r"[A-Za-z0-9._-]+", wanted.pop()).group(0))
-    if name in environment:
+    requirement = wanted.pop()
+    name = canonicalize_name(requirement.name)
+    extras = set(requirement.extras) - environment.get(name, set())
+    if name in environment and not extras:
         continue
-    environment.add(name)
+    environment.setdefault(name, set()).update(extras)
     try:
         requires = metadata.requires(name) or []
     except metadata.PackageNotFoundError:
         continue
-    # Extras are not installed; other markers may be, so they stay.
-    wanted += [r for r in requires if "extra" not in r.partition(";")[2]]
+    for line in requires:
+        needed = Requirement(line)
+        if needed.marker is None or any(
+            needed.marker.evaluate({"extra": extra})
+            for extra in environment[name] | {""}
+        ):
+            wanted.append(needed)
 refused = {
     top
     for top, owners in installed.items()
-    if not {normal(owner) for owner in owners} & environment
+    if not {canonicalize_name(owner) for owner in owners} & set(environment)
     and top not in sys.stdlib_module_names
     and not (Path.cwd() / top).exists()
 }
+# What is already loaded (this script's packaging, anything a .pth file
+# imported at startup) would be found in sys.modules without a finder:
+# drop it, so the next import comes here and is refused.
+for loaded in list(sys.modules):
+    if loaded.partition(".")[0] in refused:
+        del sys.modules[loaded]
 
 
 class Environment(importlib.abc.MetaPathFinder):
