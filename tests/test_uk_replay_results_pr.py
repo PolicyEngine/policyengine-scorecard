@@ -292,9 +292,14 @@ def shell_residue(text):
     return "".join(out)
 
 
-# A command that runs text as shell code, such as a block of echoed
-# messages piped into it.
-SHELL = re.compile(r"\b(?:(?:ba|da|z|k)?sh|eval|exec|source)\b|(?:^|[;&|(){}])\s*\.\s")
+# A command that can run text as shell code, such as a block of echoed
+# messages piped or written to it: a shell by name or as $BASH, $SHELL or
+# $0, eval, exec, source, trap, or the . command, escaped or not.
+SHELL = re.compile(
+    r"\b(?:(?:ba|da|z|k)?sh|eval|exec|source|trap)\b"
+    r"|\$\{?(?:BASH|SHELL|0)\b"
+    r"|(?:^|[\s;&|(){}!])\\?\.(?=\s|$)"
+)
 
 
 def runs_pipeline_code(text):
@@ -393,7 +398,9 @@ def test_the_builder_runs_no_release_code_and_never_merges():
         'echo "::error::; builder check" | bash',
         '{\necho "::error::; builder check"\n} | bash',
         'if :; then\necho "::error::; builder check"\nfi | sh',
-        '{\necho "::error::; builder check"\n} > "$TMPDIR/x"\n. "$TMPDIR/x"',
+        '{\necho "::error::; builder check"\n} | "$BASH"',
+        '{\necho "::error::; builder check"\n} > "$TMPDIR/x"\nif \\. "$TMPDIR/x"; then :; fi',
+        '{\necho "::error::; builder check"\n} > "$TMPDIR/x"\ntrap "$(cat "$TMPDIR/x")" EXIT',
     ):
         assert runs_pipeline_code(runs), runs
     # These are flagged by the rules that keep the residue honest: no
