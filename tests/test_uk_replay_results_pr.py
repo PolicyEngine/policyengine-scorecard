@@ -190,6 +190,131 @@ def phase(script, name):
     return script[start : script.index("\n}\n", start)]
 
 
+class Unlexed(ValueError):
+    """Shell text that shell_residue does not model."""
+
+
+# A message bash reads as one literal word: a double-quoted ::error::,
+# ::notice:: or ::warning:: string that holds no quote, backslash, backtick
+# or newline and expands only plain $names (no $(, ${, $(( or bash 5.3's
+# ${ cmd; }), as the one argument of an echo on its own line.
+MESSAGE = re.compile(
+    r"""echo "::(?:error|notice|warning)::(?:[^"'\\`$\n]|\$[A-Za-z0-9_])*\""""
+    r"""[ \t]*(?:[12]?>&2[ \t]*)?(?=\n|\Z)"""
+)
+
+
+def shell_residue(text):
+    """``text`` as bash reads it, left to right, less its comment lines and
+    with each MESSAGE line cut to ``echo ""``.
+
+    Review of 3ddb3311 (1, 3): quote state carries across lines, and a
+    comment line or a message counts only where it starts a line outside
+    any quote, ``$(...)``, ``(...)`` or ``${...}``. Those nest as in bash.
+    A construct it does not model (a heredoc, a backtick, ``$'...'``,
+    ``case`` inside parentheses, a quote left open) raises Unlexed."""
+    out, stack, i, line_start = [], [], 0, True
+    while i < len(text):
+        c, rest = text[i], text[i:]
+        if not stack and line_start and c not in " \t\n":
+            line_start = False
+            if c == "#":
+                end = text.find("\n", i)
+                i = len(text) if end < 0 else end
+                continue
+            message = MESSAGE.match(text, i)
+            if message:
+                out.append('echo ""')
+                i = message.end()
+                continue
+        if c == "\\":
+            out.append(rest[:2])
+            i += 2
+            continue
+        if c == "`":
+            raise Unlexed("a backtick")
+        if stack[-1:] == ['"']:
+            if c == '"':
+                stack.pop()
+            elif rest.startswith(("$(", "${")):
+                stack.append(")" if rest[1] == "(" else "}")
+                out.append(rest[:2])
+                i += 2
+                continue
+            out.append(c)
+            i += 1
+            continue
+        # Outside double quotes: the top level, (...), $(...) or ${...}.
+        if rest.startswith("$'"):
+            raise Unlexed("$'...'")
+        if c == "$" and rest[1:2] in ('"', "(", "{"):
+            stack.append({'"': '"', "(": ")", "{": "}"}[rest[1]])
+            out.append(rest[:2])
+            i += 2
+            continue
+        if c == "'":
+            end = text.find("'", i + 1)
+            if end < 0:
+                raise Unlexed("an unclosed '")
+            out.append(text[i : end + 1])
+            i = end + 1
+            continue
+        if c == "#" and stack[-1:] != ["}"] and text[i - 1 : i] in ("", *" \t\n;&|()"):
+            # An inline comment, or a comment line inside (...): kept.
+            end = text.find("\n", i)
+            end = len(text) if end < 0 else end
+            out.append(text[i:end])
+            i = end
+            continue
+        if rest.startswith("<<"):
+            if not rest.startswith("<<<"):
+                raise Unlexed("a heredoc")
+            out.append(rest[:3])
+            i += 3
+            continue
+        if ")" in stack and re.compile(r"(?<!\w)case\b").match(text, i):
+            # A pattern's ) would close the parentheses early.
+            raise Unlexed("case inside parentheses")
+        if c == '"':
+            stack.append('"')
+        elif c == "(":
+            stack.append(")")
+        elif c == "{" and stack[-1:] == ["}"]:
+            stack.append("}")
+        elif c in ")}" and stack[-1:] == [c]:
+            stack.pop()
+        elif c == "\n" and not stack:
+            line_start = True
+        out.append(c)
+        i += 1
+    if stack:
+        raise Unlexed(f"an unclosed {stack[-1]}")
+    return "".join(out)
+
+
+# A command that runs text as shell code, such as a block of echoed
+# messages piped into it.
+SHELL = re.compile(r"\b(?:(?:ba|da|z|k)?sh|eval|exec|source)\b|(?:^|[;&|(){}])\s*\.\s")
+
+
+def runs_pipeline_code(text):
+    """The lines of ``text`` that may run the builder or a pipeline module,
+    hide a command in a comment or run text as code, once its messages are
+    set aside."""
+    try:
+        residue = shell_residue(text)
+    except Unlexed as problem:
+        return [str(problem)]
+    return [
+        line
+        for line in residue.splitlines()
+        if "#" in line
+        or "pipeline" in line
+        or re.search(r"\bbuilder\b", line)
+        or SHELL.search(line)
+    ]
+
+
 def test_the_builder_runs_no_release_code_and_never_merges():
     script = SCRIPT.read_text()
     for forbidden in (
@@ -235,34 +360,63 @@ def test_the_builder_runs_no_release_code_and_never_merges():
                 assert "python3 -I" in line, line
     assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
     # propose runs neither the builder nor any pipeline module. Its messages
-    # may name them (review of 78e080c6, 3): only the text of a quoted
-    # ::error::, ::notice:: or ::warning:: string with no command
-    # substitution is set aside, never the rest of its line, and propose
-    # holds no inline comment for a command to hide behind.
-    # A message is one whole shell word in double quotes, holding no other
-    # quote, backslash, backtick or command substitution, so nothing set
-    # aside can run (review of c5c17db7, 3).
-    message = re.compile(
-        r"""(?<![^\s])"::(?:error|notice|warning)::(?:[^"'$\\`]|\$(?!\())*"(?=[\s;]|$)"""
-    )
-
-    def runs_pipeline_code(line):
-        command = message.sub('""', line)
-        return (
-            "#" in command
-            or "pipeline" in command
-            or bool(re.search(r"\bbuilder\b", command))
-        )
-
-    assert runs_pipeline_code('echo "::error::fine" >&2; builder check')
-    assert runs_pipeline_code('echo "::notice::$(builder check)"')
-    assert runs_pipeline_code("true # builder check")
-    assert runs_pipeline_code('echo ""::error::; builder check; : ""')
-    assert runs_pipeline_code("""echo 'x "::error::' ; builder check ; echo '" '""")
-    assert not runs_pipeline_code('echo "::error::$branch: not this builder" >&2')
-    for line in propose.splitlines():
-        if not line.lstrip().startswith("#"):
-            assert not runs_pipeline_code(line), line
+    # may name them (review of 78e080c6, 3), so shell_residue sets aside
+    # each message that bash reads as a literal echoed to the log. Bash runs
+    # `builder check` in each of these (bash 5.3 in the ${ ...; } forms,
+    # bash 3.2 in the rest), and each is flagged.
+    for runs in (
+        'echo "::error::fine" >&2; builder check',
+        'echo "::notice::$(builder check)"',
+        'echo ""::error::; builder check; : ""',
+        """echo 'x "::error::' ; builder check ; echo '" '""",
+        # Review of 3ddb3311 (1): a closing quote is not a message's opening.
+        'echo " "::error::; builder check; echo " "',
+        'echo x"::error::a "::error::; builder check; echo " z"',
+        'echo "start\n "::error::; builder check; echo " end"',
+        # Review of 3ddb3311 (3): a comment line inside a string is code,
+        # and bash 5.3 runs ${ cmd; } and ${|cmd;} inside double quotes.
+        'echo "start\n#$(builder check)\nend"',
+        'echo "::error::${ builder check; }"',
+        'echo "::error::${|builder check;}"',
+        # Read as plain text, a single quote, an escaped quote, ${...} or
+        # what the lexer does not model would hide a command as well.
+        ': \'"\' "\necho "::error::; builder check; : "\n#"',
+        ': \\" "\necho "::error::; builder check; : "\n#"',
+        "echo ${x:-\n#$(builder check)\n}",
+        "cat <<EOF\n#$(builder check)\nEOF",
+        ': `"` "\necho "::error::; builder check; : "\n#"',
+        ': $\'\\\'"\' "\necho "::error::; builder check; : "\n#"',
+        # A message is a literal echoed to the log, never code: not
+        # evaluated, trapped, or fed to a shell.
+        'eval "::error::; builder check"',
+        'trap "::error::; builder check" EXIT',
+        'echo "::error::; builder check" | bash',
+        '{\necho "::error::; builder check"\n} | bash',
+        'if :; then\necho "::error::; builder check"\nfi | sh',
+        '{\necho "::error::; builder check"\n} > "$TMPDIR/x"\n. "$TMPDIR/x"',
+    ):
+        assert runs_pipeline_code(runs), runs
+    # These are flagged by the rules that keep the residue honest: no
+    # inline comment, no construct the lexer does not model, no quote left
+    # open, and a message alone on its line, outside any parentheses.
+    for refused in (
+        "true # builder check",
+        ': "$(case a in a) :;; esac)"',
+        'echo "open',
+        'echo "::error::; builder check" | tee /dev/null',
+        '(\necho "::error::; builder check"\n) | tee /dev/null',
+    ):
+        assert runs_pipeline_code(refused), refused
+    # A comment line, a string or a substitution spanning lines leaves the
+    # quote state where bash leaves it.
+    for inert in (
+        'echo "::error::$branch: not this builder" >&2',
+        '# the bot\'s builder check\n  echo "::notice::not this builder"',
+        'x="$(git rev-parse "$r^{tree}")"\necho "::error::not this builder" >&2',
+        'x=(--a \'b\'\n  "c")\necho "::warning::not this builder"',
+    ):
+        assert not runs_pipeline_code(inert), inert
+    assert not runs_pipeline_code(propose), runs_pipeline_code(propose)
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -356,27 +510,32 @@ class ImportScan:
     """The third-party imports that running the entry points can execute.
 
     It follows the code that runs. A module's top level runs when it is
-    imported, except its ``if __name__ == "__main__"`` block. A function or
-    class runs when reachable code names it, directly or through a module
-    alias; a class makes all its methods reachable. An import statement in
-    reachable code imports its module; one in a function nothing reaches
-    does not. Pipeline modules are followed however they are named:
-    ``pipeline.x``, ``from pipeline import x``, a relative import, or the
-    bare sibling name some modules fall back to.
+    imported; its ``if __name__ == "__main__"`` block runs only when it is
+    the entry point. A function or class runs when reachable code names it,
+    directly or through a module alias; a class makes all its methods
+    reachable. An import statement in reachable code imports its module;
+    one in a function nothing reaches does not. Pipeline modules are
+    followed however they are named: ``pipeline.x``, ``from pipeline import
+    x``, a relative import, or the bare sibling name some modules fall back
+    to.
 
-    Names resolve as Python scopes them: a module-level import binds a name
-    everywhere in its module, and one inside a function only in the code
-    that runs it. Where it cannot tell which code runs, it assumes all of it
-    can (review of c5c17db7, 4): a name bound to several things resolves to
-    all of them, and a pipeline module used as a value (assigned, passed,
-    given to ``getattr``) makes every function in it reachable.
-    Dynamic imports in reached code (``__import__``, ``exec``, ``eval``,
-    ``importlib``'s loaders and ``runpy``, however they are named) are
-    recorded, since it cannot follow them."""
+    Names resolve as Python scopes them: an import at module level, in the
+    ``__main__`` block, or in a function that declares the name ``global``
+    binds it everywhere in its module (review of 3ddb3311, 2), and any other
+    import inside a function only in the code that runs it. Where it cannot
+    tell which code runs, it assumes all of it can (review of c5c17db7, 4):
+    a name bound to several things resolves to all of them, and a pipeline
+    module used as a value (assigned, passed, given to ``getattr``) makes
+    every function in it reachable. Dynamic imports in reached code
+    (``__import__``, ``exec``, ``eval``, ``importlib``'s loaders and
+    ``runpy``, however they are named) are recorded, since it cannot follow
+    them."""
 
     DYNAMIC_NAMES = {"__import__", "exec", "eval"}
     DYNAMIC_ATTRIBUTES = {
         "__import__",
+        "exec",
+        "eval",
         "import_module",
         "module_from_spec",
         "spec_from_file_location",
@@ -422,7 +581,7 @@ class ImportScan:
             for node in tree.body
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
         }
-        top_level = []
+        top_level, main = [], []
         for node in tree.body:
             main_block = (
                 isinstance(node, ast.If)
@@ -430,6 +589,7 @@ class ImportScan:
                 and ast.unparse(node.test.left) == "__name__"
             )
             if main_block:
+                main.append(node)
                 continue
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 parts = [
@@ -446,8 +606,22 @@ class ImportScan:
             else:
                 parts = [node]
             top_level += [part for part in parts if part is not None]
-        aliases = self.bindings(name, [n for part in top_level for n in ast.walk(part)])
-        self.modules[name] = {"defs": defs, "aliases": aliases}
+        aliases = self.bindings(
+            name, [n for part in top_level + main for n in ast.walk(part)]
+        )
+        for function in ast.walk(tree):
+            if isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                nodes = list(ast.walk(function))
+                declared = {
+                    bound
+                    for node in nodes
+                    if isinstance(node, ast.Global)
+                    for bound in node.names
+                }
+                for bound, found in self.bindings(name, nodes).items():
+                    if bound in declared:
+                        aliases.setdefault(bound, set()).update(found)
+        self.modules[name] = {"defs": defs, "aliases": aliases, "main": main}
         for part in top_level:
             self.walk(name, part, {})
         return self.modules[name]
@@ -558,25 +732,37 @@ class ImportScan:
                     self.dynamic.append(f"{module}:{node.lineno} {ast.unparse(node)}")
 
     def entry(self, module, function, *, command=None):
-        """Run ``function`` of ``module`` (after its top level). With
-        ``command``, skip the other ``if args.command == "..."`` branches
-        of its body; exactly one branch must run ``command``."""
+        """Run ``module`` as the entry point: its top level, its
+        ``__main__`` block and ``function``, which that block calls. With
+        ``command``, a branch of ``function``'s body that tests
+        ``args.command == "x"`` for another x is skipped, but not its
+        ``elif`` or ``else`` (review of 3ddb3311, 4); any other test of
+        ``args.command`` (``!=``, ``in``) may go either way, so it all runs.
+        Exactly one branch must run ``command``."""
         info = self.module(module)
+        # The block's call to function runs only what is selected below.
+        self.reached.add((module, function))
+        for block in info["main"]:
+            self.walk(module, block, {})
         branches, selected = 0, []
-        for stmt in info["defs"][function].body:
+        pending = list(info["defs"][function].body)
+        while pending:
+            stmt = pending.pop(0)
             test = getattr(stmt, "test", None)
-            chosen = None
             if (
-                isinstance(stmt, ast.If)
-                and isinstance(test, ast.Compare)
-                and ast.unparse(test.left) == "args.command"
+                command is None
+                or not isinstance(stmt, ast.If)
+                or not isinstance(test, ast.Compare)
+                or ast.unparse(test.left) != "args.command"
+                or [type(op) for op in test.ops] != [ast.Eq]
+                or not isinstance(test.comparators[0], ast.Constant)
             ):
-                chosen = test.comparators[0].value
-            if command is not None and chosen is not None:
-                if chosen != command:
-                    continue
+                selected.append(stmt)
+            elif test.comparators[0].value == command:
                 branches += 1
-            selected.append(stmt)
+                selected += stmt.body
+            else:
+                pending[:0] = stmt.orelse
         if command is not None:
             assert branches == 1, (module, function, command, branches)
         local = self.bindings(module, [n for stmt in selected for n in ast.walk(stmt)])
@@ -650,6 +836,12 @@ def main(args):
         near.used()
     if args.command == "other":
         import numpy
+    elif args.command == "third":
+        import polars
+    else:
+        import msgpack
+    if args.command != "other":
+        import zmq
     return 0
 
 
@@ -659,6 +851,8 @@ def unreachable():
 
 if __name__ == "__main__":
     import scipy
+
+    raise SystemExit(main(None))
 """,
     "helper.py": """
 import yaml
@@ -673,6 +867,10 @@ def run():
 
 def unused():
     import torch
+
+
+if __name__ == "__main__":
+    import tensorflow
 """,
     "sibling.py": """
 def used():
@@ -709,18 +907,28 @@ def test_the_import_scan_follows_what_runs_and_skips_what_nothing_reaches(tmp_pa
     for name, text in SCAN_FIXTURE.items():
         (tmp_path / "pipeline").mkdir(exist_ok=True)
         (tmp_path / "pipeline" / name).write_text(text)
+    reached = {"yaml", "jsonschema", "rfc8785", "attr"}
+    # The entry point's __main__ block runs (scipy), an imported module's
+    # does not (tensorflow). A skipped branch's else runs (msgpack), and a
+    # test it cannot decide runs (zmq).
+    every = {"scipy", "msgpack", "zmq"}
     scan = ImportScan(tmp_path)
     scan.entry("pipeline.entry", "main", command="wanted")
-    assert set(scan.third_party) == {"yaml", "jsonschema", "rfc8785", "attr"}
+    assert set(scan.third_party) == reached | every
     line = (
         SCAN_FIXTURE["deep.py"]
         .splitlines()
         .index('    importlib.import_module("anything")')
     )
     assert scan.dynamic == [f"pipeline.deep:{line + 1} importlib.import_module"]
+    # The branch that runs the command skips its elif and else; != is no
+    # branch for "other".
+    other = ImportScan(tmp_path)
+    other.entry("pipeline.entry", "main", command="other")
+    assert set(other.third_party) == {"yaml", "scipy", "numpy", "zmq"}
     whole = ImportScan(tmp_path)
     whole.entry("pipeline.entry", "main")
-    assert set(whole.third_party) == {"yaml", "jsonschema", "rfc8785", "attr", "numpy"}
+    assert set(whole.third_party) == reached | every | {"numpy", "polars"}
     with pytest.raises(AssertionError):
         ImportScan(tmp_path).entry("pipeline.entry", "main", command="missing")
 
@@ -732,24 +940,41 @@ from pipeline import live as handle
 from pipeline import loaders, passed
 
 
+def _load():
+    global lazy
+    from pipeline import heavy as lazy
+
+
 def main(args):
     handle.run()
     chosen = passed
     chosen.anything()
     getattr(passed, "name")()
     loaders.go()
+    _load()
+    lazy.go()
+    tool.go()
 
 
 def unreachable():
     from pipeline import dead as handle
 
     return handle
+
+
+if __name__ == "__main__":
+    from pipeline import mainonly as tool
+
+    raise SystemExit(main(None))
 """,
     "live.py": "def run():\n    import msgpack\n",
     "dead.py": "def run():\n    import zmq\n",
     "passed.py": "def one():\n    import lxml\n\n\ndef two():\n    import requests\n",
+    "heavy.py": "def go():\n    import pyarrow\n",
+    "mainonly.py": "def go():\n    import polars\n",
     "loaders.py": """
 from importlib import import_module as load
+import builtins
 import importlib.util as util
 
 
@@ -757,6 +982,8 @@ def go():
     load("x")
     util.spec_from_file_location("y", "y.py")
     __import__("z")
+    builtins.exec("import a")
+    builtins.eval("b")
 """,
 }
 
@@ -773,24 +1000,40 @@ def test_the_import_scan_assumes_the_worst_where_it_cannot_follow(tmp_path):
     # A module used as a value (assigned, given to getattr) may run any of
     # its functions.
     assert scan.escaped == {"pipeline.passed"}
-    assert set(scan.third_party) == {"msgpack", "lxml", "requests"}
+    # Review of 3ddb3311 (2): a name a function imports under `global`
+    # (pyarrow) or the __main__ block imports (polars) is bound for the
+    # whole module.
+    assert set(scan.third_party) == {
+        "msgpack",
+        "lxml",
+        "requests",
+        "pyarrow",
+        "polars",
+    }
     # Dynamic imports, however they are named.
     assert {entry.split(" ", 1)[1] for entry in scan.dynamic} == {
         "import_module",
         "util.spec_from_file_location",
         "__import__",
+        "builtins.exec",
+        "builtins.eval",
     }
 
 
-def in_control(tmp_path, specs, *arguments, cwd):
-    """``uv run --with SPEC... python -m ARGUMENTS`` through the test uv."""
+def in_control(tmp_path, specs, *arguments, cwd, path=()):
+    """``uv run --with SPEC... python -m ARGUMENTS`` through the test uv,
+    with ``path`` after the checkout on PYTHONPATH."""
     tools = tmp_path / "uv-bin"
     tools.mkdir(exist_ok=True)
     flags = [word for spec in specs for word in ("--with", spec)]
     return subprocess.run(
         [str(install_uv(tools)), "run", *flags, "python", "-m", *arguments],
         cwd=cwd,
-        env={**os.environ, "PYTHONPATH": str(cwd), "PYTHONDONTWRITEBYTECODE": "1"},
+        env={
+            **os.environ,
+            "PYTHONPATH": os.pathsep.join(str(entry) for entry in (cwd, *path)),
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
         capture_output=True,
         text=True,
         check=False,
@@ -798,7 +1041,9 @@ def in_control(tmp_path, specs, *arguments, cwd):
 
 
 def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
-    (tmp_path / "probe.py").write_text(
+    checkout = tmp_path / "checkout"
+    checkout.mkdir()
+    (checkout / "probe.py").write_text(
         "import importlib, sys\n"
         "for name in sys.argv[1:]:\n"
         "    try:\n"
@@ -807,15 +1052,38 @@ def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
         "    except ModuleNotFoundError:\n"
         "        print(name, 'refused')\n"
     )
+    (checkout / "local.py").write_text("")
     names = ["json", "yaml", "jsonschema", "referencing", "rfc8785", "numpy"]
     # packaging is loaded before the finder (the stub itself imports it), as
     # a .pth file's import would be: it is refused all the same.
     names += ["hypothesis", "pytest", "packaging"]
     for name in names:
         assert importlib.util.find_spec(name), f"the suite installs {name}"
+    # Review of 3ddb3311 (5): a module no distribution owns, from outside
+    # the checkout, is refused too, even when a startup hook has loaded it
+    # (as _virtualenv.pth loads _virtualenv, refused where it exists).
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    (elsewhere / "stray.py").write_text("")
+    (elsewhere / "sitecustomize.py").write_text(
+        "import sys\nimport stray\nprint('stray loaded', file=sys.stderr)\n"
+    )
+    unowned = ["stray"]
+    if importlib.util.find_spec("_virtualenv"):
+        unowned.append("_virtualenv")
     _, specs = control_line()
-    control = in_control(tmp_path, specs, "probe", *names, cwd=tmp_path)
+    control = in_control(
+        tmp_path,
+        specs,
+        "probe",
+        *names,
+        *unowned,
+        "local",
+        cwd=checkout,
+        path=[elsewhere],
+    )
     assert control.returncode == 0, control.stderr
+    assert "stray loaded" in control.stderr
     assert control.stdout.splitlines() == [
         "json imported",
         "yaml refused",
@@ -826,8 +1094,10 @@ def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
         "hypothesis refused",
         "pytest refused",
         "packaging refused",
+        *(f"{name} refused" for name in unowned),
+        "local imported",
     ]
-    bare = in_control(tmp_path, [], "probe", "json", "yaml", "jsonschema", cwd=tmp_path)
+    bare = in_control(tmp_path, [], "probe", "json", "yaml", "jsonschema", cwd=checkout)
     assert bare.stdout.splitlines() == [
         "json imported",
         "yaml refused",
@@ -1371,8 +1641,12 @@ def terminal_status(directory, rid, receipt, commit, status="complete"):
 # (markers evaluated, extras only where asked for), and the checkout's own
 # modules can be imported. It does not resolve versions: each package is
 # the version the suite installed, where uv would pick its own.
+# Review of 3ddb3311 (5): it allows those and refuses the rest, so a module
+# no distribution owns (_virtualenv, which a .pth file loads at startup, or
+# an editable install without top_level.txt) is refused too.
 UV_RUN = r'''"""uv run [--with SPEC]... python -m MODULE ARGS, in this interpreter
-with every package refused but the specs and what they require."""
+with every module refused but the standard library, the specs and what they
+require, and the checkout's own."""
 
 import importlib.abc
 import importlib.metadata as metadata
@@ -1405,31 +1679,61 @@ while wanted:
             for extra in environment[name] | {""}
         ):
             wanted.append(needed)
-refused = {
+provided = set(sys.stdlib_module_names) | {
     top
     for top, owners in installed.items()
-    if not {canonicalize_name(owner) for owner in owners} & set(environment)
-    and top not in sys.stdlib_module_names
-    and not (Path.cwd() / top).exists()
+    if {canonicalize_name(owner) for owner in owners} & set(environment)
 }
+checkout = Path.cwd().resolve()
+
+
+def checked_out(spec):
+    """``spec`` is the interpreter's own or loads from the checkout."""
+    if spec.origin in ("built-in", "frozen"):
+        return True
+    places = (
+        [spec.origin]
+        if spec.has_location
+        else list(spec.submodule_search_locations or ())
+    )
+    return bool(places) and all(
+        Path(place).resolve().is_relative_to(checkout) for place in places
+    )
+
+
 # What is already loaded (this script's packaging, anything a .pth file
 # imported at startup) would be found in sys.modules without a finder:
 # drop it, so the next import comes here and is refused.
-for loaded in list(sys.modules):
-    if loaded.partition(".")[0] in refused:
+for loaded, module in list(sys.modules.items()):
+    spec = getattr(module, "__spec__", None)
+    if not (
+        loaded == "__main__"
+        or loaded.partition(".")[0] in provided
+        or (spec is not None and checked_out(spec))
+    ):
         del sys.modules[loaded]
 
 
 class Environment(importlib.abc.MetaPathFinder):
     def find_spec(self, name, path=None, target=None):
-        top = name.partition(".")[0]
-        if top in refused:
-            raise ModuleNotFoundError(
-                f"No module named {top!r}: uv run --with "
-                f"{' '.join(specs) or '(nothing)'} does not install it",
-                name=top,
-            )
-        return None
+        if name.partition(".")[0] in provided:
+            return None
+        # Anything else loads only where the finders after this one would
+        # load it from the checkout.
+        for finder in sys.meta_path[sys.meta_path.index(self) + 1 :]:
+            find = getattr(finder, "find_spec", None)
+            spec = find(name, path, target) if find else None
+            if spec is not None:
+                break
+        else:
+            return None
+        if checked_out(spec):
+            return spec
+        raise ModuleNotFoundError(
+            f"No module named {name!r}: uv run --with "
+            f"{' '.join(specs) or '(nothing)'} does not install it",
+            name=name,
+        )
 
 
 sys.meta_path.insert(0, Environment())
