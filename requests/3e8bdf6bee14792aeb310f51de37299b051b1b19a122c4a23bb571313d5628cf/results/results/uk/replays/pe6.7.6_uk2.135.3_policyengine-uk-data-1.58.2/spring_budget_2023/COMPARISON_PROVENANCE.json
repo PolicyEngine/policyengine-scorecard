@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "678db18e5e5289eb4fa7d92707ce03f670e6f435525f531ae816418223f47e05",
+  "COMPARISON.json": "dd64e52b67973c286b87e0fbcbc143a0dfde8929ff649775ab47b5bbee2f21e6",
+  "COMPARISON.md": "04d82ca77ec447103601842986c32057fd609741e4011a352f28830e41b62cdb"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "ea924e8ee536a741546a9606c38874d8cb7833edaa5dcba33491872431e88edd",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "23b61eb51849ec5a635bbf09fb9a854ea26821c29a5c694651dc358e7ceb3428",
+ "staging_manifest_path": "results/uk/replays/pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "b8af296e5e64950c5473c8cd7a0452d1105d538c4c0a1fa4ac78cdb0ed3a3b25"
+}

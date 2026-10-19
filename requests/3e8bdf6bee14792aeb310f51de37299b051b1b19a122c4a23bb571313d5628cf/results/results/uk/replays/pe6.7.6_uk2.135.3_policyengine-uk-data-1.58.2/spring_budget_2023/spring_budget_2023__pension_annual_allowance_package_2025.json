@@ -1,0 +1,218 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+    "2023-01-01.2035-12-31": 40000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+    "2023-01-01.2035-12-31": 4000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+    "2023-01-01.2035-12-31": 240000
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2025 proxies FY 2025-26.",
+ "certified_aggregates_gbp": {
+  "income_tax": 299173438654.15564,
+  "ni_class_1_employee": 50017085095.86952,
+  "ni_class_1_employer": 152914138921.995,
+  "ni_class_2": 0.0,
+  "ni_class_4": 2729627595.558269
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "spring_budget_2023__pension_annual_allowance_package"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.135.3",
+ "event": "spring_budget_2023",
+ "fiscal_event": "Spring Budget 2023",
+ "fy_proxy": "2025-26",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_2": "tax",
+  "ni_class_4": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": -3296329364.5786133,
+  "ni_class_1_employee": 0.0,
+  "ni_class_1_employer": 0.0,
+  "ni_class_2": 0.0,
+  "ni_class_4": 0.0
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_2",
+  "ni_class_4"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": 3296329364.5786133,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -0.0
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": 3296329364.5786133,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -0.0
+ },
+ "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+ "measure_total_gbp": -3296329364.5786133,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01.2035-12-31": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01.2035-12-31": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01.2035-12-31": 240000
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+    "intended": 40000,
+    "processed": 40000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+    "intended": 4000,
+    "processed": 4000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+    "intended": 240000,
+    "processed": 240000
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+    "intended": 60000,
+    "processed": 60000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+    "intended": 10000,
+    "processed": 10000
+   },
+   "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+    "intended": 260000,
+    "processed": 260000
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 302469768018.73425,
+    "ni_class_1_employee": 50017085095.86952,
+    "ni_class_1_employer": 152914138921.995,
+    "ni_class_2": 0.0,
+    "ni_class_4": 2729627595.558269
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 299173438654.15564,
+    "ni_class_1_employee": 50017085095.86952,
+    "ni_class_1_employer": 152914138921.995,
+    "ni_class_2": 0.0,
+    "ni_class_4": 2729627595.558269
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_2": {
+   "definition_period": "year",
+   "documentation": "Compulsory Class 2 contributions under s.11(2) SSCBA 1992 for a full year of self-employment: the weekly rate for each contribution week in the tax year (53 in 2019-20, otherwise 52 to 2023-24). Liability is tested on relevant profits, the profits on which Class 4 is payable under s.15 (s.11(3)), as modelled in ni_class_4_profits.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+   "entity": "person",
+   "label": "NI Class 2 contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "75e6ef92715518185cf8727477b81c29a09634d178022d35c34cb8508ee3d0d3",
+ "year": 2025
+}

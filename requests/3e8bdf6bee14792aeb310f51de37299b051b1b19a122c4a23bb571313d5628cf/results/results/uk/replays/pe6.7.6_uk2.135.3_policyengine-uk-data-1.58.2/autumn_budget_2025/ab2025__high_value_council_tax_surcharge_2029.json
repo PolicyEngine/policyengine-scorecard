@@ -1,0 +1,158 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+    "2028-01-01.2030-12-31": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+    "2028-01-01.2030-12-31": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+    "2028-01-01.2030-12-31": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+    "2028-01-01.2030-12-31": 0
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2029 proxies FY 2029-30.",
+ "certified_aggregates_gbp": {
+  "high_value_council_tax_surcharge": 469605186.562956
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "ab2025__high_value_council_tax_surcharge"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.135.3",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2029-30",
+ "head_channels": {
+  "high_value_council_tax_surcharge": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "High-value council tax surcharge",
+   "pe_variables": [
+    "high_value_council_tax_surcharge"
+   ]
+  }
+ ],
+ "head_effects": {
+  "high_value_council_tax_surcharge": 469605186.562956
+ },
+ "head_variables": [
+  "high_value_council_tax_surcharge"
+ ],
+ "literal_reform_minus_baseline": {
+  "high_value_council_tax_surcharge": -469605186.562956
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "high_value_council_tax_surcharge": -469605186.562956
+ },
+ "measure_key": "ab2025__high_value_council_tax_surcharge",
+ "measure_total_gbp": 469605186.562956,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+     "2028-01-01.2030-12-31": 0
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+    "intended": 0,
+    "processed": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+    "intended": 0,
+    "processed": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+    "intended": 0,
+    "processed": 0
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+    "intended": 0,
+    "processed": 0
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+    "intended": 2549.997619869331,
+    "processed": 2549.997619869331
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+    "intended": 3569.996667817064,
+    "processed": 3569.996667817064
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+    "intended": 5099.995239738662,
+    "processed": 5099.995239738662
+   },
+   "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+    "intended": 7649.992859607994,
+    "processed": 7649.992859607994
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "high_value_council_tax_surcharge": 0.0
+   }
+  },
+  "reform": {
+   "heads": {
+    "high_value_council_tax_surcharge": 469605186.562956
+   }
+  }
+ },
+ "variable_metadata": {
+  "high_value_council_tax_surcharge": {
+   "definition_period": "year",
+   "documentation": "Additional annual surcharge on owners of residential property in England worth at least \u00a32 million in 2026 prices. Owners, not occupiers, are liable, so the household is charged on its main residence only where it owns that home (owned outright or with a mortgage). Let property and second homes are not modelled.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/high_value_council_tax_surcharge.py",
+   "entity": "household",
+   "label": "High Value Council Tax Surcharge",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.7.6_uk2.135.3_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "75e6ef92715518185cf8727477b81c29a09634d178022d35c34cb8508ee3d0d3",
+ "year": 2029
+}
