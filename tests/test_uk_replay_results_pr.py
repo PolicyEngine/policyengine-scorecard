@@ -48,6 +48,14 @@ RUN = "https://github.com/PolicyEngine/policyengine-scorecard/actions/runs/7"
 REPOSITORY = "PolicyEngine/policyengine-scorecard"
 PE641 = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
 PE650 = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+# PE641 and PE650 are the hand-built results PRs the round trips reproduce.
+# "The newest certified variant" and "the last committed one" are whatever the
+# committed index holds now: every results PR appends one (#195's 6.7.5 broke
+# tests that named 6.5.0 for them).
+INDEX_IDS = [v["variant_id"] for v in rv.load_document()["variants"]]
+NEWEST_CERTIFIED = qualify.latest_certified(rv.load_document())
+NEWEST_ID = NEWEST_CERTIFIED["variant_id"]
+NEWEST_VERSION = NEWEST_CERTIFIED["identity"]["packages"]["policyengine"]["version"]
 BOT_EMAIL = "41898282+github-actions[bot]@users.noreply.github.com"
 
 
@@ -993,26 +1001,28 @@ def test_a_results_commit_never_needs_the_workflows_permission():
 
 
 def test_the_test_edits_move_newest_and_extend_committed():
+    older = INDEX_IDS[INDEX_IDS.index(NEWEST_ID) - 1]
     for name in builder.NEWEST_TESTS:
         text = (ROOT / name).read_text()
-        moved = builder.replace_newest(text, PE650, "pe9.9.9_x", name=name)
+        moved = builder.replace_newest(text, NEWEST_ID, "pe9.9.9_x", name=name)
         assert moved.count('NEWEST = "pe9.9.9_x"') == 1
-        assert builder.replace_newest(moved, "pe9.9.9_x", PE650, name=name) == text
+        assert builder.replace_newest(moved, "pe9.9.9_x", NEWEST_ID, name=name) == text
         with pytest.raises(builder.Refused, match="not the newest certified"):
-            builder.replace_newest(text, PE641, "pe9.9.9_x", name=name)
+            builder.replace_newest(text, older, "pe9.9.9_x", name=name)
+    last, before_last = INDEX_IDS[-1], INDEX_IDS[-2]
     text = (ROOT / builder.COMMITTED_TEST).read_text()
-    line = f'    "{PE650}",\n'
+    line = f'    "{last}",\n'
     assert text.count(line) == 1
     assert (
         builder.append_committed(
-            text.replace(line, ""), PE641, PE650, name=builder.COMMITTED_TEST
+            text.replace(line, ""), before_last, last, name=builder.COMMITTED_TEST
         )
         == text
     )
     with pytest.raises(builder.Refused, match="does not end with"):
-        builder.append_committed(text, PE641, "x", name=builder.COMMITTED_TEST)
+        builder.append_committed(text, before_last, "x", name=builder.COMMITTED_TEST)
     with pytest.raises(builder.Refused, match="exactly once"):
-        builder.append_committed("", PE650, "x", name=builder.COMMITTED_TEST)
+        builder.append_committed("", last, "x", name=builder.COMMITTED_TEST)
 
 
 def test_the_paragraph_states_what_the_hand_written_6_5_0_one_counted():
@@ -1046,10 +1056,12 @@ def test_the_paragraph_closes_the_committed_results_subsection():
     text = (ROOT / builder.DOC).read_text()
     edited = builder.insert_paragraph(text, "NEW PARAGRAPH")
     section = edited[edited.index(builder.SECTION) :]
+    following = section[section.index("\n## ") + 1 :].split("\n", 1)[0]
     section = section[: section.index("\n## ")]
-    assert section.endswith(
-        "real replay of this variant compares whole bytes.\n\nNEW PARAGRAPH\n"
-    )
+    # Last in the subsection, directly before the next heading, whatever
+    # paragraph closes it today; removing it gives back the document.
+    assert section.endswith("\n\nNEW PARAGRAPH\n")
+    assert f"NEW PARAGRAPH\n\n{following}\n" in edited
     assert edited.replace("NEW PARAGRAPH\n\n", "", 1) == text
     with pytest.raises(builder.Refused, match="exactly one"):
         builder.insert_paragraph(text.replace(builder.SECTION, "### Other"), "x")
@@ -1194,7 +1206,15 @@ def test_a_commit_never_touches_github_even_inside_its_own_trees(path):
 
 # --- the whole builder on a local bare remote ----------------------------------
 
-VERSION = "6.6.0"
+
+def next_minor(version):
+    major, minor = (int(part) for part in version.split(".")[:2])
+    return f"{major}.{minor + 1}.0"
+
+
+# The synthetic release: newer than anything main has certified, so the
+# version-order refusal never fires by accident as main gains releases.
+VERSION = next_minor(NEWEST_VERSION)
 
 
 def released_request(version=VERSION):
@@ -1777,7 +1797,7 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
         assert f'NEWEST = "{record["variant_id"]}"' in git(
             remote.remote, "show", f"{head}:{name}"
         )
-    assert f'    "{PE650}",\n    "{record["variant_id"]}",\n)' in git(
+    assert f'    "{INDEX_IDS[-1]}",\n    "{record["variant_id"]}",\n)' in git(
         remote.remote, "show", f"{head}:{builder.COMMITTED_TEST}"
     )
     doc = git(remote.remote, "show", f"{head}:{builder.DOC}")
@@ -2589,7 +2609,7 @@ def test_an_inconsistent_request_is_refused_before_any_push(remote, how, message
             {"extra": {"results/uk/replays/diffs/x.h5": b"\x89HDF"}},
             "refusing to publish",
         ),
-        ({"version": "6.4.9"}, "older than the newest certified 6.5.0"),
+        ({"version": "6.4.9"}, f"older than the newest certified {NEWEST_VERSION}"),
     ],
 )
 def test_results_outside_the_contract_are_refused(remote, setup, message):
