@@ -1,0 +1,18 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.7.6_uk2.137.1_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2027.json": "c29d27c2cfdc3dca7b33d4198b8f0eac686452d5d605c6bc9767f73f5ccdb1cb",
+  "results/uk/replays/pe6.7.6_uk2.137.1_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2027.json": "10bdcceddf988909869dfbff182191547d1a54a8683472a5cfa2b5a3f9368fb2"
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "engine_version": "2.137.1",
+ "event": "spring_budget_2023",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "schema_version": 1,
+ "variant_id": "pe6.7.6_uk2.137.1_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "b4f9278ba0aa9aadd5892464b27925d28af3ce7843cac4e80e2ff1f00e11545a",
+ "year": 2027
+}
