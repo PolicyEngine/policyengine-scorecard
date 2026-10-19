@@ -9,6 +9,15 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# GITHUB_TOKEN reads the repository and nothing else in every job without
+# its own block. The repository's default is write, which the pytest job
+# would otherwise hold (persisted by checkout) while it runs PyPI packages
+# on pushes to main. Uploading the built database and publish-db's download
+# of it from this run use the Actions runtime token, not GITHUB_TOKEN, so
+# neither needs the actions scope (tests/test_ci_gates.py pins all of this).
+permissions:
+  contents: read
+
 jobs:
   python:
     name: pytest · ruff format
