@@ -17,18 +17,18 @@ name: UK replay results PR
 # with PyPI packages and no write credential. `propose` runs on a fresh
 # runner, so nothing those packages did can reach it: with git and the
 # standard library alone it assembles the same commit from the same main and
-# replay-state history, decides again against main's tip, refuses unless its
-# tree is the one `build` verified (`build`'s other outputs are its word,
-# checked for shape; CI on the pull request reruns the checks), and only then
-# mints a short-lived token for the organisation's policyengine GitHub App,
-# scoped to
-# this repository: contents and pull-requests to push its own
-# uk-replay-results/<variant> branch and open the pull request, workflows
-# because the commit adds the variant to ci.yml's matrix (GITHUB_TOKEN can
-# never hold workflows). A pull request opened with GITHUB_TOKEN would also
-# start no pull_request run, so it would never carry checks; the App's does.
-# The actions in `propose` are pinned to commits. Nothing here merges:
-# merging stays on the normal gates, CI and an independent review.
+# replay-state history, refuses unless its tree is the one `build` verified
+# (`build`'s other outputs are its word, checked for shape; CI on the pull
+# request reruns the checks), decides again against main's tip from the
+# request it guarded, and only then mints a short-lived token for the
+# organisation's policyengine GitHub App, scoped to this repository:
+# contents and pull-requests to push its own uk-replay-results/<variant>
+# branch and open the pull request, workflows because the commit adds the
+# variant to ci.yml's matrix (GITHUB_TOKEN can never hold workflows). A
+# pull request opened with GITHUB_TOKEN would also start no pull_request
+# run, so it would never carry checks; the App's does. The actions in
+# `propose` are pinned to commits. Nothing here merges: merging stays on
+# the normal gates, CI and an independent review.
 # https://docs.github.com/en/actions/concepts/security/github_token
 # https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks
 

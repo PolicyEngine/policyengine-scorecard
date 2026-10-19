@@ -830,7 +830,7 @@ runs only the default branch's code.
 | Job | Authority and inputs |
 |---|---|
 | `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
-| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It decides again against main's current tip, and refuses unless its tree is `build`'s. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
+| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
 
 Neither job holds a dataset token, and neither installs, imports or runs
 release or candidate code; both read only committed public results from
@@ -870,9 +870,12 @@ start CI as any other pull request does.
    So is a variant id that could not name a branch and paths (anything but
    letters, digits, `.`, `_` and `-`, or a `..`). An exactly certified pair
    qualified again returns the committed record, so it ends with a notice
-   too; a record that only shares its id with a committed one (two runs that
-   finished before either merged) is refused, to be qualified again for an
-   id of its own.
+   too. That comparison is the variant: its id and its `identity_sha256`,
+   which must be the digest of its identity, against a certified record on
+   main. The rest of main's record (the note, and anything a later change
+   to the index adds or reshapes) is not compared. A record that only
+   shares its id with a committed one (two runs that finished before either
+   merged) is refused, to be qualified again for an id of its own.
 2. **Results, byte for byte.** The request directory passes the receiver's
    output guard again, and its receipt and results must be unchanged since
    the receipt commit. `requests/<request_id>/results/{results,docs}` is

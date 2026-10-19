@@ -36,13 +36,15 @@ if ! [[ "$REQUEST_ID" =~ ^[0-9a-f]{64}$ ]]; then
   echo "::error::REQUEST_ID must be 64 lowercase hex characters" >&2
   exit 1
 fi
-plan() {
+# One field of a JSON file: field FILE KEY...
+field() {
   python3 -I -c 'import json, sys
 value = json.load(open(sys.argv[1]))
 for key in sys.argv[2:]:
     value = value[key]
-print("" if value is None else value)' "$WORK/plan.json" "$@"
+print("" if value is None else value)' "$@"
 }
+plan() { field "$WORK/plan.json" "$@"; }
 output() {
   if [ -n "${GITHUB_OUTPUT:-}" ]; then
     printf '%s=%s\n' "$1" "$2" >> "$GITHUB_OUTPUT"
@@ -147,7 +149,7 @@ build() {
       exit 1
     fi
   )
-  content_hash() { python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1]))["content_hash"])' "$1"; }
+  content_hash() { field "$1" content_hash; }
   if [ "$(content_hash "$WORK/build1.json")" != "$(content_hash "$WORK/build2.json")" ]; then
     echo "::error::scorecard_db.build_db is nondeterministic on the results branch" >&2
     exit 1
@@ -193,26 +195,26 @@ rebuild() {
     echo "::error::the build job's base is older than this workflow's commit $GITHUB_SHA" >&2
     exit 1
   fi
-  # Decide again on main as it is now: a request whose results main has
-  # gained since the build job ran (a rerun after the merge) is skipped.
-  local tip
-  tip=$(git rev-parse "$BASE_REF")
-  if [ "$tip" != "$BUILT_BASE" ]; then
-    mkdir -p "$WORK/tip-stage"
-    git archive "$BUILT_STATE" "$REQUEST" | tar -x -C "$WORK/tip-stage"
-    git worktree add -q --detach "$WORK/tip" "$tip"
-    builder check --request-dir "$WORK/tip-stage/$REQUEST" --checkout "$WORK/tip" \
-      --request-id "$REQUEST_ID" --state-commit "$BUILT_STATE" --plan "$WORK/tip-plan.json"
-    if [ "$(python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1]))["action"])' "$WORK/tip-plan.json")" != build ]; then
-      echo "::notice::No results pull request for $REQUEST_ID: on main as it is now, $(python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1]))["reason"])' "$WORK/tip-plan.json")"
-      output action skip
-      exit 0
-    fi
-  fi
   assemble "$BUILT_BASE" "$BUILT_STATE"
   if [ "$(git -C "$TREE" rev-parse 'HEAD^{tree}')" != "$BUILT_TREE" ]; then
     echo "::error::this job's commit is not the tree the build job verified" >&2
     exit 1
+  fi
+  # Decide again on main as it is now: a request whose results main has
+  # gained since the build job ran (a rerun after the merge) is skipped.
+  # This reads the request assemble extracted and guarded, never the
+  # replay-state tree directly.
+  local tip
+  tip=$(git rev-parse "$BASE_REF")
+  if [ "$tip" != "$BUILT_BASE" ]; then
+    git worktree add -q --detach "$WORK/tip" "$tip"
+    builder check --request-dir "$STAGE/$REQUEST" --checkout "$WORK/tip" \
+      --request-id "$REQUEST_ID" --state-commit "$BUILT_STATE" --plan "$WORK/tip-plan.json"
+    if [ "$(field "$WORK/tip-plan.json" action)" != build ]; then
+      echo "::notice::No results pull request for $REQUEST_ID: on main as it is now, $(field "$WORK/tip-plan.json" reason)"
+      output action skip
+      exit 0
+    fi
   fi
   python3 -I - "$WORK/validation.json" "$IDENTICAL" "$BUILT_SEALED" "$BUILT_CONTENT_HASH" <<'PY'
 import json

@@ -16,8 +16,13 @@ Hypothesis property):
 """
 
 import ast
+import contextlib
 import copy
+import difflib
+import functools
 import hashlib
+import importlib.metadata
+import importlib.util
 import json
 import os
 import re
@@ -224,15 +229,35 @@ def test_the_builder_runs_no_release_code_and_never_merges():
             if "python" in line and not line.lstrip().startswith("#"):
                 assert "python3 -I" in line, line
     assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
-    # propose runs neither the builder nor any pipeline module (its prose
-    # may name them; its commands may not).
-    for line in propose.splitlines():
-        command = line.split("#", 1)[0]
-        if line.lstrip().startswith("#") or "::error::" in line:
-            continue
-        assert "pipeline" not in command and not re.search(r"\bbuilder\b", command), (
-            line
+    # propose runs neither the builder nor any pipeline module. Its messages
+    # may name them (review of 78e080c6, 3): only the text of a quoted
+    # ::error::, ::notice:: or ::warning:: string with no command
+    # substitution is set aside, never the rest of its line, and propose
+    # holds no inline comment for a command to hide behind.
+    # A message is one whole shell word in double quotes, holding no other
+    # quote, backslash, backtick or command substitution, so nothing set
+    # aside can run (review of c5c17db7, 3).
+    message = re.compile(
+        r"""(?<![^\s])"::(?:error|notice|warning)::(?:[^"'$\\`]|\$(?!\())*"(?=[\s;]|$)"""
+    )
+
+    def runs_pipeline_code(line):
+        command = message.sub('""', line)
+        return (
+            "#" in command
+            or "pipeline" in command
+            or bool(re.search(r"\bbuilder\b", command))
         )
+
+    assert runs_pipeline_code('echo "::error::fine" >&2; builder check')
+    assert runs_pipeline_code('echo "::notice::$(builder check)"')
+    assert runs_pipeline_code("true # builder check")
+    assert runs_pipeline_code('echo ""::error::; builder check; : ""')
+    assert runs_pipeline_code("""echo 'x "::error::' ; builder check ; echo '" '""")
+    assert not runs_pipeline_code('echo "::error::$branch: not this builder" >&2')
+    for line in propose.splitlines():
+        if not line.lstrip().startswith("#"):
+            assert not runs_pipeline_code(line), line
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -290,15 +315,28 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         "output tree",
         "output action build",
     )
+    rebuild = phase(script, "rebuild")
     order(
-        phase(script, "rebuild"),
+        rebuild,
         "the build job's outputs are malformed",
         'git merge-base --is-ancestor "$BUILT_BASE"',
+        'git merge-base --is-ancestor "$GITHUB_SHA"',
         "assemble ",
         "not the tree the build job verified",
+        'builder check --request-dir "$STAGE/$REQUEST" --checkout "$WORK/tip"',
+        "on main as it is now",
         " body ",
         "output action build",
     )
+    # Review of 78e080c6 (1): job 2 reads the request only as assemble
+    # extracted it, after the output guard; the tip check rereads that copy,
+    # never the replay-state tree.
+    commands = [
+        line for line in rebuild.splitlines() if not line.lstrip().startswith("#")
+    ]
+    assert not [line for line in commands if "git archive" in line or "tar " in line]
+    checks = [line for line in commands if "builder check" in line]
+    assert len(checks) == 1 and '--request-dir "$STAGE/$REQUEST"' in checks[0]
     order(
         phase(script, "propose"),
         "the results commit changed after it was assembled",
@@ -309,44 +347,505 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
     )
 
 
-def test_the_control_environment_installs_what_the_builder_imports():
-    # The build job's CONTROL runs the builder's strict path and
-    # uk_replay_qualify verify-sealed. Their third-party imports, top-level
-    # or inside functions, must all be installed; release and dataset code
-    # (imported only by the qualifier's run and fetch steps) must not be.
+class ImportScan:
+    """The third-party imports that running the entry points can execute.
+
+    It follows the code that runs. A module's top level runs when it is
+    imported, except its ``if __name__ == "__main__"`` block. A function or
+    class runs when reachable code names it, directly or through a module
+    alias; a class makes all its methods reachable. An import statement in
+    reachable code imports its module; one in a function nothing reaches
+    does not. Pipeline modules are followed however they are named:
+    ``pipeline.x``, ``from pipeline import x``, a relative import, or the
+    bare sibling name some modules fall back to.
+
+    Names resolve as Python scopes them: a module-level import binds a name
+    everywhere in its module, and one inside a function only in the code
+    that runs it. Where it cannot tell which code runs, it assumes all of it
+    can (review of c5c17db7, 4): a name bound to several things resolves to
+    all of them, and a pipeline module used as a value (assigned, passed,
+    given to ``getattr``) makes every function in it reachable.
+    Dynamic imports in reached code (``__import__``, ``exec``, ``eval``,
+    ``importlib``'s loaders and ``runpy``, however they are named) are
+    recorded, since it cannot follow them."""
+
+    DYNAMIC_NAMES = {"__import__", "exec", "eval"}
+    DYNAMIC_ATTRIBUTES = {
+        "__import__",
+        "import_module",
+        "module_from_spec",
+        "spec_from_file_location",
+        "exec_module",
+        "load_module",
+        "run_module",
+        "run_path",
+    }
+
+    def __init__(self, root):
+        self.root = Path(root)
+        self.modules = {}
+        self.reached = set()
+        self.escaped = set()
+        self.third_party = {}
+        self.dynamic = []
+
+    def source(self, name):
+        path = self.root / (name.replace(".", "/") + ".py")
+        return path if path.is_file() else None
+
+    def first_party(self, name):
+        if name.split(".")[0] == "pipeline":
+            return name
+        if self.source(f"pipeline.{name.split('.')[0]}"):
+            return f"pipeline.{name}"
+        return None
+
+    @staticmethod
+    def absolute(module, node):
+        if not node.level:
+            return node.module or ""
+        package = module.split(".")[: -node.level]
+        return ".".join([*package, *([node.module] if node.module else [])])
+
+    def module(self, name):
+        """Import ``name``: parse it and run its top level, once."""
+        if name in self.modules:
+            return self.modules[name]
+        tree = ast.parse(self.source(name).read_text())
+        defs = {
+            node.name: node
+            for node in tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        }
+        top_level = []
+        for node in tree.body:
+            main_block = (
+                isinstance(node, ast.If)
+                and isinstance(node.test, ast.Compare)
+                and ast.unparse(node.test.left) == "__name__"
+            )
+            if main_block:
+                continue
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                parts = [
+                    *node.decorator_list,
+                    *node.args.defaults,
+                    *node.args.kw_defaults,
+                ]
+            elif isinstance(node, ast.ClassDef):
+                parts = [*node.decorator_list, *node.bases] + [
+                    stmt
+                    for stmt in node.body
+                    if not isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef))
+                ]
+            else:
+                parts = [node]
+            top_level += [part for part in parts if part is not None]
+        aliases = self.bindings(name, [n for part in top_level for n in ast.walk(part)])
+        self.modules[name] = {"defs": defs, "aliases": aliases}
+        for part in top_level:
+            self.walk(name, part, {})
+        return self.modules[name]
+
+    def bindings(self, module, nodes):
+        """What the pipeline imports among ``nodes`` bind each name to."""
+        found = {}
+        for node in nodes:
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    bound = alias.asname or alias.name.split(".")[0]
+                    target = self.first_party(alias.name if alias.asname else bound)
+                    if target:
+                        found.setdefault(bound, set()).add(("module", target))
+            elif isinstance(node, ast.ImportFrom):
+                base = self.first_party(self.absolute(module, node))
+                for alias in node.names:
+                    if base and self.source(f"{base}.{alias.name}"):
+                        binding = ("module", f"{base}.{alias.name}")
+                    elif base:
+                        binding = ("symbol", base, alias.name)
+                    else:
+                        continue
+                    found.setdefault(alias.asname or alias.name, set()).add(binding)
+        return found
+
+    def reach(self, module, name):
+        if (module, name) in self.reached:
+            return
+        self.reached.add((module, name))
+        found = self.module(module)["defs"].get(name)
+        if found is not None:
+            self.walk(module, found, self.bindings(module, ast.walk(found)))
+        elif self.source(f"{module}.{name}"):
+            self.module(f"{module}.{name}")
+
+    def escape(self, module):
+        """``module`` is used as a value: any of its code may run."""
+        if module in self.escaped or not self.source(module):
+            return
+        self.escaped.add(module)
+        for name in list(self.module(module)["defs"]):
+            self.reach(module, name)
+
+    def resolve(self, module, expr, local):
+        """Everything ``expr`` may name, given the function's own import
+        bindings ``local``: (kind, module[, name]) bindings."""
+        if isinstance(expr, ast.Name):
+            info = self.module(module)
+            found = set(info["aliases"].get(expr.id, ())) | local.get(expr.id, set())
+            if expr.id in info["defs"]:
+                found.add(("symbol", module, expr.id))
+            return found
+        if isinstance(expr, ast.Attribute):
+            found = set()
+            for base in self.resolve(module, expr.value, local):
+                if base[0] != "module":
+                    continue
+                if self.source(f"{base[1]}.{expr.attr}"):
+                    found.add(("module", f"{base[1]}.{expr.attr}"))
+                else:
+                    found.add(("symbol", base[1], expr.attr))
+            return found
+        return set()
+
+    def imported(self, module, name, line):
+        """An import of ``name`` ran in ``module``."""
+        target = self.first_party(name)
+        if target is None:
+            top = name.split(".")[0]
+            if top not in sys.stdlib_module_names and top != "__future__":
+                self.third_party.setdefault(top, set()).add(f"{module}:{line}")
+        elif self.source(target):
+            self.module(target)
+
+    def walk(self, module, root, local):
+        """Run ``root``, a node of ``module``, where the imports of the
+        function it belongs to bind ``local``."""
+        nodes = list(ast.walk(root))
+        bases = {id(node.value) for node in nodes if isinstance(node, ast.Attribute)}
+        for node in nodes:
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    self.imported(module, alias.name, node.lineno)
+            elif isinstance(node, ast.ImportFrom):
+                base = self.absolute(module, node)
+                self.imported(module, base, node.lineno)
+                target = self.first_party(base)
+                for alias in node.names:
+                    if target and self.source(f"{target}.{alias.name}"):
+                        self.module(f"{target}.{alias.name}")
+                    if alias.name in self.DYNAMIC_ATTRIBUTES | self.DYNAMIC_NAMES:
+                        self.dynamic.append(f"{module}:{node.lineno} {alias.name}")
+            elif isinstance(node, (ast.Name, ast.Attribute)) and isinstance(
+                node.ctx, ast.Load
+            ):
+                for found in self.resolve(module, node, local):
+                    if found[0] == "symbol":
+                        self.reach(found[1], found[2])
+                    elif id(node) not in bases:
+                        self.escape(found[1])
+                dynamic = (
+                    node.id in self.DYNAMIC_NAMES
+                    if isinstance(node, ast.Name)
+                    else node.attr in self.DYNAMIC_ATTRIBUTES
+                )
+                if dynamic:
+                    self.dynamic.append(f"{module}:{node.lineno} {ast.unparse(node)}")
+
+    def entry(self, module, function, *, command=None):
+        """Run ``function`` of ``module`` (after its top level). With
+        ``command``, skip the other ``if args.command == "..."`` branches
+        of its body; exactly one branch must run ``command``."""
+        info = self.module(module)
+        branches, selected = 0, []
+        for stmt in info["defs"][function].body:
+            test = getattr(stmt, "test", None)
+            chosen = None
+            if (
+                isinstance(stmt, ast.If)
+                and isinstance(test, ast.Compare)
+                and ast.unparse(test.left) == "args.command"
+            ):
+                chosen = test.comparators[0].value
+            if command is not None and chosen is not None:
+                if chosen != command:
+                    continue
+                branches += 1
+            selected.append(stmt)
+        if command is not None:
+            assert branches == 1, (module, function, command, branches)
+        local = self.bindings(module, [n for stmt in selected for n in ast.walk(stmt)])
+        for stmt in selected:
+            self.walk(module, stmt, local)
+
+
+def control_line():
+    """The build job's CONTROL command, and the packages it installs."""
     line = next(
         line.strip().removeprefix("local ")
         for line in SCRIPT.read_text().splitlines()
         if "CONTROL=(" in line
     )
-    installed = {
-        word.split("==")[0]
-        for word, before in zip(line.split()[1:], line.split())
-        if before == "--with"
-    }
-    imported = set()
-    for relative in (
-        "pipeline/uk_replay_results_pr.py",
-        "pipeline/uk_replay_interface.py",
-        "pipeline/uk_replay_variants.py",
-        "pipeline/uk_replay_qualify.py",
-    ):
-        for node in ast.walk(ast.parse((ROOT / relative).read_text())):
-            if isinstance(node, ast.Import):
-                imported |= {alias.name.split(".")[0] for alias in node.names}
-            elif isinstance(node, ast.ImportFrom) and not node.level:
-                imported.add((node.module or "").split(".")[0])
-    third_party = imported - set(sys.stdlib_module_names) - {"pipeline", "__future__"}
-    release = {
-        "policyengine",
-        "policyengine_uk",
-        "policyengine_core",
-        "huggingface_hub",
-    }
-    needed = {{"yaml": "pyyaml"}.get(name, name) for name in third_party - release}
-    assert needed == {"jsonschema", "rfc8785", "pyyaml"}
+    words = line.removeprefix("CONTROL=(").removesuffix(")").split()
+    return words, [word for word, before in zip(words[1:], words) if before == "--with"]
+
+
+RELEASE = {"policyengine", "policyengine_uk", "policyengine_core", "huggingface_hub"}
+
+
+def test_the_control_environment_installs_what_the_builder_imports():
+    # Review of 78e080c6 (4): the build job's CONTROL runs the builder's
+    # strict path and `uk_replay_qualify verify-sealed`. Every third-party
+    # module the code they run can import, through any pipeline module they
+    # reach, must be installed; release and dataset code (which only the
+    # qualifier's run and fetch steps import) must not even be reached.
+    words, specs = control_line()
+    assert words[:2] == ["uv", "run"] and words[-1] == "python"
+    installed = {spec.split("==")[0] for spec in specs}
+    scan = ImportScan(ROOT)
+    scan.entry("pipeline.uk_replay_results_pr", "main")
+    scan.entry("pipeline.uk_replay_qualify", "main", command="verify-sealed")
+    assert scan.dynamic == []
+    assert not set(scan.third_party) & RELEASE, scan.third_party
+    needed = {{"yaml": "pyyaml"}.get(name, name) for name in scan.third_party}
+    assert needed == {"jsonschema", "rfc8785", "pyyaml"}, scan.third_party
     assert installed == needed, sorted(installed ^ needed)
-    assert not release & installed
+    # What the scan reached is what those paths run, and no more.
+    assert set(scan.modules) == {
+        "pipeline.uk_replay_interface",
+        "pipeline.uk_replay_qualify",
+        "pipeline.uk_replay_results_pr",
+        "pipeline.uk_replay_variants",
+    }
+    for reached in (
+        ("pipeline.uk_replay_qualify", "verify_sealed"),
+        ("pipeline.uk_replay_qualify", "latest_certified"),
+        ("pipeline.uk_replay_variants", "validate_record"),
+        ("pipeline.uk_replay_interface", "validate"),
+    ):
+        assert reached in scan.reached, reached
+    for unreached in (
+        ("pipeline.uk_replay_qualify", "probe"),
+        ("pipeline.uk_replay_qualify", "fetch_dataset"),
+        ("pipeline.uk_replay_qualify", "run_request"),
+    ):
+        assert unreached not in scan.reached, unreached
+
+
+SCAN_FIXTURE = {
+    "entry.py": """
+import json
+from pipeline import helper
+from . import sibling as near
+
+
+def main(args):
+    if args.command == "wanted":
+        helper.run()
+        near.used()
+    if args.command == "other":
+        import numpy
+    return 0
+
+
+def unreachable():
+    import pandas
+
+
+if __name__ == "__main__":
+    import scipy
+""",
+    "helper.py": """
+import yaml
+
+
+def run():
+    import jsonschema
+    from pipeline.deep import go
+
+    go()
+
+
+def unused():
+    import torch
+""",
+    "sibling.py": """
+def used():
+    from fallback import loader
+
+    return loader()
+""",
+    "fallback.py": """
+class Loader:
+    def load(self):
+        import rfc8785
+
+
+def loader():
+    return Loader()
+""",
+    "deep.py": """
+import attr
+
+
+def go():
+    import importlib
+
+    importlib.import_module("anything")
+
+
+def never():
+    import sklearn
+""",
+}
+
+
+def test_the_import_scan_follows_what_runs_and_skips_what_nothing_reaches(tmp_path):
+    for name, text in SCAN_FIXTURE.items():
+        (tmp_path / "pipeline").mkdir(exist_ok=True)
+        (tmp_path / "pipeline" / name).write_text(text)
+    scan = ImportScan(tmp_path)
+    scan.entry("pipeline.entry", "main", command="wanted")
+    assert set(scan.third_party) == {"yaml", "jsonschema", "rfc8785", "attr"}
+    line = (
+        SCAN_FIXTURE["deep.py"]
+        .splitlines()
+        .index('    importlib.import_module("anything")')
+    )
+    assert scan.dynamic == [f"pipeline.deep:{line + 1} importlib.import_module"]
+    whole = ImportScan(tmp_path)
+    whole.entry("pipeline.entry", "main")
+    assert set(whole.third_party) == {"yaml", "jsonschema", "rfc8785", "attr", "numpy"}
+    with pytest.raises(AssertionError):
+        ImportScan(tmp_path).entry("pipeline.entry", "main", command="missing")
+
+
+# What a call graph cannot see (review of c5c17db7, 4).
+SCAN_CONSERVATIVE = {
+    "entry.py": """
+from pipeline import live as handle
+from pipeline import loaders, passed
+
+
+def main(args):
+    handle.run()
+    chosen = passed
+    chosen.anything()
+    getattr(passed, "name")()
+    loaders.go()
+
+
+def unreachable():
+    from pipeline import dead as handle
+
+    return handle
+""",
+    "live.py": "def run():\n    import msgpack\n",
+    "dead.py": "def run():\n    import zmq\n",
+    "passed.py": "def one():\n    import lxml\n\n\ndef two():\n    import requests\n",
+    "loaders.py": """
+from importlib import import_module as load
+import importlib.util as util
+
+
+def go():
+    load("x")
+    util.spec_from_file_location("y", "y.py")
+    __import__("z")
+""",
+}
+
+
+def test_the_import_scan_assumes_the_worst_where_it_cannot_follow(tmp_path):
+    (tmp_path / "pipeline").mkdir()
+    for name, text in SCAN_CONSERVATIVE.items():
+        (tmp_path / "pipeline" / name).write_text(text)
+    scan = ImportScan(tmp_path)
+    scan.entry("pipeline.entry", "main")
+    # A function nothing reaches rebinding `handle` does not hide the live
+    # binding, and its own import never runs.
+    assert "msgpack" in scan.third_party and "zmq" not in scan.third_party
+    # A module used as a value (assigned, given to getattr) may run any of
+    # its functions.
+    assert scan.escaped == {"pipeline.passed"}
+    assert set(scan.third_party) == {"msgpack", "lxml", "requests"}
+    # Dynamic imports, however they are named.
+    assert {entry.split(" ", 1)[1] for entry in scan.dynamic} == {
+        "import_module",
+        "util.spec_from_file_location",
+        "__import__",
+    }
+
+
+def in_control(tmp_path, specs, *arguments, cwd):
+    """``uv run --with SPEC... python -m ARGUMENTS`` through the test uv."""
+    tools = tmp_path / "uv-bin"
+    tools.mkdir(exist_ok=True)
+    flags = [word for spec in specs for word in ("--with", spec)]
+    return subprocess.run(
+        [str(install_uv(tools)), "run", *flags, "python", "-m", *arguments],
+        cwd=cwd,
+        env={**os.environ, "PYTHONPATH": str(cwd), "PYTHONDONTWRITEBYTECODE": "1"},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
+    (tmp_path / "probe.py").write_text(
+        "import importlib, sys\n"
+        "for name in sys.argv[1:]:\n"
+        "    try:\n"
+        "        importlib.import_module(name)\n"
+        "        print(name, 'imported')\n"
+        "    except ModuleNotFoundError:\n"
+        "        print(name, 'refused')\n"
+    )
+    names = ["json", "yaml", "jsonschema", "referencing", "rfc8785", "numpy"]
+    # packaging is loaded before the finder (the stub itself imports it), as
+    # a .pth file's import would be: it is refused all the same.
+    names += ["hypothesis", "pytest", "packaging"]
+    for name in names:
+        assert importlib.util.find_spec(name), f"the suite installs {name}"
+    _, specs = control_line()
+    control = in_control(tmp_path, specs, "probe", *names, cwd=tmp_path)
+    assert control.returncode == 0, control.stderr
+    assert control.stdout.splitlines() == [
+        "json imported",
+        "yaml imported",
+        "jsonschema imported",
+        "referencing imported",
+        "rfc8785 imported",
+        "numpy refused",
+        "hypothesis refused",
+        "pytest refused",
+        "packaging refused",
+    ]
+    bare = in_control(tmp_path, [], "probe", "json", "yaml", "jsonschema", cwd=tmp_path)
+    assert bare.stdout.splitlines() == [
+        "json imported",
+        "yaml refused",
+        "jsonschema refused",
+    ]
+
+
+def test_verify_sealed_runs_with_controls_packages_alone(tmp_path):
+    # Every committed sealed namespace, as the build job's CONTROL checks
+    # them; a module that needs numpy fails there.
+    _, specs = control_line()
+    result = in_control(
+        tmp_path, specs, "pipeline.uk_replay_qualify", "verify-sealed", cwd=ROOT
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    checked = result.stdout.splitlines()[-1]
+    assert re.fullmatch(r"([0-9]+) sealed namespace\(s\) checked", checked)
+    assert int(checked.split()[0]) >= 2
+    numerical = in_control(
+        tmp_path, specs, "pipeline.compute_uk_event", "--help", cwd=ROOT
+    )
+    assert numerical.returncode != 0
+    assert "does not install it" in numerical.stderr
 
 
 def test_the_record_job_dispatches_the_results_workflow_only_when_complete():
@@ -450,25 +949,146 @@ def test_appending_a_record_reproduces_the_committed_index(variant_id):
         builder.append_variant(json.dumps(before).encode(), without_note, "n")
 
 
-@pytest.mark.parametrize("variant_id", [PE641, PE650])
-def test_the_stdlib_matrix_edit_is_the_strict_one_on_the_real_workflow(variant_id):
-    # Review of f7247f19: the propose job's --stdlib edit must be byte for
-    # byte the build job's, on the real inputs each certification saw.
-    text = (ROOT / builder.CI).read_text()
+# The ci.yml each hand-built results PR edited, byte for byte: #188 (6.4.1)
+# edited e796ffb5^'s and #190 (6.5.0) f4164f20^'s. CI's shallow checkout has
+# no history, so the files are committed; their git blob ids pin them to
+# those commits (`git rev-parse e796ffb5^:.github/workflows/ci.yml`).
+RESULTS_PR_FIXTURES = ROOT / "tests/fixtures/uk_replay/results_pr"
+HAND_EDITED = {
+    PE641: ("ci_before_188.yml", "9a5decd648be594e644443d0ddf020407ced5d03"),
+    PE650: ("ci_before_190.yml", "454624d30c1a3e9477a4e0b4a49408e104ff0d2c"),
+}
+# f4164f20:.github/workflows/ci.yml, #190's result. #188's result (#190's
+# input) also changed the determinism step, so only its matrix hunk is ours.
+AFTER_190 = "29f7a1b88bb05de435e7174e5ad630c24cb87492"
+SYNTHETIC = "pe9.9.9_uk9.9.9_x"
+
+
+def git_blob(data):
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def hand_edited(variant_id):
+    """The ci.yml the hand-built results PR for ``variant_id`` edited, and
+    the certified variants once it merged (append order)."""
+    name, blob = HAND_EDITED[variant_id]
+    data = (RESULTS_PR_FIXTURES / name).read_bytes()
+    assert git_blob(data) == blob, name
     certified = [
         v["variant_id"]
         for v in rv.load_document()["variants"]
         if v["status"] == "certified"
     ]
-    keep = certified.index(variant_id)
-    before = text
-    for later in certified[keep:]:
-        before = before.replace(f"          - {later}\n", "", 1)
-    strict = builder.add_matrix_variant(before, variant_id, certified[: keep + 1])
-    lean = builder.add_matrix_variant(
-        before, variant_id, certified[: keep + 1], strict=False
+    return data.decode(), certified[: certified.index(variant_id) + 1]
+
+
+@contextlib.contextmanager
+def without_yaml():
+    """``import yaml`` fails, as under the propose job's python3 -I -S."""
+    saved = sys.modules.get("yaml")
+    sys.modules["yaml"] = None
+    try:
+        yield
+    finally:
+        if saved is None:
+            del sys.modules["yaml"]
+        else:
+            sys.modules["yaml"] = saved
+
+
+def changes(before, after):
+    """Each change from ``before`` to ``after``: (tag, first line, last
+    line, the new lines)."""
+    old, new = before.splitlines(True), after.splitlines(True)
+    matcher = difflib.SequenceMatcher(None, old, new, autojunk=False)
+    return [
+        (tag, i1, i2, tuple(new[j1:j2]))
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes()
+        if tag != "equal"
+    ]
+
+
+@pytest.mark.parametrize("variant_id", [PE641, PE650])
+def test_the_stdlib_matrix_edit_is_the_hand_built_one(variant_id):
+    # Review of 78e080c6 (3): on the bytes #188 and #190 edited, the propose
+    # job's edit, with no yaml importable, is the matrix edit each made by
+    # hand. (The strict edit returns the same text once its YAML checks
+    # pass; that agreement holds by construction.)
+    text, certified = hand_edited(variant_id)
+    with without_yaml():
+        lean = builder.add_matrix_variant(text, variant_id, certified, strict=False)
+        with pytest.raises(ImportError):
+            builder.add_matrix_variant(text, variant_id, certified)
+    if variant_id == PE650:
+        assert git_blob(lean.encode()) == AFTER_190
+    else:
+        after = (RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]).read_text()
+        ours = changes(text, lean)
+        assert ours == [("insert", 85, 85, (f"          - {PE641}\n",))]
+        assert ours[0] in changes(text, after)
+        assert len(changes(text, after)) == 2
+    assert builder.add_matrix_variant(text, variant_id, certified) == lean
+
+
+def test_the_propose_jobs_interpreter_makes_the_hand_built_edit():
+    # python3 -I -S, as the propose job runs the builder: no site-packages,
+    # so nothing but the standard library can be imported.
+    text, certified = hand_edited(PE650)
+    code = (
+        "import hashlib, sys\n"
+        "sys.path.insert(0, sys.argv[1])\n"
+        "from pipeline import uk_replay_results_pr as builder\n"
+        "text = open(sys.argv[2]).read()\n"
+        "edited = builder.add_matrix_variant(\n"
+        "    text, sys.argv[3], sys.argv[4:], strict=False\n"
+        ").encode()\n"
+        "print(hashlib.sha1(b'blob %d\\0' % len(edited) + edited).hexdigest())\n"
     )
-    assert strict == lean
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-S",
+            "-c",
+            code,
+            str(ROOT),
+            str(RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]),
+            PE650,
+            *certified,
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == f"{AFTER_190}\n"
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    st.sampled_from([PE641, PE650]),
+    st.data(),
+)
+def test_the_stdlib_list_check_alone_refuses_a_wrong_matrix(variant_id, data):
+    # The propose job skips the YAML checks, so its list check must refuse
+    # by itself: the real file with its matrix listing anything other than
+    # the certified variants before this one is refused.
+    text, certified = hand_edited(variant_id)
+    block = "".join(f"          - {v}\n" for v in certified[:-1])
+    assert text.count(block) == 1
+    listed = data.draw(
+        st.one_of(
+            st.just(certified[:-1]),
+            st.lists(st.sampled_from([*certified, SYNTHETIC]), max_size=6),
+        )
+    )
+    edited = text.replace(block, "".join(f"          - {v}\n" for v in listed), 1)
+    with without_yaml():
+        if listed == certified[:-1]:
+            builder.add_matrix_variant(edited, variant_id, certified, strict=False)
+        else:
+            with pytest.raises(builder.Refused):
+                builder.add_matrix_variant(edited, variant_id, certified, strict=False)
 
 
 def test_the_matrix_edit_reproduces_the_committed_ci_workflow():
@@ -838,6 +1458,114 @@ def terminal_status(directory, rid, receipt, commit, status="complete"):
     )
 
 
+# Review of 78e080c6 (4): the stub uv used to run the test interpreter with
+# everything the suite installs (numpy among it), so no test ran the build
+# job's checks with CONTROL's packages alone. This runs `uv run [--with
+# SPEC]... python -m MODULE ARGS` as uv does outside a project: only the
+# standard library, the specs and what they require on this interpreter
+# (markers evaluated, extras only where asked for), and the checkout's own
+# modules can be imported. It does not resolve versions: each package is
+# the version the suite installed, where uv would pick its own.
+UV_RUN = r'''"""uv run [--with SPEC]... python -m MODULE ARGS, in this interpreter
+with every package refused but the specs and what they require."""
+
+import importlib.abc
+import importlib.metadata as metadata
+import json
+import os
+import runpy
+import sys
+from pathlib import Path
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+
+installed, specs = json.loads(Path(sys.argv[1]).read_text()), sys.argv[2].split()
+wanted, environment = [Requirement(spec) for spec in specs], {}
+while wanted:
+    requirement = wanted.pop()
+    name = canonicalize_name(requirement.name)
+    extras = set(requirement.extras) - environment.get(name, set())
+    if name in environment and not extras:
+        continue
+    environment.setdefault(name, set()).update(extras)
+    try:
+        requires = metadata.requires(name) or []
+    except metadata.PackageNotFoundError:
+        continue
+    for line in requires:
+        needed = Requirement(line)
+        if needed.marker is None or any(
+            needed.marker.evaluate({"extra": extra})
+            for extra in environment[name] | {""}
+        ):
+            wanted.append(needed)
+refused = {
+    top
+    for top, owners in installed.items()
+    if not {canonicalize_name(owner) for owner in owners} & set(environment)
+    and top not in sys.stdlib_module_names
+    and not (Path.cwd() / top).exists()
+}
+# What is already loaded (this script's packaging, anything a .pth file
+# imported at startup) would be found in sys.modules without a finder:
+# drop it, so the next import comes here and is refused.
+for loaded in list(sys.modules):
+    if loaded.partition(".")[0] in refused:
+        del sys.modules[loaded]
+
+
+class Environment(importlib.abc.MetaPathFinder):
+    def find_spec(self, name, path=None, target=None):
+        top = name.partition(".")[0]
+        if top in refused:
+            raise ModuleNotFoundError(
+                f"No module named {top!r}: uv run --with "
+                f"{' '.join(specs) or '(nothing)'} does not install it",
+                name=top,
+            )
+        return None
+
+
+sys.meta_path.insert(0, Environment())
+command = sys.argv[3:]
+assert command[0] == "-m", command
+sys.argv = command[1:]
+sys.path[0] = os.getcwd()
+runpy.run_module(command[1], run_name="__main__", alter_sys=True)
+'''
+
+
+@functools.lru_cache(maxsize=1)
+def installed_modules():
+    """Each top-level module installed in this interpreter, with the
+    distributions that provide it."""
+    return {
+        top: sorted(set(owners))
+        for top, owners in importlib.metadata.packages_distributions().items()
+    }
+
+
+def install_uv(tools):
+    """A uv for ``tools`` that runs ``uv run [--with SPEC]... python -m ...``
+    through UV_RUN, and refuses any other use."""
+    (tools / "uv_run.py").write_text(UV_RUN)
+    (tools / "installed.json").write_text(json.dumps(installed_modules()))
+    uv = tools / "uv"
+    uv.write_text(
+        f"#!{sys.executable}\nimport os, sys\nargs = sys.argv[1:]\n"
+        "assert args[0] == 'run' and 'python' in args, args\n"
+        "assert 'venv' not in args and 'pip' not in args, args\n"
+        "at = args.index('python')\n"
+        "assert at % 2 and all(args[i] == '--with' for i in range(1, at, 2)), args\n"
+        f"os.execv({sys.executable!r}, [{sys.executable!r}, "
+        f"{str(tools / 'uv_run.py')!r}, {str(tools / 'installed.json')!r}, "
+        "' '.join(args[2:at:2]), *args[at + 1:]])\n"
+    )
+    uv.chmod(0o755)
+    return uv
+
+
 REGENERATE_STUB = """#!/usr/bin/env bash
 set -euo pipefail
 echo "regenerate $(git rev-parse HEAD)" >> "$CHECK_LOG"
@@ -924,22 +1652,17 @@ class Remote:
         )
         self.tools = tmp_path / "bin"
         self.tools.mkdir()
-        uv = self.tools / "uv"
-        uv.write_text(
-            f"#!{sys.executable}\nimport os, sys\nargs = sys.argv[1:]\n"
-            "assert args[0] == 'run' and 'python' in args, args\n"
-            "assert 'venv' not in args and 'pip' not in args, args\n"
-            f"os.execv({sys.executable!r}, [{sys.executable!r}, "
-            "*args[args.index('python') + 1:]])\n"
-        )
+        # The build job's checks run with CONTROL's packages alone (UV_RUN).
+        install_uv(self.tools)
         gh = self.tools / "gh"
         gh.write_text(f"#!{sys.executable}\n{GH_STUB}")
-        for tool in (uv, gh):
-            tool.chmod(0o755)
+        gh.chmod(0o755)
         # python3 is the test interpreter: under -I -S it sees no
         # site-packages, so the stdlib rebuild cannot import a package.
         (self.tools / "python3").symlink_to(sys.executable)
         self.runs = 0
+        self.gh_log = tmp_path / "gh.jsonl"
+        self.check_log = tmp_path / "checks.log"
 
     def publish_state(self):
         git(self.state, "push", "-q", "-f", str(self.remote), "HEAD:replay-state")
@@ -995,42 +1718,67 @@ class Remote:
             )
         return result, values
 
-    def run(self, rid, forge=None, **overrides):
-        """As the workflow runs it. Job 1 builds and verifies in this
-        runner's checkout. Job 2 runs on a fresh clone with its own temp
-        directory: it rebuilds with the standard library and, only when its
-        tree is job 1's, proposes with the token. ``forge`` overrides job 1's
-        outputs as job 2 receives them."""
-        self.runs += 1
-        temp = self.tmp / f"runner-temp-{self.runs}"
+    def checkout(self, directory, commit):
+        """``directory`` at ``commit``, as actions/checkout checks out
+        GITHUB_SHA: a fresh clone, or this runner's fetched again."""
+        if not directory.exists():
+            subprocess.run(
+                ["git", "clone", "-q", str(self.remote), str(directory)], check=True
+            )
+        git(directory, "fetch", "-q", "origin")
+        git(directory, "checkout", "-q", "--detach", commit)
+        return directory
+
+    def build_job(self, rid, sha, temp, **overrides):
+        """Job 1 of a run dispatched at main ``sha``, in this runner's
+        checkout of it: (result, outputs)."""
         temp.mkdir()
-        self.gh_log = temp / "gh.jsonl"
-        self.check_log = temp / "checks.log"
-        env = self.environment(temp, rid, **overrides)
-        built, self.outputs = self.step(
-            self.runner, "build", env, temp / "build-output.txt"
-        )
-        self.rebuilt = {}
-        if built.returncode or self.outputs.get("action") != "build":
-            return built
-        fresh = self.tmp / f"job2-{self.runs}"
-        subprocess.run(["git", "clone", "-q", str(self.remote), str(fresh)], check=True)
-        temp2 = self.tmp / f"runner-temp-{self.runs}-job2"
-        temp2.mkdir()
-        env2 = self.environment(temp2, rid, **overrides)
-        received = {**self.outputs, **(forge or {})}
-        self.job2 = (fresh, env2, temp2)
-        rebuilt, self.rebuilt = self.step(
+        self.gh_log, self.check_log = temp / "gh.jsonl", temp / "checks.log"
+        self.checkout(self.runner, sha)
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        return self.step(self.runner, "build", env, temp / "build-output.txt")
+
+    def rebuild_job(self, rid, received, sha, name, **overrides):
+        """Job 2's rebuild for a run dispatched at main ``sha``, on a fresh
+        clone of it, given ``received`` as job 1's outputs: (result,
+        outputs, (checkout, environment, temp))."""
+        fresh = self.checkout(self.tmp / name, sha)
+        temp = self.tmp / f"{name}-temp"
+        temp.mkdir()
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        result, outputs = self.step(
             fresh,
             "rebuild",
-            env2,
-            temp2 / "rebuild-output.txt",
+            env,
+            temp / "rebuild-output.txt",
             BUILT_TREE=received["tree"],
             BUILT_BASE=received["base"],
             BUILT_STATE=received["state"],
             BUILT_SEALED=received["sealed"],
             BUILT_CONTENT_HASH=received["content_hash"],
         )
+        return result, outputs, (fresh, env, temp)
+
+    def run(self, rid, forge=None, dispatched=None, **overrides):
+        """As the workflow runs it, dispatched when main was ``dispatched``
+        (default: main now). That commit is GITHUB_SHA, and both jobs check
+        it out. Job 1 builds and verifies in this runner's checkout. Job 2
+        runs on a fresh clone with its own temp directory: it rebuilds with
+        the standard library and, only when its tree is job 1's, proposes
+        with the token. ``forge`` overrides job 1's outputs as job 2
+        receives them."""
+        self.runs += 1
+        sha = dispatched or git(self.remote, "rev-parse", "main")
+        temp = self.tmp / f"runner-temp-{self.runs}"
+        built, self.outputs = self.build_job(rid, sha, temp, **overrides)
+        self.rebuilt = {}
+        if built.returncode or self.outputs.get("action") != "build":
+            return built
+        received = {**self.outputs, **(forge or {})}
+        rebuilt, self.rebuilt, self.job2 = self.rebuild_job(
+            rid, received, sha, f"job2-{self.runs}", **overrides
+        )
+        fresh, env2, _ = self.job2
         outs = [built, rebuilt]
         if not rebuilt.returncode and self.rebuilt.get("action") == "build":
             proposed, _ = self.step(
@@ -1081,6 +1829,10 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert head
     main = git(remote.remote, "rev-parse", "main")
     assert git(remote.remote, "rev-parse", f"{head}^") == main
+    # The production case (review of 78e080c6, 5): GITHUB_SHA is main as
+    # dispatched, and job 2 ran that commit's code.
+    assert remote.job2[1]["GITHUB_SHA"] == main
+    assert git(remote.job2[0], "rev-parse", "HEAD") == main
     assert git(remote.remote, "log", "-1", "--format=%ae", head) == BOT_EMAIL
     message = git(remote.remote, "log", "-1", "--format=%B", head)
     assert message.startswith(f"Certify the policyengine.py {VERSION} replay results")
@@ -1394,8 +2146,156 @@ def test_an_id_main_holds_for_another_identity_is_refused_not_skipped(remote):
     assert record["identity_sha256"] != committed_record(PE650)["identity_sha256"]
     result = remote.run(rid)
     assert result.returncode == 1, result.stdout + result.stderr
-    assert f"{PE650} already names another record" in result.stderr
+    assert f"{PE650} already names another identity" in result.stderr
     assert "action" not in remote.outputs
+
+
+# Review of 78e080c6 (2): a request whose variant main already holds is the
+# same variant when the id and identity agree. Every other field of main's
+# record may differ: the note the results pull request added, and whatever a
+# later change to the index (a schema migration) adds, drops or reshapes.
+COMPARED = ("variant_id", "identity", "identity_sha256", "status")
+
+
+@pytest.fixture(scope="module")
+def requalified(tmp_path_factory):
+    """A complete request whose VARIANT.json is the committed 6.5.0 record,
+    as the receiver returns it for a pair it already certified."""
+    state = tmp_path_factory.mktemp("requalified")
+    rid, _, receipt = certified_results(state, requalify=True)
+    terminal_status(state, rid, receipt, "0" * 40)
+    return state / "requests" / rid, rid
+
+
+def decide(requalified, edit, *, strict=True):
+    """``check`` against a main whose 6.5.0 record ``edit`` changed: the
+    skip reason, or the refusal as ``Refused``."""
+    directory, rid = requalified
+    document = json.loads(rv.VARIANTS_PATH.read_bytes())
+    ids = [v["variant_id"] for v in document["variants"]]
+    edit(document["variants"][ids.index(PE650)])
+    checkout = directory.parent.parent / "main"
+    (checkout / builder.INDEX).parent.mkdir(parents=True, exist_ok=True)
+    (checkout / builder.INDEX).write_bytes(canonical_bytes(document))
+    with pytest.raises(builder.Ineligible) as skipped:
+        builder.check(directory, checkout, rid, "0" * 40, strict=strict)
+    return str(skipped.value)
+
+
+def migrate(record):
+    record["note"] = "Reworded after the merge."
+    record["schema_migration"] = {"from": 1, "to": 2}
+    record.pop("qualification_request_sha256")
+    record["data_years_evidence"] = {"reshaped": True}
+
+
+def other_identity(record):
+    record["identity"]["packages"]["policyengine"]["record_sha256"] = "f" * 64
+    record["identity_sha256"] = rv.identity_sha256(record["identity"])
+
+
+@pytest.mark.parametrize("strict", [True, False])
+@pytest.mark.parametrize(
+    ("edit", "refusal"),
+    [
+        (lambda record: None, None),
+        (migrate, None),
+        (other_identity, f"{PE650} already names another identity"),
+        (
+            lambda record: record.update(identity_sha256="f" * 64),
+            f"{PE650} already names another identity",
+        ),
+        (
+            lambda record: record.update(status="candidate"),
+            f"holds {PE650} as candidate, not certified",
+        ),
+    ],
+)
+def test_a_held_variant_is_skipped_only_for_the_same_identity(
+    requalified, edit, refusal, strict
+):
+    if refusal is None:
+        assert decide(requalified, edit, strict=strict) == (
+            f"{PE650} is already in {builder.INDEX}"
+        )
+    else:
+        with pytest.raises(builder.Refused, match=re.escape(refusal)):
+            decide(requalified, edit, strict=strict)
+
+
+def test_a_variant_whose_digest_is_not_its_identitys_is_refused(tmp_path):
+    # The skip rests on identity_sha256, so VARIANT.json's own digest must be
+    # its identity's: a record claiming the committed digest for another
+    # identity is refused, not skipped.
+    rid, record, receipt = certified_results(tmp_path, requalify=True)
+    terminal_status(tmp_path, rid, receipt, "0" * 40)
+    directory = tmp_path / "requests" / rid
+    record["identity"]["packages"]["policyengine"]["record_sha256"] = "f" * 64
+    (directory / "results/VARIANT.json").write_bytes(qualify.canonical_bytes(record))
+    (tmp_path / "main" / builder.INDEX).parent.mkdir(parents=True)
+    shutil.copyfile(rv.VARIANTS_PATH, tmp_path / "main" / builder.INDEX)
+    for strict in (True, False):
+        with pytest.raises(builder.Refused, match="not its identity's digest"):
+            builder.check(directory, tmp_path / "main", rid, "0" * 40, strict=strict)
+
+
+json_values = st.recursive(
+    st.none() | st.booleans() | st.integers(-5, 5) | st.text(max_size=6),
+    lambda children: (
+        st.lists(children, max_size=3)
+        | st.dictionaries(st.text(max_size=5), children, max_size=3)
+    ),
+    max_leaves=6,
+)
+
+
+@settings(max_examples=60, deadline=None)
+@given(
+    st.dictionaries(
+        st.text(min_size=1, max_size=12).filter(lambda key: key not in COMPARED),
+        json_values,
+        max_size=4,
+    ),
+    st.sets(st.sampled_from(sorted(set(committed_record(PE650)) - set(COMPARED)))),
+)
+def test_any_change_to_the_rest_of_the_record_still_skips(
+    requalified, changed, dropped
+):
+    def edit(record):
+        record.update(changed)
+        for key in dropped - set(changed):
+            record.pop(key)
+
+    assert decide(requalified, edit) == f"{PE650} is already in {builder.INDEX}"
+
+
+def leaves(value, path=()):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            yield from leaves(child, (*path, key))
+    elif isinstance(value, str):
+        yield path
+
+
+IDENTITY_LEAVES = sorted(leaves(committed_record(PE650)["identity"]))
+
+
+@settings(max_examples=60, deadline=None)
+@given(st.sampled_from(IDENTITY_LEAVES), st.text(min_size=1, max_size=8))
+def test_any_change_to_the_identity_is_refused(requalified, path, value):
+    def edit(record):
+        *parents, last = path
+        holder = record["identity"]
+        for key in parents:
+            holder = holder[key]
+        if holder[last] == value:
+            holder[last] = value + "x"
+        else:
+            holder[last] = value
+        record["identity_sha256"] = rv.identity_sha256(record["identity"])
+
+    with pytest.raises(builder.Refused, match="already names another identity"):
+        decide(requalified, edit)
 
 
 def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
@@ -1428,45 +2328,70 @@ def test_job_2_pushes_only_what_it_rebuilt_and_job_1_verified(remote, forge, mes
     assert remote.gh_calls() == []
 
 
-def test_a_base_older_than_the_workflow_commit_is_refused(remote):
-    # Review of f7247f19 (3): a consistent older base, forged or stale.
-    rid, record, _ = remote.certify()
-    old_main = git(remote.remote, "rev-parse", "main")
-    (remote.seed / "NOTES.md").write_text("main moved\n")
+def move_main(remote, note="main moved\n"):
+    """A commit on main after the dispatch; the new main."""
+    (remote.seed / "NOTES.md").write_text(note)
     git(remote.seed, "add", ".")
     git(remote.seed, "commit", "-qm", "Main moves")
     git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
-    git(remote.runner, "pull", "-q", "--ff-only")
-    workflow_commit = git(remote.remote, "rev-parse", "main")
-    result = remote.run(rid, forge={"base": old_main}, GITHUB_SHA=workflow_commit)
-    assert result.returncode == 1, result.stdout + result.stderr
-    assert "older than this workflow's commit" in result.stderr
+    return git(remote.remote, "rev-parse", "main")
+
+
+def test_a_run_dispatched_before_main_moved_proposes_on_the_new_main(remote):
+    # Review of 78e080c6 (5): the production case. GITHUB_SHA is main at
+    # dispatch and both jobs run that commit's code; main moves before job 1
+    # fetches it, so the base job 1 builds on is newer than GITHUB_SHA.
+    rid, record, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    newer = move_main(remote)
+    result = remote.run(rid, dispatched=dispatched)
+    assert result.returncode == 0, result.stdout + result.stderr
+    fresh, env, _ = remote.job2
+    assert env["GITHUB_SHA"] == dispatched
+    assert git(fresh, "rev-parse", "HEAD") == dispatched
+    assert git(remote.runner, "rev-parse", "HEAD") == dispatched
+    assert remote.outputs["base"] == newer
+    assert git(remote.remote, "rev-parse", f"{remote.branch(record)}^") == newer
+    assert [call[:2] for call in remote.gh_calls()] == [
+        ["pr", "list"],
+        ["pr", "create"],
+    ]
+
+
+def test_a_consistent_build_on_an_older_main_is_refused(remote):
+    # Review of f7247f19 (3) and 78e080c6 (5): job 1's outputs agree with
+    # each other (the tree is the one their base gives) but the base
+    # predates the run's own commit. Only the GITHUB_SHA check refuses it.
+    rid, record, _ = remote.certify()
+    old_main = git(remote.remote, "rev-parse", "main")
+    built, old = remote.build_job(rid, old_main, remote.tmp / "old-job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    assert old["action"] == "build" and old["base"] == old_main
+    new_main = move_main(remote)
+    # In the run that built them, on main's newer tip, they pass: the tree
+    # job 2 assembles on that base is job 1's.
+    honest, values, _ = remote.rebuild_job(rid, old, old_main, "honest-job2")
+    assert honest.returncode == 0, honest.stdout + honest.stderr
+    assert values["action"] == "build"
+    # In a run dispatched on today's main, they are refused.
+    forged, values, _ = remote.rebuild_job(rid, old, new_main, "forged-job2")
+    assert forged.returncode == 1, forged.stdout + forged.stderr
+    assert f"older than this workflow's commit {new_main}" in forged.stderr
+    assert "action" not in values
     assert not remote.branch(record)
+    assert remote.gh_calls() == []
 
 
 def test_a_rerun_after_the_merge_skips_on_mains_tip(remote):
     # Review of f7247f19 (3): job 2 rerun on job 1's old outputs once the
-    # results are on main must not open a second pull request.
+    # results are on main must not open a second pull request. A rerun
+    # keeps the run's GITHUB_SHA.
     rid, record, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
     assert remote.run(rid).returncode == 0
     built = dict(remote.outputs)
     git(remote.remote, "update-ref", "refs/heads/main", remote.branch(record))
-    fresh = remote.tmp / "rerun-job2"
-    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
-    temp = remote.tmp / "rerun-job2-temp"
-    temp.mkdir()
-    remote.gh_log = temp / "gh.jsonl"
-    rebuilt, values = remote.step(
-        fresh,
-        "rebuild",
-        remote.environment(temp, rid),
-        temp / "out.txt",
-        BUILT_TREE=built["tree"],
-        BUILT_BASE=built["base"],
-        BUILT_STATE=built["state"],
-        BUILT_SEALED=built["sealed"],
-        BUILT_CONTENT_HASH=built["content_hash"],
-    )
+    rebuilt, values, _ = remote.rebuild_job(rid, built, dispatched, "rerun-job2")
     assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
     assert values == {"action": "skip"}
     assert "on main as it is now" in rebuilt.stdout
@@ -1476,39 +2401,64 @@ def test_a_rerun_after_the_merge_skips_on_mains_tip(remote):
 def test_main_moving_between_the_jobs_still_rebuilds_on_the_verified_base(remote):
     # Job 2 rebuilds on the main job 1 verified, provided that commit is in
     # main's history; main moving in between does not fail the run.
-    rid, record, _ = remote.certify()
-    temp = remote.tmp / "job1"
-    temp.mkdir()
-    remote.gh_log, remote.check_log = temp / "gh.jsonl", temp / "checks.log"
-    built, outputs = remote.step(
-        remote.runner, "build", remote.environment(temp, rid), temp / "out.txt"
-    )
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
     assert built.returncode == 0, built.stdout + built.stderr
-    (remote.seed / "NOTES.md").write_text("main moved\n")
-    git(remote.seed, "add", ".")
-    git(remote.seed, "commit", "-qm", "Main moves")
-    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
-    assert git(remote.remote, "rev-parse", "main") != outputs["base"]
-    fresh = remote.tmp / "job2"
-    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
-    temp2 = remote.tmp / "job2-temp"
-    temp2.mkdir()
-    rebuilt, values = remote.step(
-        fresh,
-        "rebuild",
-        remote.environment(temp2, rid),
-        temp2 / "out.txt",
-        BUILT_TREE=outputs["tree"],
-        BUILT_BASE=outputs["base"],
-        BUILT_STATE=outputs["state"],
-        BUILT_SEALED=outputs["sealed"],
-        BUILT_CONTENT_HASH=outputs["content_hash"],
-    )
+    assert move_main(remote) != outputs["base"]
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(rid, outputs, dispatched, "job2")
     assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
     assert values["action"] == "build"
-    tree = temp2 / "results-pr/tree"
+    tree = temp / "results-pr/tree"
     assert git(tree, "rev-parse", "HEAD^") == outputs["base"]
     assert git(tree, "rev-parse", "HEAD^{tree}") == outputs["tree"]
+
+
+def test_job_2_reports_a_request_missing_at_the_state_commit(remote):
+    # Review of 78e080c6 (1): with main moved on, a state commit that lacks
+    # the request (an older one in replay-state's history) ends with the
+    # builder's own message, not a raw git error from a tip-check extract.
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    move_main(remote)
+    queued = git(remote.state, "rev-list", "--max-parents=0", "HEAD")
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(
+        rid, {**outputs, "state": queued}, dispatched, "job2"
+    )
+    assert rebuilt.returncode == 1, rebuilt.stdout + rebuilt.stderr
+    assert f"replay-state has no request {rid}" in rebuilt.stderr
+    assert "fatal:" not in rebuilt.stderr
+    assert "action" not in values
+    assert not (temp / "results-pr/tip-plan.json").exists()
+
+
+def test_job_2_guards_the_request_before_deciding_on_mains_tip(remote):
+    # Review of 78e080c6 (1): the tip check reads the request only after
+    # the output guard. A state commit whose STATUS.json is a link (into
+    # the receipt) is refused by the guard; nothing reads through it.
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    status = remote.state / "requests" / rid / "STATUS.json"
+    status.unlink()
+    os.symlink(rv.RECEIPT_NAME, status)
+    git(remote.state, "add", "-A")
+    git(remote.state, "commit", "-qm", "Link the status")
+    remote.publish_state()
+    linked = git(remote.state, "rev-parse", "HEAD")
+    move_main(remote)
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(
+        rid, {**outputs, "state": linked}, dispatched, "job2"
+    )
+    assert rebuilt.returncode == 1, rebuilt.stdout + rebuilt.stderr
+    assert "STATUS.json: not a regular file" in rebuilt.stdout
+    assert "Traceback" not in rebuilt.stderr
+    assert "action" not in values
+    assert not (temp / "results-pr/tip-plan.json").exists()
+    assert not (temp / "results-pr/tip").exists()
 
 
 def test_propose_pushes_only_the_commit_rebuild_assembled(remote):
@@ -1559,6 +2509,22 @@ def test_a_variant_already_on_main_is_skipped(remote):
     result = remote.run(rid)
     assert result.returncode == 0, result.stdout + result.stderr
     assert f"{record['variant_id']} is already in {builder.INDEX}" in result.stdout
+    # Review of 78e080c6 (2): a later change to main's copy of the record (a
+    # schema migration) does not turn the merged request's rerun into a
+    # refusal.
+    person = remote.tmp / "migration"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(person)], check=True)
+    for key, value in (("user.name", "Migrator"), ("user.email", "m@example.org")):
+        git(person, "config", key, value)
+    document = json.loads((person / builder.INDEX).read_bytes())
+    migrate(document["variants"][-1])
+    (person / builder.INDEX).write_bytes(canonical_bytes(document))
+    git(person, "commit", "-qam", "Migrate the index")
+    git(person, "push", "-q", "origin", "HEAD:main")
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert f"{record['variant_id']} is already in {builder.INDEX}" in result.stdout
+    assert remote.outputs == {"action": "skip"}
 
 
 def tamper(remote, rid, record, how):
