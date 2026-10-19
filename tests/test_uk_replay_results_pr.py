@@ -1952,7 +1952,7 @@ while read -r old new ref; do
     done)
   else
     touched=$(git diff --name-only "$old" "$new" -- .github/workflows
-      git log --format= --name-only "$old..$new" -- .github/workflows)
+      git log --full-history --format= --name-only "$old..$new" -- .github/workflows)
   fi
   if [ -n "$touched" ]; then
     echo "refusing to allow a GitHub App to create or update workflow without workflows permission" >&2
@@ -2019,6 +2019,35 @@ def test_without_workflows_a_rebuild_over_mains_workflow_change_says_what_to_do(
     git(remote.seed, "revert", "--no-edit", "HEAD")
     move_main(remote, "main moved after the revert\n")
     assert not git(remote.remote, "diff", "--name-only", fresh, "main", "--", ".github")
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "Main has changed .github/workflows since the branch was built" in (
+        result.stderr
+    )
+    assert remote.branch(record) == fresh
+    # Review of 34fba891: the same change and revert on a side branch, merged
+    # after main moved on. Default path-limited history prunes that merge to
+    # its first parent and hides both commits; the hint reads full history,
+    # as the strictest refusal would.
+    git(remote.remote, "update-ref", "-d", branch)
+    assert remote.run(rid).returncode == 0
+    fresh = remote.branch(record)
+    git(remote.seed, "switch", "-q", "-c", "side")
+    workflow.write_text(workflow.read_text() + "# a side change\n")
+    git(remote.seed, "commit", "-qam", "A side branch changes a workflow")
+    git(remote.seed, "revert", "--no-edit", "HEAD")
+    git(remote.seed, "switch", "-q", "main")
+    move_main(remote, "main moved before the merge\n")
+    git(remote.seed, "merge", "-q", "--no-ff", "--no-edit", "side")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    span = f"{fresh}..main"
+    assert not git(remote.remote, "log", "--format=%H", span, "--", ".github")
+    assert git(
+        remote.remote, "log", "--full-history", "--format=%s", span, "--", ".github"
+    ).splitlines() == [
+        'Revert "A side branch changes a workflow"',
+        "A side branch changes a workflow",
+    ]
     result = remote.run(rid, GH_OPEN_PR="999")
     assert result.returncode == 1, result.stdout + result.stderr
     assert "Main has changed .github/workflows since the branch was built" in (
