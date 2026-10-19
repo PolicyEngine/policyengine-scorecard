@@ -1,0 +1,182 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.3950999610000281,
+    "end_rss_bytes": 2759020544,
+    "peak_rss_bytes": 2759020544,
+    "rss_after_gc_bytes": 1844375552,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 260218880,
+    "wall_seconds": 17.08405480700003
+   },
+   "seconds": 24.42217649199995,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 27.730042077000007,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 27.789219585999945,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "seconds": 28.00135956700001,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "seconds": 28.31710835499996,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.4535416969999915,
+    "end_rss_bytes": 2497622016,
+    "peak_rss_bytes": 2497622016,
+    "rss_after_gc_bytes": 1600921600,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 260169728,
+    "wall_seconds": 15.197567947000039
+   },
+   "seconds": 22.596196097000075,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 26.36007684099991,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 26.33109226600004,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "seconds": 26.35874379100005,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "seconds": 26.55861784800004,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6561674749999611,
+    "end_rss_bytes": 4007276544,
+    "peak_rss_bytes": 4007329792,
+    "rss_after_gc_bytes": 3996205056,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3997237248,
+    "wall_seconds": 14.68281462099992
+   },
+   "seconds": 15.341292867999982,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 26.1981730629999,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 26.39743737599997,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "seconds": 26.053470683,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "seconds": 26.276203996999925,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.62614940200001,
+    "end_rss_bytes": 4232749056,
+    "peak_rss_bytes": 4336549888,
+    "rss_after_gc_bytes": 4220551168,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4336545792,
+    "wall_seconds": 14.503994167999963
+   },
+   "seconds": 15.14475526900003,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 25.90201897899999,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 25.852164955000035,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "seconds": 26.10448704700002,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "seconds": 26.57537215600007,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6823821220000355,
+    "end_rss_bytes": 4002471936,
+    "peak_rss_bytes": 4106153984,
+    "rss_after_gc_bytes": 3998056448,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4102766592,
+    "wall_seconds": 14.085200663000023
+   },
+   "seconds": 14.770009061999986,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 23.64849730700007,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 23.684985943000015,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "seconds": 23.955184414000087,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "seconds": 24.177362166999956,
+   "year": 2028
+  }
+ ],
+ "wall_seconds": 370.054833346,
+ "workers": 2
+}
