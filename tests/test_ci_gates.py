@@ -186,8 +186,9 @@ def test_publish_db_downloads_this_runs_database_without_a_token():
     in the current run through the Actions runtime token
     (ACTIONS_RUNTIME_TOKEN), which is why publish-db needs no actions scope;
     a `github-token` would need actions: read. Upload has no token input.
-    Re-check this when either action changes major version. Nothing in the
-    file hands GITHUB_TOKEN to a step either."""
+    Re-check this when either action changes major version. No step is
+    handed GITHUB_TOKEN explicitly; setup-uv and setup-bun take it by
+    default, to read public releases."""
     text = CI.read_text()
     assert "secrets.GITHUB_TOKEN" not in text and "github.token" not in text
     jobs = ci()["jobs"]
