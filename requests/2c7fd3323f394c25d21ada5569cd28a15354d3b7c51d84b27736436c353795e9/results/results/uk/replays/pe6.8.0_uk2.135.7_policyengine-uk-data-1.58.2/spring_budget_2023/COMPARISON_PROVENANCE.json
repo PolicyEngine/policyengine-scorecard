@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "062077249db6e2d50d0a73ffe12d267c061ba5a6e1a31cc07e11521657242d3c",
+  "COMPARISON.json": "2375c4867fc43dec38de1463377c04f6b2f5d4cd8aaf5bdebb118765a4c3e5f0",
+  "COMPARISON.md": "3ce4d706cf87dc108d5c3eb95c0a3a914dd73f4f41f4d2d9defaca9161f5ed3a"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "c4300a1dcbf3f065854fbac630ba571b9ad3195b17c19744b0d9dc4acc485079",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "6485133ac710cbd21f20f9c5d31260f44c7687da903b4ba28db22d7f2bc7ceae",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "c3874a347092c34d4fac69217e467a87920c5684e0f256bbfaffade5c895953f"
+}

@@ -1,0 +1,25 @@
+{
+ "by_status": {
+  "constructed": 90,
+  "not_computed": 1422
+ },
+ "computed_measure_years": 54,
+ "event": "autumn_budget_2025",
+ "full_event_complete": true,
+ "full_event_grid_size": 54,
+ "full_supported_grid_complete": true,
+ "missing_measure_years": [],
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "source_rows": 1512,
+ "source_value_gbp": 20106669555.758602,
+ "source_value_gbp_decimal": "20106669555.75860149730126",
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2/autumn_budget_2025/STAGED.jsonl",
+ "staged_rows": 1512,
+ "staged_sha256": "ec88981f527930f0f114d42c1d5c3d79f9855880b1a5ec6717dfa0b7dc93c040",
+ "staged_value_gbp_decimal": "20106669555.75860149730126",
+ "supported_grid_size": 54,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.8.0_uk2.135.7_policyengine-uk-data-1.58.2"
+}
