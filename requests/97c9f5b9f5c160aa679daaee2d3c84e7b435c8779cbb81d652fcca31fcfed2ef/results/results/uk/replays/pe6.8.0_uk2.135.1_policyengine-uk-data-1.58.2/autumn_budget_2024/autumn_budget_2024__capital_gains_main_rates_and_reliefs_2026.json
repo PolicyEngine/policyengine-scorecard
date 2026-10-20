@@ -1,0 +1,155 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.cgt.additional_rate": {
+    "2024-01-01.2035-12-31": 0.2
+   },
+   "gov.hmrc.cgt.basic_rate": {
+    "2024-01-01.2035-12-31": 0.1
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "2024-01-01.2035-12-31": 0.2
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "capital_gains_tax": 13076997906.726238
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+ ],
+ "construction": "reversal_on_certified_world",
+ "construction_revision": {
+  "activation_fy": "2024-25",
+  "part_year_rule": "part_year_day_weighted",
+  "paths": [
+   "gov.hmrc.cgt.basic_rate",
+   "gov.hmrc.cgt.higher_rate",
+   "gov.hmrc.cgt.additional_rate"
+  ],
+  "registry_sha256": "23993c8fbdcff319045b10bf316b29eb093c283dc6d135c430db237de0050a57",
+  "revision_id": "ab2024_cgt_fiscal_year_blend.v1"
+ },
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.135.1",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "capital_gains_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Capital gains tax",
+   "pe_variables": [
+    "capital_gains_tax"
+   ]
+  }
+ ],
+ "head_effects": {
+  "capital_gains_tax": 1801465870.3176498
+ },
+ "head_variables": [
+  "capital_gains_tax"
+ ],
+ "literal_reform_minus_baseline": {
+  "capital_gains_tax": -1801465870.3176498
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "capital_gains_tax": -1801465870.3176498
+ },
+ "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+ "measure_total_gbp": 1801465870.3176498,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-04-06.2036-04-05": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-04-06.2036-04-05": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-04-06.2036-04-05": 0.2
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.cgt.additional_rate": {
+    "intended": 0.2,
+    "processed": 0.2
+   },
+   "gov.hmrc.cgt.basic_rate": {
+    "intended": 0.1,
+    "processed": 0.1
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "intended": 0.2,
+    "processed": 0.2
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.cgt.additional_rate": {
+    "intended": 0.24,
+    "processed": 0.24
+   },
+   "gov.hmrc.cgt.basic_rate": {
+    "intended": 0.18000000000000002,
+    "processed": 0.18000000000000002
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "intended": 0.24,
+    "processed": 0.24
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "capital_gains_tax": 11275532036.408588
+   }
+  },
+  "reform": {
+   "heads": {
+    "capital_gains_tax": 13076997906.726238
+   }
+  }
+ },
+ "variable_metadata": {
+  "capital_gains_tax": {
+   "definition_period": "year",
+   "documentation": "Capital gains tax on the person's gains, charged on four schedules: gains qualifying for Business Asset Disposal Relief or Investors' Relief (capital_gains_badr, a flat rate up to the lifetime limit), residential property gains (capital_gains_residential_property), carried interest (capital_gains_carried_interest) and the remainder of capital_gains at the main rates. The three named inputs are components of capital_gains before any realisation response: relief gains move by their own response (capital_gains_badr_behavioural_response) and the other two in proportion with the rest of the gains. All three are clipped so that together they never exceed capital_gains. The annual exempt amount is set against the schedule with the highest top rate first (TCGA 1992 s. 1K(5)); the unused basic rate band goes to relief gains first, as s. 1I(4)-(6) requires, and then to the schedule with the widest gap between its higher and basic rates (s. 1I(7)-(9)). Gains above the basic rate band are split at the income tax higher rate limit only so that reforms can set an additional rate; the law has none.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py",
+   "entity": "person",
+   "label": "capital gains tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "89d69f545ba6ffee7009030b731249a660c8c298ee5f3364a67a47250c8035c4",
+ "year": 2026
+}

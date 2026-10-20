@@ -1,0 +1,187 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.rates.dividends[0].rate": {
+    "2026-01-01.2030-12-31": 0.0875
+   },
+   "gov.hmrc.income_tax.rates.dividends[1].rate": {
+    "2026-01-01.2030-12-31": 0.3375
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2028 proxies FY 2028-29.",
+ "certified_aggregates_gbp": {
+  "income_tax": 351355843233.54224,
+  "ni_class_1_employee": 55440381704.80593,
+  "ni_class_1_employer": 169032834990.53113,
+  "ni_class_4": 3202491297.5102015
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "ab2025__dividend_rates_plus_2pp"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.135.1",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2028-29",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_4": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 980668246.38031,
+  "ni_class_1_employee": 0.0,
+  "ni_class_1_employer": 0.0,
+  "ni_class_4": 0.0
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_4"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -980668246.38031,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_4": -0.0
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -980668246.38031,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_4": -0.0
+ },
+ "measure_key": "ab2025__dividend_rates_plus_2pp",
+ "measure_total_gbp": 980668246.38031,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2026-01-01.2030-12-31": 0.3375
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.income_tax.rates.dividends[0].rate": {
+    "intended": 0.0875,
+    "processed": 0.0875
+   },
+   "gov.hmrc.income_tax.rates.dividends[1].rate": {
+    "intended": 0.3375,
+    "processed": 0.3375
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.income_tax.rates.dividends[0].rate": {
+    "intended": 0.1075,
+    "processed": 0.1075
+   },
+   "gov.hmrc.income_tax.rates.dividends[1].rate": {
+    "intended": 0.3575,
+    "processed": 0.3575
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 350375174987.1619,
+    "ni_class_1_employee": 55440381704.80593,
+    "ni_class_1_employer": 169032834990.53113,
+    "ni_class_4": 3202491297.5102015
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 351355843233.54224,
+    "ni_class_1_employee": 55440381704.80593,
+    "ni_class_1_employer": 169032834990.53113,
+    "ni_class_4": 3202491297.5102015
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "89d69f545ba6ffee7009030b731249a660c8c298ee5f3364a67a47250c8035c4",
+ "year": 2028
+}

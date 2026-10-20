@@ -1,0 +1,48 @@
+{
+ "by_status": {
+  "constructed": 29,
+  "inert_construction": 5,
+  "not_computed": 1100
+ },
+ "computed_measure_years": 30,
+ "event": "autumn_budget_2024",
+ "full_event_complete": false,
+ "full_event_grid_size": 30,
+ "full_supported_grid_complete": false,
+ "inert_measure_years": [
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2029
+  }
+ ],
+ "missing_measure_years": [],
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "source_rows": 1134,
+ "source_value_gbp": -190164695347.9921,
+ "source_value_gbp_decimal": "-190164695347.9920989661272",
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2/autumn_budget_2024/STAGED.jsonl",
+ "staged_rows": 1134,
+ "staged_sha256": "a6aa7df36ebfe9edbbab3b4d604344dcb9e6063d1887feb7237111c2cdb45631",
+ "staged_value_gbp_decimal": "-190164695347.9920989661272",
+ "supported_grid_size": 30,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2"
+}

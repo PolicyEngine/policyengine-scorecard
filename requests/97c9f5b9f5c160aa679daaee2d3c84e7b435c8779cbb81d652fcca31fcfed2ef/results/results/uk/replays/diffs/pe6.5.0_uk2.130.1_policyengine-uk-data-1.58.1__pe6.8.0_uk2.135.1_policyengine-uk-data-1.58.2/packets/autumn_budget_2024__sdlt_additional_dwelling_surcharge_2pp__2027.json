@@ -1,0 +1,1832 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2027.json",
+   "reform_reform_dict": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31.2035-12-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31.2035-12-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31.2035-12-31": 0.17
+    }
+   },
+   "sha256": "f4c39be893fa1a9504f1b558ee5d23fdaeae6a98c1c18c377b8095abc78ef89b"
+  },
+  "head": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2027.json",
+   "reform_reform_dict": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31.2035-12-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31.2035-12-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31.2035-12-31": 0.17
+    }
+   },
+   "sha256": "1261c03a0840f2684c8d17c8aa782de0158a0ee607da1abdf3c468335f569059"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical",
+  "structural",
+  "inertness"
+ ],
+ "fy": "2027-28",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.135.1",
+   "policyengine_version": "6.8.0",
+   "variant_id": "pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "forward_delta_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2025": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2026": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2027": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2028": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2029": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "stamp_duty_land_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Stamp duty",
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "measure_type": "stamp_duty_land_tax",
+   "missing_legs": [
+    "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.",
+    "The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    ],
+    "pattern": "gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[0\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[1\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[2\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[3\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[4\\]\\.rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Government parameter processing samples 30 April and applies that value across each annual period; the October2024 onset is therefore absent from processed 2024 and present throughout processed 2025. Main-home rates and thresholds are retained.",
+   "pe_gap": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+   "pe_reform_delta": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31": 0.17
+    }
+   },
+   "program": "stamp_duty_land_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11646:015f43cbab8a5a02",
+     "source_row_number": 11646,
+     "source_row_sha256": "015f43cbab8a5a026ed4041017656524fdd7fa5b293a907b2ed718ab366a904e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 134319307.0,
+     "value_gbp_decimal": "134319307.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11647:b269082735adb83b",
+     "source_row_number": 11647,
+     "source_row_sha256": "b269082735adb83b754a4d5397e9d55fc8f59cee41543d7d7e7fcbe09c9f2067",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 208253392.0,
+     "value_gbp_decimal": "208253392.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11648:48bd77ddd06dec27",
+     "source_row_number": 11648,
+     "source_row_sha256": "48bd77ddd06dec270c6d642b52e9b88af26d4942798a838943a1c13915fcd03c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 334228735.0,
+     "value_gbp_decimal": "334228735.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11649:910077d14a180f90",
+     "source_row_number": 11649,
+     "source_row_sha256": "910077d14a180f90eacf2629398479757bab2715d5f496a2fbe7d621e47d646a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 413466265.0,
+     "value_gbp_decimal": "413466265.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11650:068acce8b0873200",
+     "source_row_number": 11650,
+     "source_row_sha256": "068acce8b0873200b40f8bd35498d7dec375aaaa06acf28aba0348f31dd0ed31",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 450753667.0,
+     "value_gbp_decimal": "450753667.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11651:9a7327566a66890c",
+     "source_row_number": 11651,
+     "source_row_sha256": "9a7327566a66890cbd41371bd8f45253d44152eb7c4c96528ef4e247cf6b0334",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 490256279.0,
+     "value_gbp_decimal": "490256279.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11652:27a50b13291133b1",
+     "source_row_number": 11652,
+     "source_row_sha256": "27a50b13291133b11e40ec025b254017fefec13cc145f635115a08c1e7eedb37",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -22084526.0,
+     "value_gbp_decimal": "-22084526.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11653:f9403f5df25abb27",
+     "source_row_number": 11653,
+     "source_row_sha256": "f9403f5df25abb273168ddd52537d7bc01ab0f25b002277152a67b9f44ebe532",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -92226191.0,
+     "value_gbp_decimal": "-92226191.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11654:d3b9bc5fd38a798c",
+     "source_row_number": 11654,
+     "source_row_sha256": "d3b9bc5fd38a798c322e46225ff8039f6bb457b75fb745ecdc9102b12fc5a11e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -121433670.0,
+     "value_gbp_decimal": "-121433670.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11655:2e1dc1d269227e2f",
+     "source_row_number": 11655,
+     "source_row_sha256": "2e1dc1d269227e2f6be063640a88ec3287ebda191b4978d5aa7d6781c34f200f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -117897950.0,
+     "value_gbp_decimal": "-117897950.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11656:e5c5845a4df7a18b",
+     "source_row_number": 11656,
+     "source_row_sha256": "e5c5845a4df7a18bd720727a1ad76fb558b654bfa23f1a0dfff2181b9c325f7f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -122757660.0,
+     "value_gbp_decimal": "-122757660.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11657:7fa7efce401257e4",
+     "source_row_number": 11657,
+     "source_row_sha256": "7fa7efce401257e4cd20e7616acced15307a8268f507dd63a35bfc3ca987c629",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -129198080.0,
+     "value_gbp_decimal": "-129198080.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11658:7bd2fb01df3101cc",
+     "source_row_number": 11658,
+     "source_row_sha256": "7bd2fb01df3101ccb53d23708b4de9c5fa9c8eb2a75ccc911d74cabcb15d8149",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -6972326.4,
+     "value_gbp_decimal": "-6972326.4"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11659:58ae63699eb03986",
+     "source_row_number": 11659,
+     "source_row_sha256": "58ae63699eb03986a3c6a6e44fccb70c5d20e6da161ae65d75c1e2f6e87d4c78",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -39050650.0,
+     "value_gbp_decimal": "-39050650.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11660:8cf7ed109cbbb468",
+     "source_row_number": 11660,
+     "source_row_sha256": "8cf7ed109cbbb468a460a67c7c00820c5baf0d1daffd7fa01422b9937256483e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -66413874.00000001,
+     "value_gbp_decimal": "-66413874.00000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11661:a5ce1ea1b223ab58",
+     "source_row_number": 11661,
+     "source_row_sha256": "a5ce1ea1b223ab58ae31ff8baabdd662ecdc660b4ebf29f1347070e37d6098c9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -70646577.0,
+     "value_gbp_decimal": "-70646577.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11662:6d909ba62cdc4a9d",
+     "source_row_number": 11662,
+     "source_row_sha256": "6d909ba62cdc4a9d3dc304d2a1dd96e32b88e0b5504607f66bbe2ac492c427af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -77431827.0,
+     "value_gbp_decimal": "-77431827.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11663:7a186012776764b9",
+     "source_row_number": 11663,
+     "source_row_sha256": "7a186012776764b9d4cbb7ffe67c93874a5b2adf73be861a02712c3d016d2d0a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -84678949.0,
+     "value_gbp_decimal": "-84678949.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22805:100fbff6a9179adc",
+     "source_row_number": 22805,
+     "source_row_sha256": "100fbff6a9179adcd6f0b0999951f18a6d340cb7280821a9eeb863b50039e3f3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 6210695.292849095,
+     "value_gbp_decimal": "6210695.292849095"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22806:de888a245348bcc1",
+     "source_row_number": 22806,
+     "source_row_sha256": "de888a245348bcc1c1eec374a598e70fd26b149885eee9d222d81f592965395b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9654539.56415215,
+     "value_gbp_decimal": "9654539.56415215"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22807:422d5d733ecadc39",
+     "source_row_number": 22807,
+     "source_row_sha256": "422d5d733ecadc39e47d3d975b72770c8f7a5311c98e7affcc006ad294b6b855",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 15535346.1708672,
+     "value_gbp_decimal": "15535346.1708672"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22808:c8fe3aecef088bf1",
+     "source_row_number": 22808,
+     "source_row_sha256": "c8fe3aecef088bf1684a4d49b89d751e3b57cb31cc2b640cd54570b1d15f6fb2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 19268810.522786085,
+     "value_gbp_decimal": "19268810.522786085"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22809:83691f2969d81ad0",
+     "source_row_number": 22809,
+     "source_row_sha256": "83691f2969d81ad00410ac9acbd3dc20eadaf388abcb4b7c705ebcabe8d1cf5d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 21006518.810046963,
+     "value_gbp_decimal": "21006518.810046963"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22810:b94a793fb1d3c286",
+     "source_row_number": 22810,
+     "source_row_sha256": "b94a793fb1d3c286df1daf288383eefb99c11da920f1967b13b950f7cfe7ff3c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 22847463.47299579,
+     "value_gbp_decimal": "22847463.47299579"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22811:21d31fd21a96d516",
+     "source_row_number": 22811,
+     "source_row_sha256": "21d31fd21a96d516641e2f3f417d166e4daeef26dd2d4776080513cff1c1ea02",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 2722449.707150902,
+     "value_gbp_decimal": "2722449.707150902"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22812:2180748e886ef44d",
+     "source_row_number": 22812,
+     "source_row_sha256": "2180748e886ef44dc72c37307f4ec3f886b275b5e3cce7a847d73ad80c5f94e9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 4216644.4358478505,
+     "value_gbp_decimal": "4216644.4358478505"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22813:efbafd1fd9337894",
+     "source_row_number": 22813,
+     "source_row_sha256": "efbafd1fd9337894c44070ac7d9f3173e4a4ad823fb07cba2b8bb3d460cff605",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 6761880.829132819,
+     "value_gbp_decimal": "6761880.829132819"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22814:3608d4c47b99f4c7",
+     "source_row_number": 22814,
+     "source_row_sha256": "3608d4c47b99f4c7f95a898269475b09fae4911d44896192d4c7b41b2c2a6a44",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 8358564.477213893,
+     "value_gbp_decimal": "8358564.477213893"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22815:1312cc7ca835f35b",
+     "source_row_number": 22815,
+     "source_row_sha256": "1312cc7ca835f35b3ac85c50a88c45516de930c302a0f47b9305cff9f6e6b379",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9112360.189953031,
+     "value_gbp_decimal": "9112360.189953031"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22816:4ee584ef8c6c1052",
+     "source_row_number": 22816,
+     "source_row_sha256": "4ee584ef8c6c10520fa6fd2c34ff8b608b513d73d0d746d27b9c362397fee92b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9910938.527004203,
+     "value_gbp_decimal": "9910938.527004203"
+    }
+   ],
+   "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Inheritance tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "forward_delta_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2025": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2026": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2027": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2028": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    },
+    "2029": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "stamp_duty_land_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Stamp duty",
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "measure_type": "stamp_duty_land_tax",
+   "missing_legs": [
+    "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.",
+    "The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate",
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    ],
+    "pattern": "gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[0\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[1\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[2\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[3\\]\\.rate|gov\\.hmrc\\.stamp_duty\\.residential\\.purchase\\.additional\\.rate\\[4\\]\\.rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Government parameter processing samples 30 April and applies that value across each annual period; the October2024 onset is therefore absent from processed 2024 and present throughout processed 2025. Main-home rates and thresholds are retained.",
+   "pe_gap": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+   "pe_reform_delta": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31": 0.17
+    }
+   },
+   "program": "stamp_duty_land_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11646:015f43cbab8a5a02",
+     "source_row_number": 11646,
+     "source_row_sha256": "015f43cbab8a5a026ed4041017656524fdd7fa5b293a907b2ed718ab366a904e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 134319307.0,
+     "value_gbp_decimal": "134319307.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11647:b269082735adb83b",
+     "source_row_number": 11647,
+     "source_row_sha256": "b269082735adb83b754a4d5397e9d55fc8f59cee41543d7d7e7fcbe09c9f2067",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 208253392.0,
+     "value_gbp_decimal": "208253392.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11648:48bd77ddd06dec27",
+     "source_row_number": 11648,
+     "source_row_sha256": "48bd77ddd06dec270c6d642b52e9b88af26d4942798a838943a1c13915fcd03c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 334228735.0,
+     "value_gbp_decimal": "334228735.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11649:910077d14a180f90",
+     "source_row_number": 11649,
+     "source_row_sha256": "910077d14a180f90eacf2629398479757bab2715d5f496a2fbe7d621e47d646a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 413466265.0,
+     "value_gbp_decimal": "413466265.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11650:068acce8b0873200",
+     "source_row_number": 11650,
+     "source_row_sha256": "068acce8b0873200b40f8bd35498d7dec375aaaa06acf28aba0348f31dd0ed31",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 450753667.0,
+     "value_gbp_decimal": "450753667.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11651:9a7327566a66890c",
+     "source_row_number": 11651,
+     "source_row_sha256": "9a7327566a66890cbd41371bd8f45253d44152eb7c4c96528ef4e247cf6b0334",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 490256279.0,
+     "value_gbp_decimal": "490256279.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11652:27a50b13291133b1",
+     "source_row_number": 11652,
+     "source_row_sha256": "27a50b13291133b11e40ec025b254017fefec13cc145f635115a08c1e7eedb37",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -22084526.0,
+     "value_gbp_decimal": "-22084526.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11653:f9403f5df25abb27",
+     "source_row_number": 11653,
+     "source_row_sha256": "f9403f5df25abb273168ddd52537d7bc01ab0f25b002277152a67b9f44ebe532",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -92226191.0,
+     "value_gbp_decimal": "-92226191.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11654:d3b9bc5fd38a798c",
+     "source_row_number": 11654,
+     "source_row_sha256": "d3b9bc5fd38a798c322e46225ff8039f6bb457b75fb745ecdc9102b12fc5a11e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -121433670.0,
+     "value_gbp_decimal": "-121433670.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11655:2e1dc1d269227e2f",
+     "source_row_number": 11655,
+     "source_row_sha256": "2e1dc1d269227e2f6be063640a88ec3287ebda191b4978d5aa7d6781c34f200f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -117897950.0,
+     "value_gbp_decimal": "-117897950.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11656:e5c5845a4df7a18b",
+     "source_row_number": 11656,
+     "source_row_sha256": "e5c5845a4df7a18bd720727a1ad76fb558b654bfa23f1a0dfff2181b9c325f7f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -122757660.0,
+     "value_gbp_decimal": "-122757660.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11657:7fa7efce401257e4",
+     "source_row_number": 11657,
+     "source_row_sha256": "7fa7efce401257e4cd20e7616acced15307a8268f507dd63a35bfc3ca987c629",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -129198080.0,
+     "value_gbp_decimal": "-129198080.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11658:7bd2fb01df3101cc",
+     "source_row_number": 11658,
+     "source_row_sha256": "7bd2fb01df3101ccb53d23708b4de9c5fa9c8eb2a75ccc911d74cabcb15d8149",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -6972326.4,
+     "value_gbp_decimal": "-6972326.4"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11659:58ae63699eb03986",
+     "source_row_number": 11659,
+     "source_row_sha256": "58ae63699eb03986a3c6a6e44fccb70c5d20e6da161ae65d75c1e2f6e87d4c78",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -39050650.0,
+     "value_gbp_decimal": "-39050650.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11660:8cf7ed109cbbb468",
+     "source_row_number": 11660,
+     "source_row_sha256": "8cf7ed109cbbb468a460a67c7c00820c5baf0d1daffd7fa01422b9937256483e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -66413874.00000001,
+     "value_gbp_decimal": "-66413874.00000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11661:a5ce1ea1b223ab58",
+     "source_row_number": 11661,
+     "source_row_sha256": "a5ce1ea1b223ab58ae31ff8baabdd662ecdc660b4ebf29f1347070e37d6098c9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -70646577.0,
+     "value_gbp_decimal": "-70646577.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11662:6d909ba62cdc4a9d",
+     "source_row_number": 11662,
+     "source_row_sha256": "6d909ba62cdc4a9d3dc304d2a1dd96e32b88e0b5504607f66bbe2ac492c427af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -77431827.0,
+     "value_gbp_decimal": "-77431827.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Corporate purchasers, housing transactions response, and OBR CGT/IHT interactions are outside this household SDLT rate leg.; The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11663:7a186012776764b9",
+     "source_row_number": 11663,
+     "source_row_sha256": "7a186012776764b9d4cbb7ffe67c93874a5b2adf73be861a02712c3d016d2d0a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": -84678949.0,
+     "value_gbp_decimal": "-84678949.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22805:100fbff6a9179adc",
+     "source_row_number": 22805,
+     "source_row_sha256": "100fbff6a9179adcd6f0b0999951f18a6d340cb7280821a9eeb863b50039e3f3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 6210695.292849095,
+     "value_gbp_decimal": "6210695.292849095"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22806:de888a245348bcc1",
+     "source_row_number": 22806,
+     "source_row_sha256": "de888a245348bcc1c1eec374a598e70fd26b149885eee9d222d81f592965395b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9654539.56415215,
+     "value_gbp_decimal": "9654539.56415215"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22807:422d5d733ecadc39",
+     "source_row_number": 22807,
+     "source_row_sha256": "422d5d733ecadc39e47d3d975b72770c8f7a5311c98e7affcc006ad294b6b855",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 15535346.1708672,
+     "value_gbp_decimal": "15535346.1708672"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22808:c8fe3aecef088bf1",
+     "source_row_number": 22808,
+     "source_row_sha256": "c8fe3aecef088bf1684a4d49b89d751e3b57cb31cc2b640cd54570b1d15f6fb2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 19268810.522786085,
+     "value_gbp_decimal": "19268810.522786085"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22809:83691f2969d81ad0",
+     "source_row_number": 22809,
+     "source_row_sha256": "83691f2969d81ad00410ac9acbd3dc20eadaf388abcb4b7c705ebcabe8d1cf5d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 21006518.810046963,
+     "value_gbp_decimal": "21006518.810046963"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22810:b94a793fb1d3c286",
+     "source_row_number": 22810,
+     "source_row_sha256": "b94a793fb1d3c286df1daf288383eefb99c11da920f1967b13b950f7cfe7ff3c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 22847463.47299579,
+     "value_gbp_decimal": "22847463.47299579"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22811:21d31fd21a96d516",
+     "source_row_number": 22811,
+     "source_row_sha256": "21d31fd21a96d516641e2f3f417d166e4daeef26dd2d4776080513cff1c1ea02",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 2722449.707150902,
+     "value_gbp_decimal": "2722449.707150902"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22812:2180748e886ef44d",
+     "source_row_number": 22812,
+     "source_row_sha256": "2180748e886ef44dc72c37307f4ec3f886b275b5e3cce7a847d73ad80c5f94e9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 4216644.4358478505,
+     "value_gbp_decimal": "4216644.4358478505"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22813:efbafd1fd9337894",
+     "source_row_number": 22813,
+     "source_row_sha256": "efbafd1fd9337894c44070ac7d9f3173e4a4ad823fb07cba2b8bb3d460cff605",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 6761880.829132819,
+     "value_gbp_decimal": "6761880.829132819"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22814:3608d4c47b99f4c7",
+     "source_row_number": 22814,
+     "source_row_sha256": "3608d4c47b99f4c7f95a898269475b09fae4911d44896192d4c7b41b2c2a6a44",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 8358564.477213893,
+     "value_gbp_decimal": "8358564.477213893"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22815:1312cc7ca835f35b",
+     "source_row_number": 22815,
+     "source_row_sha256": "1312cc7ca835f35b3ac85c50a88c45516de930c302a0f47b9305cff9f6e6b379",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9112360.189953031,
+     "value_gbp_decimal": "9112360.189953031"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22816:4ee584ef8c6c1052",
+     "source_row_number": 22816,
+     "source_row_sha256": "4ee584ef8c6c10520fa6fd2c34ff8b608b513d73d0d746d27b9c362397fee92b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+     "value_gbp": 9910938.527004203,
+     "value_gbp_decimal": "9910938.527004203"
+    }
+   ],
+   "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Inheritance tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+      "baseline_world": 0.03,
+      "current_law": 0.03,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.03,
+      "reform_world": 0.05
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+      "baseline_world": 0.05,
+      "current_law": 0.05,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.05,
+      "reform_world": 0.07
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+      "baseline_world": 0.08,
+      "current_law": 0.08,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.08,
+      "reform_world": 0.1
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+      "baseline_world": 0.13,
+      "current_law": 0.13,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.13,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+      "baseline_world": 0.15,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.17
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+      "baseline_world": 0.03,
+      "current_law": 0.03,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.03,
+      "reform_world": 0.05
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+      "baseline_world": 0.05,
+      "current_law": 0.05,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.05,
+      "reform_world": 0.07
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+      "baseline_world": 0.08,
+      "current_law": 0.08,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.08,
+      "reform_world": 0.1
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+      "baseline_world": 0.13,
+      "current_law": 0.13,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.13,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+      "baseline_world": 0.15,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.17
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 2335967764.6855392,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 413466265.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "inert_construction"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "inert_on_head_only",
+     "flag": "inertness"
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "inertness"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11649:910077d14a180f90",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -117897950.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11655:2e1dc1d269227e2f",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -70646577.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Inheritance tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11661:a5ce1ea1b223ab58",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 19268810.522786085,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22808:c8fe3aecef088bf1",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 8358564.477213893,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22814:3608d4c47b99f4c7",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": 2335967764.6855392,
+   "context": {},
+   "delta_gbp": -2335967764.6855392,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 23359677.64685539
+    },
+    {
+     "code": "zero_crossing",
+     "flag": "structural"
+    },
+    {
+     "code": "inert_on_head_only",
+     "flag": "inertness"
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical",
+    "structural",
+    "inertness"
+   ],
+   "head_gbp": 0.0,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": 23359677.64685539,
+   "year": 2027
+  },
+  {
+   "base_gbp": 2335967764.6855392,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -2335967764.6855392,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 23359677.64685539
+    },
+    {
+     "code": "zero_crossing",
+     "flag": "structural"
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical",
+    "structural"
+   ],
+   "head_gbp": 0.0,
+   "key": "stamp_duty_land_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": 23359677.64685539,
+   "year": 2027
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2027",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2027"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 2335967764.6855392,
+   "flags": [
+    "inertness"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 413466265.0,
+   "side": "base",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11649:910077d14a180f90",
+   "source_row_number": 11649,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -117897950.0,
+   "side": "base",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11655:2e1dc1d269227e2f",
+   "source_row_number": 11655,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -70646577.0,
+   "side": "base",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11661:a5ce1ea1b223ab58",
+   "source_row_number": 11661,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 19268810.522786085,
+   "side": "base",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:22808:c8fe3aecef088bf1",
+   "source_row_number": 22808,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 8358564.477213893,
+   "side": "base",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:22814:3608d4c47b99f4c7",
+   "source_row_number": 22814,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": 2335967764.6855392,
+   "flags": [
+    "inertness"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 413466265.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11649:910077d14a180f90",
+   "source_row_number": 11649,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -117897950.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11655:2e1dc1d269227e2f",
+   "source_row_number": 11655,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -70646577.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:11661:a5ce1ea1b223ab58",
+   "source_row_number": 11661,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 19268810.522786085,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:22808:c8fe3aecef088bf1",
+   "source_row_number": 22808,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 8358564.477213893,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:22814:3608d4c47b99f4c7",
+   "source_row_number": 22814,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+ "year": 2027
+}

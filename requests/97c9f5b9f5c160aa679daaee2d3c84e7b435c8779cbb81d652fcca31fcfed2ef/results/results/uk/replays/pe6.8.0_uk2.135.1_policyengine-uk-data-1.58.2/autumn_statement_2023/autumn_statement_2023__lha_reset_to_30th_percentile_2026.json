@@ -1,0 +1,133 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.LHA.freeze": {
+    "2024-01-01.2035-12-31": true
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "housing_benefit": 8784755867.740675,
+  "universal_credit": 83718678827.36949
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "autumn_statement_2023__lha_reset_to_30th_percentile"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.135.1",
+ "event": "autumn_statement_2023",
+ "fiscal_event": "Autumn Statement 2023",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "housing_benefit": "spending",
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "housing_benefit",
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "housing_benefit": -151306003.82013702,
+  "universal_credit": -1810373547.6206055
+ },
+ "head_variables": [
+  "housing_benefit",
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "housing_benefit": 151306003.82013702,
+  "universal_credit": 1810373547.6206055
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "housing_benefit": 151306003.82013702,
+  "universal_credit": 1810373547.6206055
+ },
+ "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+ "measure_total_gbp": -1961679551.4407425,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.dwp.LHA.freeze": {
+     "2024-01-01.2035-12-31": true
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.dwp.LHA.freeze": {
+    "intended": true,
+    "processed": true
+   }
+  },
+  "reform_world": {
+   "gov.dwp.LHA.freeze": {
+    "intended": true,
+    "processed": true
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "housing_benefit": 8633449863.920538,
+    "universal_credit": 81908305279.74889
+   }
+  },
+  "reform": {
+   "heads": {
+    "housing_benefit": 8784755867.740675,
+    "universal_credit": 83718678827.36949
+   }
+  }
+ },
+ "variable_metadata": {
+  "housing_benefit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/housing_benefit/housing_benefit.py",
+   "entity": "benunit",
+   "label": "Housing Benefit",
+   "unit": "currency-GBP"
+  },
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.8.0_uk2.135.1_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "89d69f545ba6ffee7009030b731249a660c8c298ee5f3364a67a47250c8035c4",
+ "year": 2026
+}
