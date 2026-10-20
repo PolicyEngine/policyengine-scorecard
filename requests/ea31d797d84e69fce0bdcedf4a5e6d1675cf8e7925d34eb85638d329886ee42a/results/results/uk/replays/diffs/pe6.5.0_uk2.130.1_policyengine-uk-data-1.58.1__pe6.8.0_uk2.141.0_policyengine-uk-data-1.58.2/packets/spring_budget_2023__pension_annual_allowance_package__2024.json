@@ -1,0 +1,1824 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01.2035-12-31": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01.2035-12-31": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01.2035-12-31": 240000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024.json",
+   "reform_reform_dict": null,
+   "sha256": "2d6e67616f8d7df78bccdd1dd0649af42c9f59d69bcd7a0c0527b557a2a37d76"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01.2035-12-31": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01.2035-12-31": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01.2035-12-31": 240000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024.json",
+   "reform_reform_dict": null,
+   "sha256": "2721928c397a1582f0af5d2ecba5ec858a15782ea451a19f5002907fa93df19a"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2024-25",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.0",
+   "policyengine_version": "6.8.0",
+   "variant_id": "pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2023-24",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2024": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2025": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2026": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2027": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    }
+   },
+   "fiscal_event": "Spring Budget 2023",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.",
+    "Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.allowances.annual_allowance.default",
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum",
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.default|gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.minimum|gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.taper",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore \u00a340,000 default, \u00a34,000 tapered minimum and \u00a3240,000 adjusted-income taper from January2023 so annual FY2023-24 is computed. Dictionary reforms do not repeat fiscal-year conversion. These three old/new values are encoded at the pin; the separate MPAA measure is not treated as the minimum tapered annual allowance. The pinned relief cap plus excess-contribution charge is diagnosed in policyengine-uk#2237.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01": 240000
+    }
+   },
+   "pe_gap": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2022-23",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:10230:b1c3f4726af79c6e",
+     "source_row_number": 10230,
+     "source_row_sha256": "b1c3f4726af79c6e764db77bbfff0e087d8100b48c3084d4c5a15f18819198af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10231:ce0a1472426c8430",
+     "source_row_number": 10231,
+     "source_row_sha256": "ce0a1472426c84308ca2028fc7d4cf9d5726d402af2f480eabc34ae954844181",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -80947714.92372231,
+     "value_gbp_decimal": "-80947714.92372231"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10232:aa24b205227c35bd",
+     "source_row_number": 10232,
+     "source_row_sha256": "aa24b205227c35bd5f5767eaf73a8d3d8a398d98a2aea99fc9d0874e1abbcf1b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -233876728.02074286,
+     "value_gbp_decimal": "-233876728.02074286"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10233:f9cad5be5ec138c8",
+     "source_row_number": 10233,
+     "source_row_sha256": "f9cad5be5ec138c8747babaf4084f5d924f3f89925105e842e20bd4cafbf5c05",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -405021326.1734674,
+     "value_gbp_decimal": "-405021326.1734674"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10234:7fb22cdd33e49932",
+     "source_row_number": 10234,
+     "source_row_sha256": "7fb22cdd33e4993277686222d191111c0fe7d8fe8bcf25dd112e51aa4638c697",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -414629625.82069576,
+     "value_gbp_decimal": "-414629625.82069576"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10235:fbb8ccda250b78e9",
+     "source_row_number": 10235,
+     "source_row_sha256": "fbb8ccda250b78e94850841930d376b5aed0462d551e00a610af6a3262df31fb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -420436303.88386756,
+     "value_gbp_decimal": "-420436303.88386756"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2022-23",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:10236:b3261d652b98e813",
+     "source_row_number": 10236,
+     "source_row_sha256": "b3261d652b98e81338f358491b29e78752315be02459900a512002886b2c2913",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10237:2f261725299509e1",
+     "source_row_number": 10237,
+     "source_row_sha256": "2f261725299509e16ca437af146c420d850610245016a4a4cc413750383a19ed",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -8990625.53614,
+     "value_gbp_decimal": "-8990625.53614"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10238:f00ba92ca8350bec",
+     "source_row_number": 10238,
+     "source_row_sha256": "f00ba92ca8350bec94c22cb967498d9bd14d879111785c50b4292dd88808b62e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -14416286.811474001,
+     "value_gbp_decimal": "-14416286.811474001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10239:eae2e7a942d667da",
+     "source_row_number": 10239,
+     "source_row_sha256": "eae2e7a942d667dad8cd0327bfd0208eff5065d47aea720282b19e4e2055e16c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -20568943.281972002,
+     "value_gbp_decimal": "-20568943.281972002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10240:c53005dc3f74f60f",
+     "source_row_number": 10240,
+     "source_row_sha256": "c53005dc3f74f60f6492451cce7646dc169c51c31ac670269d9522b241c381e7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -21110365.420436002,
+     "value_gbp_decimal": "-21110365.420436002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10241:b45d113eb69a2a68",
+     "source_row_number": 10241,
+     "source_row_sha256": "b45d113eb69a2a6891592c04a952fedc3d8fa03956772fc62be9b2d8bfbaf094",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -21735019.545727,
+     "value_gbp_decimal": "-21735019.545727"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:20993:9a42006baf8c0159",
+     "source_row_number": 20993,
+     "source_row_sha256": "9a42006baf8c01590d4bf055491973c90f28eb368290625de49aedad66202e63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:20994:3447da176e4bc085",
+     "source_row_number": 20994,
+     "source_row_sha256": "3447da176e4bc085bd425ac5999f20b39660f0a6650a454776d2ea18c08d420c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -5806335.636293161,
+     "value_gbp_decimal": "-5806335.636293161"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:20995:8087b1a02a4eee19",
+     "source_row_number": 20995,
+     "source_row_sha256": "8087b1a02a4eee1945f23214513764f90661c1853bb23db0057722b2b29d2a31",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -16651198.945857612,
+     "value_gbp_decimal": "-16651198.945857612"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:20996:18794ff6dbde2924",
+     "source_row_number": 20996,
+     "source_row_sha256": "18794ff6dbde292479eb012c0fe8ac5008d30185a36f7ac318230cb329d34989",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -28717123.48316291,
+     "value_gbp_decimal": "-28717123.48316291"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:20997:a2d202e6d4474250",
+     "source_row_number": 20997,
+     "source_row_sha256": "a2d202e6d447425009fbbb5416fb72c716666bc403cb2b470c4560bfaf6915fe",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -29495474.572977465,
+     "value_gbp_decimal": "-29495474.572977465"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:20998:5405e18b093611d0",
+     "source_row_number": 20998,
+     "source_row_sha256": "5405e18b093611d07a9e60249b23be68699ca6850bec7de577b928fcaa39963f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -30158228.581404883,
+     "value_gbp_decimal": "-30158228.581404883"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:20999:2a07dc8539d1ce9c",
+     "source_row_number": 20999,
+     "source_row_sha256": "2a07dc8539d1ce9c0af7852823888150aacf7b3ea0c68d69568971b3d8e32440",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21000:c0139e6de0095ba4",
+     "source_row_number": 21000,
+     "source_row_sha256": "c0139e6de0095ba4edaa6a704bca495373f88c36aaa50c1d18c2f428c41cbcf1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 42289209.888019,
+     "value_gbp_decimal": "42289209.888019"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21001:ccc579e7814559b3",
+     "source_row_number": 21001,
+     "source_row_sha256": "ccc579e7814559b3a2a6a7cd94e531e4147898a28dadf759e3b9c9cfd77a3790",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 67809895.57685901,
+     "value_gbp_decimal": "67809895.57685901"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21002:97562450c81ff19c",
+     "source_row_number": 21002,
+     "source_row_sha256": "97562450c81ff19c618f556704bfbf1e8ea0a94bf15426367b44fa9ea5e19a07",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 186175369.60035098,
+     "value_gbp_decimal": "186175369.60035098"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21003:24d20cb8f6deed27",
+     "source_row_number": 21003,
+     "source_row_sha256": "24d20cb8f6deed278afb4debb2d27779e1cdcb4bd6cd0a6a699769898098b538",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 196266291.217428,
+     "value_gbp_decimal": "196266291.217428"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21004:4de031e5ab4ad901",
+     "source_row_number": 21004,
+     "source_row_sha256": "4de031e5ab4ad901dc077853390dc1b5a198c4d14054344ff96052992f6740b2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 183277298.33039,
+     "value_gbp_decimal": "183277298.33039"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:21005:cdf95df0fc97da6c",
+     "source_row_number": 21005,
+     "source_row_sha256": "cdf95df0fc97da6c56cef02704bcf61aa09edc5ddb53034dd71a5d7264fece1d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21006:5ca828fbfe74cf61",
+     "source_row_number": 21006,
+     "source_row_sha256": "5ca828fbfe74cf61c1e708733ff27aacd2bce84b77d1c527ef76590668ffebc5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -120611.9075122566,
+     "value_gbp_decimal": "-120611.9075122566"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21007:877d001aa00f2eaf",
+     "source_row_number": 21007,
+     "source_row_sha256": "877d001aa00f2eafdc680393c391ce01e53c1e80369371e4232c73e6af0d630f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -477750.711539592,
+     "value_gbp_decimal": "-477750.711539592"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21008:3fcd0f4987e122f2",
+     "source_row_number": 21008,
+     "source_row_sha256": "3fcd0f4987e122f24b28d488f6e4b05a50aa9b90efa2ba3a15ac73eedf5300c3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -913981.4878025111,
+     "value_gbp_decimal": "-913981.4878025111"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21009:ca378bb43ec6d967",
+     "source_row_number": 21009,
+     "source_row_sha256": "ca378bb43ec6d967f614d92e980f6bd37fbf1c9bd6ab28324c72508605d37c08",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -781447.8474404374,
+     "value_gbp_decimal": "-781447.8474404374"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21010:b33224f6af5b4ee6",
+     "source_row_number": 21010,
+     "source_row_sha256": "b33224f6af5b4ee62219235d68cbad0f59bf04749f30dc131d8de6e21ba03889",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -586832.7502434849,
+     "value_gbp_decimal": "-586832.7502434849"
+    }
+   ],
+   "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+   "unmapped_obr_heads": [
+    "Net public service pension payments",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2023-24",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2024": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2025": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2026": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    },
+    "2027": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": 60000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": 10000,
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": 260000
+    }
+   },
+   "fiscal_event": "Spring Budget 2023",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.",
+    "Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.allowances.annual_allowance.default",
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum",
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.default|gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.minimum|gov\\.hmrc\\.income_tax\\.allowances\\.annual_allowance\\.taper",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore \u00a340,000 default, \u00a34,000 tapered minimum and \u00a3240,000 adjusted-income taper from January2023 so annual FY2023-24 is computed. Dictionary reforms do not repeat fiscal-year conversion. These three old/new values are encoded at the pin; the separate MPAA measure is not treated as the minimum tapered annual allowance. The pinned relief cap plus excess-contribution charge is diagnosed in policyengine-uk#2237.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01": 240000
+    }
+   },
+   "pe_gap": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2022-23",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:10230:b1c3f4726af79c6e",
+     "source_row_number": 10230,
+     "source_row_sha256": "b1c3f4726af79c6e764db77bbfff0e087d8100b48c3084d4c5a15f18819198af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10231:ce0a1472426c8430",
+     "source_row_number": 10231,
+     "source_row_sha256": "ce0a1472426c84308ca2028fc7d4cf9d5726d402af2f480eabc34ae954844181",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -80947714.92372231,
+     "value_gbp_decimal": "-80947714.92372231"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10232:aa24b205227c35bd",
+     "source_row_number": 10232,
+     "source_row_sha256": "aa24b205227c35bd5f5767eaf73a8d3d8a398d98a2aea99fc9d0874e1abbcf1b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -233876728.02074286,
+     "value_gbp_decimal": "-233876728.02074286"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10233:f9cad5be5ec138c8",
+     "source_row_number": 10233,
+     "source_row_sha256": "f9cad5be5ec138c8747babaf4084f5d924f3f89925105e842e20bd4cafbf5c05",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -405021326.1734674,
+     "value_gbp_decimal": "-405021326.1734674"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10234:7fb22cdd33e49932",
+     "source_row_number": 10234,
+     "source_row_sha256": "7fb22cdd33e4993277686222d191111c0fe7d8fe8bcf25dd112e51aa4638c697",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -414629625.82069576,
+     "value_gbp_decimal": "-414629625.82069576"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10235:fbb8ccda250b78e9",
+     "source_row_number": 10235,
+     "source_row_sha256": "fbb8ccda250b78e94850841930d376b5aed0462d551e00a610af6a3262df31fb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -420436303.88386756,
+     "value_gbp_decimal": "-420436303.88386756"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2022-23",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:10236:b3261d652b98e813",
+     "source_row_number": 10236,
+     "source_row_sha256": "b3261d652b98e81338f358491b29e78752315be02459900a512002886b2c2913",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10237:2f261725299509e1",
+     "source_row_number": 10237,
+     "source_row_sha256": "2f261725299509e16ca437af146c420d850610245016a4a4cc413750383a19ed",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -8990625.53614,
+     "value_gbp_decimal": "-8990625.53614"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10238:f00ba92ca8350bec",
+     "source_row_number": 10238,
+     "source_row_sha256": "f00ba92ca8350bec94c22cb967498d9bd14d879111785c50b4292dd88808b62e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -14416286.811474001,
+     "value_gbp_decimal": "-14416286.811474001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10239:eae2e7a942d667da",
+     "source_row_number": 10239,
+     "source_row_sha256": "eae2e7a942d667dad8cd0327bfd0208eff5065d47aea720282b19e4e2055e16c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -20568943.281972002,
+     "value_gbp_decimal": "-20568943.281972002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10240:c53005dc3f74f60f",
+     "source_row_number": 10240,
+     "source_row_sha256": "c53005dc3f74f60f6492451cce7646dc169c51c31ac670269d9522b241c381e7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -21110365.420436002,
+     "value_gbp_decimal": "-21110365.420436002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10241:b45d113eb69a2a68",
+     "source_row_number": 10241,
+     "source_row_sha256": "b45d113eb69a2a6891592c04a952fedc3d8fa03956772fc62be9b2d8bfbaf094",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -21735019.545727,
+     "value_gbp_decimal": "-21735019.545727"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:20993:9a42006baf8c0159",
+     "source_row_number": 20993,
+     "source_row_sha256": "9a42006baf8c01590d4bf055491973c90f28eb368290625de49aedad66202e63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:20994:3447da176e4bc085",
+     "source_row_number": 20994,
+     "source_row_sha256": "3447da176e4bc085bd425ac5999f20b39660f0a6650a454776d2ea18c08d420c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -5806335.636293161,
+     "value_gbp_decimal": "-5806335.636293161"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:20995:8087b1a02a4eee19",
+     "source_row_number": 20995,
+     "source_row_sha256": "8087b1a02a4eee1945f23214513764f90661c1853bb23db0057722b2b29d2a31",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -16651198.945857612,
+     "value_gbp_decimal": "-16651198.945857612"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:20996:18794ff6dbde2924",
+     "source_row_number": 20996,
+     "source_row_sha256": "18794ff6dbde292479eb012c0fe8ac5008d30185a36f7ac318230cb329d34989",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -28717123.48316291,
+     "value_gbp_decimal": "-28717123.48316291"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:20997:a2d202e6d4474250",
+     "source_row_number": 20997,
+     "source_row_sha256": "a2d202e6d447425009fbbb5416fb72c716666bc403cb2b470c4560bfaf6915fe",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -29495474.572977465,
+     "value_gbp_decimal": "-29495474.572977465"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:20998:5405e18b093611d0",
+     "source_row_number": 20998,
+     "source_row_sha256": "5405e18b093611d07a9e60249b23be68699ca6850bec7de577b928fcaa39963f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -30158228.581404883,
+     "value_gbp_decimal": "-30158228.581404883"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:20999:2a07dc8539d1ce9c",
+     "source_row_number": 20999,
+     "source_row_sha256": "2a07dc8539d1ce9c0af7852823888150aacf7b3ea0c68d69568971b3d8e32440",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21000:c0139e6de0095ba4",
+     "source_row_number": 21000,
+     "source_row_sha256": "c0139e6de0095ba4edaa6a704bca495373f88c36aaa50c1d18c2f428c41cbcf1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 42289209.888019,
+     "value_gbp_decimal": "42289209.888019"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21001:ccc579e7814559b3",
+     "source_row_number": 21001,
+     "source_row_sha256": "ccc579e7814559b3a2a6a7cd94e531e4147898a28dadf759e3b9c9cfd77a3790",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 67809895.57685901,
+     "value_gbp_decimal": "67809895.57685901"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21002:97562450c81ff19c",
+     "source_row_number": 21002,
+     "source_row_sha256": "97562450c81ff19c618f556704bfbf1e8ea0a94bf15426367b44fa9ea5e19a07",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 186175369.60035098,
+     "value_gbp_decimal": "186175369.60035098"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21003:24d20cb8f6deed27",
+     "source_row_number": 21003,
+     "source_row_sha256": "24d20cb8f6deed278afb4debb2d27779e1cdcb4bd6cd0a6a699769898098b538",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 196266291.217428,
+     "value_gbp_decimal": "196266291.217428"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21004:4de031e5ab4ad901",
+     "source_row_number": 21004,
+     "source_row_sha256": "4de031e5ab4ad901dc077853390dc1b5a198c4d14054344ff96052992f6740b2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Net public service pension payments",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 183277298.33039,
+     "value_gbp_decimal": "183277298.33039"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2022-23",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2022-23",
+     "source_row_id": "obr_pmd_nov2025:21005:cdf95df0fc97da6c",
+     "source_row_number": 21005,
+     "source_row_sha256": "cdf95df0fc97da6c56cef02704bcf61aa09edc5ddb53034dd71a5d7264fece1d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21006:5ca828fbfe74cf61",
+     "source_row_number": 21006,
+     "source_row_sha256": "5ca828fbfe74cf61c1e708733ff27aacd2bce84b77d1c527ef76590668ffebc5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -120611.9075122566,
+     "value_gbp_decimal": "-120611.9075122566"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21007:877d001aa00f2eaf",
+     "source_row_number": 21007,
+     "source_row_sha256": "877d001aa00f2eafdc680393c391ce01e53c1e80369371e4232c73e6af0d630f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -477750.711539592,
+     "value_gbp_decimal": "-477750.711539592"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21008:3fcd0f4987e122f2",
+     "source_row_number": 21008,
+     "source_row_sha256": "3fcd0f4987e122f24b28d488f6e4b05a50aa9b90efa2ba3a15ac73eedf5300c3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -913981.4878025111,
+     "value_gbp_decimal": "-913981.4878025111"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21009:ca378bb43ec6d967",
+     "source_row_number": 21009,
+     "source_row_sha256": "ca378bb43ec6d967f614d92e980f6bd37fbf1c9bd6ab28324c72508605d37c08",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -781447.8474404374,
+     "value_gbp_decimal": "-781447.8474404374"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21010:b33224f6af5b4ee6",
+     "source_row_number": 21010,
+     "source_row_sha256": "b33224f6af5b4ee62219235d68cbad0f59bf04749f30dc131d8de6e21ba03889",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+     "value_gbp": -586832.7502434849,
+     "value_gbp_decimal": "-586832.7502434849"
+    }
+   ],
+   "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+   "unmapped_obr_heads": [
+    "Net public service pension payments",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+      "baseline_world": 40000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+      "baseline_world": 4000,
+      "current_law": 10000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 10000,
+      "reform_world": 10000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+      "baseline_world": 240000,
+      "current_law": 260000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 260000,
+      "reform_world": 260000
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+      "baseline_world": 40000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+      "baseline_world": 4000,
+      "current_law": 10000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 10000,
+      "reform_world": 10000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+      "baseline_world": 240000,
+      "current_law": 260000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 260000,
+      "reform_world": 260000
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -3004426501.3733215,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": -233876728.02074286,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 141100269.87417603,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 30044265.013733216
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2863326231.4991455,
+   "key": "obr_pmd_nov2025:10232:aa24b205227c35bd",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 30044265.013733216,
+   "year": 2024
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": -14416286.811474001,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:10238:f00ba92ca8350bec",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2024
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": -16651198.945857612,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:20995:8087b1a02a4eee19",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2024
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": 67809895.57685901,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Net public service pension payments"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21001:ccc579e7814559b3",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2024
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": -477750.711539592,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21007:877d001aa00f2eaf",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2024
+  },
+  {
+   "base_gbp": -3004426501.3733215,
+   "context": {},
+   "delta_gbp": 141100269.87417603,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 30044265.013733216
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2863326231.4991455,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 30044265.013733216,
+   "year": 2024
+  },
+  {
+   "base_gbp": -3004426501.3733215,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 141100269.87417603,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 30044265.013733216
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2863326231.4991455,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 30044265.013733216,
+   "year": 2024
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2024
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2024
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2024
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2024
+  }
+ ],
+ "registry_sha256": {
+  "base": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+  "head": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/spring_budget_2023_measures.json --measures spring_budget_2023__pension_annual_allowance_package --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2 --registry data/uk/events/spring_budget_2023_measures.json --measures spring_budget_2023__pension_annual_allowance_package --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -3004426501.3733215,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2024-25",
+   "head_gbp": -2863326231.4991455,
+   "obr_value_gbp": -233876728.02074286,
+   "side": "base",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:10232:aa24b205227c35bd",
+   "source_row_number": 10232,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": 0.0,
+   "obr_value_gbp": -14416286.811474001,
+   "side": "base",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:10238:f00ba92ca8350bec",
+   "source_row_number": 10238,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": -16651198.945857612,
+   "side": "base",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:20995:8087b1a02a4eee19",
+   "source_row_number": 20995,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": 67809895.57685901,
+   "side": "base",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:21001:ccc579e7814559b3",
+   "source_row_number": 21001,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Net public service pension payments"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": -477750.711539592,
+   "side": "base",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:21007:877d001aa00f2eaf",
+   "source_row_number": 21007,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": -3004426501.3733215,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2024-25",
+   "head_gbp": -2863326231.4991455,
+   "obr_value_gbp": -233876728.02074286,
+   "side": "head",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:10232:aa24b205227c35bd",
+   "source_row_number": 10232,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": 0.0,
+   "obr_value_gbp": -14416286.811474001,
+   "side": "head",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:10238:f00ba92ca8350bec",
+   "source_row_number": 10238,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": -16651198.945857612,
+   "side": "head",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:20995:8087b1a02a4eee19",
+   "source_row_number": 20995,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": 67809895.57685901,
+   "side": "head",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:21001:ccc579e7814559b3",
+   "source_row_number": 21001,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Net public service pension payments"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": -477750.711539592,
+   "side": "head",
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:21007:877d001aa00f2eaf",
+   "source_row_number": 21007,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+ "year": 2024
+}

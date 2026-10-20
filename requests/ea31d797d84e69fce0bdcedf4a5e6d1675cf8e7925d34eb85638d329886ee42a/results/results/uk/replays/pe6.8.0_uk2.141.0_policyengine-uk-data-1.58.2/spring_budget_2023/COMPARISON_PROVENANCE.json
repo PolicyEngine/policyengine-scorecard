@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "2b06ab77df3028af3628a68765e9b2f35db0f9039a7a007e8f12aff619551119",
+  "COMPARISON.json": "86d562322bda06def2c349ccb967e4d761e027500136a4884ec839d834464bc4",
+  "COMPARISON.md": "b48a2ff929826eb718132cf4c4cd501d098c2cdcfd749e51985a620468f4ad0d"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "b87735416eaf2c95a76fe15bb668302f4d2063a820ec36eda689c944df24cce8",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "91415a600bebcada4b8ae3b518ba03a9ab45caa77933eb4ea0f474d71522e239",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.141.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "b4a9581b41049b97bdd4ec7fc462dbc68ccd6b825bc22d96384616fb1d2298c6"
+}
