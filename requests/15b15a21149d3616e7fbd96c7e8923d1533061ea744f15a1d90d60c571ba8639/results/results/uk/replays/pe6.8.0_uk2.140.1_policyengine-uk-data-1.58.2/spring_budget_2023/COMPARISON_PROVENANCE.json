@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "53a379c870e73209fa578334b1d758e83230179fca6875987c08b2af877b775e",
+  "COMPARISON.json": "09e1824e6723ccbbc848ca66de0d6b2f67effa4931dfb416f7a24ed8d67dff3a",
+  "COMPARISON.md": "fab757e22a26f73a46e44136403ef0e24b3672d37d9e8378d68f05f3c1c97f28"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.140.1_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.140.1_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "def81ad42b4092b78a56b914a6d96d2ae579b04218f5e04a30ee8bcd4917fd2e",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.140.1_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "abd58abf5a427da40d2e4423c88155392d05c32b189cbf88fcd0ee5f942d29b9",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.140.1_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "72f7e65c6ef6a08f9a911f01a6884e37578c9792b5923a27ab0fcf5b6a3ea6c7"
+}
