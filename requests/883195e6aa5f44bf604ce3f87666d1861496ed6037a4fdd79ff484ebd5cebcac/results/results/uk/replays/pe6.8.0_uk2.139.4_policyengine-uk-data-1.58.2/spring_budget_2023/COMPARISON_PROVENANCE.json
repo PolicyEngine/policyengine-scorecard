@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "7ca7768ad9e7697555aecc9e397d17a083713e84ed8d326cc8d40410ec4c9721",
+  "COMPARISON.json": "10ac7813e7cf46078fa94bcee5ba4dcb053a46a6d2f1b5b65cadeacc012f2ce3",
+  "COMPARISON.md": "4e311f2e3e9d333d96c7319613149aca5d360c458a6a637624e6ae1c6f35601e"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.139.4_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.4_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "004339e504390335629a1af827a1daee39da2cfb5f8265e56e378b47572b471f",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.139.4_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "d0a6ced94472e6f4fdd2f5e80b72edbf76369f9393eb4aeb33aa99e0642b1d89",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.4_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "fb9b2dd1e888f81d01241b68324953fa228f5abb90e8055b760ad5b18f69dcba"
+}

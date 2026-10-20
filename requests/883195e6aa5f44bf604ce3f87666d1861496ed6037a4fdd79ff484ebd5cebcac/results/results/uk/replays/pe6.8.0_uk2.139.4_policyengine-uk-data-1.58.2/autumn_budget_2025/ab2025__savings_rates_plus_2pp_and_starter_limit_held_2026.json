@@ -1,0 +1,144 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.rates.savings.additional": {
+    "2027-01-01.2030-12-31": 0.45
+   },
+   "gov.hmrc.income_tax.rates.savings.basic": {
+    "2027-01-01.2030-12-31": 0.2
+   },
+   "gov.hmrc.income_tax.rates.savings.higher": {
+    "2027-01-01.2030-12-31": 0.4
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "income_tax": 320804670397.82806
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "ab2025__savings_rates_plus_2pp_and_starter_limit_held"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.139.4",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "income_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 0.0
+ },
+ "head_variables": [
+  "income_tax"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -0.0
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -0.0
+ },
+ "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+ "measure_total_gbp": 0.0,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.income_tax.rates.savings.additional": {
+    "intended": 0.45,
+    "processed": 0.45
+   },
+   "gov.hmrc.income_tax.rates.savings.basic": {
+    "intended": 0.2,
+    "processed": 0.2
+   },
+   "gov.hmrc.income_tax.rates.savings.higher": {
+    "intended": 0.4,
+    "processed": 0.4
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.income_tax.rates.savings.additional": {
+    "intended": 0.45,
+    "processed": 0.45
+   },
+   "gov.hmrc.income_tax.rates.savings.basic": {
+    "intended": 0.2,
+    "processed": 0.2
+   },
+   "gov.hmrc.income_tax.rates.savings.higher": {
+    "intended": 0.4,
+    "processed": 0.4
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 320804670397.82806
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 320804670397.82806
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.8.0_uk2.139.4_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "89b9480b13b5b9279596efa2eaa0920cce4ad32979e77561e8abb518e6125930",
+ "year": 2026
+}
