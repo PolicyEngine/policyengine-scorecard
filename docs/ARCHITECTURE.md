@@ -184,6 +184,15 @@ Operating rules for the agent stage:
   that State. FY2023 is a us-6.2.1 calibration target (`consumed_as_target`).
   Collections are administrative outturns, staged as claims by decision on
   #176, a departure from the boundary rule below.
+- **California fiscal notes** (`sources/ca-fiscal-notes/`, lane
+  `ca-fiscal-notes`, issue #4): FTB's revenue estimates for the young child
+  tax credit bills AB 397 and AB 1690, as restated in the Assembly Revenue
+  and Taxation analyses (ftb.ca.gov refuses scripted fetches). The adapter
+  parses each bill's age schedule, and a test checks the PE reform
+  (`ineligible_age` year by year, `pipeline/campaign_us/ca_fiscal_notes.py`)
+  encodes it. A fiscal year compares with the tax year filed in it. Claims
+  use the registry's `ca_fiscal_note` source; the lane owns only its own
+  rows (source model `ftb_revenue_estimate`).
 - **ASPE Welfare Indicators, Indicator 4** (`sources/aspe-welfare-indicators/`,
   lane `aspe-welfare-indicators`): TANF families and SSI adult units
   (TRIM3) and SNAP households (FNS series), participation among the

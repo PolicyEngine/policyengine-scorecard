@@ -34,6 +34,7 @@ STEPS = (
     "irs_eitc_participation",
     "aspe_welfare_indicators",
     "census_stc",
+    "ca_fiscal_notes",
     "diagnoses_batch3",
     "us_admin_outturns",
     "uk_externals",

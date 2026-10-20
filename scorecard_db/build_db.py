@@ -23,6 +23,7 @@ Chain order is dependency order and is part of the contract:
     irs_eitc_participation  IRS/Census EITC participation + PE counterparts
     aspe_welfare_indicators  ASPE Indicator 4 (TRIM3/FNS) + PE counterparts
     census_stc  Census STC State income tax collections + PE counterparts
+    ca_fiscal_notes  CA FTB fiscal notes (YCTC bills) + PE counterparts
     diagnoses_batch3  diagnosis batch 3 on the FNS, EITC and ASPE lanes
     us_admin_outturns  US admin outturns -> data/ledger (Chronicle; no claims)
     uk_externals five UK primary-source families + Chronicle staging
@@ -61,6 +62,7 @@ from nz import ingest_official_budget_scores
 
 from . import (
     ingest_aspe_welfare_indicators,
+    ingest_ca_fiscal_notes,
     ingest_campaign,
     ingest_census_stc,
     ingest_diagnoses,
@@ -192,6 +194,7 @@ def build(db_path: Path) -> dict:
             lambda: ingest_aspe_welfare_indicators.ingest(db_path),
         ),
         ("census_stc", lambda: ingest_census_stc.ingest(db_path)),
+        ("ca_fiscal_notes", lambda: ingest_ca_fiscal_notes.ingest(db_path)),
         # Diagnosis batch 3 (FNS, EITC, ASPE lanes): after their claims exist.
         ("diagnoses_batch3", lambda: ingest_diagnoses.ingest_batch3(db_path)),
         # US administrative outturns staged for Chronicle (boundary rule
