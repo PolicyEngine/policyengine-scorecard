@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "3a75fd6b80b1aa97efd88bdbfa06e5d5faaa4d41e6d7496d7b004e8108f73a81",
+  "COMPARISON.json": "7f4ac86b38094526a5c4e614ea1db6adc291ec66de484977bd3133adb86c6154",
+  "COMPARISON.md": "36451ba92bab0af493b9820458cdbe8002987f6ccdababffbd44defc8c81328e"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "c60c578c89fff453990f07ab7315f7e1c8b51400b024f18c4c34e1bda86ed1c4",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "760691b110dabdffd55d0cdb5062dd3668fe5b4ca73460f896540e0049cf151c",
+ "staging_manifest_path": "results/uk/replays/pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "ace7c3ade169cf1753653c9dc6a7d3d1f12d741c070e3cfc9b91efc79e2408e8"
+}

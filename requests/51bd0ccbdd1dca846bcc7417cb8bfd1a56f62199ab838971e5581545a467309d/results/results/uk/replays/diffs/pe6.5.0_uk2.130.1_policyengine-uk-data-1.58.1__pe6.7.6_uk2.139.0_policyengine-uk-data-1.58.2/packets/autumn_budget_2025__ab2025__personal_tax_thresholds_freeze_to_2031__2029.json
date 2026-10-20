@@ -1,0 +1,2382 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028-01-01.2028-12-31": 12821.388032703,
+     "2029-01-01.2029-12-31": 13077.7873710267,
+     "2030-01-01.2030-12-31": 13339.3476061836
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "543023fa8c109445d152cb1bdca991ef58997cd4701b07662dbbb2d2fcd0df0e"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028-01-01.2028-12-31": 12821.388032703,
+     "2029-01-01.2029-12-31": 13077.7873710267,
+     "2030-01-01.2030-12-31": 13339.3476061836
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "193028d6db55c4de60e5ec21bbe7285f9b0a35298205166916a41749d634cc09"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.139.0",
+   "policyengine_version": "6.7.6",
+   "variant_id": "pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2028-29",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37500,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2026": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2027": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2028": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2029": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2030": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+     "gov.hmrc.income_tax.rates.dividends[1].threshold",
+     "gov.hmrc.income_tax.rates.uk[1].threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.allowances\\.personal_allowance\\.amount|gov\\.hmrc\\.income_tax\\.rates\\.uk\\[1\\]\\.threshold|gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[1\\]\\.threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028-01-01.2028-12-31": 12821.388032703,
+     "2029-01-01.2029-12-31": 13077.7873710267,
+     "2030-01-01.2030-12-31": 13339.3476061836
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    }
+   },
+   "pe_gap": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12228:d38b159485d898ff",
+     "source_row_number": 12228,
+     "source_row_sha256": "d38b159485d898ff8cbf56d8896d2893b6bab6ae00ef949c4bbea08d281d6f5e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12229:cfb89b1b6d937169",
+     "source_row_number": 12229,
+     "source_row_sha256": "cfb89b1b6d937169cde1cc6929a14d8fd885b0eea071e3a1589bb8e6e43a775b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12230:70e3551d03ce85cf",
+     "source_row_number": 12230,
+     "source_row_sha256": "70e3551d03ce85cfd6799216c9a2ddcff7bb07c9d192138c377fac9e5bbac43d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12231:4ba2e06431d2eb73",
+     "source_row_number": 12231,
+     "source_row_sha256": "4ba2e06431d2eb738fe54eb4a39631739c593d38d6ad44a3f13e186603a1dee3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 6296551.743684713,
+     "value_gbp_decimal": "6296551.743684713"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12232:6192e83494d8ae4f",
+     "source_row_number": 12232,
+     "source_row_sha256": "6192e83494d8ae4f612e5bd179f1225b209bc1bfb6bf640fb54b2316d13c8dd3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 14575105.609506441,
+     "value_gbp_decimal": "14575105.609506441"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12233:46d608242afb15f6",
+     "source_row_number": 12233,
+     "source_row_sha256": "46d608242afb15f63c9d57287d4795124af32eb9c27bdb43da87e7dbaac3e253",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 23731802.367095023,
+     "value_gbp_decimal": "23731802.367095023"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12234:c1382507c39ee980",
+     "source_row_number": 12234,
+     "source_row_sha256": "c1382507c39ee980432e2c3d304bc176782c79f4e18bf3e8db610bb5498b8d53",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12235:62f097bf7d9d61c0",
+     "source_row_number": 12235,
+     "source_row_sha256": "62f097bf7d9d61c072c04ce32b6526fab90286d6e3ea50e95079d2ec1b4682ba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12236:a4aebc6995d1f171",
+     "source_row_number": 12236,
+     "source_row_sha256": "a4aebc6995d1f171a3f80dc7cd981f1995547a00a9b8fb72a09c4d2189239ca0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12237:0c8c820d59cc8062",
+     "source_row_number": 12237,
+     "source_row_sha256": "0c8c820d59cc8062dbb1310071681aa70908348af8442fe0efdaa108ada95dbb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 3220073386.3742213,
+     "value_gbp_decimal": "3220073386.3742213"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+     "source_row_number": 12238,
+     "source_row_sha256": "ed7d488b306dcf83b016af04604d6b139b472a7aef847dc603aea667dfe093db",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 7427273778.518814,
+     "value_gbp_decimal": "7427273778.518814"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12239:11eea01fb370a818",
+     "source_row_number": 12239,
+     "source_row_sha256": "11eea01fb370a818b7d5b3fa7eb0e1d5ed89e008bd5d1544bfe3ce4f450fe32b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 11531971226.805769,
+     "value_gbp_decimal": "11531971226.805769"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12240:c7bffab29c5d6353",
+     "source_row_number": 12240,
+     "source_row_sha256": "c7bffab29c5d63533e08b5c46f0aa8e501d588d9cce68dd1b2c5fbc85c342223",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12241:47c127e5bae3a97c",
+     "source_row_number": 12241,
+     "source_row_sha256": "47c127e5bae3a97c659117a3137260a5e7a5727580a2d620f9b55f73c776e862",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12242:8821990307cd4ca7",
+     "source_row_number": 12242,
+     "source_row_sha256": "8821990307cd4ca7f527d214d906e16af3babacb4c353ace9adbd62adbd1b6c5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12243:489d985f59a57f6e",
+     "source_row_number": 12243,
+     "source_row_sha256": "489d985f59a57f6ef74f68ba5bc0600632825ab22eeb7d0627d457e466742f71",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 156439383.83396828,
+     "value_gbp_decimal": "156439383.83396828"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12244:5ebeab8e54fb9380",
+     "source_row_number": 12244,
+     "source_row_sha256": "5ebeab8e54fb938057f522ef87de52984f1e476affb08f3d0d520c90ebce4693",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 329060572.787541,
+     "value_gbp_decimal": "329060572.787541"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12245:bcc4c8e8749434d7",
+     "source_row_number": 12245,
+     "source_row_sha256": "bcc4c8e8749434d78bcb4227a0e7fb314d5bcad958841a9be32062bd888412b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 533142762.31519884,
+     "value_gbp_decimal": "533142762.31519884"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12246:887dab1e9725d45f",
+     "source_row_number": 12246,
+     "source_row_sha256": "887dab1e9725d45f6face557edce0c3023cf5099e97a904b55748837c1def1e5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12247:ddda0e2b90652150",
+     "source_row_number": 12247,
+     "source_row_sha256": "ddda0e2b90652150ce05b31a59b059b5d1ad866b8b5d912c70ce692edb6f0dba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12248:4e867af4cf8e98ea",
+     "source_row_number": 12248,
+     "source_row_sha256": "4e867af4cf8e98eafdc0a5b5cbb150500013573cb1a63972635768661010f1d5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -24357352.09599435,
+     "value_gbp_decimal": "-24357352.09599435"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12249:06e004e47cbe1979",
+     "source_row_number": 12249,
+     "source_row_sha256": "06e004e47cbe1979153e177ebbfef50fca0183f82237d976982640fc32d1edfa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -203193731.93731976,
+     "value_gbp_decimal": "-203193731.93731976"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12250:a20cefba9a79d467",
+     "source_row_number": 12250,
+     "source_row_sha256": "a20cefba9a79d467946a6340e42b077b8cd350b00d6382af00eaebd521e84ae1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -405958754.63473374,
+     "value_gbp_decimal": "-405958754.63473374"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12251:1a002f19d93f58bc",
+     "source_row_number": 12251,
+     "source_row_sha256": "1a002f19d93f58bcd512a33e911c63ab1eed07feb6392abdcbb90ea5ca14b82f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -297763685.91142386,
+     "value_gbp_decimal": "-297763685.91142386"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23909:f351a5ac1519fcec",
+     "source_row_number": 23909,
+     "source_row_sha256": "f351a5ac1519fcec8726ac6dc9527247f60ca926d5b24f286d075df5500e361a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23910:6b8f308cdb2c0f75",
+     "source_row_number": 23910,
+     "source_row_sha256": "6b8f308cdb2c0f75d80c916343f367c82edd2f4df263671f51cd37c4bae9d401",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23911:38c95e0dae337e30",
+     "source_row_number": 23911,
+     "source_row_sha256": "38c95e0dae337e30a3092dea7d079c463aec6abbcee4bdba50322880e4658e6f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23912:f3f16f2fd20c9cbf",
+     "source_row_number": 23912,
+     "source_row_sha256": "f3f16f2fd20c9cbfe53a9272b1d4060bff157a68ab35b94643b5c53d02873879",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 20954521.63544088,
+     "value_gbp_decimal": "20954521.63544088"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23913:3660478e58dc0c33",
+     "source_row_number": 23913,
+     "source_row_sha256": "3660478e58dc0c33bfbaf156a0782b58fc69f4811b03cd81eed8f1a78ad0318a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 44048074.22647604,
+     "value_gbp_decimal": "44048074.22647604"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23914:82af6138df257d06",
+     "source_row_number": 23914,
+     "source_row_sha256": "82af6138df257d06bac7e596e613e9fccd465fdc79936022c51bd8cc4a5a2fd9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 68248899.37326068,
+     "value_gbp_decimal": "68248899.37326068"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23915:48461770cb90e722",
+     "source_row_number": 23915,
+     "source_row_sha256": "48461770cb90e722be757c73fd9e9a026a139d9c205e932b25ba4b8cfb47c207",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23916:faf5040a2cef1bc6",
+     "source_row_number": 23916,
+     "source_row_sha256": "faf5040a2cef1bc6c3ea745b44b00c3aa8c39b59fa98dc579b9ff303c566a174",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23917:f813a593e6390ba1",
+     "source_row_number": 23917,
+     "source_row_sha256": "f813a593e6390ba112898814613c1cbb4d08b2c42ac482cadca66825a2ebd093",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23918:cb97d1297e767678",
+     "source_row_number": 23918,
+     "source_row_sha256": "cb97d1297e7676783c717ccb623ad336d0cafad6b6b8ee562c5621ebd2b4e8a0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -77541696.64243785,
+     "value_gbp_decimal": "-77541696.64243785"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23919:d57980273e85240e",
+     "source_row_number": 23919,
+     "source_row_sha256": "d57980273e85240ea0e48ca4ec00b79f5472e0029a5127eb8e6da15c2974522b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -157107573.63540453,
+     "value_gbp_decimal": "-157107573.63540453"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23920:07fdfe7c4df486ae",
+     "source_row_number": 23920,
+     "source_row_sha256": "07fdfe7c4df486ae6b06ca4c9f96cd4b06a76a2d9f0c09cd784dfee226453ccf",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -235717202.5606915,
+     "value_gbp_decimal": "-235717202.5606915"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23921:a7d689d3b547d3a5",
+     "source_row_number": 23921,
+     "source_row_sha256": "a7d689d3b547d3a5f079ebb784c644ca649a84b636fef37f259041c15d510409",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23922:03cbc4e6dd1a937a",
+     "source_row_number": 23922,
+     "source_row_sha256": "03cbc4e6dd1a937a34f19d3fecfd4657150cf1a07a90bf937f5d2ae47753edd2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23923:32225f68f6d6e9b1",
+     "source_row_number": 23923,
+     "source_row_sha256": "32225f68f6d6e9b17f36c955e4d7937d3bd28c58e283fd4576a83d87ae8d2ee2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23924:e306b642355353f8",
+     "source_row_number": 23924,
+     "source_row_sha256": "e306b642355353f8e8d3e2a777c1172543bf4934de50b41ec25290dc42e7470e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 241210491.39541942,
+     "value_gbp_decimal": "241210491.39541942"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23925:d67929eb924e3879",
+     "source_row_number": 23925,
+     "source_row_sha256": "d67929eb924e3879392a5baf810f7d95da45f0ce09f1ad4d34cc0e67b3784340",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 529875840.2127845,
+     "value_gbp_decimal": "529875840.2127845"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23926:7658be5fd7ff4733",
+     "source_row_number": 23926,
+     "source_row_sha256": "7658be5fd7ff47330eab74898c95970af3c29d2a0e115fcf65429daa81ad9569",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 811818094.2782551,
+     "value_gbp_decimal": "811818094.2782551"
+    }
+   ],
+   "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2028-29",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37500,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2026": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2027": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2028": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2029": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    },
+    "2030": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": 37700,
+     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+     "gov.hmrc.income_tax.rates.dividends[1].threshold",
+     "gov.hmrc.income_tax.rates.uk[1].threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.allowances\\.personal_allowance\\.amount|gov\\.hmrc\\.income_tax\\.rates\\.uk\\[1\\]\\.threshold|gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[1\\]\\.threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028-01-01.2028-12-31": 12821.388032703,
+     "2029-01-01.2029-12-31": 13077.7873710267,
+     "2030-01-01.2030-12-31": 13339.3476061836
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028-01-01.2028-12-31": 38453.940508488,
+     "2029-01-01.2029-12-31": 39222.9827084964,
+     "2030-01-01.2030-12-31": 40007.3554135334
+    }
+   },
+   "pe_gap": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12228:d38b159485d898ff",
+     "source_row_number": 12228,
+     "source_row_sha256": "d38b159485d898ff8cbf56d8896d2893b6bab6ae00ef949c4bbea08d281d6f5e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12229:cfb89b1b6d937169",
+     "source_row_number": 12229,
+     "source_row_sha256": "cfb89b1b6d937169cde1cc6929a14d8fd885b0eea071e3a1589bb8e6e43a775b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12230:70e3551d03ce85cf",
+     "source_row_number": 12230,
+     "source_row_sha256": "70e3551d03ce85cfd6799216c9a2ddcff7bb07c9d192138c377fac9e5bbac43d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12231:4ba2e06431d2eb73",
+     "source_row_number": 12231,
+     "source_row_sha256": "4ba2e06431d2eb738fe54eb4a39631739c593d38d6ad44a3f13e186603a1dee3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 6296551.743684713,
+     "value_gbp_decimal": "6296551.743684713"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12232:6192e83494d8ae4f",
+     "source_row_number": 12232,
+     "source_row_sha256": "6192e83494d8ae4f612e5bd179f1225b209bc1bfb6bf640fb54b2316d13c8dd3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 14575105.609506441,
+     "value_gbp_decimal": "14575105.609506441"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12233:46d608242afb15f6",
+     "source_row_number": 12233,
+     "source_row_sha256": "46d608242afb15f63c9d57287d4795124af32eb9c27bdb43da87e7dbaac3e253",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 23731802.367095023,
+     "value_gbp_decimal": "23731802.367095023"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12234:c1382507c39ee980",
+     "source_row_number": 12234,
+     "source_row_sha256": "c1382507c39ee980432e2c3d304bc176782c79f4e18bf3e8db610bb5498b8d53",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12235:62f097bf7d9d61c0",
+     "source_row_number": 12235,
+     "source_row_sha256": "62f097bf7d9d61c072c04ce32b6526fab90286d6e3ea50e95079d2ec1b4682ba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12236:a4aebc6995d1f171",
+     "source_row_number": 12236,
+     "source_row_sha256": "a4aebc6995d1f171a3f80dc7cd981f1995547a00a9b8fb72a09c4d2189239ca0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12237:0c8c820d59cc8062",
+     "source_row_number": 12237,
+     "source_row_sha256": "0c8c820d59cc8062dbb1310071681aa70908348af8442fe0efdaa108ada95dbb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 3220073386.3742213,
+     "value_gbp_decimal": "3220073386.3742213"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+     "source_row_number": 12238,
+     "source_row_sha256": "ed7d488b306dcf83b016af04604d6b139b472a7aef847dc603aea667dfe093db",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 7427273778.518814,
+     "value_gbp_decimal": "7427273778.518814"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12239:11eea01fb370a818",
+     "source_row_number": 12239,
+     "source_row_sha256": "11eea01fb370a818b7d5b3fa7eb0e1d5ed89e008bd5d1544bfe3ce4f450fe32b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 11531971226.805769,
+     "value_gbp_decimal": "11531971226.805769"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12240:c7bffab29c5d6353",
+     "source_row_number": 12240,
+     "source_row_sha256": "c7bffab29c5d63533e08b5c46f0aa8e501d588d9cce68dd1b2c5fbc85c342223",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12241:47c127e5bae3a97c",
+     "source_row_number": 12241,
+     "source_row_sha256": "47c127e5bae3a97c659117a3137260a5e7a5727580a2d620f9b55f73c776e862",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12242:8821990307cd4ca7",
+     "source_row_number": 12242,
+     "source_row_sha256": "8821990307cd4ca7f527d214d906e16af3babacb4c353ace9adbd62adbd1b6c5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12243:489d985f59a57f6e",
+     "source_row_number": 12243,
+     "source_row_sha256": "489d985f59a57f6ef74f68ba5bc0600632825ab22eeb7d0627d457e466742f71",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 156439383.83396828,
+     "value_gbp_decimal": "156439383.83396828"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12244:5ebeab8e54fb9380",
+     "source_row_number": 12244,
+     "source_row_sha256": "5ebeab8e54fb938057f522ef87de52984f1e476affb08f3d0d520c90ebce4693",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 329060572.787541,
+     "value_gbp_decimal": "329060572.787541"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12245:bcc4c8e8749434d7",
+     "source_row_number": 12245,
+     "source_row_sha256": "bcc4c8e8749434d78bcb4227a0e7fb314d5bcad958841a9be32062bd888412b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 533142762.31519884,
+     "value_gbp_decimal": "533142762.31519884"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12246:887dab1e9725d45f",
+     "source_row_number": 12246,
+     "source_row_sha256": "887dab1e9725d45f6face557edce0c3023cf5099e97a904b55748837c1def1e5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12247:ddda0e2b90652150",
+     "source_row_number": 12247,
+     "source_row_sha256": "ddda0e2b90652150ce05b31a59b059b5d1ad866b8b5d912c70ce692edb6f0dba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12248:4e867af4cf8e98ea",
+     "source_row_number": 12248,
+     "source_row_sha256": "4e867af4cf8e98eafdc0a5b5cbb150500013573cb1a63972635768661010f1d5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -24357352.09599435,
+     "value_gbp_decimal": "-24357352.09599435"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12249:06e004e47cbe1979",
+     "source_row_number": 12249,
+     "source_row_sha256": "06e004e47cbe1979153e177ebbfef50fca0183f82237d976982640fc32d1edfa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -203193731.93731976,
+     "value_gbp_decimal": "-203193731.93731976"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12250:a20cefba9a79d467",
+     "source_row_number": 12250,
+     "source_row_sha256": "a20cefba9a79d467946a6340e42b077b8cd350b00d6382af00eaebd521e84ae1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -405958754.63473374,
+     "value_gbp_decimal": "-405958754.63473374"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12251:1a002f19d93f58bc",
+     "source_row_number": 12251,
+     "source_row_sha256": "1a002f19d93f58bcd512a33e911c63ab1eed07feb6392abdcbb90ea5ca14b82f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -297763685.91142386,
+     "value_gbp_decimal": "-297763685.91142386"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23909:f351a5ac1519fcec",
+     "source_row_number": 23909,
+     "source_row_sha256": "f351a5ac1519fcec8726ac6dc9527247f60ca926d5b24f286d075df5500e361a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23910:6b8f308cdb2c0f75",
+     "source_row_number": 23910,
+     "source_row_sha256": "6b8f308cdb2c0f75d80c916343f367c82edd2f4df263671f51cd37c4bae9d401",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23911:38c95e0dae337e30",
+     "source_row_number": 23911,
+     "source_row_sha256": "38c95e0dae337e30a3092dea7d079c463aec6abbcee4bdba50322880e4658e6f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23912:f3f16f2fd20c9cbf",
+     "source_row_number": 23912,
+     "source_row_sha256": "f3f16f2fd20c9cbfe53a9272b1d4060bff157a68ab35b94643b5c53d02873879",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 20954521.63544088,
+     "value_gbp_decimal": "20954521.63544088"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23913:3660478e58dc0c33",
+     "source_row_number": 23913,
+     "source_row_sha256": "3660478e58dc0c33bfbaf156a0782b58fc69f4811b03cd81eed8f1a78ad0318a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 44048074.22647604,
+     "value_gbp_decimal": "44048074.22647604"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23914:82af6138df257d06",
+     "source_row_number": 23914,
+     "source_row_sha256": "82af6138df257d06bac7e596e613e9fccd465fdc79936022c51bd8cc4a5a2fd9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 68248899.37326068,
+     "value_gbp_decimal": "68248899.37326068"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23915:48461770cb90e722",
+     "source_row_number": 23915,
+     "source_row_sha256": "48461770cb90e722be757c73fd9e9a026a139d9c205e932b25ba4b8cfb47c207",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23916:faf5040a2cef1bc6",
+     "source_row_number": 23916,
+     "source_row_sha256": "faf5040a2cef1bc6c3ea745b44b00c3aa8c39b59fa98dc579b9ff303c566a174",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23917:f813a593e6390ba1",
+     "source_row_number": 23917,
+     "source_row_sha256": "f813a593e6390ba112898814613c1cbb4d08b2c42ac482cadca66825a2ebd093",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23918:cb97d1297e767678",
+     "source_row_number": 23918,
+     "source_row_sha256": "cb97d1297e7676783c717ccb623ad336d0cafad6b6b8ee562c5621ebd2b4e8a0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -77541696.64243785,
+     "value_gbp_decimal": "-77541696.64243785"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23919:d57980273e85240e",
+     "source_row_number": 23919,
+     "source_row_sha256": "d57980273e85240ea0e48ca4ec00b79f5472e0029a5127eb8e6da15c2974522b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -157107573.63540453,
+     "value_gbp_decimal": "-157107573.63540453"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the PA/main/dividend HRT extension using the installed parameters' documented CPI uprating indices. The certified bundle already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027, so it does not consistently encode the equivalent-NI freeze; this construction is partial and makes no NI threshold override.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23920:07fdfe7c4df486ae",
+     "source_row_number": 23920,
+     "source_row_sha256": "07fdfe7c4df486ae6b06ca4c9f96cd4b06a76a2d9f0c09cd784dfee226453ccf",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": -235717202.5606915,
+     "value_gbp_decimal": "-235717202.5606915"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23921:a7d689d3b547d3a5",
+     "source_row_number": 23921,
+     "source_row_sha256": "a7d689d3b547d3a5f079ebb784c644ca649a84b636fef37f259041c15d510409",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23922:03cbc4e6dd1a937a",
+     "source_row_number": 23922,
+     "source_row_sha256": "03cbc4e6dd1a937a34f19d3fecfd4657150cf1a07a90bf937f5d2ae47753edd2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23923:32225f68f6d6e9b1",
+     "source_row_number": 23923,
+     "source_row_sha256": "32225f68f6d6e9b17f36c955e4d7937d3bd28c58e283fd4576a83d87ae8d2ee2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23924:e306b642355353f8",
+     "source_row_number": 23924,
+     "source_row_sha256": "e306b642355353f8e8d3e2a777c1172543bf4934de50b41ec25290dc42e7470e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 241210491.39541942,
+     "value_gbp_decimal": "241210491.39541942"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23925:d67929eb924e3879",
+     "source_row_number": 23925,
+     "source_row_sha256": "d67929eb924e3879392a5baf810f7d95da45f0ce09f1ad4d34cc0e67b3784340",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 529875840.2127845,
+     "value_gbp_decimal": "529875840.2127845"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23926:7658be5fd7ff4733",
+     "source_row_number": 23926,
+     "source_row_sha256": "7658be5fd7ff47330eab74898c95970af3c29d2a0e115fcf65429daa81ad9569",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+     "value_gbp": 811818094.2782551,
+     "value_gbp_decimal": "811818094.2782551"
+    }
+   ],
+   "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+      "baseline_world": 13077.7873710267,
+      "current_law": 12570,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 12570,
+      "reform_world": 12570
+     },
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+      "baseline_world": 39222.9827084964,
+      "current_law": 37700,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 37700,
+      "reform_world": 37700
+     },
+     "gov.hmrc.income_tax.rates.uk[1].threshold": {
+      "baseline_world": 39222.9827084964,
+      "current_law": 37700,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 37700,
+      "reform_world": 37700
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+      "baseline_world": 13077.7873710267,
+      "current_law": 12570,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 12570,
+      "reform_world": 12570
+     },
+     "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+      "baseline_world": 39222.9827084964,
+      "current_law": 37700,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 37700,
+      "reform_world": 37700
+     },
+     "gov.hmrc.income_tax.rates.uk[1].threshold": {
+      "baseline_world": 39222.9827084964,
+      "current_law": 37700,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 37700,
+      "reform_world": 37700
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 14575105.609506441,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12232:6192e83494d8ae4f",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 8078999312.888916,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 7427273778.518814,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": -80478428.46356201,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 7998520884.425354,
+   "key": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 80789993.12888916,
+   "year": 2029
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 329060572.787541,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:12244:5ebeab8e54fb9380",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -405958754.63473374,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12250:a20cefba9a79d467",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 44048074.22647604,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23913:3660478e58dc0c33",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": -150448797.6953888,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -157107573.63540453,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -2070868.9316558838,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1525196.6662704467
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -152519666.62704468,
+   "key": "obr_pmd_nov2025:23919:d57980273e85240e",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1525196.6662704467,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 529875840.2127845,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23925:d67929eb924e3879",
+   "level": "source_row",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 7928550515.193527,
+   "context": {},
+   "delta_gbp": -82549297.3952179,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 79285505.15193528
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 7846001217.798309,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 79285505.15193528,
+   "year": 2029
+  },
+  {
+   "base_gbp": 8078999312.888916,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -80478428.46356201,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 7998520884.425354,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 80789993.12888916,
+   "year": 2029
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": -150448797.6953888,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -2070868.9316558838,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1525196.6662704467
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -152519666.62704468,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "threshold_gbp": 1525196.6662704467,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__personal_tax_thresholds_freeze_to_2031 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__personal_tax_thresholds_freeze_to_2031 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.7.6_uk2.139.0_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 14575105.609506441,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12232:6192e83494d8ae4f",
+   "source_row_number": 12232,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 8078999312.888916,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 7998520884.425354,
+   "obr_value_gbp": 7427273778.518814,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+   "source_row_number": 12238,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 329060572.787541,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12244:5ebeab8e54fb9380",
+   "source_row_number": 12244,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -405958754.63473374,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12250:a20cefba9a79d467",
+   "source_row_number": 12250,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 44048074.22647604,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23913:3660478e58dc0c33",
+   "source_row_number": 23913,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": -150448797.6953888,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -152519666.62704468,
+   "obr_value_gbp": -157107573.63540453,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23919:d57980273e85240e",
+   "source_row_number": 23919,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 529875840.2127845,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23925:d67929eb924e3879",
+   "source_row_number": 23925,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 14575105.609506441,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12232:6192e83494d8ae4f",
+   "source_row_number": 12232,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 8078999312.888916,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 7998520884.425354,
+   "obr_value_gbp": 7427273778.518814,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+   "source_row_number": 12238,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 329060572.787541,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12244:5ebeab8e54fb9380",
+   "source_row_number": 12244,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -405958754.63473374,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12250:a20cefba9a79d467",
+   "source_row_number": 12250,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 44048074.22647604,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23913:3660478e58dc0c33",
+   "source_row_number": 23913,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": -150448797.6953888,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -152519666.62704468,
+   "obr_value_gbp": -157107573.63540453,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23919:d57980273e85240e",
+   "source_row_number": 23919,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 529875840.2127845,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23925:d67929eb924e3879",
+   "source_row_number": 23925,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031",
+ "year": 2029
+}
