@@ -1,0 +1,65 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_statement_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "78d90820d5a03158aeee369e369260f9ad7912494d56d46bf693dbca96b0f4be",
+  "COMPARISON.json": "221aeb835f75bb0bdd87edf792ff9d8a1b266f6992d1c9ba3e8225d2c7baa74c",
+  "COMPARISON.md": "1a8293bf96ad92598c9b5e55cebeab94da769cea3011f91a8b349c1153b44935"
+ },
+ "registry_path": "data/uk/events/autumn_statement_2023_measures.json",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "replay_grid": {
+  "computed_measure_years": 20,
+  "full_event_complete": false,
+  "full_event_grid_size": 24,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 20,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.139.2_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.2_policyengine-uk-data-1.58.2/autumn_statement_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "7ca16e627ffd30542b3f840c8f41cc9bcca118f673a4588e83fd8d5f7338129f",
+ "source_rows": 1116,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.139.2_policyengine-uk-data-1.58.2/autumn_statement_2023/STAGED.jsonl",
+ "staged_sha256": "63327b43b0cbc8a364757136929f236c0bb20d80c2cb7def864958cc850ec82a",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.2_policyengine-uk-data-1.58.2/autumn_statement_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "bea70ab02e32f2829bf0d806973a64a9a86713cc3b2b910d074b13c060d507f6"
+}
