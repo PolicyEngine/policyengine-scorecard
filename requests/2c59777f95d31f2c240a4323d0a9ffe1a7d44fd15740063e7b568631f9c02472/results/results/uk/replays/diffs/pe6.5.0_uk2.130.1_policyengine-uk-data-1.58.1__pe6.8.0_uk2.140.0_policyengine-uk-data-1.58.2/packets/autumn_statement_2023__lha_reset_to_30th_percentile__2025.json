@@ -1,0 +1,905 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.LHA.freeze": {
+     "2024-01-01.2035-12-31": true
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "b1775483183a2130cda55a67718c282141d62afff85c1f22031b0dc5d150363d"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.LHA.freeze": {
+     "2024-01-01.2035-12-31": true
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "eec7de6eea8a3b1dbd3041598feefc69b2541ed729b8fd3b1a05d0460e1f24f8"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_statement_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.140.0",
+   "policyengine_version": "6.8.0",
+   "variant_id": "pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2024": {
+     "gov.dwp.LHA.freeze": false
+    },
+    "2025": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2026": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2027": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2028": {
+     "gov.dwp.LHA.freeze": true
+    }
+   },
+   "fiscal_event": "Autumn Statement 2023",
+   "head_variables": [
+    "housing_benefit",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "housing_benefit",
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "measure_type": "housing_benefit",
+   "missing_legs": [
+    "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.",
+    "Rent and tenure responses are absent; the certified later rent distribution and population are retained."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.LHA.freeze"
+    ],
+    "pattern": "gov\\.dwp\\.LHA\\.freeze",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore LHA.freeze=True from annual2024, removing the pinned April2024 reset to the default 30th BRMA rent percentile. The engine's find_freeze_start then preserves the continuous 2020 freeze rather than the certified new freeze from2025. Uses the installed rent list, with no dataset download.",
+   "pe_baseline_modifier": {
+    "gov.dwp.LHA.freeze": {
+     "2024-01-01": true
+    }
+   },
+   "pe_gap": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+   "program": "housing_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21629:a71ef831d6e1cb87",
+     "source_row_number": 21629,
+     "source_row_sha256": "a71ef831d6e1cb870d064331c8f8f6365b992203cd03ae7e764d8822cc8c96e5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21630:bf9643f47e057983",
+     "source_row_number": 21630,
+     "source_row_sha256": "bf9643f47e057983f6f4b176d5c03b5941cbd6004492507f1e955825631836ae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -952573500.0,
+     "value_gbp_decimal": "-952573500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+     "source_row_number": 21631,
+     "source_row_sha256": "75b9415771e2e20c6c3685c16918c467ca66481f7012555c7a8b2bfe49c45d77",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1092072500.0,
+     "value_gbp_decimal": "-1092072500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21632:353c5d3f922bfc89",
+     "source_row_number": 21632,
+     "source_row_sha256": "353c5d3f922bfc894095958129cc0c93e1403ec65f4665994ee0bd05dabbd466",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1188456000.0,
+     "value_gbp_decimal": "-1188456000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21633:5ce95c1559b8bc39",
+     "source_row_number": 21633,
+     "source_row_sha256": "5ce95c1559b8bc391a32dcaed652ec2638112b0aafa815372b6491d43819bcbc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1259868000.0,
+     "value_gbp_decimal": "-1259868000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21634:ff94f5b54b89d1ee",
+     "source_row_number": 21634,
+     "source_row_sha256": "ff94f5b54b89d1ee1bc1cbe738f19f4c6ac0229ef83b0d1171a4dc7482397256",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1273040500.0,
+     "value_gbp_decimal": "-1273040500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21635:7e6b2c17ec9be5e4",
+     "source_row_number": 21635,
+     "source_row_sha256": "7e6b2c17ec9be5e4cbda4ae1743c170e9df8083fd385face7e3e2c47ad2482ad",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21636:60e317e2af427357",
+     "source_row_number": 21636,
+     "source_row_sha256": "60e317e2af42735771db0834a2681ad3b3e47bd4863cf25271d2abe052d6c50e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -330000000.0,
+     "value_gbp_decimal": "-330000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21637:973f5a064b8352ab",
+     "source_row_number": 21637,
+     "source_row_sha256": "973f5a064b8352ab070e0655f3ca975255bb666353ea3999714da3ac8b2dd9dd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -391000000.0,
+     "value_gbp_decimal": "-391000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21638:ceefaca226c58d41",
+     "source_row_number": 21638,
+     "source_row_sha256": "ceefaca226c58d41cd49d5e6b33d3f1081efde253401ff3d8f67165e8854ee2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -399000000.0,
+     "value_gbp_decimal": "-399000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21639:7b87de87a4048332",
+     "source_row_number": 21639,
+     "source_row_sha256": "7b87de87a40483326478346843460f2718a10b981c947a7ed1b2b10bdbf0532b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -402000000.0,
+     "value_gbp_decimal": "-402000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21640:c223f09f1998ebbe",
+     "source_row_number": 21640,
+     "source_row_sha256": "c223f09f1998ebbe54d93829e4f9c9afcb53494be149dff99f9b0640b387b907",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -425000000.0,
+     "value_gbp_decimal": "-425000000.0"
+    }
+   ],
+   "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+   "unmapped_obr_heads": [
+    "Welfare outside cap"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2024": {
+     "gov.dwp.LHA.freeze": false
+    },
+    "2025": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2026": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2027": {
+     "gov.dwp.LHA.freeze": true
+    },
+    "2028": {
+     "gov.dwp.LHA.freeze": true
+    }
+   },
+   "fiscal_event": "Autumn Statement 2023",
+   "head_variables": [
+    "housing_benefit",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "housing_benefit",
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "measure_type": "housing_benefit",
+   "missing_legs": [
+    "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.",
+    "Rent and tenure responses are absent; the certified later rent distribution and population are retained."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.LHA.freeze"
+    ],
+    "pattern": "gov\\.dwp\\.LHA\\.freeze",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore LHA.freeze=True from annual2024, removing the pinned April2024 reset to the default 30th BRMA rent percentile. The engine's find_freeze_start then preserves the continuous 2020 freeze rather than the certified new freeze from2025. Uses the installed rent list, with no dataset download.",
+   "pe_baseline_modifier": {
+    "gov.dwp.LHA.freeze": {
+     "2024-01-01": true
+    }
+   },
+   "pe_gap": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+   "program": "housing_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21629:a71ef831d6e1cb87",
+     "source_row_number": 21629,
+     "source_row_sha256": "a71ef831d6e1cb870d064331c8f8f6365b992203cd03ae7e764d8822cc8c96e5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21630:bf9643f47e057983",
+     "source_row_number": 21630,
+     "source_row_sha256": "bf9643f47e057983f6f4b176d5c03b5941cbd6004492507f1e955825631836ae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -952573500.0,
+     "value_gbp_decimal": "-952573500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+     "source_row_number": 21631,
+     "source_row_sha256": "75b9415771e2e20c6c3685c16918c467ca66481f7012555c7a8b2bfe49c45d77",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1092072500.0,
+     "value_gbp_decimal": "-1092072500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21632:353c5d3f922bfc89",
+     "source_row_number": 21632,
+     "source_row_sha256": "353c5d3f922bfc894095958129cc0c93e1403ec65f4665994ee0bd05dabbd466",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1188456000.0,
+     "value_gbp_decimal": "-1188456000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21633:5ce95c1559b8bc39",
+     "source_row_number": 21633,
+     "source_row_sha256": "5ce95c1559b8bc391a32dcaed652ec2638112b0aafa815372b6491d43819bcbc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1259868000.0,
+     "value_gbp_decimal": "-1259868000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21634:ff94f5b54b89d1ee",
+     "source_row_number": 21634,
+     "source_row_sha256": "ff94f5b54b89d1ee1bc1cbe738f19f4c6ac0229ef83b0d1171a4dc7482397256",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -1273040500.0,
+     "value_gbp_decimal": "-1273040500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21635:7e6b2c17ec9be5e4",
+     "source_row_number": 21635,
+     "source_row_sha256": "7e6b2c17ec9be5e4cbda4ae1743c170e9df8083fd385face7e3e2c47ad2482ad",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21636:60e317e2af427357",
+     "source_row_number": 21636,
+     "source_row_sha256": "60e317e2af42735771db0834a2681ad3b3e47bd4863cf25271d2abe052d6c50e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -330000000.0,
+     "value_gbp_decimal": "-330000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21637:973f5a064b8352ab",
+     "source_row_number": 21637,
+     "source_row_sha256": "973f5a064b8352ab070e0655f3ca975255bb666353ea3999714da3ac8b2dd9dd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -391000000.0,
+     "value_gbp_decimal": "-391000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21638:ceefaca226c58d41",
+     "source_row_number": 21638,
+     "source_row_sha256": "ceefaca226c58d41cd49d5e6b33d3f1081efde253401ff3d8f67165e8854ee2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -399000000.0,
+     "value_gbp_decimal": "-399000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21639:7b87de87a4048332",
+     "source_row_number": 21639,
+     "source_row_sha256": "7b87de87a40483326478346843460f2718a10b981c947a7ed1b2b10bdbf0532b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -402000000.0,
+     "value_gbp_decimal": "-402000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.; Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21640:c223f09f1998ebbe",
+     "source_row_number": 21640,
+     "source_row_sha256": "c223f09f1998ebbe54d93829e4f9c9afcb53494be149dff99f9b0640b387b907",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+     "value_gbp": -425000000.0,
+     "value_gbp_decimal": "-425000000.0"
+    }
+   ],
+   "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+   "unmapped_obr_heads": [
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.LHA.freeze": {
+      "baseline_world": true,
+      "current_law": true,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": true,
+      "reform_world": true
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.LHA.freeze": {
+      "baseline_world": true,
+      "current_law": true,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": true,
+      "reform_world": true
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -1883075660.240798,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -1092072500.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_1.25_to_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -46181538.34733105,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19292571.98588129
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1929257198.588129,
+   "key": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "threshold_gbp": 19292571.98588129,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -391000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21637:973f5a064b8352ab",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": -1883075660.240798,
+   "context": {},
+   "delta_gbp": -46181538.34733105,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19292571.98588129
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1929257198.588129,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "threshold_gbp": 19292571.98588129,
+   "year": 2025
+  },
+  {
+   "base_gbp": -145070938.0732565,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -2176425.6847639084,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1472473.637580204
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -147247363.7580204,
+   "key": "housing_benefit",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "threshold_gbp": 1472473.637580204,
+   "year": 2025
+  },
+  {
+   "base_gbp": -1738004722.1675415,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -44005112.66256714,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 17820098.348301087
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1782009834.8301086,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "threshold_gbp": 17820098.348301087,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+  "head": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__lha_reset_to_30th_percentile --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__lha_reset_to_30th_percentile --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -1883075660.240798,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": -1929257198.588129,
+   "obr_value_gbp": -1092072500.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+   "source_row_number": 21631,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -391000000.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21637:973f5a064b8352ab",
+   "source_row_number": 21637,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": -1883075660.240798,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": -1929257198.588129,
+   "obr_value_gbp": -1092072500.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+   "source_row_number": 21631,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -391000000.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21637:973f5a064b8352ab",
+   "source_row_number": 21637,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+ "year": 2025
+}

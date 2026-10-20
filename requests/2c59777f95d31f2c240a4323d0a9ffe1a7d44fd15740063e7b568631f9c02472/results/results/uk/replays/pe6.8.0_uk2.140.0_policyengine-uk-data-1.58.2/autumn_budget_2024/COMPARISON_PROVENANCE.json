@@ -1,0 +1,51 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "6009162fdae77c92f50a5e698b2fcf426e9a587dc85bf6747188487901ecdbdb",
+  "COMPARISON.json": "945b652f602308ffae516a65423046b109c420311a7d41211f3b0e10e68a65da",
+  "COMPARISON.md": "559c50001a503c8e5674cbe55b41eb6074b71643b057343306cdefa2cb065ba8"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "replay_grid": {
+  "computed_measure_years": 30,
+  "full_event_complete": false,
+  "full_event_grid_size": 30,
+  "full_supported_grid_complete": false,
+  "inert_measure_years": [
+   {
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2025
+   },
+   {
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2026
+   },
+   {
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2027
+   },
+   {
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2028
+   },
+   {
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2029
+   }
+  ],
+  "missing_measure_years": [],
+  "supported_grid_size": 30,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2/autumn_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "33512db8db73122d2a1b9b92a5ad8c6539ffc89dab43a3ce6d2523bec8166b23",
+ "source_rows": 1134,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2/autumn_budget_2024/STAGED.jsonl",
+ "staged_sha256": "49f1240a465c89d07522c7f2bc26472815646a61f744ea156953c7c07f5c5042",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.140.0_policyengine-uk-data-1.58.2/autumn_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "2a1fe0320851bb54f79638ea1cb1c7df51501b175909f14881b6728138b8fbde"
+}
