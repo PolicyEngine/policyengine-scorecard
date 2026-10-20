@@ -1,0 +1,34 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2028.json": "4cdec5e772e79e784cd2ce8be8a75acb4a0c4394bb8d672d1eb3ed79b06dfd48",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2028.json": "76bfaa31c05a82bd37d75587c10cceb10f248c0875b40d0839b9e95eb4928711",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2028.json": "acf748e80f1be461f93ddcc2e8714264fbf6f108b507aa894446f0d94510822a",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2028.json": "1c8fa213cbf358fdd359df28b29db50f5a304d051cb9025c54d52963fb4f16d9",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2028.json": "71e2bd5b93379434c146d8e4593e7b8bee808e032c9362b3386d6c3425138941"
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "construction_revisions": {
+  "autumn_budget_2024__capital_gains_main_rates_and_reliefs": {
+   "activation_fy": "2024-25",
+   "part_year_rule": "part_year_day_weighted",
+   "paths": [
+    "gov.hmrc.cgt.basic_rate",
+    "gov.hmrc.cgt.higher_rate",
+    "gov.hmrc.cgt.additional_rate"
+   ],
+   "registry_sha256": "23993c8fbdcff319045b10bf316b29eb093c283dc6d135c430db237de0050a57",
+   "revision_id": "ab2024_cgt_fiscal_year_blend.v1"
+  }
+ },
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "engine_version": "2.136.0",
+ "event": "autumn_budget_2024",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "variant_id": "pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "5609d8cb72853fa4ad522ccb890f259d123c4d049c9213f99d944c21a0fce18f",
+ "year": 2028
+}

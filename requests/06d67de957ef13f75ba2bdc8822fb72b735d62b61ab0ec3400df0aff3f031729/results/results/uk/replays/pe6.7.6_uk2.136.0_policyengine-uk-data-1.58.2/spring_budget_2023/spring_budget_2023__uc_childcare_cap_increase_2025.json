@@ -1,0 +1,146 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.universal_credit.elements.childcare.cap.1": {
+    "2023-01-01.2023-12-31": 646.35,
+    "2024-01-01.2024-12-31": 689.6,
+    "2025-01-01.2025-12-31": 701.32,
+    "2026-01-01.2026-12-31": 727.97,
+    "2027-01-01.2027-12-31": 727.97
+   },
+   "gov.dwp.universal_credit.elements.childcare.cap.2": {
+    "2023-01-01.2023-12-31": 1108.04,
+    "2024-01-01.2024-12-31": 1182.39,
+    "2025-01-01.2025-12-31": 1202.49,
+    "2026-01-01.2026-12-31": 1248.18,
+    "2027-01-01.2027-12-31": 1248.18
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2025 proxies FY 2025-26.",
+ "certified_aggregates_gbp": {
+  "universal_credit": 79282164557.77979
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "spring_budget_2023__uc_childcare_cap_increase"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.136.0",
+ "event": "spring_budget_2023",
+ "fiscal_event": "Spring Budget 2023",
+ "fy_proxy": "2025-26",
+ "head_channels": {
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "universal_credit": -246211570.276474
+ },
+ "head_variables": [
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "universal_credit": 246211570.276474
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "universal_credit": 246211570.276474
+ },
+ "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+ "measure_total_gbp": -246211570.276474,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.dwp.universal_credit.elements.childcare.cap.1": {
+     "2023-01-01.2023-12-31": 646.35,
+     "2024-01-01.2024-12-31": 689.6,
+     "2025-01-01.2025-12-31": 701.32,
+     "2026-01-01.2026-12-31": 727.97,
+     "2027-01-01.2027-12-31": 727.97
+    },
+    "gov.dwp.universal_credit.elements.childcare.cap.2": {
+     "2023-01-01.2023-12-31": 1108.04,
+     "2024-01-01.2024-12-31": 1182.39,
+     "2025-01-01.2025-12-31": 1202.49,
+     "2026-01-01.2026-12-31": 1248.18,
+     "2027-01-01.2027-12-31": 1248.18
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.dwp.universal_credit.elements.childcare.cap.1": {
+    "intended": 701.32,
+    "processed": 701.32
+   },
+   "gov.dwp.universal_credit.elements.childcare.cap.2": {
+    "intended": 1202.49,
+    "processed": 1202.49
+   }
+  },
+  "reform_world": {
+   "gov.dwp.universal_credit.elements.childcare.cap.1": {
+    "intended": 1031.88,
+    "processed": 1031.88
+   },
+   "gov.dwp.universal_credit.elements.childcare.cap.2": {
+    "intended": 1768.94,
+    "processed": 1768.94
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "universal_credit": 79035952987.50331
+   }
+  },
+  "reform": {
+   "heads": {
+    "universal_credit": 79282164557.77979
+   }
+  }
+ },
+ "variable_metadata": {
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "5609d8cb72853fa4ad522ccb890f259d123c4d049c9213f99d944c21a0fce18f",
+ "year": 2025
+}

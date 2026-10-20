@@ -1,0 +1,342 @@
+{
+ "artifact_grid": [
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2028
+  }
+ ],
+ "artifacts": {
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2024.json": "67dd9c611efb3fb1228ab05e5816d693cb487f8e5a372e52f5d791e094b00819",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2025.json": "e91fea420827b4e5598ac95f96382924fae90859058aa16b99371fc51d948697",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": "8b867203d7b13e5b955cfa8b922295610f9559334339c85d70bae46e25709968",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": "cff71ce7f7d7e78d54ce566d6422a8b6c69b4f6acf9caab4ba83d0ab2d696a7f",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028.json": "718b7a99438c1877a0a761759be98ffaaec0cd2622704fab46eba4ba82da2f81",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2024.json": "669108a399cc3418b48c4fe1c8f43bd34ef74d224371d7394524e3d4f6a9b02a",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2025.json": "82d34929ab4f1de6bbe4d8113b93276f004e41f99264bd3f4cc6ed88d384790d",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026.json": "2171d6408ced1e6fc7bfb53b219ad99d6a1fe583ad55235e7f45b0ce4020f8e7",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2027.json": "0e8fd023c017ebe07942ac65db158765c87d60db007e020a2f28af881aa385a8",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2028.json": "80553478f67bdce229cedf9d3746a7f944064e2ee8a8c1570d706f10f040e094",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2024.json": "1ace0f70969aaa74aa8ce5d1b8f54618e7e424678ab92921bd33ed5adc2bdcd3",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2025.json": "450109cb405544a2f408e85853becf1a4215dc2f9e0d6b1e0d2d84ec0a7a71d0",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2026.json": "0e0a29e58e30f4cf8dfcf452ec97d0c20694d7a9af0924ace5b6a9f665161c73",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2027.json": "d90ebe3bcc6bc6b7f49b96ebb4bc4516e4592b683cfb73c83b3d13e424560e09",
+  "results/uk/replays/pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028.json": "6a9a245ec52bcdf5e9c19ff4684cf9dafe533ae30c0fb9b4ea9618cfe317f1ba"
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "data_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031,
+  2032
+ ],
+ "engine_version": "2.136.0",
+ "event": "spring_budget_2024",
+ "full_event_complete": false,
+ "full_event_grid": [
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2028
+  }
+ ],
+ "full_supported_grid": [
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2028
+  }
+ ],
+ "full_supported_grid_complete": true,
+ "measures": [
+  "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+  "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+  "spring_budget_2024__hicbc_threshold_and_taper"
+ ],
+ "not_computable": {},
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_value_check": "processed_period_values.v1",
+ "registry_path": "data/uk/events/spring_budget_2024_measures.json",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "requested_grid": [
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "year": 2028
+  }
+ ],
+ "requested_measures": [
+  "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+  "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+  "spring_budget_2024__hicbc_threshold_and_taper"
+ ],
+ "requested_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ],
+ "schema_version": 1,
+ "supported_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ],
+ "unsupported_years": [
+  {
+   "reason": "before_data_year",
+   "year": 2023
+  }
+ ],
+ "variant_id": "pe6.7.6_uk2.136.0_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "5609d8cb72853fa4ad522ccb890f259d123c4d049c9213f99d944c21a0fce18f",
+ "years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ]
+}
