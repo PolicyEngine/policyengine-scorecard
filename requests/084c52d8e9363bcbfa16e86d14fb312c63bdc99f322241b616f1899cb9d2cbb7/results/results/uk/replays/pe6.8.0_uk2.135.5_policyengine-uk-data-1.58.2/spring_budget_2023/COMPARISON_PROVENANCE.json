@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "7e5dbfa41f1f12da6d084e410858ca59065a2008de4a20ca18498d6ca22e76d5",
+  "COMPARISON.json": "cd92c157644661fc396f41f30d881033a54f711f2672483809d6c284a6e65d54",
+  "COMPARISON.md": "0b5a9b9546cad9049b88f85e5a2e0829028e02134d31583c3b50f25037f5c300"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.135.5_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.135.5_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "4648f23eff5108a40a1f787d71e154d5903a66a4a7b49e10022a1dfce8de9974",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.135.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "d94538bad17fbbf20e4ae872a3497ca549a651c00e5adf511eb47651b4865d2f",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.135.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "0abd8a79f6f996ed168b742d757c93ee0d81f121d40800b07222ed5aff4dc110"
+}
