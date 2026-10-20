@@ -1,0 +1,3823 @@
+{
+ "description": "Intended-world values at each annual lookup (1 January), computed by the shared runtime intended-value rule. Current law is already fiscal-year processed; construction windows override that annual value. These are not simulation readbacks: measure-year artifacts record each world's actual processed values and refuse a mismatch, except one in an announcement world before the measure commences whose worlds come out identical, listed under processed_value_notes. Selected metadata-based construction revisions are digest-bound.",
+ "engine": {
+  "policyengine": "6.8.0",
+  "policyengine_core": "3.33.0",
+  "policyengine_uk": "2.139.3"
+ },
+ "events": {
+  "autumn_budget_2024": {
+   "measures": {
+    "autumn_budget_2024__capital_gains_main_rates_and_reliefs": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "these paths are annualised another way (day-weighted fiscal-year blend or statutory calendar dates): gov.hmrc.cgt.additional_rate, gov.hmrc.cgt.basic_rate, gov.hmrc.cgt.higher_rate",
+       "holds": false
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "construction_revision": {
+      "activation_fy": "2024-25",
+      "part_year_rule": "part_year_day_weighted",
+      "paths": [
+       "gov.hmrc.cgt.basic_rate",
+       "gov.hmrc.cgt.higher_rate",
+       "gov.hmrc.cgt.additional_rate"
+      ],
+      "registry_sha256": "23993c8fbdcff319045b10bf316b29eb093c283dc6d135c430db237de0050a57",
+      "revision_id": "ab2024_cgt_fiscal_year_blend.v1"
+     },
+     "years": {
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.21731506849315071,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.21731506849315071
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.13463013698630139,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1,
+         "reform_world": 0.13463013698630139
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.21731506849315071,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.21731506849315071
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.18000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.18,
+         "reform_world": 0.18000000000000002
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.18000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.18,
+         "reform_world": 0.18000000000000002
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24000000000000002
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.18,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.18,
+         "reform_world": 0.18
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24000000000000002
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.18000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.18,
+         "reform_world": 0.18000000000000002
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.cgt.additional_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        },
+        "gov.hmrc.cgt.basic_rate": {
+         "baseline_world": 0.1,
+         "current_law": 0.18000000000000002,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.18,
+         "reform_world": 0.18000000000000002
+        },
+        "gov.hmrc.cgt.higher_rate": {
+         "baseline_world": 0.2,
+         "current_law": 0.24,
+         "fiscal_year_blend": true,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.24,
+         "reform_world": 0.24
+        }
+       }
+      }
+     }
+    },
+    "autumn_budget_2024__employer_nics_package": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.138,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.138,
+         "reform_world": 0.138
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 175,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 175,
+         "reform_world": 175
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employer": {
+         "baseline_world": 0.138,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 175,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      }
+     }
+    },
+    "autumn_budget_2024__private_school_vat_20pct": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "the forward delta changes current law in an in-force year",
+       "holds": true
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "not a reversal",
+       "holds": null
+      }
+     },
+     "construction": "forward_delta_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0.2
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0.2
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0.2
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0.2
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.labour.private_school_vat": {
+         "baseline_world": 0,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0.2
+        }
+       }
+      }
+     }
+    },
+    "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "the forward delta changes current law in an in-force year",
+       "holds": true
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "not a reversal",
+       "holds": null
+      }
+     },
+     "construction": "forward_delta_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.03
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.13
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.15
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.07
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.1
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.17
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.07
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.1
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.17
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.07
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.1
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.17
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.07
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.1
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.17
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+         "baseline_world": 0.03,
+         "current_law": 0.03,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.03,
+         "reform_world": 0.05
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+         "baseline_world": 0.05,
+         "current_law": 0.05,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.05,
+         "reform_world": 0.07
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+         "baseline_world": 0.08,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.1
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+         "baseline_world": 0.13,
+         "current_law": 0.13,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.13,
+         "reform_world": 0.15
+        },
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+         "baseline_world": 0.15,
+         "current_law": 0.15,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.15,
+         "reform_world": 0.17
+        }
+       }
+      }
+     }
+    },
+    "autumn_budget_2024__winter_fuel_means_test": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+  },
+  "autumn_budget_2025": {
+   "measures": {
+    "ab2025__dividend_rates_plus_2pp": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.0875,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0875,
+         "reform_world": 0.0875
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3375,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3375,
+         "reform_world": 0.3375
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.1075,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1075,
+         "reform_world": 0.1075
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3575,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3575,
+         "reform_world": 0.3575
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.1075,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1075,
+         "reform_world": 0.1075
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3575,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3575,
+         "reform_world": 0.3575
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.1075,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1075,
+         "reform_world": 0.1075
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3575,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3575,
+         "reform_world": 0.3575
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.1075,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1075,
+         "reform_world": 0.1075
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3575,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3575,
+         "reform_world": 0.3575
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.dividends[0].rate": {
+         "baseline_world": 0.0875,
+         "current_law": 0.1075,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.1075,
+         "reform_world": 0.1075
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].rate": {
+         "baseline_world": 0.3375,
+         "current_law": 0.3575,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.3575,
+         "reform_world": 0.3575
+        }
+       }
+      }
+     }
+    },
+    "ab2025__employer_nics_secondary_threshold_freeze_to_2031": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 96.153846,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 96.153846,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2027": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 96.153846,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 97.9199086029823,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 99.8780897071249,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+         "baseline_world": 101.875685775149,
+         "current_law": 96.153846,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 96.153846,
+         "reform_world": 96.153846
+        }
+       }
+      }
+     }
+    },
+    "ab2025__high_value_council_tax_surcharge": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 2500,
+         "current_law": 2500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2500,
+         "reform_world": 2500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 3500,
+         "current_law": 3500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3500,
+         "reform_world": 3500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 5000,
+         "current_law": 5000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5000,
+         "reform_world": 5000
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 7500,
+         "current_law": 7500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7500,
+         "reform_world": 7500
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 2500,
+         "current_law": 2500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2500,
+         "reform_world": 2500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 3500,
+         "current_law": 3500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3500,
+         "reform_world": 3500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 5000,
+         "current_law": 5000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5000,
+         "reform_world": 5000
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 7500,
+         "current_law": 7500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7500,
+         "reform_world": 7500
+        }
+       }
+      },
+      "2027": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 2500,
+         "current_law": 2500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2500,
+         "reform_world": 2500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 3500,
+         "current_law": 3500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3500,
+         "reform_world": 3500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 5000,
+         "current_law": 5000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5000,
+         "reform_world": 5000
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 7500,
+         "current_law": 7500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7500,
+         "reform_world": 7500
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 0,
+         "current_law": 2500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2500,
+         "reform_world": 2500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 0,
+         "current_law": 3500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3500,
+         "reform_world": 3500
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 0,
+         "current_law": 5000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5000,
+         "reform_world": 5000
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 0,
+         "current_law": 7500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7500,
+         "reform_world": 7500
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 0,
+         "current_law": 2549.997619869331,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2549.997619869331,
+         "reform_world": 2549.997619869331
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 0,
+         "current_law": 3569.996667817064,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3569.996667817064,
+         "reform_world": 3569.996667817064
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 0,
+         "current_law": 5099.995239738662,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5099.995239738662,
+         "reform_world": 5099.995239738662
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 0,
+         "current_law": 7649.992859607994,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7649.992859607994,
+         "reform_world": 7649.992859607994
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+         "baseline_world": 0,
+         "current_law": 2600.991919456378,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2600.991919456378,
+         "reform_world": 2600.991919456378
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+         "baseline_world": 0,
+         "current_law": 3641.3886872389294,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3641.3886872389294,
+         "reform_world": 3641.3886872389294
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+         "baseline_world": 0,
+         "current_law": 5201.983838912756,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 5201.983838912756,
+         "reform_world": 5201.983838912756
+        },
+        "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+         "baseline_world": 0,
+         "current_law": 7802.975758369134,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7802.975758369134,
+         "reform_world": 7802.975758369134
+        }
+       }
+      }
+     }
+    },
+    "ab2025__personal_tax_thresholds_freeze_to_2031": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 12570,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 37500,
+         "current_law": 37500,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37500,
+         "reform_world": 37500
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 37700,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 12570,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 37700,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 37700,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      },
+      "2027": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 12570,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 37700,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 37700,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 12821.388032703,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 38453.940508488,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 38453.940508488,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 13077.7873710267,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 39222.9827084964,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 39222.9827084964,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+         "baseline_world": 13339.3476061836,
+         "current_law": 12570,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 12570,
+         "reform_world": 12570
+        },
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+         "baseline_world": 40007.3554135334,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        },
+        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+         "baseline_world": 40007.3554135334,
+         "current_law": 37700,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 37700,
+         "reform_world": 37700
+        }
+       }
+      }
+     }
+    },
+    "ab2025__property_income_separate_rates": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.45,
+         "reform_world": 0.45
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.2,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.2
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.4,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.4,
+         "reform_world": 0.4
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.45,
+         "reform_world": 0.45
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.2,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.2
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.4,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.4,
+         "reform_world": 0.4
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.property.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.property.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.property.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      }
+     }
+    },
+    "ab2025__salary_sacrifice_pension_nics_cap_2000": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0016,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": "inf",
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0016,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": "inf",
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2027": {
+       "in_force": false,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0016,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": "inf",
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2028": {
+       "in_force": false,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0016,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": "inf",
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": 1e+100,
+         "current_law": 2000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2000,
+         "reform_world": 2000
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+         "baseline_world": 0.0,
+         "current_law": 0.0016,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.0016,
+         "reform_world": 0.0016
+        },
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+         "baseline_world": 1e+100,
+         "current_law": 2000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2000,
+         "reform_world": 2000
+        }
+       }
+      }
+     }
+    },
+    "ab2025__savings_rates_plus_2pp_and_starter_limit_held": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.45,
+         "reform_world": 0.45
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.2,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.2
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.4,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.4,
+         "reform_world": 0.4
+        }
+       }
+      },
+      "2026": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.45,
+         "reform_world": 0.45
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.2,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.2,
+         "reform_world": 0.2
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.4,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.4,
+         "reform_world": 0.4
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.rates.savings.additional": {
+         "baseline_world": 0.45,
+         "current_law": 0.47,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.47,
+         "reform_world": 0.47
+        },
+        "gov.hmrc.income_tax.rates.savings.basic": {
+         "baseline_world": 0.2,
+         "current_law": 0.22,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.22,
+         "reform_world": 0.22
+        },
+        "gov.hmrc.income_tax.rates.savings.higher": {
+         "baseline_world": 0.4,
+         "current_law": 0.42,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.42,
+         "reform_world": 0.42
+        }
+       }
+      }
+     }
+    },
+    "ab2025__uc_child_element_remove_two_child_limit": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": 2,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 2,
+         "reform_world": 2
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+         "baseline_world": 2,
+         "current_law": "inf",
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": "inf",
+         "reform_world": "inf"
+        }
+       }
+      }
+     }
+    },
+    "ab2025__winter_fuel_payment_income_test_35000": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2030": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+         "baseline_world": 0,
+         "current_law": 35000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 35000,
+         "reform_world": 35000
+        },
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+         "baseline_world": false,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+  },
+  "autumn_statement_2023": {
+   "measures": {
+    "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.12,
+         "current_law": 0.12,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.12,
+         "reform_world": 0.12
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      }
+     }
+    },
+    "autumn_statement_2023__class_2_self_employed_nics_abolition": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.45,
+         "current_law": 3.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 3.45,
+         "reform_world": 3.45
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 6725,
+         "current_law": 6725,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 6725,
+         "reform_world": 6725
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.7,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 12570,
+         "current_law": 6725,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 6725,
+         "reform_world": 6725
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.7,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 12570,
+         "current_law": 6845,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 6845,
+         "reform_world": 6845
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.7,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 12570,
+         "current_law": 7105,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7105,
+         "reform_world": 7105
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.7,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 12570,
+         "current_law": 7247.088788138113,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7247.088788138113,
+         "reform_world": 7247.088788138113
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_2.flat_rate": {
+         "baseline_world": 3.7,
+         "current_law": 0,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0,
+         "reform_world": 0
+        },
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+         "baseline_world": 12570,
+         "current_law": 7392.0236642935615,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 7392.0236642935615,
+         "reform_world": 7392.0236642935615
+        }
+       }
+      }
+     }
+    },
+    "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.09,
+         "current_law": 0.09,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.09,
+         "reform_world": 0.09
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.07,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.07,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.07,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.07,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.07,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      }
+     }
+    },
+    "autumn_statement_2023__lha_reset_to_30th_percentile": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": false,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": false,
+         "reform_world": false
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.LHA.freeze": {
+         "baseline_world": true,
+         "current_law": true,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": true,
+         "reform_world": true
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021"
+  },
+  "spring_budget_2023": {
+   "measures": {
+    "spring_budget_2023__pension_annual_allowance_package": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+         "baseline_world": 40000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+         "baseline_world": 4000,
+         "current_law": 10000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 10000,
+         "reform_world": 10000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+         "baseline_world": 240000,
+         "current_law": 260000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 260000,
+         "reform_world": 260000
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+         "baseline_world": 40000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+         "baseline_world": 4000,
+         "current_law": 10000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 10000,
+         "reform_world": 10000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+         "baseline_world": 240000,
+         "current_law": 260000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 260000,
+         "reform_world": 260000
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+         "baseline_world": 40000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+         "baseline_world": 4000,
+         "current_law": 10000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 10000,
+         "reform_world": 10000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+         "baseline_world": 240000,
+         "current_law": 260000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 260000,
+         "reform_world": 260000
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+         "baseline_world": 40000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+         "baseline_world": 4000,
+         "current_law": 10000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 10000,
+         "reform_world": 10000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+         "baseline_world": 240000,
+         "current_law": 260000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 260000,
+         "reform_world": 260000
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+         "baseline_world": 40000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+         "baseline_world": 4000,
+         "current_law": 10000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 10000,
+         "reform_world": 10000
+        },
+        "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+         "baseline_world": 240000,
+         "current_law": 260000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 260000,
+         "reform_world": 260000
+        }
+       }
+      }
+     }
+    },
+    "spring_budget_2023__uc_childcare_cap_increase": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.childcare.cap.1": {
+         "baseline_world": 646.35,
+         "current_law": 951,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 951,
+         "reform_world": 951
+        },
+        "gov.dwp.universal_credit.elements.childcare.cap.2": {
+         "baseline_world": 1108.04,
+         "current_law": 1630,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1630,
+         "reform_world": 1630
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.childcare.cap.1": {
+         "baseline_world": 689.6,
+         "current_law": 1014.63,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1014.63,
+         "reform_world": 1014.63
+        },
+        "gov.dwp.universal_credit.elements.childcare.cap.2": {
+         "baseline_world": 1182.39,
+         "current_law": 1739.37,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1739.37,
+         "reform_world": 1739.37
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.childcare.cap.1": {
+         "baseline_world": 701.32,
+         "current_law": 1031.88,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1031.88,
+         "reform_world": 1031.88
+        },
+        "gov.dwp.universal_credit.elements.childcare.cap.2": {
+         "baseline_world": 1202.49,
+         "current_law": 1768.94,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1768.94,
+         "reform_world": 1768.94
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.childcare.cap.1": {
+         "baseline_world": 727.97,
+         "current_law": 1071.09,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1071.09,
+         "reform_world": 1071.09
+        },
+        "gov.dwp.universal_credit.elements.childcare.cap.2": {
+         "baseline_world": 1248.18,
+         "current_law": 1836.16,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1836.16,
+         "reform_world": 1836.16
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.elements.childcare.cap.1": {
+         "baseline_world": 727.97,
+         "current_law": 1071.09,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1071.09,
+         "reform_world": 1071.09
+        },
+        "gov.dwp.universal_credit.elements.childcare.cap.2": {
+         "baseline_world": 1248.18,
+         "current_law": 1836.16,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 1836.16,
+         "reform_world": 1836.16
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357"
+  },
+  "spring_budget_2024": {
+   "measures": {
+    "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.12,
+         "current_law": 0.12,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.12,
+         "reform_world": 0.12
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+         "baseline_world": 0.1,
+         "current_law": 0.08,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.08,
+         "reform_world": 0.08
+        }
+       }
+      }
+     }
+    },
+    "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.09,
+         "current_law": 0.09,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.09,
+         "reform_world": 0.09
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.08,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.08,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.08,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.08,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.national_insurance.class_4.rates.main": {
+         "baseline_world": 0.08,
+         "current_law": 0.06,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 0.06,
+         "reform_world": 0.06
+        }
+       }
+      }
+     }
+    },
+    "spring_budget_2024__hicbc_threshold_and_taper": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2023": {
+       "in_force": false,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 50000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 50000,
+         "reform_world": 50000
+        }
+       }
+      },
+      "2024": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 80000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 80000,
+         "reform_world": 80000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        }
+       }
+      },
+      "2025": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 80000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 80000,
+         "reform_world": 80000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 80000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 80000,
+         "reform_world": 80000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 80000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 80000,
+         "reform_world": 80000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+         "baseline_world": 60000,
+         "current_law": 80000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 80000,
+         "reform_world": 80000
+        },
+        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+         "baseline_world": 50000,
+         "current_law": 60000,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 60000,
+         "reform_world": 60000
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a"
+  },
+  "spring_statement_2025": {
+   "measures": {
+    "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 217.26,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      },
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 217.26,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 437.66,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 447.73,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 456.68,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "baseline_world": 465.81,
+         "current_law": 217.26,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 217.26,
+         "reform_world": 217.26
+        }
+       }
+      }
+     }
+    },
+    "spring_statement_2025__uc_standard_allowance_above_inflation": {
+     "checks": {
+      "annual_value_matches_30_april_sample": {
+       "detail": "every touched path is sampled at 30 April",
+       "holds": true
+      },
+      "authored_construction_reproduces": {
+       "detail": "re-authoring with this engine's parameters reproduces the registry",
+       "holds": true
+      },
+      "forward_delta_changes_current_law": {
+       "detail": "not a forward delta",
+       "holds": null
+      },
+      "reversal_differs_from_current_law": {
+       "detail": "the reversal differs from current law in an in-force year",
+       "holds": true
+      }
+     },
+     "construction": "reversal_on_certified_world",
+     "years": {
+      "2024": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 617.6,
+         "current_law": 617.6,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 617.6,
+         "reform_world": 617.6
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 489.23,
+         "current_law": 489.23,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 489.23,
+         "reform_world": 489.23
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 393.45,
+         "current_law": 393.45,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 393.45,
+         "reform_world": 393.45
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 311.68,
+         "current_law": 311.68,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 311.68,
+         "reform_world": 311.68
+        }
+       }
+      },
+      "2025": {
+       "in_force": false,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 628.1,
+         "current_law": 628.1,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 628.1,
+         "reform_world": 628.1
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 497.55,
+         "current_law": 497.55,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 497.55,
+         "reform_world": 497.55
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 400.14,
+         "current_law": 400.14,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 400.14,
+         "reform_world": 400.14
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 316.98,
+         "current_law": 316.98,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 316.98,
+         "reform_world": 316.98
+        }
+       }
+      },
+      "2026": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 651.97,
+         "current_law": 666.97,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 666.97,
+         "reform_world": 666.97
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 516.46,
+         "current_law": 528.34,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 528.34,
+         "reform_world": 528.34
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 415.35,
+         "current_law": 424.9,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 424.9,
+         "reform_world": 424.9
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 329.03,
+         "current_law": 338.58,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 338.58,
+         "reform_world": 338.58
+        }
+       }
+      },
+      "2027": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 666.96,
+         "current_law": 687.644580047067,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 687.644580047067,
+         "reform_world": 687.644580047067
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 528.33,
+         "current_law": 544.717359734422,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 544.717359734422,
+         "reform_world": 544.717359734422
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 424.9,
+         "current_law": 438.0709508103794,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 438.0709508103794,
+         "reform_world": 438.0709508103794
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 336.59,
+         "current_law": 349.0752236417469,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 349.0752236417469,
+         "reform_world": 349.0752236417469
+        }
+       }
+      },
+      "2028": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 680.3,
+         "current_law": 707.5191483892868,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 707.5191483892868,
+         "reform_world": 707.5191483892868
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 538.9,
+         "current_law": 560.4609905392982,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 560.4609905392982,
+         "reform_world": 560.4609905392982
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 433.39,
+         "current_law": 450.73224605395734,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 450.73224605395734,
+         "reform_world": 450.73224605395734
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 343.32,
+         "current_law": 359.1643301222614,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 359.1643301222614,
+         "reform_world": 359.1643301222614
+        }
+       }
+      },
+      "2029": {
+       "in_force": true,
+       "paths": {
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+         "baseline_world": 693.91,
+         "current_law": 727.2201566677235,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 727.2201566677235,
+         "reform_world": 727.2201566677235
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+         "baseline_world": 549.68,
+         "current_law": 576.0671358139423,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 576.0671358139423,
+         "reform_world": 576.0671358139423
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+         "baseline_world": 442.06,
+         "current_law": 463.2829730994133,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 463.2829730994133,
+         "reform_world": 463.2829730994133
+        },
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+         "baseline_world": 350.19,
+         "current_law": 369.1653307413494,
+         "fiscal_year_blend": false,
+         "preserve_calendar_dates": false,
+         "raw_30_april": 369.1653307413494,
+         "reform_world": 369.1653307413494
+        }
+       }
+      }
+     }
+    }
+   },
+   "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b"
+  }
+ },
+ "schema_version": 1
+}

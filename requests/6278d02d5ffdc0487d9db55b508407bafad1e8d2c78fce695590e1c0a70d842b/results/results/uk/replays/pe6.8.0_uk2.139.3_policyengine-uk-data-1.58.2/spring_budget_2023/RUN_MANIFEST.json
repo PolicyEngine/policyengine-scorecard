@@ -1,0 +1,214 @@
+{
+ "artifact_grid": [
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2027
+  }
+ ],
+ "artifacts": {
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024.json": "b4d36b2580d994e781e9a32165ffc35e98fec5a473600f537924931f527b69e6",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025.json": "27040df9d7cf5902dbb6891ab543a92a1fd436f97bb5aeed310deda1f8e01ee3",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2026.json": "785d3051de2b14467eb80f875a552d40c077c4af00d89c068305d59e4b0f5c1c",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2027.json": "552e8cd077117e2c3db7ad90346ee913445a32b892b7b45e59d6afa1107a622a",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2024.json": "a9a7e09c17d135e7de19d3c004488e6a5e2bdb1189ce5ccf67ee07e3baa6eb44",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2025.json": "16971ac8ee09462c0b83aa7010c3a1a1aac14d2abb5469d3b3041277f7c7937f",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2026.json": "6074799bda444b243ab119def2875b43afc54ea542ea24631f640be9d079dcfb",
+  "results/uk/replays/pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2027.json": "7ab8bdd6ad5bc0fedc73faf36b21d3f9ecab61adc4e5cc986cce30709a13bb91"
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "data_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031,
+  2032
+ ],
+ "engine_version": "2.139.3",
+ "event": "spring_budget_2023",
+ "full_event_complete": false,
+ "full_event_grid": [
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2027
+  }
+ ],
+ "full_supported_grid": [
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2027
+  }
+ ],
+ "full_supported_grid_complete": true,
+ "measures": [
+  "spring_budget_2023__pension_annual_allowance_package",
+  "spring_budget_2023__uc_childcare_cap_increase"
+ ],
+ "not_computable": {},
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_value_check": "processed_period_values.v1",
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "requested_grid": [
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "year": 2027
+  }
+ ],
+ "requested_measures": [
+  "spring_budget_2023__pension_annual_allowance_package",
+  "spring_budget_2023__uc_childcare_cap_increase"
+ ],
+ "requested_years": [
+  2024,
+  2025,
+  2026,
+  2027
+ ],
+ "schema_version": 1,
+ "supported_years": [
+  2024,
+  2025,
+  2026,
+  2027
+ ],
+ "unsupported_years": [
+  {
+   "reason": "before_data_year",
+   "year": 2023
+  }
+ ],
+ "variant_id": "pe6.8.0_uk2.139.3_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "2ceddacab4223676397ca410aa13287d9a5c098d461c0f443a85e93004059251",
+ "years": [
+  2024,
+  2025,
+  2026,
+  2027
+ ]
+}

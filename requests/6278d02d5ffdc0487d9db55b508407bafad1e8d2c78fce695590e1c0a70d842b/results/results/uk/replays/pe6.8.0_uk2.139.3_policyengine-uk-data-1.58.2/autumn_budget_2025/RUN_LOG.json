@@ -1,0 +1,367 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.4427486550002868,
+    "end_rss_bytes": 2494513152,
+    "peak_rss_bytes": 2494513152,
+    "rss_after_gc_bytes": 1655951360,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 256335872,
+    "wall_seconds": 17.29256298600012
+   },
+   "seconds": 24.74095880699997,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 31.55040200900021,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 29.62213695499986,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 30.307774765999966,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 30.080136390999996,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 31.708545896000032,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 31.358571342999767,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 30.607225536999977,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 33.541108126999916,
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 34.96725633599999,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.4413531449999937,
+    "end_rss_bytes": 2500972544,
+    "peak_rss_bytes": 2500972544,
+    "rss_after_gc_bytes": 1659523072,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 256364544,
+    "wall_seconds": 17.323622875999718
+   },
+   "seconds": 24.680116429999998,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 31.62847366699998,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 29.788875000999724,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 30.869529949000025,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 31.266212601999996,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 31.58817286700014,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 31.524494317000062,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 31.181507184999646,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 34.11867937900024,
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 34.565441414999896,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.9299079630000051,
+    "end_rss_bytes": 4050190336,
+    "peak_rss_bytes": 4050227200,
+    "rss_after_gc_bytes": 4049158144,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4050190336,
+    "wall_seconds": 18.378541710999798
+   },
+   "seconds": 19.31141291999984,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 33.86638940900002,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 33.185387752000224,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 32.68445904100008,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 31.949449386000197,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 33.01391679199969,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 33.03163711000025,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 32.08223570100017,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 34.848025676999896,
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 34.02461333199972,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.916213611999865,
+    "end_rss_bytes": 4178984960,
+    "peak_rss_bytes": 4179021824,
+    "rss_after_gc_bytes": 4178984960,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4178984960,
+    "wall_seconds": 18.548270170999785
+   },
+   "seconds": 19.46705467799984,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 34.31380506400001,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 32.94986676999997,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 32.82106700200029,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 32.558095877999676,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 33.174949304000165,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 33.119267648000005,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 32.048190203000104,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 35.206249498000034,
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 34.35117077299992,
+   "year": 2028
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.1795993569999155,
+    "end_rss_bytes": 4166033408,
+    "peak_rss_bytes": 4168093696,
+    "rss_after_gc_bytes": 4165001216,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4164173824,
+    "wall_seconds": 17.5127020179998
+   },
+   "seconds": 18.695269038999868,
+   "world": "certified_baseline",
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 34.02807083700009,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 33.10239528000011,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 33.37473921499986,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 33.639084258000366,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 33.24668716499991,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 33.57761600499998,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 33.73105838299989,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 35.407682570999896,
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 35.69088971200017,
+   "year": 2029
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.196271888999945,
+    "end_rss_bytes": 4525084672,
+    "peak_rss_bytes": 4527149056,
+    "rss_after_gc_bytes": 4524052480,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 4523139072,
+    "wall_seconds": 17.99836520000008
+   },
+   "seconds": 19.197982868000054,
+   "world": "certified_baseline",
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+   "seconds": 34.710283419999996,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "seconds": 33.64320114599968,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__property_income_separate_rates",
+   "seconds": 34.61604712600001,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "seconds": 33.49014700199996,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "seconds": 34.219395726999664,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "seconds": 34.00382934500021,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "seconds": 33.733281425000314,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "seconds": 35.983497811000234,
+   "year": 2030
+  },
+  {
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "seconds": 35.35109626100029,
+   "year": 2030
+  }
+ ],
+ "wall_seconds": 972.9536724330001,
+ "workers": 2
+}
