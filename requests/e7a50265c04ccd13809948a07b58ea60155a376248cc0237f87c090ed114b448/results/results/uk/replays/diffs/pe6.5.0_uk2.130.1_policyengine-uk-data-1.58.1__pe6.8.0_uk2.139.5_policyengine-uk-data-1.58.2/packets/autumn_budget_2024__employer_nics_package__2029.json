@@ -1,0 +1,1782 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01.2035-12-31": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01.2035-12-31": 175
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "7df2d5f7e7eeed2ed1a50bebb7c4e9562b4dbef83d8d8e3d64b85522a5a10912"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01.2035-12-31": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01.2035-12-31": 175
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "f1478d46c6995ea74b87d2955f9da89c932199d442b9da9dfd7510dd81aaa788"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.139.5",
+   "policyengine_version": "6.8.0",
+   "variant_id": "pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "autumn_budget_2024__employer_nics_package",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2025-26",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.138,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 175
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2029": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_1.rates.employer",
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_1\\.rates\\.employer|gov\\.hmrc\\.national_insurance\\.class_1\\.thresholds\\.secondary_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Rate and weekly secondary-threshold reversal reuses the mode-2 construction. \u00a3175/week = \u00a39,100/year; the current model's \u00a396/week = \u00a34,992/year. Employer-NI employee_incidence=1 at the pin changes wages holding employer cost fixed; indirect tax heads consequently move. This differs from the OBR's direct costing scope.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01": 175
+    }
+   },
+   "pe_gap": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11664:f05ae4554e5ffe4c",
+     "source_row_number": 11664,
+     "source_row_sha256": "f05ae4554e5ffe4cb9706f4a650c482e8fb02e4131782ed0b2cfb4152c93a338",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11665:72598886f546ef8c",
+     "source_row_number": 11665,
+     "source_row_sha256": "72598886f546ef8ca927cf44bb5469eec903c628f5c4c74ca49c441db27e18b2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 104397.3189455585,
+     "value_gbp_decimal": "104397.3189455585"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11666:e4413c7487d85ddf",
+     "source_row_number": 11666,
+     "source_row_sha256": "e4413c7487d85ddf952c851cfea393de52b615afdf9ec3ee68b0d459c2655948",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -312921791.2621155,
+     "value_gbp_decimal": "-312921791.2621155"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11667:35345df3785dfdea",
+     "source_row_number": 11667,
+     "source_row_sha256": "35345df3785dfdea5c9c3487934515dbd8495fc349255220d3d5370cfddcde0c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -139433648.31822416,
+     "value_gbp_decimal": "-139433648.31822416"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11668:a076a7d6b3992e7c",
+     "source_row_number": 11668,
+     "source_row_sha256": "a076a7d6b3992e7c366009a3bd83c1cd322acbed4941ebc65ac0219625f2835a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -125022028.69605237,
+     "value_gbp_decimal": "-125022028.69605237"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+     "source_row_number": 11669,
+     "source_row_sha256": "1cedd72c387ad84b42fe87e2dad476f45a007058caa52b03b9974b8821e13fcb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -129843394.06867449,
+     "value_gbp_decimal": "-129843394.06867449"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11670:74ebee9530b9724f",
+     "source_row_number": 11670,
+     "source_row_sha256": "74ebee9530b9724fdf41d4dd70ed72ce3b139460e99b3ec6587174516d5f4d17",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11671:291070a94715062c",
+     "source_row_number": 11671,
+     "source_row_sha256": "291070a94715062cf23d2cd0e28c0103296a9a453a521ebdfe69c4927dae8785",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 23737482906.08718,
+     "value_gbp_decimal": "23737482906.08718"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11672:0b55202125025854",
+     "source_row_number": 11672,
+     "source_row_sha256": "0b55202125025854efa92804fa8619dc539359c66d362066e97422140bd5ce51",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 23923342053.649563,
+     "value_gbp_decimal": "23923342053.649563"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11673:94b8906a8929f113",
+     "source_row_number": 11673,
+     "source_row_sha256": "94b8906a8929f11391756951552d5bbecb228cadde418017110dfb35aead2bab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 24166582486.907063,
+     "value_gbp_decimal": "24166582486.907063"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11674:6dd4d473c559cbea",
+     "source_row_number": 11674,
+     "source_row_sha256": "6dd4d473c559cbea6e719573d9766a83685fa6cbae7dda7f97bcd050fedc19be",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 24873640251.083874,
+     "value_gbp_decimal": "24873640251.083874"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+     "source_row_number": 11675,
+     "source_row_sha256": "286359ea5a53fc9425eb2487b810085e74bad5f52c9bdfec0aa445872d375c53",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 25624586204.164253,
+     "value_gbp_decimal": "25624586204.164253"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11676:611f8e9e96a6b92d",
+     "source_row_number": 11676,
+     "source_row_sha256": "611f8e9e96a6b92de224de3dfd6d2ba12b796fd7e1935cec4124db345349df03",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11677:38177db5dd288931",
+     "source_row_number": 11677,
+     "source_row_sha256": "38177db5dd28893117d26a9fbcd3d2c53942e89c37c91338ded46d9409c5e145",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 32349658.066893354,
+     "value_gbp_decimal": "32349658.066893354"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11678:cf7e6fb3e86bb47c",
+     "source_row_number": 11678,
+     "source_row_sha256": "cf7e6fb3e86bb47cd6ac3ee74bbdf4c91903c17c5cb63d17e87a12fcce506493",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 104302519.83016719,
+     "value_gbp_decimal": "104302519.83016719"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11679:80b7d4c0d69f1c59",
+     "source_row_number": 11679,
+     "source_row_sha256": "80b7d4c0d69f1c595191e6d32c1e89a3edbc3a32e0f4f33ee2a3f97f48790e4d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 157878460.38779414,
+     "value_gbp_decimal": "157878460.38779414"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11680:1df0b2733f687ca0",
+     "source_row_number": 11680,
+     "source_row_sha256": "1df0b2733f687ca05e5b9f23e9b21e1f40389316223daa019fad7c8a54a8f1cb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 197370614.57409978,
+     "value_gbp_decimal": "197370614.57409978"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11681:83ebf7f916ba0b8d",
+     "source_row_number": 11681,
+     "source_row_sha256": "83ebf7f916ba0b8d2a09a039f2c9fc19ed53b0bc2127345f59fd2bf9a1821b75",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 231671928.62583068,
+     "value_gbp_decimal": "231671928.62583068"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22817:2cc3a9f8dc1f5233",
+     "source_row_number": 22817,
+     "source_row_sha256": "2cc3a9f8dc1f523327a18503bce2bfee9bbfe46b72d1f38f07e76f24eb0ad5aa",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22818:aeea2c28b98a2cfa",
+     "source_row_number": 22818,
+     "source_row_sha256": "aeea2c28b98a2cfa831584264b746386b97b2b7b15e7b9982130764592b493b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 7679.083794280304,
+     "value_gbp_decimal": "7679.083794280304"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22819:dd2ccd436f0e20b2",
+     "source_row_number": 22819,
+     "source_row_sha256": "dd2ccd436f0e20b255a79b3660b8ac54ffde1e023a58d86399342c107088dc4d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -22555697.86413367,
+     "value_gbp_decimal": "-22555697.86413367"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22820:f6b54a5fbcdee6cb",
+     "source_row_number": 22820,
+     "source_row_sha256": "f6b54a5fbcdee6cb03499f0bd3e01e000b59c19f066be092acd9cbee0820bb95",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -12795546.945261901,
+     "value_gbp_decimal": "-12795546.945261901"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22821:be2053a7986ecc49",
+     "source_row_number": 22821,
+     "source_row_sha256": "be2053a7986ecc49f2b25af1110da79a2c3cdd5b6b29c6a8682f89ee32a44bc4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -13334609.397444367,
+     "value_gbp_decimal": "-13334609.397444367"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22822:be5f3270a974f57f",
+     "source_row_number": 22822,
+     "source_row_sha256": "be5f3270a974f57f84294473ef769e734edc130f4767c192b713c03ab7a2e88d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -14739180.416154342,
+     "value_gbp_decimal": "-14739180.416154342"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22823:daffa02a25835b38",
+     "source_row_number": 22823,
+     "source_row_sha256": "daffa02a25835b3861ee97b3dbfc721b1a5791309817a99786a7fec7fd2f7287",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22824:43a72c43eb1bd902",
+     "source_row_number": 22824,
+     "source_row_sha256": "43a72c43eb1bd902bced6cfa605b7a6a04d319d47143609216526ca48bdca0cb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 593.4454839152991,
+     "value_gbp_decimal": "593.4454839152991"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22825:edacdcc46eb06fe4",
+     "source_row_number": 22825,
+     "source_row_sha256": "edacdcc46eb06fe48548e2c7eea972bffcfbcf9e96dcc96be21d86df157b37ed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -2722169.4714540956,
+     "value_gbp_decimal": "-2722169.4714540956"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22826:318fb1def1dc970d",
+     "source_row_number": 22826,
+     "source_row_sha256": "318fb1def1dc970d15ed21ef8d2a4f03df8569ed297b0469cb3d965e23a55a9e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -1695682.812090235,
+     "value_gbp_decimal": "-1695682.812090235"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22827:9881af9ed6467d43",
+     "source_row_number": 22827,
+     "source_row_sha256": "9881af9ed6467d4325ac3c9098bbbbe2abdfd89349e15d2a8d72136be2325e43",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -1876637.8792906133,
+     "value_gbp_decimal": "-1876637.8792906133"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22828:f93a41b9d86839e9",
+     "source_row_number": 22828,
+     "source_row_sha256": "f93a41b9d86839e9d75bce89f0496e6a260a572164e808766a2adb6dc1d7f575",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -2096171.2099097595,
+     "value_gbp_decimal": "-2096171.2099097595"
+    }
+   ],
+   "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2025-26",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.138,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 175
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2029": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": 0.15,
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_1.rates.employer",
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_1\\.rates\\.employer|gov\\.hmrc\\.national_insurance\\.class_1\\.thresholds\\.secondary_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Rate and weekly secondary-threshold reversal reuses the mode-2 construction. \u00a3175/week = \u00a39,100/year; the current model's \u00a396/week = \u00a34,992/year. Employer-NI employee_incidence=1 at the pin changes wages holding employer cost fixed; indirect tax heads consequently move. This differs from the OBR's direct costing scope.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01": 175
+    }
+   },
+   "pe_gap": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11664:f05ae4554e5ffe4c",
+     "source_row_number": 11664,
+     "source_row_sha256": "f05ae4554e5ffe4cb9706f4a650c482e8fb02e4131782ed0b2cfb4152c93a338",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11665:72598886f546ef8c",
+     "source_row_number": 11665,
+     "source_row_sha256": "72598886f546ef8ca927cf44bb5469eec903c628f5c4c74ca49c441db27e18b2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 104397.3189455585,
+     "value_gbp_decimal": "104397.3189455585"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11666:e4413c7487d85ddf",
+     "source_row_number": 11666,
+     "source_row_sha256": "e4413c7487d85ddf952c851cfea393de52b615afdf9ec3ee68b0d459c2655948",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -312921791.2621155,
+     "value_gbp_decimal": "-312921791.2621155"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11667:35345df3785dfdea",
+     "source_row_number": 11667,
+     "source_row_sha256": "35345df3785dfdea5c9c3487934515dbd8495fc349255220d3d5370cfddcde0c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -139433648.31822416,
+     "value_gbp_decimal": "-139433648.31822416"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11668:a076a7d6b3992e7c",
+     "source_row_number": 11668,
+     "source_row_sha256": "a076a7d6b3992e7c366009a3bd83c1cd322acbed4941ebc65ac0219625f2835a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -125022028.69605237,
+     "value_gbp_decimal": "-125022028.69605237"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+     "source_row_number": 11669,
+     "source_row_sha256": "1cedd72c387ad84b42fe87e2dad476f45a007058caa52b03b9974b8821e13fcb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -129843394.06867449,
+     "value_gbp_decimal": "-129843394.06867449"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11670:74ebee9530b9724f",
+     "source_row_number": 11670,
+     "source_row_sha256": "74ebee9530b9724fdf41d4dd70ed72ce3b139460e99b3ec6587174516d5f4d17",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11671:291070a94715062c",
+     "source_row_number": 11671,
+     "source_row_sha256": "291070a94715062cf23d2cd0e28c0103296a9a453a521ebdfe69c4927dae8785",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 23737482906.08718,
+     "value_gbp_decimal": "23737482906.08718"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11672:0b55202125025854",
+     "source_row_number": 11672,
+     "source_row_sha256": "0b55202125025854efa92804fa8619dc539359c66d362066e97422140bd5ce51",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 23923342053.649563,
+     "value_gbp_decimal": "23923342053.649563"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11673:94b8906a8929f113",
+     "source_row_number": 11673,
+     "source_row_sha256": "94b8906a8929f11391756951552d5bbecb228cadde418017110dfb35aead2bab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 24166582486.907063,
+     "value_gbp_decimal": "24166582486.907063"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11674:6dd4d473c559cbea",
+     "source_row_number": 11674,
+     "source_row_sha256": "6dd4d473c559cbea6e719573d9766a83685fa6cbae7dda7f97bcd050fedc19be",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 24873640251.083874,
+     "value_gbp_decimal": "24873640251.083874"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Employment Allowance increase to \u00a310,500 and removal of the \u00a3100,000 eligibility test: no firm entity or Employment Allowance formula.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+     "source_row_number": 11675,
+     "source_row_sha256": "286359ea5a53fc9425eb2487b810085e74bad5f52c9bdfec0aa445872d375c53",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 25624586204.164253,
+     "value_gbp_decimal": "25624586204.164253"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11676:611f8e9e96a6b92d",
+     "source_row_number": 11676,
+     "source_row_sha256": "611f8e9e96a6b92de224de3dfd6d2ba12b796fd7e1935cec4124db345349df03",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11677:38177db5dd288931",
+     "source_row_number": 11677,
+     "source_row_sha256": "38177db5dd28893117d26a9fbcd3d2c53942e89c37c91338ded46d9409c5e145",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 32349658.066893354,
+     "value_gbp_decimal": "32349658.066893354"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11678:cf7e6fb3e86bb47c",
+     "source_row_number": 11678,
+     "source_row_sha256": "cf7e6fb3e86bb47cd6ac3ee74bbdf4c91903c17c5cb63d17e87a12fcce506493",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 104302519.83016719,
+     "value_gbp_decimal": "104302519.83016719"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11679:80b7d4c0d69f1c59",
+     "source_row_number": 11679,
+     "source_row_sha256": "80b7d4c0d69f1c595191e6d32c1e89a3edbc3a32e0f4f33ee2a3f97f48790e4d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 157878460.38779414,
+     "value_gbp_decimal": "157878460.38779414"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11680:1df0b2733f687ca0",
+     "source_row_number": 11680,
+     "source_row_sha256": "1df0b2733f687ca05e5b9f23e9b21e1f40389316223daa019fad7c8a54a8f1cb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 197370614.57409978,
+     "value_gbp_decimal": "197370614.57409978"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11681:83ebf7f916ba0b8d",
+     "source_row_number": 11681,
+     "source_row_sha256": "83ebf7f916ba0b8d2a09a039f2c9fc19ed53b0bc2127345f59fd2bf9a1821b75",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 231671928.62583068,
+     "value_gbp_decimal": "231671928.62583068"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22817:2cc3a9f8dc1f5233",
+     "source_row_number": 22817,
+     "source_row_sha256": "2cc3a9f8dc1f523327a18503bce2bfee9bbfe46b72d1f38f07e76f24eb0ad5aa",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22818:aeea2c28b98a2cfa",
+     "source_row_number": 22818,
+     "source_row_sha256": "aeea2c28b98a2cfa831584264b746386b97b2b7b15e7b9982130764592b493b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 7679.083794280304,
+     "value_gbp_decimal": "7679.083794280304"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22819:dd2ccd436f0e20b2",
+     "source_row_number": 22819,
+     "source_row_sha256": "dd2ccd436f0e20b255a79b3660b8ac54ffde1e023a58d86399342c107088dc4d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -22555697.86413367,
+     "value_gbp_decimal": "-22555697.86413367"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22820:f6b54a5fbcdee6cb",
+     "source_row_number": 22820,
+     "source_row_sha256": "f6b54a5fbcdee6cb03499f0bd3e01e000b59c19f066be092acd9cbee0820bb95",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -12795546.945261901,
+     "value_gbp_decimal": "-12795546.945261901"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22821:be2053a7986ecc49",
+     "source_row_number": 22821,
+     "source_row_sha256": "be2053a7986ecc49f2b25af1110da79a2c3cdd5b6b29c6a8682f89ee32a44bc4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -13334609.397444367,
+     "value_gbp_decimal": "-13334609.397444367"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22822:be5f3270a974f57f",
+     "source_row_number": 22822,
+     "source_row_sha256": "be5f3270a974f57f84294473ef769e734edc130f4767c192b713c03ab7a2e88d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -14739180.416154342,
+     "value_gbp_decimal": "-14739180.416154342"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22823:daffa02a25835b38",
+     "source_row_number": 22823,
+     "source_row_sha256": "daffa02a25835b3861ee97b3dbfc721b1a5791309817a99786a7fec7fd2f7287",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22824:43a72c43eb1bd902",
+     "source_row_number": 22824,
+     "source_row_sha256": "43a72c43eb1bd902bced6cfa605b7a6a04d319d47143609216526ca48bdca0cb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": 593.4454839152991,
+     "value_gbp_decimal": "593.4454839152991"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22825:edacdcc46eb06fe4",
+     "source_row_number": 22825,
+     "source_row_sha256": "edacdcc46eb06fe48548e2c7eea972bffcfbcf9e96dcc96be21d86df157b37ed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -2722169.4714540956,
+     "value_gbp_decimal": "-2722169.4714540956"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22826:318fb1def1dc970d",
+     "source_row_number": 22826,
+     "source_row_sha256": "318fb1def1dc970d15ed21ef8d2a4f03df8569ed297b0469cb3d965e23a55a9e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -1695682.812090235,
+     "value_gbp_decimal": "-1695682.812090235"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22827:9881af9ed6467d43",
+     "source_row_number": 22827,
+     "source_row_sha256": "9881af9ed6467d4325ac3c9098bbbbe2abdfd89349e15d2a8d72136be2325e43",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -1876637.8792906133,
+     "value_gbp_decimal": "-1876637.8792906133"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22828:f93a41b9d86839e9",
+     "source_row_number": 22828,
+     "source_row_sha256": "f93a41b9d86839e9d75bce89f0496e6a260a572164e808766a2adb6dc1d7f575",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+     "value_gbp": -2096171.2099097595,
+     "value_gbp_decimal": "-2096171.2099097595"
+    }
+   ],
+   "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": {
+      "baseline_world": 0.138,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 175,
+      "current_law": 96.153846,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 96.153846,
+      "reform_world": 96.153846
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": {
+      "baseline_world": 0.138,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 175,
+      "current_law": 96.153846,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 96.153846,
+      "reform_world": 96.153846
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -8092876935.234375,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -129843394.06867449,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 98161668.27258301,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 80928769.35234375
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -7994715266.961792,
+   "key": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 80928769.35234375,
+   "year": 2029
+  },
+  {
+   "base_gbp": 25792458746.42136,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 25624586204.164253,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 47612329.00323868,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 25840071075.4246,
+   "key": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 258400710.754246,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 231671928.62583068,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11681:83ebf7f916ba0b8d",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -14739180.416154342,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22822:be5f3270a974f57f",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -2096171.2099097595,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22828:f93a41b9d86839e9",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 17699581811.186985,
+   "context": {},
+   "delta_gbp": 145773997.2758217,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 17845355808.462807,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 178453558.08462808,
+   "year": 2029
+  },
+  {
+   "base_gbp": -8092876935.234375,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 98161668.27258301,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 80928769.35234375
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -7994715266.961792,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 80928769.35234375,
+   "year": 2029
+  },
+  {
+   "base_gbp": -1450619444.7683945,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 416470.0987548828,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": -1450202974.6696396,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 14506194.447683945,
+   "year": 2029
+  },
+  {
+   "base_gbp": 27241694068.63434,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 47063326.279296875,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 27288757394.913635,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 272887573.9491364,
+   "year": 2029
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": 1384122.5554156303,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 132532.62518644333,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 1516655.1806020737,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__employer_nics_package --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__employer_nics_package --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -8092876935.234375,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -7994715266.961792,
+   "obr_value_gbp": -129843394.06867449,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+   "source_row_number": 11669,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 25792458746.42136,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 25840071075.4246,
+   "obr_value_gbp": 25624586204.164253,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+   "source_row_number": 11675,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 231671928.62583068,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11681:83ebf7f916ba0b8d",
+   "source_row_number": 11681,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -14739180.416154342,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:22822:be5f3270a974f57f",
+   "source_row_number": 22822,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -2096171.2099097595,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:22828:f93a41b9d86839e9",
+   "source_row_number": 22828,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": -8092876935.234375,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -7994715266.961792,
+   "obr_value_gbp": -129843394.06867449,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+   "source_row_number": 11669,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 25792458746.42136,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 25840071075.4246,
+   "obr_value_gbp": 25624586204.164253,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+   "source_row_number": 11675,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 231671928.62583068,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:11681:83ebf7f916ba0b8d",
+   "source_row_number": 11681,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -14739180.416154342,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:22822:be5f3270a974f57f",
+   "source_row_number": 22822,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -2096171.2099097595,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:22828:f93a41b9d86839e9",
+   "source_row_number": 22828,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+ "year": 2029
+}

@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "edccae3f66754b9178a1ec206febc557a48d8554bde7a294d7a8e5cc733b5f30",
+  "COMPARISON.json": "8eef52c7fda999e6e451cf6571f51ddb6287f4737cb5f13920040e121e01f4d0",
+  "COMPARISON.md": "2f28baf93fad05b9c7238d58e1f189d28e4ddfb6b037ae056331aa5d3ab971e9"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "67596fb1a7b1299cc548bf81c752085e39377a66e17cfd534293cd9ae84445fb",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "dd6c812e615136c51ed3d6f876e746e29bda2a1a5ca0e4f302056dfed38457fe",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.139.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "83045904fb1e136a8d3d61040a8138f351f810a0e33a4fb32eb903cb4d216684"
+}
