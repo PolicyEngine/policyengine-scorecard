@@ -1,0 +1,239 @@
+[
+ {
+  "id": "survey-bill-below-dwp",
+  "claims": [
+   "dwp_ame_nominal_fy2039"
+  ],
+  "status": "comparable",
+  "explains_gap": true,
+  "cause": "DWP's £15bn is for Great Britain. The dashboard sets it beside its UK figure, £11.14bn (26% below), and the results file's Great Britain figure is £10.83bn (28% below). Much of the gap is the size of the pension bill. On any one path the gross saving is a fixed share of the basic and new State Pension bill: the engine fails a run unless every such pension scales by the ratio of the two rules' amounts (engine.py), and the results file's paired run on Microcosm, whose 2026-27 basic and new bill is 10.1% larger, raises the 2039-40 saving by £1.12bn with the share unchanged (expected_value.paired_difference.gross_share_flat_rate_spending_pct: 0.0000001 points). The dashboard's basic and new State Pension spending in Great Britain is 84 to 86% of DWP's figure, which includes payments abroad (flat_rate_bn: 0.856 in 2026-27, 0.837 in 2030-31; coverage.by_year). DWP separates payments abroad (£5.9bn in 2026-27, £6.6bn in 2030-31) only for all State Pension types together, so the like-for-like shortfall is about 10 to 16%. The Enhanced FRS has 11.16m recipients in Great Britain against DWP's 12.15m in 2026-27, and the method grows the survey's own counts by ONS growth rather than matching ONS levels (METHOD.md), so the shortfall carries forward. On the OBR-wedge path the dashboard's 2039-40 State Pension bill under the triple lock is £243.2bn for the UK, 85% of the £286bn the Resolution Foundation cites for that year; RF does not say whether that includes payments abroad, which the survey omits. Taking the bill shortfall out leaves the Great Britain figure about 14 to 19% below DWP's, and the paired Microcosm run, whose basic and new bill is 0.94 of DWP's figure including payments abroad, gives £11.94bn for Great Britain, 20% below: inside the threshold either way. The remainder is consistent with a different uprating path, with Pensim3's projection of the population and pension types after 2030-31, or with DWP's rounding to £1bn, and none of these can be checked. DWP's page says the analysis 'applies a path for uprating' but does not publish it. Asked for its yearly earnings and CPI assumptions, DWP answered that the analysis 'did not use single year assumptions for earnings or prices growth' (HL3774). This is an accounting decomposition from measured bills and one paired run, not the matched full-run counterfactual the analysis's issue #13 asks for.",
+  "basis": [
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/src/triple_lock/engine.py#L1166-L1172"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/docs/METHOD.md#L63"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/state-pension-uprating"
+   },
+   {
+    "kind": "document",
+    "ref": "https://questions-statements.parliament.uk/written-questions/detail/2026-10-05/hl3774"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/comment/why-nobody-knows-how-much-well-save-from-the-triple-lock-announcement/"
+   },
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/issues/13"
+   }
+  ]
+ },
+ {
+  "id": "dwp-real-terms-table",
+  "claims": [
+   "dwp_ame_real_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "DWP's Table 2 gives the same saving in 2025-26 prices; the dashboard publishes cash figures, which DWP gives in Table 1, compared under survey-bill-below-dwp.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/state-pension-uprating"
+   }
+  ]
+ },
+ {
+  "id": "dwp-relative-vs-absolute-poverty",
+  "claims": [
+   "dwp_pensioner_relative_poverty_ahc_fy2034",
+   "dwp_pensioner_relative_poverty_ahc_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "DWP's Chart 1 is relative low income (below 60% of a median projected forward with average earnings) for pensioners in Great Britain under the adjusted Triple Lock. The dashboard prints pensioner poverty levels on an absolute line (the population step's bars) and relative poverty only as the change between the rules, so no published figure measures the same thing. Its results file does hold the central path's relative level, which the page does not show: 13.85% in 2034-35 and 13.77% in 2039-40 under the plan (central.run.poverty_pct), against DWP's chart readings of about 10.3% and 9.2%. DWP projects the population and individual pension outcomes in Pensim3; the dashboard holds survey ages fixed and reweights them to the ONS projection (results.json assumptions[0]). Nothing measured here separates that difference from others, so no cause of the level gap is claimed.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/state-pension-uprating"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/src/components/StepPopulation.jsx#L182-L190"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   }
+  ]
+ },
+ {
+  "id": "cbp-full-rate-base-and-own-paths",
+  "claims": [
+   "cbp_tool_gross_fy2031",
+   "cbp_tool_gross_fy2032",
+   "cbp_tool_gross_fy2033",
+   "cbp_tool_gross_fy2034",
+   "cbp_tool_gross_fy2035",
+   "cbp_tool_gross_fy2036",
+   "cbp_tool_gross_fy2037",
+   "cbp_tool_gross_fy2038",
+   "cbp_tool_gross_fy2039"
+  ],
+  "status": "comparable",
+  "explains_gap": true,
+  "cause": "Two differences documented in CBP's methodology put its savings above the dashboard's. First, the spending base, which 'the savings scale with'. CBP counts 13.39 million pensioners in 2026 (tool_data.json population: 5.89m new, 7.51m basic), from DWP's caseload, which includes pensioners abroad (CBP leaves only their share out of its tax calculation), against the survey's 11.46m UK recipients (results.json coverage). It prices each at the full weekly rate (£241.30 new, £184.90 basic), which 'ignores partial entitlements'. That makes CBP's base about £146bn in 2026-27 against the dashboard's £115.2bn UK bill, 27% larger: a count 17% higher, and full rates 8 to 9% above survey amounts. By 2039-40 the gap narrows to about 23% at 2026 rates (CBP's 15.05m pensioners against the dashboard's central-path bill deflated by its own triple-lock index). The dashboard's saving is a fixed share of its bill on each path (engine.py), so the base accounts for about 70% of the 2039-40 gap, where CBP's £14.90bn is 34% above the dashboard's £11.14bn. Second, the paths. CBP's baseline is 'the model's own projection of the Triple Lock, not the OBR's forecast, so savings will not match a costing scored against the OBR's Economic and Fiscal Outlook'. CBP says its inflation 'settles too high' (2.9% a year over 2032-49) and its earnings growth is 'too volatile', both raising the savings, while normal shocks understate large inflation surprises, which works the other way ('the net effect is unclear'). The dashboard's paths are shifted so their means match the OBR's March 2026 central path, on which CPI is 2.0% and the earnings input stays below 2.5% for the April 2028 to 2031 rises. On that path the 2.5% floor sets both rules' rise and the plan saves nothing until 2032-33 (central.run.rate_sources, central.run.saving_bn). That is where the early years part most: the dashboard is 59% below CBP in 2031-32 (£0.22bn against £0.53bn) and 37% below in 2032-33.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://triple-lock.britishprogress.org/methodology"
+   },
+   {
+    "kind": "document",
+    "ref": "https://triple-lock.britishprogress.org/data/tool_data.json"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/src/triple_lock/engine.py#L1166-L1172"
+   }
+  ]
+ },
+ {
+  "id": "cbp-net-after-income-tax-only",
+  "claims": [
+   "cbp_tool_net_fy2031",
+   "cbp_tool_net_fy2032",
+   "cbp_tool_net_fy2033",
+   "cbp_tool_net_fy2034",
+   "cbp_tool_net_fy2035",
+   "cbp_tool_net_fy2036",
+   "cbp_tool_net_fy2037",
+   "cbp_tool_net_fy2038",
+   "cbp_tool_net_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "CBP's net figures subtract income tax only, and its model 'does not include Pension Credit, whose spending would rise for some pensioners if the State Pension grew more slowly'. The dashboard's net saving also takes off higher Pension Credit, Housing Benefit, council tax reduction and other benefits: in 2039-40 £0.81bn of the £3.28bn between its gross and net figures (results.json expected_value.estimates.primary.component.*). The two net figures measure different things.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://triple-lock.britishprogress.org/methodology"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   }
+  ]
+ },
+ {
+  "id": "ifs-price-basis-not-stated",
+  "claims": [
+   "ifs_saving_fy2034"
+  ],
+  "status": "comparable",
+  "explains_gap": false,
+  "cause": "The comparison takes IFS's 'around £4 billion' as cash and gross, the basis of the dashboard's figure; IFS states neither. If it is in today's prices, as the £11bn in the paragraph before it is, its cash value in 2034-35 is higher (about £4.7bn at 2% a year inflation) and the gap about -32%. If it is net of tax, the dashboard's figure is £2.30bn net and the gap -43%. Either reading would put it over the threshold, so the -20% here rests on the cash, gross reading.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://ifs.org.uk/articles/savings-triple-lock-reform-could-be-large-will-not-be-able-fund-social-care"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   }
+  ]
+ },
+ {
+  "id": "ifs-range-of-outcomes",
+  "claims": [
+   "ifs_range_low_fy2039",
+   "ifs_range_high_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "IFS's £4bn to £20bn is a range of outcomes, where the saving 'could reasonably be'. The dashboard shows the same kind of range, its 'Middle 80% of paths' card: £3.9bn to £18.9bn gross for 2039-40, about 2% and 6% below IFS's ends. But the browser computes that band from the paths (dataHelpers.js getSavingSpread), and the results file stores no percentile to pin. The nearest stored figures, the lowest and highest of the reweightings the Summary tab charts (£7.05bn, £12.41bn), are expected values under different calibrations of the same runs, not outcomes. IFS does not say whether its range is in cash or today's prices.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://ifs.org.uk/articles/savings-triple-lock-reform-could-be-large-will-not-be-able-fund-social-care"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/src/lib/dataHelpers.js#L397"
+   }
+  ]
+ },
+ {
+  "id": "rf-one-decade-replayed",
+  "claims": [
+   "rf_decade_2010s_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "RF's £24bn is the saving if the 2030s repeat the price and earnings record of the decade after 2016, set beside 'nothing' if they repeat the 1990s or 2000s: one historical path per decade, not an expectation over paths like the dashboard's £11.14bn.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/comment/why-nobody-knows-how-much-well-save-from-the-triple-lock-announcement/"
+   }
+  ]
+ },
+ {
+  "id": "rf-reconstruction-of-government-figure",
+  "claims": [
+   "rf_reconstruction_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "RF's 'around £15 billion' reproduces the government's figure. It takes the OBR's average triple-lock premium of 0.53 points a year, compounds it over ten years (5.43%), and applies it to the whole projected State Pension bill of £286bn in 2039-40. That bill includes the pre-2016 components DWP says the triple lock does not uprate. It is not a run of the plan's rule on a path. The dashboard's nearest figure, its OBR-wedge path (£10.29bn, UK), runs both rules with the triple lock paying the OBR's long-term premium on the survey's flat-rate bill.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/comment/why-nobody-knows-how-much-well-save-from-the-triple-lock-announcement/"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/state-pension-uprating"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-triple-lock/blob/5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d/dashboard/public/data/results.json"
+   }
+  ]
+ },
+ {
+  "id": "rf-triple-lock-against-earnings-link",
+  "claims": [
+   "rf_typical_after_five_years_fy2034",
+   "rf_typical_after_ten_years_fy2039"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "RF gives £5bn after five years and £15bn after ten as what the triple lock 'tends to increase the pension bill by', having described the replacement as 'a system that grows in line with earnings in the long-run'. Its next paragraph says the new mechanism keeps minimum rises of inflation or 2.5% and would have left the pension 4.5% above 'just a link to earnings' since 2012. So RF approximates the plan by an earnings link and leaves out the CPI and 2.5% floor the dashboard models. The release presents the figures as the saving from ending the triple lock, and The Telegraph (30 September 2026) reported them as the plan's.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/press-releases/recycling-savings-from-ending-the-triple-lock-into-social-care-is-good-news-for-vulnerable-pensioners/"
+   }
+  ]
+ }
+]

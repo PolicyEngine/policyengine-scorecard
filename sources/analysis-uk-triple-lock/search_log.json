@@ -1,0 +1,326 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-21",
+   "kind": "backfill",
+   "by": "subfleet:20261021-113608-cmp-uk-triple-lock",
+   "producers": [
+    {
+     "producer": "obr",
+     "result": "found",
+     "queries": [
+      "site:obr.uk triple lock cost state pension uprating 2026",
+      "OBR adjusted triple lock April 2030 Burnham costing state pension earnings link",
+      "OBR \"£12.6 billion\" triple lock earnings uprating state pension 2026-27",
+      "OBR \"0.53 percentage points\" triple lock earnings",
+      "site:obr.uk triple lock adjusted 2030 state pension saving",
+      "OBR Burnham adjusted triple lock costing October 2026 Budget state pension"
+     ],
+     "checked": [
+      "https://obr.uk/frs/fiscal-risks-and-sustainability-july-2026/",
+      "https://obr.uk/frs/fiscal-risks-and-sustainability-july-2025/",
+      "https://obr.uk/docs/dlm_uploads/Long-term-economic-determinants-March-2026-EFO.xlsx"
+     ],
+     "claims": [
+      "obr_wedge_frs2026",
+      "obr_lted_premium"
+     ],
+     "note": "No OBR costing of the plan was found (none is scored before the 28 October 2026 Budget). Staged: the OBR's triple-lock wedge over earnings (0.56 points, July 2026 FRS; 0.6 points, the 2025 long-term determinants note), against the dashboard's 0.55 points. Not staged: the FRS's £15.5bn (2025 FRS) and its 50-year % of GDP figures, which compare the triple lock with earnings uprating, a world the dashboard does not score."
+    },
+    {
+     "producer": "hm_treasury",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"HM Treasury\" triple lock adjusted 2030 state pension savings",
+      "site:gov.uk \"HM Treasury\" adjusted triple lock state pension 2030 savings social care"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/news/prime-minister-andy-burnham-sets-out-plans-for-a-new-national-care-service"
+     ],
+     "claims": [],
+     "note": "The Prime Minister's Office release of 29 September restates DWP's £15bn and £50bn; no Treasury costing was found."
+    },
+    {
+     "producer": "uk_hmrc",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"tax information and impact note\" state pension triple lock",
+      "HMRC income tax state pension adjusted triple lock 2030 tax receipts estimate"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No tax information and impact note or HMRC estimate of the plan's income tax effect was found."
+    },
+    {
+     "producer": "dwp",
+     "result": "found",
+     "queries": [
+      "site:gov.uk DWP \"impact assessment\" state pension uprating adjusted triple lock"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/state-pension-uprating",
+      "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026/triple-lock-reform-factsheet",
+      "https://www.gov.uk/government/publications/state-pension-uprating-analysis-2026",
+      "https://questions-statements.parliament.uk/written-questions/detail/2026-10-05/hl3774",
+      "https://assets.publishing.service.gov.uk/media/6abbac623fe1a15db6aff25e/Adjusted_TL_poverty_chart.svg"
+     ],
+     "claims": [
+      "dwp_ame_nominal_fy2039",
+      "dwp_ame_real_fy2039",
+      "dwp_pensioner_relative_poverty_ahc_fy2034",
+      "dwp_pensioner_relative_poverty_ahc_fy2039"
+     ],
+     "note": "Staged: Table 1 (nominal) and Table 2 (2025-26 prices) for 2039-40, and Chart 1's pensioner relative poverty under the adjusted Triple Lock for 2034-35 and 2039-40, read from the chart's vector file. Not staged: 2049-50 (-£50bn, -£30bn) and the chart's labelled points (about 14% in 2024-25, about 8% in 2049-50), outside the dashboard's years. The factsheet (6 October) gives no figure. Asked for its yearly earnings and CPI assumptions, DWP answered that the analysis 'did not use single year assumptions for earnings or prices growth' (HL3774, 15 October)."
+    },
+    {
+     "producer": "dfe",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"Department for Education\" triple lock state pension"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No DfE publication on the plan was found."
+    },
+    {
+     "producer": "scottish_fiscal_commission",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "A UK-wide analysis of a reserved benefit; the Commission's list covers Scotland only."
+    },
+    {
+     "producer": "ifs",
+     "result": "found",
+     "queries": [
+      "site:ifs.org.uk triple lock reform savings social care 2039-40",
+      "IFS Burnham triple lock earnings link April 2030 savings estimate October 2026",
+      "\"no significant saving before 2034\" triple lock",
+      "IFS \"has the triple lock been fixed\"",
+      "site:ifs.org.uk triple lock October 2026"
+     ],
+     "checked": [
+      "https://ifs.org.uk/articles/how-will-new-triple-lock-work-and-what-effects-will-it-have",
+      "https://ifs.org.uk/articles/savings-triple-lock-reform-could-be-large-will-not-be-able-fund-social-care",
+      "https://ifs.org.uk/articles/new-triple-lock-much-improved-not-perfect-and-not-enough-fund-universal-social-care",
+      "https://ifs.org.uk/system/files/2026-09/Triple%20lock%20datafile.xlsx"
+     ],
+     "claims": [
+      "ifs_saving_fy2034",
+      "ifs_range_low_fy2039",
+      "ifs_range_high_fy2039",
+      "ifs_since_2011_fy2026"
+     ],
+     "note": "Staged: around £4bn in 2034-35, the £4bn to £20bn range for 2039-40, and £9bn lower spending in 2026-27 had the new rule applied since 2011. Not staged: the government's £15bn and £11bn as IFS restates them; the old triple lock's £16bn in 2026-27 against earnings indexation (a world the dashboard does not score); the 6% real rise since 2010 (the dashboard publishes no real-growth figure). The IFS response of 29 September restates the £9bn and £16bn. 'Has the triple lock been fixed?' is a podcast episode and was not read. IFS article pages return HTTP 403 to automated fetches; they were read from Wayback Machine captures."
+    },
+    {
+     "producer": "resolution_foundation",
+     "result": "found",
+     "queries": [
+      "site:resolutionfoundation.org triple lock 2026 social care savings Burnham",
+      "Resolution Foundation adjusted triple lock 2030 cost pensioners lose analysis",
+      "site:resolutionfoundation.org adjusted triple lock October 2026"
+     ],
+     "checked": [
+      "https://www.resolutionfoundation.org/comment/why-nobody-knows-how-much-well-save-from-the-triple-lock-announcement/",
+      "https://www.resolutionfoundation.org/press-releases/recycling-savings-from-ending-the-triple-lock-into-social-care-is-good-news-for-vulnerable-pensioners/",
+      "https://www.resolutionfoundation.org/publications/what-a-ratchet/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/06/What-a-ratchet.pdf",
+      "https://www.resolutionfoundation.org/press-releases/pension-commissions-evidence-should-be-used-to-set-end-date-for-triple-lock/",
+      "https://www.resolutionfoundation.org/press-releases/government-should-call-time-on-the-costly-triple-lock-ratchet/",
+      "https://www.resolutionfoundation.org/comment/the-triple-lock-has-been-far-more-damaging-than-i-ever-feared/"
+     ],
+     "claims": [
+      "rf_decade_2010s_fy2039",
+      "rf_reconstruction_fy2039",
+      "rf_typical_after_five_years_fy2034",
+      "rf_typical_after_ten_years_fy2039",
+      "rf_level_since_2012_fy2026"
+     ],
+     "note": "Staged: £24bn in 2039-40 if the 2030s repeat the decade after 2016; RF's reconstruction of the government's figure (around £15bn, staged as restated); the press release's 'around £5 billion annually after five years, but by £15 billion after ten years', which press coverage reported as the plan's saving, set beside the dashboard with a concept mismatch because RF gives it as the triple lock against a system rising with earnings; the pension 5.9% lower in 2026-27 had the new mechanism applied since 2012. Not staged: £32bn and £24bn for the triple lock against an earnings uprating, the new mechanism 4.5% above an earnings link, the 8.3% decade gap, and What a ratchet!'s £9bn (and the OBR's £12.6bn it reports) and £650m, all against an earnings link or RF's smoothed earnings link. The May and June 2026 releases and the July 2025 comment predate the plan."
+    },
+    {
+     "producer": "centax",
+     "result": "none_found",
+     "queries": [
+      "site:centax.org.uk triple lock state pension",
+      "site:centax.org.uk state pension income tax pensioners 2026"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "centre_for_british_progress",
+     "result": "found",
+     "queries": [
+      "\"Centre for British Progress\" triple lock state pension cost",
+      "britishprogress.org fix the triple lock to save it report savings estimate"
+     ],
+     "checked": [
+      "https://britishprogress.substack.com/p/how-much-will-the-governments-triple",
+      "https://triple-lock.britishprogress.org/solutions.html",
+      "https://triple-lock.britishprogress.org/methodology",
+      "https://triple-lock.britishprogress.org/data/tool_data.json",
+      "https://britishprogress.org/reports/fix-the-triple-lock-to-save-it"
+     ],
+     "claims": [
+      "cbp_post_mean_fy2034",
+      "cbp_post_pretax_fy2039",
+      "cbp_tool_gross_fy2031",
+      "cbp_tool_gross_fy2032",
+      "cbp_tool_gross_fy2033",
+      "cbp_tool_gross_fy2034",
+      "cbp_tool_gross_fy2035",
+      "cbp_tool_gross_fy2036",
+      "cbp_tool_gross_fy2037",
+      "cbp_tool_gross_fy2038",
+      "cbp_tool_gross_fy2039",
+      "cbp_tool_net_fy2031",
+      "cbp_tool_net_fy2032",
+      "cbp_tool_net_fy2033",
+      "cbp_tool_net_fy2034",
+      "cbp_tool_net_fy2035",
+      "cbp_tool_net_fy2036",
+      "cbp_tool_net_fy2037",
+      "cbp_tool_net_fy2038",
+      "cbp_tool_net_fy2039"
+     ],
+     "note": "Staged: the post's £3bn (2034/35) and £14.3bn pre-tax (2039/40), written on the 1 October model, and the calculator's 6 October export, mean savings before and after income tax for 2031/32 to 2039/40 (the 'RF Smoothed Triple Lock', which the calculator labels the PM's plan from April 2030). Not staged: 2040/41 onwards (outside the dashboard's years), the 10th to 90th percentiles (the dashboard stores no percentile to set beside them), and the November 2025 report 'Fix the triple lock to save it', which costs CBP's own lookback reform."
+    },
+    {
+     "producer": "ippr",
+     "result": "none_found",
+     "queries": [
+      "site:ippr.org triple lock state pension 2026 Burnham",
+      "IPPR triple lock Burnham 2030 state pension pensioner poverty response"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "fabian_society",
+     "result": "none_found",
+     "queries": [
+      "site:fabians.org.uk triple lock pension",
+      "Fabian Society triple lock reform 2026 state pension earnings link"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "niesr",
+     "result": "none_found",
+     "queries": [
+      "site:niesr.ac.uk triple lock state pension 2030",
+      "NIESR triple lock adjusted 2030 Burnham state pension analysis"
+     ],
+     "checked": [
+      "https://niesr.ac.uk/blog/triple-lock-pensions-urgent-case-change"
+     ],
+     "claims": [],
+     "note": "The only NIESR piece found, 'The triple lock on pensions: An urgent case for change?', is from August 2016."
+    },
+    {
+     "producer": "ukmod",
+     "result": "none_found",
+     "queries": [
+      "UKMOD CeMPA triple lock state pension uprating simulation",
+      "UKMOD CeMPA microsimulation state pension triple lock reform 2026 working paper"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "lse_case",
+     "result": "none_found",
+     "queries": [
+      "LSE CASE paper triple lock state pension uprating pensioner poverty",
+      "site:sticerd.lse.ac.uk triple lock state pension"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "jrf",
+     "result": "none_found",
+     "queries": [
+      "site:jrf.org.uk triple lock pensioner poverty 2026",
+      "Joseph Rowntree Foundation triple lock change 2030 pensioner poverty Burnham"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "landman_economics",
+     "result": "none_found",
+     "queries": [
+      "\"Landman Economics\" triple lock state pension",
+      "Landman Economics state pension uprating triple lock distributional analysis 2026"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "tax_policy_associates",
+     "result": "none_found",
+     "queries": [
+      "site:taxpolicy.org.uk triple lock pension",
+      "Tax Policy Associates Dan Neidle triple lock state pension Burnham"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "academic",
+     "result": "none_found",
+     "queries": [
+      "working paper triple lock state pension indexation uncertainty fiscal cost stochastic simulation UK",
+      "triple lock state pension uprating reform cost uncertainty stochastic simulation paper 2024 2025 2026 smoothed earnings link",
+      "SSRN OR IZA OR ISER working paper \"triple lock\" state pension indexation United Kingdom 2025 2026",
+      "\"triple lock\" pensions journal article fiscal cost earnings indexation Fiscal Studies OR \"National Institute Economic Review\" OR \"Political Quarterly\" 2024 2025 2026"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No working paper or article estimating the plan was found; the uncertainty literature found (IFS R272, 2023) is the IFS's and costs the triple lock against earnings indexation."
+    },
+    {
+     "producer": "open_search",
+     "result": "found_not_staged",
+     "queries": [
+      "adjusted triple lock 2030 savings estimate pensioners lose per year analysis October 2026",
+      "Pensions Policy Institute adjusted triple lock 2030 analysis state pension value pensioners",
+      "House of Commons Library triple lock 2030 adjusted research briefing costs",
+      "House of Commons Library CBP-11126 triple lock",
+      "Burnham triple lock change pensioners worse off by 2040 £ a year AJ Bell OR Quilter OR \"Hargreaves Lansdown\" OR \"Royal London\" calculation",
+      "AJ Bell Burnham triple lock \"since 2011\" new state pension worth less per year analysis",
+      "\"£490\" \"triple lock\" Burnham basic state pension AJ Bell",
+      "\"triple lock\" Burnham plan estimate savings 2034-35 OR 2039-40 think tank analysis IEA OR \"Policy Exchange\" OR \"Tony Blair Institute\" OR \"Social Market Foundation\" OR Onward",
+      "Hansard 13 October 2026 Pensions Triple Lock debate savings estimate",
+      "scenarios.uk Burnham plan triple lock model savings"
+     ],
+     "checked": [
+      "https://moneyweek.com/personal-finance/state-pensions/state-pension-triple-lock-unsustainable-changing-mechanism-overdue",
+      "https://commonslibrary.parliament.uk/research-briefings/cbp-11126/",
+      "https://www.ii.co.uk/analysis-commentary/burnhams-triple-lock-shake-and-what-it-could-mean-pensioners-ii540447",
+      "https://www.cityam.com/?p=2461989",
+      "https://hannahritchie.substack.com/p/uk-triple-lock-pension-explainer",
+      "https://scenarios.uk/blog/burnham-plan-to-scrap-the-triple-lock",
+      "https://www.yahoo.com/news/politics/articles/scrapping-triple-lock-could-save-103014605.html"
+     ],
+     "claims": [],
+     "note": "AJ Bell: had the plan's method been used since 2011, the full new State Pension would be about £600 a year lower today and the full basic State Pension about £490 lower (Moneyweek, 2 October 2026). Only press coverage carries it; no AJ Bell primary was found, so it is not staged (the dashboard's comparable figure is the plan-from-2012 replay's weekly rate). The Commons Library briefing CBP-11126 returns HTTP 403 to automated fetches and has no Wayback capture, so it could not be read. The other pages checked restate DWP's or the IFS's figures."
+    }
+   ]
+  }
+ ]
+}
