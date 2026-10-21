@@ -1,0 +1,30 @@
+[
+ {
+  "id": "hours-draw-microcosm-1126",
+  "claims": [
+   "centax_static_central_fy2027",
+   "centax_static_central_fy2029",
+   "centax_static_high_cost_fy2027",
+   "centax_static_high_cost_fy2029",
+   "centax_static_low_cost_fy2027",
+   "centax_static_low_cost_fy2029"
+  ],
+  "status": "constructed",
+  "explains_gap": true,
+  "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
+  "basis": [
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/microcosm/issues/1126"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/blob/f25f0dbd46c31d336bde06898d801a1887a8cf89/data/results.json"
+   },
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8"
+   }
+  ]
+ }
+]

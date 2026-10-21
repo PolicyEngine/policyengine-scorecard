@@ -39,6 +39,7 @@ Chain order is dependency order and is part of the contract:
     uk_policy_effects  OBR published economic effects of policy
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
+    analysis_comparables  pre-publish comparables records (sources/analysis-*)
     be_pit_reform Belgian PIT-reform claims + Axiom result attachments
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
                 final so its 2026-08-21 lane update cannot be regressed by
@@ -60,6 +61,7 @@ from be import ingest_jrc_country_report, ingest_pit_reform_2026
 from nz import ingest_official_budget_scores
 
 from . import (
+    ingest_analysis_comparables,
     ingest_aspe_welfare_indicators,
     ingest_campaign,
     ingest_census_stc,
@@ -286,6 +288,15 @@ def build(db_path: Path) -> dict:
         # computed PE result reads "computed" rather than "ingested" (#136).
         ("uk_ab2025_lanes", lambda: ingest_uk_ab2025.advance_lanes(db_path)),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
+        # Pre-publish comparables (docs/COMPARABLES.md): every external
+        # estimate found for each PolicyEngine analysis, held out, with the
+        # analysis's own published figure as its result. Validates every
+        # sources/analysis-* directory first, so an incomplete record fails
+        # the build.
+        (
+            "analysis_comparables",
+            lambda: ingest_analysis_comparables.ingest(db_path),
+        ),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
     ]

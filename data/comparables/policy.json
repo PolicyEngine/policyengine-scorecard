@@ -1,0 +1,8 @@
+{
+  "_what": "Parameters of the pre-publish comparables gate (docs/COMPARABLES.md). Changing a value here changes what every analysis directory must explain; the validator and the published index read it, and nothing else defines it.",
+  "gap_threshold": 0.25,
+  "gap_rule": "relative gap = PolicyEngine value / external value in PolicyEngine's orientation - 1 (scorecard_db/signs.py orients the external value; an unsigned magnitude compares absolute values). A gap whose absolute value exceeds gap_threshold needs an annotation that names its cause and cites a basis before the analysis can be recorded as reviewed.",
+  "gap_threshold_status": "default proposed on 2026-10-21, queued for Max's ruling",
+  "reharvest_window_days": 183,
+  "reharvest_note": "Published analyses are searched again weekly for this many days after their registry date (the launchd job comparables-reharvest)."
+}

@@ -1,0 +1,396 @@
+{
+  "_what": "The producers a pre-publish comparables search must cover, by country (docs/COMPARABLES.md). Every search logs every producer listed for the analysis's country whose `added` date is on or before the search date: found, none_found, or not_applicable when `applies_to` excludes the analysis's scope. `slug` is the claim `source` a staged claim from this producer carries; `aliases` are other claim-source slugs already in this repository that count as the same producer. The list was seeded from Max's list of 2026-10-21; entries with `why` were added beyond it, for the reason given.",
+  "scopes": {
+    "UK": ["uk_wide", "great_britain", "england", "scotland", "wales", "northern_ireland", "local"],
+    "US": ["federal", "state", "local"]
+  },
+  "countries": {
+    "UK": [
+      {
+        "slug": "obr",
+        "name": "Office for Budget Responsibility",
+        "kind": "official",
+        "url": "https://obr.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": ["obr_efo", "obr_pmd", "obr_policy_effects"],
+        "search_hints": ["site:obr.uk"],
+        "where_to_look": ["Economic and fiscal outlook policy costings and supplementary tables", "Policy measures database", "Briefing papers and working papers"]
+      },
+      {
+        "slug": "hm_treasury",
+        "name": "HM Treasury",
+        "kind": "official",
+        "url": "https://www.gov.uk/government/organisations/hm-treasury",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:gov.uk \"HM Treasury\""],
+        "where_to_look": ["Budget and Spending Review policy costings documents", "Red book tables (Table 4.1 and the scorecard)", "Impact on households distributional analysis"]
+      },
+      {
+        "slug": "uk_hmrc",
+        "name": "HM Revenue and Customs",
+        "kind": "official",
+        "url": "https://www.gov.uk/government/organisations/hm-revenue-customs",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:gov.uk \"tax information and impact note\""],
+        "where_to_look": ["Tax information and impact notes", "Direct effects of illustrative tax changes (ready reckoner)", "Statistics releases"],
+        "why": "HMRC's tax information and impact notes are the official costing and affected-population counts for every tax measure; a tax analysis without them misses the official comparator."
+      },
+      {
+        "slug": "dwp",
+        "name": "Department for Work and Pensions",
+        "kind": "official",
+        "url": "https://www.gov.uk/government/organisations/department-for-work-pensions",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": ["dwp_takeup", "dwp_hbai", "dwp_pensions"],
+        "search_hints": ["site:gov.uk \"impact assessment\" DWP"],
+        "where_to_look": ["Impact assessments and equality analyses", "Benefit expenditure and caseload tables"],
+        "why": "DWP publishes the official impact assessments and costings for benefit measures, the counterpart of HMRC's notes for tax."
+      },
+      {
+        "slug": "dfe",
+        "name": "Department for Education",
+        "kind": "official",
+        "url": "https://www.gov.uk/government/organisations/department-for-education",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:gov.uk \"Department for Education\"", "site:explore-education-statistics.service.gov.uk"],
+        "where_to_look": ["Impact assessments of childcare and education measures", "Explore education statistics (funded early education take-up)", "Answers to parliamentary questions and released FOI estimates"],
+        "why": "DfE runs the funded childcare entitlements and publishes or releases the official estimates of their cost; the first search (the £100,000 childcare dashboard, 2026-10-21) found DfE's estimate of the support the limit withholds, which no listed producer covered."
+      },
+      {
+        "slug": "scottish_fiscal_commission",
+        "name": "Scottish Fiscal Commission",
+        "kind": "official",
+        "url": "https://fiscalcommission.scot/",
+        "added": "2026-10-21",
+        "applies_to": ["scotland"],
+        "aliases": [],
+        "search_hints": ["site:fiscalcommission.scot"],
+        "where_to_look": ["Scotland's Economic and Fiscal Forecasts policy costings"],
+        "why": "The official costing body for devolved Scottish tax and social security measures."
+      },
+      {
+        "slug": "ifs",
+        "name": "Institute for Fiscal Studies",
+        "kind": "think_tank",
+        "url": "https://ifs.org.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:ifs.org.uk"],
+        "where_to_look": ["Reports, briefing notes and comments", "Budget and Green Budget analysis", "Working papers"]
+      },
+      {
+        "slug": "resolution_foundation",
+        "name": "Resolution Foundation",
+        "kind": "think_tank",
+        "url": "https://www.resolutionfoundation.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:resolutionfoundation.org"],
+        "where_to_look": ["Reports, briefings and spotlights", "Budget responses"]
+      },
+      {
+        "slug": "centax",
+        "name": "Centre for the Analysis of Taxation (CenTax)",
+        "kind": "think_tank",
+        "url": "https://centax.org.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:centax.org.uk"],
+        "where_to_look": ["Reports and policy briefings (HMRC administrative data)"]
+      },
+      {
+        "slug": "centre_for_british_progress",
+        "name": "Centre for British Progress",
+        "kind": "think_tank",
+        "url": "https://www.britishprogress.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["\"Centre for British Progress\""],
+        "where_to_look": ["Reports and technical appendices"]
+      },
+      {
+        "slug": "ippr",
+        "name": "Institute for Public Policy Research",
+        "kind": "think_tank",
+        "url": "https://www.ippr.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:ippr.org"],
+        "where_to_look": ["Research and briefings"]
+      },
+      {
+        "slug": "fabian_society",
+        "name": "Fabian Society",
+        "kind": "think_tank",
+        "url": "https://fabians.org.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:fabians.org.uk"],
+        "where_to_look": ["Reports and policy papers"]
+      },
+      {
+        "slug": "niesr",
+        "name": "National Institute of Economic and Social Research",
+        "kind": "think_tank",
+        "url": "https://www.niesr.ac.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:niesr.ac.uk"],
+        "where_to_look": ["Publications, including the living standards and household analyses"]
+      },
+      {
+        "slug": "ukmod",
+        "name": "UKMOD (CeMPA, University of Essex)",
+        "kind": "model",
+        "url": "https://www.microsimulation.ac.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:microsimulation.ac.uk", "UKMOD CeMPA working paper"],
+        "where_to_look": ["CeMPA working papers and Budget briefs", "UKMOD country reports"]
+      },
+      {
+        "slug": "lse_case",
+        "name": "Centre for Analysis of Social Exclusion (LSE CASE)",
+        "kind": "academic",
+        "url": "https://sticerd.lse.ac.uk/case/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:sticerd.lse.ac.uk/case", "LSE CASE paper"],
+        "where_to_look": ["CASE papers and reports"]
+      },
+      {
+        "slug": "jrf",
+        "name": "Joseph Rowntree Foundation",
+        "kind": "think_tank",
+        "url": "https://www.jrf.org.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:jrf.org.uk"],
+        "where_to_look": ["Reports, analysis and Budget responses"]
+      },
+      {
+        "slug": "landman_economics",
+        "name": "Landman Economics",
+        "kind": "model",
+        "url": "https://www.landmaneconomics.co.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["\"Landman Economics\"", "site:landmaneconomics.co.uk"],
+        "where_to_look": ["Commissioned reports (often published by IPPR, RF, JRF, NEF or unions)"]
+      },
+      {
+        "slug": "tax_policy_associates",
+        "name": "Tax Policy Associates",
+        "kind": "think_tank",
+        "url": "https://taxpolicy.org.uk/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:taxpolicy.org.uk"],
+        "where_to_look": ["Reports and articles"]
+      },
+      {
+        "slug": "academic",
+        "name": "Academic working papers",
+        "kind": "academic",
+        "url": "https://scholar.google.com/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["Google Scholar", "SSRN", "IZA discussion papers", "CEPR / VoxEU", "Institute for Social and Economic Research working papers"],
+        "where_to_look": ["Working papers and journal articles from the last five years that estimate the same quantity"]
+      },
+      {
+        "slug": "open_search",
+        "name": "Open web search (any other producer)",
+        "kind": "open_search",
+        "url": "",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["the analysis's subject and search terms with cost, estimate, impact, households, poverty"],
+        "where_to_look": ["Any producer not listed above: other think tanks, charities, consultancies, unions, select committees, the Commons Library, press-reported estimates traced to their primary"],
+        "why": "A list never covers every producer; the Centre for British Progress estimate CenTax reviewed is the kind of comparable only an open search finds. A claim found here keeps its producer's own slug."
+      }
+    ],
+    "US": [
+      {
+        "slug": "cbo",
+        "name": "Congressional Budget Office",
+        "kind": "official",
+        "url": "https://www.cbo.gov/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:cbo.gov"],
+        "where_to_look": ["Cost estimates", "Budget options", "Distributional analyses and reports"]
+      },
+      {
+        "slug": "jct",
+        "name": "Joint Committee on Taxation",
+        "kind": "official",
+        "url": "https://www.jct.gov/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:jct.gov"],
+        "where_to_look": ["JCX revenue estimates", "Distributional tables", "Tax expenditure estimates"]
+      },
+      {
+        "slug": "tpc",
+        "name": "Urban-Brookings Tax Policy Center",
+        "kind": "model",
+        "url": "https://taxpolicycenter.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:taxpolicycenter.org"],
+        "where_to_look": ["Model estimates tables (T-tables)", "Briefs and TaxVox posts"]
+      },
+      {
+        "slug": "pwbm",
+        "name": "Penn Wharton Budget Model",
+        "kind": "model",
+        "url": "https://budgetmodel.wharton.upenn.edu/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:budgetmodel.wharton.upenn.edu"],
+        "where_to_look": ["Issue analyses and briefs"]
+      },
+      {
+        "slug": "budget_lab",
+        "name": "The Budget Lab at Yale",
+        "kind": "model",
+        "url": "https://budgetlab.yale.edu/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:budgetlab.yale.edu"],
+        "where_to_look": ["Research reports and trackers"]
+      },
+      {
+        "slug": "tax_foundation",
+        "name": "Tax Foundation",
+        "kind": "model",
+        "url": "https://taxfoundation.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:taxfoundation.org"],
+        "where_to_look": ["Research, including state tax analyses"]
+      },
+      {
+        "slug": "urban",
+        "name": "Urban Institute",
+        "kind": "model",
+        "url": "https://www.urban.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": ["urban_sotsn"],
+        "search_hints": ["site:urban.org"],
+        "where_to_look": ["TRIM3 and ATTIS analyses", "Research reports and features"]
+      },
+      {
+        "slug": "cbpp",
+        "name": "Center on Budget and Policy Priorities",
+        "kind": "think_tank",
+        "url": "https://www.cbpp.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:cbpp.org"],
+        "where_to_look": ["Reports and analyses"]
+      },
+      {
+        "slug": "itep",
+        "name": "Institute on Taxation and Economic Policy",
+        "kind": "model",
+        "url": "https://itep.org/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:itep.org"],
+        "where_to_look": ["Federal and state analyses (ITEP microsimulation model)"]
+      },
+      {
+        "slug": "cpsp",
+        "name": "Center on Poverty and Social Policy, Columbia University",
+        "kind": "academic",
+        "url": "https://www.povertycenter.columbia.edu/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["site:povertycenter.columbia.edu"],
+        "where_to_look": ["Poverty and Social Policy briefs", "Monthly poverty data"],
+        "why": "The most frequent independent estimator of the poverty effects of federal and state credits, which PolicyEngine's US analyses headline."
+      },
+      {
+        "slug": "crfb",
+        "name": "Committee for a Responsible Federal Budget",
+        "kind": "think_tank",
+        "url": "https://www.crfb.org/",
+        "added": "2026-10-21",
+        "applies_to": ["federal"],
+        "aliases": [],
+        "search_hints": ["site:crfb.org"],
+        "where_to_look": ["Analyses and bill cost tallies"],
+        "why": "Publishes its own costings of federal proposals, often before CBO."
+      },
+      {
+        "slug": "state_fiscal_note",
+        "name": "State fiscal notes and legislative fiscal offices",
+        "kind": "fiscal_note",
+        "url": "",
+        "added": "2026-10-21",
+        "applies_to": ["state", "local"],
+        "aliases": [],
+        "alias_pattern": "^[a-z]{2}_fiscal_note$",
+        "search_hints": ["<state> legislature fiscal note <bill number>", "<state> legislative fiscal office", "<state> department of revenue estimate"],
+        "where_to_look": ["The bill's fiscal note on the legislature's site", "The state's legislative fiscal office, revenue department and budget office"]
+      },
+      {
+        "slug": "academic",
+        "name": "Academic working papers",
+        "kind": "academic",
+        "url": "https://scholar.google.com/",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["Google Scholar", "NBER working papers", "SSRN"],
+        "where_to_look": ["Working papers and journal articles from the last five years that estimate the same quantity"]
+      },
+      {
+        "slug": "open_search",
+        "name": "Open web search (any other producer)",
+        "kind": "open_search",
+        "url": "",
+        "added": "2026-10-21",
+        "applies_to": "all",
+        "aliases": [],
+        "search_hints": ["the analysis's subject and search terms with cost, estimate, impact, households, poverty"],
+        "where_to_look": ["Any producer not listed above: other think tanks, state budget offices, advocacy groups, press-reported estimates traced to their primary"],
+        "why": "A list never covers every producer. A claim found here keeps its producer's own slug."
+      }
+    ]
+  }
+}
