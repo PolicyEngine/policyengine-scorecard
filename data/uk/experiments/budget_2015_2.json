@@ -109,6 +109,40 @@
     2024,
     2025
    ]
+  },
+  {
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_extended_childcare_30_hours",
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_heads": [
+      "PSCE in RDEL"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "extended_childcare_entitlement"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
+   "note": "Removes the extended entitlement for three- and four-year-olds of working parents (pe-uk's age-3 bracket of extended hours), keeping the 2024-25 expansions to younger children. pe-uk values the hours at the funding rate; the OBR's tax credit and welfare rows (free hours replacing paid childcare) have no counterpart.",
+   "reform": {
+    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+     "2024-01-01.2025-12-31": 0.0
+    }
+   },
+   "sources": [
+    "Childcare Act 2016 s. 1",
+    "pe-uk 2.132.6 parameters gov/dfe/extended_childcare_entitlement/hours.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
   }
  ],
  "kind": "uk_modern_population_policy_experiments",

@@ -1409,6 +1409,42 @@ def experiments() -> dict[str, dict]:
             "2020-21",
         )
     )
+    specs[sb15]["experiments"].append(
+        carried(
+            {
+                "experiment_id": "sb2015_extended_childcare_30_hours",
+                "measure_key": f"{sb15}__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
+                "construction": "reversal_on_modern_law",
+                "reform": {
+                    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+                        window(2024, 2025): 0.0
+                    }
+                },
+                "years": [2024, 2025],
+                "heads": [
+                    {
+                        "obr_heads": ["PSCE in RDEL"],
+                        "pe_variables": ["extended_childcare_entitlement"],
+                        "channel": "spending",
+                        "pe_base_comparable": False,
+                    }
+                ],
+                "magnitude_check": "scaled",
+                "note": (
+                    "Removes the extended entitlement for three- and four-year-olds of "
+                    "working parents (pe-uk's age-3 bracket of extended hours), keeping "
+                    "the 2024-25 expansions to younger children. pe-uk values the hours "
+                    "at the funding rate; the OBR's tax credit and welfare rows (free "
+                    "hours replacing paid childcare) have no counterpart."
+                ),
+                "sources": [
+                    "Childcare Act 2016 s. 1",
+                    "pe-uk 2.132.6 parameters gov/dfe/extended_childcare_entitlement/hours.yaml",
+                ],
+            },
+            "2020-21",
+        )
+    )
     specs[a12] = {
         "obr_forecast_vintage": "December 2012",
         "experiments": [
