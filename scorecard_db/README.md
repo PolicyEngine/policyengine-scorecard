@@ -170,6 +170,27 @@ categories `Reform` / `Program actual` with an explicit `jct.publisher`
 scope is per country — run prefixes are disjoint by test, so one country's
 wholesale replace cannot delete another's rows.
 
+**Per-release automation** (`tools/reform_validation/`, re-homed from
+calibration-diagnostics #112 per issue #15 call 3). The scheduled workflow
+`.github/workflows/reform-validation-backfill.yml` keeps this population
+current without hand-running the producer: on a tick it checks whether the
+latest certified release already has a `raw/<id>.json`; if not, it spawns
+the producer on Modal (`modal_backfill_app.py` drives `backfill.py` in a
+64GB container at the release's exact engine pins — the sim no longer fits a
+GitHub runner), and on a later tick harvests the artifact, `register_release.py`
+lands it under `raw/` and adds it to `source.json`, and the ingest rebuilds
+the DB slice. A new release needs no code edit: `backfill.py` stamps the
+release-manifest versions into the artifact's `engine` block, which
+`_base_engine` reads when the release isn't in `ENGINE_VERSIONS`, and OBBBA
+scoring defaults to `jcx_stacked` (the current producer's mode). The
+liveness-checked spawner (`spawn_or_wait.py`) records the Modal call id on
+the Volume and re-spawns dead runs (resuming from checkpointed batch
+partials). The workflow opens a PR for review rather than auto-merging,
+because a new release brings a new engine pin and shifts the exact-count
+ingest tests — a human confirms the DB delta and updates
+`tests/test_reform_validation_ingest.py`'s corpus counts before merging.
+Requires `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET` repo secrets.
+
 ## 2026-08-20 population: OBR published policy effects (UK)
 
 Fourth UK population and the external half of the Macro entry point
