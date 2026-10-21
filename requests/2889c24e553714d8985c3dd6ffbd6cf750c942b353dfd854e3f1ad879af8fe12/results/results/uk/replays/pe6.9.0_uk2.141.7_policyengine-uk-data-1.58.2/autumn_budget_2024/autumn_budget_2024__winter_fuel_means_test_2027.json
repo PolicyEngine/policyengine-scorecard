@@ -1,0 +1,116 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+    "2024-01-01.2035-12-31": false
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "winter_fuel_allowance": 1587227784.1114209
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "autumn_budget_2024__winter_fuel_means_test"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.141.7",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "winter_fuel_allowance": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "winter_fuel_allowance"
+   ]
+  }
+ ],
+ "head_effects": {
+  "winter_fuel_allowance": 219651206.51188183
+ },
+ "head_variables": [
+  "winter_fuel_allowance"
+ ],
+ "literal_reform_minus_baseline": {
+  "winter_fuel_allowance": -219651206.51188183
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "winter_fuel_allowance": -219651206.51188183
+ },
+ "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+ "measure_total_gbp": 219651206.51188183,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+     "2024-01-01.2035-12-31": false
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.9.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+    "intended": false,
+    "processed": false
+   }
+  },
+  "reform_world": {
+   "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+    "intended": true,
+    "processed": true
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "winter_fuel_allowance": 1806878990.6233027
+   }
+  },
+  "reform": {
+   "heads": {
+    "winter_fuel_allowance": 1587227784.1114209
+   }
+  }
+ },
+ "variable_metadata": {
+  "winter_fuel_allowance": {
+   "definition_period": "year",
+   "documentation": "Winter Fuel Payments made to the members of this household (winter_fuel_payment). Payments in Scotland from the 2024 qualifying week are the Pension Age Winter Heating Payment (pawhp).",
+   "engine_source": "policyengine_uk/variables/gov/dwp/winter_fuel_allowance.py",
+   "entity": "household",
+   "label": "Winter Fuel Allowance",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.9.0_uk2.141.7_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "48519531ce83bea6436fc9468881a58939d3059a0e6f5aec71547080e873de8b",
+ "year": 2027
+}
