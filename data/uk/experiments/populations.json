@@ -150,6 +150,15 @@
     "requirements_sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
    },
    "label": "modern_population_sensitivity",
+   "model_swap_input_gaps": {
+    "effect": "No household buys an additional dwelling or non-residential property (SDLT on them is nil), and no salary sacrifice is returned to income. Experiments on these bases are not valid on this swap.",
+    "method": "Variables with a formula (or adds) in policyengine-uk 2.132.6 and none in 2.143.0, read from the source at both tags, that the interim cut's microcosm_uk_2024_25.h5 does not carry. On this swap each is nil for every record.",
+    "variables": [
+     "additional_residential_property_purchased",
+     "non_residential_property_purchased",
+     "salary_sacrifice_returned_to_income"
+    ]
+   },
    "model_swap_of": "2.132.6",
    "pairing": "model_swap",
    "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",

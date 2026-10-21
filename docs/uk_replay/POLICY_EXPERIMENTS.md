@@ -54,6 +54,13 @@ modern law's own schedule changes within a year.
 | `certified_pair` | a policyengine.py release's model on the data cut certified for it | the experiment population proper |
 | `model_swap` | a newer policyengine-uk on the same data cut | the newest model before a data cut is built for it; against the certified pair on the same data, it separates model changes from data |
 
+A model swap is valid only where the data carries the newer model's inputs.
+A variable the older model computed and the newer one expects from the data
+is nil on the swap; the record lists them in `model_swap_input_gaps`, found by
+comparing the two models' source with the data cut's columns (for 2.143.0 on
+the interim cut: the additional-dwelling and non-residential purchase prices
+and salary sacrifice returned to income).
+
 A model swap's record names the bundle's model in `model_swap_of`. Its
 artifacts record the installed model as `engine_version` and the data's
 model as `data_built_with_model_version`. policyengine.py runs it with a
