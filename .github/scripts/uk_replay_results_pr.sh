@@ -91,7 +91,8 @@ assemble() {
   # 1. The results and requirements trees, byte for byte.
   git archive "$state_commit" "$REQUEST/results/results" "$REQUEST/results/docs" \
     | tar -x -C "$TREE" --strip-components=3
-  # 2-5. The variant record, the CI matrix, the tests and the paragraph.
+  # 2-4. The variant record (CI's engine matrix reads it), the tests and the
+  # paragraph. Nothing under .github/: scope refuses it.
   builder apply --request-dir "$STAGE/$REQUEST" --checkout "$TREE" \
     --plan "$WORK/plan.json" --commit-message "$WORK/COMMIT_MESSAGE"
   git -C "$TREE" add -A
@@ -117,7 +118,7 @@ assemble() {
 
 build() {
   # Every third-party module the builder and the checks import (tests check).
-  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with pyyaml python)
+  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema python)
   builder() { PYTHONPATH="$HERE" "${CONTROL[@]}" -m pipeline.uk_replay_results_pr "$@"; }
   git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
     "+refs/heads/$STATE_BRANCH:$STATE_REF"
@@ -167,12 +168,13 @@ build() {
 rebuild() {
   : "${BUILT_TREE:?}" "${BUILT_BASE:?}" "${BUILT_STATE:?}" "${BUILT_SEALED:?}" "${BUILT_CONTENT_HASH:?}"
   # The standard library alone: no site-packages, nothing installed. check
-  # and apply skip the schema, digest and YAML checks the build job made.
+  # skips the schema and digest checks the build job made; the rest of the
+  # builder needs no package in either job.
   builder() {
     local command=$1
     shift
     case "$command" in
-      check | apply) set -- "$@" --stdlib ;;
+      check) set -- "$@" --stdlib ;;
     esac
     python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py" "$command" "$@"
   }
@@ -274,8 +276,18 @@ propose() {
         echo "::error::$branch holds work this builder did not write; update the branch by hand" >&2
         exit 1
       fi
-      pushgit push -q --force-with-lease="refs/heads/$branch:$remote" \
-        origin "HEAD:refs/heads/$branch"
+      # The token has no workflows permission. This commit changes no
+      # workflow, but the rebuilt branch also carries main's commits since
+      # $remote; if one changed .github/workflows (even one main later
+      # reverted), GitHub may refuse it.
+      if ! pushgit push -q --force-with-lease="refs/heads/$branch:$remote" \
+        origin "HEAD:refs/heads/$branch"; then
+        if ! git -C "$TREE" diff --quiet "$remote" HEAD -- .github/workflows \
+          || [ -n "$(git -C "$TREE" log --full-history --format=%H "$remote..HEAD" -- .github/workflows)" ]; then
+          echo "::error::$branch was not updated. Main has changed .github/workflows since the branch was built, and the App token has no workflows permission. If GitHub refused the push for that, close the pull request, delete the branch and run this workflow again: a new branch holds only the bot's commit" >&2
+        fi
+        exit 1
+      fi
       pushed=true
     fi
   fi
