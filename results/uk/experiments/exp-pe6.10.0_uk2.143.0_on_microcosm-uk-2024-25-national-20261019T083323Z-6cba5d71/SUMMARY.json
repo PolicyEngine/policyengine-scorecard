@@ -101,14 +101,94 @@
   }
  ],
  "events": [
+  "autumn_budget_2021",
   "autumn_statement_2022"
  ],
- "experiment_years": 36,
+ "experiment_years": 50,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",
  "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
- "mirrors": [],
+ "mirrors": [
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -3198778067.177185,
+    3198778067.177185
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    19665940310.038162,
+    -19665940310.038162
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -3814213402.7076416,
+    3814213402.7076416
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    22255559888.927948,
+    -22255559888.927948
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -4050499674.7957153,
+    4050499674.7957153
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2026
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    23326515104.92922,
+    -23326515104.92922
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2026
+  }
+ ],
  "model_changes": [
   {
    "certified_pair_gbp": 852598324.87323,

@@ -2,7 +2,7 @@
 
 **Policy experiments on the modern population: not replays or costings of any past event.**
 
-1 events, 36 experiment-years (model_swap). Per-event detail is in each event's FINDINGS.md.
+2 events, 50 experiment-years (model_swap). Per-event detail is in each event's FINDINGS.md.
 
 ## Anomalies
 
@@ -14,6 +14,12 @@
 
 | Pair | FY | Variables | Effects (£bn) | Exact negatives |
 |---|---|---|---|---|
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2024-25 | `income_tax` | -3.199 / +3.199 | yes |
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2024-25 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +19.666 / -19.666 | yes |
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2025-26 | `income_tax` | -3.814 / +3.814 | yes |
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2025-26 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +22.256 / -22.256 | yes |
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `income_tax` | -4.050 / +4.050 | yes |
+| `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +23.327 / -23.327 | yes |
 
 ## Modern base against the OBR's newest forecast
 

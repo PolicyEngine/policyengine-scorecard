@@ -2,7 +2,7 @@
 
 **Policy experiments on the modern population: not replays or costings of any past event.**
 
-13 events, 91 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
+14 events, 93 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
 
 ## Anomalies
 

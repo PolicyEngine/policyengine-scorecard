@@ -1,0 +1,34 @@
+{
+ "timings": [
+  {
+   "seconds": 33.803133797999976,
+   "world": "modern_law",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "seconds": 55.856557124999995,
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "seconds": 57.32271608399998,
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "seconds": 59.11152849999996,
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "seconds": 58.17792044999999,
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_fuel_duty_freeze_2022",
+   "seconds": 52.84882819699999,
+   "year": 2025
+  }
+ ]
+}

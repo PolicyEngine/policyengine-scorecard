@@ -28,49 +28,99 @@ already fixed there.
 | Dividend bands keep the £37,500 higher-rate and £150,000 additional-rate thresholds until April 2026, while the main bands are £37,700 and £125,140 | `rates/dividends.yaml` | 83de1ef1d "Correct historical dividend income tax band thresholds", first in 2.139.4 | `as2022_additional_rate_threshold_125140`, `ab2021_dividend_rates_plus_1_25pp` |
 | Residential SDLT has no Growth Plan relief (£250,000 nil-rate band, £425,000 first-time buyers' threshold, 23 September 2022 to 31 March 2025) | `stamp_duty/residential/purchase/main/*` | 4044d6ccf "Fix recent residential SDLT purchase schedules and inclusive first-buyer caps" | `as2022_sdlt_nil_rate_bands_2024` (expected `construction_noop` on 2.132.6) |
 
-## Runs
+## What broke
 
-Each simulation runs on Modal: about 30 seconds for modern law and 50 seconds
-for each alternate world, so an event's grid takes 15 to 35 minutes.
-
-### Autumn Statement 2022, interim pair
-
-36 experiment-years, nine experiments, FY 2024-25 to 2027-28
-([FINDINGS](../../results/uk/experiments/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_statement_2022/FINDINGS.md)).
-No investigate-level anomaly. Every computed scaled ratio lies between 0.52
-and 2.25:
-
-| Experiment | 2024-25 PE / OBR mapped (£bn) | Scaled ratio, 2024-25 to 2027-28 |
+| Finding | Status | Experiment that caught it |
 |---|---|---|
-| Reverse the 1.25pp NICs rise and the levy | −16.25 / −16.21 | 1.00, 0.90, 0.91, 0.92 |
-| Keep the basic rate at 20% | +6.25 / +5.52 | 1.05, 0.95, 0.99, 1.00 |
-| Additional-rate threshold £125,140 | +0.85 / +0.79 | 1.00, 1.10, 1.24, 1.24 |
-| Dividend allowance £500 | +0.51 / +0.52 | 0.91, 0.52, 0.55, 0.52 |
-| CGT annual exempt amount £3,000 | +0.83 / +0.28 | 2.25, 1.46, 1.44, 1.52 |
-| Benefit cap uprating | −0.27 / −0.24 | 1.05, 1.21, 1.62, 1.68 |
-| Employer secondary threshold freeze | +3.67 / +5.31 | 0.69 (later years superseded) |
-| End the Growth Plan SDLT relief | 0 / +0.20 | 1.36, 0.88, 0.83 from 2025-26 |
+| **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Present on main. | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, handed to the UK hub | `as2013_marriage_allowance` (`sign_mismatch`) |
+| pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26 | `as2022_additional_rate_threshold_125140` (model change) |
+| pe-uk 2.132.6 has no Growth Plan SDLT relief (23 September 2022 to 31 March 2025) | fixed upstream in 2.141.8 (4044d6ccf); the 2024-25 experiment goes from 0 (2.132.6) to −£1.234bn (2.143.0) against the OBR's −£1.048bn | `as2022_sdlt_nil_rate_bands_2024` (`construction_noop`, then model change) |
+| pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024) | fixed upstream (2.143.0 has it); read in the parameter files | `as2015_sdlt_additional_dwellings_surcharge` (model swap pending) |
 
-The dividend allowance's later ratios near 0.5 and the CGT allowance's 2.25
-in 2024-25 fit the OBR's cash timing (self-assessment receipts lag a year)
-against PolicyEngine's liabilities. They are inside the bands and not
-flagged.
+Both 2.132.6 currency gaps confirm the brief's point: the interim pair's model
+is about 630 commits behind main, and only the newest model catches current
+bugs. Every anomaly on the interim pair was therefore checked against
+2.143.0 before anything was filed.
 
-All eight `construction_noop` notes are diagnosed
-([diagnoses](../../data/uk/experiments/diagnoses.json)). One is a model
-finding: **pe-uk 2.132.6 has no Growth Plan SDLT relief**, so its 2024-25
-SDLT is the pre-relief schedule. That is already fixed in 2.141.8
-(4044d6ccf): on 2.143.0 the same experiment is −£1.234bn in 2024-25 against the OBR's −£1.048bn.
+## Diagnosed, not bugs
 
-**The dividend-band lead, confirmed by a run.** On 2.132.6 the
-additional-rate-threshold reversal leaves dividend income untouched in
-2024-25 and 2025-26, because 2.132.6's dividend additional threshold is
-already £150,000. On 2.143.0 the same experiment is +£0.959bn in 2024-25
-against +£0.853bn, the difference being the dividend band. Fixed in 2.139.4
-(83de1ef1d).
+| Flag | Diagnosis |
+|---|---|
+| Budget 2017's Class 4 rise, `magnitude_outside_3x` (5.48 and 3.17) | The OBR's costing is net of the self-employed incorporating: its NICs yield falls from £570m to £475m while income tax goes from −£60m to −£420m and corporation tax rises to +£340m. A static run has no such response. PolicyEngine's NICs leg alone is 1.27 times the OBR's NICs row scaled to the modern base. |
+| Budget 2016's trading and property allowances, `magnitude_outside_3x` (0.20) | Without gross receipts, pe-uk relieves only profits within the £1,000 allowance and takes larger profits as already netting the better of expenses and the allowance. Neither data line (Microcosm UK 2024-25 or policyengine-uk-data's enhanced FRS 2024-25) carries `self_employment_gross_receipts`, so the partial relief the OBR costed has nothing to act on. *Data note for María:* an imputed gross-receipts column would let this leg move. |
+| Eight `construction_noop` notes in Autumn Statement 2022 | The employer threshold freeze is superseded by Autumn Budget 2024's £5,000. The Growth Plan SDLT relief ended in March 2025. Ending that relief changes nothing until 2025-26. On 2.132.6 only, the relief is missing altogether (above). |
+
+## Clean
+
+These experiments returned the OBR's sign. Where magnitudes are checked,
+their scaled ratios fall inside the bands.
+
+| Event | Experiment | Scaled ratio by year (PE / OBR × scale) |
+|---|---|---|
+| Autumn Statement 2022 | reverse the 1.25pp NICs rise and the levy | 1.00, 0.90, 0.91, 0.92 |
+| | keep the basic rate at 20% | 1.05, 0.95, 0.99, 1.00 |
+| | additional-rate threshold £125,140 | 1.00, 1.10, 1.24, 1.24 |
+| | dividend allowance £500 | 0.91, 0.52, 0.55, 0.52 (OBR cash lags a year) |
+| | CGT allowance £3,000 | 2.25, 1.46, 1.44, 1.52 (OBR cash lags a year) |
+| | benefit cap uprating | 1.05, 1.21, 1.62, 1.68 |
+| | employer threshold freeze (2024-25) | 0.69 |
+| | end the Growth Plan SDLT relief | 1.36, 0.88, 0.83 |
+| Autumn Budget 2021 | Health and Social Care Levy | 1.00, 0.90, 0.91 |
+| | dividend rates +1.25pp | 1.16, 0.99, 0.92 |
+| | UC taper 55% and £500 work allowance | 0.98, 0.88, 0.84 |
+| | double lock 2022-23 | 1.09, 1.08, 1.05 |
+| | fuel duty freeze 2022-23 | 0.55, 0.54 |
+| Spring Statement 2022 | basic rate 19% | 1.14, 1.04, 1.09 |
+| | basic rate 19%, welfare row | 1.40, 1.15, 1.21 |
+| | primary threshold and LPL alignment | 0.74, 0.70, 0.69 (modern 8% rate against 13.25% then) |
+| | the same, welfare row | 0.69, 0.58, 0.57 |
+| Spring Budget 2021 | allowance and threshold freeze (sign only) | 3.82, 3.18 (outturn inflation far above the March 2021 forecast) |
+| | fuel duty freeze 2021-22 | 0.48, 0.47 |
+| Spending Review 2020 | pension credit guarantee uprating | 0.76, 0.72 |
+| Budget 2020 | fuel duty freeze 2020-21 | 0.71 |
+| Budget 2018 | £12,500 allowance and £50,000 threshold a year early | 1.39, 1.46 |
+| | UC £1,000 work allowance increase | 0.63, 0.60 |
+| | fuel duty freeze 2019-20 | 0.62, 0.61 |
+| Autumn Budget 2017 | first-time buyers' SDLT relief | 1.31, 1.19 |
+| | fuel duty freeze 2018-19 | 0.66, 0.65 |
+| Autumn Statement 2016 | fuel duty freeze 2017-18 | 0.61, 0.60 |
+| Budget 2016 | fuel duty freeze 2016 | 0.64, 0.63 |
+| Autumn Statement 2015 | additional-dwellings surcharge (3pp) | 0.96, 0.85 |
+| Budget 2015 | personal savings allowance | 0.43, 0.45 |
+
+The fuel-duty ratios near 0.5–0.7 are expected: pe-uk's fuel duty is
+household car fuel only, while the OBR's base includes business and haulage
+fuel. Events before 2021 compare with their last costing year, carried
+forward (`carried_from_fy`).
+
+**Mirrors.** The Health and Social Care Levy (AB2021) and its reversal
+(AS2022) return exact negatives in every year and head group, from separate
+Modal containers, and so do Spring Statement 2022's 19% basic rate and
+Autumn Statement 2022's 20%. Determinism and the symmetry of the reform route
+both hold.
 
 **The population.** PolicyEngine's modern income tax base is 0.94 to 0.98
 of the OBR's March 2026 forecast, and NICs 1.01 to 1.05. Capital gains tax is
 1.69 in 2024-25, but that compares liabilities with cash receipts, which lag
 disposals by about a year; against the OBR's 2025-26 cash forecast (£21.8bn)
 the 2024-25 liability (£23.1bn) is 1.06.
+
+## Harness fixes the runs forced
+
+- **Fuel duty in cash.** The 2022 5p cut was a cash cut, so a removed
+  freeze's counterfactual is 57.95p × (1 + RPI) − 5p, not 52.95p × (1 + RPI).
+  Autumn Budget 2021 was rerun on the corrected spec.
+- **The mapped share by head.** Offsetting mapped heads (an incorporation
+  response's NICs gain against its income tax loss) hid Budget 2017's flag
+  from the magnitude check. The share now counts each head's absolute value.
+- **Mirrors by shared head group.** Mirrors map different head groups (AS2022's
+  reversal also maps Universal Credit), so they compare only the groups both
+  map.
+
+## Runs
+
+Each simulation runs on Modal: about 30 seconds for modern law and 50 seconds
+for each alternate world. Per-event detail is in each event's `FINDINGS.md`
+under `results/uk/experiments/<population>/<event>/`, and each population's
+`SUMMARY.md` collects the anomaly counts, mirrors, population check and (for
+the model swap) every model change against the certified pair.

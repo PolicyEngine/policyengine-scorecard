@@ -1,0 +1,202 @@
+{
+ "event": "autumn_budget_2021",
+ "event_years_outside_population": [
+  2021,
+  2022,
+  2023
+ ],
+ "experiments": [
+  "ab2021_dividend_rates_plus_1_25pp",
+  "ab2021_fuel_duty_freeze_2022",
+  "ab2021_hscl_nics_plus_1_25pp",
+  "ab2021_state_pension_double_lock",
+  "ab2021_uc_taper_55_work_allowance_500"
+ ],
+ "files": [
+  {
+   "path": "MODERN_LAW_2024.json",
+   "sha256": "1df3533b9d2cc9d0ae89586bffcee0d1ba5b6a4096476c9619fc59c45fc84848"
+  },
+  {
+   "path": "MODERN_LAW_2025.json",
+   "sha256": "5fd34e445e6ed2c51d1c799da2c7f25ee78ca720576372176628b4d0e9699f74"
+  },
+  {
+   "path": "MODERN_LAW_2026.json",
+   "sha256": "151739dc0fc4d7956aa74116f7be843eee4b408eb33e2390e902cb645f1cc6e2"
+  },
+  {
+   "path": "ab2021_dividend_rates_plus_1_25pp_2024.json",
+   "sha256": "83f4c88d3596cdd35b85e6a882053c068174a83bd682e7b64a682fd99fc16463"
+  },
+  {
+   "path": "ab2021_dividend_rates_plus_1_25pp_2025.json",
+   "sha256": "9986c275da633e789a8636bfaf2ad3bcda0a7fde2374c15296b5d3aada017b72"
+  },
+  {
+   "path": "ab2021_dividend_rates_plus_1_25pp_2026.json",
+   "sha256": "08e497113cbe5af554e2595faae4ce201144ee72c71c138c3fdf88bd6815fcd4"
+  },
+  {
+   "path": "ab2021_fuel_duty_freeze_2022_2024.json",
+   "sha256": "6608361aaf60c1a5c2b9d274a5c7970a9e4cb878cf3d7bb3bd33da1a1ed5f564"
+  },
+  {
+   "path": "ab2021_fuel_duty_freeze_2022_2025.json",
+   "sha256": "1e464b3e22d4cbe117a11ec5de31265332f3cdd40ec98e4e57f07064474969ae"
+  },
+  {
+   "path": "ab2021_hscl_nics_plus_1_25pp_2024.json",
+   "sha256": "ecdc074f543d1903dbc0b49118b414b44fbb7eb45dc35f7cc87cf589f00f9696"
+  },
+  {
+   "path": "ab2021_hscl_nics_plus_1_25pp_2025.json",
+   "sha256": "efbe9719ed4ac96850197db83d8f201249408118dd3978d6cb4411d272bdd357"
+  },
+  {
+   "path": "ab2021_hscl_nics_plus_1_25pp_2026.json",
+   "sha256": "b929ace3d97682336dd16c6ef44a665b3d89f77448285028d4902c173a9d177a"
+  },
+  {
+   "path": "ab2021_state_pension_double_lock_2024.json",
+   "sha256": "27996684d841f1f87483073376253f97a21a148610be3506c344047fa4525b78"
+  },
+  {
+   "path": "ab2021_state_pension_double_lock_2025.json",
+   "sha256": "e69ddbd119662f842aeb75faf92faa48215ff421ac16555b3f87d520dd455283"
+  },
+  {
+   "path": "ab2021_state_pension_double_lock_2026.json",
+   "sha256": "0c031bba8f73e3356ec44255bd5f3738537e74ac25ea190c1a8e37f4f3b4f54d"
+  },
+  {
+   "path": "ab2021_uc_taper_55_work_allowance_500_2024.json",
+   "sha256": "7f2cae183235c73bdfc07d6d0e06ca76021b031fe688f05b4f19d57afdbf294d"
+  },
+  {
+   "path": "ab2021_uc_taper_55_work_allowance_500_2025.json",
+   "sha256": "9f9150b845d19be1aea8c4ea02378d826ba0a9ffd54bfca3bbe41f11f013afd4"
+  },
+  {
+   "path": "ab2021_uc_taper_55_work_allowance_500_2026.json",
+   "sha256": "e810c0a6ece6885945fe556f4b0c2816e326fcfba3d44e6583b019bd2a051f2b"
+  }
+ ],
+ "grid": [
+  {
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ab2021_fuel_duty_freeze_2022",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2021_fuel_duty_freeze_2022",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "year": 2026
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_policy_experiment_manifest",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "population_identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "size_bytes": 321798995
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "ff067baaf848f9053220c400f39120317f3b4903298212ad01340f7597312571",
+    "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+    "version": "6.10.0"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3"
+   },
+   "policyengine-uk": {
+    "record_sha256": "88ca6c8a11ff09b9da45ff28918eed9e33ef3a8358e17b6d42e884987f150451",
+    "version": "2.143.0"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.10.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "compatibility_basis": "unverified_data_release_manifest_unavailable",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.132.6",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "model_package": "policyengine-uk",
+   "model_version": "2.132.6",
+   "policyengine_version": "6.10.0"
+  },
+  "requirements_sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
+ },
+ "registry_sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b",
+ "spec_sha256": "063ebd3773603cdcfe3af59af8e6b0e6e9856e5bb463263f3a5d112a2f66cf83",
+ "years": [
+  2024,
+  2025,
+  2026
+ ]
+}
