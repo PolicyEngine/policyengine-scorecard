@@ -1,0 +1,64 @@
+{
+ "default_population": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "kind": "uk_experiment_populations",
+ "note": "Experiment populations (docs/uk_replay/POLICY_EXPERIMENTS.md). Not replay variants: never listed in data/uk/replay_variants.json.",
+ "populations": [
+  {
+   "data_years": [
+    2024
+   ],
+   "data_years_evidence": {
+    "source": "pending_probe"
+   },
+   "description": "The interim Microcosm UK pair: policyengine.py 6.10.0 with policyengine-uk 2.132.6 and the Microcosm UK 2024-25 national cut it was built with (policyengine.py#685). Policy experiments only; never a replay variant.",
+   "executor": [
+    "modal"
+   ],
+   "identity": {
+    "dataset": {
+     "path": "microcosm_uk_2024_25.h5",
+     "repo_id": "policyengine/populace-uk-private",
+     "repo_type": "dataset",
+     "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "size_bytes": 321798995
+    },
+    "materialization": "policyengine_data_dir",
+    "packaged_bundle_manifest_sha256": "pending_probe",
+    "packages": {
+     "policyengine": {
+      "record_sha256": "pending_probe",
+      "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+      "version": "6.10.0"
+     },
+     "policyengine-core": {
+      "record_sha256": "pending_probe",
+      "version": "3.33.3"
+     },
+     "policyengine-uk": {
+      "record_sha256": "pending_probe",
+      "version": "2.132.6"
+     }
+    },
+    "python": "3.12",
+    "release_bundle": {
+     "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "model_version": "2.132.6",
+     "pending_probe": "replaced by the probe's runtime release bundle",
+     "policyengine_version": "6.10.0"
+    },
+    "requirements_sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
+   },
+   "label": "modern_population_sensitivity",
+   "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "requirements": {
+    "path": "docs/uk_replay/requirements/experiments/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71.txt",
+    "sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
+   },
+   "result_root": "results/uk/experiments/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "status": "experiment_population"
+  }
+ ],
+ "schema_version": 1
+}

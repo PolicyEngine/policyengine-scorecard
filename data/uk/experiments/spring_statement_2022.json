@@ -1,0 +1,169 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "spring_statement_2022",
+ "experiments": [
+  {
+   "construction": "forward_on_modern_law",
+   "experiment_id": "ss2022_basic_rate_19",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_2024",
+   "mirror_of": "autumn_statement_2022:as2022_maintain_basic_rate_20",
+   "note": "The cut never took effect, so modern law lacks it. The UK basic rate on non-savings, savings and property income falls to 19% from 2024-25 (21% from 2027-28, keeping Autumn Budget 2025's +2pp on savings and property income). Scottish rates on non-savings income are devolved and unchanged; dividend rates are separate and unchanged. The Welsh adjustment and block-grant effects are separate rows.",
+   "reform": {
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+     "2024-01-01.2035-12-31": 0.19
+    }
+   },
+   "sources": [
+    "Spring Statement 2022, para 4.11 (https://www.gov.uk/government/publications/spring-statement-2022-documents)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,savings,property}.yaml"
+   ]
+  },
+  {
+   "construction": "forward_on_modern_law",
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_20243",
+   "note": "The same change, scored on the measure's welfare row: higher net earnings lower Universal Credit. The UK basic rate on non-savings, savings and property income falls to 19% from 2024-25 (21% from 2027-28, keeping Autumn Budget 2025's +2pp on savings and property income). Scottish rates on non-savings income are devolved and unchanged; dividend rates are separate and unchanged. The Welsh adjustment and block-grant effects are separate rows.",
+   "reform": {
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+     "2024-01-01.2035-12-31": 0.19
+    }
+   },
+   "sources": [
+    "Spring Statement 2022, para 4.11 (https://www.gov.uk/government/publications/spring-statement-2022-documents)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,savings,property}.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "heads": [
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "Health and social care levy",
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
+   "note": "Without the July 2022 alignment the primary threshold and lower profits limit would be \u00a39,880 uprated by September 2022 CPI (10.1%) to \u00a310,878 (\u00a3209.19 a week) from April 2023, then held by the later freezes. Modern law has \u00a312,570. The modern employee rate is 8%, against 12% plus the 1.25% levy when the OBR costed it.",
+   "reform": {
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2024-01-01.2030-12-31": 209.19
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2024-01-01.2030-12-31": 10878.0
+    }
+   },
+   "sources": [
+    "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)",
+    "ONS CPI annual rate, September 2022: 10.1%",
+    "pe-uk 2.132.6 parameters class_1/thresholds/primary_threshold.yaml, class_4/thresholds/lower_profits_limit.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
+   "note": "The same change, scored on the measure's welfare row.",
+   "reform": {
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2024-01-01.2030-12-31": 209.19
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2024-01-01.2030-12-31": 10878.0
+    }
+   },
+   "sources": [
+    "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)"
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Statement 2022.",
+ "obr_forecast_vintage": "March 2022",
+ "registry": {
+  "path": "data/uk/events/spring_statement_2022_measures.json",
+  "sha256": "f8b2ef658d24895515f09297de812d176e2a12a995b2735b9c1fbe0811845bcb"
+ },
+ "schema_version": 1
+}

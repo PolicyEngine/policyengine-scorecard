@@ -1,0 +1,209 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_budget_2021",
+ "experiments": [
+  {
+   "construction": "forward_on_modern_law",
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "heads": [
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "Health and social care levy",
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__health_and_social_care_levy_introduced_from_april_2022_gross_yield",
+   "mirror_of": "autumn_statement_2022:as2022_reverse_nics_1_25pp",
+   "note": "Modern law has no levy, so the experiment adds it. The levy was 1.25% on the same earnings and profits as NICs, so the construction adds 1.25pp to every modern Class 1 and Class 4 rate (employee 8%\u21929.25%, additional 2%\u21923.25%, employer 13.8%\u219215.05% in 2024 and 15%\u219216.25% from 2025, Class 4 6%\u21927.25% and 2%\u21923.25%). Missing legs: the levy on earnings above State Pension age, and the separate dividend rate increase (its own measure).",
+   "reform": {
+    "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+     "2024-01-01.2035-12-31": 0.0325
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+     "2024-01-01.2035-12-31": 0.0925
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2024-01-01.2024-12-31": 0.1505,
+     "2025-01-01.2035-12-31": 0.1625
+    },
+    "gov.hmrc.national_insurance.class_4.rates.additional": {
+     "2024-01-01.2035-12-31": 0.0325
+    },
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.0725
+    }
+   },
+   "sources": [
+    "Health and Social Care Levy Act 2021 s. 2-3 (https://www.legislation.gov.uk/ukpga/2021/28)",
+    "pe-uk 2.132.6 parameters gov/hmrc/national_insurance/class_1/rates/*.yaml and class_4/rates/*.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__increase_rates_of_dividend_tax_by_1_25_from_april_2022",
+   "note": "Modern dividend rates are 8.75%, 33.75% and 39.35% (10.75% and 35.75% from April 2026, Autumn Budget 2025); the reversal takes 1.25pp off each, keeping the 2026 increase. pe-uk's fourth dividend bracket (39.35% above \u00a310m) moves with the additional rate.",
+   "reform": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2024-01-01.2025-12-31": 0.075,
+     "2026-01-01.2035-12-31": 0.095
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2024-01-01.2025-12-31": 0.325,
+     "2026-01-01.2035-12-31": 0.345
+    },
+    "gov.hmrc.income_tax.rates.dividends[2].rate": {
+     "2024-01-01.2035-12-31": 0.381
+    },
+    "gov.hmrc.income_tax.rates.dividends[3].rate": {
+     "2024-01-01.2035-12-31": 0.381
+    }
+   },
+   "sources": [
+    "Finance Act 2022 s. 4 (https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/dividends.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__universal_credit_reduce_taper_rate_from_63p_to_55p_and_500_p_a_increase",
+   "note": "Restores the 63% taper and removes the \u00a3500 a year work-allowance increase: modern monthly allowances scaled by 293/335 (with housing) and 515/557 (without), rounded to \u00a31, for 2024-25 to 2026-27.",
+   "reform": {
+    "gov.dwp.universal_credit.means_test.reduction_rate": {
+     "2024-01-01.2035-12-31": 0.63
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+     "2024-01-01.2024-12-31": 353.0,
+     "2025-01-01.2025-12-31": 359.0,
+     "2026-01-01.2026-12-31": 373.0
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+     "2024-01-01.2024-12-31": 622.0,
+     "2025-01-01.2025-12-31": 632.0,
+     "2026-01-01.2026-12-31": 656.0
+    }
+   },
+   "sources": [
+    "The Universal Credit (Work Allowance and Taper) (Amendment) Regulations 2021 (https://www.legislation.gov.uk/uksi/2021/1283/made)",
+    "pe-uk 2.132.6 parameters gov/dwp/universal_credit/means_test/{reduction_rate,work_allowance}.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "heads": [
+    {
+     "base_sheet": "Welfare out",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare outside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "state_pension"
+     ]
+    },
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "pension_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__state_pension_and_pension_credit_uprate_with_double_lock_in_2022_23",
+   "note": "Restores the 8.3% earnings uprating in April 2022: every modern new and basic State Pension and standard minimum guarantee amount for 2024-25 to 2026-27 scaled by 1.083/1.031.",
+   "reform": {
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+     "2024-01-01.2024-12-31": 349.74,
+     "2025-01-01.2025-12-31": 364.08,
+     "2026-01-01.2026-12-31": 381.57
+    },
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+     "2024-01-01.2024-12-31": 229.15,
+     "2025-01-01.2025-12-31": 238.55,
+     "2026-01-01.2026-12-31": 250.0
+    },
+    "gov.dwp.state_pension.basic_state_pension.amount": {
+     "2024-01-01.2024-12-31": 178.05,
+     "2025-01-01.2025-12-31": 185.35,
+     "2026-01-01.2026-12-31": 194.23
+    },
+    "gov.dwp.state_pension.new_state_pension.amount": {
+     "2024-01-01.2024-12-31": 232.36,
+     "2025-01-01.2025-12-31": 241.86,
+     "2026-01-01.2026-12-31": 253.47
+    }
+   },
+   "sources": [
+    "Social Security (Up-rating of Benefits) Act 2022 s. 1 (https://www.legislation.gov.uk/ukpga/2022/5/section/1/enacted)",
+    "pe-uk 2.132.6 parameters gov/dwp/state_pension/*/amount.yaml, gov/dwp/pension_credit/guarantee_credit/minimum_guarantee.yaml"
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "obr_forecast_vintage": "October 2021",
+ "registry": {
+  "path": "data/uk/events/autumn_budget_2021_measures.json",
+  "sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b"
+ },
+ "schema_version": 1
+}

@@ -1,0 +1,393 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_statement_2022",
+ "experiments": [
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "heads": [
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "Health and social care levy",
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_reverse_temporary_1_25pp_increase_in_nics_rates_from",
+   "mirror_of": "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+   "note": "Modern law has neither the increase nor the levy, so the reversal restores the levy. The levy was 1.25% on the same earnings and profits as NICs, so the construction adds 1.25pp to every modern Class 1 and Class 4 rate (employee 8%\u21929.25%, additional 2%\u21923.25%, employer 13.8%\u219215.05% in 2024 and 15%\u219216.25% from 2025, Class 4 6%\u21927.25% and 2%\u21923.25%). Missing legs: the levy on earnings above State Pension age, and the separate dividend rate increase (its own measure).",
+   "reform": {
+    "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+     "2024-01-01.2035-12-31": 0.0325
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+     "2024-01-01.2035-12-31": 0.0925
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2024-01-01.2024-12-31": 0.1505,
+     "2025-01-01.2035-12-31": 0.1625
+    },
+    "gov.hmrc.national_insurance.class_4.rates.additional": {
+     "2024-01-01.2035-12-31": 0.0325
+    },
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.0725
+    }
+   },
+   "sources": [
+    "Health and Social Care Levy Act 2021 s. 2-3 (https://www.legislation.gov.uk/ukpga/2021/28)",
+    "pe-uk 2.132.6 parameters gov/hmrc/national_insurance/class_1/rates/*.yaml and class_4/rates/*.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_maintaining_the_basic_rate_at_20",
+   "mirror_of": "spring_statement_2022:ss2022_basic_rate_19",
+   "note": "The pre-measure world had the 19% basic rate. The UK basic rate on non-savings, savings and property income falls to 19% from 2024-25 (21% from 2027-28, keeping Autumn Budget 2025's +2pp on savings and property income). Scottish rates on non-savings income are devolved and unchanged; dividend rates are separate and unchanged. The Welsh adjustment and block-grant effects are separate rows.",
+   "reform": {
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2024-01-01.2026-12-31": 0.19,
+     "2027-01-01.2035-12-31": 0.21
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+     "2024-01-01.2035-12-31": 0.19
+    }
+   },
+   "sources": [
+    "Spring Statement 2022, para 4.11 (https://www.gov.uk/government/publications/spring-statement-2022-documents)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,savings,property}.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "heads": [
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_maintain_employer_secondary_threshold_at_current_leve",
+   "note": "Without the freeze the threshold would be \u00a3175 a week uprated by September 2022 and September 2023 CPI (10.1%, 6.7%) to \u00a3205.58 in 2024-25. From April 2025 Autumn Budget 2024's \u00a35,000 supersedes the freeze on modern law, so later years have nothing to move.",
+   "reform": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2024-01-01.2024-12-31": 205.58
+    }
+   },
+   "sources": [
+    "Autumn Statement 2022 Table 5.1 (https://www.gov.uk/government/publications/autumn-statement-2022-documents)",
+    "ONS CPI annual rate: September 2022 10.1%, September 2023 6.7%",
+    "pe-uk 2.132.6 parameters class_1/thresholds/secondary_threshold.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+   "note": "Restores the \u00a3150,000 additional-rate threshold for non-savings, savings (pe-uk's savings bands follow the UK thresholds) and dividend income. Scottish thresholds are devolved and unchanged.",
+   "reform": {
+    "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+     "2024-01-01.2035-12-31": 150000.0
+    },
+    "gov.hmrc.income_tax.rates.uk[2].threshold": {
+     "2024-01-01.2035-12-31": 150000.0
+    }
+   },
+   "sources": [
+    "Finance Act 2023 s. 4 (https://www.legislation.gov.uk/ukpga/2023/1/section/4/enacted)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,dividends}.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_dividend_allowance_500",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_the_dividend_allowance_from_2_000_to_1_000_from_april",
+   "note": "Restores the \u00a32,000 dividend allowance (modern law: \u00a3500).",
+   "reform": {
+    "gov.hmrc.income_tax.allowances.dividend_allowance": {
+     "2024-01-01.2035-12-31": 2000.0
+    }
+   },
+   "sources": [
+    "Finance Act 2023 s. 5 (https://www.legislation.gov.uk/ukpga/2023/1/section/5/enacted)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/dividend_allowance.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "heads": [
+    {
+     "base_sheet": "CGT",
+     "channel": "tax",
+     "obr_heads": [
+      "Capital gains tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "capital_gains_tax"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__capital_gains_tax_reduce_the_annual_exempt_amount_from_12_300_to_6_000_f",
+   "note": "Restores the \u00a312,300 annual exempt amount (modern law: \u00a33,000). pe-uk labels this parameter under active development.",
+   "reform": {
+    "gov.hmrc.cgt.annual_exempt_amount": {
+     "2024-01-01.2035-12-31": 12300.0
+    }
+   },
+   "sources": [
+    "Finance Act 2023 s. 8 (https://www.legislation.gov.uk/ukpga/2023/1/section/8/enacted)",
+    "pe-uk 2.132.6 parameters gov/hmrc/cgt/annual_exempt_amount.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "housing_benefit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__benefit_cap_levels_uprate_by_cpi_in_2023_24",
+   "note": "Restores the 2016 cap levels, which the April 2023 10.1% uprating replaced and modern law still holds.",
+   "reform": {
+    "gov.dwp.benefit_cap.non_single.in_london": {
+     "2024-01-01.2035-12-31": 23000.0
+    },
+    "gov.dwp.benefit_cap.non_single.outside_london": {
+     "2024-01-01.2035-12-31": 20000.0
+    },
+    "gov.dwp.benefit_cap.single.in_london": {
+     "2024-01-01.2035-12-31": 15410.0
+    },
+    "gov.dwp.benefit_cap.single.outside_london": {
+     "2024-01-01.2035-12-31": 13400.0
+    }
+   },
+   "sources": [
+    "The Benefit Cap (Annual Limit) (Amendment) Regulations 2023 (https://www.legislation.gov.uk/uksi/2023/335/made)",
+    "pe-uk 2.132.6 parameters gov/dwp/benefit_cap.yaml"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "heads": [
+    {
+     "base_sheet": "PTT",
+     "channel": "tax",
+     "obr_heads": [
+      "Stamp duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
+   "note": "2024-25 without the Growth Plan relief: the 2% band from \u00a3125,000, first-time buyers' relief to \u00a3300,000 on prices to \u00a3500,000. The relief ended on 31 March 2025, so later years have nothing to move.",
+   "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
+     "2024-01-01.2024-12-31": 500000.0
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": {
+     "2024-01-01.2024-12-31": 300000.0
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": {
+     "2024-01-01.2024-12-31": 0.02
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
+     "2024-01-01.2024-12-31": 125000.0
+    }
+   },
+   "sources": [
+    "Stamp Duty Land Tax (Reduction) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/58)",
+    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/*"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "heads": [
+    {
+     "base_sheet": "PTT",
+     "channel": "tax",
+     "obr_heads": [
+      "Stamp duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
+   "note": "The pre-measure world kept the Growth Plan relief: nil rate to \u00a3250,000 (the 2% band removed), first-time buyers' relief to \u00a3425,000 on prices to \u00a3625,000, from 2025-26.",
+   "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
+     "2025-01-01.2035-12-31": 625000.0
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": {
+     "2025-01-01.2035-12-31": 425000.0
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": {
+     "2025-01-01.2035-12-31": 0.0
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
+     "2025-01-01.2035-12-31": 125000.0
+    }
+   },
+   "sources": [
+    "Stamp Duty Land Tax (Reduction) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/58)",
+    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/*"
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Statement 2022.",
+ "obr_forecast_vintage": "November 2022",
+ "registry": {
+  "path": "data/uk/events/autumn_statement_2022_measures.json",
+  "sha256": "25c3d327d53e180934acd159fae54b5c3f4cf7e10383a4eb750d2ba6a6c629f1"
+ },
+ "schema_version": 1
+}

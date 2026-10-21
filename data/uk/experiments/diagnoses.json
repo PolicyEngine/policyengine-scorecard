@@ -1,0 +1,6 @@
+{
+ "diagnoses": [],
+ "kind": "uk_policy_experiment_diagnoses",
+ "note": "One row per diagnosed anomaly (docs/uk_replay/POLICY_EXPERIMENTS.md): event, experiment_id, code, years (null: every year), status, summary, evidence, issue.",
+ "schema_version": 1
+}

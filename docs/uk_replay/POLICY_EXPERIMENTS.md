@@ -1,0 +1,162 @@
+# Policy experiments on the modern population
+
+Max decided cos d1817 on 21 October 2026: run past UK fiscal events on the
+newest Microcosm UK population as a bank of real policy reforms, to find where
+PolicyEngine UK breaks. These runs are **policy experiments on the modern
+population**. They are not replays, and they are not PolicyEngine's costing of
+any past event. [PLAN.md](PLAN.md#where-a-single-population-gives-a-usable-labelled-answer)
+named this question `modern_population_sensitivity` and listed what it is good
+for: construction QA and spotting sign and unit errors.
+
+Certified replays are unchanged. `compute_uk_event.refuse_unexecutable` still
+refuses every historical registry, and a historical event replays only on a
+certified event population ([HISTORICAL_ADAPTER.md](HISTORICAL_ADAPTER.md)).
+Event-year populations for true replays stay possible later (d1817).
+
+## What an experiment is
+
+An experiment takes one measure from an event's source-accounting registry
+and expresses it as a parameter change on **modern law**: the current law of
+the engine being tested. It runs that change on the modern population in each
+year both the population and the event's costing window cover, and compares
+the result with the OBR's costing of the original measure.
+
+Two constructions exist, matching the replay's orientation rules
+(`compute_uk_obr_costings.orient_exchequer_effect`):
+
+| Construction | Modern law | The alternate world | Announced effect |
+|---|---|---|---|
+| `reversal_on_modern_law` | still contains the measure | restores the pre-measure policy, keeping every later change | `-(alternate - modern)` |
+| `forward_on_modern_law` | lacks the measure (later reversed, or never commenced) | applies the measure | `alternate - modern` |
+
+Positive effects are gains to the Exchequer, as everywhere in the scorecard.
+Each construction states its pre-measure values and their sources. When later
+policy changed the same parameter, the counterfactual keeps the later change
+and removes only this measure's (for example, scaling a later-uprated amount
+by the measure's own uprating ratio).
+
+## Nothing can be mistaken for a replay
+
+| Replay | Experiment |
+|---|---|
+| Registry `data/uk/events/<event>_measures.json` | Spec `data/uk/experiments/<event>.json`, kind `uk_modern_population_policy_experiments` |
+| Variant index `data/uk/replay_variants.json` | Population records `data/uk/experiments/populations.json`, status `experiment_population`, ids prefixed `exp-` |
+| Results `results/uk/events/`, `results/uk/replays/<variant>/` | Results `results/uk/experiments/<population>/<event>/` |
+| `RUN_MANIFEST.json`, receipts, seals | `EXPERIMENT_MANIFEST.json`, `FINDINGS.json`, `FINDINGS.md` |
+| Joins published scores via `scorecard_db` | Never ingested |
+
+- **The registry is not edited.** The spec binds it by SHA-256 and reads its
+  source rows for the OBR side; its `execution` block keeps refusing replays.
+- **Every output carries the label.** Each artifact, manifest and findings
+  file has `kind`, `label: modern_population_sensitivity`, `is_replay: false`
+  and the sentence "Policy experiment on the modern population: not a replay
+  or a costing of <event>."
+- **Separate code path.** `pipeline/uk_policy_experiment.py` never writes
+  under `results/uk/events`, `results/uk/replays` or the variant index; a test
+  checks the containment for any output path. Tests also check that the
+  scorecard database build, the replay namespace scan and the results-PR
+  builder never read `results/uk/experiments`.
+- **A population is not a variant.** An experiment population record has the
+  variant's identity shape (packages, wheel and RECORD digests, the packaged
+  bundle manifest, the dataset digest, the requirements freeze) so the
+  replay's environment checks apply, but it is never added to the variant
+  index and never sealed.
+
+## Runs
+
+The runner reuses the replay's managed simulation path
+(`compute_uk_event.run_sim`): policyengine.py's managed microsimulation, the
+dataset's SHA-256 before and after every simulation, the dataset's year set
+checked against the population record, and each touched parameter read back
+from the simulation's own processed tree.
+
+For each year it computes modern law once, then each experiment's alternate
+world. A simulation that raises is recorded as a `crash` for that
+experiment-year; the run continues. Simulations run on Modal
+(`pipeline/modal_uk_experiment.py`), with runtime network blocked, and take
+the replay's two shared simulation slots, so experiments and replays together
+never run more than two simulations at once.
+
+## Anomalies
+
+Each experiment-year is classified by `classify()`, a pure function of the
+artifact, the OBR rows and the bases. Severity `investigate` must get a
+diagnosis before anything is called a bug; `check` and `note` are listed.
+
+| Code | Severity | Condition |
+|---|---|---|
+| `crash` | investigate | The alternate world raised. |
+| `reform_not_applied` | investigate | A touched parameter's processed value differs from the construction's intent: the reform route did not reach the simulation. |
+| `construction_noop` | note | Every touched parameter already equals modern law that year, so the experiment has nothing to move (the measure is superseded on modern law). |
+| `inert` | investigate if the OBR's mapped costing is at least £20m, else check | A parameter changed but the summed effect is under £1m. |
+| `sign_mismatch` | investigate | The OBR's mapped costing is at least £20m and PolicyEngine's effect has the opposite sign, at least £5m and 10% of the OBR's. |
+| `magnitude_outside_10x` | investigate | Scaled ratio outside [1/10, 10]. |
+| `magnitude_outside_3x` | check | Scaled ratio outside [1/3, 3] but inside [1/10, 10]. |
+| `obr_zero_pe_moves` | note | The OBR's mapped costing is under £1m but PolicyEngine's effect is at least £100m (usually cash timing or a costing window). |
+| `mirror_mismatch` | investigate | Two experiments declared as mirrors (the same parameter change, opposite constructions) do not return exact negatives. |
+
+Magnitude flags apply only when the experiment's `magnitude_check` is
+`scaled`, the expected value is at least £100m, and the mapped heads hold at
+least half of the OBR's costing that year. Threshold freezes and other
+measures whose value depends on the event's own inflation forecast are
+`sign_only`: PLAN.md names them as the case a modern population misleads on.
+
+## Scaling the OBR's costing
+
+The OBR costed each measure against its own forecast at the event. The
+modern population is calibrated to a later economy. For each mapped head
+group, the experiment scales the OBR's costing by
+
+```text
+scale = PE baseline of the group in year Y / OBR event-vintage forecast of the head for FY Y
+```
+
+when the group's PolicyEngine variables cover the whole OBR head
+(`pe_base_comparable`, for example `income_tax` and Income tax). Otherwise it
+uses the OBR's own vintage factor,
+
+```text
+scale = OBR newest forecast for FY Y / OBR event-vintage forecast for FY Y
+```
+
+and a group with no forecast series is unscaled. The forecasts are rows of the
+OBR's Historical official forecasts database (Spring 2026 edition), extracted
+with their cell references into `data/uk/experiments/obr_head_forecasts.json`.
+The event-vintage rows are checked against the March 2025 edition that the
+event vintage locks name. The scaled ratio is
+`PolicyEngine effect / Σ (OBR costing × scale)` over the mapped groups.
+
+The scaling is a screen for bugs, not a comparison of vintages: it absorbs
+nominal growth and base level, not differences in rates, thresholds or
+behaviour between the event's world and modern law. That is why the bands are
+wide and why each flag needs a diagnosis.
+
+## Diagnoses and findings
+
+`data/uk/experiments/diagnoses.json` records each diagnosis: the anomaly, its
+status (`expected`, `construction_corrected`, `model_bug`, `data_issue`,
+`engine_route`), the evidence (a minimised reproduction, preferably a
+synthetic household) and the policyengine-uk or Microcosm issue it became.
+`pipeline/uk_policy_experiment.py findings` writes `FINDINGS.json` and
+`FINDINGS.md` per event; [EXPERIMENTS.md](EXPERIMENTS.md) is the running log
+across events.
+
+## Invariants
+
+The tests state and check these for every input:
+
+1. **Orientation.** A reversal and a forward construction of the same raw
+   difference give exact negatives, and a spending channel negates a tax
+   channel.
+2. **Head sums.** An experiment's total is the sum of its head effects.
+3. **OBR accounting.** The mapped and unmapped OBR values of an experiment-year
+   sum to the registry's rows for that measure and fiscal year, in `Decimal`.
+4. **Classification.** `classify` is pure; negating both PolicyEngine's effect
+   and the OBR's costing leaves the codes unchanged; scaling both by a positive
+   factor (above the floors) leaves them unchanged; a ratio further from 1 than
+   a flagged one is also flagged; `crash` and `inert` exclude sign and
+   magnitude codes.
+5. **Containment.** No output path resolves outside
+   `results/uk/experiments/<population>/<event>/`.
+6. **Mirrors.** Mirrored experiments return exact negatives (checked on real
+   runs in the findings).
