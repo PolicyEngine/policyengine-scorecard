@@ -1,0 +1,46 @@
+{
+ "event": "budget_2020",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2020.",
+ "obr_forecast_vintage": "March 2020",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -304815793.2161999,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -432024462.0583826,
+   "experiment_id": "b2020_fuel_duty_freeze_2020",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -304815793.2161999
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2020__fuel_duty_freeze_for_2020_21",
+   "obr_mapped_gbp": -562000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.5423768562565834,
+   "ratio_scaled": 0.705552161939867,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7687268008156274,
+     "obr_event_forecast_gbp": 31687460322.906445,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel duty: freeze for 2020-21",
+   "year": 2024
+  }
+ ],
+ "schema_version": 1
+}

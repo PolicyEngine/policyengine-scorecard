@@ -1,7 +1,8 @@
 {
  "anomaly_counts": {
   "construction_noop:diagnosed": 8,
-  "magnitude_outside_3x:diagnosed": 2
+  "magnitude_outside_3x:diagnosed": 4,
+  "sign_mismatch:diagnosed": 2
  },
  "baseline_coverage": [
   {
@@ -102,17 +103,21 @@
   }
  ],
  "events": [
+  "autumn_2013",
+  "autumn_2016",
   "autumn_budget_2017",
   "autumn_budget_2021",
   "autumn_statement_2022",
   "budget_2015",
+  "budget_2016",
   "budget_2017",
   "budget_2018",
+  "budget_2020",
   "spending_review_2020",
   "spring_budget_2021",
   "spring_statement_2022"
  ],
- "experiment_years": 82,
+ "experiment_years": 91,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",
