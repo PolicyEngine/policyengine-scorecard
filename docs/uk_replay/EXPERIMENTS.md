@@ -56,6 +56,7 @@ bugs. Every anomaly on the interim pair was therefore checked against
 |---|---|
 | Budget 2017's Class 4 rise, `magnitude_outside_3x` (5.48 and 3.17) | The OBR's costing is net of the self-employed incorporating: its NICs yield falls from £570m to £475m while income tax goes from −£60m to −£420m and corporation tax rises to +£340m. A static run has no such response. PolicyEngine's NICs leg alone is 1.27 times the OBR's NICs row scaled to the modern base. |
 | Budget 2016's trading and property allowances, `magnitude_outside_3x` (0.20) | Without gross receipts, pe-uk relieves only profits within the £1,000 allowance and takes larger profits as already netting the better of expenses and the allowance. Neither data line (Microcosm UK 2024-25 or policyengine-uk-data's enhanced FRS 2024-25) carries `self_employment_gross_receipts`, so the partial relief the OBR costed has nothing to act on. *Data note for María:* an imputed gross-receipts column would let this leg move. |
+| Budget 2012's 45p additional rate, `magnitude_outside_10x` (39.5) | The OBR's −£110m is net of a taxable-income response that offsets almost all of the static cost; a static run has none. Restoring 50% costs £6.3bn statically on the modern population. The flag is the screen working as designed on a measure costed behaviourally. |
 | Eight `construction_noop` notes in Autumn Statement 2022 | The employer threshold freeze is superseded by Autumn Budget 2024's £5,000. The Growth Plan SDLT relief ended in March 2025. Ending that relief changes nothing until 2025-26. On 2.132.6 only, the relief is missing altogether (above). |
 
 ## Clean
@@ -95,6 +96,14 @@ their scaled ratios fall inside the bands.
 | Budget 2016 | fuel duty freeze 2016 | 0.64, 0.63 |
 | Autumn Statement 2015 | additional-dwellings surcharge (3pp), interim pair only (see above) | 0.96, 0.85 |
 | Budget 2015 | personal savings allowance | 0.43, 0.45 |
+| Summer Budget 2015 | two-child limit (sign only) | 0.90, 0.94 |
+| | working-age benefit freeze (scaled amounts) | 0.68, 0.65 |
+| | 30-hour childcare entitlement | 0.69, 0.70 |
+| Autumn Statement 2012 | Universal Credit at 1% (scaled amounts) | 0.51, 0.50 |
+| | child benefit at 1% (scaled amounts) | 0.51, 0.49 |
+| Autumn Statement 2010 | high-income child benefit charge | 0.58, 0.61 |
+| Budget 2010 | VAT at 20% | 1.31, 1.31 |
+| | child benefit three-year freeze | 0.91, 0.86 |
 
 The fuel-duty ratios near 0.5–0.7 are expected: pe-uk's fuel duty is
 household car fuel only, while the OBR's base includes business and haulage

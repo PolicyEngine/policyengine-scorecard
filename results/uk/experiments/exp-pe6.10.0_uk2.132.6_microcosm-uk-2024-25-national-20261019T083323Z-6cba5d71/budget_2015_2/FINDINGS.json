@@ -1,0 +1,217 @@
+{
+ "event": "budget_2015_2",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015 #2.",
+ "obr_forecast_vintage": "July 2015",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -622379813.0578859,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -900000000.0,
+   "experiment_id": "sb2015_extended_childcare_30_hours",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "extended_childcare_entitlement": -622379813.0578859
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
+   "obr_mapped_gbp": -900000000.0,
+   "obr_unmapped_gbp": 230000000.0,
+   "ratio_raw": 0.6915331256198732,
+   "ratio_scaled": 0.6915331256198732,
+   "scales": [
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Childcare: 30 hour entitlement for working parents of 3 and 4 year olds",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -628849341.717402,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -900000000.0,
+   "experiment_id": "sb2015_extended_childcare_30_hours",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "extended_childcare_entitlement": -628849341.717402
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
+   "obr_mapped_gbp": -900000000.0,
+   "obr_unmapped_gbp": 230000000.0,
+   "ratio_raw": 0.6987214907971133,
+   "ratio_scaled": 0.6987214907971133,
+   "scales": [
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Childcare: 30 hour entitlement for working parents of 3 and 4 year olds",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 1694684773.07493,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1887640990.7265933,
+   "experiment_id": "sb2015_two_child_limit",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit+child_tax_credit": 1694684773.07493
+   },
+   "magnitude_check": "sign_only",
+   "measure_key": "budget_2015_2__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+   "obr_mapped_gbp": 1365000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.241527306282,
+   "ratio_scaled": 0.8977791759134292,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.3828871726934748,
+     "obr_event_forecast_gbp": 114900000000.0,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Limit child element of tax credits and UC to 2 children for new claims",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 1890854193.9122467,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 2009679192.4699755,
+   "experiment_id": "sb2015_two_child_limit",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit+child_tax_credit": 1890854193.9122467
+   },
+   "magnitude_check": "sign_only",
+   "measure_key": "budget_2015_2__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+   "obr_mapped_gbp": 1365000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.3852411677012797,
+   "ratio_scaled": 0.940873648389777,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.4722924486959528,
+     "obr_event_forecast_gbp": 114900000000.0,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Limit child element of tax credits and UC to 2 children for new claims",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 3761777152.656203,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 5544955438.715376,
+   "experiment_id": "sb2015_working_age_benefit_freeze",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -73454756.39489746,
+    "universal_credit+child_tax_credit+working_tax_credit+child_benefit+housing_benefit": 3835231909.0511003
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+   "obr_mapped_gbp": 4005000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.9392702004135338,
+   "ratio_scaled": 0.6784143162614324,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.384508224398346,
+     "obr_event_forecast_gbp": 227343769192.35162,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Uprating: freeze working-age benefits, tax credits and Local Housing Allowances for 4 years from 2016-17",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 3820779502.63157,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 5863991346.85881,
+   "experiment_id": "sb2015_working_age_benefit_freeze",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -87333543.96087646,
+    "universal_credit+child_tax_credit+working_tax_credit+child_benefit+housing_benefit": 3908113046.5924463
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+   "obr_mapped_gbp": 4005000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.9540023726920275,
+   "ratio_scaled": 0.6515663609698645,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.4641676271807267,
+     "obr_event_forecast_gbp": 227343769192.35162,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Uprating: freeze working-age benefits, tax credits and Local Housing Allowances for 4 years from 2016-17",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

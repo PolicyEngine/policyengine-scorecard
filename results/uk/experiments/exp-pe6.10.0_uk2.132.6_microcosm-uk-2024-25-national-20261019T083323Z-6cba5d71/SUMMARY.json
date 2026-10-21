@@ -1,6 +1,7 @@
 {
  "anomaly_counts": {
   "construction_noop:diagnosed": 8,
+  "magnitude_outside_10x:diagnosed": 2,
   "magnitude_outside_3x:diagnosed": 4,
   "sign_mismatch:diagnosed": 2
  },
@@ -103,13 +104,18 @@
   }
  ],
  "events": [
+  "autumn_2010",
+  "autumn_2012",
   "autumn_2013",
   "autumn_2015",
   "autumn_2016",
   "autumn_budget_2017",
   "autumn_budget_2021",
   "autumn_statement_2022",
+  "budget_2010_2",
+  "budget_2012",
   "budget_2015",
+  "budget_2015_2",
   "budget_2016",
   "budget_2017",
   "budget_2018",
@@ -118,7 +124,7 @@
   "spring_budget_2021",
   "spring_statement_2022"
  ],
- "experiment_years": 93,
+ "experiment_years": 111,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",

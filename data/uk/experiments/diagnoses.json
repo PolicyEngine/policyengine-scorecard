@@ -133,6 +133,15 @@
    "status": "data_issue",
    "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), which inflates its \u00a30.94bn. 2.143.0 takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
    "years": null
+  },
+  {
+   "code": "magnitude_outside_10x",
+   "event": "budget_2012",
+   "evidence": "data/uk/events/inventory.jsonl expressibility note for budget_2012__income_tax_reduce_additional_rate_to_45p_in_2013_14 ('OBR costing is dominated by taxable-income response')",
+   "experiment_id": "b2012_additional_rate_45p",
+   "status": "expected",
+   "summary": "The OBR's costing of the cut to 45p (-\u00a3110m in 2016-17) is net of a taxable-income response that offsets almost all of the static cost; a static run has no such response. Restoring 50% on income above \u00a3125,140 costs \u00a36.3bn to \u00a36.9bn statically on the modern population, which also has a lower threshold than the \u00a3150,000 of 2013 (dividends left out of the construction).",
+   "years": null
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",
