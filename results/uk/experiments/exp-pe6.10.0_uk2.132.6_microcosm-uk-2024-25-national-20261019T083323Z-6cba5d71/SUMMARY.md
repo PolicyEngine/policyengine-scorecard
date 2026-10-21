@@ -1,0 +1,33 @@
+# Policy experiments: exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71
+
+**Policy experiments on the modern population: not replays or costings of any past event.**
+
+1 events, 36 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
+
+## Anomalies
+
+| Code | Diagnosed | Count |
+|---|---|---:|
+| `construction_noop` | diagnosed | 8 |
+
+## Mirrors
+
+| Pair | FY | Variables | Effects (£bn) | Exact negatives |
+|---|---|---|---|---|
+
+## Modern base against the OBR's newest forecast
+
+| Head | FY | PE base (£bn) | OBR newest (£bn) | Ratio |
+|---|---|---:|---:|---:|
+| CGT | 2024-25 | 23.1 | 13.7 (March 2026) | 1.691 |
+| CGT | 2025-26 | 27.3 | 21.8 (March 2026) | 1.253 |
+| CGT | 2026-27 | 29.0 | 20.8 (March 2026) | 1.396 |
+| CGT | 2027-28 | 30.1 | 25.5 (March 2026) | 1.183 |
+| IT | 2024-25 | 299.6 | 305.9 (March 2026) | 0.979 |
+| IT | 2025-26 | 325.2 | 331.4 (March 2026) | 0.981 |
+| IT | 2026-27 | 346.2 | 359.6 (March 2026) | 0.963 |
+| IT | 2027-28 | 362.7 | 384.6 (March 2026) | 0.943 |
+| NICS | 2024-25 | 172.4 | 171.4 (March 2026) | 1.006 |
+| NICS | 2025-26 | 214.0 | 204.0 (March 2026) | 1.049 |
+| NICS | 2026-27 | 223.2 | 211.6 (March 2026) | 1.055 |
+| NICS | 2027-28 | 230.3 | 218.9 (March 2026) | 1.052 |

@@ -1414,6 +1414,9 @@ def summary(population_id: str | None = None) -> dict:
             for anomaly in row["anomalies"]:
                 key = f"{anomaly['code']}:{'diagnosed' if anomaly['diagnosis'] else 'undiagnosed'}"
                 counts[key] = counts.get(key, 0) + 1
+    model_changes = []
+    if population.get("pairing") == "model_swap":
+        model_changes = against_certified_pair(population, documents)
     return {
         "schema_version": 1,
         "kind": "uk_policy_experiment_summary",
@@ -1427,7 +1430,75 @@ def summary(population_id: str | None = None) -> dict:
         "anomaly_counts": dict(sorted(counts.items())),
         "mirrors": mirror_findings(documents, specs),
         "baseline_coverage": [coverage[k] for k in sorted(coverage)],
+        "model_changes": model_changes,
     }
+
+
+MODEL_CHANGE_FLOOR = 10e6
+MODEL_CHANGE_SHARE = 0.05
+
+
+def against_certified_pair(population: dict, documents: list[dict]) -> list[dict]:
+    """A model swap against the certified pair on the same data: every
+    experiment-year whose effect moved by at least £10m and 5%. Same data,
+    so each is a model change between the two engines: a fix or a bug."""
+    document = load_populations()
+    pair = next(
+        (
+            record
+            for record in document["populations"]
+            if record.get("pairing") == "certified_pair"
+            and record["identity"]["dataset"]["sha256"]
+            == population["identity"]["dataset"]["sha256"]
+        ),
+        None,
+    )
+    if pair is None:
+        return []
+    out = []
+    for mine in documents:
+        path = output_root(pair["population_id"]) / mine["event"] / "FINDINGS.json"
+        if not path.exists():
+            continue
+        theirs = {
+            (row["experiment_id"], row["year"]): row
+            for row in json.loads(path.read_bytes())["rows"]
+        }
+        for row in mine["rows"]:
+            other = theirs.get((row["experiment_id"], row["year"]))
+            if other is None:
+                continue
+            a, b = other.get("effect_gbp"), row.get("effect_gbp")
+            if a is None or b is None:
+                if (a is None) != (b is None):
+                    out.append(
+                        {
+                            "event": mine["event"],
+                            "experiment_id": row["experiment_id"],
+                            "year": row["year"],
+                            "certified_pair_gbp": a,
+                            "model_swap_gbp": b,
+                            "change": "status",
+                        }
+                    )
+                continue
+            change = b - a
+            if abs(change) >= max(
+                MODEL_CHANGE_FLOOR, MODEL_CHANGE_SHARE * max(abs(a), abs(b))
+            ):
+                out.append(
+                    {
+                        "event": mine["event"],
+                        "experiment_id": row["experiment_id"],
+                        "year": row["year"],
+                        "certified_pair_gbp": a,
+                        "model_swap_gbp": b,
+                        "change_gbp": change,
+                        "groups_certified_pair": other.get("group_effects_gbp"),
+                        "groups_model_swap": row.get("group_effects_gbp"),
+                    }
+                )
+    return out
 
 
 def render_summary(document: dict) -> str:
@@ -1472,6 +1543,22 @@ def render_summary(document: dict) -> str:
             f"| {row['base_sheet']} | {row['fy']} | {row['pe_base_gbp'] / 1e9:,.1f} | "
             f"{row['obr_newest_forecast_gbp'] / 1e9:,.1f} ({row['obr_newest_vintage']}) | {row['pe_over_obr']:.3f} |"
         )
+    if document["model_changes"]:
+        lines += [
+            "",
+            "## Against the certified pair on the same data",
+            "",
+            "Same data, so each row is a model change between the engines: a fix or a bug.",
+            "",
+            "| Event | Experiment | FY | Certified pair (£bn) | This model (£bn) | Change (£bn) |",
+            "|---|---|---|---:|---:|---:|",
+        ]
+        for row in document["model_changes"]:
+            lines.append(
+                f"| {row['event']} | `{row['experiment_id']}` | {fy_label(row['year'])} | "
+                f"{money(row['certified_pair_gbp'])} | {money(row['model_swap_gbp'])} | "
+                f"{money(row.get('change_gbp'))} |"
+            )
     return "\n".join(lines) + "\n"
 
 
