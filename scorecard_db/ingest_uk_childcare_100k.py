@@ -636,10 +636,12 @@ def diagnoses(scores: list[ExternalScore], art: dict) -> list[tuple]:
             f"{hours:.1f} of 30 weekly hours (measured); microcosm#1126 identifies this draw as the main "
             "reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. "
             f"With every family at the full 30 hours the same reform costs £{full / 1e9:.3f}bn on this pair "
-            "(diagnostic run). The fix merged in microcosm on 16 October 2026 and is not yet in a "
-            "certified bundle; PolicyEngine's published dashboard figure had the same draw. Two smaller "
-            "PolicyEngine-side factors are recorded on the result: the universal-hours switch-off "
-            "(policyengine-uk#1930, fixed after the pin) and no hours for children under 1."
+            "(diagnostic run). The fix merged in microcosm on 16 October 2026 (microcosm#1299); this "
+            "certified pair was built on 19 June 2026, before it. PolicyEngine's published dashboard "
+            "figure ran on the 2 October Microcosm release that microcosm#1126 examines, with the same "
+            "draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours "
+            "switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no "
+            "hours for children under 1."
         )
         rows.append(
             ScorecardDB.diagnosis_row(

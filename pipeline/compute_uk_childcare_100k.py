@@ -166,6 +166,7 @@ def year_block(sim, year: int) -> dict:
         dtype=bool,
     )
     under_one = is_child & (age < 1)
+    fractional_age = np.abs(age - np.round(age)) > 1e-9
     return {
         "sums_gbp": sums,
         "counts": {
@@ -178,6 +179,7 @@ def year_block(sim, year: int) -> dict:
             "children_under_one_receiving_extended": float(
                 w_p[under_one & extended_child].sum()
             ),
+            "people_with_fractional_age": float(w_p[fractional_age].sum()),
         },
         "hours_usage": {
             "mean_all_benunits": float((hours * w_bu).sum() / w_bu.sum()),
@@ -196,13 +198,22 @@ def year_block(sim, year: int) -> dict:
 
 def set_full_use(sim, years) -> dict[int, float]:
     """Set the hours-usage input to full use in every simulated year before
-    any calculation; return the post-set weighted mean per requested year."""
+    anything that reads it is calculated; return the post-set weighted mean
+    per requested year and the (empty) dependent holders checked first."""
+    # Nothing that reads the input may have been calculated yet, or the
+    # override would not reach it: every dependent holder must be empty.
+    computed = {
+        v: [str(p) for p in sim.get_holder(v).get_known_periods()]
+        for v in (*FREE_HOURS, "extended_childcare_entitlement_eligible")
+    }
+    if any(computed.values()):
+        raise SystemExit(f"calculated before the override: {computed}")
     dataset_years = sorted(int(y) for y in sim.dataset.years)
     # the entity count, read without any calculation
     n = sim.populations["benunit"].count
     for y in dataset_years:
         sim.set_input(HOURS_USAGE, y, np.full(n, FULL_USE_HOURS))
-    out = {}
+    out = {"dependents_calculated_before_override": computed}
     for y in years:
         h, w = _weighted(sim.calculate(HOURS_USAGE, y))
         out[y] = float((h * w).sum() / w.sum())
@@ -239,6 +250,9 @@ def run_world(name: str, reform, years, pre: dict, *, full_use: bool = False):
             "variable": HOURS_USAGE,
             "value": FULL_USE_HOURS,
             "set_for_years": dataset_years,
+            "dependents_calculated_before_override": check.pop(
+                "dependents_calculated_before_override"
+            ),
             "post_set_weighted_mean": {str(k): v for k, v in check.items()},
         }
     return out, metadata

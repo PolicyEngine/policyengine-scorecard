@@ -293,6 +293,15 @@ def test_full_use_diagnostic_took_effect_and_costs_more(artifact):
         assert world["input_override"]["value"] == 30.0
         for mean in world["input_override"]["post_set_weighted_mean"].values():
             assert mean == pytest.approx(30.0)
+        # set before anything that reads it was calculated ...
+        overridden = world["input_override"]["dependents_calculated_before_override"]
+        assert overridden and not any(overridden.values())
+    # ... so it reached the entitlement: full use funds more extended hours
+    for year in diag["baseline__full_use_hours"]["years"]:
+        full = diag["baseline__full_use_hours"]["years"][year]["sums_gbp"]
+        drawn = artifact["worlds"]["baseline"]["years"][year]["sums_gbp"]
+        ext = "extended_childcare_entitlement"
+        assert full[ext] > drawn[ext]
     for year in diag["baseline__full_use_hours"]["years"]:
         full = sum(
             diag["free_hours__full_use_hours"]["years"][year]["sums_gbp"][v]
@@ -303,12 +312,14 @@ def test_full_use_diagnostic_took_effect_and_costs_more(artifact):
 
 
 def test_no_child_under_one_receives_extended_hours(artifact):
-    """The pe-under-ones construction note states this for every world and
-    year; the artifact must keep it true."""
+    """The pe-under-ones construction note states both facts for every world
+    and year; the artifact must keep them true."""
     for group in ("worlds", "diagnostics"):
         for world in artifact[group].values():
             for block in world["years"].values():
                 assert block["counts"]["children_under_one_receiving_extended"] == 0
+                assert block["counts"]["people_with_fractional_age"] == 0
+                assert block["counts"]["children_under_one"] > 0
 
 
 # --- claims, statuses, annotations -------------------------------------------
