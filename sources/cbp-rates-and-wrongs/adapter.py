@@ -91,7 +91,9 @@ def check_digests() -> None:
     for path in (PDF, PAGES):
         got = sha256(path)
         if got != spec[path.name]:
-            raise ValueError(f"QC failed: {path.name} sha256 {got} != {spec[path.name]}")
+            raise ValueError(
+                f"QC failed: {path.name} sha256 {got} != {spec[path.name]}"
+            )
 
 
 def pages() -> dict[int, str]:
@@ -115,9 +117,13 @@ def parse_table(number: str, text: str) -> dict[str, list[tuple[str, float]]]:
     start = text.index(spec["title"])
     end = text.index(NOTE, start)
     block = text[start:end]
-    title = " ".join(text[start : start + 200].split()).replace("Endoge- nous", "Endogenous")
+    title = " ".join(text[start : start + 200].split()).replace(
+        "Endoge- nous", "Endogenous"
+    )
     if spec["model_label"] not in title:
-        raise ValueError(f"QC failed: Table {number} title lacks {spec['model_label']!r}")
+        raise ValueError(
+            f"QC failed: Table {number} title lacks {spec['model_label']!r}"
+        )
     header = next(line for line in block.splitlines() if "Taper Rate" in line)
     if header.split()[2:] != list(YEAR_LABELS):
         raise ValueError(f"QC failed: Table {number} year columns {header.split()[2:]}")
@@ -128,10 +134,14 @@ def parse_table(number: str, text: str) -> dict[str, list[tuple[str, float]]]:
     for line, (label, key) in zip(body, POLICIES):
         stripped = line.strip()
         if not stripped.startswith(label):
-            raise ValueError(f"QC failed: Table {number} row {stripped!r} is not {label!r}")
+            raise ValueError(
+                f"QC failed: Table {number} row {stripped!r} is not {label!r}"
+            )
         cells = re.findall(_VALUE, stripped.removeprefix(label))
         if len(cells) != len(YEAR_LABELS):
-            raise ValueError(f"QC failed: Table {number} {label} has {len(cells)} values")
+            raise ValueError(
+                f"QC failed: Table {number} {label} has {len(cells)} values"
+            )
         out[key] = [(c, float(c)) for c in cells]
     note = " ".join(text[end : end + 300].split())
     if not note.startswith(f"{NOTE} {spec['note']}"):
@@ -144,7 +154,9 @@ def check_order(number: str, table: dict) -> None:
     for i, label in enumerate(YEAR_LABELS):
         column = [table[key][i][1] for _, key in POLICIES]
         if column != sorted(column) or len(set(column)) != len(column):
-            raise ValueError(f"QC failed: Table {number} {label} not rising with the taper")
+            raise ValueError(
+                f"QC failed: Table {number} {label} not rising with the taper"
+            )
 
 
 def tidy(number: str, table: dict) -> list[dict]:

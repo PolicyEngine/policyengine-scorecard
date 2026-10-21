@@ -227,6 +227,20 @@ Operating rules for the agent stage:
   `consumed_as_target`: PolicyEngine-UK takes ONS September rates and OBR
   determinants as inputs, so a match checks the input, not model skill.
 
+- **The £100,000 childcare limit (UK)** (`sources/centax-childcare-100k/`,
+  `sources/cbp-rates-and-wrongs/`, lane `uk-childcare-100k`): CenTax's
+  Table 4.2 (static cost, two behavioural margins and net cost; three
+  scenarios; 2027-28 and 2029-30) and the Centre for British Progress
+  appendix (net of behaviour, 2026-27 to 2031-32). PDF adapters read a
+  vendored page extract that a test re-extracts from the PDF. Counterparts
+  come from `pipeline/compute_uk_childcare_100k.py` on the certified
+  populace-uk pair: static, the three free-hours entitlements summed.
+  Static against static is `comparable`; net costs are `concept_mismatch`.
+  PolicyEngine's published dashboard figure stays as an older history row,
+  so the published miss stays on the page, and the central static rows
+  carry a `pe_gap` diagnosis linked to microcosm#1126 (the hours-usage
+  draw).
+
 ### Staged for Chronicle, not claims
 
 Administrative outturn tables (caseloads, units, spending) are calibration

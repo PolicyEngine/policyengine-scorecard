@@ -99,7 +99,9 @@ def check_digests() -> dict:
     for path in (PDF, PAGES):
         got = sha256(path)
         if got != spec[path.name]:
-            raise ValueError(f"QC failed: {path.name} sha256 {got} != {spec[path.name]}")
+            raise ValueError(
+                f"QC failed: {path.name} sha256 {got} != {spec[path.name]}"
+            )
     return spec
 
 
@@ -108,7 +110,9 @@ def pages() -> dict[int, str]:
     out: dict[int, str] = {}
     current = None
     for line in PAGES.read_text().splitlines(keepends=True):
-        m = re.match(r"=== PDF page (\d+) \(printed page (\d+)\) ===$", line.rstrip("\n"))
+        m = re.match(
+            r"=== PDF page (\d+) \(printed page (\d+)\) ===$", line.rstrip("\n")
+        )
         if m:
             current = int(m.group(1))
             if int(m.group(2)) != current - 1:
@@ -132,7 +136,9 @@ def _count(cell: str) -> int:
 
 def parse_table_4_2(text: str) -> dict[tuple[str, int], dict[str, int]]:
     """QC 2-3: {(scenario, year): {column: value}} from printed page 41."""
-    start = text.index("Table 4.2: Fiscal cost estimates of removing £100,000 threshold")
+    start = text.index(
+        "Table 4.2: Fiscal cost estimates of removing £100,000 threshold"
+    )
     end = text.index("Notes: This table presents the results", start)
     block = text[start:end]
     order = [block.find(w) for w in ("Central", "High-", "Low-")]
@@ -151,7 +157,9 @@ def parse_table_4_2(text: str) -> dict[tuple[str, int], dict[str, int]]:
         values |= {c: _gbp_m(v) for c, v in zip(MONEY, groups[3:])}
         for c in MONEY:
             if values[c] % ROUNDING_GBP_M:
-                raise ValueError(f"QC failed: {scenario} {year} {c} not a £10m multiple")
+                raise ValueError(
+                    f"QC failed: {scenario} {year} {c} not a £10m multiple"
+                )
         out[(scenario, year)] = values
         out[(scenario, year)]["_verbatim"] = dict(zip((*COUNTS, *MONEY), groups[1:]))
     return out
@@ -160,15 +168,24 @@ def parse_table_4_2(text: str) -> dict[tuple[str, int], dict[str, int]]:
 def check_sums(table: dict) -> None:
     """QC 4."""
     for (scenario, year), v in table.items():
-        gap = v["static_cost"] + v["intensive_margin"] + v["extensive_margin"] - v["net_fiscal_cost"]
+        gap = (
+            v["static_cost"]
+            + v["intensive_margin"]
+            + v["extensive_margin"]
+            - v["net_fiscal_cost"]
+        )
         if abs(gap) > SUM_TOLERANCE_GBP_M:
-            raise ValueError(f"QC failed: {scenario} {year} components miss net by £{gap}m")
+            raise ValueError(
+                f"QC failed: {scenario} {year} components miss net by £{gap}m"
+            )
 
 
 def check_table_4_3(table: dict, text: str) -> None:
     """QC 5: Table 4.3's abolition rows equal Table 4.2's central rows."""
     start = text.index("Table 4.3: Fiscal cost estimates of childcare policy reforms")
-    rows = [m.groups() for line in text[start:].splitlines() if (m := _T43_ROW.search(line))]
+    rows = [
+        m.groups() for line in text[start:].splitlines() if (m := _T43_ROW.search(line))
+    ]
     for groups in rows[:2]:
         year = int(groups[0])
         central = table[("central", year)]
@@ -178,21 +195,28 @@ def check_table_4_3(table: dict, text: str) -> None:
         }
         want = {k: central[k] for k in got}
         if got != want:
-            raise ValueError(f"QC failed: Table 4.3 abolition {year} {got} != Table 4.2 {want}")
+            raise ValueError(
+                f"QC failed: Table 4.3 abolition {year} {got} != Table 4.2 {want}"
+            )
     if [int(g[0]) for g in rows[:2]] != list(YEARS):
-        raise ValueError("QC failed: Table 4.3's first rows are not the abolition years")
+        raise ValueError(
+            "QC failed: Table 4.3's first rows are not the abolition years"
+        )
 
 
 def check_prose(table: dict, text: str) -> None:
     """QC 6: the sentences under the table restate the central 2030 row."""
     # the page footers ("41   © CenTax") split a sentence across pages
     body = "\n".join(
-        line for line in text.splitlines() if not re.fullmatch(r"\s*\d+\s+© CenTax\s*", line)
+        line
+        for line in text.splitlines()
+        if not re.fullmatch(r"\s*\d+\s+© CenTax\s*", line)
     )
     flat = " ".join(body.split())
     c = table[("central", 2030)]
     claims = {
-        "around £340 million less than the static cost": c["net_fiscal_cost"] - c["static_cost"],
+        "around £340 million less than the static cost": c["net_fiscal_cost"]
+        - c["static_cost"],
         "£210 million of this is estimated to arise": c["intensive_margin"],
         "Another £130 million is expected": c["extensive_margin"],
     }

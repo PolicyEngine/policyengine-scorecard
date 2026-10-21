@@ -41,6 +41,8 @@ Chain order is dependency order and is part of the contract:
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     uk_benefit_uprating  September 2026 CPI claims + pe-uk benefit-rate
                 read-backs (also on the HMT and RF uprating claims)
+    uk_childcare_100k  CenTax + CBP costings of removing the £100,000
+                  childcare limit, certified-pair counterparts
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
     be_pit_reform Belgian PIT-reform claims + Axiom result attachments
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
@@ -86,6 +88,7 @@ from . import (
     ingest_lpc_minimum_wage,
     ingest_uk_ab2025,
     ingest_uk_benefit_uprating,
+    ingest_uk_childcare_100k,
     ingest_uk_thinktanks,
     ingest_us_admin_outturns,
     ingest_ons_etb,
@@ -297,6 +300,10 @@ def build(db_path: Path) -> dict:
             "uk_benefit_uprating",
             lambda: ingest_uk_benefit_uprating.ingest(db_path),
         ),
+        # The £100,000 childcare limit costings: CenTax (Table 4.2) and the
+        # Centre for British Progress appendix, with the certified pair's
+        # static counterparts and the published dashboard figure as history.
+        ("uk_childcare_100k", lambda: ingest_uk_childcare_100k.ingest(db_path)),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),

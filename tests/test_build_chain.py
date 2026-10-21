@@ -59,6 +59,7 @@ STEPS = (
     "uk_ab2025_verdicts",
     "uk_ab2025_lanes",
     "uk_benefit_uprating",
+    "uk_childcare_100k",
     "nz_budget_scores",
     "be_pit_reform",
     "be_jrc",

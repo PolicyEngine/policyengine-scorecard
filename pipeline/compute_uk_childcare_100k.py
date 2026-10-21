@@ -60,8 +60,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "pipeline"))
 
-import compute_uk_ab2025 as ab  # noqa: E402
-import uk_replay_variants as variants  # noqa: E402
+import compute_uk_ab2025 as ab
+import uk_replay_variants as variants
 
 OUTPUT_DIR = ROOT / "results" / "uk" / "childcare_100k"
 YEARS = (2026, 2027, 2028, 2029, 2030)
@@ -250,7 +250,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--diagnostic-years", nargs="*", type=int, default=list(DIAGNOSTIC_YEARS)
     )
-    ap.add_argument("--run-id", default=f"childcare-100k-{dt.date.today():%Y%m%d}")
+    ap.add_argument(
+        "--run-id", default=f"childcare-100k-{dt.datetime.now(dt.timezone.utc):%Y%m%d}"
+    )
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     args = ap.parse_args(argv)
 
