@@ -523,6 +523,11 @@ STANDARD_CONDITIONS = frozenset(
         #                 publication's own words
         "horizon",
         "horizon_note",
+        # scenario        the source's named scenario where one costing is
+        #                 published under several assumption sets (CenTax's
+        #                 childcare cliff-edge Table 4.2: "central" |
+        #                 "high_cost" | "low_cost"); identity-bearing
+        "scenario",
     }
 )
 

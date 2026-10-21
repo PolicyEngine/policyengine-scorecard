@@ -1,0 +1,133 @@
+{
+ "_schema": {
+  "applies_to": "matcher on {components, scenarios, periods, results}; null = any. components: Table 4.2 money columns (static_cost, intensive_margin, extensive_margin, net_fiscal_cost); scenarios: central, high_cost, low_cost; periods: claim periods (the tax year's later year); results: certified (the certified-pair run) or published_dashboard (the history row)",
+  "severity": "period | definitional | construction | caution | gap",
+  "status": "the comparison status this annotation sets, where it sets one; at most one status-setting annotation matches a result",
+  "basis": "traceability: raw/pages_layout.txt (PDF page and printed page), engine files at the certified pin, or the measured artifact results/uk/childcare_100k/<variant>.json"
+ },
+ "annotations": [
+  {
+   "id": "centax-static-vs-static",
+   "applies_to": {
+    "components": [
+     "static_cost"
+    ],
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "certified"
+    ]
+   },
+   "severity": "construction",
+   "status": "comparable",
+   "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements with the limit removed and no behavioural response run.",
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)'; policyengine_uk 2.89.2 applies labour-supply responses only through Simulation.apply_dynamics (simulation.py), which pipeline/compute_uk_childcare_100k.py never calls"
+  },
+  {
+   "id": "centax-static-published-dashboard",
+   "applies_to": {
+    "components": [
+     "static_cost"
+    ],
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "published_dashboard"
+    ]
+   },
+   "severity": "construction",
+   "status": "constructed",
+   "text": "A static cost on both sides, but the published PolicyEngine figure is the engine plus the dashboard's six local corrections to policyengine-uk 2.102.3, so it is a construction rather than the engine as served.",
+   "basis": "pe/published_dashboard.json (corrections: src/childcare_100k/corrections.py at PolicyEngine/uk-childcare-100k-threshold f25f0db)"
+  },
+  {
+   "id": "centax-net-includes-behaviour",
+   "applies_to": {
+    "components": [
+     "net_fiscal_cost"
+    ],
+    "scenarios": null,
+    "periods": null,
+    "results": null
+   },
+   "severity": "definitional",
+   "status": "concept_mismatch",
+   "text": "CenTax's net fiscal cost adds two behavioural gains to the static cost: tax from parents who stop holding their income below £100,000 (the intensive margin) and tax and National Insurance from partners who enter work (the extensive margin). PolicyEngine's counterpart is the static cost alone, so the two measure different things.",
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes: 'The intensive margin behavioural gain ... The extensive margin behavioural gain ...') and PDF page 76 (printed page 75, Appendix A 'Behavioural revenue gain')"
+  },
+  {
+   "id": "centax-scenario-friction",
+   "applies_to": {
+    "components": [
+     "static_cost",
+     "net_fiscal_cost"
+    ],
+    "scenarios": [
+     "high_cost",
+     "low_cost"
+    ],
+    "periods": null,
+    "results": null
+   },
+   "severity": "construction",
+   "text": "CenTax's scenarios assume different falls in the bunching friction after 2022 (none in the high-cost scenario, a 50% fall in the low-cost one). That changes how many parents are above £100,000 under current law, so the static cost differs by scenario. PolicyEngine has one current-law income distribution, so one PolicyEngine value meets all three scenarios.",
+   "basis": "raw/pages_layout.txt PDF pages 40-41 (printed pages 39-40, section 4.1) and PDF page 75 (printed page 74, Appendix A 'Static cost': parents between £100,000 and the marginal buncher's income)"
+  },
+  {
+   "id": "centax-free-hours-only",
+   "applies_to": {
+    "components": null,
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "certified"
+    ]
+   },
+   "severity": "definitional",
+   "text": "CenTax costs the free childcare hours only ('removing the £100,000 threshold for eligibility for free childcare hours'). Tax-Free Childcare, which has its own £100,000 limit, is not part of the reform. PolicyEngine's counterpart matches: it removes only the 30-hours limit and sums the three free-hours entitlements, and the run measured no change in Tax-Free Childcare. The £500 Tax-Free Childcare addition in CenTax's Appendix D belongs to the Centre for British Progress estimate CenTax reviews, not to CenTax's figures.",
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes), PDF page 9 (printed page 8, section 1.1: Tax-Free Childcare 'withdrawn in full ... once either parent has an ANI above £100,000') and PDF page 100 (printed page 99, Appendix D: CBP's 'value of the entitlement ... with £500 added for Tax-Free Childcare'); results/uk/childcare_100k/<variant>.json worlds.free_hours: limits_executed and the tax_free_childcare sum"
+  },
+  {
+   "id": "centax-year-convention",
+   "applies_to": {
+    "components": null,
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "certified"
+    ]
+   },
+   "severity": "period",
+   "text": "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. PolicyEngine's annual period 2027 runs the 2027-28 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
+   "basis": "raw/pages_layout.txt PDF page 3 (printed page 2, editorial note: 'tax year 2021-22 is given as 2022'); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"
+  },
+  {
+   "id": "centax-free-hours-only-published",
+   "applies_to": {
+    "components": null,
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "published_dashboard"
+    ]
+   },
+   "severity": "definitional",
+   "text": "CenTax costs the free childcare hours only. The dashboard's reform also removed the Tax-Free Childcare limit; the figure here is its 30-hours leg, which excludes Tax-Free Childcare (the dashboard puts that leg at £0.159bn in 2027-28 and £0.173bn in 2029-30).",
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes); pe/published_dashboard.json (budget.gross_bn.thirty_hours and budget.gross_bn.tax_free_childcare of data/results.json at f25f0db)"
+  },
+  {
+   "id": "centax-year-convention-published",
+   "applies_to": {
+    "components": null,
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "published_dashboard"
+    ]
+   },
+   "severity": "period",
+   "text": "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. The dashboard names fiscal years by their start year (2027 is 2027-28) and compared its 2029-30 figure with CenTax's 2030.",
+   "basis": "raw/pages_layout.txt PDF page 3 (printed page 2, editorial note); pe/published_dashboard.json (src/childcare_100k/config.py at f25f0db: 'Fiscal years named by start year (\"2026\" = 2026-27)'; data/results.json benchmarks[0].like_for_like)"
+  }
+ ]
+}

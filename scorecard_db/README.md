@@ -507,3 +507,40 @@ this lane's PMD scores by fiscal event from compact, lossless shards. All scores
 remain accessible. Coverage distinguishes scores with a numerical PE value,
 recorded findings and scores without a recorded result, so adding unanswered
 scores does not imply that a model comparison has been completed.
+
+## 2026-10-21 population: the £100,000 childcare limit (UK)
+
+Two costings of removing the £100,000 adjusted-net-income limit on the
+working-parent childcare offers in England, with PolicyEngine's static
+counterparts, from `ingest_uk_childcare_100k` (lane `uk-childcare-100k`):
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_uk_childcare_100k data/scorecard.db
+```
+
+- **CenTax**, Table 4.2 of "Removing the childcare cliff-edge" (September
+  2026, `sources/centax-childcare-100k/`): 24 claims, the static cost, both
+  behavioural margins and the net cost for three scenarios in 2027-28 and
+  2029-30. The free hours only. The 12 bunching counts stay in
+  `data/externals` with a tallied reason.
+- **Centre for British Progress**, Tables 2 and 3 of the "Rates and wrongs"
+  technical appendix (25 March 2026, `sources/cbp-rates-and-wrongs/`): 12
+  claims, the net impact of abolishing the cliff on the free hours and
+  Tax-Free Childcare, after behaviour, 2026-27 to 2031-32. The 60 taper
+  cells stay in `data/externals`.
+
+All claims are `revenue_change` in pounds, held out, keyed to two
+`policy_ref` worlds (`measure_key` carries the same slug for retrieval
+across producers), and published without a result where PolicyEngine has
+none, with the reason in `pe_missing`. The new `scenario` condition carries
+CenTax's scenario.
+
+Results come from `pipeline/compute_uk_childcare_100k.py` on the certified
+pair (the default replay variant): 22 rows, `comparable` for CenTax's static
+cost and `concept_mismatch` for every net figure. Each status is the one
+status-setting entry of the source's `annotations.json` that matches the
+row, so no status is a default. PolicyEngine's published dashboard figure
+(£0.434bn in 2027-28) is four further result rows, older than the certified
+run: the history keeps the published miss beside the current figure. The
+central static rows carry a `pe_gap` diagnosis linked to microcosm#1126 (the
+hours-usage draw). See `sources/centax-childcare-100k/README.md`.

@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-19",
+ "updated": "2026-10-21",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -577,6 +577,17 @@
    "running": false,
    "updated": "2026-10-15",
    "note": "88 of 132 claims computed \u2014 State individual income tax collections (T40) for 41 States, DC, NH and WA, FY2023-FY2025; FY2023 (a us-6.2.1 calibration target) and FY2025 compared with PE's CY2024 State income tax on us-6.2.1; adapter QC checks the US column against the 50 States on all 25 items; admin outturns staged as claims by decision on #176"
+  },
+  {
+   "id": "uk-childcare-100k",
+   "source": "CenTax + Centre for British Progress",
+   "area": "\u00a3100,000 childcare limit (30 funded hours, Tax-Free Childcare)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-21",
+   "note": "22 of 36 claims computed on the certified pair (populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z, policyengine-uk 2.89.2) \u2014 CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published dashboard figure kept as history; pe_gap on the central static rows (microcosm#1126)"
   }
  ]
 }
