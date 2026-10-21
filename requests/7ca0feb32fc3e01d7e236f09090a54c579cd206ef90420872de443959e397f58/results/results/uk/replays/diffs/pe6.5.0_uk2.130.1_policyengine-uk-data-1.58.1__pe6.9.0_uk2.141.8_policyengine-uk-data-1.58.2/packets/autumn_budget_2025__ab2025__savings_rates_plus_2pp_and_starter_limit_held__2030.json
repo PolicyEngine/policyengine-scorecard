@@ -1,0 +1,696 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "89d3180fa8f1772e16cbd7c12ed3076bcb1dda30d87bfb1642b6edbe4fb73f1d"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "f17ccc14843fe9789dcc5f6214e9a82b0c03673f6ea218227b7c5e3c8d021231"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.8",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2027-28",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.45,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.2,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.4
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.45,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.2,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.4
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.savings.additional",
+     "gov.hmrc.income_tax.rates.savings.basic",
+     "gov.hmrc.income_tax.rates.savings.higher"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.savings\\.basic|gov\\.hmrc\\.income_tax\\.rates\\.savings\\.higher|gov\\.hmrc\\.income_tax\\.rates\\.savings\\.additional",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "pe_gap": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12330:822760a3237ff614",
+     "source_row_number": 12330,
+     "source_row_sha256": "822760a3237ff61456aa975baba3c6eeef08e6eb41d0fc9268f7799537f79f41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12331:02c5d107aa20029b",
+     "source_row_number": 12331,
+     "source_row_sha256": "02c5d107aa20029be95077185660c2952b0d792b2b79a551ef9f96354965a642",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 3194839.600493571,
+     "value_gbp_decimal": "3194839.600493571"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12332:c6b82f1f54c54340",
+     "source_row_number": 12332,
+     "source_row_sha256": "c6b82f1f54c54340d2cb9baa86c71c38c456a6bb9602dd1406244038e8d663f3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 52840570.89519846,
+     "value_gbp_decimal": "52840570.89519846"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12333:e7cb08bb9df37f81",
+     "source_row_number": 12333,
+     "source_row_sha256": "e7cb08bb9df37f813c70f23167a0f8ac8c0e7c3daa25ca7da1a0108b8b7a2f49",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 522938617.1892237,
+     "value_gbp_decimal": "522938617.1892237"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12334:b5f43f5e38667473",
+     "source_row_number": 12334,
+     "source_row_sha256": "b5f43f5e386674735de494ceb5331f2721f0e8b794ae6cc2ba766275ce854738",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 469096430.7994401,
+     "value_gbp_decimal": "469096430.7994401"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+     "source_row_number": 12335,
+     "source_row_sha256": "4ff6459d9e873238ee5504b3dc5755879da01249bfbfaed3e7f1269e0a22b7d3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 507273946.4918935,
+     "value_gbp_decimal": "507273946.4918935"
+    }
+   ],
+   "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+   "unmapped_obr_heads": []
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2027-28",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.45,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.2,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.4
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.45,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.2,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.4
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.savings.additional": 0.47,
+     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
+     "gov.hmrc.income_tax.rates.savings.higher": 0.42
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.savings.additional",
+     "gov.hmrc.income_tax.rates.savings.basic",
+     "gov.hmrc.income_tax.rates.savings.higher"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.savings\\.basic|gov\\.hmrc\\.income_tax\\.rates\\.savings\\.higher|gov\\.hmrc\\.income_tax\\.rates\\.savings\\.additional",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "pe_gap": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12330:822760a3237ff614",
+     "source_row_number": 12330,
+     "source_row_sha256": "822760a3237ff61456aa975baba3c6eeef08e6eb41d0fc9268f7799537f79f41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12331:02c5d107aa20029b",
+     "source_row_number": 12331,
+     "source_row_sha256": "02c5d107aa20029be95077185660c2952b0d792b2b79a551ef9f96354965a642",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 3194839.600493571,
+     "value_gbp_decimal": "3194839.600493571"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12332:c6b82f1f54c54340",
+     "source_row_number": 12332,
+     "source_row_sha256": "c6b82f1f54c54340d2cb9baa86c71c38c456a6bb9602dd1406244038e8d663f3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 52840570.89519846,
+     "value_gbp_decimal": "52840570.89519846"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12333:e7cb08bb9df37f81",
+     "source_row_number": 12333,
+     "source_row_sha256": "e7cb08bb9df37f813c70f23167a0f8ac8c0e7c3daa25ca7da1a0108b8b7a2f49",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 522938617.1892237,
+     "value_gbp_decimal": "522938617.1892237"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12334:b5f43f5e38667473",
+     "source_row_number": 12334,
+     "source_row_sha256": "b5f43f5e386674735de494ceb5331f2721f0e8b794ae6cc2ba766275ce854738",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 469096430.7994401,
+     "value_gbp_decimal": "469096430.7994401"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified savings-income rates to 20%, 40%, and 45%. The same OBR measure freezes the Starting Rate for Savings limit at \u00a35,000, but PE's parameter is constant at \u00a35,000 since 2010 and carries no no-measure uprating path; that component is omitted.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+     "source_row_number": 12335,
+     "source_row_sha256": "4ff6459d9e873238ee5504b3dc5755879da01249bfbfaed3e7f1269e0a22b7d3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+     "value_gbp": 507273946.4918935,
+     "value_gbp_decimal": "507273946.4918935"
+    }
+   ],
+   "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+   "unmapped_obr_heads": []
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.savings.additional": {
+      "baseline_world": 0.45,
+      "current_law": 0.47,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.47,
+      "reform_world": 0.47
+     },
+     "gov.hmrc.income_tax.rates.savings.basic": {
+      "baseline_world": 0.2,
+      "current_law": 0.22,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.22,
+      "reform_world": 0.22
+     },
+     "gov.hmrc.income_tax.rates.savings.higher": {
+      "baseline_world": 0.4,
+      "current_law": 0.42,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.42,
+      "reform_world": 0.42
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.savings.additional": {
+      "baseline_world": 0.45,
+      "current_law": 0.47,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.47,
+      "reform_world": 0.47
+     },
+     "gov.hmrc.income_tax.rates.savings.basic": {
+      "baseline_world": 0.2,
+      "current_law": 0.22,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.22,
+      "reform_world": 0.22
+     },
+     "gov.hmrc.income_tax.rates.savings.higher": {
+      "baseline_world": 0.4,
+      "current_law": 0.42,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.42,
+      "reform_world": 0.42
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 1155847208.477478,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 507273946.4918935,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 89913383.62042236,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 12457605.920979004
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1245760592.0979004,
+   "key": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+   "level": "source_row",
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "threshold_gbp": 12457605.920979004,
+   "year": 2030
+  },
+  {
+   "base_gbp": 1155847208.477478,
+   "context": {},
+   "delta_gbp": 89913383.62042236,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 12457605.920979004
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1245760592.0979004,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "threshold_gbp": 12457605.920979004,
+   "year": 2030
+  },
+  {
+   "base_gbp": 1155847208.477478,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 89913383.62042236,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 12457605.920979004
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1245760592.0979004,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+   "threshold_gbp": 12457605.920979004,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__savings_rates_plus_2pp_and_starter_limit_held --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__savings_rates_plus_2pp_and_starter_limit_held --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 1155847208.477478,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 1245760592.0979004,
+   "obr_value_gbp": 507273946.4918935,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+   "source_row_number": 12335,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 1155847208.477478,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 1245760592.0979004,
+   "obr_value_gbp": 507273946.4918935,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+   "source_row_number": 12335,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at \u00a35000 from April 2026 to April 2031",
+ "year": 2030
+}

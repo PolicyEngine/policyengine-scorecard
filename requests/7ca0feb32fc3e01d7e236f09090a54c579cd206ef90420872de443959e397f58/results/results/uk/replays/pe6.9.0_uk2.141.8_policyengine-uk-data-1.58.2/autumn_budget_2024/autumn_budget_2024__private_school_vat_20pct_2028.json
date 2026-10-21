@@ -1,0 +1,113 @@
+{
+ "baseline_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "calendar_year_proxy": "PE calendar year 2028 proxies FY 2028-29.",
+ "certified_aggregates_gbp": {
+  "private_school_vat": 0.0
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "autumn_budget_2024__private_school_vat_20pct"
+ ],
+ "construction": "forward_delta_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.141.8",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2028-29",
+ "head_channels": {
+  "private_school_vat": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "VAT",
+   "pe_variables": [
+    "private_school_vat"
+   ]
+  }
+ ],
+ "head_effects": {
+  "private_school_vat": 2093262565.6763942
+ },
+ "head_variables": [
+  "private_school_vat"
+ ],
+ "literal_reform_minus_baseline": {
+  "private_school_vat": 2093262565.6763942
+ },
+ "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+ "measure_total_gbp": 2093262565.6763942,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  },
+  "reform_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01.2035-12-31": 0.2
+    }
+   }
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.9.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.contrib.labour.private_school_vat": {
+    "intended": 0,
+    "processed": 0
+   }
+  },
+  "reform_world": {
+   "gov.contrib.labour.private_school_vat": {
+    "intended": 0.2,
+    "processed": 0.2
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.contrib.labour.private_school_vat": {
+    "2025-01-01.2035-12-31": 0.2
+   }
+  }
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "private_school_vat": 0.0
+   }
+  },
+  "reform": {
+   "heads": {
+    "private_school_vat": 2093262565.6763942
+   }
+  }
+ },
+ "variable_metadata": {
+  "private_school_vat": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/contrib/labour/private_school_vat.py",
+   "entity": "household",
+   "label": "private school VAT",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "97bc0e4f847cf1869e9dc88c772ba5198bc38796b6047147b05815366a806a38",
+ "year": 2028
+}

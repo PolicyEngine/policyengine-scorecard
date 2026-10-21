@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "b83d17f373031fd3f000f07008684f5eb3fdcc9497df73556a3aecf3d32021d1",
+  "COMPARISON.json": "2281b969c6932f7d1bec24594ca2e7b18f9fa3ecb34fb0573cd89903ea0ac3d4",
+  "COMPARISON.md": "1371b56847b87f4e4169f160020bbd471b1c6f6336ce1831012b19fa7f8b6009"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "040c0ca99cde0792282defa72f174df69a63d1e0db5a1636921402c0977edbf2",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "ccf2a0627c4aaf0be6bad03e67251efef9874fe84b56796e7310b066b68d3559",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.8_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "3dbb0f01d41a376f9dffcf7f32f12d003e58a1645768abb3d4c8172a2eb6d52f"
+}
