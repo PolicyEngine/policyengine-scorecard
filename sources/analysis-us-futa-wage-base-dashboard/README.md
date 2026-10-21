@@ -27,9 +27,9 @@ production.
 
 ## What the search found
 
-Nobody has scored the dashboard's policy, a base near $43,000 at the 0.6% rate, in the last
-five years. The nearest precedent is Kletzer and Rosen (Hamilton Project, 2006). They put a
-$45,000 base at the same rate at $8.7 billion, with no year stated. It is logged under
+No producer has scored the dashboard's policy, a base near $43,000 at the 0.6% rate. The
+nearest precedent is Kletzer and Rosen (Hamilton Project, 2006). They put a $45,000 base at
+the then-current 0.8% net rate at $8.7 billion, with no year stated. It is logged under
 `academic` and not staged.
 
 **Staged:**
@@ -48,8 +48,8 @@ $45,000 base at the same rate at $8.7 billion, with no year stated. It is logged
 - Treasury's own estimate of the FY2017 budget's $40,000 proposal ($46.3 billion over
   2017-26) and CBO's estimate of the same proposal. Both are estimated after the budget's
   permanent FUTA surtax, a baseline `scorecard_db/baselines.py` does not register (harvest
-  rule 7). Their primaries are hashed in `manifest.jsonl`, and the `open_search` entry
-  records the hold.
+  rule 7). Their primaries are hashed in `manifest.jsonl`. The `open_search` entry records
+  Treasury's hold and the `cbo` entry records CBO's.
 - The Searchlight Institute's "north of $250 billion" (8 October 2026), which restates this
   dashboard.
 

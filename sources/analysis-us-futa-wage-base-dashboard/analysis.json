@@ -1532,7 +1532,8 @@
     "fiscal_year": "FY2024 (October 2023 to September 2024)",
     "basis": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
     "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
-    "published_as": "the page reads this file and prints the gap to IRS gross collections (gap_even_split_covered_wages, -17.0%)",
+    "prior_year_surcharge": "2023 statutory credit-reduction rates applied to the 2024 wage distribution (the dataset has no 2023 weights)",
+    "published_as": "the page reads this file and prints the gap to IRS gross collections in whole percent ('17% below in fiscal 2024 and 2025'); gap_even_split_covered_wages = -0.1701",
     "tax": "FUTA",
     "sign_convention": "level"
    },
@@ -1598,7 +1599,8 @@
     "fiscal_year": "FY2025 (October 2024 to September 2025)",
     "basis": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
     "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
-    "published_as": "the page reads this file and prints the gap to IRS gross collections (gap_even_split_covered_wages, -16.8%)",
+    "prior_year_surcharge": "modeled",
+    "published_as": "the page reads this file and prints the gap to IRS gross collections in whole percent ('17% below in fiscal 2024 and 2025'); gap_even_split_covered_wages = -0.1680",
     "tax": "FUTA",
     "sign_convention": "level"
    },
