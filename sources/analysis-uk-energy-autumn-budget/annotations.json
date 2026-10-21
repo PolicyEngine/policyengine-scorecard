@@ -1,0 +1,235 @@
+[
+ {
+  "id": "levy-scope-120-assumption",
+  "claims": [
+   "cbp_ro_fit_cost_fy2027",
+   "cbp_ro_fit_saving_fy2027",
+   "rf_ro_fit_saving_fy2027"
+  ],
+  "status": "comparable",
+  "explains_gap": true,
+  "cause": "The dashboard does not price the two levies. It sets the cut so that it takes £120 off a typical 2027-28 electricity bill of 2,500 kWh, a figure it takes from press reports with a £3.2bn price tag (LEVY_SAVING_TYPICAL in budget_options.py, citing the Guardian of 6 October and the FT of 11 October 2026), and applies that share, 12.6%, to every GB household's electricity bill. The remaining 25% of the Renewables Obligation and the Feed-in Tariffs are worth far less: CBP prices them together at c. £1.5bn and £53 a household (£780m and £730m), RF at £42 a year and, as mean averages, £26 and £24 a year, Good Energy at £0.61bn and £0.57bn (£20.45 and £19.25 on a typical bill), and HM Treasury's costing of the 75% of the domestic RO already funded (-£2,100m in 2027-28) puts the remaining quarter near £0.7bn. £120 is the size producers give for removing every remaining policy cost: RF's mean of £128 for all of them (Power struggle), the MCS Foundation's average of around £120 (at its archetypes' 3,955 kWh), the REA's £112 for a typical bill. So the option prices that wider change under the narrower label (annotation wider-levy-scope): its £3.83bn is close to RF's £3.75bn for every remaining policy cost plus the Carbon Price Support, and 20-28% above the REA's £3.2bn and the MCS Foundation's just over £3bn. The year does not close the gap: the producers' figures are at 2026 levy rates, the RO part falls in 2027-28 (the Treasury's 75% costing goes from £2,580m in 2026-27 to £2,100m), and the FiT part (£0.57bn in Good Energy's table to c. £0.73bn in CBP's) is too small to make up a difference of about £2.3bn whatever its indexation. RF's £42 is per household and the dashboard's £130 is the mean over all households; the dashboard's own typical-household saving is £120, so the statistic accounts for little of the gap.",
+  "basis": [
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/energy_budget/budget_options.py#L56-L61"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/energy_budget/budget_options.py#L228-L233"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/components/Dashboard.jsx#L522"
+   },
+   {
+    "kind": "document",
+    "ref": "https://britishprogress.org/api/media/file/quid-pro-quo-cheaper-electricity-now-for-longer-te-2.pdf#page=14"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf#page=9"
+   },
+   {
+    "kind": "document",
+    "ref": "https://mcsfoundation.org.uk/wp-content/uploads/2026/06/MCSF-The-case-for-further-levy-reform-Report-2026-1.pdf#page=16"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.r-e-a.net/geopolitical-tensions-are-making-uk-energy-bills-more-expensive/"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.goodenergy.co.uk/wp-content/uploads/2026/06/Lowering-energy-bills-report.pdf#page=19"
+   },
+   {
+    "kind": "document",
+    "ref": "https://assets.publishing.service.gov.uk/media/692872fd2a37784b16ecf676/Budget_2025-Policy_Costings.pdf#page=12"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/comment/trimming-the-vat/"
+   }
+  ]
+ },
+ {
+  "id": "whd-proxy-caseload",
+  "claims": [
+   "desnz_whd_rebates_fy2026"
+  ],
+  "status": "constructed",
+  "explains_gap": true,
+  "cause": "The dashboard's proxy pays the £100 to every Great Britain household where anyone receives a listed means-tested benefit (the note on the option in its results file), so it reaches 7.85m households, close to the 8.3m DESNZ estimates are on a qualifying benefit. Not all of them receive the Warm Home Discount: the benefit recipient or partner must be named on the energy bill and data matching misses some households, so DESNZ expects around 5.9m rebates, from about 85% of Pension Credit recipients and about 70% of recipients of other means-tested benefits (impact assessment, paragraphs 38 to 40). A top-up paid with the rebate reaches those 5.9m, so the proxy overstates its reach by about a third. The dashboard states the gap itself ('Modelled caseload 7.8m households against about 6m in official estimates').",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://assets.publishing.service.gov.uk/media/6978a8b51c24881f40a4d675/continuing-the-warm-home-discount-scheme-impact-assessment.pdf#page=11"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/data/options.json"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/energy_budget/budget_options.py#L306-L316"
+   }
+  ]
+ },
+ {
+  "id": "wider-levy-scope",
+  "claims": [
+   "rf_remaining_levies_cost_fy2027",
+   "mcs_all_levies_cost_fy2027",
+   "mcs_all_levies_saving_fy2027",
+   "rea_all_levies_cost_fy2027",
+   "rea_all_levies_saving_fy2027",
+   "jrf_ro_fit_whd_saving_fy2027",
+   "ebt_ro_fit_whd_nuclear_saving_fy2027",
+   "octopus_all_levies_saving_fy2027",
+   "rf_all_policy_costs_saving_fy2027",
+   "rf_policy_costs_cost_fy2027"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "These producers price a wider change than the option, which moves only the remaining 25% of the Renewables Obligation and the Feed-in Tariffs off household electricity bills. The MCS Foundation removes all remaining social and environmental levies and the REA all remaining levies on household electricity bills; Octopus lists the Warm Home Discount, RO, Sizewell C, Network Charging Compensation, AAHEDC and FiT; JRF adds the Warm Home Discount; the Electricity Bills Taskforce adds the Warm Home Discount and the nuclear levy; RF's Power struggle moves the rest of the RO, the FiT, the Warm Home Discount, the nuclear RAB, Network Charging Compensation, the Green Gas Levy and AAHEDC and removes the Carbon Price Support, and its August 'remaining levies' are not listed. They are shown beside the option because its £120 assumption is the size of this wider change (annotation levy-scope-120-assumption).",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://mcsfoundation.org.uk/wp-content/uploads/2026/06/MCSF-The-case-for-further-levy-reform-Report-2026-1.pdf#page=16"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.r-e-a.net/geopolitical-tensions-are-making-uk-energy-bills-more-expensive/"
+   },
+   {
+    "kind": "document",
+    "ref": "https://octopus.energy/press/more-news-press-releases/new-prime-minister-can-slash-household-energy-bills-by-almost-pound200-a-year-by-fixing-britain-s-broken-electricity-market/"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.jrf.org.uk/cost-of-living/helping-households-with-energy-costs-this-winter"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.e3g.org/news/over-120-organisations-call-for-hidden-taxes-to-come-off-electricity-bills/"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/08/Billing-me-softly.pdf#page=3"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf#page=9"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf#page=5"
+   }
+  ]
+ },
+ {
+  "id": "levy-components",
+  "claims": [
+   "rf_ro_remainder_saving_fy2027",
+   "rf_fit_saving_fy2027",
+   "good_energy_ro_remainder_cost_fy2027",
+   "good_energy_ro_remainder_saving_fy2027",
+   "good_energy_fit_cost_fy2027",
+   "good_energy_fit_saving_fy2027"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "Each figure prices one of the option's two levies, the remaining 25% of the Renewables Obligation or the Feed-in Tariffs, not the option; the dashboard publishes no figure for either alone. Good Energy prices the two at £0.61bn and £0.57bn (£20.45 and £19.25 on a typical bill) and RF at £26 and £24 a year as mean averages; each pair is far below the dashboard's £3.83bn and £130 for both together (annotation levy-scope-120-assumption).",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf#page=9"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.goodenergy.co.uk/wp-content/uploads/2026/06/Lowering-energy-bills-report.pdf#page=19"
+   }
+  ]
+ },
+ {
+  "id": "whd-570-not-100",
+  "claims": [
+   "rf_whd_570_cost_fy2026"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "RF's option raises the Warm Home Discount payment by £570, sized to its £3.75 billion envelope for a full year; the dashboard's option raises it by £100. The two price different changes to the same scheme.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf#page=5"
+   }
+  ]
+ },
+ {
+  "id": "per-eligible-vs-all-households",
+  "claims": [
+   "rf_ted_per_eligible_fy2026"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "RF's £175 is the average discount per eligible household; the dashboard publishes the average gain over all households (£73 in 2026-27). Its per-eligible amount is the flat £175 it takes from RF as an input (the option's assumptions in its results file), so the two figures are not independent estimates.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.resolutionfoundation.org/app/uploads/2026/10/Hitting-the-buffers.pdf#page=29"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/data/options.json"
+   }
+  ]
+ },
+ {
+  "id": "whd-recipients-vs-means-tested-households",
+  "claims": [
+   "good_energy_whd_payment_cost_fy2026"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "Good Energy pays £300 to the roughly 6 million Warm Home Discount recipients; the dashboard's £300 Cost of Living Payment, the 2022-24 design, goes to every household on a means-tested benefit (8.1m in 2026-27 in its results file). The two pay different households, so their costs measure different policies.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.goodenergy.co.uk/wp-content/uploads/2026/06/Lowering-energy-bills-report.pdf#page=11"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/data/options.json"
+   }
+  ]
+ },
+ {
+  "id": "cap-freeze-unstated-period",
+  "claims": [
+   "jrf_epg_style_cap_cost_fy2026",
+   "green_party_cap_freeze_cost_fy2026"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "Neither producer states the period its cost covers, and both priced the freeze before the October 2026 cap and the January 2027 forecast: JRF on 'current cost projections for July 2026' (9 April 2026), the Green Party in March 2026 against 'a rise of up to £300 per household'. The dashboard's 2026-27 cost holds every quarter of the year at April-June 2026 rates on its price path (Ofgem caps of £1,663 and £1,723, Cornwall Insight's £1,999 forecast for January-March 2027), as each household's forecast bill minus its bill at April-June tariffs (cap_freeze_support). A cost with no stated period on an earlier price path is not the dashboard's quantity.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://www.jrf.org.uk/cost-of-living/addressing-the-2026-energy-price-crisis"
+   },
+   {
+    "kind": "document",
+    "ref": "https://greenparty.org.uk/2026/03/18/zack-polanski-lays-out-plans-to-back-the-caring-majority-in-major-speech/"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/data/price_path.json"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-energy-autumn-budget/blob/4d916d54c15f12407d6d463d23acb47ac89b55be/src/energy_budget/budget_options.py#L221-L225"
+   }
+  ]
+ }
+]

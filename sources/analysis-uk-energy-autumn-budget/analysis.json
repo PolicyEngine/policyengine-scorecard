@@ -1,0 +1,1434 @@
+{
+ "schema": "comparables/analysis/1",
+ "id": "uk/energy-autumn-budget",
+ "country": "UK",
+ "registry": {
+  "kind": "app",
+  "slug": "energy-autumn-budget",
+  "country_id": "uk"
+ },
+ "title": "Energy bills and the Autumn Budget 2026",
+ "url": "https://policyengine.org/uk/energy-autumn-budget",
+ "published": "2026-10-14",
+ "owner": {
+  "author": "vahid-ahmadi"
+ },
+ "scope": "uk_wide",
+ "subject": "Household energy bills at forecast prices in 2026-27 and 2027-28 (the average extra cost against April–June 2026 cap rates), and the cost to government, reach and average gain of seven Autumn Budget 2026 energy support options: a Resolution Foundation-style targeted discount, a £100 Warm Home Discount top-up, a £300 Cost of Living Payment, £400 to every household, a cap freeze at April–June 2026 tariffs, keeping 0% VAT on domestic electricity through 2027-28, and moving the remaining Renewables Obligation and Feed-in Tariff levies to taxation.",
+ "search_terms": [
+  "energy bill support cost 2026",
+  "energy price guarantee cost",
+  "Autumn Budget 2026 energy bills",
+  "household energy bills forecast 2027",
+  "warm home discount expansion cost",
+  "targeted energy discount cost",
+  "electricity VAT zero rate cost 2027-28",
+  "remaining levies off electricity bills cost",
+  "cost of living payment 2026 cost",
+  "energy price cap freeze cost"
+ ],
+ "worlds": {
+  "targeted_discount_flat": {
+   "policy": "uk_energy_targeted_discount_flat_175",
+   "description": "The dashboard's simplified Resolution Foundation discount: a flat £175 to every Great Britain household on a means-tested benefit or whose highest individual income is under £24,000, on annual income, with full take-up."
+  },
+  "rf_targeted_energy_discount": {
+   "policy": "uk_energy_rf_targeted_energy_discount",
+   "description": "The Resolution Foundation's Targeted Energy Discount: a discount on gas and electricity unit prices for households on means-tested benefits or whose highest individual income over the previous three months is under £24,000, funded from general taxation (Billing me softly; Hitting the buffers)."
+  },
+  "whd_top_up": {
+   "policy": "uk_energy_whd_top_up_100",
+   "description": "£100 on top of the £150 Warm Home Discount, paid from taxation; the dashboard models it as £100 to every Great Britain household where anyone receives a listed means-tested benefit."
+  },
+  "cost_of_living_payment": {
+   "policy": "uk_energy_cost_of_living_payment_300",
+   "description": "A £300 Cost of Living Payment to households on means-tested benefits, the 2022-24 design."
+  },
+  "whd_recipients_payment_300": {
+   "policy": "uk_energy_whd_recipients_payment_300",
+   "description": "Good Energy's proposal: an additional £300 to the roughly 6 million Warm Home Discount recipients this winter."
+  },
+  "flat_400": {
+   "policy": "uk_energy_bills_support_400",
+   "description": "£400 off every household's energy bill, the 2022 Energy Bills Support Scheme design."
+  },
+  "cap_freeze": {
+   "policy": "uk_energy_cap_freeze_apr_jun_2026",
+   "description": "Household energy prices held at the April–June 2026 price cap (unit rates and standing charges), the government paying suppliers the difference: an Energy Price Guarantee at the April 2026 level."
+  },
+  "extend_vat_cut": {
+   "policy": "uk_energy_domestic_electricity_vat_zero_2027_28",
+   "description": "VAT on domestic electricity in Great Britain kept at 0% through 2027-28 instead of returning to 5% on 1 April 2027 (SI 2026/987 sets 0% from 1 October 2026 to 31 March 2027)."
+  },
+  "remove_levies": {
+   "policy": "uk_energy_remove_remaining_ro_and_fit",
+   "description": "The remaining 25% of the domestic Renewables Obligation and the Feed-in Tariffs moved from household electricity bills to general taxation."
+  },
+  "remove_remaining_ro": {
+   "policy": "uk_energy_remove_remaining_ro",
+   "description": "The remaining 25% of the domestic Renewables Obligation moved from household electricity bills to general taxation: one of the two levies in the dashboard's option."
+  },
+  "remove_fit": {
+   "policy": "uk_energy_remove_fit",
+   "description": "The Feed-in Tariffs moved from household electricity bills to general taxation: one of the two levies in the dashboard's option."
+  },
+  "whd_increase_570": {
+   "policy": "uk_energy_whd_increase_570",
+   "description": "The Resolution Foundation's option of raising the Warm Home Discount payment by £570 (Power struggle, March 2026)."
+  },
+  "remove_wider_levies": {
+   "policy": "uk_energy_remove_wider_electricity_levies",
+   "description": "More than the remaining Renewables Obligation and the Feed-in Tariffs moved from household electricity bills to general taxation: at least the Warm Home Discount as well, and for most producers every remaining levy (each producer's list is in its claim's reform_hint)."
+  }
+ },
+ "pe_estimates": [
+  {
+   "key": "rf_targeted_discount_cost_fy2026",
+   "label": "Cost to government of the targeted discount (RF, simplified: flat £175), 2026-27",
+   "world": "targeted_discount_flat",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": -2140000000,
+   "value_raw": "2.14",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=rf_targeted_discount].cost_bn"
+   }
+  },
+  {
+   "key": "rf_targeted_discount_share_fy2026",
+   "label": "Share of households helped by the targeted discount (RF, simplified: flat £175), 2026-27",
+   "world": "targeted_discount_flat",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 41.7,
+   "value_raw": "41.7",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=rf_targeted_discount].share_receiving_pct"
+   }
+  },
+  {
+   "key": "rf_targeted_discount_avg_gain_fy2026",
+   "label": "Average gain per household (all households) from the targeted discount (RF, simplified: flat £175), 2026-27",
+   "world": "targeted_discount_flat",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 73,
+   "value_raw": "73",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=rf_targeted_discount].avg_per_household"
+   }
+  },
+  {
+   "key": "whd_top_up_cost_fy2026",
+   "label": "Cost to government of the Warm Home Discount +£100 (means-tested-household proxy), 2026-27",
+   "world": "whd_top_up",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": -780000000,
+   "value_raw": "0.78",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=whd_top_up].cost_bn"
+   }
+  },
+  {
+   "key": "whd_top_up_share_fy2026",
+   "label": "Share of households helped by the Warm Home Discount +£100 (means-tested-household proxy), 2026-27",
+   "world": "whd_top_up",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 26.7,
+   "value_raw": "26.7",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=whd_top_up].share_receiving_pct"
+   }
+  },
+  {
+   "key": "whd_top_up_avg_gain_fy2026",
+   "label": "Average gain per household (all households) from the Warm Home Discount +£100 (means-tested-household proxy), 2026-27",
+   "world": "whd_top_up",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 27,
+   "value_raw": "27",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=whd_top_up].avg_per_household"
+   }
+  },
+  {
+   "key": "whd_top_up_households_fy2026",
+   "label": "Households reached by the Warm Home Discount +£100 (means-tested-household proxy), 2026-27",
+   "world": "whd_top_up",
+   "metric": "affected_count",
+   "unit_concept": "households",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 7850000,
+   "value_raw": "7.85",
+   "normalization": "millions x 1e6",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "take_up": "full",
+    "published_as": "our 2026-27 proxy reaches about 7.8 million (policy box, Dashboard.jsx)"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=whd_top_up].recipients_m"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_cost_fy2026",
+   "label": "Cost to government of the £300 Cost of Living Payment, 2026-27",
+   "world": "cost_of_living_payment",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": -2430000000,
+   "value_raw": "2.43",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cost_of_living_payment].cost_bn"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_share_fy2026",
+   "label": "Share of households helped by the £300 Cost of Living Payment, 2026-27",
+   "world": "cost_of_living_payment",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 27.6,
+   "value_raw": "27.6",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cost_of_living_payment].share_receiving_pct"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_avg_gain_fy2026",
+   "label": "Average gain per household (all households) from the £300 Cost of Living Payment, 2026-27",
+   "world": "cost_of_living_payment",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 83,
+   "value_raw": "83",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cost_of_living_payment].avg_per_household"
+   }
+  },
+  {
+   "key": "flat_400_cost_fy2026",
+   "label": "Cost to government of the £400 to every household, 2026-27",
+   "world": "flat_400",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": -11740000000,
+   "value_raw": "11.74",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=flat_400].cost_bn"
+   }
+  },
+  {
+   "key": "flat_400_share_fy2026",
+   "label": "Share of households helped by the £400 to every household, 2026-27",
+   "world": "flat_400",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 100.0,
+   "value_raw": "100.0",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=flat_400].share_receiving_pct"
+   }
+  },
+  {
+   "key": "flat_400_avg_gain_fy2026",
+   "label": "Average gain per household (all households) from the £400 to every household, 2026-27",
+   "world": "flat_400",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 400,
+   "value_raw": "400",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=flat_400].avg_per_household"
+   }
+  },
+  {
+   "key": "cap_freeze_cost_fy2026",
+   "label": "Cost to government of the cap freeze at April–June 2026 tariffs, 2026-27",
+   "world": "cap_freeze",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": -7220000000,
+   "value_raw": "7.22",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cap_freeze].cost_bn"
+   }
+  },
+  {
+   "key": "cap_freeze_share_fy2026",
+   "label": "Share of households helped by the cap freeze at April–June 2026 tariffs, 2026-27",
+   "world": "cap_freeze",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 94.6,
+   "value_raw": "94.6",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cap_freeze].share_receiving_pct"
+   }
+  },
+  {
+   "key": "cap_freeze_avg_gain_fy2026",
+   "label": "Average gain per household (all households) from the cap freeze at April–June 2026 tariffs, 2026-27",
+   "world": "cap_freeze",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 246,
+   "value_raw": "246",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2026-27, option_id=cap_freeze].avg_per_household"
+   }
+  },
+  {
+   "key": "rf_targeted_discount_cost_fy2027",
+   "label": "Cost to government of the targeted discount (RF, simplified: flat £175), 2027-28",
+   "world": "targeted_discount_flat",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -2110000000,
+   "value_raw": "2.11",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=rf_targeted_discount].cost_bn"
+   }
+  },
+  {
+   "key": "rf_targeted_discount_share_fy2027",
+   "label": "Share of households helped by the targeted discount (RF, simplified: flat £175), 2027-28",
+   "world": "targeted_discount_flat",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 40.9,
+   "value_raw": "40.9",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=rf_targeted_discount].share_receiving_pct"
+   }
+  },
+  {
+   "key": "rf_targeted_discount_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the targeted discount (RF, simplified: flat £175), 2027-28",
+   "world": "targeted_discount_flat",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 72,
+   "value_raw": "72",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "rf_targeted_discount",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=rf_targeted_discount].avg_per_household"
+   }
+  },
+  {
+   "key": "whd_top_up_cost_fy2027",
+   "label": "Cost to government of the Warm Home Discount +£100 (means-tested-household proxy), 2027-28",
+   "world": "whd_top_up",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -790000000,
+   "value_raw": "0.79",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=whd_top_up].cost_bn"
+   }
+  },
+  {
+   "key": "whd_top_up_share_fy2027",
+   "label": "Share of households helped by the Warm Home Discount +£100 (means-tested-household proxy), 2027-28",
+   "world": "whd_top_up",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 26.7,
+   "value_raw": "26.7",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=whd_top_up].share_receiving_pct"
+   }
+  },
+  {
+   "key": "whd_top_up_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the Warm Home Discount +£100 (means-tested-household proxy), 2027-28",
+   "world": "whd_top_up",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 27,
+   "value_raw": "27",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "whd_top_up",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=whd_top_up].avg_per_household"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_cost_fy2027",
+   "label": "Cost to government of the £300 Cost of Living Payment, 2027-28",
+   "world": "cost_of_living_payment",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -2430000000,
+   "value_raw": "2.43",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cost_of_living_payment].cost_bn"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_share_fy2027",
+   "label": "Share of households helped by the £300 Cost of Living Payment, 2027-28",
+   "world": "cost_of_living_payment",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 27.5,
+   "value_raw": "27.5",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cost_of_living_payment].share_receiving_pct"
+   }
+  },
+  {
+   "key": "cost_of_living_payment_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the £300 Cost of Living Payment, 2027-28",
+   "world": "cost_of_living_payment",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 83,
+   "value_raw": "83",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cost_of_living_payment",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cost_of_living_payment].avg_per_household"
+   }
+  },
+  {
+   "key": "flat_400_cost_fy2027",
+   "label": "Cost to government of the £400 to every household, 2027-28",
+   "world": "flat_400",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -11780000000,
+   "value_raw": "11.78",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=flat_400].cost_bn"
+   }
+  },
+  {
+   "key": "flat_400_share_fy2027",
+   "label": "Share of households helped by the £400 to every household, 2027-28",
+   "world": "flat_400",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 100.0,
+   "value_raw": "100.0",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=flat_400].share_receiving_pct"
+   }
+  },
+  {
+   "key": "flat_400_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the £400 to every household, 2027-28",
+   "world": "flat_400",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 400,
+   "value_raw": "400",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "flat_400",
+    "method": "PolicyEngine reform; cost is the change in household net income summed over households",
+    "geography": "UK",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=flat_400].avg_per_household"
+   }
+  },
+  {
+   "key": "cap_freeze_cost_fy2027",
+   "label": "Cost to government of the cap freeze at April–June 2026 tariffs, 2027-28",
+   "world": "cap_freeze",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -11390000000,
+   "value_raw": "11.39",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cap_freeze].cost_bn"
+   }
+  },
+  {
+   "key": "cap_freeze_share_fy2027",
+   "label": "Share of households helped by the cap freeze at April–June 2026 tariffs, 2027-28",
+   "world": "cap_freeze",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 94.7,
+   "value_raw": "94.7",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cap_freeze].share_receiving_pct"
+   }
+  },
+  {
+   "key": "cap_freeze_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the cap freeze at April–June 2026 tariffs, 2027-28",
+   "world": "cap_freeze",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 387,
+   "value_raw": "387",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "cap_freeze",
+    "method": "price cut costed from each household's bill (forecast bill minus bill at April–June 2026 tariffs, floored at zero)",
+    "geography": "UK (Northern Ireland on GB prices as a proxy)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=cap_freeze].avg_per_household"
+   }
+  },
+  {
+   "key": "extend_vat_cut_cost_fy2027",
+   "label": "Cost to government of the 0% VAT on domestic electricity kept through 2027-28, 2027-28",
+   "world": "extend_vat_cut",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -1450000000,
+   "value_raw": "1.45",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "extend_vat_cut",
+    "method": "price cut costed from each household's electricity bill (5/105 of the GB bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=extend_vat_cut].cost_bn"
+   }
+  },
+  {
+   "key": "extend_vat_cut_share_fy2027",
+   "label": "Share of households helped by the 0% VAT on domestic electricity kept through 2027-28, 2027-28",
+   "world": "extend_vat_cut",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 97.4,
+   "value_raw": "97.4",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "extend_vat_cut",
+    "method": "price cut costed from each household's electricity bill (5/105 of the GB bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=extend_vat_cut].share_receiving_pct"
+   }
+  },
+  {
+   "key": "extend_vat_cut_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the 0% VAT on domestic electricity kept through 2027-28, 2027-28",
+   "world": "extend_vat_cut",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 49,
+   "value_raw": "49",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "extend_vat_cut",
+    "method": "price cut costed from each household's electricity bill (5/105 of the GB bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=extend_vat_cut].avg_per_household"
+   }
+  },
+  {
+   "key": "remove_levies_cost_fy2027",
+   "label": "Cost to government of the remaining 25% of the RO and the FiT moved to taxation, 2027-28",
+   "world": "remove_levies",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -3830000000,
+   "value_raw": "3.83",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "options.json prints each option's cost to government as a positive number of pounds billion (cost_bn); revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "remove_levies",
+    "method": "price cut costed from each household's electricity bill (the share that takes £120 off the typical 2027-28 electricity bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "basis": "static",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=remove_levies].cost_bn"
+   }
+  },
+  {
+   "key": "remove_levies_share_fy2027",
+   "label": "Share of households helped by the remaining 25% of the RO and the FiT moved to taxation, 2027-28",
+   "world": "remove_levies",
+   "metric": "affected_share",
+   "unit_concept": "percent",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 97.4,
+   "value_raw": "97.4",
+   "normalization": "percent as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "remove_levies",
+    "method": "price cut costed from each household's electricity bill (the share that takes £120 off the typical 2027-28 electricity bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "denominator": "all households",
+    "take_up": "full"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=remove_levies].share_receiving_pct"
+   }
+  },
+  {
+   "key": "remove_levies_avg_gain_fy2027",
+   "label": "Average gain per household (all households) from the remaining 25% of the RO and the FiT moved to taxation, 2027-28",
+   "world": "remove_levies",
+   "metric": "average_annual_gain",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 130,
+   "value_raw": "130",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "option": "remove_levies",
+    "method": "price cut costed from each household's electricity bill (the share that takes £120 off the typical 2027-28 electricity bill)",
+    "geography": "Great Britain (paid to GB households; averages and shares over all UK households)",
+    "statistic": "mean over all households",
+    "sign_convention": "positive = gain to households"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/options.json",
+    "sha256": "c047f33a2af9bfe3e6e872a2cbe76a45e173bb74b53d1ef332af4de896213cba",
+    "field": "options[fy=2027-28, option_id=remove_levies].avg_per_household"
+   }
+  },
+  {
+   "key": "price_rise_mean_extra_cost_fy2026",
+   "label": "Average extra energy cost per household at forecast prices against April–June 2026 cap rates, 2026-27",
+   "world": "baseline",
+   "metric": "energy_bill_change",
+   "unit_concept": "gbp_per_household",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "value": 246,
+   "value_raw": "246",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2026-27",
+    "comparison": "current law at forecast prices minus the same kWh at April–June 2026 tariffs",
+    "statistic": "mean over all households",
+    "basis": "static (same kWh at every price)",
+    "sign_convention": "positive = increase in the annual bill"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/years.json",
+    "sha256": "138a17f941e49c538d7dd1ccc9cdf5e6e746ce11834b453a4657773e86d1df19",
+    "field": "years[fy=2026-27].mean_extra_cost"
+   }
+  },
+  {
+   "key": "price_rise_mean_extra_cost_fy2027",
+   "label": "Average extra energy cost per household at forecast prices against April–June 2026 cap rates, 2027-28",
+   "world": "baseline",
+   "metric": "energy_bill_change",
+   "unit_concept": "gbp_per_household",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": 386,
+   "value_raw": "386",
+   "normalization": "as printed",
+   "conditions": {
+    "fy": "2027-28",
+    "comparison": "current law at forecast prices minus the same kWh at April–June 2026 tariffs",
+    "statistic": "mean over all households",
+    "basis": "static (same kWh at every price)",
+    "sign_convention": "positive = increase in the annual bill"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/uk-energy-autumn-budget",
+    "commit": "4d916d54c15f12407d6d463d23acb47ac89b55be",
+    "computed_at": "2026-10-12T14:31:27+00:00",
+    "engine": {
+     "policyengine": "6.2.7",
+     "policyengine_uk": "2.125.1",
+     "policyengine_core": "3.33.0"
+    },
+    "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "path": "src/data/years.json",
+    "sha256": "138a17f941e49c538d7dd1ccc9cdf5e6e746ce11834b453a4657773e86d1df19",
+    "field": "years[fy=2027-28].mean_extra_cost"
+   }
+  }
+ ]
+}

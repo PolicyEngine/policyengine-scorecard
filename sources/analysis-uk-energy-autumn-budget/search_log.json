@@ -1,0 +1,615 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-21",
+   "kind": "backfill",
+   "by": "subfleet:20261021-113608-cmp-uk-energy-autumn-budget",
+   "producers": [
+    {
+     "producer": "obr",
+     "result": "none_found",
+     "queries": [
+      "gov.uk search API: filter_organisations=office-for-budget-responsibility, newest first (results 1-40)",
+      "Wayback CDX: obr.uk/efo/* captures from 2026",
+      "Wayback CDX: obr.uk/docs/dlm_uploads/, obr.uk/publications/ and obr.uk/docs/ captures from July 2026"
+     ],
+     "checked": [
+      "https://obr.uk/",
+      "https://obr.uk/publications/",
+      "https://www.gov.uk/government/publications/fiscal-risks-and-sustainability-july-2026",
+      "https://assets.publishing.service.gov.uk/media/6a4cb4c74889d85e75ab40e0/E03599617_OBR_FRS_2026_Accessible.pdf",
+      "https://web.archive.org/web/20260608144821/https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/",
+      "https://web.archive.org/web/20260316092224id_/https://obr.uk/docs/d055fbf02d5b3g6jq8l2/efo-march-2026-detailed-forecast-tables-receipts.xlsx",
+      "https://web.archive.org/web/20261002001129id_/https://obr.uk/docs/5b333286c0b5e1bbb5b333286c0b/PSF_commentary_August_2026.pdf",
+      "https://web.archive.org/web/20260821161551id_/https://obr.uk/docs/efc0bd6f46ee4e6e8990cd53/PSF_commentary_July_2026.pdf"
+     ],
+     "claims": [],
+     "note": "No OBR costing of any option. The March 2026 EFO (forecast closed before the Middle East escalation) has domestic energy support at zero in every year (Table A.7) and forecasts the Renewables Obligation and Warm Home Discount levies, not their removal; the July 2026 Fiscal risks and sustainability report has no energy-support scenario; the July and August 2026 public finances commentaries do not mention the electricity VAT cut. obr.uk returned 403 to direct fetches, so OBR documents were read through Wayback captures and gov.uk mirrors; the web search budget was exhausted before an obr.uk site search could run."
+    },
+    {
+     "producer": "hm_treasury",
+     "result": "found_not_staged",
+     "queries": [
+      "VAT domestic electricity zero rate October 2026 cost to Exchequer £ billion tax information and impact note",
+      "£850 million VAT electricity October 2026 March 2027",
+      "gov.uk news VAT domestic electricity cut Prime Minister July 2026",
+      "gov.uk search API q='energy bills support cost' filter_organisations=hm-treasury (newest first)",
+      "gov.uk search API q='Budget 2025 policy costings' filter_organisations=hm-treasury",
+      "gov.uk search API q='Spring Statement 2026' / 'Spring Forecast 2026'",
+      "Parliament committees API: Treasury Committee publications from 2026-06-01",
+      "warm home discount £250 increase cost £600m budget Reeves",
+      "Treasury weighs targeted energy bill support warm home discount £250 means-tested Times report",
+      "Guardian Healey warm home discount £100 extra £1bn energy bills budget October 2026"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/news/new-pm-cuts-tax-on-household-electricity-bills-to-give-breathing-space-on-cost-of-living",
+      "https://www.gov.uk/government/news/energy-bill-tax-cut-starts-today-to-give-families-breathing-space",
+      "https://www.gov.uk/government/news/chancellor-says-it-is-my-job-to-protect-resilience-of-the-uk-economy-and-the-budget-will-do-that-in-the-face-of-international-headwinds",
+      "https://www.gov.uk/government/news/spring-forecast-2026-the-right-economic-plan-for-britain",
+      "https://www.gov.uk/government/publications/supporting-documents-for-budget-2025",
+      "https://assets.publishing.service.gov.uk/media/692872fd2a37784b16ecf676/Budget_2025-Policy_Costings.pdf",
+      "https://assets.publishing.service.gov.uk/media/69269df29fd433badebc31b3/Table_4.1_-_Budget_2025_Policy_Decisions.xlsx",
+      "https://committees-api.parliament.uk/api/Publications?CommitteeId=158&StartDate=2026-06-01&Take=60",
+      "https://committees-api.parliament.uk/api/Publications/54694/Document/303841/OriginalFormat",
+      "https://committees-api.parliament.uk/api/Publications/54698/Document/303847/OriginalFormat",
+      "https://www.yahoo.com/news/world/articles/poorer-uk-households-could-given-081831584.html",
+      "https://www.aol.co.uk/articles/budget-2026-burnham-healey-could-100512000.html",
+      "https://investinginsiders.co.uk/live-news/what-could-the-autumn-budget-deliver-if-youre-struggling-with-household-bills/",
+      "https://www.lbc.co.uk/article/chancellors-intervention-plans-cut-energy-bills-for-millions-1billion-5HjdjXX_2/"
+     ],
+     "claims": [],
+     "note": "The Treasury's reported preferred option, £100 on the Warm Home Discount, is put at around £600 million for about six million households (Investing Insiders, 13 October 2026, citing the FT of 11 October) and the Chancellor's targeted package at 'over £1bn' (The Independent via Yahoo, 7 October 2026, citing the Guardian); no Treasury document publishes either figure, so neither is staged (harvest rule 8). The Treasury's £850 million for the 0% electricity VAT rate (21 July 2026 press release; Chancellor's letter to the Treasury Committee of the same day) costs the October 2026 to March 2027 cut, which is current law in the dashboard's baseline, not an option it scores. Budget 2025's costings price measures already in the baseline: 75% of the domestic Renewables Obligation (-£2,100m in 2027-28, cited in annotation levy-scope-120-assumption) and the Warm Home Discount expansion (about £600 million a year gross)."
+    },
+    {
+     "producer": "uk_hmrc",
+     "result": "none_found",
+     "queries": [
+      "VAT domestic electricity zero rate October 2026 cost to Exchequer £ billion tax information and impact note",
+      "VAT zero rate domestic electricity 1 October 2026 tax information and impact note exchequer impact",
+      "gov.uk search API q='VAT domestic electricity zero rate'",
+      "gov.uk search API q='\"Direct effects of illustrative tax changes\"'",
+      "gov.uk search API q='tax information and impact note electricity' filter_organisations=hm-revenue-customs",
+      "gov.uk search API q='Climate Change Levy tax information and impact note 2026' filter_organisations=hm-revenue-customs",
+      "gov.uk search API q='Estimated costs of tax reliefs' filter_organisations=hm-revenue-customs"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/publications/temporary-zero-rate-of-vat-for-domestic-electricity-in-great-britain",
+      "https://www.gov.uk/government/publications/temporary-zero-rate-of-vat-for-domestic-electricity-in-great-britain/temporary-zero-rate-of-vat-in-great-britain-for-domestic-electricity",
+      "https://www.legislation.gov.uk/uksi/2026/987/made",
+      "https://www.gov.uk/government/statistics/direct-effects-of-illustrative-tax-changes",
+      "https://www.gov.uk/government/statistics/direct-effects-of-illustrative-tax-changes/direct-effects-of-illustrative-tax-changes-bulletin-january-2025",
+      "https://assets.publishing.service.gov.uk/media/68552862b46781eacfd71d71/June_2025_TRR_ODS__1_.ods",
+      "https://www.gov.uk/government/statistics/tax-reliefs",
+      "https://assets.publishing.service.gov.uk/media/69a0194e3e672177d0bc76e6/tax_relief_statistics_january_2026.ods"
+     ],
+     "claims": [],
+     "note": "HMRC's policy paper on the temporary zero rate (8 September 2026) leaves its Exchequer impact table blank until the OBR scrutinises the costing at the Budget. The latest ready reckoner (June 2025) costs a 1-point change in the whole reduced rate (£480m in 2027-28), not domestic electricity; the January 2026 tax relief statistics cost the 5% rate on domestic fuel and power against the standard rate (£7.0bn in 2025-26). Neither estimates an option the dashboard scores."
+    },
+    {
+     "producer": "dwp",
+     "result": "none_found",
+     "queries": [
+      "gov.uk search API q='Cost of Living Payment' filter_organisations=department-for-work-pensions",
+      "gov.uk search API q='cost of living payment 2026' filter_organisations=department-for-work-pensions (newest first)",
+      "gov.uk search API q='impact assessment energy cost of living payment 2026' department-for-work-pensions",
+      "gov.uk search API q='benefit expenditure and caseload tables 2026' department-for-work-pensions"
+     ],
+     "checked": [
+      "https://www.gov.uk/guidance/cost-of-living-payment",
+      "https://www.gov.uk/government/publications/cost-of-living-payment-2023-to-2024-management-information",
+      "https://www.gov.uk/government/publications/cost-of-living-payment-2023-to-2024-management-information/cost-of-living-payment-2023-to-2024-management-information",
+      "https://www.gov.uk/government/publications/benefit-expenditure-and-caseload-tables-2026",
+      "https://assets.publishing.service.gov.uk/media/69dcdc8c6b695d635c34dcc4/outturn-and-forecast-tables-spring-forecast-2026.xlsx"
+     ],
+     "claims": [],
+     "note": "No 2026 Cost of Living Payment has been announced or costed: DWP's guidance says it is not planning more payments, and the Spring Forecast 2026 tables carry no Cost of Living spending in 2026-27 or 2027-28. The autumn 2023 £300 payment went to 8.3 million households at £2.5 billion (management information, February 2024): the same design in a year the dashboard does not estimate, and an administrative outturn."
+    },
+    {
+     "producer": "dfe",
+     "result": "none_found",
+     "queries": [
+      "gov.uk search API q='energy bills support' filter_organisations=department-for-education"
+     ],
+     "checked": [
+      "https://www.gov.uk/api/search.json?q=energy+bills+support&filter_organisations=department-for-education&count=10"
+     ],
+     "claims": [],
+     "note": "DfE publishes nothing on household energy support; the results were school estate energy guidance and school costs."
+    },
+    {
+     "producer": "scottish_fiscal_commission",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "Its applies_to is Scotland; the analysis is UK-wide and its options are reserved."
+    },
+    {
+     "producer": "ifs",
+     "result": "found",
+     "queries": [
+      "site:ifs.org.uk energy bills 2026 support cost",
+      "IFS Zaranko VAT energy bills cut £850 million 2026",
+      "IFS Green Budget 2026 energy bills support options",
+      "IFS Green Budget 2026 published October 2026 VAT electricity permanent £1.5 billion",
+      "site:ifs.org.uk energy bills Iran price cap support households 2026 comment",
+      "\"Temporary VAT cut on household electricity bills: IFS response\"",
+      "IFS October 2026 energy bills winter support Healey Budget warm home discount comment ifs.org.uk",
+      "Institute for Fiscal Studies 2026 \"Energy Price Guarantee\" cost estimate price cap January 2027 households"
+     ],
+     "checked": [
+      "https://ifs.org.uk/system/files/2026-10/IFS_Green_Budget_2026_0.pdf",
+      "http://web.archive.org/web/20260707083110/https://ifs.org.uk/articles/what-does-war-middle-east-mean-energy-prices-and-how-could-government-respond",
+      "http://web.archive.org/web/20260821164000/https://ifs.org.uk/collections/autumn-budget-2026"
+     ],
+     "claims": [
+      "ifs_vat_permanent_cost_fy2027"
+     ],
+     "note": "The Green Budget (October 2026) also restates the Treasury's £850 million for the six-month VAT cut and Budget 2025's £2 billion a year for 75% of the domestic RO; it costs no targeted discount, Warm Home Discount top-up, cap freeze or £400 payment. ifs.org.uk HTML pages returned 403, and the 21 July 2026 VAT response had no Wayback capture, so it was not read."
+    },
+    {
+     "producer": "resolution_foundation",
+     "result": "found",
+     "queries": [
+      "Resolution Foundation \"Billing me softly\" targeted energy discount cost households eligible",
+      "Resolution Foundation \"Billing me softly\" energy bills 2026",
+      "resolutionfoundation.org \"Billing me softly\"",
+      "Resolution Foundation March 2026 social tariff £3.7 billion energy bills report",
+      "Resolution Foundation energy price cap October 2026 Autumn Budget energy support",
+      "Resolution Foundation price cap rise July 2026 energy bills press release",
+      "Resolution Foundation Budget 2026 preview October energy bills VAT levies",
+      "site:resolutionfoundation.org energy 2026",
+      "Resolution Foundation \"Counting the cost\" five years high inflation October 2026 energy",
+      "Resolution Foundation VAT electricity cut Burnham July 2026 response £45 typical household",
+      "Resolution Foundation Curtice Smith \"self-defeating\" cost of living measures September 2026",
+      "Resolution Foundation April 2026 targeted time-limited energy discounts low-income households analysis"
+     ],
+     "checked": [
+      "https://www.resolutionfoundation.org/publications/billing-me-softly/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/08/Billing-me-softly.pdf",
+      "https://www.resolutionfoundation.org/press-releases/government-must-be-ready-to-provide-targeted-energy-support-if-further-price-spikes-cause-more-families-to-struggle-this-winter/",
+      "https://www.resolutionfoundation.org/?p=46698",
+      "https://www.resolutionfoundation.org/publications/hitting-the-buffers/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/10/Hitting-the-buffers.pdf",
+      "https://www.resolutionfoundation.org/publications/counting-cost/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/10/Counting-the-cost.pdf",
+      "https://www.resolutionfoundation.org/publications/power-struggle/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf",
+      "https://www.resolutionfoundation.org/press-releases/efforts-to-deliver-a-new-social-tariff-for-energy-bills-should-start-now-to-help-vulnerable-families-this-winter/",
+      "https://www.resolutionfoundation.org/press-releases/chancellor-right-to-target-energy-bill-support-at-vulnerable-customers-rather-than-repeat-than-blank-cheque-mistake-of-the-last-energy-crisis/",
+      "https://www.resolutionfoundation.org/?p=45585",
+      "https://www.resolutionfoundation.org/comment/trimming-the-vat/",
+      "https://www.resolutionfoundation.org/?p=46579",
+      "https://resolutionfoundation.substack.com/p/trimming-the-vat",
+      "https://www.resolutionfoundation.org/?p=46097",
+      "https://www.resolutionfoundation.org/app/uploads/2026/02/Power-cut.pdf",
+      "https://www.resolutionfoundation.org/?p=45307",
+      "https://www.resolutionfoundation.org/?p=45334",
+      "https://www.resolutionfoundation.org/?p=45348",
+      "https://www.resolutionfoundation.org/?p=46534",
+      "https://www.resolutionfoundation.org/?p=46753",
+      "https://www.resolutionfoundation.org/?p=45817",
+      "https://www.resolutionfoundation.org/comment/crowd-pleasing-cost-of-living-measures-risk-being-self-defeating/",
+      "https://www.resolutionfoundation.org/comment/",
+      "https://www.resolutionfoundation.org/comment/zero-to-hero/"
+     ],
+     "claims": [
+      "rf_ted_cost_fy2026",
+      "rf_ted_share_fy2026",
+      "rf_ted_per_eligible_fy2026",
+      "rf_remaining_levies_cost_fy2027",
+      "rf_vat_annual_cost_fy2027",
+      "rf_ro_fit_saving_fy2027",
+      "rf_ro_remainder_saving_fy2027",
+      "rf_fit_saving_fy2027",
+      "rf_all_policy_costs_saving_fy2027",
+      "rf_policy_costs_cost_fy2027",
+      "rf_whd_570_cost_fy2026"
+     ],
+     "note": "Hitting the buffers' £900 million for doubling the Warm Home Discount cites press reports of government plans (footnote 32), so it is not staged as RF's own estimate; its 5.5 million WHD recipients in 2025-26 restate DESNZ statistics for a year the dashboard does not estimate. From Power struggle (18 March 2026), not staged: the combined scenario's £2 billion for the remaining RO and the Warm Home Discount (a different pair of levies from the option's), the £3.75 billion EPG budget (a 9% unit-price discount, not a freeze at April-June 2026 rates) and the UC boost (another policy). Trimming the VAT's £45 a year restates the government's figure. Counting the cost (October 2026) restates 2022-24 outturns. Billing me softly gives no year for its £2 billion; the year is Hitting the buffers' ('£2 billion this year')."
+    },
+    {
+     "producer": "centax",
+     "result": "none_found",
+     "queries": [
+      "site:centax.org.uk energy",
+      "Centax energy bills VAT electricity 2026 analysis",
+      "\"CenTax\" Centre for the Analysis of Taxation 2026 publication"
+     ],
+     "checked": [
+      "https://centax.org.uk/",
+      "https://centax.org.uk/policy/",
+      "https://centax.org.uk/research/"
+     ],
+     "claims": [],
+     "note": "CenTax's policy and research lists (2020-2026) cover no energy bills, energy VAT, levies or energy support."
+    },
+    {
+     "producer": "centre_for_british_progress",
+     "result": "found",
+     "queries": [
+      "\"Centre for British Progress\" energy bills levies",
+      "britishprogress.org energy bills report 2026",
+      "\"Centre for British Progress\" electricity prices report Hezlet",
+      "\"Centre for British Progress\" energy bills winter 2026 Budget levies report September October",
+      "site:britishprogress.org reports energy"
+     ],
+     "checked": [
+      "https://britishprogress.org/",
+      "https://britishprogress.org/reports",
+      "https://britishprogress.org/api/articles?limit=300&depth=0",
+      "https://britishprogress.org/sitemap.xml",
+      "https://britishprogress.org/reports/quid-pro-quo-cheaper-electricity-now-for-longer-te",
+      "https://britishprogress.org/api/media/file/quid-pro-quo-cheaper-electricity-now-for-longer-te-2.pdf",
+      "https://britishprogress.substack.com/p/post-haste-lets-care-for-our-electrical"
+     ],
+     "claims": [
+      "cbp_ro_fit_cost_fy2027",
+      "cbp_ro_fit_saving_fy2027"
+     ],
+     "note": "Quid pro quo (1 June 2026) is CBP's only 2026 energy-bill report. Its wider £4 billion package (adding the Warm Home Discount, Climate Change Levy and the ETS for generators, about £115 a household) is not an option the dashboard scores, so it is not staged."
+    },
+    {
+     "producer": "ippr",
+     "result": "none_found",
+     "queries": [
+      "IPPR price caps and economic stability Iran war energy shock",
+      "IPPR 2026 energy bills report social tariff warm home discount cost",
+      "site:ippr.org energy price cap 2026",
+      "IPPR energy bills Autumn Budget 2026 Iran war cost of living proposal",
+      "IPPR 2026 \"energy\" bills households analysis report ippr.org/articles"
+     ],
+     "checked": [
+      "https://www.ippr.org/articles/price-caps-and-economic-stability",
+      "https://files.ippr.org/production/Downloads/Price_caps_and_economic_stability_May26.pdf?dm=1778662271",
+      "https://ippr-org.files.svdcdn.com/production/Downloads/Price_caps_and_economic_stability_May26.pdf",
+      "https://www.ippr.org/articles/cost-of-living-autumn-budget",
+      "https://www.ippr.org/media-office/get-started-with-tax-reform-to-pay-for-priorities-on-cost-of-living-and-economic-growth-ippr-urges-chancellor"
+     ],
+     "claims": [],
+     "note": "IPPR costs a £2,000 bill cap with a 10p fuel duty cut (up to £5 billion or about £24 billion, May 2026) and a £2,000 ceiling for January to June 2027 with a fuel duty freeze ('less than £0.5 billion in total', October 2026): caps at £2,000 bundled with fuel duty, not a freeze at April-June 2026 rates, with no year-by-year cost. Its £11.9 billion for the EBSS restates the 2022-23 outturn."
+    },
+    {
+     "producer": "fabian_society",
+     "result": "none_found",
+     "queries": [
+      "Fabian Society energy bills 2026",
+      "site:fabians.org.uk energy bills cost of living support warm home discount social tariff",
+      "\"Fabian Society\" 2026 energy support households billion proposal winter Iran"
+     ],
+     "checked": [
+      "https://fabians.org.uk/wp-content/uploads/2026/06/Living-Standards-Web-final-js.pdf",
+      "https://fabians.org.uk/grid-system/",
+      "https://fabians.org.uk/cut-to-the-quick/",
+      "https://fabians.org.uk/no-time-to-waste-2/"
+     ],
+     "claims": [],
+     "note": "Standard Issue (June 2026) argues for a social tariff without a cost; the 2025-26 Fabian articles opened give no comparable figure."
+    },
+    {
+     "producer": "niesr",
+     "result": "none_found",
+     "queries": [
+      "NIESR energy bills 2026 households cost price cap October 2026",
+      "site:niesr.ac.uk Autumn Budget 2026 energy",
+      "NIESR living standards tracker 2026 energy price cap households real income",
+      "NIESR \"energy\" support households cost of living 2026 Budget preview",
+      "NIESR \"Economic Outlook\" Autumn 2026",
+      "NIESR pre-Budget October 2026 households energy support targeted low income",
+      "NIESR CPI tracker \"Ofgem Price Cap Re-energises Inflation\"",
+      "NIESR CPI tracker September 2026 \"Inflation Momentum Strengthens\" VAT electricity",
+      "NIESR \"New Shock, Old Vulnerabilities\" Economic Outlook April 2026 published"
+     ],
+     "checked": [
+      "https://niesr.ac.uk/news/niesrs-response-ofgem-energy-price-cap-announcement",
+      "https://niesr.ac.uk/reports/economic-outlook-summer-2026",
+      "https://niesr.ac.uk/wp-content/uploads/2026/07/Economic-Outlook-Summer-2026.pdf?ver=w8hqL3qtyyaWKQSEebj4",
+      "https://www.niesr.ac.uk/publications/search",
+      "https://niesr.ac.uk/wp-content/uploads/2026/04/Economic-Outlook-Spring-2026.pdf",
+      "https://niesr.ac.uk/reports/economic-outlook-spring-2026"
+     ],
+     "claims": [],
+     "note": "The Spring 2026 Economic Outlook (Box B) costs a six-month £10-a-week Universal Credit uplift (around £2 billion) and income top-ups, and estimates the oil shock's effect on energy and fuel spending by decile and on poverty; none is an option or a quantity the dashboard publishes. The Summer 2026 Outlook is macroeconomic."
+    },
+    {
+     "producer": "ukmod",
+     "result": "none_found",
+     "queries": [
+      "CeMPA UKMOD energy prices 2026 households support working paper",
+      "site:microsimulation.ac.uk energy 2026",
+      "CeMPA working paper 2026 cost of living energy bills UKMOD distributional",
+      "\"UKMOD\" energy bills 2026 OR \"price cap\" OR \"Warm Home Discount\" OR \"VAT on electricity\""
+     ],
+     "checked": [
+      "https://www.microsimulation.ac.uk/publications/",
+      "https://www.iser.essex.ac.uk/wp-content/uploads/files/working-papers/cempa/cempa3-26.pdf",
+      "https://www.microsimulation.ac.uk/about/news/"
+     ],
+     "claims": [],
+     "note": "CeMPA's 2026 working papers include no energy bill measures; WP 3/26 (the Autumn Budget 2025 brief) models no levy, WHD or VAT change."
+    },
+    {
+     "producer": "lse_case",
+     "result": "none_found",
+     "queries": [
+      "LSE CASE energy costs fuel poverty 2026 paper",
+      "sticerd.lse.ac.uk CASE paper energy bills support households distribution social tariff",
+      "LSE \"Centre for Analysis of Social Exclusion\" 2026 energy cost of living households report"
+     ],
+     "checked": [
+      "https://sticerd.lse.ac.uk/case/_new/publications/series.asp?prog=CASE",
+      "https://sticerd.lse.ac.uk/case/",
+      "https://sticerd.lse.ac.uk/case/_new/publications/"
+     ],
+     "claims": [],
+     "note": "No CASE publication from June 2025 to September 2026 covers energy bills or energy support."
+    },
+    {
+     "producer": "jrf",
+     "result": "found",
+     "queries": [
+      "JRF energy bills Autumn Budget 2026 support cost",
+      "site:jrf.org.uk energy 2026 social tariff price cap low income households",
+      "JRF responds Ofgem price cap August 2026 October cap low-income households",
+      "Joseph Rowntree Foundation \"Budget\" 2026 representation energy \"Warm Home Discount\" OR \"cost of living payment\" cost billion",
+      "cost of freezing energy price cap 2026 billion estimate winter 2026/27 energy price guarantee"
+     ],
+     "checked": [
+      "https://www.jrf.org.uk/cost-of-living/addressing-the-2026-energy-price-crisis",
+      "https://www.jrf.org.uk/cost-of-living/helping-households-with-energy-costs-this-winter",
+      "https://www.jrf.org.uk/pdf/15660",
+      "https://www.jrf.org.uk/cost-of-living/an-affordable-energy-guarantee",
+      "https://www.jrf.org.uk/income-savings-and-debt/rebuilding-living-standards-and-economic-security"
+     ],
+     "claims": [
+      "jrf_ro_fit_whd_saving_fy2027",
+      "jrf_epg_style_cap_cost_fy2026"
+     ],
+     "note": "JRF's £6.3 billion winter package (levy removal plus cash tiered by historic consumption) is not an option the dashboard scores, and its £11.9 billion for the EBSS restates IPPR. The Affordable Energy Guarantee paper (May 2026) and the June 2026 energy allowance (£6.9 billion in 2029-30) cost other policies."
+    },
+    {
+     "producer": "landman_economics",
+     "result": "none_found",
+     "queries": [
+      "\"Landman Economics\" energy bills 2026",
+      "Howard Reed Landman Economics energy price cap support households report 2026 OR 2025",
+      "\"Landman Economics\" report 2026 cost of living OR \"energy\" OR \"fuel poverty\" commissioned TUC OR IPPR OR NEF",
+      "\"Landman Economics\" 2026"
+     ],
+     "checked": [
+      "https://www.tuc.org.uk/sites/default/files/2026-05/Domestic_energy_support_policy_proposal.pdf"
+     ],
+     "claims": [],
+     "note": "landmaneconomics.co.uk did not resolve, so the site could not be read; search found no 2025-26 Landman energy report, and the TUC's May 2026 social tariff paper credits no outside modeller."
+    },
+    {
+     "producer": "tax_policy_associates",
+     "result": "none_found",
+     "queries": [
+      "taxpolicy.org.uk VAT electricity 2026",
+      "Tax Policy Associates Dan Neidle VAT on domestic electricity cut cost energy levies 2026",
+      "site:taxpolicy.org.uk energy",
+      "Dan Neidle \"VAT\" electricity \"zero rate\" Burnham analysis cost who benefits"
+     ],
+     "checked": [
+      "https://taxpolicy.org.uk/",
+      "https://taxpolicy.org.uk/?s=electricity",
+      "https://taxpolicy.org.uk/?s=energy"
+     ],
+     "claims": [],
+     "note": "TPA's July to October 2026 articles do not cover energy VAT, levies or bill support; its energy pieces are 2022 windfall-tax articles."
+    },
+    {
+     "producer": "academic",
+     "result": "none_found",
+     "queries": [
+      "distributional impact Energy Price Guarantee Energy Bills Support Scheme UK microsimulation journal article",
+      "IZA OR SSRN OR CEPR paper UK energy price shock 2022 household support cost targeted versus universal Energy Price Guarantee",
+      "social tariff energy Great Britain cost estimate academic paper Energy Policy journal 2024 OR 2025 OR 2026 microsimulation",
+      "pass-through VAT cut domestic energy UK incidence paper 5% VAT energy bills distributional",
+      "\"Exploring social tariffs for energy\" University of York Social Policy Research Unit Bradshaw cost billion",
+      "VoxEU 2026 UK households energy price shock support Middle East gas price targeted transfers",
+      "working paper 2026 UK household energy bills 2026-27 distributional analysis price cap \"Family Resources Survey\" OR \"Living Costs and Food Survey\"",
+      "ISER working paper energy prices UK households Understanding Society 2025 OR 2026 energy bill support",
+      "\"Policy design challenges for energy affordability following price hikes in the UK\"",
+      "UKERC OR academic analysis moving policy levies off electricity bills general taxation cost £bn households 2025 2026 Renewables Obligation Feed-in Tariff",
+      "\"Energy Price Guarantee\" cost distribution income decile UK academic paper 2024 \"Fiscal Studies\" OR \"Energy Economics\" OR \"Energy Policy\"",
+      "arXiv OR SSRN 2026 \"energy price cap\" UK households microsimulation poverty energy support options",
+      "energy bill increases mental well-being dynamic microsimulation United Kingdom energy price cap rebates vulnerable groups"
+     ],
+     "checked": [
+      "https://ifs.org.uk/sites/default/files/2025-11/WP202555-The-welfare-effects-of-price-shocks-and-household-relief-packages-evidence-from-an-energy-crisis.pdf",
+      "https://www.economic-policy.org/wp-content/uploads/2023/10/Fetzer-et-al.pdf",
+      "https://www.york.ac.uk/media/policyengine/documents/EXPLORING%20SOCIAL%20TARIFFS%20FOR%20ENERGY.pdf",
+      "https://eprints.whiterose.ac.uk/id/eprint/198630/",
+      "https://ideas.repec.org/p/ris/fcnwpa/021757.html",
+      "https://www.iser.essex.ac.uk/?p=233268",
+      "https://strathprints.strath.ac.uk/82776/1/Turner_etal_CEP_2022_The_impacts_of_the_October_2022_gas_and_electricity.pdf",
+      "https://ukerc.ac.uk/publications/the-cost-of-electricity-in-the-uk-drivers-challenges-and-opportunities-for-reform/",
+      "https://d2e1qxpsswcpgz.cloudfront.net/uploads/2026/07/UKERC-Mission-on-bills-brochure-v7acc.pdf"
+     ],
+     "claims": [],
+     "note": "UKERC's The cost of electricity in the UK (July 2026) prices the remaining RO at about £25 on a typical electricity bill, one component of the levy option rather than its cost or average gain. The IFS working paper on 2022-23 relief (Levell, O'Connell and Smith) and York's 2023 social tariff paper cost a different period; no academic paper estimates a 2026-27 or 2027-28 option."
+    },
+    {
+     "producer": "open_search",
+     "result": "found",
+     "queries": [
+      "Autumn Budget 2026 energy bills support options cost October 2026",
+      "remove remaining levies electricity bills Renewables Obligation general taxation £3.2bn £120 off bills October 2026",
+      "Warm Home Discount impact assessment 2026/27 scheme spending levy per bill",
+      "DESNZ 2026 estimate cost Renewables Obligation Feed-in Tariff remaining levies domestic bills general taxation 2027-28",
+      "warm home discount expansion cost",
+      "warm home discount £250 cost",
+      "Budget 2025 data sources Renewables Obligation 75% general taxation household saving",
+      "VAT zero rate domestic electricity 1 October 2026 tax information and impact note exchequer impact",
+      "£850 million VAT electricity October 2026 March 2027",
+      "gov.uk news VAT domestic electricity cut Prime Minister July 2026",
+      "Ofgem breakdown typical bill October 2026 policy costs share",
+      "Ofgem warm home discount cost allowance",
+      "Energy UK economic defence tackling energy bills winter 2026/27 levies VAT cost",
+      "Energy UK economic defence report energy bills October 2026",
+      "Energy UK Dhara Vyas October 2026 support all households",
+      "MCS Foundation report electricity levies off bills saving £530 general taxation cost",
+      "MCS Foundation case for further levy reform 2026",
+      "REA modelling moving energy levies to general taxation",
+      "REA geopolitical tensions energy bills levies £3.2 billion",
+      "levies off bills cost 2027",
+      "renewables obligation taxation cost",
+      "next prime minister must tackle Britain's broken energy system Good Energy report",
+      "E3G 2026 levies electricity bills general taxation cost Autumn Budget remaining Renewables Obligation",
+      "E3G hidden taxes off electricity bills",
+      "Citizens Advice 2026 energy bills support proposal cost winter 2026/27",
+      "citizensadvice.org.uk 2026 Warm Home Discount increase cost social tariff",
+      "New Economics Foundation 2026 energy bills proposal cost price cap freeze support households winter 2026",
+      "Cornwall Insight price cap forecast April 2027 annual bill 2027-28",
+      "cornwall-insight.com price cap forecast January 2027",
+      "House of Commons Library energy bill support 2026 briefing cost options Warm Home Discount levies",
+      "commonslibrary.parliament.uk energy prices 2026 household support research briefing",
+      "Institute for Government 2026 energy bills support options cost",
+      "instituteforgovernment.org.uk 2026 energy bills Autumn Budget support cost",
+      "National Energy Action 2026 energy bills winter cost Warm Home Discount increase £250 Autumn Budget submission",
+      "National Energy Action Autumn Budget 2026 representation",
+      "End Fuel Poverty Coalition 2026 Autumn Budget energy bills cost estimate",
+      "End Fuel Poverty Coalition October 2026 Warm Home Discount £250",
+      "SSE powering secure affordable energy 2026",
+      "ECIU 2026 energy bills analysis cost of gas price rise households winter 2026/27",
+      "Green Alliance OR ECIU 2026 levies off bills cost Autumn Budget",
+      "Martin Lewis MoneySavingExpert 2026 Warm Home Discount £250 Treasury cost levies off bills",
+      "Bank of England Monetary Policy Report August 2026 Ofgem price cap assumption household energy",
+      "E.ON Next price cap forecast 2027",
+      "British Gas price cap forecast January 2027 April 2027",
+      "EDF energy price cap prediction January 2027",
+      "Bloomberg Economics UK energy bills 25% January £2,150 Iran war inflation above 4%",
+      "Capital Economics UK energy price cap forecast 2027 inflation Ofgem January",
+      "Green Party Polanski energy bills plan 2026 price freeze cost",
+      "Green Party \"£8.4bn\" energy bills April-June price cap rise £300",
+      "Octopus Energy Greg Jackson proposal energy bills support 2026 cost government January",
+      "Octopus Energy press release incoming prime minister market reform £114 levies general taxation £75 2026",
+      "TUC OR Unite OR GMB energy bills freeze price cap 2026 cost billion call government",
+      "TUC social tariff 18.7 million households £559 energy bills 2026",
+      "TUC \"Funding a cut in energy bills with a bank tax\" social tariff cost billion",
+      "Conservatives Badenoch energy bills plan cost costed 2026 scrap levies VAT",
+      "Conservatives \"Cheap Power Plan\" 2026 cost VAT energy bills £ billion carbon price",
+      "average household energy bill forecast 2027 price cap",
+      "TaxPayers' Alliance energy bills VAT levies 2026 cost",
+      "VAT cut domestic electricity 0% cost £ billion 2026 Burnham £45",
+      "Public First \"Closing the fuel poverty gap\" report cost Warm Home Discount £400 social tariff",
+      "\"Electricity Bills Taskforce\" levies general taxation £120 cost £3.2 billion report",
+      "remove levies electricity bills £120 cost \"£3.2bn\" OR \"£3.2 billion\" budget 2026",
+      "Liberal Democrats energy bills plan 2026 cost £ billion autumn budget",
+      "Energy Security and Net Zero Committee 2026 report energy bills support winter Middle East households",
+      "Treasury Committee energy support cost living 2026 inquiry energy bills fiscal cost",
+      "Scottish Government energy bills 2026 UK Government support call price cap January fuel poverty estimate",
+      "Northern Ireland energy support payment 2026 households Middle East heating oil cost Executive",
+      "Policy Exchange energy bills 2026 cost of support households price cap",
+      "Social Market Foundation energy bills autumn budget 2026",
+      "Onward OR \"Centre for Policy Studies\" energy bills support plan 2026 cost households January price cap",
+      "Common Wealth think tank energy bills 2026 windfall tax price cap Middle East support",
+      "Child Poverty Action Group energy bills support budget October 2026",
+      "Trussell energy bills cost of living payment 2026 budget call",
+      "Which? consumer group energy bills January 2027 support call government analysis households £",
+      "Autumn Budget 2026 energy bills support cost billion",
+      "energy price cap freeze cost 2026 billion government",
+      "\"freeze the price cap\" OR \"freezing the price cap\" 2026 cost Treasury billion January Burnham Healey",
+      "\"£400\" energy rebate every household 2026 call cost \"£11\" OR \"£12\" billion",
+      "\"cost of living payment\" 2026 budget £300 means-tested benefits cost \"£2\" billion call",
+      "households pay extra billion energy bills winter 2026-27 price cap rise total cost estimate",
+      "warm home discount top-up £100 cost analysis 2026 households eligible million think tank estimate",
+      "Aurora Energy Research OR Baringa OR \"LCP Delta\" household energy bills 2027 forecast UK price cap",
+      "Reform UK energy bills plan cost 2026 £ billion",
+      "Fair By Design OR \"Independent Age\" OR \"Age UK\" energy support 2026 budget call cost £ billion winter",
+      "Policy in Practice energy bills 2026 cost of living payment analysis households"
+     ],
+     "checked": [
+      "https://assets.publishing.service.gov.uk/media/697b454bf8f4a746d9572efe/continuing-the-warm-home-discount-scheme-government-response.pdf",
+      "https://assets.publishing.service.gov.uk/media/6978a8b51c24881f40a4d675/continuing-the-warm-home-discount-scheme-impact-assessment.pdf",
+      "https://www.gov.uk/government/news/breathing-space-on-your-energy-bill",
+      "https://www.gov.uk/government/news/energy-bill-tax-cut-starts-today-to-give-families-breathing-space",
+      "https://www.gov.uk/government/news/what-does-the-autumn-budget-mean-for-your-energy-bills",
+      "https://assets.publishing.service.gov.uk/media/697a744c005d288bf850df2f/ro-indexation-analytical-annex.pdf",
+      "https://www.gov.uk/government/consultations/feed-in-tariffs-fit-scheme-indexation-changes/changes-to-inflation-indexation-in-the-feed-in-tariffs-fit-scheme-consultation-document-html",
+      "https://www.gov.uk/government/publications/renewables-obligation-level-calculations-2027-to-2028/calculating-the-level-of-the-renewables-obligation-for-2027-to-2028",
+      "https://www.gov.uk/government/news/new-pm-cuts-tax-on-household-electricity-bills-to-give-breathing-space-on-cost-of-living",
+      "https://www.gov.uk/government/publications/temporary-zero-rate-of-vat-for-domestic-electricity-in-great-britain",
+      "https://www.gov.uk/government/publications/temporary-zero-rate-of-vat-for-domestic-electricity-in-great-britain/temporary-zero-rate-of-vat-in-great-britain-for-domestic-electricity",
+      "https://www.legislation.gov.uk/uksi/2026/987/made",
+      "https://www.legislation.gov.uk/uksi/2026/987/memorandum/contents",
+      "https://www.ofgem.gov.uk/sites/default/files/2026-08/Summary-of-changes-to-energy-price-cap-1-October-to-31-December-2026.pdf",
+      "https://www.ofgem.gov.uk/news/changes-energy-price-cap-between-1-october-and-31-december-2026",
+      "https://www.ofgem.gov.uk/sites/default/files/2025-11/Energy%20price%20cap%20proposed%20changes%20to%20Warm%20Home%20Discount%20Scheme%20cost%20allowance%20decision.pdf",
+      "https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained",
+      "https://mcsfoundation.org.uk/wp-content/uploads/2026/06/MCSF-The-case-for-further-levy-reform-Report-2026-1.pdf",
+      "https://mcsfoundation.org.uk/wp-content/uploads/2026/02/MCSF-Rebalancing-Electricity-Levies-in-the-UK-Report-Final.pdf",
+      "https://mcsfoundation.org.uk/wp-content/uploads/2024/10/Cut-the-Cost-of-Electricity-The-MCS-Foundation-April-2026.pdf",
+      "https://mcsfoundation.org.uk/news/households-could-save-up-to-530-if-electricity-levies-moved-off-bills-new-report/",
+      "https://mcsfoundation.org.uk/?p=4057",
+      "https://www.r-e-a.net/wp-content/uploads/2026/06/UK-energy-bills-to-rise-in-July-as-geopolitical-strains-hit-gas.pdf",
+      "https://www.r-e-a.net/vat-off-electricity-bills-but-the-economy-needs-more/",
+      "https://www.r-e-a.net/geopolitical-tensions-are-making-uk-energy-bills-more-expensive/",
+      "https://www.goodenergy.co.uk/wp-content/uploads/2026/06/Lowering-energy-bills-report.pdf",
+      "https://www.e3g.org/news/over-120-organisations-call-for-hidden-taxes-to-come-off-electricity-bills/",
+      "https://www.e3g.org/wp-content/uploads/Energy-UK-x-EBT-Levies-Letter-summer-2026-with-signatories-1.pdf",
+      "https://www.citizensadvice.org.uk/about-us/media-centre/press-releases/more-than-a-third-of-brits-worried-about-affording-energy-bills-this-winter-warns-citizens-advice/",
+      "https://www.citizensadvice.org.uk/policy/publications/hitting-the-rationing-wall/",
+      "https://assets.ctfassets.net/mfz4nbgura3g/XOarKUJjFQZp7ScW70bEo/5141ac4d77e31595ab1a44ac620f2be5/Policy_paperr_on_rationing_and_adjusting_budgets_.pdf",
+      "https://www.citizensadvice.org.uk/about-us/media-centre/press-releases/rising-energy-costs-to-hit-those-who-never-recovered-from-the-last-crisis-as-4-6-million-worry-about-affording-bills/",
+      "https://www.citizensadvice.org.uk/about-us/media-centre/press-releases/citizens-advice-reveals-how-to-save-struggling-households-gbp950-a-year/",
+      "https://www.citizensadvice.org.uk/wales/policy/publications/winter-warning-the-urgent-case-for-energy-bill-support-this-winter/",
+      "https://neweconomics.org/2026/10/government-must-act-to-protect-essential-energy-consumption-for-all",
+      "https://energymadeeasy.co.uk/news/january-price-cap-forecast-eases",
+      "https://www.instituteforgovernment.org.uk/publication/managing-economic-consequences-iran-war",
+      "https://www.instituteforgovernment.org.uk/comment/rachel-reeves-should-not-rushed-action-energy-bills",
+      "https://www.instituteforgovernment.org.uk/explainer/domestic-energy-bills",
+      "https://www.instituteforgovernment.org.uk/publication/report/addressing-rising-energy-bills",
+      "https://www.nea.org.uk/news-insights/government-cuts-vat-on-electricity-bills/",
+      "https://www.endfuelpoverty.org.uk/households-face-a-332-trump-tax-on-energy-bills-from-july/",
+      "https://www.endfuelpoverty.org.uk/coalition-sets-out-winter-rescue-plan-for-chancellors-budget/",
+      "https://www.endfuelpoverty.org.uk/chancellor-confirms-energy-bill-support-planning/",
+      "https://www.sse.com/about-us/our-campaigns/powering-secure-affordable-energy/",
+      "https://www.bankofengland.co.uk/-/media/boe/files/letter/2026/governor-cpi-inflation-letter-september.pdf",
+      "https://www.bankofengland.co.uk/-/media/boe/files/monetary-policy-report/2026/july/monetary-policy-report-july-2026.pdf",
+      "https://www.eonnext.com/electricity-and-gas/price-cap/predictions",
+      "https://www.britishgas.co.uk/energy/price-cap.html",
+      "https://www.edfenergy.com/gas-and-electricity/price-cap-predictions",
+      "https://www.moneysavingexpert.com/utilities/energy-price-cap-prediction/",
+      "https://greenparty.org.uk/2026/03/18/zack-polanski-lays-out-plans-to-back-the-caring-majority-in-major-speech/",
+      "https://greenparty.org.uk/2026/07/02/greens-call-on-burnham-to-cut-bills-by-150-before-winter-as-new-energy-price-cap-kicks-in/",
+      "https://greenparty.org.uk/2026/10/12/polanski-calls-for-bold-and-immediate-action-on-the-cost-of-living-in-october-budget/",
+      "https://octopus.energy/press/more-news-press-releases/new-prime-minister-can-slash-household-energy-bills-by-almost-pound200-a-year-by-fixing-britain-s-broken-electricity-market/",
+      "https://www.tuc.org.uk/sites/default/files/2026-05/Domestic_energy_support_policy_proposal.pdf",
+      "https://pocketwise.co.uk/energy/bills-and-switching/energy-price-cap-january-2027/",
+      "https://www.channel4.com/news/factcheck/factcheck-energy-bills-likely-to-rise-despite-burnhams-vat-cut",
+      "https://www.ukgovproposals.com/news/electricity-vat-cut/",
+      "https://www.scope.org.uk/news-and-stories/closing-the-fuel-poverty-gap-a-plan-for-targeted-energy-support",
+      "https://media.nesta.org.uk/documents/Cheaper_electricity_fairer_bills_lXiIIac.pdf",
+      "https://kpmg.com/uk/en/media/press-releases/2025/11/kpmg-uk-fairer-energy-bills.html",
+      "https://www.mpamag.com/uk/news/general/economist-sees-2-inflation-by-end-of-2027-challenging-market-rate-bets/594024",
+      "https://www.libdems.org.uk/news",
+      "https://api.parliament.uk/committees/publications/52206",
+      "https://api.parliament.uk/committees/publications/53481",
+      "https://www.which.co.uk/policy-and-insight/article/increase-support-to-help-people-with-terrifying-energy-bills-hike-which-urges-government-acIQw0c9SpHf"
+     ],
+     "claims": [
+      "desnz_whd_rebates_fy2026",
+      "mcs_all_levies_cost_fy2027",
+      "mcs_all_levies_saving_fy2027",
+      "rea_all_levies_cost_fy2027",
+      "rea_all_levies_saving_fy2027",
+      "ebt_ro_fit_whd_nuclear_saving_fy2027",
+      "octopus_all_levies_saving_fy2027",
+      "good_energy_whd_payment_cost_fy2026",
+      "green_party_cap_freeze_cost_fy2026",
+      "good_energy_ro_remainder_cost_fy2027",
+      "good_energy_ro_remainder_saving_fy2027",
+      "good_energy_fit_cost_fy2027",
+      "good_energy_fit_saving_fy2027",
+      "desnz_vat_saving_fy2027"
+     ],
+     "note": "Not staged: the energy secretary's levy plan ('as much as £120' off a typical bill, 'as much as £3.2bn', Guardian 6 October and FT 11 October 2026, as the dashboard's code cites them) has no published primary; DESNZ's 8.3m households on a qualifying means-tested benefit is a count from the 2024 English Housing Survey (impact assessment footnote 19), calibration material cited in annotation whd-proxy-caseload; the REA's 29 July £2.99bn (28.6m households saving £105) is superseded by its own 27 August estimate for the same change; Citizens Advice's £39 is for a package that also reforms the Warm Home Discount, for households not on means-tested benefits; supplier and Bank of England cap forecasts are price-path inputs, not estimates of a published quantity; the TUC's social tariff, JRF's package and NIESR's UC uplift are other policies; 2022-23 EBSS and EPG outturns are a different period. DESNZ, found here for the Warm Home Discount caseload and the VAT cut's average saving, publishes the official figures for energy measures and is a candidate for the UK producer list."
+    }
+   ]
+  }
+ ]
+}
