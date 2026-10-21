@@ -1,0 +1,20 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json": "080d45f00b0b8974aedbbc58bc6a407e3b9f1835d20d57f5c44bf74bff55b056",
+  "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2026.json": "f3e5b0c7aabcba61f9416d8abbf4052f579a17773ec508d58812604511b6b7f8",
+  "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json": "978b23e4a1dee9705483614654f370c3ba46ab499f42c1bce077cb7c3a14edb0",
+  "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2026.json": "136b3820703fccefe0424b94179faf5825fd75c77fa9f4c2932697f13101317a"
+ },
+ "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+ "data_bundle": "policyengine-uk-data-1.59.1",
+ "engine_version": "2.141.10",
+ "event": "autumn_statement_2023",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.9.0",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "schema_version": 1,
+ "variant_id": "pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1",
+ "variant_identity_sha256": "ce710eb0f57e0bd115df3aac12687fc5cc5e6a1c4d6ef51dcc4911146486b607",
+ "year": 2026
+}

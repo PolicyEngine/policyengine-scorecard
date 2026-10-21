@@ -1,0 +1,157 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.43537832399988474,
+    "end_rss_bytes": 2650628096,
+    "peak_rss_bytes": 2650628096,
+    "rss_after_gc_bytes": 1671143424,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 260411392,
+    "wall_seconds": 18.230101803000025
+   },
+   "seconds": 25.94192319600006,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 29.969123397000203,
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 33.479603562999955,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.4414290950001032,
+    "end_rss_bytes": 2438422528,
+    "peak_rss_bytes": 2438422528,
+    "rss_after_gc_bytes": 1687920640,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 260497408,
+    "wall_seconds": 16.97488685899998
+   },
+   "seconds": 24.763001268999915,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 28.68558516500002,
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 31.661804168000117,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5954753790001632,
+    "end_rss_bytes": 2948620288,
+    "peak_rss_bytes": 2948673536,
+    "rss_after_gc_bytes": 2933075968,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 2930978816,
+    "wall_seconds": 16.633756364999954
+   },
+   "seconds": 17.23190015299997,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 29.895512135000217,
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 30.194697003999863,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5840245589999995,
+    "end_rss_bytes": 3369234432,
+    "peak_rss_bytes": 3369287680,
+    "rss_after_gc_bytes": 3347243008,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3346169856,
+    "wall_seconds": 16.529539587000045
+   },
+   "seconds": 17.116100607999897,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 28.767759622000085,
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 30.214409551000017,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6300560030001634,
+    "end_rss_bytes": 3386601472,
+    "peak_rss_bytes": 3386654720,
+    "rss_after_gc_bytes": 3381460992,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3382493184,
+    "wall_seconds": 16.61552932299992
+   },
+   "seconds": 17.24806033599998,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 29.105200705000016,
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 30.34237542799997,
+   "year": 2028
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6654591950000395,
+    "end_rss_bytes": 3389169664,
+    "peak_rss_bytes": 3389222912,
+    "rss_after_gc_bytes": 3382902784,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3383836672,
+    "wall_seconds": 17.097273377999954
+   },
+   "seconds": 17.76547717299991,
+   "world": "certified_baseline",
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "seconds": 29.231283934999965,
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "seconds": 29.773894544000086,
+   "year": 2029
+  }
+ ],
+ "wall_seconds": 253.25509141899988,
+ "workers": 2
+}

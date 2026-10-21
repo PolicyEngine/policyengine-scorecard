@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "727fe00825c6d95ffa80c4983a56cbbf283ff8041f98654e1df5e9468b6ab34c",
+  "COMPARISON.json": "12c79297d79c355a97bd63ee3fa0d80450314f775a48251e073035a01c8ab058",
+  "COMPARISON.md": "513ddf238f75d0cd2d3875846eec94480b347c03ee4bf58f7945fdd4661796ba"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "de0b4a9903d4db0c2a43759032bcd70a7056e9572b77afa3777f4a0a81810073",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "9370720d36259286f0e21cc646f5c1d14d242f095dfb314c06bd6aaa6576a3ad",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.10_policyengine-uk-data-1.59.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "1caf628e1be315e43815a1602beb958d428bab93fdc6bdb418117f625fe56539"
+}
