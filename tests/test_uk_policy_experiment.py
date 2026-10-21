@@ -611,14 +611,15 @@ def test_mirror_findings_compare_only_shared_head_groups():
         c["pe_variables"] == "universal_credit" and "hscl" in c["pair"][0]
         for c in checks
     )
-    first = next(
-        r
-        for r in rows[0]["rows"]
-        if ex.load_spec(rows[0]["event"])["experiments"][0]["experiment_id"]
-        == r["experiment_id"]
+    hscl = next(
+        row
+        for document in rows
+        if document["event"] == "autumn_budget_2021"
+        for row in document["rows"]
+        if row["experiment_id"] == "ab2021_hscl_nics_plus_1_25pp"
     )
-    key = next(iter(first["group_effects_gbp"]))
-    first["group_effects_gbp"][key] *= 1.001
+    key = next(iter(hscl["group_effects_gbp"]))
+    hscl["group_effects_gbp"][key] *= 1.001
     assert not all(check["agrees"] for check in ex.mirror_findings(rows, specs))
 
 
