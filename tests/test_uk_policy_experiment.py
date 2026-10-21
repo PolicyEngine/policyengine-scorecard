@@ -656,10 +656,15 @@ def test_modal_request_refuses_a_replay_variant_and_downloads_stay_ignored():
         "autumn_statement_2022", "exp-a", years=[2024], experiments=[], probe=False
     )
     assert request["is_replay"] is False and request["label"] == ex.LABEL
-    target = modal_experiment.download_dir(modal_experiment.DOWNLOAD_ROOT, request)
+    payload = {"request": request, "inputs": {"files": []}}
+    target = modal_experiment.download_dir(modal_experiment.DOWNLOAD_ROOT, payload)
     assert target.resolve().is_relative_to((ROOT / ".venv-replay-checks").resolve())
+    other = {"request": request, "inputs": {"files": [{"path": "x", "sha256": "0"}]}}
+    assert (
+        modal_experiment.download_dir(modal_experiment.DOWNLOAD_ROOT, other) != target
+    )
     with pytest.raises(ValueError):
-        modal_experiment.download_dir("results/uk/replays", request)
+        modal_experiment.download_dir("results/uk/replays", payload)
 
 
 def test_the_modal_allowlist_names_files_that_exist():

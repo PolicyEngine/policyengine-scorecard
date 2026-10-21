@@ -394,11 +394,14 @@ def modal_function(mounts: dict[str, Path], requirements: Path):
     return modal, app, experiment, modal_time
 
 
-def download_dir(download_root: str, request: dict) -> Path:
+def download_dir(download_root: str, payload: dict) -> Path:
+    """One folder per request and exact inputs, so a rerun on a corrected
+    spec never meets an earlier run's files."""
     replay_modal.relative_path(download_root)
     if not PurePosixPath(download_root).is_relative_to(".venv-replay-checks"):
         raise ValueError("downloads must stay under .venv-replay-checks")
-    stamp = digest_bytes(canonical_bytes(request))[:12]
+    request = payload["request"]
+    stamp = digest_bytes(canonical_bytes(payload))[:12]
     target = ROOT / download_root / request["population_id"] / request["event"] / stamp
     if not target.resolve().is_relative_to((ROOT / ".venv-replay-checks").resolve()):
         raise ValueError("the download directory escapes .venv-replay-checks")
@@ -528,7 +531,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     inputs, mounts = input_manifest(args.event, population, args.dataset_file)
     payload = {"request": request, "inputs": inputs}
-    target = download_dir(args.download_root, request)
+    target = download_dir(args.download_root, payload)
     if not args.execute:
         print(
             canonical_bytes(
