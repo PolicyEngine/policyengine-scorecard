@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "04c60a8c4f7d141a177161ec599646665bdf644153f53035e0e301c14776e67c",
+  "COMPARISON.json": "4ef031a5bb2b7c1c1a422f87798b713e8375e3da3d31a635f5ac924f4ef0ee90",
+  "COMPARISON.md": "9266483f0d1087cd8e47b8a134c605bb008becb875b2ccbab5cad225e468f090"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "a9bcb9d340dd84909ce27b2eba23e15c137b9b062b503b3fe69867229e53ad9f",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "9e5e00bf7e833ab173f672e10018974567d5776a31427615159ba45be9d96e92",
+ "staging_manifest_path": "results/uk/replays/pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "d3e68d42eeb4a2405846bf415d817781e2be7f8c5e94c6fee92965f53a5d4657"
+}

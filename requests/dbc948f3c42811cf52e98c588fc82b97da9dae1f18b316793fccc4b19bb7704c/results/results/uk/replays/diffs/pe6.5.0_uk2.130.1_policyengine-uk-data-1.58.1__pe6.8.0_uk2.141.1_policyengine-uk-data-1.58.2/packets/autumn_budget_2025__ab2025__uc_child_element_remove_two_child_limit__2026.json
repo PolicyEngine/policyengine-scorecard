@@ -1,0 +1,872 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2026-01-01.2030-12-31": 2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "0fc939904ae76f5e4571fe49eee94209b53f7968778c7c2b61b831638271f6dd"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2026-01-01.2030-12-31": 2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "f05420c1d80c97dd95a7af1bba8b4316e7f57224f57b89582749e16d1766c6c1"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.1",
+   "policyengine_version": "6.8.0",
+   "variant_id": "pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": 2
+    },
+    "2026": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2027": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2028": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2029": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2030": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "measure_type": "tax_benefit",
+   "missing_legs": [
+    "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.elements.child.limit.child_count"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.elements\\.child\\.limit\\.child_count",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2026-01-01.2030-12-31": 2
+    }
+   },
+   "pe_gap": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+   "program": "tax_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23525:46339c11b7b3c9d3",
+     "source_row_number": 23525,
+     "source_row_sha256": "46339c11b7b3c9d3f5197bb860b19e60067402ec44e14d3cb8985df74bbbc9e5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23526:7a52217d035becaf",
+     "source_row_number": 23526,
+     "source_row_sha256": "7a52217d035becaf05c1a1a479bb59d565e0ad748ac3561dbe8fcfccc2efbddb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -1886715000.0,
+     "value_gbp_decimal": "-1886715000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23527:76270d3c75a7a426",
+     "source_row_number": 23527,
+     "source_row_sha256": "76270d3c75a7a426920df33af72657b93839e95f026408e08b7827d1d26216e1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2100951000.0,
+     "value_gbp_decimal": "-2100951000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23528:35553a766a3ad3d3",
+     "source_row_number": 23528,
+     "source_row_sha256": "35553a766a3ad3d36001a941ee3eab117de2e521c325eafc63b4dc074512a2ee",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2325254000.0,
+     "value_gbp_decimal": "-2325254000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23529:1e1a237caba88918",
+     "source_row_number": 23529,
+     "source_row_sha256": "1e1a237caba88918b6749e3ac6d11c70166bdc92ff2062330171c6370dadd47a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2570299000.0,
+     "value_gbp_decimal": "-2570299000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23530:d1bc796d9f235c4f",
+     "source_row_number": 23530,
+     "source_row_sha256": "d1bc796d9f235c4fb14c6f238f16fbd3a533830cf76e3d308c8571adbe024f63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2684855000.0,
+     "value_gbp_decimal": "-2684855000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23531:68ca04cd4d91504a",
+     "source_row_number": 23531,
+     "source_row_sha256": "68ca04cd4d91504a7298afb7229b78a3e9118f7a503c2057424aa26e521aa84d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23532:a4b6c3164622eec3",
+     "source_row_number": 23532,
+     "source_row_sha256": "a4b6c3164622eec367c83c552697779049652681ff548b293b605b64e3451008",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -480000000.0,
+     "value_gbp_decimal": "-480000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23533:536f90f4ea5cecc8",
+     "source_row_number": 23533,
+     "source_row_sha256": "536f90f4ea5cecc85226af7fba24b51e9610737ced7b65c7d8f523823bef4c03",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -489000000.0,
+     "value_gbp_decimal": "-489000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23534:b80fd366f320caa3",
+     "source_row_number": 23534,
+     "source_row_sha256": "b80fd366f320caa3bedc548087ebe0da049d358ccb26df227f2e503d29a82a29",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -490000000.0,
+     "value_gbp_decimal": "-490000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23535:0e2f301b9e5ffadd",
+     "source_row_number": 23535,
+     "source_row_sha256": "0e2f301b9e5ffadd2d9640077a1b18c03704053b00630f39b85b5d319371ab77",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -525000000.0,
+     "value_gbp_decimal": "-525000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23536:b082924fa31ed31d",
+     "source_row_number": 23536,
+     "source_row_sha256": "b082924fa31ed31d9ca6a300946966dcb469b63c21323867424292c4aca3f8c1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -550000000.0,
+     "value_gbp_decimal": "-550000000.0"
+    }
+   ],
+   "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+   "unmapped_obr_heads": [
+    "Welfare outside cap"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": 2
+    },
+    "2026": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2027": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2028": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2029": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    },
+    "2030": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": "inf"
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "measure_type": "tax_benefit",
+   "missing_legs": [
+    "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.elements.child.limit.child_count"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.elements\\.child\\.limit\\.child_count",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2026-01-01.2030-12-31": 2
+    }
+   },
+   "pe_gap": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+   "program": "tax_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23525:46339c11b7b3c9d3",
+     "source_row_number": 23525,
+     "source_row_sha256": "46339c11b7b3c9d3f5197bb860b19e60067402ec44e14d3cb8985df74bbbc9e5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23526:7a52217d035becaf",
+     "source_row_number": 23526,
+     "source_row_sha256": "7a52217d035becaf05c1a1a479bb59d565e0ad748ac3561dbe8fcfccc2efbddb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -1886715000.0,
+     "value_gbp_decimal": "-1886715000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23527:76270d3c75a7a426",
+     "source_row_number": 23527,
+     "source_row_sha256": "76270d3c75a7a426920df33af72657b93839e95f026408e08b7827d1d26216e1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2100951000.0,
+     "value_gbp_decimal": "-2100951000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23528:35553a766a3ad3d3",
+     "source_row_number": 23528,
+     "source_row_sha256": "35553a766a3ad3d36001a941ee3eab117de2e521c325eafc63b4dc074512a2ee",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2325254000.0,
+     "value_gbp_decimal": "-2325254000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23529:1e1a237caba88918",
+     "source_row_number": 23529,
+     "source_row_sha256": "1e1a237caba88918b6749e3ac6d11c70166bdc92ff2062330171c6370dadd47a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2570299000.0,
+     "value_gbp_decimal": "-2570299000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23530:d1bc796d9f235c4f",
+     "source_row_number": 23530,
+     "source_row_sha256": "d1bc796d9f235c4fb14c6f238f16fbd3a533830cf76e3d308c8571adbe024f63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -2684855000.0,
+     "value_gbp_decimal": "-2684855000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23531:68ca04cd4d91504a",
+     "source_row_number": 23531,
+     "source_row_sha256": "68ca04cd4d91504a7298afb7229b78a3e9118f7a503c2057424aa26e521aa84d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23532:a4b6c3164622eec3",
+     "source_row_number": 23532,
+     "source_row_sha256": "a4b6c3164622eec367c83c552697779049652681ff548b293b605b64e3451008",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -480000000.0,
+     "value_gbp_decimal": "-480000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23533:536f90f4ea5cecc8",
+     "source_row_number": 23533,
+     "source_row_sha256": "536f90f4ea5cecc85226af7fba24b51e9610737ced7b65c7d8f523823bef4c03",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -489000000.0,
+     "value_gbp_decimal": "-489000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23534:b80fd366f320caa3",
+     "source_row_number": 23534,
+     "source_row_sha256": "b80fd366f320caa3bedc548087ebe0da049d358ccb26df227f2e503d29a82a29",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -490000000.0,
+     "value_gbp_decimal": "-490000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23535:0e2f301b9e5ffadd",
+     "source_row_number": 23535,
+     "source_row_sha256": "0e2f301b9e5ffadd2d9640077a1b18c03704053b00630f39b85b5d319371ab77",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -525000000.0,
+     "value_gbp_decimal": "-525000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23536:b082924fa31ed31d",
+     "source_row_number": 23536,
+     "source_row_sha256": "b082924fa31ed31d9ca6a300946966dcb469b63c21323867424292c4aca3f8c1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+     "value_gbp": -550000000.0,
+     "value_gbp_decimal": "-550000000.0"
+    }
+   ],
+   "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+   "unmapped_obr_heads": [
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": {
+      "baseline_world": 2,
+      "current_law": "inf",
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": "inf",
+      "reform_world": "inf"
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.elements.child.limit.child_count": {
+      "baseline_world": 2,
+      "current_law": "inf",
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": "inf",
+      "reform_world": "inf"
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -2694647923.6472473,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -1886715000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_1.25_to_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -70795176.45010376,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 27654431.00097351
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2765443100.097351,
+   "key": "obr_pmd_nov2025:23526:7a52217d035becaf",
+   "level": "source_row",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "threshold_gbp": 27654431.00097351,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -480000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23532:a4b6c3164622eec3",
+   "level": "source_row",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": -2694647923.6472473,
+   "context": {},
+   "delta_gbp": -70795176.45010376,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 27654431.00097351
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2765443100.097351,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "threshold_gbp": 27654431.00097351,
+   "year": 2026
+  },
+  {
+   "base_gbp": -2694647923.6472473,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -70795176.45010376,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 27654431.00097351
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -2765443100.097351,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "threshold_gbp": 27654431.00097351,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__uc_child_element_remove_two_child_limit --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2026",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__uc_child_element_remove_two_child_limit --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -2694647923.6472473,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -2765443100.097351,
+   "obr_value_gbp": -1886715000.0,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23526:7a52217d035becaf",
+   "source_row_number": 23526,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -480000000.0,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23532:a4b6c3164622eec3",
+   "source_row_number": 23532,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": -2694647923.6472473,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -2765443100.097351,
+   "obr_value_gbp": -1886715000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23526:7a52217d035becaf",
+   "source_row_number": 23526,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -480000000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23532:a4b6c3164622eec3",
+   "source_row_number": 23532,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+ "year": 2026
+}

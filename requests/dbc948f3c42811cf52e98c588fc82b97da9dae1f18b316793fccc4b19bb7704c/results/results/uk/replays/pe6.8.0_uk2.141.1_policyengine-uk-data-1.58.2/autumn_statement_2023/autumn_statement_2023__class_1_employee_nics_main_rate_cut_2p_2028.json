@@ -1,0 +1,213 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+    "2024-01-01.2035-12-31": 0.1
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2028 proxies FY 2028-29.",
+ "certified_aggregates_gbp": {
+  "income_tax": 353397490553.3463,
+  "ni_class_1_employee": 55440381704.80593,
+  "ni_class_1_employer": 169032834990.53113,
+  "ni_class_2": 0.0,
+  "ni_class_4": 3202491297.5102015,
+  "universal_credit": 86839164653.00317
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.141.1",
+ "event": "autumn_statement_2023",
+ "fiscal_event": "Autumn Statement 2023",
+ "fy_proxy": "2028-29",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_2": "tax",
+  "ni_class_4": "tax",
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 0.0,
+  "ni_class_1_employee": -12484705092.594742,
+  "ni_class_1_employer": 0.0,
+  "ni_class_2": 0.0,
+  "ni_class_4": 7634949.758920193,
+  "universal_credit": 309241839.93692017
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_2",
+  "ni_class_4",
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": 12484705092.594742,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -7634949.758920193,
+  "universal_credit": -309241839.93692017
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": 12484705092.594742,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -7634949.758920193,
+  "universal_credit": -309241839.93692017
+ },
+ "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+ "measure_total_gbp": -12167828302.898901,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+     "2024-01-01.2035-12-31": 0.1
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.8.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+    "intended": 0.1,
+    "processed": 0.1
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+    "intended": 0.08,
+    "processed": 0.08
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 353397490553.3463,
+    "ni_class_1_employee": 67925086797.40067,
+    "ni_class_1_employer": 169032834990.53113,
+    "ni_class_2": 0.0,
+    "ni_class_4": 3194856347.7512813,
+    "universal_credit": 87148406492.9401
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 353397490553.3463,
+    "ni_class_1_employee": 55440381704.80593,
+    "ni_class_1_employer": 169032834990.53113,
+    "ni_class_2": 0.0,
+    "ni_class_4": 3202491297.5102015,
+    "universal_credit": 86839164653.00317
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_2": {
+   "definition_period": "year",
+   "documentation": "Compulsory Class 2 contributions under s.11(2) SSCBA 1992 for a full year of self-employment: the weekly rate for each contribution week in the tax year (53 in 2019-20, otherwise 52 to 2023-24). Liability is tested on relevant profits, the profits on which Class 4 is payable under s.15 (s.11(3)), as modelled in ni_class_4_profits.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+   "entity": "person",
+   "label": "NI Class 2 contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  },
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.8.0_uk2.141.1_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "2ee08de7d72963d55f5de9cf21fbfde486112e14e34e14389613afe4de028d47",
+ "year": 2028
+}
