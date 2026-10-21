@@ -1,0 +1,60 @@
+{
+ "_what": "PolicyEngine's PUBLISHED estimate of the same reform, kept as a history row on the CenTax claims so the published miss stays on the page. Read from the dashboard's own results file; nothing here is recomputed.",
+ "page": "https://policyengine.org/uk/childcare-100k-threshold",
+ "repo": "PolicyEngine/uk-childcare-100k-threshold",
+ "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+ "commit_note": "main on 2026-10-21 (Merge pull request #6, 2026-10-12); the live page builds from main",
+ "results_file": "data/results.json",
+ "results_file_sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+ "generated_at": "2026-10-09T11:50:21+00:00",
+ "results_git_revision": "1b57118fe8dab4d82b456cbaff24d0306c74a1f6",
+ "run_id": "uk-childcare-100k-dashboard-1b57118",
+ "engine": {
+  "policyengine": "6.2.1",
+  "policyengine_uk": "2.102.3",
+  "policyengine_bundle": "uk-6.2.1"
+ },
+ "dataset": {
+  "release": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+  "repo_id": "policyengine/populace-uk-private",
+  "revision": "f9d1922cddab6b54a0dd37794a9bac74e3780c88",
+  "sha256": "aa31bdf67c977927ea2b325567d1cf7a79d94381239bc79918a0a0fc9c9588af",
+  "management": "pinned_by_repo_unmanaged_by_bundle"
+ },
+ "reform": {
+  "removed_limits": [
+   "gov.dfe.extended_childcare_entitlement.income.limit",
+   "gov.hmrc.tax_free_childcare.income.income_limit"
+  ],
+  "basis": "src/childcare_100k/config.py at f25f0db (REFORM_PARAMETERS, parameter_changes: each limit set to infinity in every analysis year)"
+ },
+ "corrections": "Six local corrections applied to every run, baseline and reform alike (src/childcare_100k/corrections.py at f25f0db): exactly £100,000 qualifies; a partner on a specified benefit need not pass the minimum earnings test; the universal and targeted 15 hours are a floor that eligibility for the extended hours never removes (policyengine-uk#1930); salary sacrifice returned to pay from April 2029 is not income for the limits; Tax-Free Childcare regards a partner on a caring or incapacity benefit as in qualifying paid work; both schemes test the claimant and partner.",
+ "fiscal_year_rule": "src/childcare_100k/config.py at f25f0db: 'Fiscal years named by start year (\"2026\" = 2026-27).'",
+ "values_gbp_bn": {
+  "field": "budget.gross_bn.thirty_hours (the 30-hours leg: extended, universal and targeted entitlements; budget.thirty_hours_components_bn puts it all in extended)",
+  "thirty_hours": {
+   "2026": 0.41,
+   "2027": 0.434,
+   "2028": 0.484,
+   "2029": 0.505
+  },
+  "tax_free_childcare": {
+   "2026": 0.148,
+   "2027": 0.159,
+   "2028": 0.168,
+   "2029": 0.173
+  }
+ },
+ "hours_draw": "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126",
+ "pending_fix": {
+  "pr": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8",
+  "state_on_2026_10_21": "open draft",
+  "release": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified)",
+  "thirty_hours_gbp_bn": {
+   "2027": 1.009,
+   "2029": 1.215
+  },
+  "attached": false,
+  "why_not_attached": "The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
+ }
+}

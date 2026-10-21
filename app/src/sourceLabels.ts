@@ -42,6 +42,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   scottish_fiscal_commission: "Scottish Fiscal Commission",
   wbg: "Women's Budget Group",
   centax: "CenTax",
+  centre_for_british_progress: "Centre for British Progress",
   tax_policy_associates: "Tax Policy Associates",
   policy_in_practice: "Policy in Practice",
   entitledto: "entitledto",

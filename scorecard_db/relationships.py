@@ -619,6 +619,22 @@ _AB2025_HELD: dict[str, tuple] = {
 }
 
 
+# Centre for British Progress, "Rates and wrongs" technical appendix (lane
+# uk-childcare-100k), read 2026-10-21: the certified populace-uk build's 149
+# calibration targets (microcosm fixture packages/microcosm-data/tests/
+# fixtures/uk_june_2023/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/
+# calibration_diagnostics.json) include no childcare entitlement, Tax-Free
+# Childcare or CBP quantity, and policyengine-uk 2.89.2 names neither CBP
+# nor CenTax anywhere in its package. CenTax's own entry is _AB2025_HELD.
+_CBP_HELD = (
+    CR.HELD_OUT,
+    "CBP's synthetic-microsimulation reform estimates are scored, never "
+    "consumed: none of the certified populace-uk build's 149 targets is a "
+    "childcare or CBP quantity, and policyengine-uk 2.89.2 reads nothing "
+    "from CBP (read 2026-10-21)",
+)
+
+
 def uk_relationship(source, metric, program=None, kind=None):
     """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
 
@@ -698,6 +714,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _OBR_PMD_HELD
     if source in _AB2025_HELD:
         return _AB2025_HELD[source]
+    if source == "centre_for_british_progress":
+        return _CBP_HELD
     if source == "dwp":
         return (
             CR.HELD_OUT,

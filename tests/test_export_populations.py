@@ -406,7 +406,9 @@ def test_integration_committed_db(tmp_path):
     # and FY2025) with CY2024 counterparts (#176).
     # The March 2026 PMD contributes only its 246 new cells; November's
     # historical/comprehensive claims and the existing main feed stay intact.
-    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246, "BE": 9, "NZ": 12}
+    # UK + 36: the £100,000 childcare limit costings (24 CenTax Table 4.2
+    # cells, 12 CBP abolition cells), all opted into display (uk-childcare-100k).
+    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246 + 36, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -441,7 +443,7 @@ def test_integration_committed_db(tmp_path):
     assert committed["summary"] == payload["summary"]
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
-    assert len(payload["rows"]) == 5719
+    assert len(payload["rows"]) == 5719 + 36
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()
