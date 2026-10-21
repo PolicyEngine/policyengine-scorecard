@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "6f7b4aca598b3d7f1abeafc51b766e1778d573900faf010fbf96f7ed57c65b19",
+  "COMPARISON.json": "a9421c848fc5406b5866847fa8e3f52b4d5f3f0e5a2bdede37017c716878e4cc",
+  "COMPARISON.md": "67ea1773f4f07bba7a6b0a66761547292609919d4417f815d6fd602a36fb94db"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.141.6_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.6_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "64858cfd856e2d0ae46d87f3492f082c41121947e64829f669bbf129ee6bd3fe",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.141.6_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "62f894c647d73cc0bd96ffa5c4231e63663b0c62c5567c5d766dfc8e494b8102",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.6_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "547c1680046fafd7dc09982d0d7be8dddd047c01009f8bbcda33d4db79986087"
+}
