@@ -1,8 +1,9 @@
 {
  "anomaly_counts": {
-  "construction_noop:diagnosed": 8,
   "magnitude_outside_10x:diagnosed": 2,
   "magnitude_outside_3x:diagnosed": 4,
+  "modern_law_differs:diagnosed": 4,
+  "modern_law_differs:undiagnosed": 2,
   "sign_mismatch:diagnosed": 2
  },
  "baseline_coverage": [
@@ -21,22 +22,6 @@
    "obr_newest_vintage": "March 2026",
    "pe_base_gbp": 27306631077.862415,
    "pe_over_obr": 1.2525089198262989
-  },
-  {
-   "base_sheet": "CGT",
-   "fy": "2026-27",
-   "obr_newest_forecast_gbp": 20801165202.018173,
-   "obr_newest_vintage": "March 2026",
-   "pe_base_gbp": 29031002810.145813,
-   "pe_over_obr": 1.3956431059606778
-  },
-  {
-   "base_sheet": "CGT",
-   "fy": "2027-28",
-   "obr_newest_forecast_gbp": 25469965349.80383,
-   "obr_newest_vintage": "March 2026",
-   "pe_base_gbp": 30120280831.058018,
-   "pe_over_obr": 1.182580361511564
   },
   {
    "base_sheet": "IT",
@@ -63,14 +48,6 @@
    "pe_over_obr": 0.9625589582702855
   },
   {
-   "base_sheet": "IT",
-   "fy": "2027-28",
-   "obr_newest_forecast_gbp": 384637784693.9719,
-   "obr_newest_vintage": "March 2026",
-   "pe_base_gbp": 362713363402.8606,
-   "pe_over_obr": 0.9429998243449874
-  },
-  {
    "base_sheet": "NICS",
    "fy": "2024-25",
    "obr_newest_forecast_gbp": 171402000000.0,
@@ -93,14 +70,6 @@
    "obr_newest_vintage": "March 2026",
    "pe_base_gbp": 223210938714.2597,
    "pe_over_obr": 1.0549000707516993
-  },
-  {
-   "base_sheet": "NICS",
-   "fy": "2027-28",
-   "obr_newest_forecast_gbp": 218890531203.96008,
-   "obr_newest_vintage": "March 2026",
-   "pe_base_gbp": 230306650324.01807,
-   "pe_over_obr": 1.052154467611121
   }
  ],
  "events": [
@@ -111,7 +80,6 @@
   "autumn_2016",
   "autumn_budget_2017",
   "autumn_budget_2021",
-  "autumn_statement_2022",
   "budget_2010_2",
   "budget_2012",
   "budget_2015",
@@ -124,130 +92,12 @@
   "spring_budget_2021",
   "spring_statement_2022"
  ],
- "experiment_years": 111,
+ "experiment_years": 75,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",
  "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
- "mirrors": [
-  {
-   "agrees": true,
-   "effects_gbp": [
-    -3187883583.7251587,
-    3187883583.7251587
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2024
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    19665940310.038162,
-    -19665940310.038162
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
-   "year": 2024
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    -3824669545.8587036,
-    3824669545.8587036
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2025
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    22255559888.927948,
-    -22255559888.927948
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
-   "year": 2025
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    -4073075129.0168457,
-    4073075129.0168457
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2026
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    23326515104.92922,
-    -23326515104.92922
-   ],
-   "pair": [
-    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
-    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
-   ],
-   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
-   "year": 2026
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    6333833949.8220825,
-    -6333833949.8220825
-   ],
-   "pair": [
-    "autumn_statement_2022:as2022_maintain_basic_rate_20",
-    "spring_statement_2022:ss2022_basic_rate_19"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2024
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    6730949983.279907,
-    -6730949983.279907
-   ],
-   "pair": [
-    "autumn_statement_2022:as2022_maintain_basic_rate_20",
-    "spring_statement_2022:ss2022_basic_rate_19"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2025
-  },
-  {
-   "agrees": true,
-   "effects_gbp": [
-    7024101298.717834,
-    -7024101298.717834
-   ],
-   "pair": [
-    "autumn_statement_2022:as2022_maintain_basic_rate_20",
-    "spring_statement_2022:ss2022_basic_rate_19"
-   ],
-   "pe_variables": "income_tax",
-   "year": 2026
-  }
- ],
+ "mirrors": [],
  "model_changes": [],
  "pairing": "certified_pair",
  "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",

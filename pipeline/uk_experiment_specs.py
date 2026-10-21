@@ -129,21 +129,42 @@ BASIC_19_SOURCES = [
     "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,savings,property}.yaml",
 ]
 
+
 # Primary threshold and lower profits limit without the July 2022 alignment.
-# The pre-measure 2022-23 level was £9,880 (£190 a week); the default April
-# 2023 uprating is September 2022 CPI, 10.1% (ONS), giving £10,878 (£209.19 a
-# week), which the later freezes (Autumn Statement 2022 to April 2028,
-# Autumn Budget 2025 to April 2031) then hold.
-PT_CF_ANNUAL = round(9880 * 1.101)
-PT_CF_WEEKLY = money(PT_CF_ANNUAL / 52)
+# Before it, the primary threshold was indexed each April by the previous
+# September's CPI (ONS: 10.1% 2022, 6.7% 2023, 1.7% 2024), from £190 a week
+# and £9,880 a year in 2022-23: £209, £223 and £227 a week (whole pounds, as
+# the weekly thresholds are set) and £10,878, £11,607 and £11,804 a year for
+# 2023-24 to 2025-26. Autumn Statement 2022 then holds the 2025-26 levels for
+# a further two years from April 2026, as it does the personal allowance.
+def indexed_pt():
+    weekly, annual, out_w, out_a = 190.0, 9880.0, {}, {}
+    for year, rate in zip(range(2023, 2026), (0.101, 0.067, 0.017)):
+        weekly, annual = (
+            float(round(weekly * (1 + rate))),
+            float(round(annual * (1 + rate))),
+        )
+        out_w[year], out_a[year] = weekly, annual
+    for year in (2026, 2027):
+        out_w[year], out_a[year] = out_w[2025], out_a[2025]
+    return out_w, out_a
+
+
+PT_CF_WEEKLY, PT_CF_ANNUAL = indexed_pt()
 PT_LPL = {
-    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
-        window(2024, 2030): PT_CF_WEEKLY
-    },
-    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-        window(2024, 2030): float(PT_CF_ANNUAL)
-    },
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": yearly(
+        {y: PT_CF_WEEKLY[y] for y in (2024, 2025, 2026)}
+    ),
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": yearly(
+        {y: PT_CF_ANNUAL[y] for y in (2024, 2025, 2026)}
+    ),
 }
+PT_LPL_REASON = (
+    "A threshold set against an indexed path: its yield depends on inflation "
+    "since the event (outturn CPI of 10.1% in September 2022 against the March "
+    "2022 forecast), and the modern employee rate is 8% against 12% plus the "
+    "1.25% levy when the OBR costed it (PLAN.md names this case)."
+)
 
 # Secondary threshold without the freeze from April 2023: £175 a week
 # (£9,100) uprated by September 2022 CPI (10.1%) and September 2023 CPI
@@ -313,8 +334,10 @@ B2018_PA = PA_B2018[2021]  # the 2021-22 level, which the freezes hold
 B2018_BRL = BRL_B2018[2021]
 
 
-# Budget 2018's £1,000 a year work-allowance increase: £198 and £409 a month
-# would have stayed in April 2019 instead of £287 and £503. Each modern
+# Budget 2018's £1,000 a year work-allowance increase: without it the April
+# 2019 allowances would have been £198 and £409 uprated by September 2018 CPI
+# (2.4%, ONS), £203 and £419 a month, instead of £287 and £503: the measure
+# added £84 to each (198 x 1.024 + 83.33 = 286.1, 409 x 1.024 + 83.33 = 502.2). Each modern
 # allowance keeps the later upratings and Autumn Budget 2021's £500, so the
 # counterfactual removes the 2019 difference carried forward: x (293/287)
 # to April 2021, then the allowance's own growth from its November 2021
@@ -543,17 +566,20 @@ def experiments() -> dict[str, dict]:
                         nics_group(["Health and social care levy", "NICs"]),
                         INCOME_TAX,
                     ],
-                    "magnitude_check": "scaled",
+                    "magnitude_check": "sign_only",
+                    "magnitude_reason": PT_LPL_REASON,
                     "note": (
-                        f"Without the July 2022 alignment the primary threshold and lower "
-                        f"profits limit would be £9,880 uprated by September 2022 CPI (10.1%) "
-                        f"to £{PT_CF_ANNUAL:,} (£{PT_CF_WEEKLY} a week) from April 2023, then held "
-                        "by the later freezes. Modern law has £12,570. The modern employee "
-                        "rate is 8%, against 12% plus the 1.25% levy when the OBR costed it."
+                        "Without the July 2022 alignment the primary threshold and lower "
+                        "profits limit stay indexed by CPI: £"
+                        + ", £".join(f"{PT_CF_ANNUAL[y]:,.0f}" for y in (2024, 2025))
+                        + " a year (£"
+                        + ", £".join(f"{PT_CF_WEEKLY[y]:.0f}" for y in (2024, 2025))
+                        + " a week) in 2024-25 and 2025-26, held from April 2026 by "
+                        "Autumn Statement 2022's extension. Modern law has £12,570."
                     ),
                     "sources": [
                         "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)",
-                        "ONS CPI annual rate, September 2022: 10.1%",
+                        "ONS CPI annual rate, September 2022-2024: 10.1%, 6.7%, 1.7%",
                         "pe-uk 2.132.6 parameters class_1/thresholds/primary_threshold.yaml, class_4/thresholds/lower_profits_limit.yaml",
                     ],
                 },
@@ -563,7 +589,8 @@ def experiments() -> dict[str, dict]:
                     "construction": "reversal_on_modern_law",
                     "reform": PT_LPL,
                     "heads": [uc_group()],
-                    "magnitude_check": "scaled",
+                    "magnitude_check": "sign_only",
+                    "magnitude_reason": PT_LPL_REASON,
                     "note": "The same change, scored on the measure's welfare row.",
                     "sources": [
                         "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)",
@@ -635,6 +662,14 @@ def experiments() -> dict[str, dict]:
                         },
                         "gov.hmrc.income_tax.rates.dividends[2].threshold": {
                             window(2024): 150_000.0
+                        },
+                    },
+                    "assumes_modern": {
+                        "gov.hmrc.income_tax.rates.uk[2].threshold": {
+                            window(2024): 125_140.0
+                        },
+                        "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+                            window(2024): 125_140.0
                         },
                     },
                     "heads": [INCOME_TAX],
@@ -913,10 +948,14 @@ def experiments() -> dict[str, dict]:
                     "construction": "reversal_on_modern_law",
                     "reform": {
                         "gov.dwp.universal_credit.means_test.work_allowance.with_housing": yearly(
-                            b2018_work_allowance(WA_WITH, 287 - 198, (287, 293), 335)
+                            b2018_work_allowance(
+                                WA_WITH, 287 - round(198 * 1.024), (287, 293), 335
+                            )
                         ),
                         "gov.dwp.universal_credit.means_test.work_allowance.without_housing": yearly(
-                            b2018_work_allowance(WA_WITHOUT, 503 - 409, (503, 515), 557)
+                            b2018_work_allowance(
+                                WA_WITHOUT, 503 - round(409 * 1.024), (503, 515), 557
+                            )
                         ),
                     },
                     "years": [2024, 2025],
@@ -924,7 +963,8 @@ def experiments() -> dict[str, dict]:
                     "magnitude_check": "scaled",
                     "note": (
                         "Removes the April 2019 increase (£287 and £503 a month instead "
-                        "of £198 and £409), carried forward through later upratings."
+                        "of £203 and £419, the 2018 levels uprated by 2.4%), carried "
+                        "forward through later upratings."
                     ),
                     "sources": [
                         "The Universal Credit (Work Allowance) Amendment Regulations 2018",
@@ -1063,6 +1103,13 @@ def experiments() -> dict[str, dict]:
                             window(2025): rate
                         }
                         for i, rate in enumerate((0.02, 0.04, 0.07, 0.12, 0.14))
+                    },
+                    # The 5pp surcharge from 31 October 2024 (Autumn Budget 2024).
+                    "assumes_modern": {
+                        f"gov.hmrc.stamp_duty.residential.purchase.additional.rate[{i}].rate": {
+                            window(2025): rate
+                        }
+                        for i, rate in enumerate((0.05, 0.07, 0.10, 0.15, 0.17))
                     },
                     "years": [2025, 2026],
                     "heads": [stamp_duty_group()],
@@ -1418,7 +1465,10 @@ def experiments() -> dict[str, dict]:
                 "reform": {
                     "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
                         window(2024, 2025): 0.0
-                    }
+                    },
+                    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {
+                        window(2024, 2025): 0.0
+                    },
                 },
                 "years": [2024, 2025],
                 "heads": [
@@ -1432,7 +1482,8 @@ def experiments() -> dict[str, dict]:
                 "magnitude_check": "scaled",
                 "note": (
                     "Removes the extended entitlement for three- and four-year-olds of "
-                    "working parents (pe-uk's age-3 bracket of extended hours), keeping "
+                    "working parents (pe-uk's age-3 and age-4 brackets of extended "
+                    "hours), keeping "
                     "the 2024-25 expansions to younger children. pe-uk values the hours "
                     "at the funding rate; the OBR's tax credit and welfare rows (free "
                     "hours replacing paid childcare) have no counterpart."
@@ -1496,6 +1547,24 @@ def experiments() -> dict[str, dict]:
             ),
         ],
     }
+    # The current-law thresholds both allowance constructions are written
+    # against (statutory since 2021-22, the dividend bands included).
+    thresholds_2021 = {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12_570.0,
+        "gov.hmrc.income_tax.rates.uk[1].threshold": 37_700.0,
+        "gov.hmrc.income_tax.rates.dividends[1].threshold": 37_700.0,
+        "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": 966.73,
+        "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": 50_270.0,
+    }
+    for experiment in (*specs[sb21]["experiments"], *specs[b18]["experiments"]):
+        if experiment["experiment_id"] in (
+            "sb2021_personal_allowance_hrt_freeze",
+            "b2018_personal_allowance_12500_hrt_50000",
+        ):
+            experiment["assumes_modern"] = {
+                path: {window(2024, 2025): value}
+                for path, value in thresholds_2021.items()
+            }
     specs[b20] = {
         "obr_forecast_vintage": "March 2020",
         "experiments": [fuel_duty_freeze(b20, f"{b20}__fuel_duty_freeze_for_2020_21")],

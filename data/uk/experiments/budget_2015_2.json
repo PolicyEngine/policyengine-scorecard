@@ -129,9 +129,12 @@
    ],
    "magnitude_check": "scaled",
    "measure_key": "budget_2015_2__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
-   "note": "Removes the extended entitlement for three- and four-year-olds of working parents (pe-uk's age-3 bracket of extended hours), keeping the 2024-25 expansions to younger children. pe-uk values the hours at the funding rate; the OBR's tax credit and welfare rows (free hours replacing paid childcare) have no counterpart.",
+   "note": "Removes the extended entitlement for three- and four-year-olds of working parents (pe-uk's age-3 and age-4 brackets of extended hours), keeping the 2024-25 expansions to younger children. pe-uk values the hours at the funding rate; the OBR's tax credit and welfare rows (free hours replacing paid childcare) have no counterpart.",
    "reform": {
     "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+     "2024-01-01.2025-12-31": 0.0
+    },
+    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {
      "2024-01-01.2025-12-31": 0.0
     }
    },

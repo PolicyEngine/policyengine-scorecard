@@ -23,6 +23,7 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__fuel_duty_freeze_for_2019_20",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -935000000.0,
    "obr_unmapped_gbp": 0.0,
    "ratio_raw": 0.4727610738943661,
@@ -56,6 +57,7 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__fuel_duty_freeze_for_2019_20",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -935000000.0,
    "obr_unmapped_gbp": 0.0,
    "ratio_raw": 0.4633497794297121,
@@ -75,7 +77,25 @@
    "year": 2025
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "budget_2018",
+      "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (37,500 against 37,700)",
+      "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+      "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the counterfactual's \u00a336,300 moves the dividend band by \u00a31,200, not the \u00a31,400 the main bands move. 2.143.0, which has \u00a337,700, returns -\u00a32.73bn and -\u00a32.97bn against 2.132.6's -\u00a32.69bn and -\u00a32.93bn; the dividend band is one of the differences between the two models.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": true,
    "comparison_fy": "2023-24",
    "effect_gbp": -2694401377.9712343,
@@ -91,6 +111,13 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+   "modern_assumption_failures": [
+    {
+     "assumed": 37700.0,
+     "modern_processed": 37500,
+     "path": "gov.hmrc.income_tax.rates.dividends[1].threshold"
+    }
+   ],
    "obr_mapped_gbp": -1364957208.3821604,
    "obr_unmapped_gbp": -416794448.4426431,
    "ratio_raw": 1.9739823061301833,
@@ -124,7 +151,25 @@
    "year": 2024
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "budget_2018",
+      "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (37,500 against 37,700)",
+      "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+      "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the counterfactual's \u00a336,300 moves the dividend band by \u00a31,200, not the \u00a31,400 the main bands move. 2.143.0, which has \u00a337,700, returns -\u00a32.73bn and -\u00a32.97bn against 2.132.6's -\u00a32.69bn and -\u00a32.93bn; the dividend band is one of the differences between the two models.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": true,
    "comparison_fy": "2023-24",
    "effect_gbp": -2930800858.849918,
@@ -140,6 +185,13 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+   "modern_assumption_failures": [
+    {
+     "assumed": 37700.0,
+     "modern_processed": 37500,
+     "path": "gov.hmrc.income_tax.rates.dividends[1].threshold"
+    }
+   ],
    "obr_mapped_gbp": -1364957208.3821604,
    "obr_unmapped_gbp": -416794448.4426431,
    "ratio_raw": 2.147174168429574,
@@ -176,21 +228,22 @@
    "anomalies": [],
    "carried_forward": true,
    "comparison_fy": "2023-24",
-   "effect_gbp": -1286214161.1592255,
+   "effect_gbp": -1188227855.6145477,
    "error_message": null,
    "error_type": null,
    "expected_gbp": -2031963186.7461066,
    "experiment_id": "b2018_uc_work_allowance_1000",
    "fy": "2024-25",
    "group_effects_gbp": {
-    "universal_credit": -1286214161.1592255
+    "universal_credit": -1188227855.6145477
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -1697007000.0,
    "obr_unmapped_gbp": 0.0,
-   "ratio_raw": 0.7579309697362624,
-   "ratio_scaled": 0.6329908777623625,
+   "ratio_raw": 0.7001903089466028,
+   "ratio_scaled": 0.5847683970679222,
    "scales": [
     {
      "base_sheet": "Welfare in",
@@ -209,21 +262,22 @@
    "anomalies": [],
    "carried_forward": true,
    "comparison_fy": "2023-24",
-   "effect_gbp": -1289747337.0571747,
+   "effect_gbp": -1200876211.7734985,
    "error_message": null,
    "error_type": null,
    "expected_gbp": -2163331987.560183,
    "experiment_id": "b2018_uc_work_allowance_1000",
    "fy": "2025-26",
    "group_effects_gbp": {
-    "universal_credit": -1289747337.0571747
+    "universal_credit": -1200876211.7734985
    },
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -1697007000.0,
    "obr_unmapped_gbp": 0.0,
-   "ratio_raw": 0.7600129740520661,
-   "ratio_scaled": 0.5961855806106572,
+   "ratio_raw": 0.7076436407000669,
+   "ratio_scaled": 0.5551049116265566,
    "scales": [
     {
      "base_sheet": "Welfare in",

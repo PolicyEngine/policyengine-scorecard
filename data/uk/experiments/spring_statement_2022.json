@@ -108,20 +108,25 @@
      ]
     }
    ],
-   "magnitude_check": "scaled",
+   "magnitude_check": "sign_only",
+   "magnitude_reason": "A threshold set against an indexed path: its yield depends on inflation since the event (outturn CPI of 10.1% in September 2022 against the March 2022 forecast), and the modern employee rate is 8% against 12% plus the 1.25% levy when the OBR costed it (PLAN.md names this case).",
    "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
-   "note": "Without the July 2022 alignment the primary threshold and lower profits limit would be \u00a39,880 uprated by September 2022 CPI (10.1%) to \u00a310,878 (\u00a3209.19 a week) from April 2023, then held by the later freezes. Modern law has \u00a312,570. The modern employee rate is 8%, against 12% plus the 1.25% levy when the OBR costed it.",
+   "note": "Without the July 2022 alignment the primary threshold and lower profits limit stay indexed by CPI: \u00a311,607, \u00a311,804 a year (\u00a3223, \u00a3227 a week) in 2024-25 and 2025-26, held from April 2026 by Autumn Statement 2022's extension. Modern law has \u00a312,570.",
    "reform": {
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
-     "2024-01-01.2030-12-31": 209.19
+     "2024-01-01.2024-12-31": 223.0,
+     "2025-01-01.2025-12-31": 227.0,
+     "2026-01-01.2026-12-31": 227.0
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-     "2024-01-01.2030-12-31": 10878.0
+     "2024-01-01.2024-12-31": 11607.0,
+     "2025-01-01.2025-12-31": 11804.0,
+     "2026-01-01.2026-12-31": 11804.0
     }
    },
    "sources": [
     "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)",
-    "ONS CPI annual rate, September 2022: 10.1%",
+    "ONS CPI annual rate, September 2022-2024: 10.1%, 6.7%, 1.7%",
     "pe-uk 2.132.6 parameters class_1/thresholds/primary_threshold.yaml, class_4/thresholds/lower_profits_limit.yaml"
    ]
   },
@@ -141,15 +146,20 @@
      ]
     }
    ],
-   "magnitude_check": "scaled",
+   "magnitude_check": "sign_only",
+   "magnitude_reason": "A threshold set against an indexed path: its yield depends on inflation since the event (outturn CPI of 10.1% in September 2022 against the March 2022 forecast), and the modern employee rate is 8% against 12% plus the 1.25% levy when the OBR costed it (PLAN.md names this case).",
    "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
    "note": "The same change, scored on the measure's welfare row.",
    "reform": {
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
-     "2024-01-01.2030-12-31": 209.19
+     "2024-01-01.2024-12-31": 223.0,
+     "2025-01-01.2025-12-31": 227.0,
+     "2026-01-01.2026-12-31": 227.0
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-     "2024-01-01.2030-12-31": 10878.0
+     "2024-01-01.2024-12-31": 11607.0,
+     "2025-01-01.2025-12-31": 11804.0,
+     "2026-01-01.2026-12-31": 11804.0
     }
    },
    "sources": [

@@ -35,8 +35,8 @@ already fixed there.
 | **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Present on main. | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, handed to the UK hub | `as2013_marriage_allowance` (`sign_mismatch`) |
 | pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26 | `as2022_additional_rate_threshold_125140` (model change) |
 | pe-uk 2.132.6 has no Growth Plan SDLT relief (23 September 2022 to 31 March 2025) | fixed upstream in 2.141.8 (4044d6ccf); the 2024-25 experiment goes from 0 (2.132.6) to −£1.234bn (2.143.0) against the OBR's −£1.048bn | `as2022_sdlt_nil_rate_bands_2024` (`construction_noop`, then model change) |
-| pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024) | fixed upstream (2.143.0 has it); read in the parameter files | `as2015_sdlt_additional_dwellings_surcharge` |
-| pe-uk 2.132.6 charges every home buyer's whole stock of other residential property as one additional-dwelling purchase at the higher rates, so its modern-law SDLT (£15.0bn in 2025-26) is overstated, and the surcharge experiment's clean 0.96 rests on that overstatement | fixed upstream in 2.134.1 (52030637b, #2238). From then the purchase price is a dataset input: the interim cut lacks it, so on 2.143.0 SDLT is £8.1bn and the surcharge reversal is `inert`. Microcosm imputes it from #1308, so the pre-Budget cut carries it | `as2015_sdlt_additional_dwellings_surcharge` (model change, then `inert` on the swap) |
+| pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024), so the surcharge reversal removes 1pp, not 3pp | fixed upstream in 2.141.8 (4044d6ccf, the same commit as the Growth Plan relief); caught by the first review, now flagged `modern_law_differs` | `as2015_sdlt_additional_dwellings_surcharge` |
+| pe-uk 2.132.6 charges every home buyer's whole stock of other residential property as one additional-dwelling purchase at the higher rates, so its modern-law SDLT (£15.0bn in 2025-26) is overstated; its £0.94bn for the surcharge is a 1pp removal on that base, so not a comparison with the OBR | fixed upstream in 2.134.1 (52030637b, #2238). From then the purchase price is a dataset input: the interim cut lacks it, so on 2.143.0 SDLT is £8.1bn and the surcharge reversal is `inert`. Microcosm imputes it from #1308, so the pre-Budget cut carries it | `as2015_sdlt_additional_dwellings_surcharge` (model change, then `inert` on the swap) |
 
 **A model swap is valid only where the data carries the newer model's
 inputs.** Three variables the 2.132.6 model computed became dataset inputs by
@@ -81,24 +81,23 @@ their scaled ratios fall inside the bands.
 | | fuel duty freeze 2022-23 | 0.55, 0.54 |
 | Spring Statement 2022 | basic rate 19% | 1.14, 1.04, 1.09 |
 | | basic rate 19%, welfare row | 1.40, 1.15, 1.21 |
-| | primary threshold and LPL alignment | 0.74, 0.70, 0.69 (modern 8% rate against 13.25% then) |
-| | the same, welfare row | 0.69, 0.58, 0.57 |
+| | primary threshold and LPL alignment (sign only) | 0.42, 0.32, 0.31 (outturn CPI and the modern 8% rate against 13.25% then) |
+| | the same, welfare row (sign only) | 0.39, 0.26, 0.25 |
 | Spring Budget 2021 | allowance and threshold freeze (sign only) | 3.82, 3.18 (outturn inflation far above the March 2021 forecast) |
 | | fuel duty freeze 2021-22 | 0.48, 0.47 |
 | Spending Review 2020 | pension credit guarantee uprating | 0.76, 0.72 |
 | Budget 2020 | fuel duty freeze 2020-21 | 0.71 |
-| Budget 2018 | £12,500 allowance and £50,000 threshold a year early | 1.39, 1.46 |
-| | UC £1,000 work allowance increase | 0.63, 0.60 |
+| Budget 2018 | £12,500 allowance and £50,000 threshold a year early | 1.39, 1.46 (2.143.0: 1.42, 1.49) |
+| | UC £1,000 work allowance increase | 0.58, 0.56 |
 | | fuel duty freeze 2019-20 | 0.62, 0.61 |
 | Autumn Budget 2017 | first-time buyers' SDLT relief | 1.31, 1.19 |
 | | fuel duty freeze 2018-19 | 0.66, 0.65 |
 | Autumn Statement 2016 | fuel duty freeze 2017-18 | 0.61, 0.60 |
 | Budget 2016 | fuel duty freeze 2016 | 0.64, 0.63 |
-| Autumn Statement 2015 | additional-dwellings surcharge (3pp), interim pair only (see above) | 0.96, 0.85 |
 | Budget 2015 | personal savings allowance | 0.43, 0.45 |
 | Summer Budget 2015 | two-child limit (sign only) | 0.90, 0.94 |
 | | working-age benefit freeze (scaled amounts) | 0.68, 0.65 |
-| | 30-hour childcare entitlement | 0.69, 0.70 |
+| | 30-hour childcare entitlement (ages 3 and 4) | 1.38, 1.40 |
 | Autumn Statement 2012 | Universal Credit at 1% (scaled amounts) | 0.51, 0.50 |
 | | child benefit at 1% (scaled amounts) | 0.51, 0.49 |
 | Autumn Statement 2010 | high-income child benefit charge | 0.58, 0.61 |
@@ -122,6 +121,34 @@ of the OBR's March 2026 forecast, and NICs 1.01 to 1.05. Capital gains tax is
 disposals by about a year; against the OBR's 2025-26 cash forecast (£21.8bn)
 the 2024-25 liability (£23.1bn) is 1.06.
 
+## Corrections from the first review
+
+An Opus 5.5 review of the harness at `bb445279` found four constructions
+wrong on their own premises. Each is corrected, and its event rerun on both
+populations:
+
+- **The additional-dwellings surcharge removed 1pp, not 3pp, on 2.132.6.**
+  The counterfactual (2/4/7/12/14%) was written against modern law with
+  Autumn Budget 2024's further 2pp, which 2.132.6 lacks (3/5/8/13/15%). Its
+  earlier "0.96, clean" compared a 1pp removal with the OBR's 3pp. Specs now
+  state the current law they assume (`assumes_modern`), and an engine whose
+  processed value differs gets `modern_law_differs`.
+- **Spring Statement 2022's primary threshold.** No law ever set an
+  unaligned threshold after 2022-23, so its path without the alignment has
+  more than one defensible reading: CPI uprating to April 2025, then
+  Autumn Statement 2022's hold ("maintain thresholds at 2023-24 levels until
+  April 2028") from April 2026; one uprating in April 2023, then the hold;
+  or no uprating after 2022-23. The construction had the second. It now has
+  the first (£11,607, then £11,804), as the file's Spring Budget 2021
+  counterfactual indexes the allowance through 2025-26. The yield depends on
+  that reading and on outturn inflation since the event, so both
+  experiments are now sign only.
+- **Budget 2018's work allowance** removed the April 2019 uprating with the
+  £1,000 measure. Without the measure the allowances would have been £203
+  and £419 a month (the 2018 levels uprated by 2.4%), not £198 and £409.
+- **The 30-hour childcare entitlement** zeroed only the age-3 bracket; it now
+  zeroes the age-4 bracket too.
+
 ## Harness fixes the runs forced
 
 - **Fuel duty in cash.** The 2022 5p cut was a cash cut, so a removed
@@ -133,6 +160,11 @@ the 2024-25 liability (£23.1bn) is 1.06.
 - **Mirrors by shared head group.** Mirrors map different head groups (AS2022's
   reversal also maps Universal Credit), so they compare only the groups both
   map.
+- **Current law the construction assumes** (above): `modern_law_differs`.
+- **Integrity of the committed results** (from the review). `findings` refuses
+  a run on another spec; `adopt` checks every download before copying any; a
+  test regenerates every committed `FINDINGS` and `SUMMARY` file byte for
+  byte; no output path may enter a replay root of any checkout.
 
 ## Runs
 

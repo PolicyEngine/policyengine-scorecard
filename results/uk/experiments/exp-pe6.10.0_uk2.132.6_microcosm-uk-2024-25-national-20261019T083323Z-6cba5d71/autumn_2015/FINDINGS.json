@@ -9,7 +9,25 @@
  "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
  "rows": [
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_2015",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15% from 2016) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6's additional-dwellings scale lacks Autumn Budget 2024's further 2pp, so the counterfactual (2/4/7/12/14%, the scale without the 2015 surcharge but with the 2024 rise) removes 1pp, not the 3pp the OBR costed. It acts on 2.132.6's overstated purchase base (policyengine-uk#2238), so its \u00a30.94bn (2025-26) measures neither the surcharge nor a 1pp change on the true base.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": true,
    "comparison_fy": "2020-21",
    "effect_gbp": 937138301.6105042,
@@ -23,6 +41,33 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    },
+    {
+     "assumed": 0.1,
+     "modern_processed": 0.08,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate"
+    },
+    {
+     "assumed": 0.15,
+     "modern_processed": 0.13,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate"
+    },
+    {
+     "assumed": 0.17,
+     "modern_processed": 0.15,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    }
+   ],
    "obr_mapped_gbp": 1075000000.0,
    "obr_unmapped_gbp": -195000000.0,
    "ratio_raw": 0.8717565596376783,
@@ -42,7 +87,25 @@
    "year": 2025
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_2015",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15% from 2016) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6's additional-dwellings scale lacks Autumn Budget 2024's further 2pp, so the counterfactual (2/4/7/12/14%, the scale without the 2015 surcharge but with the 2024 rise) removes 1pp, not the 3pp the OBR costed. It acts on 2.132.6's overstated purchase base (policyengine-uk#2238), so its \u00a30.94bn (2025-26) measures neither the surcharge nor a 1pp change on the true base.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": true,
    "comparison_fy": "2020-21",
    "effect_gbp": 968167826.899538,
@@ -56,6 +119,33 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    },
+    {
+     "assumed": 0.1,
+     "modern_processed": 0.08,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate"
+    },
+    {
+     "assumed": 0.15,
+     "modern_processed": 0.13,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate"
+    },
+    {
+     "assumed": 0.17,
+     "modern_processed": 0.15,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    }
+   ],
    "obr_mapped_gbp": 1075000000.0,
    "obr_unmapped_gbp": -195000000.0,
    "ratio_raw": 0.9006212343251516,

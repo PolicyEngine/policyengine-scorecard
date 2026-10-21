@@ -471,10 +471,25 @@ def test_no_output_directory_resolves_into_a_replay_root(
         return
     for replay in ex.REPLAY_ROOTS:
         assert not chosen.is_relative_to((root / replay).resolve())
+        segments = Path(replay).parts
+        assert all(
+            chosen.parts[i : i + len(segments)] != segments
+            for i in range(len(chosen.parts))
+        )
     if chosen.is_relative_to(root.resolve()):
         assert chosen.is_relative_to(
             (root / ex.RESULT_ROOT / "exp-a" / "autumn_statement_2022").resolve()
         ) or chosen.is_relative_to((root / ".venv-replay-checks").resolve())
+
+
+def test_another_checkouts_replay_root_is_refused_too(tmp_path):
+    root = tmp_path / "repo"
+    for replay in ex.REPLAY_ROOTS:
+        elsewhere = tmp_path / "other-checkout" / replay / "x"
+        with pytest.raises(ex.ExperimentError, match="inside a replay root"):
+            ex.contained_output_dir(
+                "exp-a", "autumn_statement_2022", elsewhere, root=root
+            )
 
 
 def test_the_canonical_output_directory_is_the_experiment_namespace():
@@ -781,3 +796,180 @@ def test_a_scaled_path_runs_at_its_modern_value_times_its_factor(value, factor, 
     assert ex.touched_paths(experiment) == ["gov.a", "gov.b"]
     with pytest.raises(ex.ExperimentError):
         ex.executed(experiment, year, {"gov.a": 0.0})
+
+
+def test_an_engine_whose_current_law_differs_from_the_assumed_one_is_flagged():
+    experiment = {
+        "reform": {"gov.a": {"2025-01-01.2035-12-31": 0.02}},
+        "assumes_modern": {"gov.a": {"2025-01-01.2035-12-31": 0.05}},
+    }
+    stale = {"year": 2025, "parameters": {"gov.a": {"modern_processed": 0.03}}}
+    current = {"year": 2025, "parameters": {"gov.a": {"modern_processed": 0.05}}}
+    assert ex.modern_assumption_failures(experiment, stale) == [
+        {"path": "gov.a", "assumed": 0.05, "modern_processed": 0.03}
+    ]
+    assert ex.modern_assumption_failures(experiment, current) == []
+    earlier = {"year": 2024, "parameters": {"gov.a": {"modern_processed": 0.03}}}
+    assert (
+        ex.modern_assumption_failures(experiment, earlier) == []
+    )  # no assumption that year
+    codes = ex.classify(
+        artifact(1e9),
+        obr=obr(1e9),
+        scales=ONE,
+        magnitude_check="scaled",
+        assumption_failures=[{"path": "gov.a"}],
+    )["codes"]
+    assert codes == ["modern_law_differs"]
+    assert ex.severity("modern_law_differs", {}) == "investigate"
+
+
+def test_assumes_modern_may_only_name_touched_paths():
+    spec, registry = spec_and_registry("autumn_2015")
+    broken = copy.deepcopy(spec)
+    broken["experiments"][0]["assumes_modern"] = {
+        "gov.not.touched": {"2025-01-01.2035-12-31": 1.0}
+    }
+    with pytest.raises(ex.ExperimentError, match="untouched"):
+        ex.validate_spec(broken, registry, ex.load_bases())
+
+
+def committed_runs():
+    root = ROOT / ex.RESULT_ROOT
+    return sorted(
+        (population.name, event.name)
+        for population in root.glob("exp-*")
+        for event in population.iterdir()
+        if (event / "EXPERIMENT_MANIFEST.json").exists()
+    )
+
+
+@pytest.mark.parametrize("population, event", committed_runs())
+def test_committed_findings_regenerate_byte_for_byte(population, event):
+    directory = ROOT / ex.RESULT_ROOT / population / event
+    document = ex.findings(event, population)
+    assert ex.canonical_bytes(document) == (directory / "FINDINGS.json").read_bytes()
+    assert ex.render_findings(document) == (directory / "FINDINGS.md").read_text()
+
+
+@pytest.mark.parametrize("population", sorted({p for p, _ in committed_runs()}))
+def test_committed_summaries_regenerate_byte_for_byte(population):
+    root = ROOT / ex.RESULT_ROOT / population
+    document = ex.summary(population)
+    assert ex.canonical_bytes(document) == (root / "SUMMARY.json").read_bytes()
+    assert ex.render_summary(document) == (root / "SUMMARY.md").read_text()
+
+
+# Touched parameters a construction sets outright, whatever the engine's
+# current law, so two engines may disagree on them without an assumption.
+SET_OUTRIGHT = {
+    (
+        "ab2017_sdlt_first_time_buyers_relief",
+        "gov.hmrc.stamp_duty.residential.purchase.main.first.max",
+    ): "a zero price limit removes the relief on any schedule",
+}
+
+
+def test_engines_disagree_on_current_law_only_where_the_construction_says_so():
+    """Where a model swap and its certified pair (the same data) differ on a
+    touched parameter's current law, the construction either states the law it
+    assumes (assumes_modern) or sets the parameter outright."""
+    records = ex.load_populations()["populations"]
+    checked = 0
+    for swap in (r for r in records if r.get("pairing") == "model_swap"):
+        pair = next(
+            r
+            for r in records
+            if r.get("pairing") == "certified_pair"
+            and r["identity"]["dataset"]["sha256"]
+            == swap["identity"]["dataset"]["sha256"]
+        )
+        mine = ROOT / ex.RESULT_ROOT / swap["population_id"]
+        theirs = ROOT / ex.RESULT_ROOT / pair["population_id"]
+        for manifest in sorted(mine.glob("*/EXPERIMENT_MANIFEST.json")):
+            event = manifest.parent.name
+            if not (theirs / event / "EXPERIMENT_MANIFEST.json").exists():
+                continue
+            spec = json.loads(ex.spec_path(event).read_bytes())
+            for experiment in spec["experiments"]:
+                eid = experiment["experiment_id"]
+                assumed = set(experiment.get("assumes_modern") or {})
+                for year in range(2024, 2036):
+                    name = f"{eid}_{year}.json"
+                    if not (theirs / event / name).exists():
+                        continue
+                    a = json.loads((theirs / event / name).read_bytes())
+                    b = json.loads((manifest.parent / name).read_bytes())
+                    for path, record in a.get("parameters", {}).items():
+                        checked += 1
+                        if (
+                            record["modern_processed"]
+                            == b["parameters"][path]["modern_processed"]
+                        ):
+                            continue
+                        assert path in assumed or (eid, path) in SET_OUTRIGHT, (
+                            event,
+                            eid,
+                            year,
+                            path,
+                        )
+    assert checked
+
+
+def test_findings_refuse_a_run_on_another_spec(tmp_path, monkeypatch):
+    population, event = committed_runs()[0]
+    source = ROOT / ex.RESULT_ROOT / population / event
+    fake_root = tmp_path / "repo"
+    target = fake_root / ex.RESULT_ROOT / population / event
+    target.mkdir(parents=True)
+    for path in source.glob("*.json"):
+        (target / path.name).write_bytes(path.read_bytes())
+    spec_target = fake_root / ex.spec_path(event).relative_to(ROOT)
+    spec_target.parent.mkdir(parents=True)
+    spec = json.loads(ex.spec_path(event).read_bytes())
+    spec["experiments"][0]["note"] += " (edited)"
+    spec_target.write_bytes(ex.canonical_bytes(spec))
+    registry = fake_root / spec["registry"]["path"]
+    registry.parent.mkdir(parents=True, exist_ok=True)
+    registry.write_bytes((ROOT / spec["registry"]["path"]).read_bytes())
+    with pytest.raises(ex.ExperimentError, match="another spec"):
+        ex.findings(event, population, root=fake_root)
+
+
+def test_adopt_copies_nothing_when_downloads_disagree(tmp_path, monkeypatch):
+    def download(name, spec_sha):
+        directory = tmp_path / name
+        directory.mkdir()
+        artifact_bytes = b"{}\n"
+        (directory / "x_2024.json").write_bytes(artifact_bytes)
+        manifest = {
+            "registry_sha256": "r",
+            "spec_sha256": spec_sha,
+            "population_identity": {},
+            "grid": [{"experiment_id": "x", "year": 2024}],
+            "files": [
+                {"path": "x_2024.json", "sha256": ex.sha256_bytes(artifact_bytes)}
+            ],
+        }
+        (directory / "EXPERIMENT_MANIFEST.json").write_bytes(
+            ex.canonical_bytes(manifest)
+        )
+        receipt = {
+            "request": {"event": "autumn_2015", "population_id": "exp-a"},
+            "files": {
+                name_: ex.sha256_bytes((directory / name_).read_bytes())
+                for name_ in ("x_2024.json", "EXPERIMENT_MANIFEST.json")
+            },
+        }
+        (directory / "MODAL_RECEIPT.json").write_bytes(ex.canonical_bytes(receipt))
+        return directory
+
+    destination = tmp_path / "out"
+    monkeypatch.setattr(
+        ex, "contained_output_dir", lambda population, event: destination
+    )
+    with pytest.raises(ValueError, match="disagree"):
+        modal_experiment.adopt(
+            [download("a", "one"), download("b", "two")], "autumn_2015", "exp-a"
+        )
+    assert not destination.exists() or not any(destination.iterdir())

@@ -445,12 +445,16 @@ def save_download(response: dict, payload: dict, target: Path) -> list[Path]:
 def adopt(downloads: list[Path], event: str, population_id: str) -> Path:
     """Merge verified downloads (one per year batch) into the event's results.
 
-    Each download's receipt binds its files; the merged manifest lists every
-    artifact. Existing results for the same experiment-years are replaced."""
+    Every download's receipt, bytes and manifest are checked, and all
+    manifests must agree on the registry, spec and population, before any
+    file is copied. Existing results for the same experiment-years are
+    replaced; the merged manifest lists every artifact."""
     experiments = experiment_module()
     destination = experiments.contained_output_dir(population_id, event)
-    destination.mkdir(parents=True, exist_ok=True)
-    manifests = []
+    existing = destination / "EXPERIMENT_MANIFEST.json"
+    manifests, receipts = [], []
+    if existing.exists():
+        manifests.append(json.loads(existing.read_bytes()))
     for directory in downloads:
         receipt = json.loads((directory / "MODAL_RECEIPT.json").read_bytes())
         if (
@@ -464,20 +468,18 @@ def adopt(downloads: list[Path], event: str, population_id: str) -> Path:
         manifests.append(
             json.loads((directory / "EXPERIMENT_MANIFEST.json").read_bytes())
         )
-        for name in receipt["files"]:
-            if name == "EXPERIMENT_MANIFEST.json":
-                continue
-            shutil.copyfile(directory / name, destination / name)
-    existing = destination / "EXPERIMENT_MANIFEST.json"
-    if existing.exists():
-        manifests.insert(0, json.loads(existing.read_bytes()))
+        receipts.append((directory, receipt))
     first = manifests[-1]
     for manifest in manifests:
         for field in ("registry_sha256", "spec_sha256", "population_identity"):
             if manifest[field] != first[field]:
                 raise ValueError(f"downloads disagree on {field}; rerun on one spec")
-    files = {}
-    grid = {}
+    destination.mkdir(parents=True, exist_ok=True)
+    for directory, receipt in receipts:
+        for name in receipt["files"]:
+            if name != "EXPERIMENT_MANIFEST.json":
+                shutil.copyfile(directory / name, destination / name)
+    files, grid = {}, {}
     for manifest in manifests:
         for row in manifest["files"]:
             files[row["path"]] = row
@@ -486,11 +488,10 @@ def adopt(downloads: list[Path], event: str, population_id: str) -> Path:
     merged = {
         **first,
         "years": sorted({year for _, year in grid}),
-        "experiments": [e for e in first["experiments"]],
+        "experiments": sorted({eid for eid, _ in grid}),
         "grid": [grid[key] for key in sorted(grid)],
         "files": [files[name] for name in sorted(files)],
     }
-    merged["experiments"] = sorted({eid for eid, _ in grid})
     existing.write_bytes(canonical_bytes(merged))
     return destination
 

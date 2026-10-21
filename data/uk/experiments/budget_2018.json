@@ -3,6 +3,23 @@
  "event_slug": "budget_2018",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2024-01-01.2025-12-31": 12570.0
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2024-01-01.2025-12-31": 37700.0
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2024-01-01.2025-12-31": 37700.0
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2024-01-01.2025-12-31": 966.73
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2024-01-01.2025-12-31": 50270.0
+    }
+   },
    "carried_from_fy": "2023-24",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",
@@ -94,15 +111,15 @@
    ],
    "magnitude_check": "scaled",
    "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
-   "note": "Removes the April 2019 increase (\u00a3287 and \u00a3503 a month instead of \u00a3198 and \u00a3409), carried forward through later upratings.",
+   "note": "Removes the April 2019 increase (\u00a3287 and \u00a3503 a month instead of \u00a3203 and \u00a3419, the 2018 levels uprated by 2.4%), carried forward through later upratings.",
    "reform": {
     "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
-     "2024-01-01.2024-12-31": 294.0,
-     "2025-01-01.2025-12-31": 300.0
+     "2024-01-01.2024-12-31": 301.0,
+     "2025-01-01.2025-12-31": 306.0
     },
     "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
-     "2024-01-01.2024-12-31": 557.0,
-     "2025-01-01.2025-12-31": 566.0
+     "2024-01-01.2024-12-31": 569.0,
+     "2025-01-01.2025-12-31": 578.0
     }
    },
    "sources": [

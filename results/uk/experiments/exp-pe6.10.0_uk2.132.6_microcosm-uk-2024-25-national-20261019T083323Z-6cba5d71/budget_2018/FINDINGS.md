@@ -8,7 +8,7 @@ Population `exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323
 |---|---|---:|---:|---:|---:|---|
 | `b2018_fuel_duty_freeze_2019` | 2024-25 | -0.442 | -0.935 | -0.711 | 0.62 |  |
 | `b2018_fuel_duty_freeze_2019` | 2025-26 | -0.433 | -0.935 | -0.707 | 0.61 |  |
-| `b2018_personal_allowance_12500_hrt_50000` | 2024-25 | -2.694 | -1.365 | -1.934 | 1.39 |  |
-| `b2018_personal_allowance_12500_hrt_50000` | 2025-26 | -2.931 | -1.365 | -2.005 | 1.46 |  |
-| `b2018_uc_work_allowance_1000` | 2024-25 | -1.286 | -1.697 | -2.032 | 0.63 |  |
-| `b2018_uc_work_allowance_1000` | 2025-26 | -1.290 | -1.697 | -2.163 | 0.60 |  |
+| `b2018_personal_allowance_12500_hrt_50000` | 2024-25 | -2.694 | -1.365 | -1.934 | 1.39 | modern_law_differs (investigate; model_bug) |
+| `b2018_personal_allowance_12500_hrt_50000` | 2025-26 | -2.931 | -1.365 | -2.005 | 1.46 | modern_law_differs (investigate; model_bug) |
+| `b2018_uc_work_allowance_1000` | 2024-25 | -1.188 | -1.697 | -2.032 | 0.58 |  |
+| `b2018_uc_work_allowance_1000` | 2025-26 | -1.201 | -1.697 | -2.163 | 0.56 |  |

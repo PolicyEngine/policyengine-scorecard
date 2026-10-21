@@ -3,6 +3,23 @@
  "event_slug": "spring_budget_2021",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2024-01-01.2025-12-31": 12570.0
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2024-01-01.2025-12-31": 37700.0
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2024-01-01.2025-12-31": 37700.0
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2024-01-01.2025-12-31": 966.73
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2024-01-01.2025-12-31": 50270.0
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "sb2021_personal_allowance_hrt_freeze",
    "heads": [

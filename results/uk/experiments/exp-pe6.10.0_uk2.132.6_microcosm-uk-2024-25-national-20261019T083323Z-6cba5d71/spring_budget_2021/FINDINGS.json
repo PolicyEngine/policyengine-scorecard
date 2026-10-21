@@ -23,6 +23,7 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "spring_budget_2021__fuel_duty_one_year_freeze_in_2021_22",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -925096749.7961105,
    "obr_unmapped_gbp": 0.0,
    "ratio_raw": 0.38270438129800605,
@@ -56,6 +57,7 @@
    },
    "magnitude_check": "scaled",
    "measure_key": "spring_budget_2021__fuel_duty_one_year_freeze_in_2021_22",
+   "modern_assumption_failures": [],
    "obr_mapped_gbp": -942790089.396633,
    "obr_unmapped_gbp": 0.0,
    "ratio_raw": 0.3680465650887089,
@@ -75,7 +77,13 @@
    "year": 2025
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": null,
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": false,
    "comparison_fy": "2024-25",
    "effect_gbp": 26882224352.547184,
@@ -92,6 +100,13 @@
    },
    "magnitude_check": "sign_only",
    "measure_key": "spring_budget_2021__income_tax_maintain_personal_allowance_and_higher_rate_threshold_at_2021",
+   "modern_assumption_failures": [
+    {
+     "assumed": 37700.0,
+     "modern_processed": 37500,
+     "path": "gov.hmrc.income_tax.rates.dividends[1].threshold"
+    }
+   ],
    "obr_mapped_gbp": 5207466415.710218,
    "obr_unmapped_gbp": 584084900.9211981,
    "ratio_raw": 5.162246322212884,
@@ -132,7 +147,13 @@
    "year": 2024
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": null,
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": false,
    "comparison_fy": "2025-26",
    "effect_gbp": 30974733203.462418,
@@ -149,6 +170,13 @@
    },
    "magnitude_check": "sign_only",
    "measure_key": "spring_budget_2021__income_tax_maintain_personal_allowance_and_higher_rate_threshold_at_2021",
+   "modern_assumption_failures": [
+    {
+     "assumed": 37700.0,
+     "modern_processed": 37500,
+     "path": "gov.hmrc.income_tax.rates.dividends[1].threshold"
+    }
+   ],
    "obr_mapped_gbp": 7340468520.144832,
    "obr_unmapped_gbp": 840284405.4058156,
    "ratio_raw": 4.219721550260291,

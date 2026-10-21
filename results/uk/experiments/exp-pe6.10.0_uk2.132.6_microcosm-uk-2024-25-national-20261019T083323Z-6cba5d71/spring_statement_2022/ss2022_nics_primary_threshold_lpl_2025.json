@@ -5,7 +5,7 @@
  "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
  "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
  "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
- "effect_gbp": -3835705950.095271,
+ "effect_gbp": -1722808313.1979299,
  "engine_version": "2.132.6",
  "event": "spring_statement_2022",
  "event_name": "Spring Statement 2022",
@@ -13,10 +13,10 @@
  "fy": "2025-26",
  "head_groups": [
   {
-   "alternate_gbp": 217868081684.4164,
+   "alternate_gbp": 215755184047.51907,
    "channel": "tax",
-   "effect_gbp": -3835705950.095271,
-   "literal_alternate_minus_modern_gbp": 3835705950.095271,
+   "effect_gbp": -1722808313.1979299,
+   "literal_alternate_minus_modern_gbp": 1722808313.1979299,
    "modern_gbp": 214032375734.32114,
    "obr_heads": [
     "Health and social care levy",
@@ -51,15 +51,15 @@
  "pairing": "certified_pair",
  "parameters": {
   "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
-   "alternate_intended": 209.19,
-   "alternate_processed": 209.19,
+   "alternate_intended": 227.0,
+   "alternate_processed": 227.0,
    "changes_modern_law": true,
    "modern_processed": 241.73,
    "reached_simulation": true
   },
   "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-   "alternate_intended": 10878.0,
-   "alternate_processed": 10878.0,
+   "alternate_intended": 11804.0,
+   "alternate_processed": 11804.0,
    "changes_modern_law": true,
    "modern_processed": 12570,
    "reached_simulation": true
@@ -69,13 +69,18 @@
  "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
  "reform": {
   "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
-   "2024-01-01.2030-12-31": 209.19
+   "2024-01-01.2024-12-31": 223.0,
+   "2025-01-01.2025-12-31": 227.0,
+   "2026-01-01.2026-12-31": 227.0
   },
   "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-   "2024-01-01.2030-12-31": 10878.0
+   "2024-01-01.2024-12-31": 11607.0,
+   "2025-01-01.2025-12-31": 11804.0,
+   "2026-01-01.2026-12-31": 11804.0
   }
  },
  "registry_sha256": "f8b2ef658d24895515f09297de812d176e2a12a995b2735b9c1fbe0811845bcb",
+ "scale": null,
  "schema_version": 1,
  "sign_convention": "positive_gain_to_exchequer",
  "status": "computed",

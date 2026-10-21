@@ -127,6 +127,7 @@ diagnosis before anything is called a bug; `check` and `note` are listed.
 | `magnitude_outside_3x` | check | Scaled ratio outside [1/3, 3] but inside [1/10, 10]. |
 | `obr_zero_pe_moves` | note | The OBR's mapped costing is under £1m but PolicyEngine's effect is at least £100m (usually cash timing or a costing window). |
 | `mirror_mismatch` | investigate | Two experiments declared as mirrors (the same parameter change, opposite constructions) do not return exact negatives. |
+| `modern_law_differs` | investigate | A touched parameter's processed current-law value differs from the value the construction assumed. |
 
 Magnitude flags apply only when the experiment's `magnitude_check` is
 `scaled`, the expected value is at least £100m, and the mapped heads hold at
@@ -136,6 +137,23 @@ incorporation response's NICs gain against its income tax loss) still count
 as mapped. Threshold freezes and other
 measures whose value depends on the event's own inflation forecast are
 `sign_only`: PLAN.md names them as the case a modern population misleads on.
+
+## When an engine's current law is not the assumed one
+
+A construction may state the current-law values its counterfactual is
+written against (`assumes_modern`), for example the 5pp additional-dwellings
+surcharge, or the £125,140 dividend additional-rate threshold. When an
+engine's processed value differs, the experiment-year gets
+`modern_law_differs` (investigate), whatever its other codes. The effect
+measures that engine's current law, not the measure.
+
+## Integrity of the committed results
+
+`findings` refuses a run whose manifest names another spec or registry, so
+a corrected construction always forces a rerun. `adopt` checks every
+download's receipt, bytes and manifest, and that the manifests agree, before
+it copies anything. A test regenerates every committed `FINDINGS` and
+`SUMMARY` file from the committed artifacts and requires identical bytes.
 
 ## Scaling the OBR's costing
 
@@ -166,6 +184,11 @@ The scaling is a screen for bugs, not a comparison of vintages: it absorbs
 nominal growth and base level, not differences in rates, thresholds or
 behaviour between the event's world and modern law. That is why the bands are
 wide and why each flag needs a diagnosis.
+
+A group's scale is that of its whole head. The NICs base includes employer
+contributions, so Autumn Budget 2024's employer changes raise the scale from
+2025-26 for measures that touch only employees or the self-employed: Budget
+2017's Class 4 rise scales by 1.13 in 2024-25 and 1.40 in 2025-26.
 
 ## Summary
 
@@ -202,7 +225,9 @@ The tests state and check these for every input:
    factor (above the floors) leaves them unchanged; a ratio further from 1 than
    a flagged one is also flagged; `crash` and `inert` exclude sign and
    magnitude codes.
-5. **Containment.** No output path resolves outside
-   `results/uk/experiments/<population>/<event>/`.
+5. **Containment.** No output path resolves into a replay root
+   (`results/uk/events`, `results/uk/replays`) of this checkout or any other,
+   and none resolves inside the repository outside
+   `results/uk/experiments/<population>/<event>/` and `.venv-replay-checks/`.
 6. **Mirrors.** Mirrored experiments return exact negatives (checked on real
    runs in the findings).

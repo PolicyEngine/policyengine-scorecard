@@ -165,6 +165,14 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+     "2024-01-01.2035-12-31": 125140.0
+    },
+    "gov.hmrc.income_tax.rates.uk[2].threshold": {
+     "2024-01-01.2035-12-31": 125140.0
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "as2022_additional_rate_threshold_125140",
    "heads": [

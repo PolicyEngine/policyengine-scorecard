@@ -94,6 +94,7 @@ SEVERITY = {
     "magnitude_outside_3x": "check",
     "obr_zero_pe_moves": "note",
     "mirror_mismatch": "investigate",
+    "modern_law_differs": "investigate",
 }
 
 
@@ -148,15 +149,20 @@ def contained_output_dir(
 ) -> Path:
     """The event's output directory, or a requested one that resolves inside
     results/uk/experiments/<population>/<event>/ or outside the repository
-    (a scratch or Modal work directory). Never inside a replay root."""
+    (a scratch or Modal work directory). Never inside a replay root, of this
+    checkout or any other."""
     canonical = (output_root(population_id, root=root) / event).resolve()
     if not EVENT.fullmatch(event or ""):
         raise ExperimentError("event must be a lowercase underscore-separated slug")
     chosen = (requested or canonical).resolve()
     repository = root.resolve()
     for replay in REPLAY_ROOTS:
-        if chosen.is_relative_to((repository / replay).resolve()):
-            raise ExperimentError(f"{chosen} is inside the replay root {replay}")
+        segments = Path(replay).parts
+        if any(
+            chosen.parts[i : i + len(segments)] == segments
+            for i in range(len(chosen.parts))
+        ):
+            raise ExperimentError(f"{chosen} is inside a replay root ({replay})")
     checks = (repository / ".venv-replay-checks").resolve()
     if (
         chosen.is_relative_to(repository)
@@ -445,6 +451,21 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
             need(
                 path not in (reform or {}),
                 where + f"{path} is in both reform and scale",
+            )
+        assumes = experiment.get("assumes_modern") or {}
+        need(
+            isinstance(assumes, dict),
+            where + "assumes_modern must map paths to windows",
+        )
+        if isinstance(assumes, dict) and assumes:
+            try:
+                event_runner.annual_reform(assumes)
+            except (TypeError, ValueError) as exc:
+                problems.append(where + f"assumes_modern: {exc}")
+            unknown = set(assumes) - set(reform or {}) - set(scale or {})
+            need(
+                not unknown,
+                where + f"assumes_modern names untouched paths {sorted(unknown)}",
             )
         heads = experiment.get("heads") or []
         need(bool(heads), where + "no heads")
@@ -869,18 +890,43 @@ def crash_result(
 # --- classification ------------------------------------------------------------
 
 
+def modern_assumption_failures(experiment: dict, artifact: dict) -> list[dict]:
+    """Touched paths whose processed modern value differs from the value the
+    construction assumed for that year: the engine's current law is not the
+    law the counterfactual was written against."""
+    from pipeline import compute_uk_event as event_runner
+    from pipeline import uk_construction_revisions as revisions
+
+    assumes = experiment.get("assumes_modern") or {}
+    if not assumes or "parameters" not in artifact:
+        return []
+    annual = event_runner.annual_reform(assumes)
+    out = []
+    for path in sorted(assumes):
+        found, value = revisions.window_value(annual, path, f"{artifact['year']}-01-01")
+        if not found:
+            continue
+        processed = artifact["parameters"].get(path, {}).get("modern_processed")
+        if not event_runner.processed_values_match(value, processed):
+            out.append({"path": path, "assumed": value, "modern_processed": processed})
+    return out
+
+
 def classify(
     artifact: dict,
     *,
     obr: dict,
     scales: list[dict],
     magnitude_check: str,
+    assumption_failures: list | None = None,
 ) -> dict:
     """Pure: an experiment-year's anomaly codes from its artifact, its OBR rows
-    and its group scales (one per head group, in the experiment's order)."""
-    codes: list[str] = []
+    and its group scales (one per head group, in the experiment's order).
+    ``assumption_failures`` (modern_assumption_failures) adds
+    modern_law_differs alongside the other codes."""
     if artifact.get("status") == "crashed":
         return {"codes": ["crash"], "ratio_raw": None, "ratio_scaled": None}
+    codes: list[str] = ["modern_law_differs"] if assumption_failures else []
     parameters = artifact["parameters"].values()
     if any(row["reached_simulation"] is False for row in parameters):
         codes.append("reform_not_applied")
@@ -1257,10 +1303,21 @@ def evaluate(
                 modern_fy=fy_label(year),
             )
         )
+    failures = modern_assumption_failures(experiment, artifact)
     result = classify(
-        artifact, obr=obr, scales=scales, magnitude_check=experiment["magnitude_check"]
+        artifact,
+        obr=obr,
+        scales=scales,
+        magnitude_check=experiment["magnitude_check"],
+        assumption_failures=failures,
     )
-    return {"obr": obr, "scales": scales, "comparison_fy": fy, **result}
+    return {
+        "obr": obr,
+        "scales": scales,
+        "comparison_fy": fy,
+        "modern_assumption_failures": failures,
+        **result,
+    }
 
 
 def findings(
@@ -1276,6 +1333,10 @@ def findings(
     manifest = json.loads((directory / "EXPERIMENT_MANIFEST.json").read_bytes())
     if manifest.get("registry_sha256") != registry_sha256:
         raise ExperimentError("the run used another registry")
+    if manifest.get("spec_sha256") != sha256_bytes(
+        (root / spec_path(event).relative_to(ROOT)).read_bytes()
+    ):
+        raise ExperimentError(f"{event}: the run used another spec; rerun it")
     for row in manifest["files"]:
         if sha256_bytes((directory / row["path"]).read_bytes()) != row["sha256"]:
             raise ExperimentError(f"{row['path']}: bytes differ from the manifest")
@@ -1334,6 +1395,7 @@ def findings(
                 "ratio_scaled": evaluated.get("ratio_scaled"),
                 "scales": evaluated["scales"],
                 "magnitude_check": experiment["magnitude_check"],
+                "modern_assumption_failures": evaluated["modern_assumption_failures"],
                 "anomalies": anomalies,
             }
         )

@@ -6,8 +6,8 @@ Population `exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323
 
 | Experiment | FY | PE | OBR mapped | OBR × scale | Scaled ratio | Anomalies |
 |---|---|---:|---:|---:|---:|---|
-| `sb2015_extended_childcare_30_hours` | 2024-25 | -0.622 | -0.900 | -0.900 | 0.69 |  |
-| `sb2015_extended_childcare_30_hours` | 2025-26 | -0.629 | -0.900 | -0.900 | 0.70 |  |
+| `sb2015_extended_childcare_30_hours` | 2024-25 | -1.240 | -0.900 | -0.900 | 1.38 |  |
+| `sb2015_extended_childcare_30_hours` | 2025-26 | -1.262 | -0.900 | -0.900 | 1.40 |  |
 | `sb2015_two_child_limit` | 2024-25 | +1.695 | +1.365 | +1.888 | 0.90 |  |
 | `sb2015_two_child_limit` | 2025-26 | +1.891 | +1.365 | +2.010 | 0.94 |  |
 | `sb2015_working_age_benefit_freeze` | 2024-25 | +3.762 | +4.005 | +5.545 | 0.68 |  |
