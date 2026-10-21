@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "eb85b34e1e2702d2d902c6956ed3c341ce46f2ad34018674a9babe8b1f741b30",
+  "COMPARISON.json": "57260a0f5323555110065a6c9c29426a49471ff14f652eeb76004e0afeddf570",
+  "COMPARISON.md": "b834b9997c5aa18da371af79a72fa2500b6321653980aa6ae9bc772882321c01"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.141.5_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.5_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "a3e198728a3c8d6b3b45f2046fe355f6642d0c3cfdb97136b156279fc93384ca",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.141.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "21d004cc7561a35f99c20814fbb45a0c5f1425af4a9811f0463e6792abbeae1f",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "20deba647f276c1ef5e9640336c3b89581454ee2cbcfd6e5c10ef642f3cf0821"
+}

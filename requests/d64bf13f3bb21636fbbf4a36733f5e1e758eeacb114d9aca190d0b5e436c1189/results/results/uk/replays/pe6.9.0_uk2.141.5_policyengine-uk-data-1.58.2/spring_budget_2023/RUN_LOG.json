@@ -1,0 +1,107 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.5989767030000621,
+    "end_rss_bytes": 2709442560,
+    "peak_rss_bytes": 2709442560,
+    "rss_after_gc_bytes": 1811992576,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 263045120,
+    "wall_seconds": 13.683575927999982
+   },
+   "seconds": 19.322626726999943,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 23.377427504000025,
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "seconds": 27.01113783699998,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.60734853200006,
+    "end_rss_bytes": 2505486336,
+    "peak_rss_bytes": 2505486336,
+    "rss_after_gc_bytes": 1734885376,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 263041024,
+    "wall_seconds": 12.880958115000112
+   },
+   "seconds": 18.532696429999987,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 23.413824362000014,
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "seconds": 25.47342235600013,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.7665826079999079,
+    "end_rss_bytes": 2725728256,
+    "peak_rss_bytes": 3284123648,
+    "rss_after_gc_bytes": 2639818752,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3284119552,
+    "wall_seconds": 12.15396097200005
+   },
+   "seconds": 12.923012338000035,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 23.17255602099999,
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "seconds": 24.765189169999985,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.7247691079999186,
+    "end_rss_bytes": 3312607232,
+    "peak_rss_bytes": 3751858176,
+    "rss_after_gc_bytes": 3287220224,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 3751854080,
+    "wall_seconds": 12.272674864999999
+   },
+   "seconds": 12.999974114999986,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 22.624684628000068,
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "seconds": 24.315858875999993,
+   "year": 2027
+  }
+ ],
+ "wall_seconds": 138.02604423000002,
+ "workers": 2
+}
