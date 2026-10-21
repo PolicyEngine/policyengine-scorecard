@@ -1,6 +1,57 @@
 {
- "diagnoses": [],
+ "diagnoses": [
+  {
+   "code": "construction_noop",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk 2.132.6 class_1/thresholds/secondary_threshold.yaml: 96.153846 a week from 2025-04-06",
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "status": "expected",
+   "summary": "Autumn Budget 2024 sets the secondary threshold to \u00a35,000 from April 2025, superseding the freeze on modern law, so the construction (2024-25 only) leaves later years at modern law.",
+   "years": [
+    2025,
+    2026,
+    2027
+   ]
+  },
+  {
+   "code": "construction_noop",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk 2.132.6 stamp_duty/residential/purchase/main/{subsequent,first/rate,first/max}.yaml",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+   "populations": [
+    "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "pe-uk 2.132.6 has no Growth Plan SDLT relief: its 2024-25 schedule already equals the pre-relief world, so removing the relief changes nothing. The relief was law from 23 September 2022 to 31 March 2025.",
+   "years": [
+    2024
+   ]
+  },
+  {
+   "code": "construction_noop",
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "status": "expected",
+   "summary": "The relief ended on 31 March 2025, so modern law from 2025-26 is the pre-relief world. The OBR's later costings of the increase are offset by its separate 'ending the Growth Plan change' measure.",
+   "years": [
+    2025,
+    2026,
+    2027
+   ]
+  },
+  {
+   "code": "construction_noop",
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "status": "expected",
+   "summary": "The counterfactual keeps the relief from 2025-26, the first year the measure changes; the OBR's 2024-25 yield is timing around the end date, which an annual construction does not express.",
+   "years": [
+    2024
+   ]
+  }
+ ],
  "kind": "uk_policy_experiment_diagnoses",
- "note": "One row per diagnosed anomaly (docs/uk_replay/POLICY_EXPERIMENTS.md): event, experiment_id, code, years (null: every year), status, summary, evidence, issue.",
+ "note": "One row per diagnosed anomaly (docs/uk_replay/POLICY_EXPERIMENTS.md): event, experiment_id, code, years (null: every year), status, summary, evidence, fixed_in or issue, and populations (null: every population).",
  "schema_version": 1
 }

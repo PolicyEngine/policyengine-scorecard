@@ -1125,13 +1125,21 @@ def load_diagnoses(path: Path = DIAGNOSES_PATH) -> list[dict]:
     return rows
 
 
-def diagnosis_for(diagnoses: list[dict], event: str, eid: str, year: int, code: str):
+def diagnosis_for(
+    diagnoses: list[dict],
+    event: str,
+    eid: str,
+    year: int,
+    code: str,
+    population_id: str | None = None,
+):
     for row in diagnoses:
         if (
             row.get("event") == event
             and row.get("experiment_id") == eid
             and row.get("code") == code
             and (row.get("years") is None or year in row["years"])
+            and (row.get("populations") is None or population_id in row["populations"])
         ):
             return row
     return None
@@ -1233,7 +1241,9 @@ def findings(
         )
         anomalies = []
         for code in evaluated["codes"]:
-            found = diagnosis_for(diagnoses, event, eid, year, code)
+            found = diagnosis_for(
+                diagnoses, event, eid, year, code, population["population_id"]
+            )
             anomalies.append(
                 {
                     "code": code,
