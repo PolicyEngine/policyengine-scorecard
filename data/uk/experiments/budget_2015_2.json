@@ -1,0 +1,57 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2015_2",
+ "experiments": [
+  {
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_two_child_limit",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Tax credits",
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "child_tax_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "sign_only",
+   "magnitude_reason": "The limit applies to children born from 6 April 2017, so its yield grows each year until every child is covered; the 2020-21 costing is not steady state.",
+   "measure_key": "budget_2015_2__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+   "note": "Removes the two-child limit in 2024-25 and 2025-26 (a child count of 100 stands for none). Modern law abolishes it from April 2026 (Autumn Budget 2025), so later years have nothing to move.",
+   "reform": {
+    "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+     "2024-01-01.2025-12-31": 100.0
+    },
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2024-01-01.2025-12-31": 100.0
+    }
+   },
+   "sources": [
+    "Welfare Reform and Work Act 2016 s. 13-14",
+    "pe-uk parameters gov/dwp/universal_credit/elements/child/limit/child_count.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015 #2.",
+ "obr_forecast_vintage": "July 2015",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

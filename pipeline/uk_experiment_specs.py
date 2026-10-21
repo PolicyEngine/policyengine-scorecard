@@ -209,6 +209,8 @@ def stamp_duty_group() -> dict:
 FUEL_DUTY_2011 = 0.5795
 FUEL_DUTY_CUT_2022 = 0.05
 RPI_FORGONE = {
+    "budget_2016": ("b2016", 1.7109009953075116, "RPI!J18", "March 2016", 2016),
+    "autumn_2016": ("as2016", 3.192173090436583, "RPI!K19", "November 2016", 2017),
     "autumn_budget_2017": (
         "ab2017",
         3.3035316860136055,
@@ -957,6 +959,133 @@ def experiments() -> dict[str, dict]:
                     ],
                 },
                 "2021-22",
+            )
+        ],
+    }
+    b16, as16, as15, sb15 = "budget_2016", "autumn_2016", "autumn_2015", "budget_2015_2"
+    specs[as16] = {
+        "obr_forecast_vintage": "November 2016",
+        "experiments": [
+            carried(
+                fuel_duty_freeze(as16, f"{as16}__fuel_duty_freeze_in_2017_18"),
+                "2021-22",
+            )
+        ],
+    }
+    specs[b16] = {
+        "obr_forecast_vintage": "March 2016",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2016_trading_and_property_allowances",
+                    "measure_key": f"{b16}__sharing_economy_1_000_allowance_for_both_trading_and_property_income",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.allowances.trading_allowance": {
+                            window(2024, 2025): 0.0
+                        },
+                        "gov.hmrc.income_tax.allowances.property_allowance": {
+                            window(2024, 2025): 0.0
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [INCOME_TAX, nics_group(["NICs"])],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes the £1,000 trading and property allowances (modern law "
+                        "keeps both). Class 4 profits are taken after the trading allowance, "
+                        "so NICs move too."
+                    ),
+                    "sources": [
+                        "Finance (No. 2) Act 2017 Sch. 3 (https://www.legislation.gov.uk/ukpga/2017/32/schedule/3)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/{trading,property}_allowance.yaml",
+                    ],
+                },
+                "2020-21",
+            ),
+            carried(
+                fuel_duty_freeze(b16, f"{b16}__fuel_duty_freeze_in_april_2016"),
+                "2020-21",
+            ),
+        ],
+    }
+    specs[as15] = {
+        "obr_forecast_vintage": "November 2015",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+                    "measure_key": f"{as15}__stamp_duty_land_tax_higher_rates_on_additional_properties",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        f"gov.hmrc.stamp_duty.residential.purchase.additional.rate[{i}].rate": {
+                            window(2025): rate
+                        }
+                        for i, rate in enumerate((0.02, 0.04, 0.07, 0.12, 0.14))
+                    },
+                    "years": [2025, 2026],
+                    "heads": [stamp_duty_group()],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Takes the original 3pp surcharge off the additional-dwellings "
+                        "scale, keeping Autumn Budget 2024's further 2pp: from 2025-26 the "
+                        "scale becomes the main scale plus 2pp (2%, 4%, 7%, 12%, 14%) "
+                        "instead of plus 5pp. 2024-25 is left out because its main scale "
+                        "carries the Growth Plan relief for part of the year."
+                    ),
+                    "sources": [
+                        "Finance Act 2016 s. 128 and Sch. 4A FA 2003",
+                        "Autumn Budget 2024 Table 5.1 (the 2pp increase from 31 October 2024)",
+                        "pe-uk parameters gov/hmrc/stamp_duty/residential/purchase/additional/rate.yaml",
+                    ],
+                },
+                "2020-21",
+            )
+        ],
+    }
+    specs[sb15] = {
+        "obr_forecast_vintage": "July 2015",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "sb2015_two_child_limit",
+                    "measure_key": f"{sb15}__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.dwp.universal_credit.elements.child.limit.child_count": {
+                            window(2024, 2025): 100.0
+                        },
+                        "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+                            window(2024, 2025): 100.0
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [
+                        {
+                            "obr_heads": ["Tax credits", "Welfare inside cap"],
+                            "pe_variables": ["universal_credit", "child_tax_credit"],
+                            "channel": "spending",
+                            "base_sheet": "Welfare in",
+                            "pe_base_comparable": False,
+                        }
+                    ],
+                    "magnitude_check": "sign_only",
+                    "magnitude_reason": (
+                        "The limit applies to children born from 6 April 2017, so its yield "
+                        "grows each year until every child is covered; the 2020-21 costing "
+                        "is not steady state."
+                    ),
+                    "note": (
+                        "Removes the two-child limit in 2024-25 and 2025-26 (a child count "
+                        "of 100 stands for none). Modern law abolishes it from April 2026 "
+                        "(Autumn Budget 2025), so later years have nothing to move."
+                    ),
+                    "sources": [
+                        "Welfare Reform and Work Act 2016 s. 13-14",
+                        "pe-uk parameters gov/dwp/universal_credit/elements/child/limit/child_count.yaml",
+                    ],
+                },
+                "2020-21",
             )
         ],
     }
