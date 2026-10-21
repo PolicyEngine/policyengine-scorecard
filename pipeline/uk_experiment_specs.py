@@ -196,18 +196,27 @@ def stamp_duty_group() -> dict:
     }
 
 
-# Fuel duty: a one-year freeze forgoes that April's RPI uprating, and every
-# later rate keeps the lower level. The forgone uprating is the event
-# forecast's RPI for the uprating year, from the OBR's Historical official
-# forecasts database (Spring 2026), sheet RPI, percentage change on a year
-# earlier: March 2020 forecast for 2020, RPI!N25; March 2021 forecast for
-# 2021, RPI!O27; October 2021 forecast for 2022, RPI!P28. Modern law (pe-uk
-# 2.132.6) holds 52.95p a litre from 23 March 2022 to 1 January 2027; the
+# Fuel duty: a one-year freeze forgoes that April's RPI uprating of 57.95p,
+# the rate from 23 March 2011. The forgone uprating is the event forecast's
+# RPI for the uprating year, from the OBR's Historical official forecasts
+# database (Spring 2026), sheet RPI, percentage change on a year earlier.
+# Later freezes keep the higher level, and the 5p cut from 23 March 2022 is
+# a cash cut, so the counterfactual is 57.95p x (1 + RPI) - 5p. Modern law
+# (pe-uk 2.132.6) holds 52.95p from 23 March 2022 to 1 January 2027; the
 # parameter is day-weighted over each fiscal year (fiscal_year_blend), so a
 # window must cover whole fiscal years and the experiments run 2024-25 and
 # 2025-26 only, inside that constant stretch.
-FUEL_DUTY_MODERN = 0.5295
+FUEL_DUTY_2011 = 0.5795
+FUEL_DUTY_CUT_2022 = 0.05
 RPI_FORGONE = {
+    "autumn_budget_2017": (
+        "ab2017",
+        3.3035316860136055,
+        "RPI!L21",
+        "November 2017",
+        2018,
+    ),
+    "budget_2018": ("b2018", 3.138083688269977, "RPI!M23", "October 2018", 2019),
     "budget_2020": ("b2020", 2.16390512465372, "RPI!N25", "March 2020", 2020),
     "spring_budget_2021": ("sb2021", 2.5133882664885476, "RPI!O27", "March 2021", 2021),
     "autumn_budget_2021": (
@@ -220,9 +229,21 @@ RPI_FORGONE = {
 }
 
 
+CARRY_REASON = (
+    "The event's costings end before the population's first year. The "
+    "measure is a permanent change of level whose last costing year is "
+    "steady state, so later years compare with that year, scaled to the "
+    "run year's base."
+)
+
+
+def carried(experiment: dict, fy: str) -> dict:
+    return {**experiment, "carried_from_fy": fy, "carry_reason": CARRY_REASON}
+
+
 def fuel_duty_freeze(event: str, measure_key: str) -> dict:
     prefix, rpi, cell, vintage, year = RPI_FORGONE[event]
-    rate = round(FUEL_DUTY_MODERN * (1 + rpi / 100), 6)
+    rate = round(FUEL_DUTY_2011 * (1 + rpi / 100) - FUEL_DUTY_CUT_2022, 6)
     return {
         "experiment_id": f"{prefix}_fuel_duty_freeze_{year}",
         "measure_key": measure_key,
@@ -243,9 +264,10 @@ def fuel_duty_freeze(event: str, measure_key: str) -> dict:
         "magnitude_check": "scaled",
         "note": (
             f"Without the freeze the April {year} uprating would have applied: the "
-            f"{vintage} forecast's RPI for {year}, {rpi:.3f}% ({cell}). Every later "
-            f"rate keeps the higher level, so modern law's 52.95p becomes "
-            f"{rate * 100:.3f}p in 2024-25 and 2025-26. pe-uk's fuel_duty covers "
+            f"{vintage} forecast's RPI for {year}, {rpi:.3f}% ({cell}), on 57.95p. "
+            f"Later freezes keep the higher level and the 2022 5p cut is in cash, so "
+            f"modern law's 52.95p becomes {rate * 100:.3f}p in 2024-25 and 2025-26. "
+            "pe-uk's fuel_duty covers "
             "household car fuel only, so business and haulage fuel in the OBR's "
             "base are outside it."
         ),
@@ -263,10 +285,11 @@ def fuel_duty_freeze(event: str, measure_key: str) -> dict:
 # s. 21). NICs' upper earnings and profits limits follow the higher rate
 # threshold (allowance plus limit), the weekly limit at 1/52 of it.
 def indexed(
-    start: float, step: int, rates=(0.031, 0.101, 0.067, 0.017)
+    start: float, step: int, rates=(0.031, 0.101, 0.067, 0.017), first: int = 2022
 ) -> dict[int, float]:
+    """Index from ``first`` onward by each rate, rounding up to ``step``."""
     out, value = {}, start
-    for year, rate in zip(range(2022, 2026), rates):
+    for year, rate in zip(range(first, first + len(rates)), rates):
         value = -(-value * (1 + rate) // step) * step
         out[year] = float(value)
     return out
@@ -275,6 +298,35 @@ def indexed(
 PA_CF = indexed(12_570, 10)
 BRL_CF = indexed(37_700, 100)
 HRT_CF = {year: PA_CF[year] + BRL_CF[year] for year in PA_CF}
+
+# Budget 2018 brought the £12,500 allowance and £50,000 higher rate threshold
+# forward a year. The pre-measure path indexes the 2018-19 £11,850 and
+# £34,500 by the previous September's CPI (ONS: 2.4% 2018, 1.7% 2019, 0.5%
+# 2020; same rounding), to £12,420 and £36,300 in 2021-22, which the later
+# freezes then hold: the counterfactual sits £150 and £1,400 below modern
+# law in every later year.
+PA_B2018 = indexed(11_850, 10, rates=(0.024, 0.017, 0.005), first=2019)
+BRL_B2018 = indexed(34_500, 100, rates=(0.024, 0.017, 0.005), first=2019)
+B2018_PA = PA_B2018[2021]  # the 2021-22 level, which the freezes hold
+B2018_BRL = BRL_B2018[2021]
+
+
+# Budget 2018's £1,000 a year work-allowance increase: £198 and £409 a month
+# would have stayed in April 2019 instead of £287 and £503. Each modern
+# allowance keeps the later upratings and Autumn Budget 2021's £500, so the
+# counterfactual removes the 2019 difference carried forward: x (293/287)
+# to April 2021, then the allowance's own growth from its November 2021
+# level (335 with housing; 515/503 and 557 without).
+def b2018_work_allowance(
+    modern: dict[int, int], diff: float, april_2021: tuple, november_2021: float
+) -> dict[int, float]:
+    before, after = april_2021
+    return {
+        year: float(round(value - diff * (after / before) * (value / november_2021)))
+        for year, value in modern.items()
+        if year in (2024, 2025)
+    }
+
 
 # Spending Review 2020: the standard minimum guarantee rose from £173.75 to
 # £177.10 (single) and £265.20 to £270.30 (couple) in April 2021, where the
@@ -765,6 +817,147 @@ def experiments() -> dict[str, dict]:
                     "pe-uk 2.132.6 parameters gov/dwp/pension_credit/guarantee_credit/minimum_guarantee.yaml",
                 ],
             }
+        ],
+    }
+    b18, ab17, b17 = "budget_2018", "autumn_budget_2017", "budget_2017"
+    specs[b18] = {
+        "obr_forecast_vintage": "October 2018",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+                    "measure_key": f"{b18}__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+                            window(2024, 2025): B2018_PA
+                        },
+                        "gov.hmrc.income_tax.rates.uk[1].threshold": {
+                            window(2024, 2025): B2018_BRL
+                        },
+                        "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+                            window(2024, 2025): B2018_BRL
+                        },
+                        "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+                            window(2024, 2025): money((B2018_PA + B2018_BRL) / 52)
+                        },
+                        "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+                            window(2024, 2025): B2018_PA + B2018_BRL
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [INCOME_TAX, nics_group(["NICs"]), uc_group()],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        f"Pre-measure path: personal allowance £{B2018_PA:,.0f}, basic rate "
+                        f"limit £{B2018_BRL:,.0f}, so the higher rate threshold and NICs "
+                        f"upper limits £{B2018_PA + B2018_BRL:,.0f} (modern law £12,570, "
+                        "£37,700, £50,270). The dividend higher-rate band moves with the "
+                        "basic rate limit; the primary threshold keeps Spring Statement "
+                        "2022's £12,570; Scottish bands are devolved."
+                    ),
+                    "sources": [
+                        "Finance Act 2019 s. 5 (https://www.legislation.gov.uk/ukpga/2019/1/section/5)",
+                        "ONS CPI annual rate, September 2018-2020: 2.4%, 1.7%, 0.5%",
+                    ],
+                },
+                "2023-24",
+            ),
+            carried(
+                {
+                    "experiment_id": "b2018_uc_work_allowance_1000",
+                    "measure_key": f"{b18}__universal_credit_1_000_increase_to_work_allowance",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.dwp.universal_credit.means_test.work_allowance.with_housing": yearly(
+                            b2018_work_allowance(WA_WITH, 287 - 198, (287, 293), 335)
+                        ),
+                        "gov.dwp.universal_credit.means_test.work_allowance.without_housing": yearly(
+                            b2018_work_allowance(WA_WITHOUT, 503 - 409, (503, 515), 557)
+                        ),
+                    },
+                    "years": [2024, 2025],
+                    "heads": [uc_group()],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes the April 2019 increase (£287 and £503 a month instead "
+                        "of £198 and £409), carried forward through later upratings."
+                    ),
+                    "sources": [
+                        "The Universal Credit (Work Allowance) Amendment Regulations 2018",
+                        "pe-uk 2.132.6 parameters gov/dwp/universal_credit/means_test/work_allowance.yaml",
+                    ],
+                },
+                "2023-24",
+            ),
+            carried(
+                fuel_duty_freeze(b18, f"{b18}__fuel_duty_freeze_for_2019_20"), "2023-24"
+            ),
+        ],
+    }
+    specs[ab17] = {
+        "obr_forecast_vintage": "November 2017",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+                    "measure_key": f"{ab17}__stamp_duty_land_tax_abolish_for_first_time_buyers_up_to_300_000",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
+                            window(2024, 2025): 0.0
+                        }
+                    },
+                    "years": [2024, 2025],
+                    "heads": [stamp_duty_group()],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes first-time buyers' relief: a zero price limit sends every "
+                        "purchase to the main scale. First-time-buyer status is an imputed "
+                        "input; pe-uk 2.132.6 also lacks the 2022-25 Growth Plan limits."
+                    ),
+                    "sources": [
+                        "Finance Act 2018 s. 41 (https://www.legislation.gov.uk/ukpga/2018/3/section/41)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/first/max.yaml",
+                    ],
+                },
+                "2022-23",
+            ),
+            carried(
+                fuel_duty_freeze(ab17, f"{ab17}__fuel_duty_freeze_for_2018_19"),
+                "2022-23",
+            ),
+        ],
+    }
+    specs[b17] = {
+        "obr_forecast_vintage": "March 2017",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+                    "measure_key": f"{b17}__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019",
+                    "construction": "forward_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.national_insurance.class_4.rates.main": {
+                            window(2024, 2025): 0.08
+                        }
+                    },
+                    "years": [2024, 2025],
+                    "heads": [nics_group(["NICs"]), INCOME_TAX],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "The increase was withdrawn a week after the Budget, so modern law "
+                        "lacks it; the experiment adds its 2pp to the modern 6% main rate. "
+                        "The OBR's costing is net of incorporation responses, which a static "
+                        "run does not have."
+                    ),
+                    "sources": [
+                        "Spring Budget 2017 para 3.18 (https://www.gov.uk/government/publications/spring-budget-2017-documents)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/national_insurance/class_4/rates/main.yaml",
+                    ],
+                },
+                "2021-22",
+            )
         ],
     }
     specs[b20] = {

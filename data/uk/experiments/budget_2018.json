@@ -1,0 +1,163 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2018",
+ "experiments": [
+  {
+   "carried_from_fy": "2023-24",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+   "note": "Pre-measure path: personal allowance \u00a312,420, basic rate limit \u00a336,300, so the higher rate threshold and NICs upper limits \u00a348,720 (modern law \u00a312,570, \u00a337,700, \u00a350,270). The dividend higher-rate band moves with the basic rate limit; the primary threshold keeps Spring Statement 2022's \u00a312,570; Scottish bands are devolved.",
+   "reform": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2024-01-01.2025-12-31": 12420.0
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2024-01-01.2025-12-31": 36300.0
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2024-01-01.2025-12-31": 36300.0
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2024-01-01.2025-12-31": 936.92
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2024-01-01.2025-12-31": 48720.0
+    }
+   },
+   "sources": [
+    "Finance Act 2019 s. 5 (https://www.legislation.gov.uk/ukpga/2019/1/section/5)",
+    "ONS CPI annual rate, September 2018-2020: 2.4%, 1.7%, 0.5%"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "carried_from_fy": "2023-24",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2018_uc_work_allowance_1000",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
+   "note": "Removes the April 2019 increase (\u00a3287 and \u00a3503 a month instead of \u00a3198 and \u00a3409), carried forward through later upratings.",
+   "reform": {
+    "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+     "2024-01-01.2024-12-31": 294.0,
+     "2025-01-01.2025-12-31": 300.0
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+     "2024-01-01.2024-12-31": 557.0,
+     "2025-01-01.2025-12-31": 566.0
+    }
+   },
+   "sources": [
+    "The Universal Credit (Work Allowance) Amendment Regulations 2018",
+    "pe-uk 2.132.6 parameters gov/dwp/universal_credit/means_test/work_allowance.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "carried_from_fy": "2023-24",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2018_fuel_duty_freeze_2019",
+   "heads": [
+    {
+     "base_sheet": "Fuel",
+     "channel": "tax",
+     "obr_heads": [
+      "Fuel duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "fuel_duty"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__fuel_duty_freeze_for_2019_20",
+   "note": "Without the freeze the April 2019 uprating would have applied: the October 2018 forecast's RPI for 2019, 3.138% (RPI!M23), on 57.95p. Later freezes keep the higher level and the 2022 5p cut is in cash, so modern law's 52.95p becomes 54.768p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
+   "reform": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2026-12-31": 0.547685
+    }
+   },
+   "sources": [
+    "OBR Historical official forecasts database, Spring 2026, sheet RPI",
+    "pe-uk 2.132.6 parameters gov/hmrc/fuel_duty/petrol_and_diesel.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2018.",
+ "obr_forecast_vintage": "October 2018",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

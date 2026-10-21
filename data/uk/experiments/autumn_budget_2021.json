@@ -214,10 +214,10 @@
    ],
    "magnitude_check": "scaled",
    "measure_key": "autumn_budget_2021__fuel_duty_one_year_freeze_in_2022_23",
-   "note": "Without the freeze the April 2022 uprating would have applied: the October 2021 forecast's RPI for 2022, 4.966% (RPI!P28). Every later rate keeps the higher level, so modern law's 52.95p becomes 55.580p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
+   "note": "Without the freeze the April 2022 uprating would have applied: the October 2021 forecast's RPI for 2022, 4.966% (RPI!P28), on 57.95p. Later freezes keep the higher level and the 2022 5p cut is in cash, so modern law's 52.95p becomes 55.828p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
    "reform": {
     "gov.hmrc.fuel_duty.petrol_and_diesel": {
-     "2024-01-01.2026-12-31": 0.555797
+     "2024-01-01.2026-12-31": 0.558281
     }
    },
    "sources": [
