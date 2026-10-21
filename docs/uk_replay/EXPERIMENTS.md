@@ -35,9 +35,17 @@ already fixed there.
 | **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Present on main. | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, handed to the UK hub | `as2013_marriage_allowance` (`sign_mismatch`) |
 | pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26 | `as2022_additional_rate_threshold_125140` (model change) |
 | pe-uk 2.132.6 has no Growth Plan SDLT relief (23 September 2022 to 31 March 2025) | fixed upstream in 2.141.8 (4044d6ccf); the 2024-25 experiment goes from 0 (2.132.6) to −£1.234bn (2.143.0) against the OBR's −£1.048bn | `as2022_sdlt_nil_rate_bands_2024` (`construction_noop`, then model change) |
-| pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024) | fixed upstream (2.143.0 has it); read in the parameter files | `as2015_sdlt_additional_dwellings_surcharge` (model swap pending) |
+| pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024) | fixed upstream (2.143.0 has it); read in the parameter files | `as2015_sdlt_additional_dwellings_surcharge` |
+| pe-uk 2.132.6 charges every home buyer's whole stock of other residential property as one additional-dwelling purchase at the higher rates, so its modern-law SDLT (£15.0bn in 2025-26) is overstated, and the surcharge experiment's clean 0.96 rests on that overstatement | fixed upstream in 2.134.1 (52030637b, #2238). From then the purchase price is a dataset input: the interim cut lacks it, so on 2.143.0 SDLT is £8.1bn and the surcharge reversal is `inert`. Microcosm imputes it from #1308, so the pre-Budget cut carries it | `as2015_sdlt_additional_dwellings_surcharge` (model change, then `inert` on the swap) |
 
-Both 2.132.6 currency gaps confirm the brief's point: the interim pair's model
+**A model swap is valid only where the data carries the newer model's
+inputs.** Three variables the 2.132.6 model computed became dataset inputs by
+2.143.0, and the interim cut carries none of them: the additional-dwelling and
+non-residential purchase prices, and salary sacrifice returned to income. On
+the swap each is nil for every record (`model_swap_input_gaps` on the
+population record). The pre-Budget pair has no such gap for the first two.
+
+The 2.132.6 currency gaps confirm the brief's point: the interim pair's model
 is about 630 commits behind main, and only the newest model catches current
 bugs. Every anomaly on the interim pair was therefore checked against
 2.143.0 before anything was filed.
@@ -85,7 +93,7 @@ their scaled ratios fall inside the bands.
 | | fuel duty freeze 2018-19 | 0.66, 0.65 |
 | Autumn Statement 2016 | fuel duty freeze 2017-18 | 0.61, 0.60 |
 | Budget 2016 | fuel duty freeze 2016 | 0.64, 0.63 |
-| Autumn Statement 2015 | additional-dwellings surcharge (3pp) | 0.96, 0.85 |
+| Autumn Statement 2015 | additional-dwellings surcharge (3pp), interim pair only (see above) | 0.96, 0.85 |
 | Budget 2015 | personal savings allowance | 0.43, 0.45 |
 
 The fuel-duty ratios near 0.5–0.7 are expected: pe-uk's fuel duty is
