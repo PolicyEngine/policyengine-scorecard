@@ -108,6 +108,31 @@
    "status": "expected",
    "summary": "Without gross receipts, pe-uk relieves only profits within the \u00a31,000 allowance and treats a larger profit as already reflecting the better of expenses and the allowance (trading_allowance_deduction, property_allowance_deduction_if_used). The Microcosm UK 2024-25 cut carries no self_employment_gross_receipts, so the partial-relief leg the OBR costed has nothing to act on, and most fully relieved profits fall within the personal allowance anyway. The removal is 0.20 of the scaled OBR costing.",
    "years": null
+  },
+  {
+   "code": "inert",
+   "event": "autumn_2015",
+   "evidence": "pe-uk 2.143.0 variables/household/consumption/additional_residential_property_purchased.py; microcosm changelog.d/1095-additional-property-purchases.added.md",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "populations": [
+    "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "expected",
+   "summary": "From policyengine-uk 2.134.1 (52030637b, fixing #2238) additional-dwelling and non-residential purchase prices are inputs, nil unless the dataset imputes them; before, every home buyer's whole stock of other residential property was charged as one additional-dwelling purchase. The interim Microcosm cut was built for 2.132.6 and does not supply the inputs, so on 2.143.0 no household buys an additional dwelling: modern-law SDLT falls from \u00a315.0bn to \u00a38.1bn in 2025-26 and the surcharge has nothing to act on. Microcosm imputes both from microcosm#1308 (the property_purchases stage), so the pre-Budget cut carries them. A model swap is valid only where the data carries the newer model's inputs.",
+   "years": null
+  },
+  {
+   "code": "model_change",
+   "event": "autumn_2015",
+   "evidence": "pe-uk 52030637b; microcosm#1308",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "fixed_in": "policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage",
+   "populations": [
+    "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "data_issue",
+   "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), which inflates its \u00a30.94bn. 2.143.0 takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
+   "years": null
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",

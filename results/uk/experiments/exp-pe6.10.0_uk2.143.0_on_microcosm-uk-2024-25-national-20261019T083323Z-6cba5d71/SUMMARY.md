@@ -2,13 +2,15 @@
 
 **Policy experiments on the modern population: not replays or costings of any past event.**
 
-2 events, 50 experiment-years (model_swap). Per-event detail is in each event's FINDINGS.md.
+7 events, 74 experiment-years (model_swap). Per-event detail is in each event's FINDINGS.md.
 
 ## Anomalies
 
 | Code | Diagnosed | Count |
 |---|---|---:|
 | `construction_noop` | diagnosed | 7 |
+| `inert` | diagnosed | 2 |
+| `magnitude_outside_3x` | diagnosed | 2 |
 
 ## Mirrors
 
@@ -20,6 +22,9 @@
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2025-26 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +22.256 / -22.256 | yes |
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `income_tax` | -4.050 / +4.050 | yes |
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +23.327 / -23.327 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2024-25 | `income_tax` | +6.343 / -6.343 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2025-26 | `income_tax` | +6.739 / -6.739 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2026-27 | `income_tax` | +7.032 / -7.032 | yes |
 
 ## Modern base against the OBR's newest forecast
 
@@ -44,6 +49,8 @@ Same data, so each row is a model change between the engines: a fix or a bug.
 
 | Event | Experiment | FY | Certified pair (£bn) | This model (£bn) | Change (£bn) | Diagnosis |
 |---|---|---|---:|---:|---:|---|
+| autumn_2015 | `as2015_sdlt_additional_dwellings_surcharge` | 2025-26 | +0.937 | +0.000 | -0.937 | data_issue: policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage |
+| autumn_2015 | `as2015_sdlt_additional_dwellings_surcharge` | 2026-27 | +0.968 | +0.000 | -0.968 | data_issue: policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage |
 | autumn_statement_2022 | `as2022_additional_rate_threshold_125140` | 2024-25 | +0.853 | +0.959 | +0.106 | model_bug: policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds') |
 | autumn_statement_2022 | `as2022_additional_rate_threshold_125140` | 2025-26 | +0.950 | +1.071 | +0.121 | model_bug: policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds') |
 | autumn_statement_2022 | `as2022_sdlt_nil_rate_bands_2024` | 2024-25 | +0.000 | -1.234 | -1.234 | model_bug: policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps') |

@@ -1,6 +1,8 @@
 {
  "anomaly_counts": {
-  "construction_noop:diagnosed": 7
+  "construction_noop:diagnosed": 7,
+  "inert:diagnosed": 2,
+  "magnitude_outside_3x:diagnosed": 2
  },
  "baseline_coverage": [
   {
@@ -101,10 +103,15 @@
   }
  ],
  "events": [
+  "autumn_2015",
+  "autumn_2016",
   "autumn_budget_2021",
-  "autumn_statement_2022"
+  "autumn_statement_2022",
+  "budget_2016",
+  "spring_budget_2021",
+  "spring_statement_2022"
  ],
- "experiment_years": 50,
+ "experiment_years": 74,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",
@@ -187,9 +194,102 @@
    ],
    "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
    "year": 2026
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6342928739.544556,
+    -6342928739.544556
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6738870848.276794,
+    -6738870848.276794
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    7031512581.012573,
+    -7031512581.012573
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2026
   }
  ],
  "model_changes": [
+  {
+   "certified_pair_gbp": 937138301.6105042,
+   "change_gbp": -937138301.6105042,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2015",
+    "evidence": "pe-uk 52030637b; microcosm#1308",
+    "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+    "fixed_in": "policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), which inflates its \u00a30.94bn. 2.143.0 takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
+    "years": null
+   },
+   "event": "autumn_2015",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 937138301.6105042
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "model_swap_gbp": 0.0,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 968167826.899538,
+   "change_gbp": -968167826.899538,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2015",
+    "evidence": "pe-uk 52030637b; microcosm#1308",
+    "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+    "fixed_in": "policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), which inflates its \u00a30.94bn. 2.143.0 takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
+    "years": null
+   },
+   "event": "autumn_2015",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 968167826.899538
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "model_swap_gbp": 0.0,
+   "year": 2026
+  },
   {
    "certified_pair_gbp": 852598324.87323,
    "change_gbp": 106357598.81256104,

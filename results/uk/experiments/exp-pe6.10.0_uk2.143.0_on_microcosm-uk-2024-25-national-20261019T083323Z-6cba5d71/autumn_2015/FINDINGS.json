@@ -1,0 +1,113 @@
+{
+ "event": "autumn_2015",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2015.",
+ "obr_forecast_vintage": "November 2015",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [
+    {
+     "code": "inert",
+     "diagnosis": {
+      "code": "inert",
+      "event": "autumn_2015",
+      "evidence": "pe-uk 2.143.0 variables/household/consumption/additional_residential_property_purchased.py; microcosm changelog.d/1095-additional-property-purchases.added.md",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "populations": [
+       "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "expected",
+      "summary": "From policyengine-uk 2.134.1 (52030637b, fixing #2238) additional-dwelling and non-residential purchase prices are inputs, nil unless the dataset imputes them; before, every home buyer's whole stock of other residential property was charged as one additional-dwelling purchase. The interim Microcosm cut was built for 2.132.6 and does not supply the inputs, so on 2.143.0 no household buys an additional dwelling: modern-law SDLT falls from \u00a315.0bn to \u00a38.1bn in 2025-26 and the surcharge has nothing to act on. Microcosm imputes both from microcosm#1308 (the property_purchases stage), so the pre-Budget cut carries them. A model swap is valid only where the data carries the newer model's inputs.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 978902731.15511,
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "obr_mapped_gbp": 1075000000.0,
+   "obr_unmapped_gbp": -195000000.0,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.9106071917721954,
+     "obr_event_forecast_gbp": 18567035155.171417,
+     "obr_newest_forecast_gbp": 16907275742.186272,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: higher rates on additional properties",
+   "year": 2025
+  },
+  {
+   "anomalies": [
+    {
+     "code": "inert",
+     "diagnosis": {
+      "code": "inert",
+      "event": "autumn_2015",
+      "evidence": "pe-uk 2.143.0 variables/household/consumption/additional_residential_property_purchased.py; microcosm changelog.d/1095-additional-property-purchases.added.md",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "populations": [
+       "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "expected",
+      "summary": "From policyengine-uk 2.134.1 (52030637b, fixing #2238) additional-dwelling and non-residential purchase prices are inputs, nil unless the dataset imputes them; before, every home buyer's whole stock of other residential property was charged as one additional-dwelling purchase. The interim Microcosm cut was built for 2.132.6 and does not supply the inputs, so on 2.143.0 no household buys an additional dwelling: modern-law SDLT falls from \u00a315.0bn to \u00a38.1bn in 2025-26 and the surcharge has nothing to act on. Microcosm imputes both from microcosm#1308 (the property_purchases stage), so the pre-Budget cut carries them. A model swap is valid only where the data carries the newer model's inputs.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1141168692.935486,
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "obr_mapped_gbp": 1075000000.0,
+   "obr_unmapped_gbp": -195000000.0,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0615522724981266,
+     "obr_event_forecast_gbp": 18567035155.171417,
+     "obr_newest_forecast_gbp": 19709878362.524822,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: higher rates on additional properties",
+   "year": 2026
+  }
+ ],
+ "schema_version": 1
+}

@@ -1,0 +1,427 @@
+{
+ "event": "spring_statement_2022",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Statement 2022.",
+ "obr_forecast_vintage": "March 2022",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "f8b2ef658d24895515f09297de812d176e2a12a995b2735b9c1fbe0811845bcb",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -6342928739.544556,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -5537426145.11916,
+   "experiment_id": "ss2022_basic_rate_19",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -6342928739.544556
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_2024",
+   "obr_mapped_gbp": -4977267500.891409,
+   "obr_unmapped_gbp": -17058875.152042307,
+   "ratio_raw": 1.2743797150562155,
+   "ratio_scaled": 1.145465162571132,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1125434074273541,
+     "obr_event_forecast_gbp": 268609931849.66846,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 2024",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -6738870848.276794,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -6459287826.103624,
+   "experiment_id": "ss2022_basic_rate_19",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -6738870848.276794
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_2024",
+   "obr_mapped_gbp": -5633422615.594043,
+   "obr_unmapped_gbp": -52547789.79065749,
+   "ratio_raw": 1.1962303040469089,
+   "ratio_scaled": 1.043283877371636,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1466009683391194,
+     "obr_event_forecast_gbp": 282919880709.49347,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 2024",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": -7031512581.012573,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -6402432297.826253,
+   "experiment_id": "ss2022_basic_rate_19",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": -7031512581.012573
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_2024",
+   "obr_mapped_gbp": -5535355261.7263565,
+   "obr_unmapped_gbp": -81770275.12167867,
+   "ratio_raw": 1.2702911102438614,
+   "ratio_scaled": 1.098256452223619,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1566434302952895,
+     "obr_event_forecast_gbp": 298401168152.446,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 2024",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 88743192.55522156,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 63604811.84829883,
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit": 88743192.55522156
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_20243",
+   "obr_mapped_gbp": 54999936.35999999,
+   "obr_unmapped_gbp": -398403699.1760966,
+   "ratio_raw": 1.6135144588960315,
+   "ratio_scaled": 1.3952276561540535,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1564524626351558,
+     "obr_event_forecast_gbp": 137397550938.16507,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 20243",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 98971931.25657654,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 86343125.8557864,
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit": 98971931.25657654
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_20243",
+   "obr_mapped_gbp": 71552960.57839999,
+   "obr_unmapped_gbp": -438861203.884785,
+   "ratio_raw": 1.3831982695968787,
+   "ratio_scaled": 1.1462630090771007,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2067023524649403,
+     "obr_event_forecast_gbp": 140189005192.2145,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 20243",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 109745895.30360413,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 91081874.53961912,
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "universal_credit": 109745895.30360413
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__income_tax_reduce_basic_rate_from_20_to_19_from_april_20243",
+   "obr_mapped_gbp": 73680714.97119999,
+   "obr_unmapped_gbp": -428550539.7932874,
+   "ratio_raw": 1.4894792395337253,
+   "ratio_scaled": 1.204914763319528,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2361697979616624,
+     "obr_event_forecast_gbp": 143769157591.09586,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce basic rate from 20% to 19% from April 20243",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -3767590540.683062,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -5084235569.599777,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -3767590540.683062
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
+   "obr_mapped_gbp": -4919254724.8316145,
+   "obr_unmapped_gbp": -105108513.80992068,
+   "ratio_raw": 0.7658864505765203,
+   "ratio_scaled": 0.7410338268373432,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0351084488990479,
+     "obr_event_forecast_gbp": 166589143599.3466,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1125434074273541,
+     "obr_event_forecast_gbp": 268609931849.66846,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual primary threshold and lower profits limit to \u00a312,570 from July 2022",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -3835705950.095271,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -5460842397.875574,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -3835705950.095271
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
+   "obr_mapped_gbp": -4392613028.621859,
+   "obr_unmapped_gbp": -139936059.2914061,
+   "ratio_raw": 0.8732173594856109,
+   "ratio_scaled": 0.7024018769681893,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2401077078266687,
+     "obr_event_forecast_gbp": 172591763105.3356,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1466009683391194,
+     "obr_event_forecast_gbp": 282919880709.49347,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual primary threshold and lower profits limit to \u00a312,570 from July 2022",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": -3881228449.706226,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -5650483121.884651,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -3881228449.706226
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
+   "obr_mapped_gbp": -4532779483.290689,
+   "obr_unmapped_gbp": -169340332.76446894,
+   "ratio_raw": 0.8562579459278145,
+   "ratio_scaled": 0.6868843541314196,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2431543364661244,
+     "obr_event_forecast_gbp": 179552073436.6534,
+     "pe_base_gbp": 223210938714.2597
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1566434302952895,
+     "obr_event_forecast_gbp": 298401168152.446,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual primary threshold and lower profits limit to \u00a312,570 from July 2022",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 129522337.23846436,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 187149605.57833886,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit": 129522337.23846436
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
+   "obr_mapped_gbp": 161830781.31191796,
+   "obr_unmapped_gbp": 8404324.37680919,
+   "ratio_raw": 0.8003566205913494,
+   "ratio_scaled": 0.6920791355034284,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1564524626351558,
+     "obr_event_forecast_gbp": 137397550938.16507,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual Primary Threshold and Lower Profits Limit to \u00a312,570 from July 2022",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 131415387.79876709,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 225768810.04682043,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit": 131415387.79876709
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
+   "obr_mapped_gbp": 187095690.65282813,
+   "obr_unmapped_gbp": 13174261.122706931,
+   "ratio_raw": 0.7023966577756163,
+   "ratio_scaled": 0.582079463374564,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2067023524649403,
+     "obr_event_forecast_gbp": 140189005192.2145,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual Primary Threshold and Lower Profits Limit to \u00a312,570 from July 2022",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 136141105.46194458,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 237741229.73812705,
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "universal_credit": 136141105.46194458
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
+   "obr_mapped_gbp": 192320852.79072654,
+   "obr_unmapped_gbp": 16630393.86488186,
+   "ratio_raw": 0.7078853046168955,
+   "ratio_scaled": 0.5726440702435357,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2361697979616624,
+     "obr_event_forecast_gbp": 143769157591.09586,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: increase annual Primary Threshold and Lower Profits Limit to \u00a312,570 from July 2022",
+   "year": 2026
+  }
+ ],
+ "schema_version": 1
+}
