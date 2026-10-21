@@ -287,7 +287,12 @@ def variant_view(record: dict) -> dict:
 # --- specs ---------------------------------------------------------------------
 
 
+INVENTORY_PATH = "data/uk/events/inventory.jsonl"
+
+
 def load_registry(spec: dict, *, root: Path = ROOT) -> tuple[dict, str]:
+    """The event's OBR rows: its registry, or for an event with none, its
+    rows of the inventory (#158) in the registry's shape."""
     registry = spec["registry"]
     path = root / registry["path"]
     payload = path.read_bytes()
@@ -296,7 +301,54 @@ def load_registry(spec: dict, *, root: Path = ROOT) -> tuple[dict, str]:
         raise ExperimentError(
             f"{registry['path']}: sha256 {digest}, the spec binds {registry['sha256']}"
         )
+    if registry.get("kind") == "inventory":
+        if registry["path"] != INVENTORY_PATH:
+            raise ExperimentError(f"an inventory source must be {INVENTORY_PATH}")
+        return inventory_registry(payload, spec["event_slug"]), digest
     return json.loads(payload), digest
+
+
+def inventory_registry(payload: bytes, event: str) -> dict:
+    """Group an event's inventory rows (one per measure and head) into
+    measures with one source row per head and fiscal year. GBP millions
+    become GBP exactly, through the value's decimal string."""
+    measures: dict[str, dict] = {}
+    name = None
+    fys: set[str] = set()
+    for line in payload.decode().splitlines():
+        row = json.loads(line)
+        if row["event_key"] != event:
+            continue
+        name = row["event"]
+        measure = measures.setdefault(
+            row["measure_key"],
+            {
+                "measure_key": row["measure_key"],
+                "title": row["measure"],
+                "fiscal_event": row["event"],
+                "source_rows": [],
+            },
+        )
+        for fy, value in sorted(row["costing_gbp_m"].items()):
+            fys.add(fy)
+            measure["source_rows"].append(
+                {
+                    "source_row_id": f"{row['row_id']}:{fy}",
+                    "fy": fy,
+                    "tax_head": row["head"],
+                    "value_gbp_decimal": str(Decimal(repr(value)) * 1_000_000),
+                    "inventory_class": row["class"],
+                }
+            )
+    if not measures:
+        raise ExperimentError(f"{event}: no rows in the inventory")
+    return {
+        "event_slug": event,
+        "event_name": name,
+        "calendar_years": sorted(fy_start(fy) for fy in fys),
+        "source": "inventory",
+        "measures": list(measures.values()),
+    }
 
 
 def load_spec(event: str, *, root: Path = ROOT) -> dict:
@@ -407,6 +459,17 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
         )
         need(bool(experiment.get("note")), where + "note")
         need(bool(experiment.get("sources")), where + "sources")
+        limit = experiment.get("years")
+        need(
+            limit is None
+            or (
+                isinstance(limit, list)
+                and bool(limit)
+                and all(isinstance(y, int) and not isinstance(y, bool) for y in limit)
+                and limit == sorted(set(limit))
+            ),
+            where + "years must be a sorted list of calendar years",
+        )
         mirror = experiment.get("mirror_of")
         need(
             mirror is None
@@ -454,10 +517,11 @@ def plan(
         ),
         "experiments": [i for i in ids if i in chosen_ids],
         "grid": [
-            {"experiment_id": i, "year": y}
-            for i in ids
-            if i in chosen_ids
+            {"experiment_id": e["experiment_id"], "year": y}
+            for e in spec["experiments"]
+            if e["experiment_id"] in chosen_ids
             for y in chosen
+            if e.get("years") is None or y in e["years"]
         ],
     }
 
@@ -951,11 +1015,14 @@ def run(args) -> int:
     ]
     files = []
     for year in planned["years"]:
+        cells = {c["experiment_id"] for c in planned["grid"] if c["year"] == year}
+        if not cells:
+            continue
         files += run_year(
             spec,
             registry,
             population,
-            chosen,
+            [e for e in chosen if e["experiment_id"] in cells],
             year,
             pre,
             registry_sha256=registry_sha256,

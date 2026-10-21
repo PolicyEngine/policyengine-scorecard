@@ -1,0 +1,133 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "spring_budget_2021",
+ "experiments": [
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "CGT",
+     "channel": "tax",
+     "obr_heads": [
+      "Capital gains tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "capital_gains_tax"
+     ]
+    },
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "sign_only",
+   "magnitude_reason": "A threshold freeze's yield depends on inflation since the event: the counterfactual indexes by outturn CPI (10.1% in September 2022), far above the March 2021 forecast the OBR costed against (PLAN.md names this case).",
+   "measure_key": "spring_budget_2021__income_tax_maintain_personal_allowance_and_higher_rate_threshold_at_2021",
+   "note": "Indexed counterfactual: personal allowance \u00a315,230 (2024-25) and \u00a315,490 (2025-26), basic rate limit \u00a345,800 and \u00a346,600, so the higher rate threshold and NICs upper limits \u00a361,030 and \u00a362,090. Modern law: \u00a312,570, \u00a337,700, \u00a350,270. The dividend higher-rate band moves with the basic rate limit; the primary threshold keeps Spring Statement 2022's \u00a312,570 and Scottish bands are devolved.",
+   "reform": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2024-01-01.2024-12-31": 15230.0,
+     "2025-01-01.2025-12-31": 15490.0
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+     "2024-01-01.2024-12-31": 45800.0,
+     "2025-01-01.2025-12-31": 46600.0
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2024-01-01.2024-12-31": 45800.0,
+     "2025-01-01.2025-12-31": 46600.0
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2024-01-01.2024-12-31": 1173.65,
+     "2025-01-01.2025-12-31": 1194.04
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2024-01-01.2024-12-31": 61030.0,
+     "2025-01-01.2025-12-31": 62090.0
+    }
+   },
+   "sources": [
+    "Finance Act 2021 s. 5 (https://www.legislation.gov.uk/ukpga/2021/26/section/5)",
+    "Income Tax Act 2007 s. 21 and s. 57 (indexation and rounding)",
+    "ONS CPI annual rate, September 2021-2024: 3.1%, 10.1%, 6.7%, 1.7%"
+   ]
+  },
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2021_fuel_duty_freeze_2021",
+   "heads": [
+    {
+     "base_sheet": "Fuel",
+     "channel": "tax",
+     "obr_heads": [
+      "Fuel duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "fuel_duty"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spring_budget_2021__fuel_duty_one_year_freeze_in_2021_22",
+   "note": "Without the freeze the April 2021 uprating would have applied: the March 2021 forecast's RPI for 2021, 2.513% (RPI!O27). Every later rate keeps the higher level, so modern law's 52.95p becomes 54.281p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
+   "reform": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2026-12-31": 0.542808
+    }
+   },
+   "sources": [
+    "OBR Historical official forecasts database, Spring 2026, sheet RPI",
+    "pe-uk 2.132.6 parameters gov/hmrc/fuel_duty/petrol_and_diesel.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Budget 2021.",
+ "obr_forecast_vintage": "March 2021",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

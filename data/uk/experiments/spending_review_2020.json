@@ -1,0 +1,51 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "spending_review_2020",
+ "experiments": [
+  {
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sr2020_pension_credit_smg_uprating",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "pension_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "spending_review_2020__pension_credit_uprating_of_the_standard_minimum_guarantee",
+   "note": "Without the April 2021 uprating the guarantee stays at its statutory minimum, a freeze (negative earnings growth); modern single and couple amounts for 2024-25 and 2025-26 scale by 173.75/177.10 and 265.20/270.30.",
+   "reform": {
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+     "2024-01-01.2024-12-31": 326.67,
+     "2025-01-01.2025-12-31": 340.06
+    },
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+     "2024-01-01.2024-12-31": 214.02,
+     "2025-01-01.2025-12-31": 222.8
+    }
+   },
+   "sources": [
+    "The Social Security Benefits Up-rating Order 2021 (https://www.legislation.gov.uk/uksi/2021/162/made)",
+    "Social Security Administration Act 1992 s. 150A",
+    "pe-uk 2.132.6 parameters gov/dwp/pension_credit/guarantee_credit/minimum_guarantee.yaml"
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spending Review 2020.",
+ "obr_forecast_vintage": "November 2020",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

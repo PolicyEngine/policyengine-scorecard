@@ -196,6 +196,94 @@ def stamp_duty_group() -> dict:
     }
 
 
+# Fuel duty: a one-year freeze forgoes that April's RPI uprating, and every
+# later rate keeps the lower level. The forgone uprating is the event
+# forecast's RPI for the uprating year, from the OBR's Historical official
+# forecasts database (Spring 2026), sheet RPI, percentage change on a year
+# earlier: March 2020 forecast for 2020, RPI!N25; March 2021 forecast for
+# 2021, RPI!O27; October 2021 forecast for 2022, RPI!P28. Modern law (pe-uk
+# 2.132.6) holds 52.95p a litre from 23 March 2022 to 1 January 2027; the
+# parameter is day-weighted over each fiscal year (fiscal_year_blend), so a
+# window must cover whole fiscal years and the experiments run 2024-25 and
+# 2025-26 only, inside that constant stretch.
+FUEL_DUTY_MODERN = 0.5295
+RPI_FORGONE = {
+    "budget_2020": ("b2020", 2.16390512465372, "RPI!N25", "March 2020", 2020),
+    "spring_budget_2021": ("sb2021", 2.5133882664885476, "RPI!O27", "March 2021", 2021),
+    "autumn_budget_2021": (
+        "ab2021",
+        4.966476437640965,
+        "RPI!P28",
+        "October 2021",
+        2022,
+    ),
+}
+
+
+def fuel_duty_freeze(event: str, measure_key: str) -> dict:
+    prefix, rpi, cell, vintage, year = RPI_FORGONE[event]
+    rate = round(FUEL_DUTY_MODERN * (1 + rpi / 100), 6)
+    return {
+        "experiment_id": f"{prefix}_fuel_duty_freeze_{year}",
+        "measure_key": measure_key,
+        "construction": "reversal_on_modern_law",
+        "reform": {
+            "gov.hmrc.fuel_duty.petrol_and_diesel": {"2024-01-01.2026-12-31": rate}
+        },
+        "years": [2024, 2025],
+        "heads": [
+            {
+                "obr_heads": ["Fuel duty"],
+                "pe_variables": ["fuel_duty"],
+                "channel": "tax",
+                "base_sheet": "Fuel",
+                "pe_base_comparable": False,
+            }
+        ],
+        "magnitude_check": "scaled",
+        "note": (
+            f"Without the freeze the April {year} uprating would have applied: the "
+            f"{vintage} forecast's RPI for {year}, {rpi:.3f}% ({cell}). Every later "
+            f"rate keeps the higher level, so modern law's 52.95p becomes "
+            f"{rate * 100:.3f}p in 2024-25 and 2025-26. pe-uk's fuel_duty covers "
+            "household car fuel only, so business and haulage fuel in the OBR's "
+            "base are outside it."
+        ),
+        "sources": [
+            "OBR Historical official forecasts database, Spring 2026, sheet RPI",
+            "pe-uk 2.132.6 parameters gov/hmrc/fuel_duty/petrol_and_diesel.yaml",
+        ],
+    }
+
+
+# Spring Budget 2021's freeze of the personal allowance and basic rate limit
+# to 2025-26. Without it each would be indexed by the previous September's
+# CPI (ONS: 3.1% 2021, 10.1% 2022, 6.7% 2023, 1.7% 2024), the allowance
+# rounded up to £10 and the basic rate limit to £100 (ITA 2007 s. 57 and
+# s. 21). NICs' upper earnings and profits limits follow the higher rate
+# threshold (allowance plus limit), the weekly limit at 1/52 of it.
+def indexed(
+    start: float, step: int, rates=(0.031, 0.101, 0.067, 0.017)
+) -> dict[int, float]:
+    out, value = {}, start
+    for year, rate in zip(range(2022, 2026), rates):
+        value = -(-value * (1 + rate) // step) * step
+        out[year] = float(value)
+    return out
+
+
+PA_CF = indexed(12_570, 10)
+BRL_CF = indexed(37_700, 100)
+HRT_CF = {year: PA_CF[year] + BRL_CF[year] for year in PA_CF}
+
+# Spending Review 2020: the standard minimum guarantee rose from £173.75 to
+# £177.10 (single) and £265.20 to £270.30 (couple) in April 2021, where the
+# statutory minimum, earnings growth, was negative and so a freeze (Social
+# Security Administration Act 1992 s. 150A). Later amounts scale by the
+# frozen-over-uprated ratio.
+SMG_FREEZE = {"SINGLE": 173.75 / 177.10, "COUPLE": 265.20 / 270.30}
+
+
 def experiments() -> dict[str, dict]:
     ab21 = "autumn_budget_2021"
     ss22 = "spring_statement_2022"
@@ -576,11 +664,126 @@ def experiments() -> dict[str, dict]:
             ],
         },
     }
+    specs[ab21]["experiments"].append(
+        fuel_duty_freeze(ab21, f"{ab21}__fuel_duty_one_year_freeze_in_2022_23")
+    )
+    sb21 = "spring_budget_2021"
+    sr20 = "spending_review_2020"
+    b20 = "budget_2020"
+    specs[sb21] = {
+        "obr_forecast_vintage": "March 2021",
+        "experiments": [
+            {
+                "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+                "measure_key": f"{sb21}__income_tax_maintain_personal_allowance_and_higher_rate_threshold_at_2021",
+                "construction": "reversal_on_modern_law",
+                "reform": {
+                    "gov.hmrc.income_tax.allowances.personal_allowance.amount": yearly(
+                        {y: PA_CF[y] for y in (2024, 2025)}
+                    ),
+                    "gov.hmrc.income_tax.rates.uk[1].threshold": yearly(
+                        {y: BRL_CF[y] for y in (2024, 2025)}
+                    ),
+                    "gov.hmrc.income_tax.rates.dividends[1].threshold": yearly(
+                        {y: BRL_CF[y] for y in (2024, 2025)}
+                    ),
+                    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": yearly(
+                        {y: money(HRT_CF[y] / 52) for y in (2024, 2025)}
+                    ),
+                    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": yearly(
+                        {y: HRT_CF[y] for y in (2024, 2025)}
+                    ),
+                },
+                "heads": [
+                    INCOME_TAX,
+                    nics_group(["NICs"]),
+                    {
+                        "obr_heads": ["Capital gains tax"],
+                        "pe_variables": ["capital_gains_tax"],
+                        "channel": "tax",
+                        "base_sheet": "CGT",
+                        "pe_base_comparable": True,
+                    },
+                    uc_group(),
+                ],
+                "magnitude_check": "sign_only",
+                "magnitude_reason": (
+                    "A threshold freeze's yield depends on inflation since the "
+                    "event: the counterfactual indexes by outturn CPI (10.1% in "
+                    "September 2022), far above the March 2021 forecast the OBR "
+                    "costed against (PLAN.md names this case)."
+                ),
+                "note": (
+                    f"Indexed counterfactual: personal allowance £{PA_CF[2024]:,.0f} "
+                    f"(2024-25) and £{PA_CF[2025]:,.0f} (2025-26), basic rate limit "
+                    f"£{BRL_CF[2024]:,.0f} and £{BRL_CF[2025]:,.0f}, so the higher rate "
+                    f"threshold and NICs upper limits £{HRT_CF[2024]:,.0f} and "
+                    f"£{HRT_CF[2025]:,.0f}. Modern law: £12,570, £37,700, £50,270. The "
+                    "dividend higher-rate band moves with the basic rate limit; the "
+                    "primary threshold keeps Spring Statement 2022's £12,570 and Scottish "
+                    "bands are devolved."
+                ),
+                "sources": [
+                    "Finance Act 2021 s. 5 (https://www.legislation.gov.uk/ukpga/2021/26/section/5)",
+                    "Income Tax Act 2007 s. 21 and s. 57 (indexation and rounding)",
+                    "ONS CPI annual rate, September 2021-2024: 3.1%, 10.1%, 6.7%, 1.7%",
+                ],
+            },
+            fuel_duty_freeze(sb21, f"{sb21}__fuel_duty_one_year_freeze_in_2021_22"),
+        ],
+    }
+    specs[sr20] = {
+        "obr_forecast_vintage": "November 2020",
+        "experiments": [
+            {
+                "experiment_id": "sr2020_pension_credit_smg_uprating",
+                "measure_key": f"{sr20}__pension_credit_uprating_of_the_standard_minimum_guarantee",
+                "construction": "reversal_on_modern_law",
+                "reform": {
+                    f"gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.{kind}": yearly(
+                        {
+                            y: money(v * SMG_FREEZE[kind])
+                            for y, v in (
+                                SMG_SINGLE if kind == "SINGLE" else SMG_COUPLE
+                            ).items()
+                            if y in (2024, 2025)
+                        }
+                    )
+                    for kind in ("SINGLE", "COUPLE")
+                },
+                "heads": [uc_group(["pension_credit"])],
+                "magnitude_check": "scaled",
+                "note": (
+                    "Without the April 2021 uprating the guarantee stays at its "
+                    "statutory minimum, a freeze (negative earnings growth); modern "
+                    "single and couple amounts for 2024-25 and 2025-26 scale by "
+                    "173.75/177.10 and 265.20/270.30."
+                ),
+                "sources": [
+                    "The Social Security Benefits Up-rating Order 2021 (https://www.legislation.gov.uk/uksi/2021/162/made)",
+                    "Social Security Administration Act 1992 s. 150A",
+                    "pe-uk 2.132.6 parameters gov/dwp/pension_credit/guarantee_credit/minimum_guarantee.yaml",
+                ],
+            }
+        ],
+    }
+    specs[b20] = {
+        "obr_forecast_vintage": "March 2020",
+        "experiments": [fuel_duty_freeze(b20, f"{b20}__fuel_duty_freeze_for_2020_21")],
+    }
     return specs
 
 
 def registry_ref(event: str) -> dict:
+    """The event's registry, or the inventory for an event without one."""
     relative = f"data/uk/events/{event}_measures.json"
+    if not (ROOT / relative).exists():
+        relative = "data/uk/events/inventory.jsonl"
+        return {
+            "kind": "inventory",
+            "path": relative,
+            "sha256": hashlib.sha256((ROOT / relative).read_bytes()).hexdigest(),
+        }
     return {
         "path": relative,
         "sha256": hashlib.sha256((ROOT / relative).read_bytes()).hexdigest(),
@@ -592,8 +795,9 @@ def build() -> dict[str, bytes]:
 
     out = {}
     for event, body in experiments().items():
-        registry = json.loads(
-            (ROOT / f"data/uk/events/{event}_measures.json").read_bytes()
+        reference = registry_ref(event)
+        registry, _ = experiments_module.load_registry(
+            {"registry": reference, "event_slug": event}
         )
         spec = {
             "schema_version": 1,
@@ -601,7 +805,7 @@ def build() -> dict[str, bytes]:
             "label": experiments_module.LABEL,
             "label_text": experiments_module.label_text(registry["event_name"]),
             "event_slug": event,
-            "registry": registry_ref(event),
+            "registry": reference,
             "obr_forecast_vintage": body["obr_forecast_vintage"],
             "built_by": "pipeline/uk_experiment_specs.py",
             "experiments": body["experiments"],
