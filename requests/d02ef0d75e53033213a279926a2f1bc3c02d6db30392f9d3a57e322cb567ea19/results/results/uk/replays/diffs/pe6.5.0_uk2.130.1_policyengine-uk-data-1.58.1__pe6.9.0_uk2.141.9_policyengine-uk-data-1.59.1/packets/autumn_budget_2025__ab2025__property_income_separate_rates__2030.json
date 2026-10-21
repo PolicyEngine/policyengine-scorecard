@@ -1,0 +1,1988 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.property.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.property.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__property_income_separate_rates_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "475032df4ba4aa52951217dccffa075bf8bd5ee67d6ffd83a05ec7fe76cdd88d"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.property.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.property.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__property_income_separate_rates_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "3913af5addaf60647b2e532e11b550f8bb6e8e6b5a7f500b561ec8d644233c62"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.9",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "ab2025__property_income_separate_rates",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2027-28",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.45,
+     "gov.hmrc.income_tax.rates.property.basic": 0.2,
+     "gov.hmrc.income_tax.rates.property.higher": 0.4
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.45,
+     "gov.hmrc.income_tax.rates.property.basic": 0.2,
+     "gov.hmrc.income_tax.rates.property.higher": 0.4
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__property_income_separate_rates",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.property.additional",
+     "gov.hmrc.income_tax.rates.property.basic",
+     "gov.hmrc.income_tax.rates.property.higher"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.property\\.basic|gov\\.hmrc\\.income_tax\\.rates\\.property\\.higher|gov\\.hmrc\\.income_tax\\.rates\\.property\\.additional",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.property.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.property.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "pe_gap": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12276:1358a50757a0a548",
+     "source_row_number": 12276,
+     "source_row_sha256": "1358a50757a0a548f82548c8f51bc58fc07ad2a1395242cc01a18ae456950103",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12277:6ce827490c5daa83",
+     "source_row_number": 12277,
+     "source_row_sha256": "6ce827490c5daa83e0e67ead039dd31f20acabc0ad8c444c21a2a80937172ff9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12278:a0955f3d22653115",
+     "source_row_number": 12278,
+     "source_row_sha256": "a0955f3d22653115a94043746f83053506f8a08d97e4880c81595c7655a392d9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12279:d5e29857c32b332f",
+     "source_row_number": 12279,
+     "source_row_sha256": "d5e29857c32b332f6d6530c2e128f2c21b5acd9c04ba7a422bab8a9c4287bddf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -8142549.100000001,
+     "value_gbp_decimal": "-8142549.100000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12280:e36c79de21c4177c",
+     "source_row_number": 12280,
+     "source_row_sha256": "e36c79de21c4177c270f03aa653b706d6b2127cac4fa451dcc511add553973f7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -6397863.100000001,
+     "value_gbp_decimal": "-6397863.100000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12281:fe6a41b2e002c02c",
+     "source_row_number": 12281,
+     "source_row_sha256": "fe6a41b2e002c02c887f19fc70b6858c19bcdfd34e6b334720c08e75a0aee693",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -6968380.1,
+     "value_gbp_decimal": "-6968380.1"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12282:7f38814af1f52a50",
+     "source_row_number": 12282,
+     "source_row_sha256": "7f38814af1f52a50ed070d582f55c432d817d40dd166156b73aa345ef17f742c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12283:7d672bc1fee61364",
+     "source_row_number": 12283,
+     "source_row_sha256": "7d672bc1fee613641c5639906e4aa5d3e7d2e91c8a9d91b1c1cb317c79d039bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12284:4b5e915d45bc4a6b",
+     "source_row_number": 12284,
+     "source_row_sha256": "4b5e915d45bc4a6b3b5395d2dcca341b175fbcc33772e54d79dbbce355d7016b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12285:75dff87b1a3e5f53",
+     "source_row_number": 12285,
+     "source_row_sha256": "75dff87b1a3e5f53fe5137178e80dd69e04e371b037f8a1488a147e765c3ee6b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 588345351.0,
+     "value_gbp_decimal": "588345351.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12286:9fd0f4d9d9482bcc",
+     "source_row_number": 12286,
+     "source_row_sha256": "9fd0f4d9d9482bccf8b4a095224eafc4c04ca892149735276b932d01ca8460fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 427016781.0,
+     "value_gbp_decimal": "427016781.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+     "source_row_number": 12287,
+     "source_row_sha256": "19f9ac9e5f5eff97b7689e98548eca8d4fe3dec6cf6872c66f97804cb5dba0d1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 433272489.0,
+     "value_gbp_decimal": "433272489.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12288:41e92fa541a78d9c",
+     "source_row_number": 12288,
+     "source_row_sha256": "41e92fa541a78d9c4a97cbf8148c8f1cb74f7d55f4b348193176e7d7c440b185",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12289:ab09df21e9989520",
+     "source_row_number": 12289,
+     "source_row_sha256": "ab09df21e9989520d3e2e0063d855c481c1fae1d3eadc529ce98298250e799e4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12290:02404f5b489513cd",
+     "source_row_number": 12290,
+     "source_row_sha256": "02404f5b489513cd7437b8664758212abe0706bde56081d3cf173b091d9090a5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12291:3e7e48668c541715",
+     "source_row_number": 12291,
+     "source_row_sha256": "3e7e48668c54171502655f35b2724d72e65d62640ddd91e7f971c5377fc5df7d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -15094923.0,
+     "value_gbp_decimal": "-15094923.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12292:de3e9e9091c35830",
+     "source_row_number": 12292,
+     "source_row_sha256": "de3e9e9091c35830faccb1e94c41ed9492a4549f6c8dfe466d4ceec77a09415b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -11854122.0,
+     "value_gbp_decimal": "-11854122.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12293:a028a5ab264bbfc5",
+     "source_row_number": 12293,
+     "source_row_sha256": "a028a5ab264bbfc579e88a902db6f85e400300668d7ade35d7b385af5654d059",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -12904175.0,
+     "value_gbp_decimal": "-12904175.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12294:cf4ed55d420364c2",
+     "source_row_number": 12294,
+     "source_row_sha256": "cf4ed55d420364c20e2ab71232abd0e028044a7450f6f58714c7b9ff9ff7a15f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12295:46ea47c6a25ea894",
+     "source_row_number": 12295,
+     "source_row_sha256": "46ea47c6a25ea894a97956e97c433679e98327e4cd847f8d5797980a6dcc3a58",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 817095.11,
+     "value_gbp_decimal": "817095.11"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12296:63c346a2595fc727",
+     "source_row_number": 12296,
+     "source_row_sha256": "63c346a2595fc727b784e5c9b175becacd985bce1d385adb8371b3cb2d46ea3e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 6512908.279999999,
+     "value_gbp_decimal": "6512908.279999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12297:350e4e4bda28f94d",
+     "source_row_number": 12297,
+     "source_row_sha256": "350e4e4bda28f94d87644f9593a39d8dfd52cca4ae1587ca152064bf8b42d9f5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 12640579.24,
+     "value_gbp_decimal": "12640579.24"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12298:f4388d7e0643d0ef",
+     "source_row_number": 12298,
+     "source_row_sha256": "f4388d7e0643d0ef4e81f06159822d807d21302f2232d63db8a4614e79b0bafc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 18576192.92,
+     "value_gbp_decimal": "18576192.92"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12299:48c029a08ab46ea9",
+     "source_row_number": 12299,
+     "source_row_sha256": "48c029a08ab46ea98fda6cf5e362c101b2ae95641de5d589768c1ee3e40b4bba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 24921008.55,
+     "value_gbp_decimal": "24921008.55"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12300:6f470e8148ff30ef",
+     "source_row_number": 12300,
+     "source_row_sha256": "6f470e8148ff30ef06cdae7f70b2a51fc967f33778bd8a42fbab3714451d6d4e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12301:f163cbc02ac890af",
+     "source_row_number": 12301,
+     "source_row_sha256": "f163cbc02ac890af85418bc02d0723b5e54d68c8af70ec8f97912f9c98745c63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12302:347982f07f265709",
+     "source_row_number": 12302,
+     "source_row_sha256": "347982f07f2657093e67781680dceb46b49cf8ceaee754bddc0dd7b1127db92e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12303:0dbe53a3027ab483",
+     "source_row_number": 12303,
+     "source_row_sha256": "0dbe53a3027ab48398ae5a97fb25545f4ab91364e8b64810e9c14343e8878993",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -29910871.0,
+     "value_gbp_decimal": "-29910871.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12304:884ec485f8ff3f23",
+     "source_row_number": 12304,
+     "source_row_sha256": "884ec485f8ff3f23f6dacae92a1a5bad9a62ae8cd26cd46c50c549f302f24339",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -23521973.0,
+     "value_gbp_decimal": "-23521973.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12305:de095fd703abbe33",
+     "source_row_number": 12305,
+     "source_row_sha256": "de095fd703abbe33e8e9290f9f97d6629c756801beafae8a31c267eb25104830",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -25641342.0,
+     "value_gbp_decimal": "-25641342.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23945:8f9256e4921b03e6",
+     "source_row_number": 23945,
+     "source_row_sha256": "8f9256e4921b03e6628d8f65bda887c97e52117fea9d730b66d5d0d949bf6237",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23946:f7e6722cea0e8858",
+     "source_row_number": 23946,
+     "source_row_sha256": "f7e6722cea0e88581ba74ec64b3f001fa4bfe0e398bc20f28c00da9d4e6202e7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23947:c194392122620e36",
+     "source_row_number": 23947,
+     "source_row_sha256": "c194392122620e363fa65f808cd0b68cd59584076d7bf3bb7f0594b2db42bb58",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23948:9ec9e2ec991a9b24",
+     "source_row_number": 23948,
+     "source_row_sha256": "9ec9e2ec991a9b246512037ea5975576029e28cc1960a612b2e81725e203abfb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 42360741.8,
+     "value_gbp_decimal": "42360741.8"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23949:adcbd7af1eaeebb1",
+     "source_row_number": 23949,
+     "source_row_sha256": "adcbd7af1eaeebb1945e2670d9c99a28792e5c8d68d6f3b19eb5f5973f8db94b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 30664505.5,
+     "value_gbp_decimal": "30664505.5"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23950:496b684d37af3c66",
+     "source_row_number": 23950,
+     "source_row_sha256": "496b684d37af3c66d47f6380622a9828b94ef6ee1839ef7318ae89d63e644f2b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 31036869.9,
+     "value_gbp_decimal": "31036869.9"
+    }
+   ],
+   "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "Inheritance tax",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2027-28",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.45,
+     "gov.hmrc.income_tax.rates.property.basic": 0.2,
+     "gov.hmrc.income_tax.rates.property.higher": 0.4
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.45,
+     "gov.hmrc.income_tax.rates.property.basic": 0.2,
+     "gov.hmrc.income_tax.rates.property.higher": 0.4
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.property.additional": 0.47,
+     "gov.hmrc.income_tax.rates.property.basic": 0.22,
+     "gov.hmrc.income_tax.rates.property.higher": 0.42
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__property_income_separate_rates",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.property.additional",
+     "gov.hmrc.income_tax.rates.property.basic",
+     "gov.hmrc.income_tax.rates.property.higher"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.property\\.basic|gov\\.hmrc\\.income_tax\\.rates\\.property\\.higher|gov\\.hmrc\\.income_tax\\.rates\\.property\\.additional",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.property.additional": {
+     "2027-01-01.2030-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2027-01-01.2030-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.property.higher": {
+     "2027-01-01.2030-12-31": 0.4
+    }
+   },
+   "pe_gap": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12276:1358a50757a0a548",
+     "source_row_number": 12276,
+     "source_row_sha256": "1358a50757a0a548f82548c8f51bc58fc07ad2a1395242cc01a18ae456950103",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12277:6ce827490c5daa83",
+     "source_row_number": 12277,
+     "source_row_sha256": "6ce827490c5daa83e0e67ead039dd31f20acabc0ad8c444c21a2a80937172ff9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12278:a0955f3d22653115",
+     "source_row_number": 12278,
+     "source_row_sha256": "a0955f3d22653115a94043746f83053506f8a08d97e4880c81595c7655a392d9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12279:d5e29857c32b332f",
+     "source_row_number": 12279,
+     "source_row_sha256": "d5e29857c32b332f6d6530c2e128f2c21b5acd9c04ba7a422bab8a9c4287bddf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -8142549.100000001,
+     "value_gbp_decimal": "-8142549.100000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12280:e36c79de21c4177c",
+     "source_row_number": 12280,
+     "source_row_sha256": "e36c79de21c4177c270f03aa653b706d6b2127cac4fa451dcc511add553973f7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -6397863.100000001,
+     "value_gbp_decimal": "-6397863.100000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12281:fe6a41b2e002c02c",
+     "source_row_number": 12281,
+     "source_row_sha256": "fe6a41b2e002c02c887f19fc70b6858c19bcdfd34e6b334720c08e75a0aee693",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -6968380.1,
+     "value_gbp_decimal": "-6968380.1"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12282:7f38814af1f52a50",
+     "source_row_number": 12282,
+     "source_row_sha256": "7f38814af1f52a50ed070d582f55c432d817d40dd166156b73aa345ef17f742c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12283:7d672bc1fee61364",
+     "source_row_number": 12283,
+     "source_row_sha256": "7d672bc1fee613641c5639906e4aa5d3e7d2e91c8a9d91b1c1cb317c79d039bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12284:4b5e915d45bc4a6b",
+     "source_row_number": 12284,
+     "source_row_sha256": "4b5e915d45bc4a6b3b5395d2dcca341b175fbcc33772e54d79dbbce355d7016b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12285:75dff87b1a3e5f53",
+     "source_row_number": 12285,
+     "source_row_sha256": "75dff87b1a3e5f53fe5137178e80dd69e04e371b037f8a1488a147e765c3ee6b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 588345351.0,
+     "value_gbp_decimal": "588345351.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12286:9fd0f4d9d9482bcc",
+     "source_row_number": 12286,
+     "source_row_sha256": "9fd0f4d9d9482bccf8b4a095224eafc4c04ca892149735276b932d01ca8460fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 427016781.0,
+     "value_gbp_decimal": "427016781.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+     "source_row_number": 12287,
+     "source_row_sha256": "19f9ac9e5f5eff97b7689e98548eca8d4fe3dec6cf6872c66f97804cb5dba0d1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 433272489.0,
+     "value_gbp_decimal": "433272489.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12288:41e92fa541a78d9c",
+     "source_row_number": 12288,
+     "source_row_sha256": "41e92fa541a78d9c4a97cbf8148c8f1cb74f7d55f4b348193176e7d7c440b185",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12289:ab09df21e9989520",
+     "source_row_number": 12289,
+     "source_row_sha256": "ab09df21e9989520d3e2e0063d855c481c1fae1d3eadc529ce98298250e799e4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12290:02404f5b489513cd",
+     "source_row_number": 12290,
+     "source_row_sha256": "02404f5b489513cd7437b8664758212abe0706bde56081d3cf173b091d9090a5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12291:3e7e48668c541715",
+     "source_row_number": 12291,
+     "source_row_sha256": "3e7e48668c54171502655f35b2724d72e65d62640ddd91e7f971c5377fc5df7d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -15094923.0,
+     "value_gbp_decimal": "-15094923.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12292:de3e9e9091c35830",
+     "source_row_number": 12292,
+     "source_row_sha256": "de3e9e9091c35830faccb1e94c41ed9492a4549f6c8dfe466d4ceec77a09415b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -11854122.0,
+     "value_gbp_decimal": "-11854122.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12293:a028a5ab264bbfc5",
+     "source_row_number": 12293,
+     "source_row_sha256": "a028a5ab264bbfc579e88a902db6f85e400300668d7ade35d7b385af5654d059",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -12904175.0,
+     "value_gbp_decimal": "-12904175.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12294:cf4ed55d420364c2",
+     "source_row_number": 12294,
+     "source_row_sha256": "cf4ed55d420364c20e2ab71232abd0e028044a7450f6f58714c7b9ff9ff7a15f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12295:46ea47c6a25ea894",
+     "source_row_number": 12295,
+     "source_row_sha256": "46ea47c6a25ea894a97956e97c433679e98327e4cd847f8d5797980a6dcc3a58",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 817095.11,
+     "value_gbp_decimal": "817095.11"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12296:63c346a2595fc727",
+     "source_row_number": 12296,
+     "source_row_sha256": "63c346a2595fc727b784e5c9b175becacd985bce1d385adb8371b3cb2d46ea3e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 6512908.279999999,
+     "value_gbp_decimal": "6512908.279999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12297:350e4e4bda28f94d",
+     "source_row_number": 12297,
+     "source_row_sha256": "350e4e4bda28f94d87644f9593a39d8dfd52cca4ae1587ca152064bf8b42d9f5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 12640579.24,
+     "value_gbp_decimal": "12640579.24"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12298:f4388d7e0643d0ef",
+     "source_row_number": 12298,
+     "source_row_sha256": "f4388d7e0643d0ef4e81f06159822d807d21302f2232d63db8a4614e79b0bafc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 18576192.92,
+     "value_gbp_decimal": "18576192.92"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12299:48c029a08ab46ea9",
+     "source_row_number": 12299,
+     "source_row_sha256": "48c029a08ab46ea98fda6cf5e362c101b2ae95641de5d589768c1ee3e40b4bba",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 24921008.55,
+     "value_gbp_decimal": "24921008.55"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12300:6f470e8148ff30ef",
+     "source_row_number": 12300,
+     "source_row_sha256": "6f470e8148ff30ef06cdae7f70b2a51fc967f33778bd8a42fbab3714451d6d4e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12301:f163cbc02ac890af",
+     "source_row_number": 12301,
+     "source_row_sha256": "f163cbc02ac890af85418bc02d0723b5e54d68c8af70ec8f97912f9c98745c63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12302:347982f07f265709",
+     "source_row_number": 12302,
+     "source_row_sha256": "347982f07f2657093e67781680dceb46b49cf8ceaee754bddc0dd7b1127db92e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12303:0dbe53a3027ab483",
+     "source_row_number": 12303,
+     "source_row_sha256": "0dbe53a3027ab48398ae5a97fb25545f4ab91364e8b64810e9c14343e8878993",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -29910871.0,
+     "value_gbp_decimal": "-29910871.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12304:884ec485f8ff3f23",
+     "source_row_number": 12304,
+     "source_row_sha256": "884ec485f8ff3f23f6dacae92a1a5bad9a62ae8cd26cd46c50c549f302f24339",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -23521973.0,
+     "value_gbp_decimal": "-23521973.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the three certified property-income rates to 20%, 40%, and 45%. PE maps the direct Income Tax liability; the OBR also allocates effects to taxes and the Scottish block grant that this construction does not model.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12305:de095fd703abbe33",
+     "source_row_number": 12305,
+     "source_row_sha256": "de095fd703abbe33e8e9290f9f97d6629c756801beafae8a31c267eb25104830",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": -25641342.0,
+     "value_gbp_decimal": "-25641342.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23945:8f9256e4921b03e6",
+     "source_row_number": 23945,
+     "source_row_sha256": "8f9256e4921b03e6628d8f65bda887c97e52117fea9d730b66d5d0d949bf6237",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23946:f7e6722cea0e8858",
+     "source_row_number": 23946,
+     "source_row_sha256": "f7e6722cea0e88581ba74ec64b3f001fa4bfe0e398bc20f28c00da9d4e6202e7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23947:c194392122620e36",
+     "source_row_number": 23947,
+     "source_row_sha256": "c194392122620e363fa65f808cd0b68cd59584076d7bf3bb7f0594b2db42bb58",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23948:9ec9e2ec991a9b24",
+     "source_row_number": 23948,
+     "source_row_sha256": "9ec9e2ec991a9b246512037ea5975576029e28cc1960a612b2e81725e203abfb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 42360741.8,
+     "value_gbp_decimal": "42360741.8"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23949:adcbd7af1eaeebb1",
+     "source_row_number": 23949,
+     "source_row_sha256": "adcbd7af1eaeebb1945e2670d9c99a28792e5c8d68d6f3b19eb5f5973f8db94b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 30664505.5,
+     "value_gbp_decimal": "30664505.5"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23950:496b684d37af3c66",
+     "source_row_number": 23950,
+     "source_row_sha256": "496b684d37af3c66d47f6380622a9828b94ef6ee1839ef7318ae89d63e644f2b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+     "value_gbp": 31036869.9,
+     "value_gbp_decimal": "31036869.9"
+    }
+   ],
+   "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "Inheritance tax",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.property.additional": {
+      "baseline_world": 0.45,
+      "current_law": 0.47,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.47,
+      "reform_world": 0.47
+     },
+     "gov.hmrc.income_tax.rates.property.basic": {
+      "baseline_world": 0.2,
+      "current_law": 0.22,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.22,
+      "reform_world": 0.22
+     },
+     "gov.hmrc.income_tax.rates.property.higher": {
+      "baseline_world": 0.4,
+      "current_law": 0.42,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.42,
+      "reform_world": 0.42
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.property.additional": {
+      "baseline_world": 0.45,
+      "current_law": 0.47,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.47,
+      "reform_world": 0.47
+     },
+     "gov.hmrc.income_tax.rates.property.basic": {
+      "baseline_world": 0.2,
+      "current_law": 0.22,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.22,
+      "reform_world": 0.22
+     },
+     "gov.hmrc.income_tax.rates.property.higher": {
+      "baseline_world": 0.4,
+      "current_law": 0.42,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.42,
+      "reform_world": 0.42
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -6968380.1,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12281:fe6a41b2e002c02c",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": 1025483969.9395752,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 433272489.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 71551821.46990967,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 10970357.914094849
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1097035791.4094849,
+   "key": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": 10970357.914094849,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -12904175.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Inheritance tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12293:a028a5ab264bbfc5",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 24921008.55,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12299:48c029a08ab46ea9",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -25641342.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12305:de095fd703abbe33",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 31036869.9,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23950:496b684d37af3c66",
+   "level": "source_row",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": 1025483969.9395752,
+   "context": {},
+   "delta_gbp": 71551821.46990967,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 10970357.914094849
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1097035791.4094849,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": 10970357.914094849,
+   "year": 2030
+  },
+  {
+   "base_gbp": 1025483969.9395752,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 71551821.46990967,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 10970357.914094849
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1097035791.4094849,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__property_income_separate_rates",
+   "threshold_gbp": 10970357.914094849,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__property_income_separate_rates --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__property_income_separate_rates_2030",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__property_income_separate_rates --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__property_income_separate_rates_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -6968380.1,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12281:fe6a41b2e002c02c",
+   "source_row_number": 12281,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 1025483969.9395752,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 1097035791.4094849,
+   "obr_value_gbp": 433272489.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+   "source_row_number": 12287,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -12904175.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12293:a028a5ab264bbfc5",
+   "source_row_number": 12293,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 24921008.55,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12299:48c029a08ab46ea9",
+   "source_row_number": 12299,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -25641342.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12305:de095fd703abbe33",
+   "source_row_number": 12305,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 31036869.9,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23950:496b684d37af3c66",
+   "source_row_number": 23950,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -6968380.1,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12281:fe6a41b2e002c02c",
+   "source_row_number": 12281,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 1025483969.9395752,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 1097035791.4094849,
+   "obr_value_gbp": 433272489.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+   "source_row_number": 12287,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -12904175.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12293:a028a5ab264bbfc5",
+   "source_row_number": 12293,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 24921008.55,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12299:48c029a08ab46ea9",
+   "source_row_number": 12299,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -25641342.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12305:de095fd703abbe33",
+   "source_row_number": 12305,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 31036869.9,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23950:496b684d37af3c66",
+   "source_row_number": 23950,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027",
+ "year": 2030
+}

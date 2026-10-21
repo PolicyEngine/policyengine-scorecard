@@ -1,0 +1,177 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+    "2028-01-01.2028-12-31": 97.9199086029823,
+    "2029-01-01.2029-12-31": 99.8780897071249,
+    "2030-01-01.2030-12-31": 101.875685775149
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2030 proxies FY 2030-31.",
+ "certified_aggregates_gbp": {
+  "income_tax": 409454791575.6118,
+  "ni_class_1_employee": 61467352374.59189,
+  "ni_class_1_employer": 190323273485.59055,
+  "ni_class_4": 3661045785.2934456
+ },
+ "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+ "components": [
+  "ab2025__employer_nics_secondary_threshold_freeze_to_2031"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.59.1",
+ "dataset_sha256_after": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+ "dataset_sha256_before": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+ "engine_version": "2.141.9",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2030-31",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_4": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": -315678081.29437256,
+  "ni_class_1_employee": -70938600.85269165,
+  "ni_class_1_employer": 1207679475.8436584,
+  "ni_class_4": 94962.35924577713
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_4"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": 315678081.29437256,
+  "ni_class_1_employee": 70938600.85269165,
+  "ni_class_1_employer": -1207679475.8436584,
+  "ni_class_4": -94962.35924577713
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": 315678081.29437256,
+  "ni_class_1_employee": 70938600.85269165,
+  "ni_class_1_employer": -1207679475.8436584,
+  "ni_class_4": -94962.35924577713
+ },
+ "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+ "measure_total_gbp": 821157756.05584,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2028-01-01.2028-12-31": 97.9199086029823,
+     "2029-01-01.2029-12-31": 99.8780897071249,
+     "2030-01-01.2030-12-31": 101.875685775149
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.9.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+    "intended": 101.875685775149,
+    "processed": 101.875685775149
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+    "intended": 96.153846,
+    "processed": 96.153846
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 409770469656.9062,
+    "ni_class_1_employee": 61538290975.44458,
+    "ni_class_1_employer": 189115594009.7469,
+    "ni_class_4": 3660950822.9342
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 409454791575.6118,
+    "ni_class_1_employee": 61467352374.59189,
+    "ni_class_1_employer": 190323273485.59055,
+    "ni_class_4": 3661045785.2934456
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1",
+ "variant_identity_sha256": "eb11e0270f8f15d85aa07fbfbf0056f2bf6b5a2cccaa3b563c5b372a6ed20b6b",
+ "year": 2030
+}

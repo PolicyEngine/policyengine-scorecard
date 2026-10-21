@@ -1,0 +1,1761 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2028-01-01.2028-12-31": 97.9199086029823,
+     "2029-01-01.2029-12-31": 99.8780897071249,
+     "2030-01-01.2030-12-31": 101.875685775149
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "174458030ed21e38dd0f04c767b68145b2840419e7138df0ef80a4a8bfa6c5a3"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2028-01-01.2028-12-31": 97.9199086029823,
+     "2029-01-01.2029-12-31": 99.8780897071249,
+     "2030-01-01.2030-12-31": 101.875685775149
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "2d36a1aa7347a708fa2d53f664f9b9799d03e4000567f3d9ec030f56ed1c1e50"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.9",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2028-29",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2029": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2030": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_1\\.thresholds\\.secondary_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2028-01-01.2028-12-31": 97.9199086029823,
+     "2029-01-01.2029-12-31": 99.8780897071249,
+     "2030-01-01.2030-12-31": 101.875685775149
+    }
+   },
+   "pe_gap": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12252:01dfc28b448fefc1",
+     "source_row_number": 12252,
+     "source_row_sha256": "01dfc28b448fefc1d1b96d0374bc61c896e61759950973a7881728b18f0fd6fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12253:a700821a34d41059",
+     "source_row_number": 12253,
+     "source_row_sha256": "a700821a34d41059814409a295aaa8081f2a4fa49c9ce4662ad47bbaad1cf2aa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12254:ef6f52eac5c45f4c",
+     "source_row_number": 12254,
+     "source_row_sha256": "ef6f52eac5c45f4c1a9917f9b1839e7e337c0664817b0d8cb12cf2899a8ec4b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12255:0fd29e509efbba1c",
+     "source_row_number": 12255,
+     "source_row_sha256": "0fd29e509efbba1c6b053b37eeb1f2a1814b1c6be3ab439a38677104ace12e3b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -75368341.27218263,
+     "value_gbp_decimal": "-75368341.27218263"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+     "source_row_number": 12256,
+     "source_row_sha256": "5509231f1d1fc42692f920d677c7484be524b312026a14cd357c7beb89c5b2aa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -159909719.01817313,
+     "value_gbp_decimal": "-159909719.01817313"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12257:95f2605d4a114c10",
+     "source_row_number": 12257,
+     "source_row_sha256": "95f2605d4a114c108dca4558f895b8470f0cf2fbeecd7016eb8620ee05eacac5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -237932539.3115916,
+     "value_gbp_decimal": "-237932539.3115916"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12258:bd30009d1602f503",
+     "source_row_number": 12258,
+     "source_row_sha256": "bd30009d1602f503d77de55f22b47c388256304d6e5fb46b6bd1d6a98585edd6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12259:ce036213afa1446d",
+     "source_row_number": 12259,
+     "source_row_sha256": "ce036213afa1446dc8b16c682c89b3f74bdc55d061b52dbd974fbc53e44130bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12260:031335b5b668d66d",
+     "source_row_number": 12260,
+     "source_row_sha256": "031335b5b668d66dd388414844006c6949025a8abb4d0592838b1f8d514e9642",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12261:317b60a83974bf6d",
+     "source_row_number": 12261,
+     "source_row_sha256": "317b60a83974bf6da1a84b2a4b8b7352e78cc970b00664a545d1e6f3c5df1afd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 398270000.00000006,
+     "value_gbp_decimal": "398270000.00000006"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+     "source_row_number": 12262,
+     "source_row_sha256": "370b9fb9250ec360c9ad96f3d368c404da9f234de5a219a0af807a4c77ba9ddc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 842920000.0000001,
+     "value_gbp_decimal": "842920000.0000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12263:b231bc602cc23fb2",
+     "source_row_number": 12263,
+     "source_row_sha256": "b231bc602cc23fb254c3071889ad10e9f9c4e9597d12969bba6d944db24d2165",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 1253420000.0,
+     "value_gbp_decimal": "1253420000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12264:01126fa86255d2bc",
+     "source_row_number": 12264,
+     "source_row_sha256": "01126fa86255d2bc1e470c8ac3aea5ab762947b5ae26797528d4e05382d634fc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12265:97c092709106c98c",
+     "source_row_number": 12265,
+     "source_row_sha256": "97c092709106c98cf24bb94fe93840277ded7773e100a91562be347785c6eedb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12266:7a64c8990aba6f05",
+     "source_row_number": 12266,
+     "source_row_sha256": "7a64c8990aba6f056ee2f8dde929e3c006058c5b2b1c22bafaca0a1322dedcc0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -3260000.0,
+     "value_gbp_decimal": "-3260000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12267:3fa6651a965d1925",
+     "source_row_number": 12267,
+     "source_row_sha256": "3fa6651a965d192575fac1a7f773231dded86faab546ba0082394d3290a3e045",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -27970000.0,
+     "value_gbp_decimal": "-27970000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12268:45f83bc0d782b97e",
+     "source_row_number": 12268,
+     "source_row_sha256": "45f83bc0d782b97ea6b83c7421611c3b2d7aacbab8c36f9dc3b240a98989e43d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -54830000.0,
+     "value_gbp_decimal": "-54830000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12269:ac8484e9d2d62ab4",
+     "source_row_number": 12269,
+     "source_row_sha256": "ac8484e9d2d62ab414d770fc6face95b3459a78d6db428ef73db10c2159ea0a5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -69630000.00000001,
+     "value_gbp_decimal": "-69630000.00000001"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23927:fd1d4891f4b64585",
+     "source_row_number": 23927,
+     "source_row_sha256": "fd1d4891f4b64585d1b59cb40bf80ac202db3a6e59c09c72629e08da5e712591",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23928:07dd6734916f0277",
+     "source_row_number": 23928,
+     "source_row_sha256": "07dd6734916f0277ceb8aeaa3cd4861960be62ab9e6ea2a24380f30ae97fafd4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23929:aafd70576a3c0984",
+     "source_row_number": 23929,
+     "source_row_sha256": "aafd70576a3c0984586027a4b22c0d20530307e09dbd17191bf128516f13c4b3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23930:c7e38b0a5a00d8e8",
+     "source_row_number": 23930,
+     "source_row_sha256": "c7e38b0a5a00d8e8603ca40ee2d5cb1d0ed94b9e5ae84fbec6059e7c07257aca",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -793567.8033650104,
+     "value_gbp_decimal": "-793567.8033650104"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23931:d6cf2bc3c72ca4fe",
+     "source_row_number": 23931,
+     "source_row_sha256": "d6cf2bc3c72ca4fe3cbb69e5a9963af9339cda614a973f3f1625604e20b449c6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -1678443.383555091,
+     "value_gbp_decimal": "-1678443.383555091"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23932:941cef215b41c2c1",
+     "source_row_number": 23932,
+     "source_row_sha256": "941cef215b41c2c177a27e5993001cf76fb997497bceed1580e84f4e73fc17d6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -2484555.000821547,
+     "value_gbp_decimal": "-2484555.000821547"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23933:dbb15db7e903a265",
+     "source_row_number": 23933,
+     "source_row_sha256": "dbb15db7e903a265beb8ff08d2b493c17c4e1644284e4fcca9e9a78a9fb0fd24",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23934:f457b3519ddeeba0",
+     "source_row_number": 23934,
+     "source_row_sha256": "f457b3519ddeeba0de0f8a1ae177d84a5c16d90293e05f302eaadf7086ba6547",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23935:51075e3dc2ea22d1",
+     "source_row_number": 23935,
+     "source_row_sha256": "51075e3dc2ea22d188445e46592f79acb980840765224f1dfe560ae17557dd16",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23936:7895cd012b6c00fc",
+     "source_row_number": 23936,
+     "source_row_sha256": "7895cd012b6c00fc059f18d4798b8beaf4cf6a2b14d99b0e1aba6db80541cb8a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -5161071.786754526,
+     "value_gbp_decimal": "-5161071.786754526"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23937:c6309c507e442578",
+     "source_row_number": 23937,
+     "source_row_sha256": "c6309c507e44257802c222ac0440ab05a8c66cbc3260ef5d0e74f1d17e9a46a3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -10914396.83281441,
+     "value_gbp_decimal": "-10914396.83281441"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23938:58dc61511eb5ce88",
+     "source_row_number": 23938,
+     "source_row_sha256": "58dc61511eb5ce8841cf50ea633743f8512fe2b3bb4f52fe8b760414e7e1429e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -16180760.506127605,
+     "value_gbp_decimal": "-16180760.506127605"
+    }
+   ],
+   "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2028-29",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2029": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    },
+    "2030": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_1\\.thresholds\\.secondary_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2028-01-01.2028-12-31": 97.9199086029823,
+     "2029-01-01.2029-12-31": 99.8780897071249,
+     "2030-01-01.2030-12-31": 101.875685775149
+    }
+   },
+   "pe_gap": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12252:01dfc28b448fefc1",
+     "source_row_number": 12252,
+     "source_row_sha256": "01dfc28b448fefc1d1b96d0374bc61c896e61759950973a7881728b18f0fd6fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12253:a700821a34d41059",
+     "source_row_number": 12253,
+     "source_row_sha256": "a700821a34d41059814409a295aaa8081f2a4fa49c9ce4662ad47bbaad1cf2aa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12254:ef6f52eac5c45f4c",
+     "source_row_number": 12254,
+     "source_row_sha256": "ef6f52eac5c45f4c1a9917f9b1839e7e337c0664817b0d8cb12cf2899a8ec4b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12255:0fd29e509efbba1c",
+     "source_row_number": 12255,
+     "source_row_sha256": "0fd29e509efbba1c6b053b37eeb1f2a1814b1c6be3ab439a38677104ace12e3b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -75368341.27218263,
+     "value_gbp_decimal": "-75368341.27218263"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+     "source_row_number": 12256,
+     "source_row_sha256": "5509231f1d1fc42692f920d677c7484be524b312026a14cd357c7beb89c5b2aa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -159909719.01817313,
+     "value_gbp_decimal": "-159909719.01817313"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12257:95f2605d4a114c10",
+     "source_row_number": 12257,
+     "source_row_sha256": "95f2605d4a114c108dca4558f895b8470f0cf2fbeecd7016eb8620ee05eacac5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -237932539.3115916,
+     "value_gbp_decimal": "-237932539.3115916"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12258:bd30009d1602f503",
+     "source_row_number": 12258,
+     "source_row_sha256": "bd30009d1602f503d77de55f22b47c388256304d6e5fb46b6bd1d6a98585edd6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12259:ce036213afa1446d",
+     "source_row_number": 12259,
+     "source_row_sha256": "ce036213afa1446dc8b16c682c89b3f74bdc55d061b52dbd974fbc53e44130bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12260:031335b5b668d66d",
+     "source_row_number": 12260,
+     "source_row_sha256": "031335b5b668d66dd388414844006c6949025a8abb4d0592838b1f8d514e9642",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12261:317b60a83974bf6d",
+     "source_row_number": 12261,
+     "source_row_sha256": "317b60a83974bf6da1a84b2a4b8b7352e78cc970b00664a545d1e6f3c5df1afd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 398270000.00000006,
+     "value_gbp_decimal": "398270000.00000006"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+     "source_row_number": 12262,
+     "source_row_sha256": "370b9fb9250ec360c9ad96f3d368c404da9f234de5a219a0af807a4c77ba9ddc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 842920000.0000001,
+     "value_gbp_decimal": "842920000.0000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Counterfactual weekly values apply the installed parameter's documented OBR-CPI uprating to \u00a396 from 2028. Exact source rounding and non-microsimulation heads are not assumption-matched, so this is partial.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12263:b231bc602cc23fb2",
+     "source_row_number": 12263,
+     "source_row_sha256": "b231bc602cc23fb254c3071889ad10e9f9c4e9597d12969bba6d944db24d2165",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 1253420000.0,
+     "value_gbp_decimal": "1253420000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12264:01126fa86255d2bc",
+     "source_row_number": 12264,
+     "source_row_sha256": "01126fa86255d2bc1e470c8ac3aea5ab762947b5ae26797528d4e05382d634fc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12265:97c092709106c98c",
+     "source_row_number": 12265,
+     "source_row_sha256": "97c092709106c98cf24bb94fe93840277ded7773e100a91562be347785c6eedb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12266:7a64c8990aba6f05",
+     "source_row_number": 12266,
+     "source_row_sha256": "7a64c8990aba6f056ee2f8dde929e3c006058c5b2b1c22bafaca0a1322dedcc0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -3260000.0,
+     "value_gbp_decimal": "-3260000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12267:3fa6651a965d1925",
+     "source_row_number": 12267,
+     "source_row_sha256": "3fa6651a965d192575fac1a7f773231dded86faab546ba0082394d3290a3e045",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -27970000.0,
+     "value_gbp_decimal": "-27970000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12268:45f83bc0d782b97e",
+     "source_row_number": 12268,
+     "source_row_sha256": "45f83bc0d782b97ea6b83c7421611c3b2d7aacbab8c36f9dc3b240a98989e43d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -54830000.0,
+     "value_gbp_decimal": "-54830000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12269:ac8484e9d2d62ab4",
+     "source_row_number": 12269,
+     "source_row_sha256": "ac8484e9d2d62ab414d770fc6face95b3459a78d6db428ef73db10c2159ea0a5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -69630000.00000001,
+     "value_gbp_decimal": "-69630000.00000001"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23927:fd1d4891f4b64585",
+     "source_row_number": 23927,
+     "source_row_sha256": "fd1d4891f4b64585d1b59cb40bf80ac202db3a6e59c09c72629e08da5e712591",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23928:07dd6734916f0277",
+     "source_row_number": 23928,
+     "source_row_sha256": "07dd6734916f0277ceb8aeaa3cd4861960be62ab9e6ea2a24380f30ae97fafd4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23929:aafd70576a3c0984",
+     "source_row_number": 23929,
+     "source_row_sha256": "aafd70576a3c0984586027a4b22c0d20530307e09dbd17191bf128516f13c4b3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23930:c7e38b0a5a00d8e8",
+     "source_row_number": 23930,
+     "source_row_sha256": "c7e38b0a5a00d8e8603ca40ee2d5cb1d0ed94b9e5ae84fbec6059e7c07257aca",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -793567.8033650104,
+     "value_gbp_decimal": "-793567.8033650104"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23931:d6cf2bc3c72ca4fe",
+     "source_row_number": 23931,
+     "source_row_sha256": "d6cf2bc3c72ca4fe3cbb69e5a9963af9339cda614a973f3f1625604e20b449c6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -1678443.383555091,
+     "value_gbp_decimal": "-1678443.383555091"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23932:941cef215b41c2c1",
+     "source_row_number": 23932,
+     "source_row_sha256": "941cef215b41c2c177a27e5993001cf76fb997497bceed1580e84f4e73fc17d6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -2484555.000821547,
+     "value_gbp_decimal": "-2484555.000821547"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23933:dbb15db7e903a265",
+     "source_row_number": 23933,
+     "source_row_sha256": "dbb15db7e903a265beb8ff08d2b493c17c4e1644284e4fcca9e9a78a9fb0fd24",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23934:f457b3519ddeeba0",
+     "source_row_number": 23934,
+     "source_row_sha256": "f457b3519ddeeba0de0f8a1ae177d84a5c16d90293e05f302eaadf7086ba6547",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23935:51075e3dc2ea22d1",
+     "source_row_number": 23935,
+     "source_row_sha256": "51075e3dc2ea22d188445e46592f79acb980840765224f1dfe560ae17557dd16",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23936:7895cd012b6c00fc",
+     "source_row_number": 23936,
+     "source_row_sha256": "7895cd012b6c00fc059f18d4798b8beaf4cf6a2b14d99b0e1aba6db80541cb8a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -5161071.786754526,
+     "value_gbp_decimal": "-5161071.786754526"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23937:c6309c507e442578",
+     "source_row_number": 23937,
+     "source_row_sha256": "c6309c507e44257802c222ac0440ab05a8c66cbc3260ef5d0e74f1d17e9a46a3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -10914396.83281441,
+     "value_gbp_decimal": "-10914396.83281441"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23938:58dc61511eb5ce88",
+     "source_row_number": 23938,
+     "source_row_sha256": "58dc61511eb5ce8841cf50ea633743f8512fe2b3bb4f52fe8b760414e7e1429e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+     "value_gbp": -16180760.506127605,
+     "value_gbp_decimal": "-16180760.506127605"
+    }
+   ],
+   "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 99.8780897071249,
+      "current_law": 96.153846,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 96.153846,
+      "reform_world": 96.153846
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 99.8780897071249,
+      "current_law": 96.153846,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 96.153846,
+      "reform_world": 96.153846
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -196115589.39697266,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -159909719.01817313,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_1.25_to_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": -5173829.253662109,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2012894.1865063477
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -201289418.65063477,
+   "key": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+   "level": "source_row",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 2012894.1865063477,
+   "year": 2029
+  },
+  {
+   "base_gbp": 717716761.3634839,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 842920000.0000001,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 18283466.19034481,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7360002.275538287
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 736000227.5538287,
+   "key": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+   "level": "source_row",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 7360002.275538287,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -54830000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12268:45f83bc0d782b97e",
+   "level": "source_row",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -1678443.383555091,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23931:d6cf2bc3c72ca4fe",
+   "level": "source_row",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -10914396.83281441,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23937:c6309c507e442578",
+   "level": "source_row",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 521601171.96651125,
+   "context": {},
+   "delta_gbp": 13109636.936682701,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5347108.089031939
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 534710808.90319395,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 5347108.089031939,
+   "year": 2029
+  },
+  {
+   "base_gbp": -196115589.39697266,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -5173829.253662109,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2012894.1865063477
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -201289418.65063477,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 2012894.1865063477,
+   "year": 2029
+  },
+  {
+   "base_gbp": -45306402.15399933,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -1127281.8196868896,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -46433683.97368622,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  },
+  {
+   "base_gbp": 762979467.5596008,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 19397988.28173828,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7823774.558413391
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 782377455.8413391,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 7823774.558413391,
+   "year": 2029
+  },
+  {
+   "base_gbp": 43695.95788240433,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 12759.728293418884,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 56455.68617582321,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__employer_nics_secondary_threshold_freeze_to_2031 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__employer_nics_secondary_threshold_freeze_to_2031 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -196115589.39697266,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -201289418.65063477,
+   "obr_value_gbp": -159909719.01817313,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+   "source_row_number": 12256,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 717716761.3634839,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 736000227.5538287,
+   "obr_value_gbp": 842920000.0000001,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+   "source_row_number": 12262,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -54830000.0,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12268:45f83bc0d782b97e",
+   "source_row_number": 12268,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -1678443.383555091,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23931:d6cf2bc3c72ca4fe",
+   "source_row_number": 23931,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -10914396.83281441,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23937:c6309c507e442578",
+   "source_row_number": 23937,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": -196115589.39697266,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -201289418.65063477,
+   "obr_value_gbp": -159909719.01817313,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+   "source_row_number": 12256,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 717716761.3634839,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 736000227.5538287,
+   "obr_value_gbp": 842920000.0000001,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+   "source_row_number": 12262,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -54830000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12268:45f83bc0d782b97e",
+   "source_row_number": 12268,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -1678443.383555091,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23931:d6cf2bc3c72ca4fe",
+   "source_row_number": 23931,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -10914396.83281441,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23937:c6309c507e442578",
+   "source_row_number": 23937,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+ "year": 2029
+}

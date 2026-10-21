@@ -1,0 +1,2026 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+     "2028-01-01.2030-12-31": 0
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "fc9c35f9d5be9ca8cf110d421a884e30bab83fa9f68c580a312b0a1247f15791"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+     "2028-01-01.2030-12-31": 0
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030.json",
+   "reform_reform_dict": null,
+   "sha256": "a605e24cd325f359e3684b0889dde28f419d2230401f52bacfa8caa78df8c748"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.9",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "ab2025__high_value_council_tax_surcharge",
+ "measures": {
+  "base": {
+   "classification": "expressible",
+   "commences_fy": "2028-29",
+   "computability": "expressible",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2026": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2027": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2028": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2029": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2549.997619869331,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3569.996667817064,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5099.995239738662,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7649.992859607994
+    },
+    "2030": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2600.991919456378,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3641.3886872389294,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5201.983838912756,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7802.975758369134
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "high_value_council_tax_surcharge"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "High-value council tax surcharge",
+     "pe_variables": [
+      "high_value_council_tax_surcharge"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "measure_type": "council_tax",
+   "missing_legs": [],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount"
+    ],
+    "pattern": "gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[1\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[2\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[3\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[4\\]\\.amount",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the four surcharge band amounts to zero, as #136's registry does (ab2025__high_value_council_tax_surcharge in data/uk/ab2025_measures.json), from 2028, the PMD title's 1 April 2028 start.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+     "2028-01-01.2030-12-31": 0
+    }
+   },
+   "pe_gap": null,
+   "program": "council_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12366:465503aced3e49c3",
+     "source_row_number": 12366,
+     "source_row_sha256": "465503aced3e49c3de2e23449db09df4c39487d235a2f9d51058d2ecc0f82741",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -12725030.0,
+     "value_gbp_decimal": "-12725030.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12367:5e598a525ced2676",
+     "source_row_number": 12367,
+     "source_row_sha256": "5e598a525ced267637ff822eb6b170a6f5b4c64c0e2a20d8ed9f076aea0d6576",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -31792300.0,
+     "value_gbp_decimal": "-31792300.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12368:c7e702797da2671f",
+     "source_row_number": 12368,
+     "source_row_sha256": "c7e702797da2671f6209795f9cb0d2ba84ce8c980137dfc12c2612542122f58c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -51402000.0,
+     "value_gbp_decimal": "-51402000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12369:1c7f6fbb4117ff9a",
+     "source_row_number": 12369,
+     "source_row_sha256": "1c7f6fbb4117ff9a56867e0dd1643589101a6987d6ffaa519e75de1ba8bc20b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -45437720.0,
+     "value_gbp_decimal": "-45437720.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12370:7f7d3d9ec714a95e",
+     "source_row_number": 12370,
+     "source_row_sha256": "7f7d3d9ec714a95e5a84382fe03e6a7daff1c031ff49c0c083b3bcf90062679b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -35014390.0,
+     "value_gbp_decimal": "-35014390.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12371:1db21de47a410031",
+     "source_row_number": 12371,
+     "source_row_sha256": "1db21de47a410031e98a3dea18fd35ddceaae4c6e4398bd0b3ded2b942026b41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -36034690.0,
+     "value_gbp_decimal": "-36034690.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12372:2657bff11b71f228",
+     "source_row_number": 12372,
+     "source_row_sha256": "2657bff11b71f228440640d724385c5c871ededa81416ff239801b1f5a546377",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12373:b35120d1508528b3",
+     "source_row_number": 12373,
+     "source_row_sha256": "b35120d1508528b3ff2ed1bd879dfc73765061681761d2ee9f4b26807d371302",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12374:54d5dda3f0350cd9",
+     "source_row_number": 12374,
+     "source_row_sha256": "54d5dda3f0350cd96bc7753c6ff1445f875c5bff9db85fc89897dd754c0f8cae",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12375:297fca1f0cf23095",
+     "source_row_number": 12375,
+     "source_row_sha256": "297fca1f0cf230956a397ea212e2da48e1d0465e4a7f45a71c4cc2f683252a7c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 454292600.0,
+     "value_gbp_decimal": "454292600.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12376:d658edd74795036b",
+     "source_row_number": 12376,
+     "source_row_sha256": "d658edd74795036bdb514d2fe6205d66f9ac9240357b5ce03edccb38fee93746",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 466024100.0,
+     "value_gbp_decimal": "466024100.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+     "source_row_number": 12377,
+     "source_row_sha256": "ca5b9686e623d09c16f9790986168ee3794fdccbcecdaaf9e7e643c9d3e6fcd0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 478058500.0,
+     "value_gbp_decimal": "478058500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12378:39a0da2eb6974545",
+     "source_row_number": 12378,
+     "source_row_sha256": "39a0da2eb6974545a4ca14f75ceb831c3f72f5e4fd488c8628e32cfaca12eaf1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1038356.0,
+     "value_gbp_decimal": "-1038356.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12379:d28baa0990b9606c",
+     "source_row_number": 12379,
+     "source_row_sha256": "d28baa0990b9606c1f5428dffd4706ae1e1db225ea991c0c2a35fead9e6b7da2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -3582993.0,
+     "value_gbp_decimal": "-3582993.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12380:e3ebdd53fd67d884",
+     "source_row_number": 12380,
+     "source_row_sha256": "e3ebdd53fd67d88446cd140d48389f4f5ecf69398b47b4661b5772cf6e1774fc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -8104395.0,
+     "value_gbp_decimal": "-8104395.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12381:b19a4aab53a82dbb",
+     "source_row_number": 12381,
+     "source_row_sha256": "b19a4aab53a82dbbbe4b609d90ea5553f3ab2d620784ff9ced5c874cbe3aee24",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -13145213.0,
+     "value_gbp_decimal": "-13145213.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12382:8ddcecd6a5e1169b",
+     "source_row_number": 12382,
+     "source_row_sha256": "8ddcecd6a5e1169b9503ebda55836ca5671fbf688835dfb36ad8be9cc993772d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -16083791.999999998,
+     "value_gbp_decimal": "-16083791.999999998"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12383:6ffa1d434315db32",
+     "source_row_number": 12383,
+     "source_row_sha256": "6ffa1d434315db32e2120af8e2ae4e08cc778816ab6c8bfacc77ea58a8527d63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -17952102.0,
+     "value_gbp_decimal": "-17952102.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12384:01e3de17fd36acfb",
+     "source_row_number": 12384,
+     "source_row_sha256": "01e3de17fd36acfb5ce84d5f55d1da43f5b56bf2a779fe0ae756977a88d457dc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -45578280.0,
+     "value_gbp_decimal": "-45578280.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12385:6b9810c9f16cf4ae",
+     "source_row_number": 12385,
+     "source_row_sha256": "6b9810c9f16cf4aea302cef8533bbcf9c286aae86bbbbe8a8ec2a048daa02ad0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -79932100.0,
+     "value_gbp_decimal": "-79932100.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12386:e147c775aba66446",
+     "source_row_number": 12386,
+     "source_row_sha256": "e147c775aba6644661578be0efe5c804f9cb6f3120ef0736ef3c4c6c4a171f32",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -89810770.0,
+     "value_gbp_decimal": "-89810770.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12387:e6f697153fe34521",
+     "source_row_number": 12387,
+     "source_row_sha256": "e6f697153fe3452158427651188fe73d3ffdb6b8b7a0c60d0d5661f50ccf73e4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 2640788.0000000005,
+     "value_gbp_decimal": "2640788.0000000005"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12388:57698fba46d02c0e",
+     "source_row_number": 12388,
+     "source_row_sha256": "57698fba46d02c0e91f0ea49f9b0cd85bc3c84e644be5039934ca6e70062712e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 15040225.000000002,
+     "value_gbp_decimal": "15040225.000000002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12389:77692a6cdf7badf3",
+     "source_row_number": 12389,
+     "source_row_sha256": "77692a6cdf7badf3823c024a45ac5aa7b2d459aedb02963594e95faa0dd86d7d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 11119615.999999998,
+     "value_gbp_decimal": "11119615.999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23987:6bb4c3da8a53b910",
+     "source_row_number": 23987,
+     "source_row_sha256": "6bb4c3da8a53b910713d655b399ae6a06684cb5774e8550de6c02f1d6913426b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -908777.7999999999,
+     "value_gbp_decimal": "-908777.7999999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23988:9b2cf5b18d7783e5",
+     "source_row_number": 23988,
+     "source_row_sha256": "9b2cf5b18d7783e5b78d96e290595a86030027a3ad28f21e46ad39aef0d37181",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1623426.3,
+     "value_gbp_decimal": "-1623426.3"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23989:7bff20ee7164468f",
+     "source_row_number": 23989,
+     "source_row_sha256": "7bff20ee7164468f5a9a3a8df82bb414f1bf545e5c0bbc3109cdae5639d4d8cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1822307.7999999998,
+     "value_gbp_decimal": "-1822307.7999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23990:9db8028b6ef06f71",
+     "source_row_number": 23990,
+     "source_row_sha256": "9db8028b6ef06f7105ab232d2231c354c487caf3febf0214f07ae4b414631de2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 225821.69999999998,
+     "value_gbp_decimal": "225821.69999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23991:5c8f7b5233d93763",
+     "source_row_number": 23991,
+     "source_row_sha256": "5c8f7b5233d937635c815d5134b520da04334f03f66e4df6363ee5791706c144",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 483326.9,
+     "value_gbp_decimal": "483326.9"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23992:31f86ec1bc626f82",
+     "source_row_number": 23992,
+     "source_row_sha256": "31f86ec1bc626f827b69690666d968d49fa7aed27bcda0ed8f05fc2922f6458c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 405571.8,
+     "value_gbp_decimal": "405571.8"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23993:3bf572d33c2a90bf",
+     "source_row_number": 23993,
+     "source_row_sha256": "3bf572d33c2a90bf0261e2a01e7fa55309433309f81d8cdcff73632a9a65b503",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -2112989.9,
+     "value_gbp_decimal": "-2112989.9"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23994:a1ecc5a04cd0ab9e",
+     "source_row_number": 23994,
+     "source_row_sha256": "a1ecc5a04cd0ab9e229be5deeb95bb2ebf9f6dea6e8cd8ad7dc65c1a33296af6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -3715338.1,
+     "value_gbp_decimal": "-3715338.1"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23995:dd9d1b9a31aa35c2",
+     "source_row_number": 23995,
+     "source_row_sha256": "dd9d1b9a31aa35c2c9bceaa1f232ab233009bba7be754c1078a951cddcc801c6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -4185460.6,
+     "value_gbp_decimal": "-4185460.6"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23996:6faaf572a33432bb",
+     "source_row_number": 23996,
+     "source_row_sha256": "6faaf572a33432bbb3dee855055c6a55034a49c001b256c06e5fa7f8db313e43",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 519229.1,
+     "value_gbp_decimal": "519229.1"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23997:1a63945e557c2aa7",
+     "source_row_number": 23997,
+     "source_row_sha256": "1a63945e557c2aa7a944a0632936d209cfc87e7627c7c157633820b55e6931e4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 1112451.0999999999,
+     "value_gbp_decimal": "1112451.0999999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23998:5f9b3fc8cbd4920e",
+     "source_row_number": 23998,
+     "source_row_sha256": "5f9b3fc8cbd4920e8ffa83e6adb707fd2f81dfdebe7046b74e86ed2326942f03",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 934240.9,
+     "value_gbp_decimal": "934240.9"
+    }
+   ],
+   "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Inheritance tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  },
+  "head": {
+   "classification": "expressible",
+   "commences_fy": "2028-29",
+   "computability": "expressible",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2026": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2027": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2028": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3500,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5000,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7500
+    },
+    "2029": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2549.997619869331,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3569.996667817064,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5099.995239738662,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7649.992859607994
+    },
+    "2030": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2600.991919456378,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": 3641.3886872389294,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": 5201.983838912756,
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": 7802.975758369134
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "high_value_council_tax_surcharge"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "High-value council tax surcharge",
+     "pe_variables": [
+      "high_value_council_tax_surcharge"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "measure_type": "council_tax",
+   "missing_legs": [],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount",
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount"
+    ],
+    "pattern": "gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[1\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[2\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[3\\]\\.amount|gov\\.hmrc\\.council_tax\\.high_value_surcharge\\.amount\\[4\\]\\.amount",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the four surcharge band amounts to zero, as #136's registry does (ab2025__high_value_council_tax_surcharge in data/uk/ab2025_measures.json), from 2028, the PMD title's 1 April 2028 start.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+     "2028-01-01.2030-12-31": 0
+    },
+    "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+     "2028-01-01.2030-12-31": 0
+    }
+   },
+   "pe_gap": null,
+   "program": "council_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12366:465503aced3e49c3",
+     "source_row_number": 12366,
+     "source_row_sha256": "465503aced3e49c3de2e23449db09df4c39487d235a2f9d51058d2ecc0f82741",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -12725030.0,
+     "value_gbp_decimal": "-12725030.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12367:5e598a525ced2676",
+     "source_row_number": 12367,
+     "source_row_sha256": "5e598a525ced267637ff822eb6b170a6f5b4c64c0e2a20d8ed9f076aea0d6576",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -31792300.0,
+     "value_gbp_decimal": "-31792300.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12368:c7e702797da2671f",
+     "source_row_number": 12368,
+     "source_row_sha256": "c7e702797da2671f6209795f9cb0d2ba84ce8c980137dfc12c2612542122f58c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -51402000.0,
+     "value_gbp_decimal": "-51402000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12369:1c7f6fbb4117ff9a",
+     "source_row_number": 12369,
+     "source_row_sha256": "1c7f6fbb4117ff9a56867e0dd1643589101a6987d6ffaa519e75de1ba8bc20b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -45437720.0,
+     "value_gbp_decimal": "-45437720.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12370:7f7d3d9ec714a95e",
+     "source_row_number": 12370,
+     "source_row_sha256": "7f7d3d9ec714a95e5a84382fe03e6a7daff1c031ff49c0c083b3bcf90062679b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -35014390.0,
+     "value_gbp_decimal": "-35014390.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12371:1db21de47a410031",
+     "source_row_number": 12371,
+     "source_row_sha256": "1db21de47a410031e98a3dea18fd35ddceaae4c6e4398bd0b3ded2b942026b41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -36034690.0,
+     "value_gbp_decimal": "-36034690.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12372:2657bff11b71f228",
+     "source_row_number": 12372,
+     "source_row_sha256": "2657bff11b71f228440640d724385c5c871ededa81416ff239801b1f5a546377",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12373:b35120d1508528b3",
+     "source_row_number": 12373,
+     "source_row_sha256": "b35120d1508528b3ff2ed1bd879dfc73765061681761d2ee9f4b26807d371302",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12374:54d5dda3f0350cd9",
+     "source_row_number": 12374,
+     "source_row_sha256": "54d5dda3f0350cd96bc7753c6ff1445f875c5bff9db85fc89897dd754c0f8cae",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12375:297fca1f0cf23095",
+     "source_row_number": 12375,
+     "source_row_sha256": "297fca1f0cf230956a397ea212e2da48e1d0465e4a7f45a71c4cc2f683252a7c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 454292600.0,
+     "value_gbp_decimal": "454292600.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12376:d658edd74795036b",
+     "source_row_number": 12376,
+     "source_row_sha256": "d658edd74795036bdb514d2fe6205d66f9ac9240357b5ce03edccb38fee93746",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 466024100.0,
+     "value_gbp_decimal": "466024100.0"
+    },
+    {
+     "classification": "expressible",
+     "classification_reason": "Validated parameter reversal and named head mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+     "source_row_number": 12377,
+     "source_row_sha256": "ca5b9686e623d09c16f9790986168ee3794fdccbcecdaaf9e7e643c9d3e6fcd0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "High-value council tax surcharge",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 478058500.0,
+     "value_gbp_decimal": "478058500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12378:39a0da2eb6974545",
+     "source_row_number": 12378,
+     "source_row_sha256": "39a0da2eb6974545a4ca14f75ceb831c3f72f5e4fd488c8628e32cfaca12eaf1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1038356.0,
+     "value_gbp_decimal": "-1038356.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12379:d28baa0990b9606c",
+     "source_row_number": 12379,
+     "source_row_sha256": "d28baa0990b9606c1f5428dffd4706ae1e1db225ea991c0c2a35fead9e6b7da2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -3582993.0,
+     "value_gbp_decimal": "-3582993.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12380:e3ebdd53fd67d884",
+     "source_row_number": 12380,
+     "source_row_sha256": "e3ebdd53fd67d88446cd140d48389f4f5ecf69398b47b4661b5772cf6e1774fc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -8104395.0,
+     "value_gbp_decimal": "-8104395.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12381:b19a4aab53a82dbb",
+     "source_row_number": 12381,
+     "source_row_sha256": "b19a4aab53a82dbbbe4b609d90ea5553f3ab2d620784ff9ced5c874cbe3aee24",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -13145213.0,
+     "value_gbp_decimal": "-13145213.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12382:8ddcecd6a5e1169b",
+     "source_row_number": 12382,
+     "source_row_sha256": "8ddcecd6a5e1169b9503ebda55836ca5671fbf688835dfb36ad8be9cc993772d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -16083791.999999998,
+     "value_gbp_decimal": "-16083791.999999998"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12383:6ffa1d434315db32",
+     "source_row_number": 12383,
+     "source_row_sha256": "6ffa1d434315db32e2120af8e2ae4e08cc778816ab6c8bfacc77ea58a8527d63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -17952102.0,
+     "value_gbp_decimal": "-17952102.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12384:01e3de17fd36acfb",
+     "source_row_number": 12384,
+     "source_row_sha256": "01e3de17fd36acfb5ce84d5f55d1da43f5b56bf2a779fe0ae756977a88d457dc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -45578280.0,
+     "value_gbp_decimal": "-45578280.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12385:6b9810c9f16cf4ae",
+     "source_row_number": 12385,
+     "source_row_sha256": "6b9810c9f16cf4aea302cef8533bbcf9c286aae86bbbbe8a8ec2a048daa02ad0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -79932100.0,
+     "value_gbp_decimal": "-79932100.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12386:e147c775aba66446",
+     "source_row_number": 12386,
+     "source_row_sha256": "e147c775aba6644661578be0efe5c804f9cb6f3120ef0736ef3c4c6c4a171f32",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -89810770.0,
+     "value_gbp_decimal": "-89810770.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12387:e6f697153fe34521",
+     "source_row_number": 12387,
+     "source_row_sha256": "e6f697153fe3452158427651188fe73d3ffdb6b8b7a0c60d0d5661f50ccf73e4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 2640788.0000000005,
+     "value_gbp_decimal": "2640788.0000000005"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12388:57698fba46d02c0e",
+     "source_row_number": 12388,
+     "source_row_sha256": "57698fba46d02c0e91f0ea49f9b0cd85bc3c84e644be5039934ca6e70062712e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 15040225.000000002,
+     "value_gbp_decimal": "15040225.000000002"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Measure's parameter leg is expressible; this source head has no validated counterpart mapping.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12389:77692a6cdf7badf3",
+     "source_row_number": 12389,
+     "source_row_sha256": "77692a6cdf7badf3823c024a45ac5aa7b2d459aedb02963594e95faa0dd86d7d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 11119615.999999998,
+     "value_gbp_decimal": "11119615.999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23987:6bb4c3da8a53b910",
+     "source_row_number": 23987,
+     "source_row_sha256": "6bb4c3da8a53b910713d655b399ae6a06684cb5774e8550de6c02f1d6913426b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -908777.7999999999,
+     "value_gbp_decimal": "-908777.7999999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23988:9b2cf5b18d7783e5",
+     "source_row_number": 23988,
+     "source_row_sha256": "9b2cf5b18d7783e5b78d96e290595a86030027a3ad28f21e46ad39aef0d37181",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1623426.3,
+     "value_gbp_decimal": "-1623426.3"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23989:7bff20ee7164468f",
+     "source_row_number": 23989,
+     "source_row_sha256": "7bff20ee7164468f5a9a3a8df82bb414f1bf545e5c0bbc3109cdae5639d4d8cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -1822307.7999999998,
+     "value_gbp_decimal": "-1822307.7999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23990:9db8028b6ef06f71",
+     "source_row_number": 23990,
+     "source_row_sha256": "9db8028b6ef06f7105ab232d2231c354c487caf3febf0214f07ae4b414631de2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 225821.69999999998,
+     "value_gbp_decimal": "225821.69999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23991:5c8f7b5233d93763",
+     "source_row_number": 23991,
+     "source_row_sha256": "5c8f7b5233d937635c815d5134b520da04334f03f66e4df6363ee5791706c144",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 483326.9,
+     "value_gbp_decimal": "483326.9"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23992:31f86ec1bc626f82",
+     "source_row_number": 23992,
+     "source_row_sha256": "31f86ec1bc626f827b69690666d968d49fa7aed27bcda0ed8f05fc2922f6458c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 405571.8,
+     "value_gbp_decimal": "405571.8"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23993:3bf572d33c2a90bf",
+     "source_row_number": 23993,
+     "source_row_sha256": "3bf572d33c2a90bf0261e2a01e7fa55309433309f81d8cdcff73632a9a65b503",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -2112989.9,
+     "value_gbp_decimal": "-2112989.9"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23994:a1ecc5a04cd0ab9e",
+     "source_row_number": 23994,
+     "source_row_sha256": "a1ecc5a04cd0ab9e229be5deeb95bb2ebf9f6dea6e8cd8ad7dc65c1a33296af6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -3715338.1,
+     "value_gbp_decimal": "-3715338.1"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23995:dd9d1b9a31aa35c2",
+     "source_row_number": 23995,
+     "source_row_sha256": "dd9d1b9a31aa35c2c9bceaa1f232ab233009bba7be754c1078a951cddcc801c6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": -4185460.6,
+     "value_gbp_decimal": "-4185460.6"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23996:6faaf572a33432bb",
+     "source_row_number": 23996,
+     "source_row_sha256": "6faaf572a33432bbb3dee855055c6a55034a49c001b256c06e5fa7f8db313e43",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 519229.1,
+     "value_gbp_decimal": "519229.1"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23997:1a63945e557c2aa7",
+     "source_row_number": 23997,
+     "source_row_sha256": "1a63945e557c2aa7a944a0632936d209cfc87e7627c7c157633820b55e6931e4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 1112451.0999999999,
+     "value_gbp_decimal": "1112451.0999999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23998:5f9b3fc8cbd4920e",
+     "source_row_number": 23998,
+     "source_row_sha256": "5f9b3fc8cbd4920e8ffa83e6adb707fd2f81dfdebe7046b74e86ed2326942f03",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+     "value_gbp": 934240.9,
+     "value_gbp_decimal": "934240.9"
+    }
+   ],
+   "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Inheritance tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+      "baseline_world": 0,
+      "current_law": 2600.991919456378,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 2600.991919456378,
+      "reform_world": 2600.991919456378
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+      "baseline_world": 0,
+      "current_law": 3641.3886872389294,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 3641.3886872389294,
+      "reform_world": 3641.3886872389294
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+      "baseline_world": 0,
+      "current_law": 5201.983838912756,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 5201.983838912756,
+      "reform_world": 5201.983838912756
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+      "baseline_world": 0,
+      "current_law": 7802.975758369134,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 7802.975758369134,
+      "reform_world": 7802.975758369134
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": {
+      "baseline_world": 0,
+      "current_law": 2600.991919456378,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 2600.991919456378,
+      "reform_world": 2600.991919456378
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount": {
+      "baseline_world": 0,
+      "current_law": 3641.3886872389294,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 3641.3886872389294,
+      "reform_world": 3641.3886872389294
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount": {
+      "baseline_world": 0,
+      "current_law": 5201.983838912756,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 5201.983838912756,
+      "reform_world": 5201.983838912756
+     },
+     "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount": {
+      "baseline_world": 0,
+      "current_law": 7802.975758369134,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 7802.975758369134,
+      "reform_world": 7802.975758369134
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -36034690.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12371:1db21de47a410031",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": 507938784.7696847,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 478058500.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "High-value council tax surcharge"
+   },
+   "delta_gbp": 15471046.91874218,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5234098.316884269
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 523409831.68842685,
+   "key": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": 5234098.316884269,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -17952102.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Inheritance tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12383:6ffa1d434315db32",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 11119615.999999998,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12389:77692a6cdf7badf3",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 405571.8,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23992:31f86ec1bc626f82",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 934240.9,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23998:5f9b3fc8cbd4920e",
+   "level": "source_row",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": 507938784.7696847,
+   "context": {},
+   "delta_gbp": 15471046.91874218,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5234098.316884269
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 523409831.68842685,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": 5234098.316884269,
+   "year": 2030
+  },
+  {
+   "base_gbp": 507938784.7696847,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 15471046.91874218,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5234098.316884269
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 523409831.68842685,
+   "key": "high_value_council_tax_surcharge",
+   "level": "head",
+   "measure_key": "ab2025__high_value_council_tax_surcharge",
+   "threshold_gbp": 5234098.316884269,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__high_value_council_tax_surcharge --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__high_value_council_tax_surcharge --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.141.9_policyengine-uk-data-1.59.1/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -36034690.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12371:1db21de47a410031",
+   "source_row_number": 12371,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 507938784.7696847,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 523409831.68842685,
+   "obr_value_gbp": 478058500.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+   "source_row_number": 12377,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "High-value council tax surcharge"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -17952102.0,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12383:6ffa1d434315db32",
+   "source_row_number": 12383,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 11119615.999999998,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12389:77692a6cdf7badf3",
+   "source_row_number": 12389,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 405571.8,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23992:31f86ec1bc626f82",
+   "source_row_number": 23992,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 934240.9,
+   "side": "base",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23998:5f9b3fc8cbd4920e",
+   "source_row_number": 23998,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -36034690.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12371:1db21de47a410031",
+   "source_row_number": 12371,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 507938784.7696847,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2030-31",
+   "head_gbp": 523409831.68842685,
+   "obr_value_gbp": 478058500.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+   "source_row_number": 12377,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "High-value council tax surcharge"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -17952102.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12383:6ffa1d434315db32",
+   "source_row_number": 12383,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 11119615.999999998,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12389:77692a6cdf7badf3",
+   "source_row_number": 12389,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 405571.8,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23992:31f86ec1bc626f82",
+   "source_row_number": 23992,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 934240.9,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23998:5f9b3fc8cbd4920e",
+   "source_row_number": 23998,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over \u00a32m in England from 1 April 2028",
+ "year": 2030
+}
