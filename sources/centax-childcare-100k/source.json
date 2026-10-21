@@ -1,0 +1,43 @@
+{
+  "id": "centax-childcare-100k",
+  "name": "CenTax — Removing the childcare cliff-edge: impacts and cost of reform (September 2026), Table 4.2",
+  "organization": "Centre for the Analysis of Taxation (CenTax)",
+  "authors": ["Arun Advani", "Josh Flew", "Jack Pepin-Hall", "Andy Summers"],
+  "country": "UK",
+  "claim_class": "reform_score",
+  "url": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf",
+  "data_urls": [
+    "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf"
+  ],
+  "raw_sha256": {
+    "AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf": "733b7a1d48409071135303c3363482126ead83c4d6e02d9b7f049e4d3113140a",
+    "pages_layout.txt": "4769e0ee90902559e924a79b531cdb0134747ad66a9327464fa8d668bd488f8a"
+  },
+  "pages_extracted": {
+    "tool": "pdftotext -layout (poppler 26.09.0), one PDF page at a time",
+    "pdf_pages": [3, 9, 40, 41, 42, 43, 45, 74, 75, 76, 100, 101],
+    "printed_page_rule": "printed page = PDF page - 1 (the cover is unnumbered)"
+  },
+  "citation": "Advani, A., Flew, J., Pepin-Hall, J. and Summers, A. (2026), Removing the childcare cliff-edge: impacts and cost of reform, CenTax, September 2026.",
+  "published": "2026-09",
+  "fetched": "2026-10-21",
+  "pdf_metadata": "108 pages; CreationDate 2026-09-09 (pdfinfo); 2,709,003 bytes; HTTP 200 from centax.org.uk on 2026-10-21",
+  "model": {
+    "name": "CenTax bunching and static-cost model on HMRC administrative data",
+    "open_source": false,
+    "method": "Static cost: the cost of funding hours for children of parents above £100,000 adjusted net income, assuming their use of free hours equals that of children of parents just below the threshold, net of double-counted couples, parents whose partner is not working, and parents already holding live childcare accounts above £100,000; take-up from DfE's Funded early education and childcare statistics. Behavioural gains: an intensive margin (parents who stop holding income below £100,000, with Scottish parents as the control for residual Personal Allowance bunching) and an extensive margin (partners entering work). Three scenarios differ in the assumed fall in the bunching friction parameter after 2022: none (high cost), the 2019-2022 trend continued (central), a 50% fall (low cost).",
+    "method_basis": "raw/pages_layout.txt: printed pp. 38-40 (section 4.1, scenarios), p. 41 (Table 4.2 and notes), pp. 73-75 (Appendix A, static cost and behavioural revenue gain)",
+    "data": "HMRC administrative datasets (Table 4.2 source line); the most recent year observed is 2022 (tax year 2021-22)"
+  },
+  "reform": "Remove the £100,000 adjusted-net-income limit on eligibility for the free childcare hours for working parents in England (section 4.2.1, 'Abolish the threshold'). Tax-Free Childcare is not part of the costed reform.",
+  "baseline_key": "current law (the status quo with the £100,000 limit)",
+  "period": "Tax years 2027-28 and 2029-30, which the report labels 2028 and 2030 (editorial note, printed page 2: 'tax year 2021-22 is given as 2022')",
+  "metrics": ["revenue_change (static cost, intensive and extensive margins, net fiscal cost)", "bunching counts (staged in data/externals; not claims)"],
+  "units": {
+    "money": "gbp — raw pounds (published in £m), sign as published: negative = cost to the Exchequer",
+    "bunching": "persons — parents estimated to bunch at £100,000"
+  },
+  "geographies": "England (the free-hours offer)",
+  "coverage_note": "Table 4.2 in full: 36 cells (3 scenarios x 2 years x 6 columns). The 24 money cells become claims; the 12 bunching counts stay in data/externals with a tallied reason (see scorecard_db/ingest_uk_childcare_100k.py). Table 4.3's 'Abolish the threshold' rows are the central rows of Table 4.2 and are used as a QC cross-check, not staged twice; its other reforms (threshold at £125,000 or £150,000, tapers, 15 hours for under-3s) have no PolicyEngine construction in this lane.",
+  "diagnosis_upstream": "CenTax's model is closed and runs on HMRC microdata; a divergence classified as an external-model issue becomes a comparison memo, not an upstream PR. Divergences that are ours route to microcosm (data) or policyengine-uk (rules)."
+}
