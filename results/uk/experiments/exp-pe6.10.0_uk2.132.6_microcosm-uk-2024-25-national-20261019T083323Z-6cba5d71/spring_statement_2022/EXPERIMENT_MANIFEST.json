@@ -1,0 +1,185 @@
+{
+ "event": "spring_statement_2022",
+ "event_years_outside_population": [
+  2021,
+  2022,
+  2023
+ ],
+ "experiments": [
+  "ss2022_basic_rate_19",
+  "ss2022_basic_rate_19_welfare",
+  "ss2022_nics_primary_threshold_lpl",
+  "ss2022_nics_primary_threshold_lpl_welfare"
+ ],
+ "files": [
+  {
+   "path": "MODERN_LAW_2024.json",
+   "sha256": "cddb5a0183b13392e443e63ebf23c7b29e968b311934a33f1f936635b571e43b"
+  },
+  {
+   "path": "MODERN_LAW_2025.json",
+   "sha256": "30ac5400364eabad468f19d5acf0912deb1c0aa3ffa5ca2a704668b50f10a186"
+  },
+  {
+   "path": "MODERN_LAW_2026.json",
+   "sha256": "d02797144f1ec8cba807e7d72d6d5458310def4ef399a1b5d060401ff42263cd"
+  },
+  {
+   "path": "ss2022_basic_rate_19_2024.json",
+   "sha256": "0e4b8fd155872e7c853bb3e8d388528214e0620d9e2543105305c96440541993"
+  },
+  {
+   "path": "ss2022_basic_rate_19_2025.json",
+   "sha256": "939cf11082bd320ce590ba37d02c87a3876fbbd6f5da09b374974187f1eb796b"
+  },
+  {
+   "path": "ss2022_basic_rate_19_2026.json",
+   "sha256": "e24e62fdfd49414812d64a60878d6ddf1f290f6f18f59aba82da1ec0df073abc"
+  },
+  {
+   "path": "ss2022_basic_rate_19_welfare_2024.json",
+   "sha256": "4e25d2c90a512b42f1d60b2e166db01cd6bfeb0aa131d49350941906b08d42fb"
+  },
+  {
+   "path": "ss2022_basic_rate_19_welfare_2025.json",
+   "sha256": "d234ed3e8016821d9cc993e2c3fb0a38885934c0f33535855a20b5baef3bff18"
+  },
+  {
+   "path": "ss2022_basic_rate_19_welfare_2026.json",
+   "sha256": "6832d91982576b62198daff6b0babc0f59e5eba9b5f5deab7ff98bbaf445635d"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_2024.json",
+   "sha256": "abfca77641365644af5494a9931c6bb5b73acda0d14316ac6826fe758f1bc91d"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_2025.json",
+   "sha256": "7597c4a3a379ffe314975abc620b385a04947130355a54f91267ccd8bc56b4d9"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_2026.json",
+   "sha256": "16002fdeca36d6236b9b7c92ab7fd81831bf3e687068c7a2a5ca7795c8bb4d9b"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_welfare_2024.json",
+   "sha256": "542c36d0ccfc9bb845a95b207948fc4de8a9ba23757c920dc7eab88bc3ab7c8e"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_welfare_2025.json",
+   "sha256": "0164522c726d2c18bfbeb5ab58f84e5b19a5ba260ce36b128bc863fce39babb4"
+  },
+  {
+   "path": "ss2022_nics_primary_threshold_lpl_welfare_2026.json",
+   "sha256": "2835f5b02353f3a922fa87073bfa3522d62ef4a08d9361f191696ad3c042a532"
+  }
+ ],
+ "grid": [
+  {
+   "experiment_id": "ss2022_basic_rate_19",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "year": 2026
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_policy_experiment_manifest",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Statement 2022.",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "population_identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "size_bytes": 321798995
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "ff067baaf848f9053220c400f39120317f3b4903298212ad01340f7597312571",
+    "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+    "version": "6.10.0"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3"
+   },
+   "policyengine-uk": {
+    "record_sha256": "ca7c36b7617f950f48a04e2816a29e1eb962c44097f3ef08ed4036d7414d2709",
+    "version": "2.132.6"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.10.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "compatibility_basis": "built_with_model_package",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.132.6",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "model_package": "policyengine-uk",
+   "model_version": "2.132.6",
+   "policyengine_version": "6.10.0"
+  },
+  "requirements_sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
+ },
+ "registry_sha256": "f8b2ef658d24895515f09297de812d176e2a12a995b2735b9c1fbe0811845bcb",
+ "spec_sha256": "acb569b6b86bc4c29bfda99187d4e7b1999e872aadf3093137dda4e5078d185a",
+ "years": [
+  2024,
+  2025,
+  2026
+ ]
+}

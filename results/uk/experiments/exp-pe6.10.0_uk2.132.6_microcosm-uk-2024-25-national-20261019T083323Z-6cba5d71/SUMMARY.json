@@ -103,9 +103,10 @@
  "events": [
   "autumn_budget_2021",
   "autumn_statement_2022",
-  "budget_2018"
+  "budget_2018",
+  "spring_statement_2022"
  ],
- "experiment_years": 56,
+ "experiment_years": 68,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",
@@ -187,6 +188,45 @@
     "autumn_statement_2022:as2022_reverse_nics_1_25pp"
    ],
    "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2026
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6333833949.8220825,
+    -6333833949.8220825
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6730949983.279907,
+    -6730949983.279907
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    7024101298.717834,
+    -7024101298.717834
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
    "year": 2026
   }
  ],

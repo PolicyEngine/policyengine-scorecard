@@ -1,0 +1,29 @@
+{
+ "timings": [
+  {
+   "seconds": 29.500346438999998,
+   "world": "modern_law",
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19",
+   "seconds": 49.193645354999944,
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_basic_rate_19_welfare",
+   "seconds": 52.796077620000005,
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl",
+   "seconds": 51.94693036499996,
+   "year": 2026
+  },
+  {
+   "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
+   "seconds": 55.64717027800009,
+   "year": 2026
+  }
+ ]
+}

@@ -2,7 +2,7 @@
 
 **Policy experiments on the modern population: not replays or costings of any past event.**
 
-3 events, 56 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
+4 events, 68 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
 
 ## Anomalies
 
@@ -20,6 +20,9 @@
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2025-26 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +22.256 / -22.256 | yes |
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `income_tax` | -4.073 / +4.073 | yes |
 | `autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp` / `autumn_statement_2022:as2022_reverse_nics_1_25pp` | 2026-27 | `ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4` | +23.327 / -23.327 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2024-25 | `income_tax` | +6.334 / -6.334 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2025-26 | `income_tax` | +6.731 / -6.731 | yes |
+| `autumn_statement_2022:as2022_maintain_basic_rate_20` / `spring_statement_2022:ss2022_basic_rate_19` | 2026-27 | `income_tax` | +7.024 / -7.024 | yes |
 
 ## Modern base against the OBR's newest forecast
 
