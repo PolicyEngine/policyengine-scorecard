@@ -1412,8 +1412,81 @@
    }
   },
   {
-   "key": "futa_collections_model_fy2024",
-   "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2024 (the validation tab)",
+   "key": "additional_revenue_adjusted_cy2026_2035",
+   "label": "Additional FUTA revenue, adjusted (headline), ten-year total, calendar 2026-2035",
+   "world": "futa_base_43000_cpi_indexed",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "period": 2035,
+   "time_basis": "annual",
+   "value": 251088911579.0,
+   "value_raw": "251088911579",
+   "normalization": "as printed",
+   "conditions": {
+    "calendar_year": "CY2026-CY2035",
+    "window": "2026-2035",
+    "window_kind": "total",
+    "net_rate": "0.6%",
+    "basis": "static, no behavioural response, gross of any income or payroll tax offset",
+    "scope": "FUTA line only (state unemployment taxes not counted)",
+    "sign_convention": "positive = higher government revenue",
+    "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+    "derivation": "sum of the file's ten annual figures; the page's TEN_YEAR_ADJUSTED (frontend/lib/data.ts) sums the same series unrounded, 251088911579.81, printed as $251.1B",
+    "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/futa-wage-base-dashboard",
+    "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+    "path": "analysis/futa_wage_base_estimates.csv",
+    "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+    "field": "sum over calendar_year=2026..2035 of adjusted_additional_revenue_usd",
+    "computed_at": "2026-09-17T16:32:38-04:00",
+    "engine": {
+     "policyengine": "6.0.0",
+     "policyengine_us": "2.2.1"
+    },
+    "dataset": "populace-us-2024-spm-20260915"
+   }
+  },
+  {
+   "key": "additional_revenue_unadjusted_cy2026_2035",
+   "label": "Additional FUTA revenue, unadjusted model output, ten-year total, calendar 2026-2035",
+   "world": "futa_base_43000_cpi_indexed",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "period": 2035,
+   "time_basis": "annual",
+   "value": 317383963416.35486,
+   "value_raw": "317383963416.35486",
+   "normalization": "as printed",
+   "conditions": {
+    "calendar_year": "CY2026-CY2035",
+    "window": "2026-2035",
+    "window_kind": "total",
+    "net_rate": "0.6%",
+    "basis": "static, no behavioural response, gross of any income or payroll tax offset",
+    "scope": "FUTA line only (state unemployment taxes not counted)",
+    "sign_convention": "positive = higher government revenue",
+    "series": "unadjusted: model output, all wages, one wage base per worker",
+    "derivation": "sum of the file's ten annual figures in year order, the page's TEN_YEAR_TOTAL (frontend/lib/data.ts), printed as $317.4B"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/futa-wage-base-dashboard",
+    "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+    "path": "frontend/lib/results.json",
+    "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+    "field": "sum over results[year=2026..2035].additional_revenue_flat_06",
+    "computed_at": "2026-09-15",
+    "engine": {
+     "policyengine": "6.0.0",
+     "policyengine_us": "2.2.1"
+    },
+    "dataset": "populace-us-2024-spm-20260915"
+   }
+  },
+  {
+   "key": "futa_collections_model_unadjusted_fy2024",
+   "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2024 (the validation cards)",
    "world": "baseline",
    "metric": "tax_collections",
    "unit_concept": "usd",
@@ -1424,7 +1497,7 @@
    "normalization": "as printed",
    "conditions": {
     "fiscal_year": "FY2024 (October 2023 to September 2024)",
-    "basis": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January",
+    "basis": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
     "prior_year_surcharge": "2023 statutory credit-reduction rates applied to the 2024 wage distribution (the dataset has no 2023 weights)",
     "series": "unadjusted: model output, all wages, one wage base per worker",
     "tax": "FUTA",
@@ -1445,8 +1518,41 @@
    }
   },
   {
-   "key": "futa_collections_model_fy2025",
-   "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2025 (the validation tab)",
+   "key": "futa_collections_model_adjusted_fy2024",
+   "label": "FUTA revenue on a fiscal-year basis, adjusted, FY2024 (the page states it as a gap below IRS collections)",
+   "world": "baseline",
+   "metric": "tax_collections",
+   "unit_concept": "usd",
+   "period": 2024,
+   "time_basis": "fiscal_year",
+   "value": 6747188910.6393585,
+   "value_raw": "6747188910.6393585",
+   "normalization": "as printed",
+   "conditions": {
+    "fiscal_year": "FY2024 (October 2023 to September 2024)",
+    "basis": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
+    "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+    "published_as": "the page reads this file and prints the gap to IRS gross collections (gap_even_split_covered_wages, -17.0%)",
+    "tax": "FUTA",
+    "sign_convention": "level"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/futa-wage-base-dashboard",
+    "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+    "path": "frontend/lib/adjustments.json",
+    "sha256": "ebd2d43e12865e9f73265dd928ea23a22ef1e504066d327b669fd4d723423245",
+    "field": "validation[fiscal_year=2024].model_even_split_covered_wages",
+    "computed_at": "2026-09-16T23:35:18-04:00",
+    "engine": {
+     "policyengine": "6.0.0",
+     "policyengine_us": "2.2.1"
+    },
+    "dataset": "populace-us-2024-spm-20260915"
+   }
+  },
+  {
+   "key": "futa_collections_model_unadjusted_fy2025",
+   "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2025 (the validation cards)",
    "world": "baseline",
    "metric": "tax_collections",
    "unit_concept": "usd",
@@ -1457,7 +1563,7 @@
    "normalization": "as printed",
    "conditions": {
     "fiscal_year": "FY2025 (October 2024 to September 2025)",
-    "basis": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January",
+    "basis": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
     "prior_year_surcharge": "modeled",
     "series": "unadjusted: model output, all wages, one wage base per worker",
     "tax": "FUTA",
@@ -1470,6 +1576,39 @@
     "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
     "field": "validation[fiscal_year=2025].model_fiscal_year_basis",
     "computed_at": "2026-09-15",
+    "engine": {
+     "policyengine": "6.0.0",
+     "policyengine_us": "2.2.1"
+    },
+    "dataset": "populace-us-2024-spm-20260915"
+   }
+  },
+  {
+   "key": "futa_collections_model_adjusted_fy2025",
+   "label": "FUTA revenue on a fiscal-year basis, adjusted, FY2025 (the page states it as a gap below IRS collections)",
+   "world": "baseline",
+   "metric": "tax_collections",
+   "unit_concept": "usd",
+   "period": 2025,
+   "time_basis": "fiscal_year",
+   "value": 7301920494.985943,
+   "value_raw": "7301920494.985943",
+   "normalization": "as printed",
+   "conditions": {
+    "fiscal_year": "FY2025 (October 2024 to September 2025)",
+    "basis": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections",
+    "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+    "published_as": "the page reads this file and prints the gap to IRS gross collections (gap_even_split_covered_wages, -16.8%)",
+    "tax": "FUTA",
+    "sign_convention": "level"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/futa-wage-base-dashboard",
+    "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+    "path": "frontend/lib/adjustments.json",
+    "sha256": "ebd2d43e12865e9f73265dd928ea23a22ef1e504066d327b669fd4d723423245",
+    "field": "validation[fiscal_year=2025].model_even_split_covered_wages",
+    "computed_at": "2026-09-16T23:35:18-04:00",
     "engine": {
      "policyengine": "6.0.0",
      "policyengine_us": "2.2.1"

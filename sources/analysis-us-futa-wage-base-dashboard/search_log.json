@@ -31,7 +31,8 @@
       "https://www.cbo.gov/publication/60776",
       "https://www.cbo.gov/system/files/2025-01/60776-unemployment-insurance.pdf",
       "https://www.cbo.gov/system/files/2025-01/60776-data.xlsx",
-      "https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx"
+      "https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx",
+      "https://www.cbo.gov/system/files/2024-12/60557-budget-options.pdf"
      ],
      "claims": [
       "cbo_option_2018_futa_base_fy2026",
@@ -52,7 +53,7 @@
       "cbo_jan2025_futa_revenues_fy2034",
       "cbo_jan2025_futa_revenues_fy2035"
      ],
-     "note": "Staged: CBO's two most recent FUTA wage-base options (December 2016 and December 2018: $40,000, wage-indexed, net rate 0.167%, state taxes counted), the years they share with the dashboard (2026-2028) and their ten-year totals; and the January 2025 baseline's FUTA revenues for FY2025-FY2035, FY2025 compared with the dashboard's fiscal-year validation figure. Not staged: CBO's estimate of the President's FY2017 budget ('Expand FUTA Base', -$1,060 million over 2017-2026, $40,000 base from 2018) is estimated after the budget's permanent FUTA surtax (its footnote c), a baseline scorecard_db/baselines.py does not register, so harvest rule 7 holds it out; the 2013 and 2014 options ($14,000 base, net rate 0.33%) and CBO's estimates of the FY2012-FY2016 budgets cover windows that end before 2026. The December 2020, 2022 and 2024 options volumes have no FUTA option; no CBO cost estimate of a bill raising the FUTA base was found. All cbo.gov pages were read through Wayback Machine captures (cbo.gov blocks scripted fetches)."
+     "note": "Staged: CBO's two most recent FUTA wage-base options (December 2016 and December 2018: $40,000, wage-indexed, net rate 0.167%, state taxes counted), the years they share with the dashboard (2026-2028) and their ten-year totals; and the January 2025 baseline's FUTA revenues for FY2025-FY2035, FY2025 compared with the dashboard's fiscal-year validation figure. Not staged: CBO's estimate of the President's FY2017 budget ('Expand FUTA Base', -$1,060 million over 2017-2026; Treasury describes the proposal as a $40,000 base from 2018) is estimated after the budget's permanent FUTA surtax (its footnote c), a baseline scorecard_db/baselines.py does not register, so harvest rule 7 holds it out; the 2013 and 2014 options ($14,000 base, net rate 0.33%) and CBO's estimates of the FY2012-FY2016 budgets cover windows that end before 2026. The December 2024 options volume has no FUTA option, nor do the December 2020 and 2022 volumes; no CBO cost estimate of a bill raising the FUTA base was found. CBO's February 2026 revenue projections show only a combined unemployment-insurance line (state and federal), so the January 2025 UI report's FUTA series is the latest FUTA-only projection. All cbo.gov pages were read through Wayback Machine captures (cbo.gov blocks scripted fetches)."
     },
     {
      "producer": "jct",
@@ -96,7 +97,7 @@
       "https://budgetmodel.wharton.upenn.edu/p/2024-04-22-policy-options-for-reducing-the-federal-debt-spring-2024/"
      ],
      "claims": [],
-     "note": ""
+     "note": "PWBM's debt-reduction options and expenditure modules have no FUTA option or FUTA revenue figure."
     },
     {
      "producer": "budget_lab",
@@ -199,7 +200,7 @@
      ],
      "checked": [],
      "claims": [],
-     "note": ""
+     "note": "ITEP's federal analyses include unemployment-insurance taxes in baseline distributions only; no estimate of a FUTA base change."
     },
     {
      "producer": "cpsp",
@@ -210,7 +211,7 @@
      ],
      "checked": [],
      "claims": [],
-     "note": ""
+     "note": "CPSP's work on unemployment insurance covers benefits and poverty, not FUTA financing."
     },
     {
      "producer": "crfb",
@@ -270,7 +271,7 @@
       "https://www.niskanencenter.org/back-to-the-base-ics-how-taxable-wage-base-reforms-can-strengthen-unemployment-program-solvency/"
      ],
      "claims": [],
-     "note": "Treasury's own estimate of the FY2017 budget's 'Expand Federal Unemployment Tax Act (FUTA) base and reform FUTA credit reduction rules' ($40,000 base from 2018, wage-indexed, net rate to 0.167%): $7,113 million in FY2026 and $46,292 million over 2017-26 (General Explanations FY2017, printed page 269). The primary was read and hashed (sha256 2938824787071eb15506d0526c0cb0e6e034e7c9325a7ddbccfa0e3bd75f6ca7), but the row is estimated after the budget's permanent FUTA surtax ('reduce the net Federal UI tax from 0.8 percent (after the proposed permanent reenactment and extension of the FUTA surtax)'), a baseline scorecard_db/baselines.py does not register; harvest rule 7 holds it out until it is registered. Searchlight Institute (Will Raderman, October 8, 2026; read through its Wayback capture, web.archive.org/web/20261008154132) restates the dashboard: 'north of $250 billion could be raised over a 10-year period' (footnote 60 cites PolicyEngine), so it is not an external estimate. The Niskanen Center's February 23, 2026 piece has no estimate. No other producer's own estimate was found."
+     "note": "Treasury's own estimate of the FY2017 budget's 'Expand Federal Unemployment Tax Act (FUTA) base and reform FUTA credit reduction rules' ($40,000 base from 2018, wage-indexed, net rate to 0.167%): $7,113 million in FY2026 and $46,292 million over 2017-26 (General Explanations FY2017, printed page 269). The primary was read and hashed (sha256 2938824787071eb15506d0526c0cb0e6e034e7c9325a7ddbccfa0e3bd75f6ca7), but the row is estimated after the budget's permanent FUTA surtax ('reduce the net Federal UI tax from 0.8 percent (after the proposed permanent reenactment and extension of the FUTA surtax)'), a baseline scorecard_db/baselines.py does not register; harvest rule 7 holds it out until it is registered. Searchlight Institute (Will Raderman, October 8, 2026; read through its Wayback capture, web.archive.org/web/20261008154132) restates the dashboard: 'north of $250 billion could be raised over a 10-year period' (footnote 60 cites PolicyEngine), so it is not an external estimate; its '$59 billion over 10 years' for a wage-indexed $14,000 base restates the Budget Lab (footnote 58). The Niskanen Center's February 23, 2026 piece has no estimate. No other producer's own estimate was found."
     }
    ]
   }

@@ -1,5 +1,36 @@
 [
  {
+  "id": "fiscal-year-futa-collections-construction",
+  "claims": [
+   "cbo_jan2025_futa_revenues_fy2025"
+  ],
+  "status": "constructed",
+  "explains_gap": false,
+  "cause": "The dashboard's fiscal-year figure is a construction: calendar-year FUTA liability at the flat 0.6% rate plus the prior calendar year's credit-reduction surcharge, built to sit beside IRS gross collections; the page notes that 'about a quarter of a calendar year's base tax is deposited after September 30'. CBO's series is not gross: its FY2024 actual, $8.005 billion, matches IRS collections net of refunds ($7.997 billion, from the dashboard's validation fields) to 0.1%, against $8.130 billion gross. CBO's FY2025 figure is its January 2025 projection; FY2025 collections came in at $8.777 billion gross and $8.628 billion net of refunds. The compared figure is the unadjusted series the page's validation cards show (+0.4% against CBO); the page says its closeness to collections 'reflects two errors that offset', and the adjusted fiscal-year figure, $7.302 billion, is -13.7% against CBO.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/app/(shell)/page.tsx#L540-L546"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/app/(shell)/page.tsx#L656-L661"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.cbo.gov/system/files/2025-01/60776-data.xlsx"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/lib/results.json"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/lib/adjustments.json"
+   }
+  ]
+ },
+ {
   "id": "budget-lab-14000-net-of-offset",
   "claims": [
    "budget_lab_base_14000_no_index_cy2026",
@@ -38,7 +69,7 @@
   ],
   "status": "concept_mismatch",
   "explains_gap": false,
-  "cause": "Different reforms and a different revenue concept. The Budget Lab scores FUTA bases of $8,000 to $14,000 (the $14,000 rows are staged: unindexed, indexed to the chained CPI-U and to SSA's average wage index), and its figures are net of an income-tax offset it puts at 'about 25% of the additional gross FUTA revenues raised'. The dashboard scores a $43,000 base indexed to the CPI-U ($53,200 by 2035), and its figures are gross of any such offset (its methodology: 'The figures here are gross of any such offset'). Each Budget Lab figure sits beside the dashboard's adjusted estimate for the same calendar year (the 2026-35 window beside 2035) so the scale is visible; no gap is computed between different reforms.",
+  "cause": "Different reforms and a different revenue concept. The Budget Lab scores FUTA bases of $8,000 to $14,000 (the $14,000 rows are staged: unindexed, indexed to the chained CPI-U and to SSA's average wage index), and its figures are net of an income-tax offset it puts at 'about 25% of the additional gross FUTA revenues raised'. The dashboard scores a $43,000 base indexed to the CPI-U ($53,200 by 2035), and its figures are gross of any such offset (its methodology: 'The figures here are gross of any such offset'). Each Budget Lab year sits beside the dashboard's adjusted estimate for the same calendar year, and each 2026-35 budget window beside the dashboard's adjusted ten-year total, so the scale is visible; no gap is computed between different reforms.",
   "basis": [
    {
     "kind": "document",
@@ -78,6 +109,10 @@
    {
     "kind": "engine_metadata",
     "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/lib/results.json"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/futa-wage-base-dashboard/blob/72e31379e3cd4be6465fd449293369df425e7e55/frontend/app/(shell)/page.tsx#L535-L538"
    }
   ]
  },
@@ -93,11 +128,15 @@
   ],
   "status": "concept_mismatch",
   "explains_gap": false,
-  "cause": "CBO's options raise the base to $40,000, index it to wage growth and cut the net FUTA rate from 0.6% to 0.167%, and CBO counts the state unemployment taxes the higher base raises, which the federal budget includes ('The initial rise would primarily be attributable to added proceeds from SUTA taxes'), net of the rate cuts it expects states to make; its years are fiscal years. The dashboard holds the 0.6% rate, indexes a $43,000 base to the CPI-U and counts the FUTA line only ('This dashboard counts only the FUTA line. A CBO score would also count the state base expansion and the state rate cuts CBO assumes in response').",
+  "cause": "CBO's options raise the base to $40,000, index it to wage growth and cut the net FUTA rate from 0.6% to 0.167%, and CBO counts the state unemployment taxes the higher base raises, which the federal budget includes ('The initial rise would primarily be attributable to added proceeds from SUTA taxes'), net of the rate cuts it expects states to make; its years are fiscal years. The December 2018 volume adds that its estimates for options raising employer payroll contributions 'include an offset' for the reduction in income subject to income and payroll taxes. The dashboard holds the 0.6% rate, indexes a $43,000 base to the CPI-U and counts the FUTA line only ('This dashboard counts only the FUTA line. A CBO score would also count the state base expansion and the state rate cuts CBO assumes in response') and is gross of any offset.",
   "basis": [
    {
     "kind": "document",
     "ref": "https://www.cbo.gov/system/files/2019-06/54667-budgetoptions-2.pdf#page=274"
+   },
+   {
+    "kind": "document",
+    "ref": "https://www.cbo.gov/system/files/2019-06/54667-budgetoptions-2.pdf#page=211"
    },
    {
     "kind": "document",
