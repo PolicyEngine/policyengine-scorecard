@@ -32,15 +32,28 @@
  "fiscal_year_rule": "src/childcare_100k/config.py at f25f0db: 'Fiscal years named by start year (\"2026\" = 2026-27).'",
  "values_gbp_bn": {
   "field": "budget.gross_bn.thirty_hours (the 30-hours leg: extended, universal and targeted entitlements; budget.thirty_hours_components_bn puts it all in extended)",
-  "thirty_hours": {"2026": 0.41, "2027": 0.434, "2028": 0.484, "2029": 0.505},
-  "tax_free_childcare": {"2026": 0.148, "2027": 0.159, "2028": 0.168, "2029": 0.173}
+  "thirty_hours": {
+   "2026": 0.41,
+   "2027": 0.434,
+   "2028": 0.484,
+   "2029": 0.505
+  },
+  "tax_free_childcare": {
+   "2026": 0.148,
+   "2027": 0.159,
+   "2028": 0.168,
+   "2029": 0.173
+  }
  },
  "hours_draw": "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126",
  "pending_fix": {
   "pr": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8",
   "state_on_2026_10_21": "open draft",
-  "release": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (the first release with microcosm#1126's draw; not certified)",
-  "thirty_hours_gbp_bn": {"2027": 1.009, "2029": 1.215},
+  "release": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified)",
+  "thirty_hours_gbp_bn": {
+   "2027": 1.009,
+   "2029": 1.215
+  },
   "attached": false,
   "why_not_attached": "The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
  }

@@ -70,12 +70,14 @@ full 30 hours, the same reform costs £1.40bn in 2027-28 and £1.72bn in
 our side, recorded on each result: the engine switches universal and
 targeted hours off once a family qualifies for the extended hours
 ([policyengine-uk#1930](https://github.com/PolicyEngine/policyengine-uk/issues/1930),
-fixed after the pin), and no child under 1 receives hours.
+changed after the pin by [policyengine-uk#2177](https://github.com/PolicyEngine/policyengine-uk/pull/2177)),
+and no child under 1 receives hours.
 
-The published dashboard figure had the same draw. The fix merged in
-microcosm on 16 October 2026 (microcosm#1299); the certified pair predates it, so the row
-shows the miss until a certified Microcosm release with the fixed draw
-lands. That is intended. When it does, rerun the compute script on the new
+The published dashboard figure ran on the 2 October Microcosm release that
+#1126 examines, with the same draw. The fix merged in microcosm on 16
+October 2026 (microcosm#1299). The certified pair was built on 19 June 2026,
+before it, so the row shows the miss until a certified Microcosm release
+with the fixed draw lands. That is intended. When it does, rerun the compute script on the new
 variant and the new run becomes the latest; both earlier figures stay in
 the history.
 

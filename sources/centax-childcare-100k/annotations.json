@@ -21,7 +21,7 @@
    "severity": "construction",
    "status": "comparable",
    "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements with the limit removed and no behavioural response run.",
-   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)'; policyengine_uk 2.89.2 applies labour-supply responses only through Simulation.apply_dynamics (simulation.py), which pipeline/compute_uk_childcare_100k.py never calls"
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)'; policyengine_uk 2.89.2 applies labour-supply responses only through Simulation.apply_dynamics (simulation.py), which nothing in policyengine 5.0.2 and nothing in pipeline/compute_uk_childcare_100k.py calls"
   },
   {
    "id": "centax-static-published-dashboard",
@@ -71,7 +71,7 @@
    },
    "severity": "construction",
    "text": "CenTax's scenarios assume different falls in the bunching friction after 2022 (none in the high-cost scenario, a 50% fall in the low-cost one). That changes how many parents are above £100,000 under current law, so the static cost differs by scenario. PolicyEngine has one current-law income distribution, so one PolicyEngine value meets all three scenarios.",
-   "basis": "raw/pages_layout.txt PDF pages 40-41 (printed pages 39-40, section 4.1) and PDF page 75 (printed page 74, Appendix A 'Static cost': parents between £100,000 and the marginal buncher's income)"
+   "basis": "raw/pages_layout.txt PDF pages 40-41 (printed pages 39-40, section 4.1) and PDF page 75 (printed page 74, Appendix A 'Static cost': parents between £100,000 and the marginal buncher's income) and PDF page 43 (printed page 42: in the low-cost scenario 'there are fewer parents remaining above the threshold that would represent a new cost')"
   },
   {
    "id": "centax-free-hours-only",

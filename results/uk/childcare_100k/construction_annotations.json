@@ -3,13 +3,13 @@
  "annotations": [
   {
    "id": "pe-universal-switch-off",
-   "text": "policyengine-uk 2.89.2 switches a child's universal and targeted hours off once the family is eligible for the extended hours, and values the extended hours at the family's drawn weekly usage (maximum_extended_childcare_hours_usage). The counterpart sums all three entitlements, so the universal hours a newly eligible family loses are netted out rather than double-counted. policyengine-uk#1930 changed this after the pin (closed 12 October 2026).",
-   "basis": "policyengine_uk 2.89.2 variables/gov/dfe/universal_childcare_entitlement/universal_childcare_entitlement_eligible.py and targeted_childcare_entitlement/targeted_childcare_entitlement_eligible.py (~has_extended_childcare), extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage); https://github.com/PolicyEngine/policyengine-uk/issues/1930"
+   "text": "policyengine-uk 2.89.2 switches a child's universal and targeted hours off once the family is eligible for the extended hours, and values the extended hours at the family's drawn weekly usage (maximum_extended_childcare_hours_usage). The counterpart sums all three entitlements, so the universal hours a newly eligible family loses are netted out rather than double-counted. policyengine-uk#2177 (merged 12 October 2026, after the pin) changed this, closing policyengine-uk#1930.",
+   "basis": "policyengine_uk 2.89.2 variables/gov/dfe/universal_childcare_entitlement/universal_childcare_entitlement_eligible.py and targeted_childcare_entitlement/targeted_childcare_entitlement_eligible.py (~has_extended_childcare), extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage); https://github.com/PolicyEngine/policyengine-uk/issues/1930; https://github.com/PolicyEngine/policyengine-uk/pull/2177"
   },
   {
    "id": "pe-under-ones",
-   "text": "The offer starts at 9 months. The engine's extended-hours scale starts at age 0.75, but no child under 1 receives extended hours on this pair in any year. microcosm#1126 records that ages are whole years, so 9-11-month-olds never qualify.",
-   "basis": "policyengine_uk 2.89.2 parameters/gov/dfe/extended_childcare_entitlement/hours.yaml (threshold 0.75 from 2025); results/uk/childcare_100k/<variant>.json counts.children_under_one_receiving_extended (0 in every world and year); https://github.com/PolicyEngine/microcosm/issues/1126"
+   "text": "The offer starts at 9 months. The engine's extended-hours scale starts at age 0.75, but every age on this pair is a whole number of years, so a child under 1 has age 0 and no child under 1 receives extended hours in any world or year (both measured). microcosm#1126 records the same for the Microcosm release.",
+   "basis": "policyengine_uk 2.89.2 parameters/gov/dfe/extended_childcare_entitlement/hours.yaml (threshold 0.75 from 2025); results/uk/childcare_100k/<variant>.json counts.people_with_fractional_age and counts.children_under_one_receiving_extended (0 in every world and year); https://github.com/PolicyEngine/microcosm/issues/1126"
   }
  ]
 }

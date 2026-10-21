@@ -1,6 +1,6 @@
 {
  "behavioural_response": "none (static)",
- "computed_at": "2026-10-21T12:22:56.985341+00:00",
+ "computed_at": "2026-10-21T12:57:02.656219+00:00",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
  "dataset": {
   "hf_commit": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
@@ -23,6 +23,12 @@
     2030
    ],
    "input_override": {
+    "dependents_calculated_before_override": {
+     "extended_childcare_entitlement": [],
+     "extended_childcare_entitlement_eligible": [],
+     "targeted_childcare_entitlement": [],
+     "universal_childcare_entitlement": []
+    },
     "post_set_weighted_mean": {
      "2027": 29.999999999999996,
      "2029": 29.999999999999996
@@ -50,7 +56,8 @@
       "children_receiving_universal": 494404.7652310133,
       "children_under_one": 811770.268560648,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657574.6903080121
+      "people_receiving_tfc": 657574.6903080121,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 29.999999999999996,
@@ -80,7 +87,8 @@
       "children_receiving_universal": 500957.0870989561,
       "children_under_one": 818603.4279367328,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 653347.6676185802
+      "people_receiving_tfc": 653347.6676185802,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 29.999999999999996,
@@ -118,6 +126,12 @@
     2030
    ],
    "input_override": {
+    "dependents_calculated_before_override": {
+     "extended_childcare_entitlement": [],
+     "extended_childcare_entitlement_eligible": [],
+     "targeted_childcare_entitlement": [],
+     "universal_childcare_entitlement": []
+    },
     "post_set_weighted_mean": {
      "2027": 29.999999999999996,
      "2029": 29.999999999999996
@@ -149,7 +163,8 @@
       "children_receiving_universal": 466532.1504074335,
       "children_under_one": 811770.268560648,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657574.6903080121
+      "people_receiving_tfc": 657574.6903080121,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 29.999999999999996,
@@ -179,7 +194,8 @@
       "children_receiving_universal": 469037.7084082365,
       "children_under_one": 818603.4279367328,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 653347.6676185802
+      "people_receiving_tfc": 653347.6676185802,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 29.999999999999996,
@@ -391,7 +407,8 @@
       "children_receiving_universal": 491224.9334603548,
       "children_under_one": 808777.7939686179,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 671531.6491290182
+      "people_receiving_tfc": 671531.6491290182,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542723075,
@@ -421,7 +438,8 @@
       "children_receiving_universal": 494404.7652310133,
       "children_under_one": 811770.268560648,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657574.6903080121
+      "people_receiving_tfc": 657574.6903080121,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541809284,
@@ -451,7 +469,8 @@
       "children_receiving_universal": 500177.8273534775,
       "children_under_one": 815017.3566737771,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657434.4996615499
+      "people_receiving_tfc": 657434.4996615499,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541930215,
@@ -481,7 +500,8 @@
       "children_receiving_universal": 500957.0870989561,
       "children_under_one": 818603.4279367328,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 653347.6676185802
+      "people_receiving_tfc": 653347.6676185802,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542601741,
@@ -511,7 +531,8 @@
       "children_receiving_universal": 498650.2043390274,
       "children_under_one": 822287.1459171176,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 652124.2098141834
+      "people_receiving_tfc": 652124.2098141834,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.20439053965408,
@@ -562,7 +583,8 @@
       "children_receiving_universal": 467272.0593005419,
       "children_under_one": 808777.7939686179,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 671531.6491290182
+      "people_receiving_tfc": 671531.6491290182,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542723075,
@@ -592,7 +614,8 @@
       "children_receiving_universal": 466532.1504074335,
       "children_under_one": 811770.268560648,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657574.6903080121
+      "people_receiving_tfc": 657574.6903080121,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541809284,
@@ -622,7 +645,8 @@
       "children_receiving_universal": 468398.27882409096,
       "children_under_one": 815017.3566737771,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 657434.4996615499
+      "people_receiving_tfc": 657434.4996615499,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541930215,
@@ -652,7 +676,8 @@
       "children_receiving_universal": 469037.7084082365,
       "children_under_one": 818603.4279367328,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 653347.6676185802
+      "people_receiving_tfc": 653347.6676185802,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542601741,
@@ -682,7 +707,8 @@
       "children_receiving_universal": 462291.46033763885,
       "children_under_one": 822287.1459171176,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 652124.2098141834
+      "people_receiving_tfc": 652124.2098141834,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.20439053965408,
@@ -736,7 +762,8 @@
       "children_receiving_universal": 467272.0593005419,
       "children_under_one": 808777.7939686179,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 919736.191150099
+      "people_receiving_tfc": 919736.191150099,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542723075,
@@ -766,7 +793,8 @@
       "children_receiving_universal": 466532.1504074335,
       "children_under_one": 811770.268560648,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 925148.3011144027
+      "people_receiving_tfc": 925148.3011144027,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541809284,
@@ -796,7 +824,8 @@
       "children_receiving_universal": 468398.27882409096,
       "children_under_one": 815017.3566737771,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 937194.4040367007
+      "people_receiving_tfc": 937194.4040367007,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390541930215,
@@ -826,7 +855,8 @@
       "children_receiving_universal": 469037.7084082365,
       "children_under_one": 818603.4279367328,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 941658.7718813494
+      "people_receiving_tfc": 941658.7718813494,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.204390542601741,
@@ -856,7 +886,8 @@
       "children_receiving_universal": 462291.46033763885,
       "children_under_one": 822287.1459171176,
       "children_under_one_receiving_extended": 0.0,
-      "people_receiving_tfc": 953766.260276176
+      "people_receiving_tfc": 953766.260276176,
+      "people_with_fractional_age": 0.0
      },
      "hours_usage": {
       "mean_all_benunits": 15.20439053965408,
