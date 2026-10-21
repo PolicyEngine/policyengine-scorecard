@@ -72,12 +72,90 @@
     "requirements_sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
    },
    "label": "modern_population_sensitivity",
+   "pairing": "certified_pair",
    "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
    "requirements": {
     "path": "docs/uk_replay/requirements/experiments/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71.txt",
     "sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
    },
    "result_root": "results/uk/experiments/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "status": "experiment_population"
+  },
+  {
+   "data_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "data_years_evidence": {
+    "source": "pending_probe"
+   },
+   "description": "A model swap: policyengine-uk 2.143.0 (released 21 October 2026) on the same Microcosm UK 2024-25 national cut, which was built with and certified for 2.132.6. Runs the newest model now, ahead of the pre-Budget pair, and against the interim pair separates model changes from data. Policy experiments only; never a replay variant.",
+   "executor": [
+    "modal"
+   ],
+   "identity": {
+    "dataset": {
+     "path": "microcosm_uk_2024_25.h5",
+     "repo_id": "policyengine/populace-uk-private",
+     "repo_type": "dataset",
+     "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "size_bytes": 321798995
+    },
+    "materialization": "policyengine_data_dir",
+    "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+    "packages": {
+     "policyengine": {
+      "record_sha256": "pending_probe",
+      "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+      "version": "6.10.0"
+     },
+     "policyengine-core": {
+      "record_sha256": "pending_probe",
+      "version": "3.33.3"
+     },
+     "policyengine-uk": {
+      "record_sha256": "pending_probe",
+      "version": "2.143.0"
+     }
+    },
+    "python": "3.12",
+    "release_bundle": {
+     "bundle_id": "uk-6.10.0",
+     "certified_by": "policyengine.py bundle certification",
+     "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "compatibility_basis": "built_with_model_package",
+     "country_id": "uk",
+     "data_build_fingerprint": null,
+     "data_build_model_git_sha": null,
+     "data_build_model_version": "2.132.6",
+     "data_package": "microcosm-data",
+     "data_version": "0.1.0",
+     "default_dataset": "microcosm_uk_2024_25",
+     "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "model_package": "policyengine-uk",
+     "model_version": "2.132.6",
+     "policyengine_version": "6.10.0"
+    },
+    "requirements_sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
+   },
+   "label": "modern_population_sensitivity",
+   "model_swap_of": "2.132.6",
+   "pairing": "model_swap",
+   "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "requirements": {
+    "path": "docs/uk_replay/requirements/experiments/exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71.txt",
+    "sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
+   },
+   "result_root": "results/uk/experiments/exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
    "status": "experiment_population"
   }
  ],

@@ -47,6 +47,7 @@ SPEC_KIND = "uk_modern_population_policy_experiments"
 ARTIFACT_KIND = "uk_modern_population_policy_experiment_result"
 POPULATIONS_KIND = "uk_experiment_populations"
 POPULATION_STATUS = "experiment_population"
+PAIRINGS = ("certified_pair", "model_swap")
 LABEL = "modern_population_sensitivity"
 LABEL_TEXT = (
     "Policy experiment on the modern population: not a replay or a costing of {event}."
@@ -237,11 +238,26 @@ def validate_population(record: dict, *, root: Path = ROOT) -> None:
         bundle.get("certified_data_artifact_sha256") == dataset.get("sha256"),
         "the release bundle names another dataset",
     )
-    need(
-        bundle.get("model_version")
-        == (packages.get("policyengine-uk") or {}).get("version"),
-        "the release bundle names another model version",
-    )
+    # A certified pair runs the model its data was certified for. A model
+    # swap runs a newer model on the same data, to separate model changes
+    # from data: the bundle still names the data's model.
+    pairing = record.get("pairing")
+    need(pairing in PAIRINGS, f"pairing must be one of {PAIRINGS}")
+    installed_model = (packages.get("policyengine-uk") or {}).get("version")
+    if pairing == "model_swap":
+        need(
+            bundle.get("model_version") != installed_model,
+            "a model swap installs another model than the bundle's",
+        )
+        need(
+            record.get("model_swap_of") == bundle.get("model_version"),
+            "model_swap_of must name the bundle's model version",
+        )
+    else:
+        need(
+            bundle.get("model_version") == installed_model,
+            "the release bundle names another model version",
+        )
     need(
         bundle.get("policyengine_version")
         == (packages.get("policyengine") or {}).get("version"),
@@ -695,6 +711,7 @@ def base_artifact(
         "year": year,
         "fy": fy_label(year),
         "population_id": population["population_id"],
+        "pairing": population.get("pairing"),
         "dataset_sha256": population["identity"]["dataset"]["sha256"],
         "sign_convention": "positive_gain_to_exchequer",
     }
@@ -723,7 +740,12 @@ def build_result(
             "status": "computed",
             "head_groups": effects["groups"],
             "effect_gbp": effects["effect_gbp"],
-            "engine_version": alternate["policyengine_bundle"].get("model_version"),
+            "engine_version": population["identity"]["packages"]["policyengine-uk"][
+                "version"
+            ],
+            "data_built_with_model_version": alternate["policyengine_bundle"].get(
+                "model_version"
+            ),
             "policyengine_version": alternate["policyengine_bundle"].get(
                 "policyengine_version"
             ),
@@ -975,7 +997,10 @@ def run_year(
         "year": year,
         "population_id": population["population_id"],
         "aggregates_gbp": {v: modern["aggregates_gbp"][v] for v in variables},
-        "engine_version": modern["policyengine_bundle"].get("model_version"),
+        "engine_version": population["identity"]["packages"]["policyengine-uk"][
+            "version"
+        ],
+        "pairing": population["pairing"],
         "data_build_id": modern["policyengine_bundle"].get("certified_data_build_id"),
         "dataset_sha256": modern["dataset_sha256_after"],
     }
@@ -1176,6 +1201,10 @@ def findings(
                 "fy": fy_label(year),
                 "status": artifact.get("status"),
                 "effect_gbp": artifact.get("effect_gbp"),
+                "group_effects_gbp": {
+                    "+".join(group["pe_variables"]): group["effect_gbp"]
+                    for group in artifact.get("head_groups", [])
+                },
                 "error_type": artifact.get("error_type"),
                 "error_message": artifact.get("error_message"),
                 "obr_mapped_gbp": evaluated["obr"]["mapped_gbp"],
@@ -1203,9 +1232,11 @@ def findings(
 
 
 def mirror_findings(all_findings: list[dict], specs: dict[str, dict]) -> list[dict]:
-    """Experiments declared as mirrors must return exact negatives."""
-    effects = {
-        (f["event"], row["experiment_id"], row["year"]): row.get("effect_gbp")
+    """Mirrored experiments run the same simulation from opposite sides, so
+    every head group of PolicyEngine variables they share must return exact
+    negatives. A group only one of them maps is not compared."""
+    groups = {
+        (f["event"], row["experiment_id"], row["year"]): row.get("group_effects_gbp")
         for f in all_findings
         for row in f["rows"]
     }
@@ -1216,21 +1247,24 @@ def mirror_findings(all_findings: list[dict], specs: dict[str, dict]) -> list[di
             if not mirror:
                 continue
             other_event, other_id = mirror.split(":")
-            for (e, eid, year), value in effects.items():
+            for (e, eid, year), mine in groups.items():
                 if e != event or eid != experiment["experiment_id"]:
                     continue
-                other = effects.get((other_event, other_id, year))
-                if value is None or other is None:
+                theirs = groups.get((other_event, other_id, year))
+                if not mine or not theirs:
                     continue
-                scale = max(abs(value), abs(other), 1.0)
-                out.append(
-                    {
-                        "pair": [f"{event}:{eid}", mirror],
-                        "year": year,
-                        "effects_gbp": [value, other],
-                        "agrees": abs(value + other) <= MIRROR_TOLERANCE * scale,
-                    }
-                )
+                for variables in sorted(set(mine) & set(theirs)):
+                    a, b = mine[variables], theirs[variables]
+                    scale = max(abs(a), abs(b), 1.0)
+                    out.append(
+                        {
+                            "pair": [f"{event}:{eid}", mirror],
+                            "year": year,
+                            "pe_variables": variables,
+                            "effects_gbp": [a, b],
+                            "agrees": abs(a + b) <= MIRROR_TOLERANCE * scale,
+                        }
+                    )
     return out
 
 
@@ -1284,12 +1318,118 @@ def write_findings(event: str, population_id: str | None = None) -> Path:
     return directory
 
 
+def summary(population_id: str | None = None) -> dict:
+    """Every event this population has run: findings, mirrors, and each
+    comparable head's modern base against the OBR's newest forecast."""
+    population = get_population(population_id)
+    root = output_root(population["population_id"])
+    documents, specs = [], {}
+    for directory in sorted(p for p in root.glob("*") if p.is_dir()):
+        if not (directory / "EXPERIMENT_MANIFEST.json").exists():
+            continue
+        documents.append(findings(directory.name, population["population_id"]))
+        specs[directory.name] = load_spec(directory.name)
+    bases = load_bases()
+    coverage = {}
+    for document in documents:
+        for row in document["rows"]:
+            for scale in row["scales"]:
+                if scale["basis"] != "pe_base_over_obr_event_forecast":
+                    continue
+                newest = newest_forecast(bases, scale["base_sheet"], row["fy"])
+                if newest is None:
+                    continue
+                coverage[(scale["base_sheet"], row["fy"])] = {
+                    "base_sheet": scale["base_sheet"],
+                    "fy": row["fy"],
+                    "pe_base_gbp": scale["pe_base_gbp"],
+                    "obr_newest_vintage": newest[0],
+                    "obr_newest_forecast_gbp": newest[1],
+                    "pe_over_obr": scale["pe_base_gbp"] / newest[1],
+                }
+    counts: dict[str, int] = {}
+    for document in documents:
+        for row in document["rows"]:
+            for anomaly in row["anomalies"]:
+                key = f"{anomaly['code']}:{'diagnosed' if anomaly['diagnosis'] else 'undiagnosed'}"
+                counts[key] = counts.get(key, 0) + 1
+    return {
+        "schema_version": 1,
+        "kind": "uk_policy_experiment_summary",
+        "label": LABEL,
+        "is_replay": False,
+        "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
+        "population_id": population["population_id"],
+        "pairing": population.get("pairing"),
+        "events": [d["event"] for d in documents],
+        "experiment_years": sum(len(d["rows"]) for d in documents),
+        "anomaly_counts": dict(sorted(counts.items())),
+        "mirrors": mirror_findings(documents, specs),
+        "baseline_coverage": [coverage[k] for k in sorted(coverage)],
+    }
+
+
+def render_summary(document: dict) -> str:
+    lines = [
+        f"# Policy experiments: {document['population_id']}",
+        "",
+        f"**{document['label_text']}**",
+        "",
+        f"{len(document['events'])} events, {document['experiment_years']} experiment-years "
+        f"({document['pairing']}). Per-event detail is in each event's FINDINGS.md.",
+        "",
+        "## Anomalies",
+        "",
+        "| Code | Diagnosed | Count |",
+        "|---|---|---:|",
+    ]
+    for key, count in document["anomaly_counts"].items():
+        code, state = key.split(":")
+        lines.append(f"| `{code}` | {state} | {count} |")
+    lines += [
+        "",
+        "## Mirrors",
+        "",
+        "| Pair | FY | Variables | Effects (£bn) | Exact negatives |",
+        "|---|---|---|---|---|",
+    ]
+    for row in document["mirrors"]:
+        lines.append(
+            f"| `{row['pair'][0]}` / `{row['pair'][1]}` | {fy_label(row['year'])} | "
+            f"`{row['pe_variables']}` | {money(row['effects_gbp'][0])} / {money(row['effects_gbp'][1])} | "
+            f"{'yes' if row['agrees'] else '**no**'} |"
+        )
+    lines += [
+        "",
+        "## Modern base against the OBR's newest forecast",
+        "",
+        "| Head | FY | PE base (£bn) | OBR newest (£bn) | Ratio |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for row in document["baseline_coverage"]:
+        lines.append(
+            f"| {row['base_sheet']} | {row['fy']} | {row['pe_base_gbp'] / 1e9:,.1f} | "
+            f"{row['obr_newest_forecast_gbp'] / 1e9:,.1f} ({row['obr_newest_vintage']}) | {row['pe_over_obr']:.3f} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def write_summary(population_id: str | None = None) -> Path:
+    document = summary(population_id)
+    root = output_root(document["population_id"])
+    (root / "SUMMARY.json").write_bytes(canonical_bytes(document))
+    (root / "SUMMARY.md").write_text(render_summary(document))
+    return root
+
+
 # --- CLI ---------------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    command = commands.add_parser("summary")
+    command.add_argument("--population")
     for name in ("plan", "run", "findings"):
         command = commands.add_parser(name)
         command.add_argument("--event", required=True)
@@ -1321,6 +1461,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "run":
         return run(args)
+    if args.command == "summary":
+        root = write_summary(args.population)
+        print(f"wrote {root / 'SUMMARY.md'}")
+        return 0
     directory = write_findings(args.event, args.population)
     print(f"wrote {directory / 'FINDINGS.md'}")
     return 0

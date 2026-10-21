@@ -35,6 +35,32 @@ policy changed the same parameter, the counterfactual keeps the later change
 and removes only this measure's (for example, scaling a later-uprated amount
 by the measure's own uprating ratio).
 
+Events with a source-accounting registry (Autumn Budget 2021, Spring
+Statement 2022, Autumn Statement 2022) bind it. Older events have no
+registry, and building one would need an event-vintage selector first, so
+their specs bind the [inventory](INVENTORY.md) (`data/uk/events/inventory.jsonl`)
+instead: `load_registry` groups the event's inventory rows into the same
+shape, converting GBP millions to GBP through each value's decimal string.
+
+An experiment can name the `years` it runs. A parameter the engine
+day-weights over the fiscal year (`fiscal_year_blend`, such as fuel duty)
+needs a window covering whole fiscal years, so its experiments stop where
+modern law's own schedule changes within a year.
+
+## Populations
+
+| Pairing | What it runs | What it is for |
+|---|---|---|
+| `certified_pair` | a policyengine.py release's model on the data cut certified for it | the experiment population proper |
+| `model_swap` | a newer policyengine-uk on the same data cut | the newest model before a data cut is built for it; against the certified pair on the same data, it separates model changes from data |
+
+A model swap's record names the bundle's model in `model_swap_of`. Its
+artifacts record the installed model as `engine_version` and the data's
+model as `data_built_with_model_version`. policyengine.py runs it with a
+warning: offline, a data release certified for another model is marked
+unverified rather than refused (`provenance/manifest.py`,
+`certify_data_release_compatibility`).
+
 ## Nothing can be mistaken for a replay
 
 | Replay | Experiment |
@@ -130,6 +156,16 @@ The scaling is a screen for bugs, not a comparison of vintages: it absorbs
 nominal growth and base level, not differences in rates, thresholds or
 behaviour between the event's world and modern law. That is why the bands are
 wide and why each flag needs a diagnosis.
+
+## Summary
+
+`pipeline/uk_policy_experiment.py summary` writes
+`results/uk/experiments/<population>/SUMMARY.{json,md}`. It covers every
+event's findings, the anomaly counts by diagnosis state and the mirror
+checks. Mirrors compare each head group of PolicyEngine variables that both
+experiments map; a group only one of them maps is not compared. It also lists
+each comparable head's modern base against the OBR's newest forecast of the
+same head, which screens the population itself.
 
 ## Diagnoses and findings
 

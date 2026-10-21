@@ -582,10 +582,11 @@ def test_plan_runs_only_years_the_population_and_the_event_share():
         ex.plan(spec, registry, population, years=[2023])
 
 
-def test_mirror_findings_flag_disagreeing_mirrors():
+def test_mirror_findings_compare_only_shared_head_groups():
     specs = {event: ex.load_spec(event) for event in EVENTS}
     rows = []
     for event, spec in specs.items():
+        sign = {"forward_on_modern_law": 1.0, "reversal_on_modern_law": -1.0}
         rows.append(
             {
                 "event": event,
@@ -593,9 +594,11 @@ def test_mirror_findings_flag_disagreeing_mirrors():
                     {
                         "experiment_id": e["experiment_id"],
                         "year": 2024,
-                        "effect_gbp": 1e9
-                        if e["construction"] == "forward_on_modern_law"
-                        else -1e9,
+                        "group_effects_gbp": {
+                            "+".join(h["pe_variables"]): sign[e["construction"]]
+                            * (1e9 + 1e6 * i)
+                            for i, h in enumerate(e["heads"])
+                        },
                     }
                     for e in spec["experiments"]
                 ],
@@ -603,7 +606,19 @@ def test_mirror_findings_flag_disagreeing_mirrors():
         )
     checks = ex.mirror_findings(rows, specs)
     assert checks and all(check["agrees"] for check in checks)
-    rows[0]["rows"][0]["effect_gbp"] *= 1.001
+    # A group only one mirror maps (AS2022's Universal Credit) is not compared.
+    assert not any(
+        c["pe_variables"] == "universal_credit" and "hscl" in c["pair"][0]
+        for c in checks
+    )
+    first = next(
+        r
+        for r in rows[0]["rows"]
+        if ex.load_spec(rows[0]["event"])["experiments"][0]["experiment_id"]
+        == r["experiment_id"]
+    )
+    key = next(iter(first["group_effects_gbp"]))
+    first["group_effects_gbp"][key] *= 1.001
     assert not all(check["agrees"] for check in ex.mirror_findings(rows, specs))
 
 
