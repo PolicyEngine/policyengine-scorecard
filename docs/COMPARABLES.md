@@ -88,7 +88,11 @@ mechanically where they can be:
 
 A claim either names the PolicyEngine estimate it is compared with (`compare_to`), or says in
 `pe_missing` why there is none. A compared claim has the estimate's metric, unit, period and time
-basis. When the two score different policy worlds, `compare_to.across_worlds` gives the reason
+basis. A claim that has all four in common with a published estimate but is not compared
+cannot be waved off with a sentence. It names that estimate in `nearest_estimate`, and an
+annotation with status `concept_mismatch` (or `pe_gap`) and a basis says why the two differ: a
+net-of-behaviour cost beside a static one, for example. On the scorecard it then appears beside
+that estimate, labelled with the mismatch, rather than blank. When the two score different policy worlds, `compare_to.across_worlds` gives the reason
 the quantities match and its basis, and the comparison is `constructed`, not `comparable`.
 
 The gap is PolicyEngine's value over the external value, minus one, with the external value in

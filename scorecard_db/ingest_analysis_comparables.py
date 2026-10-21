@@ -183,12 +183,17 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
             scores.append(score)
             t["claims"] += 1
             row = evaluation[c["key"]]
-            if not row["estimate"]:
+            if not row["estimate"] and not row["nearest"]:
                 t["not_compared"] += 1
                 continue
-            est = estimates[row["estimate"]]
+            # A compared claim carries the analysis's figure with its record's
+            # status; an uncompared claim on the same quantity carries its
+            # nearest estimate, labelled with the mismatch its annotation states.
+            est = estimates[row["estimate"] or row["nearest"]]
             note = notes.get(c["key"])
             status = row["status"]
+            if not row["estimate"]:
+                t["not_compared"] += 1
             annotations = []
             if note:
                 annotations.append(f"{note['id']}: {note['cause']}")
@@ -218,6 +223,7 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
                             "sha256": prov["sha256"],
                             "field": prov["field"],
                             "relation": row["relation"],
+                            "compared": bool(row["estimate"]),
                         },
                         sort_keys=True,
                     ),
@@ -283,7 +289,7 @@ def ingest(db_path: Path) -> dict:
             )
             detail = (
                 f"{t['analyses']} analyses searched, {t['claims']} claims, "
-                f"{t['results']} compared with the analysis's own estimate"
+                f"{t['results']} with the analysis's own figure beside them"
             )
             db.conn.execute(LANE_SQL, (lane, stage_name, detail, updated))
     sync_lane_feed(db, REPO / "data" / "lanes.json", updated, lanes=LANE_FEED_META)

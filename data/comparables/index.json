@@ -78,6 +78,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2027-28",
      "pe_value": -434000000,
      "gap": -0.4575,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -99,8 +101,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2027",
+     "nearest_pe_value": -434000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -120,6 +124,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2029-30",
      "pe_value": -505000000,
      "gap": -0.4847,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -141,8 +147,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2029",
+     "nearest_pe_value": -505000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -162,6 +170,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2027-28",
      "pe_value": -434000000,
      "gap": -0.4707,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -183,8 +193,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2027",
+     "nearest_pe_value": -434000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -204,6 +216,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2029-30",
      "pe_value": -505000000,
      "gap": -0.5,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -225,8 +239,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2029",
+     "nearest_pe_value": -505000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -246,6 +262,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2027-28",
      "pe_value": -434000000,
      "gap": -0.2517,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -267,8 +285,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2027",
+     "nearest_pe_value": -434000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -288,6 +308,8 @@
      "estimate_label": "Static cost of the 30 funded hours, both limits removed, 2029-30",
      "pe_value": -505000000,
      "gap": -0.2786,
+     "nearest_estimate": null,
+     "nearest_pe_value": null,
      "status": "constructed",
      "cause": "The dashboard's Microcosm release draws each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what fuller use implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage), and its rerun on the first release with the corrected draw (uk-childcare-100k-threshold#8, an uncertified release) gives £1.009bn and £1.215bn for the 30 hours, 26% and 24% above CenTax's central static cost.",
      "pe_missing": null
@@ -309,8 +331,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "thirty_hours_static_fy2029",
+     "nearest_pe_value": -505000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CenTax's net fiscal cost adds intensive (bunching) and extensive (partners entering work) behavioural margins to the static cost; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -330,8 +354,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2026",
+     "nearest_pe_value": -558000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -351,8 +377,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2027",
+     "nearest_pe_value": -593000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -372,8 +400,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2028",
+     "nearest_pe_value": -652000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -393,8 +423,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2029",
+     "nearest_pe_value": -678000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -414,8 +446,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2026",
+     "nearest_pe_value": -558000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -435,8 +469,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2027",
+     "nearest_pe_value": -593000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -456,8 +492,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2028",
+     "nearest_pe_value": -652000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     },
     {
@@ -477,8 +515,10 @@
      "estimate_label": null,
      "pe_value": null,
      "gap": null,
-     "status": null,
-     "cause": null,
+     "nearest_estimate": "both_schemes_static_fy2029",
+     "nearest_pe_value": -678000000,
+     "status": "concept_mismatch",
+     "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
      "pe_missing": "CBP's net fiscal impact includes pension-contribution (Table 2) or labour-supply (Table 3) responses and is reported as the net gain to the Exchequer; the dashboard publishes static costs and has no figure on this definition."
     }
    ]

@@ -108,9 +108,9 @@
   },
   "by_latest_status": {
    "comparable": 42,
-   "concept_mismatch": 17,
+   "concept_mismatch": 31,
    "constructed": 1668,
-   "not_computed": 27121,
+   "not_computed": 27107,
    "pe_gap": 889
   },
   "by_sign_relative_to_pe": {
@@ -136,9 +136,9 @@
    },
    "UK": {
     "claims": 29181,
-    "with_result": 2168,
-    "with_value": 1183,
-    "without_result": 27013,
+    "with_result": 2182,
+    "with_value": 1197,
+    "without_result": 26999,
     "multi_release_claims": 0
    },
    "US": {
@@ -24929,21 +24929,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -434000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.8346153846153846,
+    "delta": 86000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -434000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -24991,7 +25009,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25009,7 +25027,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -25062,21 +25080,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -434000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.7114754098360656,
+    "delta": 176000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -434000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -25124,7 +25160,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25142,7 +25178,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -25195,21 +25231,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -434000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -3.1,
+    "delta": -574000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -434000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -25257,7 +25311,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25275,7 +25329,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2027\", \"field\": \"budget.gross_bn.thirty_hours.2027\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -25328,21 +25382,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -505000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.7890625,
+    "delta": 135000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -505000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -25390,7 +25462,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25408,7 +25480,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -25461,21 +25533,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -505000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.6558441558441559,
+    "delta": 265000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -505000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -25523,7 +25613,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25541,7 +25631,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -25594,21 +25684,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -505000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -3.15625,
+    "delta": -665000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -505000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -25656,7 +25764,7 @@
     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
     "release": "1002T230158Z",
-    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
     "computed_at": "2026-10-09T11:50:21+00:00",
     "annotations": [
@@ -25674,7 +25782,7 @@
      "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
      "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
      "release": "1002T230158Z",
-     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": true, \"estimate\": \"thirty_hours_static_fy2029\", \"field\": \"budget.gross_bn.thirty_hours.2029\", \"path\": \"data/results.json\", \"relation\": \"same\", \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
      "policyengine_variables": [],
      "computed_at": "2026-10-09T11:50:21+00:00",
      "annotations": [
@@ -26647,21 +26755,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -558000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2026\", \"field\": \"budget.gross_bn.total.2026\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -1.690909090909091,
+    "delta": -888000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -558000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2026\", \"field\": \"budget.gross_bn.total.2026\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26705,21 +26831,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -558000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2026\", \"field\": \"budget.gross_bn.total.2026\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -7.9714285714285715,
+    "delta": -628000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -558000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2026\", \"field\": \"budget.gross_bn.total.2026\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26763,21 +26907,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -593000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2027\", \"field\": \"budget.gross_bn.total.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -1.6991404011461317,
+    "delta": -942000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -593000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2027\", \"field\": \"budget.gross_bn.total.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26821,21 +26983,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -593000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2027\", \"field\": \"budget.gross_bn.total.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -7.701298701298701,
+    "delta": -670000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -593000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2027\", \"field\": \"budget.gross_bn.total.2027\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26879,21 +27059,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -652000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2028\", \"field\": \"budget.gross_bn.total.2028\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -1.6340852130325814,
+    "delta": -1051000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -652000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2028\", \"field\": \"budget.gross_bn.total.2028\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26937,21 +27135,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -652000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2028\", \"field\": \"budget.gross_bn.total.2028\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -7.164835164835165,
+    "delta": -743000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -652000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2028\", \"field\": \"budget.gross_bn.total.2028\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -26995,21 +27211,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -678000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2029\", \"field\": \"budget.gross_bn.total.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -1.5878220140515222,
+    "delta": -1105000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -678000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2029\", \"field\": \"budget.gross_bn.total.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -27053,21 +27287,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "value": -678000000.0,
+    "status": "concept_mismatch",
+    "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+    "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+    "release": "1002T230158Z",
+    "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2029\", \"field\": \"budget.gross_bn.total.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "computed_at": "2026-10-09T11:50:21+00:00",
+    "annotations": [
+     "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": -5.136363636363637,
+    "delta": -810000000.0
    },
-   "results": [],
+   "results": [
+    {
+     "value": -678000000.0,
+     "status": "concept_mismatch",
+     "engine_version": "policyengine==6.2.1 policyengine_uk==2.102.3",
+     "data_bundle": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68",
+     "release": "1002T230158Z",
+     "construction": "{\"analysis\": \"uk/childcare-100k-threshold\", \"commit\": \"f25f0dbd46c31d336bde06898d801a1887a8cf89\", \"compared\": false, \"estimate\": \"both_schemes_static_fy2029\", \"field\": \"budget.gross_bn.total.2029\", \"path\": \"data/results.json\", \"relation\": null, \"repo\": \"PolicyEngine/uk-childcare-100k-threshold\", \"sha256\": \"4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a\"}",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-09T11:50:21+00:00",
+     "annotations": [
+      "net-of-behaviour-vs-static: CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below \u00a3100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
    "diagnosis": null
   },
   {

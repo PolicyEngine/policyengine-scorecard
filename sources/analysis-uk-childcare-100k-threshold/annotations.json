@@ -26,5 +26,41 @@
     "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8"
    }
   ]
+ },
+ {
+  "id": "net-of-behaviour-vs-static",
+  "claims": [
+   "centax_net_central_fy2027",
+   "centax_net_central_fy2029",
+   "centax_net_high_cost_fy2027",
+   "centax_net_high_cost_fy2029",
+   "centax_net_low_cost_fy2027",
+   "centax_net_low_cost_fy2029",
+   "cbp_net_table2_fy2026",
+   "cbp_net_table2_fy2027",
+   "cbp_net_table2_fy2028",
+   "cbp_net_table2_fy2029",
+   "cbp_net_table3_fy2026",
+   "cbp_net_table3_fy2027",
+   "cbp_net_table3_fy2028",
+   "cbp_net_table3_fy2029"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "CenTax's net fiscal cost and the Centre for British Progress's net fiscal impact include behavioural responses and the tax they raise: CenTax adds parents no longer holding income below £100,000 and partners entering work (Table 4.2); CBP models pension contributions (Table 2) or labour supply (Table 3). The dashboard's figures beside them are static gross costs, so the pairs measure different things. The like-for-like comparison is CenTax's static cost, annotated above.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=42"
+   },
+   {
+    "kind": "document",
+    "ref": "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf#page=8"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/blob/f25f0dbd46c31d336bde06898d801a1887a8cf89/data/results.json"
+   }
+  ]
  }
 ]

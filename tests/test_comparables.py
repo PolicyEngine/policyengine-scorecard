@@ -297,7 +297,9 @@ def test_state_fiscal_note_sources_belong_to_state_fiscal_note():
 
 def test_childcare_gap_fails_the_gate_without_its_explanation():
     record = childcare()
-    record.annotations = []
+    record.annotations = [
+        n for n in record.annotations if n["id"] != "hours-draw-microcosm-1126"
+    ]
     errors = errors_of(record)
     unexplained = [e for e in errors if "no annotation explains it" in e]
     assert len(unexplained) == 6
@@ -315,6 +317,10 @@ def test_childcare_central_gap_is_what_the_published_figures_imply():
     # compared across two worlds, so constructed rather than comparable
     assert rows["centax_static_central_fy2027"]["status"] == "constructed"
     assert rows["centax_net_central_fy2027"]["estimate"] is None
+    # net of behaviour: beside the static figure, labelled a concept mismatch
+    assert rows["centax_net_central_fy2027"]["nearest"] == "thirty_hours_static_fy2027"
+    assert rows["centax_net_central_fy2027"]["status"] == "concept_mismatch"
+    assert rows["cbp_net_table2_fy2029"]["nearest"] == "both_schemes_static_fy2029"
 
 
 # --- the gate as a property -------------------------------------------------------------
@@ -588,6 +594,62 @@ def test_an_uncompared_claim_says_why():
     assert any("pe_missing must say why" in e for e in errors)
 
 
+def test_a_claim_on_a_published_quantity_cannot_be_waved_off():
+    def f(r):
+        r.claims[0].update(
+            compare_to=None, pe_missing="a different concept, says the stager"
+        )
+
+    errors = mutate(f)
+    assert any("matches pe_cost_fy2027 on metric, unit, period" in e for e in errors)
+
+
+def test_a_waved_off_claim_needs_a_cited_mismatch():
+    def name_it(r):
+        r.claims[0].update(
+            compare_to=None,
+            pe_missing="the producer's figure is net of behaviour",
+            nearest_estimate="pe_cost_fy2027",
+        )
+
+    assert any("must say why" in e for e in mutate(name_it))
+
+    def annotate(r):
+        name_it(r)
+        r.annotations.append(
+            {
+                "id": "net-vs-static",
+                "claims": [r.claims[0]["key"]],
+                "status": "concept_mismatch",
+                "explains_gap": False,
+                "cause": "the producer's figure is net of behavioural responses",
+                "basis": [
+                    {"kind": "document", "ref": "https://example.org/report.pdf#page=3"}
+                ],
+            }
+        )
+
+    assert mutate(annotate) == []
+
+    def comparable_status(r):
+        annotate(r)
+        r.annotations[0]["status"] = "comparable"
+
+    assert any("must say why" in e for e in mutate(comparable_status))
+
+
+def test_nearest_estimate_must_match():
+    def f(r):
+        r.claims[0].update(
+            compare_to=None,
+            pe_missing="a different period entirely",
+            period=2031,
+            nearest_estimate="pe_cost_fy2027",
+        )
+
+    assert any("does not match this claim" in e for e in mutate(f))
+
+
 def test_a_restated_figure_is_not_compared():
     errors = mutate(lambda r: r.claims[0].update(attribution="restated"))
     assert any("only a producer's own estimate is compared" in e for e in errors)
@@ -815,6 +877,12 @@ def test_db_matches_the_records(db):
             assert len(results) == 1
             want = expected[key]["status"]
             assert results[0]["status"] == ("comparable" if want == "pending" else want)
+        elif expected[key]["nearest"]:
+            # beside its nearest estimate, labelled with the stated mismatch
+            assert len(results) == 1
+            assert results[0]["status"] == expected[key]["status"]
+            assert results[0]["status"] in cmp.MISMATCH_STATUSES
+            assert cond["pe_missing"]
         else:
             assert results == []
             assert cond["pe_missing"]
@@ -847,6 +915,8 @@ def test_index_comparisons_are_every_staged_estimate(directory):
         if row["gap"] is not None and not math.isinf(row["gap"]):
             assert c["gap"] == pytest.approx(row["gap"], abs=5e-5)
         assert (c["pe_value"] is None) == (row["estimate"] is None)
+        assert c["nearest_estimate"] == row["nearest"]
+        assert (c["nearest_pe_value"] is None) == (row["nearest"] is None)
         assert (c["pe_missing"] is None) == (row["estimate"] is not None)
         if row["over"]:
             assert c["cause"], f"{c['claim']} is over the threshold with no cause"

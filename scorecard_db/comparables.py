@@ -98,6 +98,13 @@ BASELINE_WORLD = "baseline"
 # Searches that may find a producer not on the list; the claim then names
 # that producer's own slug.
 OPEN_FINDERS = ("open_search", "academic")
+# A claim and an estimate on the same quantity agree on these; an uncompared
+# claim that matches one must say why in an annotation with one of these.
+MATCH_FIELDS = ("metric", "unit_concept", "period", "time_basis")
+MISMATCH_STATUSES = (
+    ComparisonStatus.CONCEPT_MISMATCH.value,
+    ComparisonStatus.PE_GAP.value,
+)
 
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATETIME = re.compile(
@@ -660,6 +667,7 @@ def validate(
     # claims ----------------------------------------------------------------------
     labels = _baseline_labels()
     claims_by_key: dict[str, dict] = {}
+    must_annotate: list[str] = []
     for i, c in enumerate(record.claims):
         key = c.get("key")
         where = f"{name}: claim {key or i + 1}"
@@ -796,6 +804,27 @@ def validate(
         if compare is None:
             if not _nonempty_str(c.get("pe_missing"), 10):
                 errors.append(f"{where}: not compared, so pe_missing must say why")
+            # A claim on the same quantity as a published estimate cannot be
+            # waved off with a sentence: it names that estimate, and an
+            # annotation with a basis says why the two are not like for like.
+            matching = sorted(
+                e["key"]
+                for e in estimates.values()
+                if all(c.get(f) == e.get(f) for f in MATCH_FIELDS)
+            )
+            nearest = c.get("nearest_estimate")
+            if matching and nearest not in matching:
+                errors.append(
+                    f"{where}: matches {', '.join(matching)} on metric, unit, period "
+                    "and time basis; compare it (compare_to), or name it in "
+                    "nearest_estimate and annotate why they differ in concept"
+                )
+            elif not matching and nearest is not None:
+                errors.append(
+                    f"{where}: nearest_estimate {nearest!r} does not match this claim"
+                )
+            elif matching:
+                must_annotate.append(key)
             continue
         if c.get("pe_missing") is not None:
             errors.append(f"{where}: compared, so pe_missing must be absent")
@@ -904,6 +933,14 @@ def validate(
                         "explained before the analysis is recorded, not left pending"
                     )
 
+    for key in must_annotate:
+        note = annotated.get(key)
+        if note is None or note.get("status") not in MISMATCH_STATUSES:
+            errors.append(
+                f"{name}: claim {key} is not compared with its nearest estimate, so an "
+                f"annotation with status {' or '.join(MISMATCH_STATUSES)} must say why"
+            )
+
     # the gate ------------------------------------------------------------------------
     if errors:
         return errors
@@ -943,6 +980,7 @@ def evaluate(record: AnalysisRecord, policy: dict | None = None) -> list[dict]:
             "source": c["source"],
             "found_on": c["found_on"],
             "estimate": None,
+            "nearest": c.get("nearest_estimate"),
             "relation": None,
             "gap": None,
             "over": False,
@@ -1065,6 +1103,10 @@ def _comparisons(record: AnalysisRecord, rows: list[dict]) -> list[dict]:
                 "estimate_label": est["label"] if est else None,
                 "pe_value": est["value"] if est else None,
                 "gap": _round(row["gap"]),
+                "nearest_estimate": row["nearest"],
+                "nearest_pe_value": estimates[row["nearest"]]["value"]
+                if row["nearest"]
+                else None,
                 "status": row["status"],
                 "cause": causes.get(row["annotation"]),
                 "pe_missing": c.get("pe_missing"),
