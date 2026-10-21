@@ -58,6 +58,37 @@
    "status": "expected",
    "summary": "The OBR's costing is net of the self-employed incorporating in response: its NICs yield falls from \u00a3570m (2019-20) to \u00a3475m (2021-22) while income tax goes from -\u00a360m to -\u00a3420m and corporation tax rises to +\u00a3340m. A static run has no such response. PolicyEngine's NICs leg alone (+\u00a30.68bn in 2024-25) is 1.27 times the OBR's NICs row scaled to the modern base (\u00a30.475bn x 1.131).",
    "years": null
+  },
+  {
+   "code": "model_change",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+   "populations": [
+    "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026 (and the higher-rate threshold at \u00a337,500), so its reversal misses the dividend band in 2024-25 and 2025-26; 2.143.0 has the statutory \u00a3125,140 and \u00a337,700. The difference is the dividend band's yield.",
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "code": "model_change",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk stamp_duty/residential/purchase/main/* at 2.132.6 and 2.143.0",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+   "populations": [
+    "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "pe-uk 2.132.6 has no Growth Plan SDLT relief, so removing it moved nothing; 2.143.0 has the relief, and the experiment returns -\u00a31.234bn against the OBR's -\u00a31.048bn.",
+   "years": [
+    2024
+   ]
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",

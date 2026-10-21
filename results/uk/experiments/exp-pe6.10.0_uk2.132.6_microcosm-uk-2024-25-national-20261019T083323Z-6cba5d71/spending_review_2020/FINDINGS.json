@@ -1,0 +1,79 @@
+{
+ "event": "spending_review_2020",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spending Review 2020.",
+ "obr_forecast_vintage": "November 2020",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -356796374.9821434,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -466880836.478447,
+   "experiment_id": "sr2020_pension_credit_smg_uprating",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "pension_credit": -356796374.9821434
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spending_review_2020__pension_credit_uprating_of_the_standard_minimum_guarantee",
+   "obr_mapped_gbp": -367926000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.9697503709499828,
+   "ratio_scaled": 0.7642129363744286,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2689530951290395,
+     "obr_event_forecast_gbp": 125216398267.52019,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Pension credit: uprating of the standard minimum guarantee",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -366687374.29463005,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -506708779.7714277,
+   "experiment_id": "sr2020_pension_credit_smg_uprating",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "pension_credit": -366687374.29463005
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "spending_review_2020__pension_credit_uprating_of_the_standard_minimum_guarantee",
+   "obr_mapped_gbp": -382395000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.9589230358520118,
+   "ratio_scaled": 0.7236649312846717,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.325092586909943,
+     "obr_event_forecast_gbp": 127663835739.6999,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Pension credit: uprating of the standard minimum guarantee",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

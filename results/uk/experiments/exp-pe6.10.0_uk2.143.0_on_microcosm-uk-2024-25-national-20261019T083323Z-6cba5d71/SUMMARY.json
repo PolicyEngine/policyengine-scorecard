@@ -1,0 +1,206 @@
+{
+ "anomaly_counts": {
+  "construction_noop:diagnosed": 7
+ },
+ "baseline_coverage": [
+  {
+   "base_sheet": "CGT",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 13686000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 23146930734.90328,
+   "pe_over_obr": 1.691285308702563
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 21801546197.09165,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 27306093457.722675,
+   "pe_over_obr": 1.2524842601010262
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 20801165202.018173,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 29030468760.709827,
+   "pe_over_obr": 1.3956174319452657
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 25469965349.80383,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 30119730694.62251,
+   "pe_over_obr": 1.1825587620932705
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 305905000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 298840208848.8595,
+   "pe_over_obr": 0.9769052772882414
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 331437583074.4429,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 324396209183.8934,
+   "pe_over_obr": 0.9787550529869512
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 359618867481.6865,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 345143750735.9666,
+   "pe_over_obr": 0.9597487282936926
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 384637784693.9719,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 361866685318.3335,
+   "pe_over_obr": 0.9407985895255826
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 171402000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 172437830034.5404,
+   "pe_over_obr": 1.0060432785763318
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 203986467473.7301,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 214032375734.32114,
+   "pe_over_obr": 1.0492479152416558
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 211594391642.42764,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 223210938714.2597,
+   "pe_over_obr": 1.0549000707516993
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 218890531203.96008,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 230306650324.01807,
+   "pe_over_obr": 1.052154467611121
+  }
+ ],
+ "events": [
+  "autumn_statement_2022"
+ ],
+ "experiment_years": 36,
+ "is_replay": false,
+ "kind": "uk_policy_experiment_summary",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
+ "mirrors": [],
+ "model_changes": [
+  {
+   "certified_pair_gbp": 852598324.87323,
+   "change_gbp": 106357598.81256104,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_additional_rate_threshold_125140",
+    "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026 (and the higher-rate threshold at \u00a337,500), so its reversal misses the dividend band in 2024-25 and 2025-26; 2.143.0 has the statutory \u00a3125,140 and \u00a337,700. The difference is the dividend band's yield.",
+    "years": [
+     2024,
+     2025
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "groups_certified_pair": {
+    "income_tax": 852598324.87323
+   },
+   "groups_model_swap": {
+    "income_tax": 958955923.685791
+   },
+   "model_swap_gbp": 958955923.685791,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 949769167.1588135,
+   "change_gbp": 120764085.37615967,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_additional_rate_threshold_125140",
+    "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026 (and the higher-rate threshold at \u00a337,500), so its reversal misses the dividend band in 2024-25 and 2025-26; 2.143.0 has the statutory \u00a3125,140 and \u00a337,700. The difference is the dividend band's yield.",
+    "years": [
+     2024,
+     2025
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "groups_certified_pair": {
+    "income_tax": 949769167.1588135
+   },
+   "groups_model_swap": {
+    "income_tax": 1070533252.5349731
+   },
+   "model_swap_gbp": 1070533252.5349731,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 0.0,
+   "change_gbp": -1233508075.6331758,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk stamp_duty/residential/purchase/main/* at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+    "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 has no Growth Plan SDLT relief, so removing it moved nothing; 2.143.0 has the relief, and the experiment returns -\u00a31.234bn against the OBR's -\u00a31.048bn.",
+    "years": [
+     2024
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -1233508075.6331758
+   },
+   "model_swap_gbp": -1233508075.6331758,
+   "year": 2024
+  }
+ ],
+ "pairing": "model_swap",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "schema_version": 1
+}

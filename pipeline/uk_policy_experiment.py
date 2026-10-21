@@ -425,13 +425,27 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
             where + f"construction must be one of {sorted(CONSTRUCTIONS)}",
         )
         reform = experiment.get("reform")
-        if not isinstance(reform, dict) or not reform:
-            problems.append(where + "reform must be a nonempty dict")
+        scale = experiment.get("scale") or {}
+        if not isinstance(reform, dict) or not (reform or scale):
+            problems.append(where + "reform must be a dict, and it or scale nonempty")
         else:
             try:
                 event_runner.annual_reform(reform)
             except (TypeError, ValueError) as exc:
                 problems.append(where + str(exc))
+        need(isinstance(scale, dict), where + "scale must map paths to factors")
+        for path, factor in scale.items() if isinstance(scale, dict) else []:
+            need(
+                isinstance(factor, (int, float))
+                and not isinstance(factor, bool)
+                and math.isfinite(factor)
+                and factor > 0,
+                where + f"scale factor for {path} must be positive and finite",
+            )
+            need(
+                path not in (reform or {}),
+                where + f"{path} is in both reform and scale",
+            )
         heads = experiment.get("heads") or []
         need(bool(heads), where + "no heads")
         variables: list[str] = []
@@ -701,7 +715,23 @@ def head_effects(experiment: dict, modern: dict, alternate: dict) -> dict:
 
 
 def touched_paths(experiment: dict) -> list[str]:
-    return sorted(experiment["reform"])
+    return sorted(set(experiment["reform"]) | set(experiment.get("scale") or {}))
+
+
+def executed(experiment: dict, year: int, modern_values: dict) -> dict:
+    """The experiment as run in one year: a scaled path becomes that year's
+    modern processed value times its factor, so every later uprating in this
+    engine's own law is kept, whatever the engine."""
+    scale = experiment.get("scale") or {}
+    if not scale:
+        return experiment
+    reform = {path: dict(windows) for path, windows in experiment["reform"].items()}
+    for path, factor in sorted(scale.items()):
+        value = modern_values.get(path)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ExperimentError(f"{path}: no numeric modern value to scale in {year}")
+        reform[path] = {f"{year}-01-01.{year}-12-31": value * factor}
+    return {**experiment, "reform": reform}
 
 
 def intended_alternate(experiment: dict, year: int, modern_values: dict) -> dict:
@@ -757,6 +787,7 @@ def base_artifact(
         "measure_key": experiment["measure_key"],
         "construction": experiment["construction"],
         "reform": experiment["reform"],
+        "scale": experiment.get("scale"),
         "year": year,
         "fy": fy_label(year),
         "population_id": population["population_id"],
@@ -999,10 +1030,12 @@ def run_year(
         {"world": "modern_law", "year": year, "seconds": time.perf_counter() - started}
     ]
     written = []
-    for experiment in experiments:
+    for planned in experiments:
         started = time.perf_counter()
+        experiment = planned
         own = sorted({v for head in experiment["heads"] for v in head["pe_variables"]})
         try:
+            experiment = executed(planned, year, modern["processed_parameter_values"])
             alternate = event_runner.run_sim(
                 year,
                 own,
@@ -1146,7 +1179,7 @@ def load_diagnoses(path: Path = DIAGNOSES_PATH) -> list[dict]:
     for row in rows:
         if row.get("status") not in DIAGNOSIS_STATUSES:
             raise ExperimentError(f"diagnosis status {row.get('status')!r}")
-        if row.get("code") not in (*SEVERITY, "inert"):
+        if row.get("code") not in (*SEVERITY, "inert", "model_change"):
             raise ExperimentError(f"diagnosis code {row.get('code')!r}")
     return rows
 
@@ -1486,6 +1519,7 @@ def against_certified_pair(population: dict, documents: list[dict]) -> list[dict
     )
     if pair is None:
         return []
+    diagnoses = load_diagnoses()
     out = []
     for mine in documents:
         path = output_root(pair["population_id"]) / mine["event"] / "FINDINGS.json"
@@ -1527,6 +1561,14 @@ def against_certified_pair(population: dict, documents: list[dict]) -> list[dict
                         "change_gbp": change,
                         "groups_certified_pair": other.get("group_effects_gbp"),
                         "groups_model_swap": row.get("group_effects_gbp"),
+                        "diagnosis": diagnosis_for(
+                            diagnoses,
+                            mine["event"],
+                            row["experiment_id"],
+                            row["year"],
+                            "model_change",
+                            population["population_id"],
+                        ),
                     }
                 )
     return out
@@ -1581,14 +1623,16 @@ def render_summary(document: dict) -> str:
             "",
             "Same data, so each row is a model change between the engines: a fix or a bug.",
             "",
-            "| Event | Experiment | FY | Certified pair (£bn) | This model (£bn) | Change (£bn) |",
-            "|---|---|---|---:|---:|---:|",
+            "| Event | Experiment | FY | Certified pair (£bn) | This model (£bn) | Change (£bn) | Diagnosis |",
+            "|---|---|---|---:|---:|---:|---|",
         ]
         for row in document["model_changes"]:
+            found = row.get("diagnosis")
             lines.append(
                 f"| {row['event']} | `{row['experiment_id']}` | {fy_label(row['year'])} | "
                 f"{money(row['certified_pair_gbp'])} | {money(row['model_swap_gbp'])} | "
-                f"{money(row.get('change_gbp'))} |"
+                f"{money(row.get('change_gbp'))} | "
+                f"{(found['status'] + ': ' + found.get('fixed_in', found.get('issue', ''))) if found else 'undiagnosed'} |"
             )
     return "\n".join(lines) + "\n"
 

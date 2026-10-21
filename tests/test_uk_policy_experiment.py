@@ -755,3 +755,29 @@ def test_offsetting_mapped_heads_still_count_as_mapped():
         magnitude_check="scaled",
     )
     assert result["codes"] == ["magnitude_outside_3x"]
+
+
+@given(
+    value=st.floats(1.0, 1e6), factor=st.floats(0.5, 2.0), year=st.integers(2024, 2032)
+)
+def test_a_scaled_path_runs_at_its_modern_value_times_its_factor(value, factor, year):
+    experiment = {
+        "experiment_id": "x",
+        "reform": {"gov.a": {"2024-01-01.2035-12-31": 1.0}},
+        "scale": {"gov.b": factor},
+    }
+    run = ex.executed(experiment, year, {"gov.a": 0.0, "gov.b": value})
+    assert run["reform"]["gov.b"] == {f"{year}-01-01.{year}-12-31": value * factor}
+    assert run["reform"]["gov.a"] == experiment["reform"]["gov.a"]
+    record = ex.parameter_record(
+        run,
+        year,
+        {"gov.a": 0.0, "gov.b": value},
+        {"gov.a": 1.0, "gov.b": value * factor},
+    )
+    assert record["gov.b"]["reached_simulation"] and record["gov.b"][
+        "changes_modern_law"
+    ] == (factor != 1.0)
+    assert ex.touched_paths(experiment) == ["gov.a", "gov.b"]
+    with pytest.raises(ex.ExperimentError):
+        ex.executed(experiment, year, {"gov.a": 0.0})
