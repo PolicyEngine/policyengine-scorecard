@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4dcf5a9edf8bf3303532d4e1e821d831d738d4f8022f965147d5de78ed566b44",
+  "COMPARISON.json": "d1cb854d5b6d610eea9b0ae5e8ceef00c34b286bb99b77386ef751a88168699e",
+  "COMPARISON.md": "e4c58dab97a9f7e35e4be31f8017e51dfedc17d86801f044a3031189b4b3775d"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "5d129aeed9a1b933cb7b75e30d0990e37c25970a89efcb5d18571f18584c8333",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "f59b3292c44bfd8525c6493d45cc532a1322612c5f7319c44d69ea27ab961a65",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "a8bb50d1d3ba12d1f238ca4b582995e98f710f8ab77bf856d55a460569b80606"
+}

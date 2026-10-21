@@ -1,0 +1,1734 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-01-01.2035-12-31": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-01-01.2035-12-31": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-01-01.2035-12-31": 0.2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "798c2f438a232820cc74f7d2315a7935814d1f744bce9e68449ab64bf139bf93"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-01-01.2035-12-31": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-01-01.2035-12-31": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-01-01.2035-12-31": 0.2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "fd7475411d6e3e08171493d5d7951e97dff0758268a967253d8e3d8650c297fb"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.141.12",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.cgt.additional_rate": 0.2,
+     "gov.hmrc.cgt.basic_rate": 0.1,
+     "gov.hmrc.cgt.higher_rate": 0.2
+    },
+    "2025": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2026": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2027": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2028": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2029": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "capital_gains_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Capital gains tax",
+     "pe_variables": [
+      "capital_gains_tax"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "measure_type": "capital_gains_tax",
+   "missing_legs": [
+    "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.",
+    "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.",
+    "CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.cgt.additional_rate",
+     "gov.hmrc.cgt.basic_rate",
+     "gov.hmrc.cgt.higher_rate"
+    ],
+    "pattern": "gov\\.hmrc\\.cgt\\.basic_rate|gov\\.hmrc\\.cgt\\.higher_rate|gov\\.hmrc\\.cgt\\.additional_rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Receipt timing and realisations responses remain divergence axes.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-10-30": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-10-30": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-10-30": 0.2
+    }
+   },
+   "pe_gap": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+   "program": "capital_gains_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11682:73295721bdfdb9e8",
+     "source_row_number": 11682,
+     "source_row_sha256": "73295721bdfdb9e843a34a740f69f7a307cf9c3ca6f132eb027c0a898a912277",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+     "source_row_number": 11683,
+     "source_row_sha256": "b9096ecd110093bf170c4e5d34c6f5a0021f7a5bbb5e7b44ee010161070fa422",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1005043228.7250798,
+     "value_gbp_decimal": "1005043228.7250798"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11684:0d39628e9b763f67",
+     "source_row_number": 11684,
+     "source_row_sha256": "0d39628e9b763f6774787cde9b7dca293ae669b678f7cd874087f8457cc21ec0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 95778978.2266941,
+     "value_gbp_decimal": "95778978.2266941"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11685:440412b0fb8c6e2d",
+     "source_row_number": 11685,
+     "source_row_sha256": "440412b0fb8c6e2d23d144ea291114e6d7af555a48338e2458131a88edff3632",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -75842400.81283405,
+     "value_gbp_decimal": "-75842400.81283405"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11686:9ceb140875d859b8",
+     "source_row_number": 11686,
+     "source_row_sha256": "9ceb140875d859b8583b8422fb6021f8d8695ce2900842f269a4f4c2aa25903d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 755655285.3792045,
+     "value_gbp_decimal": "755655285.3792045"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11687:f738e039412d9872",
+     "source_row_number": 11687,
+     "source_row_sha256": "f738e039412d987264075134bd92e24f1f0403fe982557624cb1988a19e6889d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 985880688.8779727,
+     "value_gbp_decimal": "985880688.8779727"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11688:dcd2e2e6301193f3",
+     "source_row_number": 11688,
+     "source_row_sha256": "dcd2e2e6301193f3172b6774e4eb46d1cd033fea125b7afa6043fad395a8208d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 36706934.78603259,
+     "value_gbp_decimal": "36706934.78603259"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11689:8192b33705abc153",
+     "source_row_number": 11689,
+     "source_row_sha256": "8192b33705abc153ce64f77e2ae4b164b0bfb4694c3797ad4d19e0002691cdda",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -40935198.754274525,
+     "value_gbp_decimal": "-40935198.754274525"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11690:cfacef00089fe7d2",
+     "source_row_number": 11690,
+     "source_row_sha256": "cfacef00089fe7d23453cbc5243896b38f56f7df8feec6f9af5e9ba40c009e23",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -65673194.77414581,
+     "value_gbp_decimal": "-65673194.77414581"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11691:2bcdf86f45b6b126",
+     "source_row_number": 11691,
+     "source_row_sha256": "2bcdf86f45b6b126219cdff311ab7f22afefbbf95f972729e6ab916c78f37448",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -51430908.84458069,
+     "value_gbp_decimal": "-51430908.84458069"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11692:6df82bc59b0bf861",
+     "source_row_number": 11692,
+     "source_row_sha256": "6df82bc59b0bf861052ae28280762c98e9c4b10fdf091f018e4a1830dcaf215c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -54295632.87241625,
+     "value_gbp_decimal": "-54295632.87241625"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11693:fce3f1c54885e725",
+     "source_row_number": 11693,
+     "source_row_sha256": "fce3f1c54885e725499555203b820a7344addabc0c2c612b3d2023a119387b73",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -58683359.37907022,
+     "value_gbp_decimal": "-58683359.37907022"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11694:ade1673d32f6604b",
+     "source_row_number": 11694,
+     "source_row_sha256": "ade1673d32f6604b7f8d4ea61d72c4090049b533cece195135659dc170b47335",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 45894340.401895285,
+     "value_gbp_decimal": "45894340.401895285"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+     "source_row_number": 11695,
+     "source_row_sha256": "6d29375672cd45e7b02c0eb610af5a70fe33ff43f7b5f0456e4b51b7e55799f6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 448727476.6050552,
+     "value_gbp_decimal": "448727476.6050552"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11696:84f6e0e5fe5ec657",
+     "source_row_number": 11696,
+     "source_row_sha256": "84f6e0e5fe5ec6573a67f42a50889c3b6c53c2ad944f864ff196d2f6d6fdfe75",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1262326238.2390866,
+     "value_gbp_decimal": "1262326238.2390866"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11697:b41b55d5b8cbd0c7",
+     "source_row_number": 11697,
+     "source_row_sha256": "b41b55d5b8cbd0c7ccebd7c66ff5b56432a87d346fd088be21ffd5743738f760",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1388465535.769306,
+     "value_gbp_decimal": "1388465535.769306"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11698:85efd8e5130ecc7d",
+     "source_row_number": 11698,
+     "source_row_sha256": "85efd8e5130ecc7d4a1e2f20848023438577392fa24a6294bd348a87b533fe3a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1388878096.7939453,
+     "value_gbp_decimal": "1388878096.7939453"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11699:6ff71275479301e4",
+     "source_row_number": 11699,
+     "source_row_sha256": "6ff71275479301e420ef80183f1018731738ffda3f5c6a90796185b3d3e9cd6c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1470607578.9952433,
+     "value_gbp_decimal": "1470607578.9952433"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22829:48aea91ecc2734f1",
+     "source_row_number": 22829,
+     "source_row_sha256": "48aea91ecc2734f1bb78a2c007f3c3d73ae7cbd36548333f1cbecd278aeb9008",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 4502630.249669727,
+     "value_gbp_decimal": "4502630.249669727"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+     "source_row_number": 22830,
+     "source_row_sha256": "1b3ca3ad7932d6143a6467fdb45cedee277f50646d071e5527f9140fab06483b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 25579185.297371842,
+     "value_gbp_decimal": "25579185.297371842"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22831:ab1c8743daadde1c",
+     "source_row_number": 22831,
+     "source_row_sha256": "ab1c8743daadde1c7a7d8d01fbaa9fcb1daad42a2cc2cf8e366c9c9063f339ed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 73870561.55572048,
+     "value_gbp_decimal": "73870561.55572048"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22832:9f4c74a62730d0a2",
+     "source_row_number": 22832,
+     "source_row_sha256": "9f4c74a62730d0a25c8a3531aa84d3e9a0792db28e9dd560554ff362106c027d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 82106051.6413076,
+     "value_gbp_decimal": "82106051.6413076"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22833:50327aa26d0c6316",
+     "source_row_number": 22833,
+     "source_row_sha256": "50327aa26d0c6316d58e83db1229ecaa8c5e771f8e9f7e7da0894b9482dfd613",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 81868169.5501212,
+     "value_gbp_decimal": "81868169.5501212"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22834:74c3bd563eca97a5",
+     "source_row_number": 22834,
+     "source_row_sha256": "74c3bd563eca97a5457e2a0030885a00a5635c9d5c44e252779737011255100b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 86660781.2404471,
+     "value_gbp_decimal": "86660781.2404471"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22835:93eff38f9e206ebc",
+     "source_row_number": 22835,
+     "source_row_sha256": "93eff38f9e206ebc8db8febb23bb49df3dec3f58077ee4cdd19e10c8ac2c7183",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 881470.0926138684,
+     "value_gbp_decimal": "881470.0926138684"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+     "source_row_number": 22836,
+     "source_row_sha256": "46b312b678d3c12e5db27897a01123d37f887b13ea78cb3aee57b398b6dc09b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1410735.2449058858,
+     "value_gbp_decimal": "1410735.2449058858"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22837:75821b59c0b191da",
+     "source_row_number": 22837,
+     "source_row_sha256": "75821b59c0b191da7a333af64a2bd4caeb3d3858f50fab85722e637502a36eb3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 5757889.723234422,
+     "value_gbp_decimal": "5757889.723234422"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22838:b0c109139b2c7337",
+     "source_row_number": 22838,
+     "source_row_sha256": "b0c109139b2c7337b21c105375c282501ba74c8228590eb2929f73b9506b14d9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6697896.998231041,
+     "value_gbp_decimal": "6697896.998231041"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22839:e2b393c5a46deff3",
+     "source_row_number": 22839,
+     "source_row_sha256": "e2b393c5a46deff3a85e29dab2a826e4001a5eb1d962460ec08174ff98000df7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6539645.430615809,
+     "value_gbp_decimal": "6539645.430615809"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22840:1197e330a3c46ef4",
+     "source_row_number": 22840,
+     "source_row_sha256": "1197e330a3c46ef46640535d6074be57b1246216a1c127d8493f83a93d928862",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6848598.70149791,
+     "value_gbp_decimal": "6848598.70149791"
+    }
+   ],
+   "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Income tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.hmrc.cgt.additional_rate": 0.2,
+     "gov.hmrc.cgt.basic_rate": 0.1,
+     "gov.hmrc.cgt.higher_rate": 0.2
+    },
+    "2025": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2026": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2027": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2028": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    },
+    "2029": {
+     "gov.hmrc.cgt.additional_rate": 0.24,
+     "gov.hmrc.cgt.basic_rate": 0.18,
+     "gov.hmrc.cgt.higher_rate": 0.24
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "capital_gains_tax"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Capital gains tax",
+     "pe_variables": [
+      "capital_gains_tax"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "measure_type": "capital_gains_tax",
+   "missing_legs": [
+    "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.",
+    "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.",
+    "CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.cgt.additional_rate",
+     "gov.hmrc.cgt.basic_rate",
+     "gov.hmrc.cgt.higher_rate"
+    ],
+    "pattern": "gov\\.hmrc\\.cgt\\.basic_rate|gov\\.hmrc\\.cgt\\.higher_rate|gov\\.hmrc\\.cgt\\.additional_rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Receipt timing and realisations responses remain divergence axes.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-10-30": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-10-30": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-10-30": 0.2
+    }
+   },
+   "pe_gap": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+   "program": "capital_gains_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11682:73295721bdfdb9e8",
+     "source_row_number": 11682,
+     "source_row_sha256": "73295721bdfdb9e843a34a740f69f7a307cf9c3ca6f132eb027c0a898a912277",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+     "source_row_number": 11683,
+     "source_row_sha256": "b9096ecd110093bf170c4e5d34c6f5a0021f7a5bbb5e7b44ee010161070fa422",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1005043228.7250798,
+     "value_gbp_decimal": "1005043228.7250798"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11684:0d39628e9b763f67",
+     "source_row_number": 11684,
+     "source_row_sha256": "0d39628e9b763f6774787cde9b7dca293ae669b678f7cd874087f8457cc21ec0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 95778978.2266941,
+     "value_gbp_decimal": "95778978.2266941"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11685:440412b0fb8c6e2d",
+     "source_row_number": 11685,
+     "source_row_sha256": "440412b0fb8c6e2d23d144ea291114e6d7af555a48338e2458131a88edff3632",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -75842400.81283405,
+     "value_gbp_decimal": "-75842400.81283405"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11686:9ceb140875d859b8",
+     "source_row_number": 11686,
+     "source_row_sha256": "9ceb140875d859b8583b8422fb6021f8d8695ce2900842f269a4f4c2aa25903d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 755655285.3792045,
+     "value_gbp_decimal": "755655285.3792045"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11687:f738e039412d9872",
+     "source_row_number": 11687,
+     "source_row_sha256": "f738e039412d987264075134bd92e24f1f0403fe982557624cb1988a19e6889d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 985880688.8779727,
+     "value_gbp_decimal": "985880688.8779727"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11688:dcd2e2e6301193f3",
+     "source_row_number": 11688,
+     "source_row_sha256": "dcd2e2e6301193f3172b6774e4eb46d1cd033fea125b7afa6043fad395a8208d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 36706934.78603259,
+     "value_gbp_decimal": "36706934.78603259"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11689:8192b33705abc153",
+     "source_row_number": 11689,
+     "source_row_sha256": "8192b33705abc153ce64f77e2ae4b164b0bfb4694c3797ad4d19e0002691cdda",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -40935198.754274525,
+     "value_gbp_decimal": "-40935198.754274525"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11690:cfacef00089fe7d2",
+     "source_row_number": 11690,
+     "source_row_sha256": "cfacef00089fe7d23453cbc5243896b38f56f7df8feec6f9af5e9ba40c009e23",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -65673194.77414581,
+     "value_gbp_decimal": "-65673194.77414581"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11691:2bcdf86f45b6b126",
+     "source_row_number": 11691,
+     "source_row_sha256": "2bcdf86f45b6b126219cdff311ab7f22afefbbf95f972729e6ab916c78f37448",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -51430908.84458069,
+     "value_gbp_decimal": "-51430908.84458069"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11692:6df82bc59b0bf861",
+     "source_row_number": 11692,
+     "source_row_sha256": "6df82bc59b0bf861052ae28280762c98e9c4b10fdf091f018e4a1830dcaf215c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -54295632.87241625,
+     "value_gbp_decimal": "-54295632.87241625"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11693:fce3f1c54885e725",
+     "source_row_number": 11693,
+     "source_row_sha256": "fce3f1c54885e725499555203b820a7344addabc0c2c612b3d2023a119387b73",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": -58683359.37907022,
+     "value_gbp_decimal": "-58683359.37907022"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11694:ade1673d32f6604b",
+     "source_row_number": 11694,
+     "source_row_sha256": "ade1673d32f6604b7f8d4ea61d72c4090049b533cece195135659dc170b47335",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 45894340.401895285,
+     "value_gbp_decimal": "45894340.401895285"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+     "source_row_number": 11695,
+     "source_row_sha256": "6d29375672cd45e7b02c0eb610af5a70fe33ff43f7b5f0456e4b51b7e55799f6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 448727476.6050552,
+     "value_gbp_decimal": "448727476.6050552"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11696:84f6e0e5fe5ec657",
+     "source_row_number": 11696,
+     "source_row_sha256": "84f6e0e5fe5ec6573a67f42a50889c3b6c53c2ad944f864ff196d2f6d6fdfe75",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1262326238.2390866,
+     "value_gbp_decimal": "1262326238.2390866"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11697:b41b55d5b8cbd0c7",
+     "source_row_number": 11697,
+     "source_row_sha256": "b41b55d5b8cbd0c7ccebd7c66ff5b56432a87d346fd088be21ffd5743738f760",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1388465535.769306,
+     "value_gbp_decimal": "1388465535.769306"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11698:85efd8e5130ecc7d",
+     "source_row_number": 11698,
+     "source_row_sha256": "85efd8e5130ecc7d4a1e2f20848023438577392fa24a6294bd348a87b533fe3a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1388878096.7939453,
+     "value_gbp_decimal": "1388878096.7939453"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.; The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.; CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11699:6ff71275479301e4",
+     "source_row_number": 11699,
+     "source_row_sha256": "6ff71275479301e420ef80183f1018731738ffda3f5c6a90796185b3d3e9cd6c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1470607578.9952433,
+     "value_gbp_decimal": "1470607578.9952433"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22829:48aea91ecc2734f1",
+     "source_row_number": 22829,
+     "source_row_sha256": "48aea91ecc2734f1bb78a2c007f3c3d73ae7cbd36548333f1cbecd278aeb9008",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 4502630.249669727,
+     "value_gbp_decimal": "4502630.249669727"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+     "source_row_number": 22830,
+     "source_row_sha256": "1b3ca3ad7932d6143a6467fdb45cedee277f50646d071e5527f9140fab06483b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 25579185.297371842,
+     "value_gbp_decimal": "25579185.297371842"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22831:ab1c8743daadde1c",
+     "source_row_number": 22831,
+     "source_row_sha256": "ab1c8743daadde1c7a7d8d01fbaa9fcb1daad42a2cc2cf8e366c9c9063f339ed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 73870561.55572048,
+     "value_gbp_decimal": "73870561.55572048"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22832:9f4c74a62730d0a2",
+     "source_row_number": 22832,
+     "source_row_sha256": "9f4c74a62730d0a25c8a3531aa84d3e9a0792db28e9dd560554ff362106c027d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 82106051.6413076,
+     "value_gbp_decimal": "82106051.6413076"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22833:50327aa26d0c6316",
+     "source_row_number": 22833,
+     "source_row_sha256": "50327aa26d0c6316d58e83db1229ecaa8c5e771f8e9f7e7da0894b9482dfd613",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 81868169.5501212,
+     "value_gbp_decimal": "81868169.5501212"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22834:74c3bd563eca97a5",
+     "source_row_number": 22834,
+     "source_row_sha256": "74c3bd563eca97a5457e2a0030885a00a5635c9d5c44e252779737011255100b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 86660781.2404471,
+     "value_gbp_decimal": "86660781.2404471"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22835:93eff38f9e206ebc",
+     "source_row_number": 22835,
+     "source_row_sha256": "93eff38f9e206ebc8db8febb23bb49df3dec3f58077ee4cdd19e10c8ac2c7183",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 881470.0926138684,
+     "value_gbp_decimal": "881470.0926138684"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+     "source_row_number": 22836,
+     "source_row_sha256": "46b312b678d3c12e5db27897a01123d37f887b13ea78cb3aee57b398b6dc09b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 1410735.2449058858,
+     "value_gbp_decimal": "1410735.2449058858"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22837:75821b59c0b191da",
+     "source_row_number": 22837,
+     "source_row_sha256": "75821b59c0b191da7a333af64a2bd4caeb3d3858f50fab85722e637502a36eb3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 5757889.723234422,
+     "value_gbp_decimal": "5757889.723234422"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22838:b0c109139b2c7337",
+     "source_row_number": 22838,
+     "source_row_sha256": "b0c109139b2c7337b21c105375c282501ba74c8228590eb2929f73b9506b14d9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6697896.998231041,
+     "value_gbp_decimal": "6697896.998231041"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22839:e2b393c5a46deff3",
+     "source_row_number": 22839,
+     "source_row_sha256": "e2b393c5a46deff3a85e29dab2a826e4001a5eb1d962460ec08174ff98000df7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6539645.430615809,
+     "value_gbp_decimal": "6539645.430615809"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22840:1197e330a3c46ef4",
+     "source_row_number": 22840,
+     "source_row_sha256": "1197e330a3c46ef46640535d6074be57b1246216a1c127d8493f83a93d928862",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+     "value_gbp": 6848598.70149791,
+     "value_gbp_decimal": "6848598.70149791"
+    }
+   ],
+   "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Income tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Stamp duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "these paths are annualised another way (day-weighted fiscal-year blend or statutory calendar dates): gov.hmrc.cgt.additional_rate, gov.hmrc.cgt.basic_rate, gov.hmrc.cgt.higher_rate",
+     "holds": false
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.cgt.additional_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     },
+     "gov.hmrc.cgt.basic_rate": {
+      "baseline_world": 0.1,
+      "current_law": 0.18000000000000002,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.18,
+      "reform_world": 0.18000000000000002
+     },
+     "gov.hmrc.cgt.higher_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "these paths are annualised another way (day-weighted fiscal-year blend or statutory calendar dates): gov.hmrc.cgt.additional_rate, gov.hmrc.cgt.basic_rate, gov.hmrc.cgt.higher_rate",
+     "holds": false
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.cgt.additional_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     },
+     "gov.hmrc.cgt.basic_rate": {
+      "baseline_world": 0.1,
+      "current_law": 0.18000000000000002,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.18,
+      "reform_world": 0.18000000000000002
+     },
+     "gov.hmrc.cgt.higher_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 2321626476.090164,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 1005043228.7250798,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": 1026008915.1910019,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 33476353.912811663
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 3347635391.281166,
+   "key": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 33476353.912811663,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -40935198.754274525,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11689:8192b33705abc153",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 448727476.6050552,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 25579185.297371842,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 1410735.2449058858,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": 2321626476.090164,
+   "context": {},
+   "delta_gbp": 1026008915.1910019,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 33476353.912811663
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 3347635391.281166,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 33476353.912811663,
+   "year": 2025
+  },
+  {
+   "base_gbp": 2321626476.090164,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 1026008915.1910019,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 33476353.912811663
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 3347635391.281166,
+   "key": "capital_gains_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 33476353.912811663,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.141.12_policyengine-uk-data-1.59.1/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 2321626476.090164,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": 3347635391.281166,
+   "obr_value_gbp": 1005043228.7250798,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+   "source_row_number": 11683,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -40935198.754274525,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11689:8192b33705abc153",
+   "source_row_number": 11689,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 448727476.6050552,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+   "source_row_number": 11695,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 25579185.297371842,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+   "source_row_number": 22830,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 1410735.2449058858,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+   "source_row_number": 22836,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": 2321626476.090164,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": 3347635391.281166,
+   "obr_value_gbp": 1005043228.7250798,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+   "source_row_number": 11683,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -40935198.754274525,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11689:8192b33705abc153",
+   "source_row_number": 11689,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 448727476.6050552,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+   "source_row_number": 11695,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 25579185.297371842,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+   "source_row_number": 22830,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 1410735.2449058858,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+   "source_row_number": 22836,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+ "year": 2025
+}
