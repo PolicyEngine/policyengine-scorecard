@@ -1,0 +1,2370 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_2.flat_rate": {
+     "2024-01-01.2035-12-31": 3.7
+    },
+    "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+     "2024-01-01.2035-12-31": 12570
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "6d7377e6f401174564a6cbbeb34dcea1bc4e361e4a7772387492564e553ff25c"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_2.flat_rate": {
+     "2024-01-01.2035-12-31": 3.7
+    },
+    "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+     "2024-01-01.2035-12-31": 12570
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "7649ddc55c26f3330419079b54e7e3791b5e8ede34f7341ab2c7b6630b004d48"
+  }
+ },
+ "cited_sources": [
+  {
+   "side": "base",
+   "url": "https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html"
+  },
+  {
+   "side": "head",
+   "url": "https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html"
+  }
+ ],
+ "event": "autumn_statement_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.142.0",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 3.15,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7215.942806707856
+    },
+    "2024": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7396.336628420124
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 6845
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7105
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7980.15922330097
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 8139.754810238305
+    }
+   },
+   "fiscal_event": "Autumn Statement 2023",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+    "Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_2.flat_rate",
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_2\\.flat_rate|gov\\.hmrc\\.national_insurance\\.class_2\\.small_profits_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverse the certified zero Class2 compulsory liability from annual2024 to the documented \u00a33.70/week that was due from April2024 without abolition, with a \u00a312,570 cash-liability threshold. The pinned formula otherwise charges above the small-profits threshold, although profits \u00a36,725-\u00a312,570 were already credited without paying. This threshold substitution isolates compulsory cash payments; voluntary contributions and benefit credits are not modelled. The pin incorrectly uses \u00a33.15 for2023-24 against the actual \u00a33.45 (later fixed upstream in #1887); nominal2023 remains that certified world and is before abolition. Later years keep \u00a33.70 in cash terms and omit hypothetical later compulsory-rate uprating. Source: https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_2.flat_rate": {
+     "2024-01-01": 3.7
+    },
+    "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+     "2024-01-01": 12570
+    }
+   },
+   "pe_gap": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10590:9fb656d369cf6c02",
+     "source_row_number": 10590,
+     "source_row_sha256": "9fb656d369cf6c025edbafd7ae7270399bfe8c8bcd31da37808d3ab06b095b9b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10591:06c2501422284995",
+     "source_row_number": 10591,
+     "source_row_sha256": "06c2501422284995e85c49daf6d1d2d9c89e6118f55682d2c463ed26c72ab951",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10592:e5c257a04708cde7",
+     "source_row_number": 10592,
+     "source_row_sha256": "e5c257a04708cde79e3d1850f993bc93671956bb167132d3691e3a63da37cdd7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 1701838.270432405,
+     "value_gbp_decimal": "1701838.270432405"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10593:f37c77d805ce9401",
+     "source_row_number": 10593,
+     "source_row_sha256": "f37c77d805ce940112a2161d6156458bf3b28eb483747e286734d1bbd90476e9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 141921087.68720073,
+     "value_gbp_decimal": "141921087.68720073"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10594:eac703aa1cd0c605",
+     "source_row_number": 10594,
+     "source_row_sha256": "eac703aa1cd0c60523cde1e73e29d7ccbc8e7565ae41390c4f14588164346e72",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 206481578.21251217,
+     "value_gbp_decimal": "206481578.21251217"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+     "source_row_number": 10595,
+     "source_row_sha256": "d9bbeb74fa78d25e7f403ff718bf5188c45148cfc9ea6738527001dca7822fef",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 261654511.53642154,
+     "value_gbp_decimal": "261654511.53642154"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10596:482eac698ab9c181",
+     "source_row_number": 10596,
+     "source_row_sha256": "482eac698ab9c18132667441a4f5f40e1fabd5ebdacb55d5d131144c8a74e606",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10597:37b420855b7005a0",
+     "source_row_number": 10597,
+     "source_row_sha256": "37b420855b7005a091297158eb26212f196ad3e036a9c63375ee723d85555fca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -348669309.17433286,
+     "value_gbp_decimal": "-348669309.17433286"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10598:28f9366b82391330",
+     "source_row_number": 10598,
+     "source_row_sha256": "28f9366b82391330d9369caa844f3c58d985c55f44b15780e80a26d88a32394a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -350102319.5871488,
+     "value_gbp_decimal": "-350102319.5871488"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10599:0cdd3c6417e28a14",
+     "source_row_number": 10599,
+     "source_row_sha256": "0cdd3c6417e28a1466adb6fa0d0dd23dad9f906a4a349b8f0edbc1b0aee22677",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -358399850.0876191,
+     "value_gbp_decimal": "-358399850.0876191"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10600:d0828a5bfb537ca4",
+     "source_row_number": 10600,
+     "source_row_sha256": "d0828a5bfb537ca4d4d800b11dd959d5ec1b24fff8c594392e9a6fbf3b5eb8cc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -368703205.37524307,
+     "value_gbp_decimal": "-368703205.37524307"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+     "source_row_number": 10601,
+     "source_row_sha256": "756ded1466aa84b3c316afa3cf1f3c7fbe3d0bb63d196a3803aa21593ec70fce",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -378862321.47441095,
+     "value_gbp_decimal": "-378862321.47441095"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10602:10fba5ede62ec9a5",
+     "source_row_number": 10602,
+     "source_row_sha256": "10fba5ede62ec9a5747cca5d8df9d80e0df62daf66874ee8c265423b41574eb6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10603:f988dfb34cc38104",
+     "source_row_number": 10603,
+     "source_row_sha256": "f988dfb34cc381045ab9679ea802bd509f3175f5336c46ed30794564f6504aa1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -36776850.44972875,
+     "value_gbp_decimal": "-36776850.44972875"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10604:2e41723e31096d04",
+     "source_row_number": 10604,
+     "source_row_sha256": "2e41723e31096d041d8917589c8cbf4839be5b7400242f17e403f52b87bbc722",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -120277089.33685336,
+     "value_gbp_decimal": "-120277089.33685336"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10605:e8520c5b5437234d",
+     "source_row_number": 10605,
+     "source_row_sha256": "e8520c5b5437234d8f2a05276dcffc33da2759b34517c4c41a6aa11fdf7cfbb2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -186661694.94794962,
+     "value_gbp_decimal": "-186661694.94794962"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10606:464a49f34a9b5964",
+     "source_row_number": 10606,
+     "source_row_sha256": "464a49f34a9b59647cf60b44b3daf484a01a26749fa3b2764f75f34093e286a6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -242068400.86703146,
+     "value_gbp_decimal": "-242068400.86703146"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10607:8dbf84f23026cba0",
+     "source_row_number": 10607,
+     "source_row_sha256": "8dbf84f23026cba07dcfaa38d19211d6a40c1fdc189b6c6efb31ab8c0e765fb4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -290645711.2809461,
+     "value_gbp_decimal": "-290645711.2809461"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10608:8d76207d856fc00c",
+     "source_row_number": 10608,
+     "source_row_sha256": "8d76207d856fc00c3b7b78062b88e1f51299ab6e3f3eadf191119cda890aa2a7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10609:0bf03e9f919bfbae",
+     "source_row_number": 10609,
+     "source_row_sha256": "0bf03e9f919bfbae4cfb5979bc02902b143ba96e98e11d11255f005b8bb70fac",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10610:e82a65922591db12",
+     "source_row_number": 10610,
+     "source_row_sha256": "e82a65922591db12b44cf82981c6e2df4310d75c3ef6f4f738788cbbc1761fab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10611:c9463e33b6dd399f",
+     "source_row_number": 10611,
+     "source_row_sha256": "c9463e33b6dd399f5c220ce1f38c67ef52139d1308941be60b956e24941c48ca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10612:6f1e9a3bd0d656c3",
+     "source_row_number": 10612,
+     "source_row_sha256": "6f1e9a3bd0d656c3e367577e92fedbccfe0eb6b33ce84b39cd2751093c1c0f20",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10613:3cfca8cfa0228665",
+     "source_row_number": 10613,
+     "source_row_sha256": "3cfca8cfa02286653b719e644e7b8b2f5000159cced5faa0915960b742f9d6f4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21497:197a81ed0459bc7d",
+     "source_row_number": 21497,
+     "source_row_sha256": "197a81ed0459bc7de41a77fe5c25fe6dd305792095cd71b410bac0c8b8def6d3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21498:3fa4108a7eac0a15",
+     "source_row_number": 21498,
+     "source_row_sha256": "3fa4108a7eac0a1589393a7f5e783befe95ce1a67b199e11bc2ce54ab1340436",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 4097382.253023544,
+     "value_gbp_decimal": "4097382.253023544"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21499:909bf2ab3554e230",
+     "source_row_number": 21499,
+     "source_row_sha256": "909bf2ab3554e2305036cf9daa70758ed44acc8a832ef7a93d4f10c4be66cc19",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 5374644.901458091,
+     "value_gbp_decimal": "5374644.901458091"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21500:3cd35347ee5fc266",
+     "source_row_number": 21500,
+     "source_row_sha256": "3cd35347ee5fc2665a3a797d677a798cba55a2f0d80915bf599185e76c915161",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6093086.0845173085,
+     "value_gbp_decimal": "6093086.0845173085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21501:53e1c92d4a4f4e96",
+     "source_row_number": 21501,
+     "source_row_sha256": "53e1c92d4a4f4e961b046ad5cc6a529a2dee30015b052e4ffb260c0bfa8585a4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6154373.680937649,
+     "value_gbp_decimal": "6154373.680937649"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+     "source_row_number": 21502,
+     "source_row_sha256": "1ea7fa7e0cfb40daa09cc4200bf07762d6f21e7bb812dd6a776b32afeccf3070",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6726701.429016321,
+     "value_gbp_decimal": "6726701.429016321"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21503:210e9e8bada76134",
+     "source_row_number": 21503,
+     "source_row_sha256": "210e9e8bada7613495baeaaa66b0c2dcbc0744ccd3f91f29064233077b70920d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21504:11aac6da7a06d654",
+     "source_row_number": 21504,
+     "source_row_sha256": "11aac6da7a06d654b597a3494750497b29ed511c10ce3e1f4f25c3ddc7c4596a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21505:374cb2da46d104d4",
+     "source_row_number": 21505,
+     "source_row_sha256": "374cb2da46d104d410603240b327cee390ac32318cec23edb0d66c6b866b43da",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -59309.51934322535,
+     "value_gbp_decimal": "-59309.51934322535"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21506:b8ab58b536a1ad7f",
+     "source_row_number": 21506,
+     "source_row_sha256": "b8ab58b536a1ad7f269e3e283d99708943617fda882fd08468a8d6c3ef80a3a9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 1511118.689659208,
+     "value_gbp_decimal": "1511118.689659208"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21507:2c2538b49423c207",
+     "source_row_number": 21507,
+     "source_row_sha256": "2c2538b49423c2078f81f34a40ee1942f0bb7b234da3eb948073add4c9c84eff",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 2238872.256787487,
+     "value_gbp_decimal": "2238872.256787487"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21508:243bee3203cd1327",
+     "source_row_number": 21508,
+     "source_row_sha256": "243bee3203cd1327383c3465598943a67e2b18b1284caffdc716065f1b190133",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 2838759.920443839,
+     "value_gbp_decimal": "2838759.920443839"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21509:c5123f714ee54ff9",
+     "source_row_number": 21509,
+     "source_row_sha256": "c5123f714ee54ff93b45cdf0680659ad5d60cf5d94e824194e83f7708814c1f9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21510:f7365b6a93fbe4c8",
+     "source_row_number": 21510,
+     "source_row_sha256": "f7365b6a93fbe4c854ca71f02583c25a68e044c8e1dbfbff0b7ec4fe51071cc7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21511:69ca865721717cf1",
+     "source_row_number": 21511,
+     "source_row_sha256": "69ca865721717cf16429472d53c945b3a72588ceaa068c688e8b7020a4e41abc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -112111.41483992286,
+     "value_gbp_decimal": "-112111.41483992286"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21512:54f73d621c17378e",
+     "source_row_number": 21512,
+     "source_row_sha256": "54f73d621c17378e8d432aebe5e62c76fded16b0db55db523e505f74fa25f0f0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 13448321.248614388,
+     "value_gbp_decimal": "13448321.248614388"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21513:7aa3f5c32491b748",
+     "source_row_number": 21513,
+     "source_row_sha256": "7aa3f5c32491b74802e75e45ff29d7a98a0abae16357cf3f444b2921646a0392",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 20144606.500244483,
+     "value_gbp_decimal": "20144606.500244483"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21514:95c9fc186b0b36f4",
+     "source_row_number": 21514,
+     "source_row_sha256": "95c9fc186b0b36f44387b216d0d0b75f90e5ac612f8224c89e40db303d09f97e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 25848426.991564553,
+     "value_gbp_decimal": "25848426.991564553"
+    }
+   ],
+   "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 3.15,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7215.942806707856
+    },
+    "2024": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7396.336628420124
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 6845
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7105
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 7980.15922330097
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": 0,
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": 8139.754810238305
+    }
+   },
+   "fiscal_event": "Autumn Statement 2023",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+    "Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_2.flat_rate",
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_2\\.flat_rate|gov\\.hmrc\\.national_insurance\\.class_2\\.small_profits_threshold",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverse the certified zero Class2 compulsory liability from annual2024 to the documented \u00a33.70/week that was due from April2024 without abolition, with a \u00a312,570 cash-liability threshold. The pinned formula otherwise charges above the small-profits threshold, although profits \u00a36,725-\u00a312,570 were already credited without paying. This threshold substitution isolates compulsory cash payments; voluntary contributions and benefit credits are not modelled. The pin incorrectly uses \u00a33.15 for2023-24 against the actual \u00a33.45 (later fixed upstream in #1887); nominal2023 remains that certified world and is before abolition. Later years keep \u00a33.70 in cash terms and omit hypothetical later compulsory-rate uprating. Source: https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_2.flat_rate": {
+     "2024-01-01": 3.7
+    },
+    "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+     "2024-01-01": 12570
+    }
+   },
+   "pe_gap": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10590:9fb656d369cf6c02",
+     "source_row_number": 10590,
+     "source_row_sha256": "9fb656d369cf6c025edbafd7ae7270399bfe8c8bcd31da37808d3ab06b095b9b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10591:06c2501422284995",
+     "source_row_number": 10591,
+     "source_row_sha256": "06c2501422284995e85c49daf6d1d2d9c89e6118f55682d2c463ed26c72ab951",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10592:e5c257a04708cde7",
+     "source_row_number": 10592,
+     "source_row_sha256": "e5c257a04708cde79e3d1850f993bc93671956bb167132d3691e3a63da37cdd7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 1701838.270432405,
+     "value_gbp_decimal": "1701838.270432405"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10593:f37c77d805ce9401",
+     "source_row_number": 10593,
+     "source_row_sha256": "f37c77d805ce940112a2161d6156458bf3b28eb483747e286734d1bbd90476e9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 141921087.68720073,
+     "value_gbp_decimal": "141921087.68720073"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10594:eac703aa1cd0c605",
+     "source_row_number": 10594,
+     "source_row_sha256": "eac703aa1cd0c60523cde1e73e29d7ccbc8e7565ae41390c4f14588164346e72",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 206481578.21251217,
+     "value_gbp_decimal": "206481578.21251217"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+     "source_row_number": 10595,
+     "source_row_sha256": "d9bbeb74fa78d25e7f403ff718bf5188c45148cfc9ea6738527001dca7822fef",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 261654511.53642154,
+     "value_gbp_decimal": "261654511.53642154"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10596:482eac698ab9c181",
+     "source_row_number": 10596,
+     "source_row_sha256": "482eac698ab9c18132667441a4f5f40e1fabd5ebdacb55d5d131144c8a74e606",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10597:37b420855b7005a0",
+     "source_row_number": 10597,
+     "source_row_sha256": "37b420855b7005a091297158eb26212f196ad3e036a9c63375ee723d85555fca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -348669309.17433286,
+     "value_gbp_decimal": "-348669309.17433286"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10598:28f9366b82391330",
+     "source_row_number": 10598,
+     "source_row_sha256": "28f9366b82391330d9369caa844f3c58d985c55f44b15780e80a26d88a32394a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -350102319.5871488,
+     "value_gbp_decimal": "-350102319.5871488"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10599:0cdd3c6417e28a14",
+     "source_row_number": 10599,
+     "source_row_sha256": "0cdd3c6417e28a1466adb6fa0d0dd23dad9f906a4a349b8f0edbc1b0aee22677",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -358399850.0876191,
+     "value_gbp_decimal": "-358399850.0876191"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10600:d0828a5bfb537ca4",
+     "source_row_number": 10600,
+     "source_row_sha256": "d0828a5bfb537ca4d4d800b11dd959d5ec1b24fff8c594392e9a6fbf3b5eb8cc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -368703205.37524307,
+     "value_gbp_decimal": "-368703205.37524307"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+     "source_row_number": 10601,
+     "source_row_sha256": "756ded1466aa84b3c316afa3cf1f3c7fbe3d0bb63d196a3803aa21593ec70fce",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -378862321.47441095,
+     "value_gbp_decimal": "-378862321.47441095"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10602:10fba5ede62ec9a5",
+     "source_row_number": 10602,
+     "source_row_sha256": "10fba5ede62ec9a5747cca5d8df9d80e0df62daf66874ee8c265423b41574eb6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10603:f988dfb34cc38104",
+     "source_row_number": 10603,
+     "source_row_sha256": "f988dfb34cc381045ab9679ea802bd509f3175f5336c46ed30794564f6504aa1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -36776850.44972875,
+     "value_gbp_decimal": "-36776850.44972875"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10604:2e41723e31096d04",
+     "source_row_number": 10604,
+     "source_row_sha256": "2e41723e31096d041d8917589c8cbf4839be5b7400242f17e403f52b87bbc722",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -120277089.33685336,
+     "value_gbp_decimal": "-120277089.33685336"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10605:e8520c5b5437234d",
+     "source_row_number": 10605,
+     "source_row_sha256": "e8520c5b5437234d8f2a05276dcffc33da2759b34517c4c41a6aa11fdf7cfbb2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -186661694.94794962,
+     "value_gbp_decimal": "-186661694.94794962"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10606:464a49f34a9b5964",
+     "source_row_number": 10606,
+     "source_row_sha256": "464a49f34a9b59647cf60b44b3daf484a01a26749fa3b2764f75f34093e286a6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -242068400.86703146,
+     "value_gbp_decimal": "-242068400.86703146"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10607:8dbf84f23026cba0",
+     "source_row_number": 10607,
+     "source_row_sha256": "8dbf84f23026cba07dcfaa38d19211d6a40c1fdc189b6c6efb31ab8c0e765fb4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -290645711.2809461,
+     "value_gbp_decimal": "-290645711.2809461"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10608:8d76207d856fc00c",
+     "source_row_number": 10608,
+     "source_row_sha256": "8d76207d856fc00c3b7b78062b88e1f51299ab6e3f3eadf191119cda890aa2a7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10609:0bf03e9f919bfbae",
+     "source_row_number": 10609,
+     "source_row_sha256": "0bf03e9f919bfbae4cfb5979bc02902b143ba96e98e11d11255f005b8bb70fac",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10610:e82a65922591db12",
+     "source_row_number": 10610,
+     "source_row_sha256": "e82a65922591db12b44cf82981c6e2df4310d75c3ef6f4f738788cbbc1761fab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10611:c9463e33b6dd399f",
+     "source_row_number": 10611,
+     "source_row_sha256": "c9463e33b6dd399f5c220ce1f38c67ef52139d1308941be60b956e24941c48ca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10612:6f1e9a3bd0d656c3",
+     "source_row_number": 10612,
+     "source_row_sha256": "6f1e9a3bd0d656c3e367577e92fedbccfe0eb6b33ce84b39cd2751093c1c0f20",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10613:3cfca8cfa0228665",
+     "source_row_number": 10613,
+     "source_row_sha256": "3cfca8cfa02286653b719e644e7b8b2f5000159cced5faa0915960b742f9d6f4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21497:197a81ed0459bc7d",
+     "source_row_number": 21497,
+     "source_row_sha256": "197a81ed0459bc7de41a77fe5c25fe6dd305792095cd71b410bac0c8b8def6d3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21498:3fa4108a7eac0a15",
+     "source_row_number": 21498,
+     "source_row_sha256": "3fa4108a7eac0a1589393a7f5e783befe95ce1a67b199e11bc2ce54ab1340436",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 4097382.253023544,
+     "value_gbp_decimal": "4097382.253023544"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21499:909bf2ab3554e230",
+     "source_row_number": 21499,
+     "source_row_sha256": "909bf2ab3554e2305036cf9daa70758ed44acc8a832ef7a93d4f10c4be66cc19",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 5374644.901458091,
+     "value_gbp_decimal": "5374644.901458091"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21500:3cd35347ee5fc266",
+     "source_row_number": 21500,
+     "source_row_sha256": "3cd35347ee5fc2665a3a797d677a798cba55a2f0d80915bf599185e76c915161",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6093086.0845173085,
+     "value_gbp_decimal": "6093086.0845173085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21501:53e1c92d4a4f4e96",
+     "source_row_number": 21501,
+     "source_row_sha256": "53e1c92d4a4f4e961b046ad5cc6a529a2dee30015b052e4ffb260c0bfa8585a4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6154373.680937649,
+     "value_gbp_decimal": "6154373.680937649"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.; Restores only compulsory cash liability at the documented April2024 \u00a33.70 weekly rate above \u00a312,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+     "source_row_number": 21502,
+     "source_row_sha256": "1ea7fa7e0cfb40daa09cc4200bf07762d6f21e7bb812dd6a776b32afeccf3070",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 6726701.429016321,
+     "value_gbp_decimal": "6726701.429016321"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21503:210e9e8bada76134",
+     "source_row_number": 21503,
+     "source_row_sha256": "210e9e8bada7613495baeaaa66b0c2dcbc0744ccd3f91f29064233077b70920d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21504:11aac6da7a06d654",
+     "source_row_number": 21504,
+     "source_row_sha256": "11aac6da7a06d654b597a3494750497b29ed511c10ce3e1f4f25c3ddc7c4596a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21505:374cb2da46d104d4",
+     "source_row_number": 21505,
+     "source_row_sha256": "374cb2da46d104d410603240b327cee390ac32318cec23edb0d66c6b866b43da",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -59309.51934322535,
+     "value_gbp_decimal": "-59309.51934322535"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21506:b8ab58b536a1ad7f",
+     "source_row_number": 21506,
+     "source_row_sha256": "b8ab58b536a1ad7f269e3e283d99708943617fda882fd08468a8d6c3ef80a3a9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 1511118.689659208,
+     "value_gbp_decimal": "1511118.689659208"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21507:2c2538b49423c207",
+     "source_row_number": 21507,
+     "source_row_sha256": "2c2538b49423c2078f81f34a40ee1942f0bb7b234da3eb948073add4c9c84eff",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 2238872.256787487,
+     "value_gbp_decimal": "2238872.256787487"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21508:243bee3203cd1327",
+     "source_row_number": 21508,
+     "source_row_sha256": "243bee3203cd1327383c3465598943a67e2b18b1284caffdc716065f1b190133",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 2838759.920443839,
+     "value_gbp_decimal": "2838759.920443839"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:21509:c5123f714ee54ff9",
+     "source_row_number": 21509,
+     "source_row_sha256": "c5123f714ee54ff93b45cdf0680659ad5d60cf5d94e824194e83f7708814c1f9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:21510:f7365b6a93fbe4c8",
+     "source_row_number": 21510,
+     "source_row_sha256": "f7365b6a93fbe4c854ca71f02583c25a68e044c8e1dbfbff0b7ec4fe51071cc7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:21511:69ca865721717cf1",
+     "source_row_number": 21511,
+     "source_row_sha256": "69ca865721717cf16429472d53c945b3a72588ceaa068c688e8b7020a4e41abc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": -112111.41483992286,
+     "value_gbp_decimal": "-112111.41483992286"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:21512:54f73d621c17378e",
+     "source_row_number": 21512,
+     "source_row_sha256": "54f73d621c17378e8d432aebe5e62c76fded16b0db55db523e505f74fa25f0f0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 13448321.248614388,
+     "value_gbp_decimal": "13448321.248614388"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:21513:7aa3f5c32491b748",
+     "source_row_number": 21513,
+     "source_row_sha256": "7aa3f5c32491b74802e75e45ff29d7a98a0abae16357cf3f444b2921646a0392",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 20144606.500244483,
+     "value_gbp_decimal": "20144606.500244483"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:21514:95c9fc186b0b36f4",
+     "source_row_number": 21514,
+     "source_row_sha256": "95c9fc186b0b36f44387b216d0d0b75f90e5ac612f8224c89e40db303d09f97e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+     "value_gbp": 25848426.991564553,
+     "value_gbp_decimal": "25848426.991564553"
+    }
+   ],
+   "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": {
+      "baseline_world": 3.7,
+      "current_law": 0,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0,
+      "reform_world": 0
+     },
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+      "baseline_world": 12570,
+      "current_law": 7392.0236642935615,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 7392.0236642935615,
+      "reform_world": 7392.0236642935615
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_2.flat_rate": {
+      "baseline_world": 3.7,
+      "current_law": 0,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0,
+      "reform_world": 0
+     },
+     "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+      "baseline_world": 12570,
+      "current_law": 7392.0236642935615,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 7392.0236642935615,
+      "reform_world": 7392.0236642935615
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 261654511.53642154,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": -491167651.8830828,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -378862321.47441095,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_1.25_to_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": -13584033.666737676,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5047516.855498205
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -504751685.5498205,
+   "key": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 5047516.855498205,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -290645711.2809461,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:10607:8dbf84f23026cba0",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:10613:3cfca8cfa0228665",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": 41993236.97143555,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 6726701.429016321,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -2311808.7027130127,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 39681428.268722534,
+   "key": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 2838759.920443839,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21508:243bee3203cd1327",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 25848426.991564553,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21514:95c9fc186b0b36f4",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": -449174414.91164726,
+   "context": {},
+   "delta_gbp": -15895842.369450688,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 4650702.57281098
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -465070257.28109795,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 4650702.57281098,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": -491167651.8830828,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -13584033.666737676,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5047516.855498205
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -504751685.5498205,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 5047516.855498205,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": 41993236.97143555,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -2311808.7027130127,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 39681428.268722534,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+  "head": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__class_2_self_employed_nics_abolition --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1 --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__class_2_self_employed_nics_abolition --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 261654511.53642154,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+   "source_row_number": 10595,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -491167651.8830828,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -504751685.5498205,
+   "obr_value_gbp": -378862321.47441095,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+   "source_row_number": 10601,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -290645711.2809461,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10607:8dbf84f23026cba0",
+   "source_row_number": 10607,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10613:3cfca8cfa0228665",
+   "source_row_number": 10613,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 41993236.97143555,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 39681428.268722534,
+   "obr_value_gbp": 6726701.429016321,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+   "source_row_number": 21502,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 2838759.920443839,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21508:243bee3203cd1327",
+   "source_row_number": 21508,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 25848426.991564553,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21514:95c9fc186b0b36f4",
+   "source_row_number": 21514,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 261654511.53642154,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+   "source_row_number": 10595,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -491167651.8830828,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -504751685.5498205,
+   "obr_value_gbp": -378862321.47441095,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+   "source_row_number": 10601,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -290645711.2809461,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10607:8dbf84f23026cba0",
+   "source_row_number": 10607,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10613:3cfca8cfa0228665",
+   "source_row_number": 10613,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 41993236.97143555,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 39681428.268722534,
+   "obr_value_gbp": 6726701.429016321,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+   "source_row_number": 21502,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 2838759.920443839,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21508:243bee3203cd1327",
+   "source_row_number": 21508,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 25848426.991564553,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:21514:95c9fc186b0b36f4",
+   "source_row_number": 21514,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+ "year": 2028
+}

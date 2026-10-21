@@ -1,0 +1,2059 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.08
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "78aebf2ac5ffc918bd6505f6b2f8cd703fcaa6f68bfa6b48761250721a74745f"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.08
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "dfe32d165a9c72b820934521698552e8131a8bd743af4bcbb9ce7796168ae26a"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "e8483bd8453b468212efe7fe064575a60dfec988fb56a066534e0c43b1142367",
+   "data_bundle": "policyengine-uk-data-1.59.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.142.0",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1"
+  }
+ },
+ "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.09
+    },
+    "2024": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    }
+   },
+   "fiscal_event": "Spring Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_4.rates.main"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_4\\.rates\\.main",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverse the announced 1pp/2pp marginal cut on the certified 6% Class 4 world, retaining later policy changes.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01": 0.08
+    }
+   },
+   "pe_gap": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10968:f0c2d5c4f10ba12c",
+     "source_row_number": 10968,
+     "source_row_sha256": "f0c2d5c4f10ba12cb9dd3610c0b2126620fb33908205123070bf91b5fbb5da41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10969:8dde405208f86bbd",
+     "source_row_number": 10969,
+     "source_row_sha256": "8dde405208f86bbd45b2f98afc16abb0dc204cb9123c53928bf9ff9884cb4b18",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10970:e5f920b816ad93c4",
+     "source_row_number": 10970,
+     "source_row_sha256": "e5f920b816ad93c461437dd59aaa80287cf60233bf430914023b605d16f0ea79",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -13569766.240896903,
+     "value_gbp_decimal": "-13569766.240896903"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10971:395ed623a9b23942",
+     "source_row_number": 10971,
+     "source_row_sha256": "395ed623a9b2394206ddf27fedc67a285dbeb8ce854012819c31f9055691bc2c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 190810413.8027605,
+     "value_gbp_decimal": "190810413.8027605"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10972:7571c928a69b0431",
+     "source_row_number": 10972,
+     "source_row_sha256": "7571c928a69b0431c58a873f3120b943a3b7de3c2f54d0e2d42ad90c78e3c4d4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 280547244.177091,
+     "value_gbp_decimal": "280547244.177091"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10973:fd336468dba2c601",
+     "source_row_number": 10973,
+     "source_row_sha256": "fd336468dba2c601c76b29825de809ca4c412e17795936fe8dfae0ef688928d8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 360149917.4721497,
+     "value_gbp_decimal": "360149917.4721497"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10974:fdd0e608076292a8",
+     "source_row_number": 10974,
+     "source_row_sha256": "fdd0e608076292a8361e783cd85d5657f1ec35113d5b95ddf27e2af52b6aabfd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10975:497e18b9ba827fa3",
+     "source_row_number": 10975,
+     "source_row_sha256": "497e18b9ba827fa3be445c12bf7a4e71eba4b321d989401404aed23f19f569dc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -666527506.0,
+     "value_gbp_decimal": "-666527506.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10976:230199453880fc45",
+     "source_row_number": 10976,
+     "source_row_sha256": "230199453880fc45059e30ed82e89a547d764b82fed4db41a4f4cfd64d1f40b2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -678431604.2694858,
+     "value_gbp_decimal": "-678431604.2694858"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10977:57eced9fbf6bab3b",
+     "source_row_number": 10977,
+     "source_row_sha256": "57eced9fbf6bab3b89eae9f21817f8102bb97db328a10eacfceb170c460c538b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -699520927.4729086,
+     "value_gbp_decimal": "-699520927.4729086"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10978:58862ededbda2b44",
+     "source_row_number": 10978,
+     "source_row_sha256": "58862ededbda2b440a2d1905e1186a7039e32660a3b6961663f4cbfafd5b5976",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -724046189.4069313,
+     "value_gbp_decimal": "-724046189.4069313"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10979:3e84f55a7dc5bd63",
+     "source_row_number": 10979,
+     "source_row_sha256": "3e84f55a7dc5bd6317ef650d58ed08c015f1505c61748af536ed362239481f12",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -764340090.0783666,
+     "value_gbp_decimal": "-764340090.0783666"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10980:deff8921a24aba7e",
+     "source_row_number": 10980,
+     "source_row_sha256": "deff8921a24aba7eb8b5b181accab34c3e6e0a983edf069ca72f1f20a2a9dd1e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10981:ee23395fc58c2e94",
+     "source_row_number": 10981,
+     "source_row_sha256": "ee23395fc58c2e948e482fb1826fd69c53949ae5fa0309fd4529de71afd8f1d6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -51767991.29394705,
+     "value_gbp_decimal": "-51767991.29394705"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10982:c5dd8885d4087144",
+     "source_row_number": 10982,
+     "source_row_sha256": "c5dd8885d40871446811d9b92beae64078749e83cd4151d7a6c22727138aaa9c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -168735106.836742,
+     "value_gbp_decimal": "-168735106.836742"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10983:7b2d9bff53b719f4",
+     "source_row_number": 10983,
+     "source_row_sha256": "7b2d9bff53b719f4b9bfd59295cb813cbd0d7d44f4d108e75b5d5400a4ed45b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -261460322.13189438,
+     "value_gbp_decimal": "-261460322.13189438"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10984:f4db3cecac0c3af9",
+     "source_row_number": 10984,
+     "source_row_sha256": "f4db3cecac0c3af970325f184aed0fa277719280cfc19ccf2063ec0972ae938d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -340412870.2895398,
+     "value_gbp_decimal": "-340412870.2895398"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10985:22cea5b4798ba0ee",
+     "source_row_number": 10985,
+     "source_row_sha256": "22cea5b4798ba0ee59254f88b05cb61bf686861a14efe74af2102354dd1e4aa3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -410829092.7864674,
+     "value_gbp_decimal": "-410829092.7864674"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22187:cc8ffca6f2f5e590",
+     "source_row_number": 22187,
+     "source_row_sha256": "cc8ffca6f2f5e590ca64fba8367230d2bc357434abf6ad89c77ba7937c0e9977",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22188:9f98363a90ba075c",
+     "source_row_number": 22188,
+     "source_row_sha256": "9f98363a90ba075c0d4eaee0cd6e4369205cb6cfc8fa01ad84e6e9459ff7c612",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 8282266.46359137,
+     "value_gbp_decimal": "8282266.46359137"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22189:215059939a4b5efc",
+     "source_row_number": 22189,
+     "source_row_sha256": "215059939a4b5efc29504afce5d5d53587885f7ce9afb2823aa5ee308badfe5d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 10961860.496165676,
+     "value_gbp_decimal": "10961860.496165676"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+     "source_row_number": 22190,
+     "source_row_sha256": "dc5ace295177c84b4be491129e4a32525fe8b86b926629e28a8bb10c84a7a608",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 12431759.575112479,
+     "value_gbp_decimal": "12431759.575112479"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22191:6f3ee686a895fd60",
+     "source_row_number": 22191,
+     "source_row_sha256": "6f3ee686a895fd60a355421deac515bf5360db67fd733cbab8f8a3a7a523b426",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 12442805.897162085,
+     "value_gbp_decimal": "12442805.897162085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22192:79bd1761809b7468",
+     "source_row_number": 22192,
+     "source_row_sha256": "79bd1761809b746892d10281d317afd9bd5c02c309188703ebd6c458b1770a9e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 13483110.03993607,
+     "value_gbp_decimal": "13483110.03993607"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22193:b3628ed306ea8ac5",
+     "source_row_number": 22193,
+     "source_row_sha256": "b3628ed306ea8ac5363755d82047c11bcf968938ddd44add96691f31b2a56884",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22194:376f5e7bc1c25928",
+     "source_row_number": 22194,
+     "source_row_sha256": "376f5e7bc1c25928eb794e1b627438aa0fda3fb4ec51ceb359272abacb9ee057",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22195:db7688f590170511",
+     "source_row_number": 22195,
+     "source_row_sha256": "db7688f590170511eaeecd8c4b0d96b9edc600fa4d94111cce82e23ff44f5322",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -114801.40530596992,
+     "value_gbp_decimal": "-114801.40530596992"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22196:7b25d8523b72e3f3",
+     "source_row_number": 22196,
+     "source_row_sha256": "7b25d8523b72e3f3d24f66462555c2623f743dd2fb15257f9919e8ba31790b0e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 2125010.8932561795,
+     "value_gbp_decimal": "2125010.8932561795"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22197:1c94607e6780e917",
+     "source_row_number": 22197,
+     "source_row_sha256": "1c94607e6780e91751e9e889848fd759ed6a3b7498daf534974e1f241e08c547",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 3140514.8034139248,
+     "value_gbp_decimal": "3140514.8034139248"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22198:f6d029286c02e545",
+     "source_row_number": 22198,
+     "source_row_sha256": "f6d029286c02e5455636ff0f3ca6f94d583a8e2871ccbc670df5ba79c7e1d11f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 4010573.3368453695,
+     "value_gbp_decimal": "4010573.3368453695"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22199:1f16d2f22987a987",
+     "source_row_number": 22199,
+     "source_row_sha256": "1f16d2f22987a987a272fabdde828800eb84ac6e94bdfdc85fa1fa2b63c6f328",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22200:454271d3e97ec8eb",
+     "source_row_number": 22200,
+     "source_row_sha256": "454271d3e97ec8eb2fecbee5fec8febac6ac3b460a351807f1a32fb4b95e4e71",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22201:b16f4f7afafa9096",
+     "source_row_number": 22201,
+     "source_row_sha256": "b16f4f7afafa909629f3789a98e68354128f5097ba0c7ea68cc7ac1648339163",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -997809.9481561502,
+     "value_gbp_decimal": "-997809.9481561502"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22202:b518451c4427e13f",
+     "source_row_number": 22202,
+     "source_row_sha256": "b518451c4427e13fe107df8b02d04f9d4751cda3c64150293c6b49ce472c3173",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 18510713.28964108,
+     "value_gbp_decimal": "18510713.28964108"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22203:bdc8349aedf6e875",
+     "source_row_number": 22203,
+     "source_row_sha256": "bdc8349aedf6e875753a5a2db777a1b70e824e67e669bf31a5dae59a8e1b2e20",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 27845249.26110863,
+     "value_gbp_decimal": "27845249.26110863"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22204:5467614330bcf0e5",
+     "source_row_number": 22204,
+     "source_row_sha256": "5467614330bcf0e5c4218cc7cbd66cd548b80f8356e4d9d083064ed8e79cdab1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 36067685.735214405,
+     "value_gbp_decimal": "36067685.735214405"
+    }
+   ],
+   "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.09
+    },
+    "2024": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2025": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2026": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2027": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    },
+    "2028": {
+     "gov.hmrc.national_insurance.class_4.rates.main": 0.06
+    }
+   },
+   "fiscal_event": "Spring Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4",
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "measure_type": "national_insurance",
+   "missing_legs": [
+    "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.national_insurance.class_4.rates.main"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.class_4\\.rates\\.main",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverse the announced 1pp/2pp marginal cut on the certified 6% Class 4 world, retaining later policy changes.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01": 0.08
+    }
+   },
+   "pe_gap": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+   "program": "national_insurance",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10968:f0c2d5c4f10ba12c",
+     "source_row_number": 10968,
+     "source_row_sha256": "f0c2d5c4f10ba12cb9dd3610c0b2126620fb33908205123070bf91b5fbb5da41",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10969:8dde405208f86bbd",
+     "source_row_number": 10969,
+     "source_row_sha256": "8dde405208f86bbd45b2f98afc16abb0dc204cb9123c53928bf9ff9884cb4b18",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10970:e5f920b816ad93c4",
+     "source_row_number": 10970,
+     "source_row_sha256": "e5f920b816ad93c461437dd59aaa80287cf60233bf430914023b605d16f0ea79",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -13569766.240896903,
+     "value_gbp_decimal": "-13569766.240896903"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10971:395ed623a9b23942",
+     "source_row_number": 10971,
+     "source_row_sha256": "395ed623a9b2394206ddf27fedc67a285dbeb8ce854012819c31f9055691bc2c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 190810413.8027605,
+     "value_gbp_decimal": "190810413.8027605"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10972:7571c928a69b0431",
+     "source_row_number": 10972,
+     "source_row_sha256": "7571c928a69b0431c58a873f3120b943a3b7de3c2f54d0e2d42ad90c78e3c4d4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 280547244.177091,
+     "value_gbp_decimal": "280547244.177091"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10973:fd336468dba2c601",
+     "source_row_number": 10973,
+     "source_row_sha256": "fd336468dba2c601c76b29825de809ca4c412e17795936fe8dfae0ef688928d8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 360149917.4721497,
+     "value_gbp_decimal": "360149917.4721497"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10974:fdd0e608076292a8",
+     "source_row_number": 10974,
+     "source_row_sha256": "fdd0e608076292a8361e783cd85d5657f1ec35113d5b95ddf27e2af52b6aabfd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10975:497e18b9ba827fa3",
+     "source_row_number": 10975,
+     "source_row_sha256": "497e18b9ba827fa3be445c12bf7a4e71eba4b321d989401404aed23f19f569dc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -666527506.0,
+     "value_gbp_decimal": "-666527506.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10976:230199453880fc45",
+     "source_row_number": 10976,
+     "source_row_sha256": "230199453880fc45059e30ed82e89a547d764b82fed4db41a4f4cfd64d1f40b2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -678431604.2694858,
+     "value_gbp_decimal": "-678431604.2694858"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10977:57eced9fbf6bab3b",
+     "source_row_number": 10977,
+     "source_row_sha256": "57eced9fbf6bab3b89eae9f21817f8102bb97db328a10eacfceb170c460c538b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -699520927.4729086,
+     "value_gbp_decimal": "-699520927.4729086"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10978:58862ededbda2b44",
+     "source_row_number": 10978,
+     "source_row_sha256": "58862ededbda2b440a2d1905e1186a7039e32660a3b6961663f4cbfafd5b5976",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -724046189.4069313,
+     "value_gbp_decimal": "-724046189.4069313"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10979:3e84f55a7dc5bd63",
+     "source_row_number": 10979,
+     "source_row_sha256": "3e84f55a7dc5bd6317ef650d58ed08c015f1505c61748af536ed362239481f12",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -764340090.0783666,
+     "value_gbp_decimal": "-764340090.0783666"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10980:deff8921a24aba7e",
+     "source_row_number": 10980,
+     "source_row_sha256": "deff8921a24aba7eb8b5b181accab34c3e6e0a983edf069ca72f1f20a2a9dd1e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10981:ee23395fc58c2e94",
+     "source_row_number": 10981,
+     "source_row_sha256": "ee23395fc58c2e948e482fb1826fd69c53949ae5fa0309fd4529de71afd8f1d6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -51767991.29394705,
+     "value_gbp_decimal": "-51767991.29394705"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10982:c5dd8885d4087144",
+     "source_row_number": 10982,
+     "source_row_sha256": "c5dd8885d40871446811d9b92beae64078749e83cd4151d7a6c22727138aaa9c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -168735106.836742,
+     "value_gbp_decimal": "-168735106.836742"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10983:7b2d9bff53b719f4",
+     "source_row_number": 10983,
+     "source_row_sha256": "7b2d9bff53b719f4b9bfd59295cb813cbd0d7d44f4d108e75b5d5400a4ed45b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -261460322.13189438,
+     "value_gbp_decimal": "-261460322.13189438"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10984:f4db3cecac0c3af9",
+     "source_row_number": 10984,
+     "source_row_sha256": "f4db3cecac0c3af970325f184aed0fa277719280cfc19ccf2063ec0972ae938d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -340412870.2895398,
+     "value_gbp_decimal": "-340412870.2895398"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10985:22cea5b4798ba0ee",
+     "source_row_number": 10985,
+     "source_row_sha256": "22cea5b4798ba0ee59254f88b05cb61bf686861a14efe74af2102354dd1e4aa3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -410829092.7864674,
+     "value_gbp_decimal": "-410829092.7864674"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22187:cc8ffca6f2f5e590",
+     "source_row_number": 22187,
+     "source_row_sha256": "cc8ffca6f2f5e590ca64fba8367230d2bc357434abf6ad89c77ba7937c0e9977",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22188:9f98363a90ba075c",
+     "source_row_number": 22188,
+     "source_row_sha256": "9f98363a90ba075c0d4eaee0cd6e4369205cb6cfc8fa01ad84e6e9459ff7c612",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 8282266.46359137,
+     "value_gbp_decimal": "8282266.46359137"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22189:215059939a4b5efc",
+     "source_row_number": 22189,
+     "source_row_sha256": "215059939a4b5efc29504afce5d5d53587885f7ce9afb2823aa5ee308badfe5d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 10961860.496165676,
+     "value_gbp_decimal": "10961860.496165676"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+     "source_row_number": 22190,
+     "source_row_sha256": "dc5ace295177c84b4be491129e4a32525fe8b86b926629e28a8bb10c84a7a608",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 12431759.575112479,
+     "value_gbp_decimal": "12431759.575112479"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22191:6f3ee686a895fd60",
+     "source_row_number": 22191,
+     "source_row_sha256": "6f3ee686a895fd60a355421deac515bf5360db67fd733cbab8f8a3a7a523b426",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 12442805.897162085,
+     "value_gbp_decimal": "12442805.897162085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22192:79bd1761809b7468",
+     "source_row_number": 22192,
+     "source_row_sha256": "79bd1761809b746892d10281d317afd9bd5c02c309188703ebd6c458b1770a9e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 13483110.03993607,
+     "value_gbp_decimal": "13483110.03993607"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22193:b3628ed306ea8ac5",
+     "source_row_number": 22193,
+     "source_row_sha256": "b3628ed306ea8ac5363755d82047c11bcf968938ddd44add96691f31b2a56884",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22194:376f5e7bc1c25928",
+     "source_row_number": 22194,
+     "source_row_sha256": "376f5e7bc1c25928eb794e1b627438aa0fda3fb4ec51ceb359272abacb9ee057",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22195:db7688f590170511",
+     "source_row_number": 22195,
+     "source_row_sha256": "db7688f590170511eaeecd8c4b0d96b9edc600fa4d94111cce82e23ff44f5322",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -114801.40530596992,
+     "value_gbp_decimal": "-114801.40530596992"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22196:7b25d8523b72e3f3",
+     "source_row_number": 22196,
+     "source_row_sha256": "7b25d8523b72e3f3d24f66462555c2623f743dd2fb15257f9919e8ba31790b0e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 2125010.8932561795,
+     "value_gbp_decimal": "2125010.8932561795"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22197:1c94607e6780e917",
+     "source_row_number": 22197,
+     "source_row_sha256": "1c94607e6780e91751e9e889848fd759ed6a3b7498daf534974e1f241e08c547",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 3140514.8034139248,
+     "value_gbp_decimal": "3140514.8034139248"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22198:f6d029286c02e545",
+     "source_row_number": 22198,
+     "source_row_sha256": "f6d029286c02e5455636ff0f3ca6f94d583a8e2871ccbc670df5ba79c7e1d11f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 4010573.3368453695,
+     "value_gbp_decimal": "4010573.3368453695"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22199:1f16d2f22987a987",
+     "source_row_number": 22199,
+     "source_row_sha256": "1f16d2f22987a987a272fabdde828800eb84ac6e94bdfdc85fa1fa2b63c6f328",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22200:454271d3e97ec8eb",
+     "source_row_number": 22200,
+     "source_row_sha256": "454271d3e97ec8eb2fecbee5fec8febac6ac3b460a351807f1a32fb4b95e4e71",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22201:b16f4f7afafa9096",
+     "source_row_number": 22201,
+     "source_row_sha256": "b16f4f7afafa909629f3789a98e68354128f5097ba0c7ea68cc7ac1648339163",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": -997809.9481561502,
+     "value_gbp_decimal": "-997809.9481561502"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22202:b518451c4427e13f",
+     "source_row_number": 22202,
+     "source_row_sha256": "b518451c4427e13fe107df8b02d04f9d4751cda3c64150293c6b49ce472c3173",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 18510713.28964108,
+     "value_gbp_decimal": "18510713.28964108"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22203:bdc8349aedf6e875",
+     "source_row_number": 22203,
+     "source_row_sha256": "bdc8349aedf6e875753a5a2db777a1b70e824e67e669bf31a5dae59a8e1b2e20",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 27845249.26110863,
+     "value_gbp_decimal": "27845249.26110863"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22204:5467614330bcf0e5",
+     "source_row_number": 22204,
+     "source_row_sha256": "5467614330bcf0e5c4218cc7cbd66cd548b80f8356e4d9d083064ed8e79cdab1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+     "value_gbp": 36067685.735214405,
+     "value_gbp_decimal": "36067685.735214405"
+    }
+   ],
+   "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_4.rates.main": {
+      "baseline_world": 0.08,
+      "current_law": 0.06,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.06,
+      "reform_world": 0.06
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_4.rates.main": {
+      "baseline_world": 0.08,
+      "current_law": 0.06,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.06,
+      "reform_world": 0.06
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 190810413.8027605,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:10971:395ed623a9b23942",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": -696073741.2305636,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -699520927.4729086,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": -23149794.7010355,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7192235.359315991
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -719223535.9315991,
+   "key": "obr_pmd_nov2025:10977:57eced9fbf6bab3b",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 7192235.359315991,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -261460322.13189438,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:10983:7b2d9bff53b719f4",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": 44096154.611190796,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 12431759.575112479,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -1407726.7246246338,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 42688427.88656616,
+   "key": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 2125010.8932561795,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22196:7b25d8523b72e3f3",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 18510713.28964108,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22202:b518451c4427e13f",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": -651977586.6193728,
+   "context": {},
+   "delta_gbp": -24557521.425660133,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 6765351.08045033
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -676535108.045033,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 6765351.08045033,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": -696073741.2305636,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -23149794.7010355,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7192235.359315991
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -719223535.9315991,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 7192235.359315991,
+   "year": 2026
+  },
+  {
+   "base_gbp": 44096154.611190796,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -1407726.7246246338,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 42688427.88656616,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+  "head": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/spring_budget_2024_measures.json --measures spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1 --registry data/uk/events/spring_budget_2024_measures.json --measures spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.142.0_policyengine-uk-data-1.59.1/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 190810413.8027605,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10971:395ed623a9b23942",
+   "source_row_number": 10971,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -696073741.2305636,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -719223535.9315991,
+   "obr_value_gbp": -699520927.4729086,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10977:57eced9fbf6bab3b",
+   "source_row_number": 10977,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -261460322.13189438,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10983:7b2d9bff53b719f4",
+   "source_row_number": 10983,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": 44096154.611190796,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": 42688427.88656616,
+   "obr_value_gbp": 12431759.575112479,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+   "source_row_number": 22190,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 2125010.8932561795,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22196:7b25d8523b72e3f3",
+   "source_row_number": 22196,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 18510713.28964108,
+   "side": "base",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22202:b518451c4427e13f",
+   "source_row_number": 22202,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 190810413.8027605,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10971:395ed623a9b23942",
+   "source_row_number": 10971,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -696073741.2305636,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -719223535.9315991,
+   "obr_value_gbp": -699520927.4729086,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10977:57eced9fbf6bab3b",
+   "source_row_number": 10977,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -261460322.13189438,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10983:7b2d9bff53b719f4",
+   "source_row_number": 10983,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": 44096154.611190796,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": 42688427.88656616,
+   "obr_value_gbp": 12431759.575112479,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+   "source_row_number": 22190,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 2125010.8932561795,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22196:7b25d8523b72e3f3",
+   "source_row_number": 22196,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 18510713.28964108,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22202:b518451c4427e13f",
+   "source_row_number": 22202,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+ "year": 2026
+}
