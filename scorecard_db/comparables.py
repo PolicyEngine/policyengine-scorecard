@@ -67,7 +67,16 @@ SEARCH_SCHEMA = "comparables/search/1"
 INDEX_SCHEMA = "comparables/index/1"
 DIR_PREFIX = "analysis-"
 
-SEARCH_KINDS = ("prepublish", "backfill", "reharvest")
+# prepublish: before the analysis is listed; backfill: the first search of an
+# analysis listed before the gate; reharvest: the weekly search after
+# publication; prepromotion: a fresh search before a newsletter, social
+# campaign, webinar or press push (Max, 2026-10-21: "even if we've already
+# published something, we should do a fresh comp review before big pushes like
+# newsletters").
+SEARCH_KINDS = ("prepublish", "backfill", "reharvest", "prepromotion")
+# Searches after publication: what they find may wait on its owner's issue
+# (`pending`), but an analysis is never promoted with a pending gap (``fresh``).
+POST_PUBLICATION_KINDS = ("reharvest", "prepromotion")
 # found_not_staged: a comparable exists but its primary cannot be read (harvest
 # rule 8: a figure whose primary could not be read is never a claim); the note
 # says what it is and where it was seen.
@@ -270,6 +279,10 @@ def load_policy(path: Path = POLICY_PATH) -> dict:
         raise ValueError(
             f"{path}: gap_threshold must be a positive number: {threshold!r}"
         )
+    for key in ("promotion_window_days", "reharvest_window_days"):
+        days = policy.get(key)
+        if not (isinstance(days, int) and not isinstance(days, bool) and days > 0):
+            raise ValueError(f"{path}: {key} must be a positive whole number: {days!r}")
     return policy
 
 
@@ -593,7 +606,7 @@ def validate(
         previous_date = date
         if skind not in SEARCH_KINDS:
             errors.append(f"{where}: kind {skind!r} not in {SEARCH_KINDS}")
-        if i == 0 and skind == "reharvest":
+        if i == 0 and skind in POST_PUBLICATION_KINDS:
             errors.append(
                 f"{where}: the first search is a prepublish or backfill search"
             )
@@ -926,7 +939,7 @@ def validate(
                 annotated[key] = n
                 if (
                     status == "pending"
-                    and claim_found.get(key, ("", ""))[1] != "reharvest"
+                    and claim_found.get(key, ("", ""))[1] not in POST_PUBLICATION_KINDS
                 ):
                     errors.append(
                         f"{where}: {key} was found before publication; its gap is "
@@ -1088,6 +1101,7 @@ def _comparisons(record: AnalysisRecord, rows: list[dict]) -> list[dict]:
         out.append(
             {
                 "claim": c["key"],
+                "found_on": c["found_on"],
                 "source": c["source"],
                 "publisher": c["publication"]["publisher"],
                 "title": c["publication"]["title"],
@@ -1143,6 +1157,7 @@ def build_index(
         ),
         "schema": INDEX_SCHEMA,
         "gap_threshold": policy["gap_threshold"],
+        "promotion_window_days": policy["promotion_window_days"],
         "analyses": analyses,
     }
 
@@ -1320,6 +1335,35 @@ def due(
     return sorted(rows, key=lambda r: (r["date"], r["source"]))
 
 
+def fresh(entry: dict, on: str, window_days: int) -> list[str]:
+    """Why an analysis may not be promoted on date ``on`` (a newsletter, social
+    campaign, webinar or press push), read from its index entry: no search in
+    the ``window_days`` up to and including ``on``, or a gap found by then that
+    is still pending. Empty when it may. The newsletters repository applies the
+    same rule to every analysis an edition links."""
+    start = (dt.date.fromisoformat(on) - dt.timedelta(days=window_days)).isoformat()
+    reasons = []
+    recent = [s for s in entry["searches"] if start <= s["date"] <= on]
+    if not recent:
+        last = max(
+            (s["date"] for s in entry["searches"] if s["date"] <= on), default=None
+        )
+        reasons.append(
+            f"no comparables search between {start} and {on} (last: {last or 'none'}); "
+            "run a prepromotion search before the push"
+        )
+    pending = [
+        c["claim"]
+        for c in entry.get("comparisons", [])
+        if c["status"] == "pending" and c["found_on"] <= on
+    ]
+    if pending:
+        reasons.append(
+            f"gaps still pending by {on}: {', '.join(pending)}; explain them before the push"
+        )
+    return reasons
+
+
 def report(record: AnalysisRecord, since: str, policy: dict | None = None) -> dict:
     """New comparables found on or after ``since`` and every gap over the
     threshold among them: the text of a re-harvest's issue for the owner."""
@@ -1380,6 +1424,9 @@ def _main(argv: list[str]) -> int:
     p_report = sub.add_parser("report", help="comparables found since a date")
     p_report.add_argument("source")
     p_report.add_argument("--since", required=True)
+    p_fresh = sub.add_parser("fresh", help="may the analysis be promoted on a date?")
+    p_fresh.add_argument("source")
+    p_fresh.add_argument("--on", default=_today())
     args = parser.parse_args(argv)
 
     if args.cmd == "check":
@@ -1446,6 +1493,21 @@ def _main(argv: list[str]) -> int:
             )
         )
         return 0
+    if args.cmd == "fresh":
+        record = load_analysis(SOURCES / args.source)
+        policy = load_policy()
+        errors = validate(record, policy=policy)
+        if errors:
+            print("\n".join(errors), file=sys.stderr)
+            return 1
+        reasons = fresh(
+            index_entry(record, policy), args.on, policy["promotion_window_days"]
+        )
+        for reason in reasons:
+            print(f"NOT FRESH {args.source}: {reason}")
+        if not reasons:
+            print(f"fresh {args.source} on {args.on}")
+        return 1 if reasons else 0
     return 2
 
 

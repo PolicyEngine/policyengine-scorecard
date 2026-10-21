@@ -31,6 +31,26 @@ validator below fails it on six rows.
    analysis published in the last `reharvest_window_days` (183). A new comparable becomes a row
    here; a new gap over the threshold also opens an issue for the analysis's owner.
 
+## Before a push
+
+Publishing is not the only moment that counts. When an analysis that is already published is
+featured in a newsletter, a social campaign, a webinar or a press push, its comparables search is
+run again first (Max, 2026-10-21: "even if we've already published something, we should do a
+fresh comp review before big pushes like newsletters"). The 21 October UK newsletter promoted the
+childcare dashboard at £0.59bn. A fresh search that day would have put CenTax's £0.80bn static
+cost for the 30 hours alone beside it.
+
+- The search is appended to the analysis's `search_log.json` with `kind: prepromotion`, or the
+  analysis's first search if it has none yet (`backfill`).
+- The push may go ahead only if a search is dated within `promotion_window_days`
+  (`data/comparables/policy.json`, 7 by default) before the push date, and no gap found by then
+  is still `pending`. `python -m scorecard_db.comparables fresh analysis-<country>-<slug> --on
+  <date>` says yes or why not.
+- PolicyEngine/newsletters' CI applies the same rule to every policyengine.org analysis an edition
+  links, for editions dated on or after its cutover. The index publishes the window
+  (`promotion_window_days`) and when each claim was found, so that check needs nothing but the
+  index.
+
 ## The directory
 
 `sources/analysis-<country>-<slug>/`, where `<slug>` is the analysis's slug on policyengine.org
@@ -39,7 +59,7 @@ validator below fails it on six rows.
 | File | What it holds |
 |---|---|
 | `analysis.json` | The registry entry, scope, search terms, the policy worlds it scores, and every PolicyEngine estimate it publishes, each pinned to its results file by repo, commit, path, field and SHA-256 |
-| `search_log.json` | Every search: date, kind (`prepublish`, `backfill`, `reharvest`), who ran it, and one entry per listed producer |
+| `search_log.json` | Every search: date, kind (`prepublish`, `backfill`, `reharvest`, `prepromotion`), who ran it, and one entry per listed producer |
 | `manifest.jsonl` | One line per primary publication, with its SHA-256 |
 | `claims_staged.jsonl` | Every comparable found, staged under the harvest rules |
 | `annotations.json` | The status and cause of anything that is not a plain comparison, each citing a basis |

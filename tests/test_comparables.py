@@ -920,3 +920,119 @@ def test_index_comparisons_are_every_staged_estimate(directory):
         assert (c["pe_missing"] is None) == (row["estimate"] is not None)
         if row["over"]:
             assert c["cause"], f"{c['claim']} is over the threshold with no cause"
+
+
+# --- promotion: a fresh search before a push ----------------------------------------
+
+WINDOW = POLICY["promotion_window_days"]
+
+
+def _entry(search_dates, pending=()):
+    return {
+        "searches": [{"date": d, "kind": "reharvest"} for d in search_dates],
+        "comparisons": [
+            {"claim": f"c{i}", "status": "pending", "found_on": found}
+            for i, found in enumerate(pending)
+        ],
+    }
+
+
+days_st = st.integers(min_value=-400, max_value=400)
+
+
+def _shift(days):
+    import datetime as dt
+
+    return (dt.date(2026, 11, 2) + dt.timedelta(days=days)).isoformat()
+
+
+@given(offsets=st.lists(days_st, min_size=1, max_size=6), window=st.integers(1, 60))
+def test_fresh_exactly_when_a_search_falls_in_the_window(offsets, window):
+    on = _shift(0)
+    dates = sorted(_shift(o) for o in offsets)
+    in_window = any(-window <= o <= 0 for o in offsets)
+    assert (cmp.fresh(_entry(dates), on, window) == []) == in_window
+
+
+@given(
+    offsets=st.lists(days_st, min_size=1, max_size=6),
+    w1=st.integers(1, 60),
+    w2=st.integers(1, 60),
+)
+def test_a_wider_window_is_never_stricter(offsets, w1, w2):
+    on = _shift(0)
+    dates = sorted(_shift(o) for o in offsets)
+    narrow, wide = sorted((w1, w2))
+    if cmp.fresh(_entry(dates), on, narrow) == []:
+        assert cmp.fresh(_entry(dates), on, wide) == []
+
+
+@given(found=days_st)
+def test_a_pending_gap_blocks_a_push_only_once_found(found):
+    on = _shift(0)
+    reasons = cmp.fresh(_entry([on], pending=[_shift(found)]), on, WINDOW)
+    assert bool(reasons) == (found <= 0)
+
+
+def test_a_search_after_the_push_does_not_count():
+    assert cmp.fresh(_entry([_shift(1)]), _shift(0), WINDOW) != []
+
+
+def test_the_childcare_record_was_fresh_on_its_search_day_only_for_the_window():
+    entry = json.loads(cmp.INDEX_PATH.read_text())["analyses"][CHILDCARE.name]
+    assert cmp.fresh(entry, "2026-10-21", WINDOW) == []
+    assert cmp.fresh(entry, f"2026-10-{21 + WINDOW:02d}", WINDOW) == []
+    late = cmp.fresh(entry, f"2026-10-{22 + WINDOW:02d}", WINDOW)
+    assert late and "run a prepromotion search" in late[0]
+
+
+def test_the_index_carries_the_window_and_when_each_claim_was_found():
+    index = json.loads(cmp.INDEX_PATH.read_text())
+    assert index["promotion_window_days"] == WINDOW
+    for entry in index["analyses"].values():
+        assert all("found_on" in c for c in entry["comparisons"])
+
+
+def test_a_prepromotion_search_is_never_the_first():
+    errors = mutate(lambda r: r.search_log["searches"][0].update(kind="prepromotion"))
+    assert any("prepublish or backfill" in e for e in errors)
+
+
+def test_a_prepromotion_find_may_wait_on_its_issue_but_blocks_the_push():
+    record = synthetic(-100.0, -300.0)
+    first = copy.deepcopy(record.search_log["searches"][0])
+    for p in first["producers"]:
+        if p["producer"] == "ifs":
+            p.update(result="none_found", claims=[])
+    later = record.search_log["searches"][0]
+    later.update(date="2026-11-02", kind="prepromotion")
+    record.search_log["searches"] = [first, later]
+    record.claims[0]["found_on"] = "2026-11-02"
+    record.annotations.append(
+        {
+            "id": "found-before-a-push",
+            "claims": [record.claims[0]["key"]],
+            "status": "pending",
+            "explains_gap": False,
+            "cause": "found by the search before the newsletter; the owner is explaining it",
+            "basis": [
+                {
+                    "kind": "issue",
+                    "ref": "https://github.com/PolicyEngine/test/issues/4",
+                }
+            ],
+            "tracking_issue": "https://github.com/PolicyEngine/test/issues/4",
+        }
+    )
+    assert errors_of(record) == []
+    entry = cmp.index_entry(record, POLICY)
+    reasons = cmp.fresh(entry, "2026-11-03", WINDOW)
+    assert len(reasons) == 1 and "pending" in reasons[0]
+
+
+def test_the_policy_rejects_a_bad_window(tmp_path):
+    bad = dict(POLICY, promotion_window_days=0)
+    path = tmp_path / "policy.json"
+    path.write_text(json.dumps(bad))
+    with pytest.raises(ValueError, match="promotion_window_days"):
+        cmp.load_policy(path)
