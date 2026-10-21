@@ -145,7 +145,7 @@ def test_mapped_and_unmapped_obr_values_conserve_the_fiscal_year(event):
                 Decimal(values["mapped_decimal"]) + Decimal(values["unmapped_decimal"])
                 == total
             )
-            groups = ex.obr_for(experiment, measure, ex.fy_start(fy))["groups"]
+            groups = ex.obr_for(experiment, measure, fy)["groups"]
             assert math.isclose(
                 sum(g["obr_mapped_gbp"] for g in groups),
                 values["mapped_gbp"],
@@ -666,3 +666,42 @@ def test_the_modal_allowlist_names_files_that_exist():
     for event in EVENTS:
         for relative in modal_experiment.repository_files(event, population):
             assert (ROOT / relative).is_file(), relative
+
+
+def test_a_carried_forward_experiment_runs_its_named_years_against_its_named_fy():
+    spec, registry = spec_and_registry("autumn_statement_2022")
+    population = {"population_id": "exp-a", "data_years": list(range(2024, 2033))}
+    experiment = copy.deepcopy(spec["experiments"][1])
+    experiment.update(
+        years=[2028, 2029], carried_from_fy="2027-28", carry_reason="steady state"
+    )
+    carried = {**spec, "experiments": [experiment]}
+    ex.validate_spec(carried, registry, ex.load_bases())
+    planned = ex.plan(carried, registry, population)
+    assert planned["years"] == [2028, 2029]
+    assert ex.comparison_fy(experiment, registry, 2028) == "2027-28"
+    assert ex.comparison_fy(experiment, registry, 2026) == "2026-27"
+    bad = copy.deepcopy(experiment)
+    bad["carried_from_fy"] = "2031-32"
+    with pytest.raises(ex.ExperimentError, match="carried_from_fy"):
+        ex.validate_spec({**spec, "experiments": [bad]}, registry, ex.load_bases())
+
+
+def test_group_scale_reads_the_event_forecast_at_the_costing_year_and_newest_at_the_run_year():
+    bases = ex.load_bases()
+    head = {"base_sheet": "IT", "pe_base_comparable": False}
+    scale = ex.group_scale(
+        head,
+        pe_base=None,
+        bases=bases,
+        vintage="November 2022",
+        fy="2027-28",
+        modern_fy="2029-30",
+    )
+    assert scale["obr_event_forecast_gbp"] == ex.forecast(
+        bases, "IT", "November 2022", "2027-28"
+    )
+    assert (
+        scale["obr_newest_forecast_gbp"]
+        == ex.newest_forecast(bases, "IT", "2029-30")[1]
+    )

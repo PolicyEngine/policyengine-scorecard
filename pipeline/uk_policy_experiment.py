@@ -486,6 +486,14 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
             ),
             where + "years must be a sorted list of calendar years",
         )
+        carried = experiment.get("carried_from_fy")
+        if carried is not None:
+            need(
+                carried in {row["fy"] for row in measure["source_rows"]},
+                where + "carried_from_fy must be one of the measure's costing years",
+            )
+            need(bool(experiment.get("carry_reason")), where + "carry_reason")
+            need(bool(limit), where + "a carried-forward experiment names its years")
         mirror = experiment.get("mirror_of")
         need(
             mirror is None
@@ -505,21 +513,46 @@ def experiment_years(registry: dict, population: dict) -> list[int]:
     return sorted(year for year in registry["calendar_years"] if year in data)
 
 
+def experiment_grid_years(
+    experiment: dict, registry: dict, population: dict
+) -> list[int]:
+    """An experiment's years: the event's window on the population, or, for
+    one carried forward past the window, the years it names."""
+    data = set(population["data_years"])
+    if experiment.get("carried_from_fy"):
+        return sorted(y for y in experiment["years"] if y in data)
+    window = experiment_years(registry, population)
+    limit = experiment.get("years")
+    return [y for y in window if limit is None or y in limit]
+
+
+def comparison_fy(experiment: dict, registry: dict, year: int) -> str:
+    """The OBR costing year an experiment-year is compared with."""
+    if year in registry["calendar_years"] or not experiment.get("carried_from_fy"):
+        return fy_label(year)
+    return experiment["carried_from_fy"]
+
+
 def plan(
     spec: dict, registry: dict, population: dict, *, years=None, selected=None
 ) -> dict:
-    available = experiment_years(registry, population)
-    chosen = sorted(set(years or available))
-    if set(chosen) - set(available):
-        raise ExperimentError(
-            f"years {sorted(set(chosen) - set(available))} are outside "
-            f"{available}, the event window on this population"
-        )
     ids = [e["experiment_id"] for e in spec["experiments"]]
     chosen_ids = selected or ids
     if set(chosen_ids) - set(ids):
         raise ExperimentError(
             f"unknown experiments {sorted(set(chosen_ids) - set(ids))}"
+        )
+    allowed = {
+        e["experiment_id"]: experiment_grid_years(e, registry, population)
+        for e in spec["experiments"]
+        if e["experiment_id"] in chosen_ids
+    }
+    available = sorted({y for ys in allowed.values() for y in ys})
+    chosen = sorted(set(years or available))
+    if set(chosen) - set(available):
+        raise ExperimentError(
+            f"years {sorted(set(chosen) - set(available))} are outside "
+            f"{available}, the event window on this population"
         )
     return {
         "kind": "uk_policy_experiment_plan",
@@ -527,7 +560,7 @@ def plan(
         "is_replay": False,
         "event": spec["event_slug"],
         "population_id": population["population_id"],
-        "years": chosen,
+        "years": [y for y in chosen if any(y in ys for ys in allowed.values())],
         "event_years_outside_population": sorted(
             set(registry["calendar_years"]) - set(population["data_years"])
         ),
@@ -537,7 +570,7 @@ def plan(
             for e in spec["experiments"]
             if e["experiment_id"] in chosen_ids
             for y in chosen
-            if e.get("years") is None or y in e["years"]
+            if y in allowed[e["experiment_id"]]
         ],
     }
 
@@ -589,10 +622,19 @@ def newest_forecast(
 
 
 def group_scale(
-    head: dict, *, pe_base: float | None, bases: dict, vintage: str, fy: str
+    head: dict,
+    *,
+    pe_base: float | None,
+    bases: dict,
+    vintage: str,
+    fy: str,
+    modern_fy: str | None = None,
 ) -> dict:
     """The factor that carries one head group's OBR costing to the modern
-    population (docs/uk_replay/POLICY_EXPERIMENTS.md, Scaling)."""
+    population (docs/uk_replay/POLICY_EXPERIMENTS.md, Scaling). ``fy`` is the
+    costing year; ``modern_fy`` the run year, which differs for an
+    experiment carried forward past the event's window."""
+    modern_fy = modern_fy or fy
     sheet = head.get("base_sheet")
     event_base = forecast(bases, sheet, vintage, fy)
     if event_base is None or event_base <= 0:
@@ -605,7 +647,7 @@ def group_scale(
             "obr_event_forecast_gbp": event_base,
             "pe_base_gbp": pe_base,
         }
-    newest = newest_forecast(bases, sheet, fy)
+    newest = newest_forecast(bases, sheet, modern_fy)
     if newest is None:
         return {"basis": "unscaled", "factor": 1.0, "base_sheet": sheet}
     return {
@@ -1095,8 +1137,7 @@ def diagnosis_for(diagnoses: list[dict], event: str, eid: str, year: int, code: 
     return None
 
 
-def obr_for(experiment: dict, measure: dict, year: int) -> dict:
-    fy = fy_label(year)
+def obr_for(experiment: dict, measure: dict, fy: str) -> dict:
     mapped_heads = [h for head in experiment["heads"] for h in head["obr_heads"]]
     values = obr_values(measure, fy, mapped_heads)
     values["groups"] = [
@@ -1125,10 +1166,12 @@ def evaluate(
     bases: dict,
     vintage: str,
     modern: dict | None,
+    registry: dict,
 ) -> dict:
     """One experiment-year: OBR values, scales, ratios and anomaly codes."""
     year = artifact["year"]
-    obr = obr_for(experiment, measure, year)
+    fy = comparison_fy(experiment, registry, year)
+    obr = obr_for(experiment, measure, fy)
     scales = []
     for head in experiment["heads"]:
         pe_base = None
@@ -1139,13 +1182,18 @@ def evaluate(
             )
         scales.append(
             group_scale(
-                head, pe_base=pe_base, bases=bases, vintage=vintage, fy=fy_label(year)
+                head,
+                pe_base=pe_base,
+                bases=bases,
+                vintage=vintage,
+                fy=fy,
+                modern_fy=fy_label(year),
             )
         )
     result = classify(
         artifact, obr=obr, scales=scales, magnitude_check=experiment["magnitude_check"]
     )
-    return {"obr": obr, "scales": scales, **result}
+    return {"obr": obr, "scales": scales, "comparison_fy": fy, **result}
 
 
 def findings(
@@ -1181,6 +1229,7 @@ def findings(
             bases,
             spec["obr_forecast_vintage"],
             modern,
+            registry,
         )
         anomalies = []
         for code in evaluated["codes"]:
@@ -1199,6 +1248,8 @@ def findings(
                 "title": measures[experiment["measure_key"]]["title"],
                 "year": year,
                 "fy": fy_label(year),
+                "comparison_fy": evaluated["comparison_fy"],
+                "carried_forward": evaluated["comparison_fy"] != fy_label(year),
                 "status": artifact.get("status"),
                 "effect_gbp": artifact.get("effect_gbp"),
                 "group_effects_gbp": {
