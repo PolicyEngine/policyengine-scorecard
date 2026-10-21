@@ -1,0 +1,243 @@
+{
+ "event": "budget_2018",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2018.",
+ "obr_forecast_vintage": "October 2018",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -442031604.0912323,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -710679005.8671318,
+   "experiment_id": "b2018_fuel_duty_freeze_2019",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -442031604.0912323
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__fuel_duty_freeze_for_2019_20",
+   "obr_mapped_gbp": -935000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.4727610738943661,
+   "ratio_scaled": 0.6219848911280127,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7600844982536169,
+     "obr_event_forecast_gbp": 32047752659.036797,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze for 2019-20",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -433232043.76678085,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -707261852.5228516,
+   "experiment_id": "b2018_fuel_duty_freeze_2019",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "fuel_duty": -433232043.76678085
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__fuel_duty_freeze_for_2019_20",
+   "obr_mapped_gbp": -935000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.4633497794297121,
+   "ratio_scaled": 0.6125482976657265,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7564297887944936,
+     "obr_event_forecast_gbp": 32047752659.036797,
+     "obr_newest_forecast_gbp": 24241874775.213375,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze for 2019-20",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -2694401377.9712343,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1933740060.9016416,
+   "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -3278302254.890381,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 553334335.7049742,
+    "universal_credit": 30566541.214172363
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+   "obr_mapped_gbp": -1364957208.3821604,
+   "obr_unmapped_gbp": -416794448.4426431,
+   "ratio_raw": 1.9739823061301833,
+   "ratio_scaled": 1.3933627546170402,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.3032223128716418,
+     "obr_event_forecast_gbp": 229873089395.08374,
+     "pe_base_gbp": 299575739228.4107
+    },
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.041787643701709,
+     "obr_event_forecast_gbp": 165521093552.06927,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1973805569134992,
+     "obr_event_forecast_gbp": 132701115969.3977,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Personal Allowance and Higher Rate Threshold: increase to \u00a312,500 and \u00a350,000 for 2019-20 and 2020-21",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -2930800858.849918,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -2005470772.8118703,
+   "experiment_id": "b2018_personal_allowance_12500_hrt_50000",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -3587761030.73761,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 623880842.6527982,
+    "universal_credit": 33079329.2348938
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__personal_allowance_and_higher_rate_threshold_increase_to_12_500_and_50_0",
+   "obr_mapped_gbp": -1364957208.3821604,
+   "obr_unmapped_gbp": -416794448.4426431,
+   "ratio_raw": 2.147174168429574,
+   "ratio_scaled": 1.461402927722872,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.4148639010902428,
+     "obr_event_forecast_gbp": 229873089395.08374,
+     "pe_base_gbp": 325239136017.19434
+    },
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2930821754569384,
+     "obr_event_forecast_gbp": 165521093552.06927,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2747926128532074,
+     "obr_event_forecast_gbp": 132701115969.3977,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Personal Allowance and Higher Rate Threshold: increase to \u00a312,500 and \u00a350,000 for 2019-20 and 2020-21",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -1286214161.1592255,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -2031963186.7461066,
+   "experiment_id": "b2018_uc_work_allowance_1000",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit": -1286214161.1592255
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
+   "obr_mapped_gbp": -1697007000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.7579309697362624,
+   "ratio_scaled": 0.6329908777623625,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1973805569134992,
+     "obr_event_forecast_gbp": 132701115969.3977,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal Credit: \u00a31,000 increase to work allowance",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2023-24",
+   "effect_gbp": -1289747337.0571747,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -2163331987.560183,
+   "experiment_id": "b2018_uc_work_allowance_1000",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit": -1289747337.0571747
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2018__universal_credit_1_000_increase_to_work_allowance",
+   "obr_mapped_gbp": -1697007000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.7600129740520661,
+   "ratio_scaled": 0.5961855806106572,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2747926128532074,
+     "obr_event_forecast_gbp": 132701115969.3977,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal Credit: \u00a31,000 increase to work allowance",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

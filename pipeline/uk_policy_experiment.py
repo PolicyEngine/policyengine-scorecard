@@ -1302,11 +1302,16 @@ def mirror_findings(all_findings: list[dict], specs: dict[str, dict]) -> list[di
         for row in f["rows"]
     }
     out = []
+    seen = set()
     for event, spec in specs.items():
         for experiment in spec["experiments"]:
             mirror = experiment.get("mirror_of")
             if not mirror:
                 continue
+            pair = tuple(sorted((f"{event}:{experiment['experiment_id']}", mirror)))
+            if pair in seen:
+                continue  # each pair once, from the side that sorts first
+            seen.add(pair)
             other_event, other_id = mirror.split(":")
             for (e, eid, year), mine in groups.items():
                 if e != event or eid != experiment["experiment_id"]:

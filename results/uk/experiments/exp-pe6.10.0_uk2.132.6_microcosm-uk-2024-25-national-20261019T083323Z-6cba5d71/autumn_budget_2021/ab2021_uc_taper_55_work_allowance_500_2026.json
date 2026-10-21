@@ -1,0 +1,80 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": -3137253193.114212,
+ "engine_version": "2.132.6",
+ "event": "autumn_budget_2021",
+ "event_name": "Autumn Budget 2021",
+ "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+ "fy": "2026-27",
+ "head_groups": [
+  {
+   "alternate_gbp": 77223693430.55164,
+   "channel": "spending",
+   "effect_gbp": -3137253193.114212,
+   "literal_alternate_minus_modern_gbp": 3137253193.114212,
+   "modern_gbp": 80360946623.66585,
+   "obr_heads": [
+    "Welfare inside cap"
+   ],
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "measure_key": "autumn_budget_2021__universal_credit_reduce_taper_rate_from_63p_to_55p_and_500_p_a_increase",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.dwp.universal_credit.means_test.reduction_rate": {
+   "alternate_intended": 0.63,
+   "alternate_processed": 0.63,
+   "changes_modern_law": true,
+   "modern_processed": 0.55,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+   "alternate_intended": 373.0,
+   "alternate_processed": 373.0,
+   "changes_modern_law": true,
+   "modern_processed": 427,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+   "alternate_intended": 656.0,
+   "alternate_processed": 656.0,
+   "changes_modern_law": true,
+   "modern_processed": 710,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.universal_credit.means_test.reduction_rate": {
+   "2024-01-01.2035-12-31": 0.63
+  },
+  "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+   "2024-01-01.2024-12-31": 353.0,
+   "2025-01-01.2025-12-31": 359.0,
+   "2026-01-01.2026-12-31": 373.0
+  },
+  "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+   "2024-01-01.2024-12-31": 622.0,
+   "2025-01-01.2025-12-31": 632.0,
+   "2026-01-01.2026-12-31": 656.0
+  }
+ },
+ "registry_sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b",
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2026
+}
