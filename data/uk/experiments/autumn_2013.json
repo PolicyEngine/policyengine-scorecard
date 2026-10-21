@@ -1,0 +1,63 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_2013",
+ "experiments": [
+  {
+   "carried_from_fy": "2018-19",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2013_marriage_allowance",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Social security benefits"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "housing_benefit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2013__income_tax_transferable_marriage_allowance",
+   "note": "Removes the transferable allowance (modern law: 10% of the personal allowance).",
+   "reform": {
+    "gov.hmrc.income_tax.allowances.marriage_allowance.max": {
+     "2024-01-01.2025-12-31": 0.0
+    }
+   },
+   "sources": [
+    "Finance Act 2014 s. 11 (Income Tax Act 2007 s. 55A-55E)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/marriage_allowance/max.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2013.",
+ "obr_forecast_vintage": "December 2013",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

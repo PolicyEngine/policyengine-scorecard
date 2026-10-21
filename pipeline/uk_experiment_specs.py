@@ -330,6 +330,11 @@ def b2018_work_allowance(
     }
 
 
+# Budget 2010 (June): child benefit frozen for 2011-12 to 2013-14 instead of
+# rising with the previous September's CPI (ONS: 3.1% 2010, 5.2% 2011, 2.2%
+# 2012). Every later rate scales by the forgone factor.
+CB_FREEZE = 1.031 * 1.052 * 1.022
+
 # Spending Review 2020: the standard minimum guarantee rose from £173.75 to
 # £177.10 (single) and £265.20 to £270.30 (couple) in April 2021, where the
 # statutory minimum, earnings growth, was negative and so a freeze (Social
@@ -1086,6 +1091,240 @@ def experiments() -> dict[str, dict]:
                     ],
                 },
                 "2020-21",
+            )
+        ],
+    }
+    b10, a10, b12, a13, b15 = (
+        "budget_2010_2",
+        "autumn_2010",
+        "budget_2012",
+        "autumn_2013",
+        "budget_2015",
+    )
+
+    def welfare(variables, heads=("Social security benefits",)) -> dict:
+        return {
+            "obr_heads": list(heads),
+            "pe_variables": list(variables),
+            "channel": "spending",
+            "base_sheet": "Total welfare",
+            "pe_base_comparable": False,
+        }
+
+    hicbc_leg = {
+        "obr_heads": [],
+        "pe_variables": ["income_tax"],
+        "channel": "tax",
+        "pe_base_comparable": False,
+        "note": (
+            "The charge is income tax in PolicyEngine; the OBR books the measure "
+            "as reduced benefit spending."
+        ),
+    }
+    specs[b10] = {
+        "obr_forecast_vintage": "June 2010",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2010_vat_standard_rate_20",
+                    "measure_key": f"{b10}__vat_increase_main_rate_to_20_from_4_january_2011",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.vat.standard_rate": {window(2024, 2025): 0.175}
+                    },
+                    "years": [2024, 2025],
+                    "heads": [
+                        {
+                            "obr_heads": ["VAT"],
+                            "pe_variables": ["vat"],
+                            "channel": "tax",
+                            "base_sheet": "VAT",
+                            "pe_base_comparable": False,
+                        }
+                    ],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Restores the 17.5% standard rate. pe-uk's VAT is household "
+                        "consumption grossed up by its coverage factor; the OBR's base "
+                        "also includes VAT that businesses and government cannot recover."
+                    ),
+                    "sources": [
+                        "Finance (No. 2) Act 2010 s. 3",
+                        "pe-uk 2.132.6 parameters gov/hmrc/vat/standard_rate.yaml",
+                    ],
+                },
+                "2014-15",
+            ),
+            carried(
+                {
+                    "experiment_id": "b2010_child_benefit_three_year_freeze",
+                    "measure_key": f"{b10}__child_benefit_freeze_for_3_years_from_2011_12",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        f"gov.hmrc.child_benefit.amount.{kind}": yearly(
+                            {
+                                y: round(round(v * CB_FREEZE / 0.05) * 0.05, 2)
+                                for y, v in amounts.items()
+                            }
+                        )
+                        for kind, amounts in (
+                            ("eldest", {2024: 25.60, 2025: 26.05}),
+                            ("additional", {2024: 16.95, 2025: 17.25}),
+                        )
+                    },
+                    "years": [2024, 2025],
+                    "heads": [welfare(["child_benefit"]), hicbc_leg],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Restores the CPI upratings the freeze forwent in April 2011, "
+                        "2012 and 2013 (September CPI 3.1%, 5.2%, 2.2%, ONS): every modern "
+                        f"rate scaled by {CB_FREEZE:.6f}, rounded to 5p. The higher "
+                        "benefit raises the high-income charge, an income-tax leg."
+                    ),
+                    "sources": [
+                        "Budget 2010 (June) Table 2.1",
+                        "ONS CPI annual rate, September 2010-2012: 3.1%, 5.2%, 2.2%",
+                        "pe-uk 2.132.6 parameters gov/hmrc/child_benefit/amount/*.yaml",
+                    ],
+                },
+                "2014-15",
+            ),
+        ],
+    }
+    specs[a10] = {
+        "obr_forecast_vintage": "November 2010",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "as2010_high_income_child_benefit_charge",
+                    "measure_key": f"{a10}__child_benefit_remove_from_families_with_a_higher_rate_taxpayer_from_janu",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+                            window(2024, 2025): 1e9
+                        },
+                        "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+                            window(2024, 2025): 1e9 + 1e4
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [welfare(["child_benefit"]), hicbc_leg],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes the charge (a phase-out from £1bn stands for none), "
+                        "whatever later events made of its design. Families who opted out "
+                        "of child benefit resume it once their charge share falls below "
+                        "pe-uk's opt-out threshold."
+                    ),
+                    "sources": [
+                        "Finance Act 2012 Sch. 1 (Income Tax (Earnings and Pensions) Act 2003 s. 681B-681H)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/income_tax/charges/CB_HITC/*.yaml",
+                    ],
+                },
+                "2015-16",
+            )
+        ],
+    }
+    specs[b12] = {
+        "obr_forecast_vintage": "March 2012",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2012_additional_rate_45p",
+                    "measure_key": f"{b12}__income_tax_reduce_additional_rate_to_45p_in_2013_14",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.rates.uk[2].rate": {
+                            window(2024, 2025): 0.5
+                        },
+                        "gov.hmrc.income_tax.rates.savings.additional": {
+                            window(2024, 2025): 0.5
+                        },
+                        "gov.hmrc.income_tax.rates.property.additional": {
+                            window(2024, 2025): 0.5
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [INCOME_TAX],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Restores the 50% additional rate on non-savings, savings and "
+                        "property income. The dividend additional rate's 2013 cut (42.5% "
+                        "to 37.5%) is left out: the 2016 dividend reform rebuilt that "
+                        "schedule. The OBR's costing is dominated by the taxable-income "
+                        "response, which a static run does not have."
+                    ),
+                    "sources": [
+                        "Finance Act 2012 s. 1",
+                        "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,savings,property}.yaml",
+                    ],
+                },
+                "2016-17",
+            )
+        ],
+    }
+    specs[a13] = {
+        "obr_forecast_vintage": "December 2013",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "as2013_marriage_allowance",
+                    "measure_key": f"{a13}__income_tax_transferable_marriage_allowance",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.allowances.marriage_allowance.max": {
+                            window(2024, 2025): 0.0
+                        }
+                    },
+                    "years": [2024, 2025],
+                    "heads": [
+                        INCOME_TAX,
+                        welfare(["universal_credit", "housing_benefit"]),
+                    ],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes the transferable allowance (modern law: 10% of the "
+                        "personal allowance)."
+                    ),
+                    "sources": [
+                        "Finance Act 2014 s. 11 (Income Tax Act 2007 s. 55A-55E)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/marriage_allowance/max.yaml",
+                    ],
+                },
+                "2018-19",
+            )
+        ],
+    }
+    specs[b15] = {
+        "obr_forecast_vintage": "March 2015",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "b2015_personal_savings_allowance",
+                    "measure_key": f"{b15}__savings_tax_allowance_and_isa_flexibility",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {
+                        "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic": {
+                            window(2024, 2025): 0.0
+                        },
+                        "gov.hmrc.income_tax.allowances.personal_savings_allowance.higher": {
+                            window(2024, 2025): 0.0
+                        },
+                    },
+                    "years": [2024, 2025],
+                    "heads": [INCOME_TAX],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Removes the personal savings allowance (£1,000 basic rate, £500 "
+                        "higher rate); the measure's ISA flexibility leg has no "
+                        "counterpart."
+                    ),
+                    "sources": [
+                        "Finance (No. 2) Act 2015 s. 4 (Income Tax Act 2007 s. 12B)",
+                        "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/personal_savings_allowance/*.yaml",
+                    ],
+                },
+                "2019-20",
             )
         ],
     }

@@ -1,0 +1,101 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2010_2",
+ "experiments": [
+  {
+   "carried_from_fy": "2014-15",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2010_vat_standard_rate_20",
+   "heads": [
+    {
+     "base_sheet": "VAT",
+     "channel": "tax",
+     "obr_heads": [
+      "VAT"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "vat"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__vat_increase_main_rate_to_20_from_4_january_2011",
+   "note": "Restores the 17.5% standard rate. pe-uk's VAT is household consumption grossed up by its coverage factor; the OBR's base also includes VAT that businesses and government cannot recover.",
+   "reform": {
+    "gov.hmrc.vat.standard_rate": {
+     "2024-01-01.2025-12-31": 0.175
+    }
+   },
+   "sources": [
+    "Finance (No. 2) Act 2010 s. 3",
+    "pe-uk 2.132.6 parameters gov/hmrc/vat/standard_rate.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "carried_from_fy": "2014-15",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2010_child_benefit_three_year_freeze",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Social security benefits"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "child_benefit"
+     ]
+    },
+    {
+     "channel": "tax",
+     "note": "The charge is income tax in PolicyEngine; the OBR books the measure as reduced benefit spending.",
+     "obr_heads": [],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__child_benefit_freeze_for_3_years_from_2011_12",
+   "note": "Restores the CPI upratings the freeze forwent in April 2011, 2012 and 2013 (September CPI 3.1%, 5.2%, 2.2%, ONS): every modern rate scaled by 1.108473, rounded to 5p. The higher benefit raises the high-income charge, an income-tax leg.",
+   "reform": {
+    "gov.hmrc.child_benefit.amount.additional": {
+     "2024-01-01.2024-12-31": 18.8,
+     "2025-01-01.2025-12-31": 19.1
+    },
+    "gov.hmrc.child_benefit.amount.eldest": {
+     "2024-01-01.2024-12-31": 28.4,
+     "2025-01-01.2025-12-31": 28.9
+    }
+   },
+   "sources": [
+    "Budget 2010 (June) Table 2.1",
+    "ONS CPI annual rate, September 2010-2012: 3.1%, 5.2%, 2.2%",
+    "pe-uk 2.132.6 parameters gov/hmrc/child_benefit/amount/*.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2010 #2.",
+ "obr_forecast_vintage": "June 2010",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

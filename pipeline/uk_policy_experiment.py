@@ -439,8 +439,14 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
         source_heads = measure_heads(measure)
         for head in heads:
             need(head.get("channel") in ("tax", "spending"), where + "head channel")
+            # A group with no OBR head is a PolicyEngine leg the OBR books
+            # under another group's head (the child benefit charge, an income
+            # tax charge, scored as reduced benefit spending).
+            need(
+                isinstance(head.get("obr_heads"), list),
+                where + "obr_heads must be a list",
+            )
             obr_heads = head.get("obr_heads") or []
-            need(bool(obr_heads), where + "a head group maps no OBR head")
             for name in obr_heads:
                 need(
                     name in source_heads,
@@ -463,6 +469,7 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
                 not head.get("pe_base_comparable") or sheet is not None,
                 where + "a comparable base needs a base_sheet",
             )
+        need(bool(mapped), where + "no head group maps an OBR head")
         need(
             len(variables) == len(set(variables)), where + "a variable is in two heads"
         )

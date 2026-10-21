@@ -711,3 +711,23 @@ def test_group_scale_reads_the_event_forecast_at_the_costing_year_and_newest_at_
         scale["obr_newest_forecast_gbp"]
         == ex.newest_forecast(bases, "IT", "2029-30")[1]
     )
+
+
+def test_a_leg_without_an_obr_head_counts_toward_the_total_but_not_the_expectation():
+    spec, registry = spec_and_registry("autumn_2010")
+    experiment = spec["experiments"][0]
+    assert [h["obr_heads"] for h in experiment["heads"]] == [
+        ["Social security benefits"],
+        [],
+    ]
+    broken = copy.deepcopy(spec)
+    for head in broken["experiments"][0]["heads"]:
+        head["obr_heads"] = []
+    with pytest.raises(ex.ExperimentError, match="no head group maps an OBR head"):
+        ex.validate_spec(broken, registry, ex.load_bases())
+    measure = {m["measure_key"]: m for m in registry["measures"]}[
+        experiment["measure_key"]
+    ]
+    obr = ex.obr_for(experiment, measure, "2015-16")
+    assert obr["groups"][1]["obr_mapped_gbp"] == 0.0
+    assert obr["mapped_gbp"] == obr["groups"][0]["obr_mapped_gbp"]
