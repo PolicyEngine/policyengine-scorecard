@@ -123,7 +123,10 @@ diagnosis before anything is called a bug; `check` and `note` are listed.
 
 Magnitude flags apply only when the experiment's `magnitude_check` is
 `scaled`, the expected value is at least £100m, and the mapped heads hold at
-least half of the OBR's costing that year. Threshold freezes and other
+least half of the OBR's costing that year. That share is measured on each
+head's absolute value, so mapped heads that offset each other (an
+incorporation response's NICs gain against its income tax loss) still count
+as mapped. Threshold freezes and other
 measures whose value depends on the event's own inflation forecast are
 `sign_only`: PLAN.md names them as the case a modern population misleads on.
 

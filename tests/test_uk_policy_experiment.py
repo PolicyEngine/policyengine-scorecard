@@ -731,3 +731,27 @@ def test_a_leg_without_an_obr_head_counts_toward_the_total_but_not_the_expectati
     obr = ex.obr_for(experiment, measure, "2015-16")
     assert obr["groups"][1]["obr_mapped_gbp"] == 0.0
     assert obr["mapped_gbp"] == obr["groups"][0]["obr_mapped_gbp"]
+
+
+def test_offsetting_mapped_heads_still_count_as_mapped():
+    obr_ = {
+        "mapped_gbp": 185e6,
+        "unmapped_gbp": 340e6,
+        "by_head_gbp": {
+            "NICs": 475e6,
+            "Income tax": -290e6,
+            "Corporation tax (onshore)": 340e6,
+        },
+        "groups": [
+            {"obr_heads": ["NICs"], "obr_mapped_gbp": 475e6},
+            {"obr_heads": ["Income tax"], "obr_mapped_gbp": -290e6},
+        ],
+    }
+    assert math.isclose(ex.mapped_head_share(obr_), 765 / 1105)
+    result = ex.classify(
+        artifact(680e6),
+        obr=obr_,
+        scales=[{"factor": 1.0}, {"factor": 1.0}],
+        magnitude_check="scaled",
+    )
+    assert result["codes"] == ["magnitude_outside_3x"]

@@ -1,0 +1,117 @@
+{
+ "event": "autumn_budget_2017",
+ "event_years_outside_population": [
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022
+ ],
+ "experiments": [
+  "ab2017_fuel_duty_freeze_2018",
+  "ab2017_sdlt_first_time_buyers_relief"
+ ],
+ "files": [
+  {
+   "path": "MODERN_LAW_2024.json",
+   "sha256": "996f3705587294fdcaa78a429093b3e0baae46ed3a06d7427efe6dc121e39242"
+  },
+  {
+   "path": "MODERN_LAW_2025.json",
+   "sha256": "c5b3d168f3694852eada3546cbbd143cb34a0e3ec56dcd6fbee46c66cbf7c4e8"
+  },
+  {
+   "path": "ab2017_fuel_duty_freeze_2018_2024.json",
+   "sha256": "1dba90ff0580473ebac2b4ceca7f166e80bbd17a8339e9eefe2a92c19096bcb0"
+  },
+  {
+   "path": "ab2017_fuel_duty_freeze_2018_2025.json",
+   "sha256": "830eb3dfe0ab83c3dfda17b560baf9b3465cf8a25921dd890ec7c5e7654fb18f"
+  },
+  {
+   "path": "ab2017_sdlt_first_time_buyers_relief_2024.json",
+   "sha256": "48482cc8e3f96c4ba50a082cc2cc1ee0a7d91f1beacb94ba86b115018a815fa7"
+  },
+  {
+   "path": "ab2017_sdlt_first_time_buyers_relief_2025.json",
+   "sha256": "fc3c19b45af6e122b44840c24a8cbd19cbd37dea033f7a87bf1ddd76fb4b98b4"
+  }
+ ],
+ "grid": [
+  {
+   "experiment_id": "ab2017_fuel_duty_freeze_2018",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2017_fuel_duty_freeze_2018",
+   "year": 2025
+  },
+  {
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "year": 2024
+  },
+  {
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "year": 2025
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_policy_experiment_manifest",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2017.",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "population_identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "size_bytes": 321798995
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "ff067baaf848f9053220c400f39120317f3b4903298212ad01340f7597312571",
+    "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+    "version": "6.10.0"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3"
+   },
+   "policyengine-uk": {
+    "record_sha256": "ca7c36b7617f950f48a04e2816a29e1eb962c44097f3ef08ed4036d7414d2709",
+    "version": "2.132.6"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.10.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "compatibility_basis": "built_with_model_package",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.132.6",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "model_package": "policyengine-uk",
+   "model_version": "2.132.6",
+   "policyengine_version": "6.10.0"
+  },
+  "requirements_sha256": "87601813f4beeda4c1dc2b0beb3c0ac144515c2bb7cf971cae32b6e619415bda"
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "spec_sha256": "0a6ebdcf9b420fc554d6a09c094414d98895ac1497f88360e7595e157c3869a9",
+ "years": [
+  2024,
+  2025
+ ]
+}

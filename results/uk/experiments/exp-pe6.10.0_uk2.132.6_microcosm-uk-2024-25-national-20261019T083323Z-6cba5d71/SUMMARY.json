@@ -1,6 +1,7 @@
 {
  "anomaly_counts": {
-  "construction_noop:diagnosed": 8
+  "construction_noop:diagnosed": 8,
+  "magnitude_outside_3x:diagnosed": 2
  },
  "baseline_coverage": [
   {
@@ -101,12 +102,15 @@
   }
  ],
  "events": [
+  "autumn_budget_2017",
   "autumn_budget_2021",
   "autumn_statement_2022",
+  "budget_2017",
   "budget_2018",
+  "spring_budget_2021",
   "spring_statement_2022"
  ],
- "experiment_years": 68,
+ "experiment_years": 78,
  "is_replay": false,
  "kind": "uk_policy_experiment_summary",
  "label": "modern_population_sensitivity",

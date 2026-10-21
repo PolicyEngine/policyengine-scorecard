@@ -49,6 +49,15 @@
    "years": [
     2024
    ]
+  },
+  {
+   "code": "magnitude_outside_3x",
+   "event": "budget_2017",
+   "evidence": "data/uk/events/inventory.jsonl rows for budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019; FINDINGS.json group effects",
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "status": "expected",
+   "summary": "The OBR's costing is net of the self-employed incorporating in response: its NICs yield falls from \u00a3570m (2019-20) to \u00a3475m (2021-22) while income tax goes from -\u00a360m to -\u00a3420m and corporation tax rises to +\u00a3340m. A static run has no such response. PolicyEngine's NICs leg alone (+\u00a30.68bn in 2024-25) is 1.27 times the OBR's NICs row scaled to the modern base (\u00a30.475bn x 1.131).",
+   "years": null
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",

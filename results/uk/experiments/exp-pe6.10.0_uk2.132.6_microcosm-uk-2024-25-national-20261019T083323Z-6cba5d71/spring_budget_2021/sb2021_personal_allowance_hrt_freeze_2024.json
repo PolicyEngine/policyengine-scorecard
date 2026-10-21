@@ -1,0 +1,143 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 26882224352.547184,
+ "engine_version": "2.132.6",
+ "event": "spring_budget_2021",
+ "event_name": "Spring Budget 2021",
+ "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+ "fy": "2024-25",
+ "head_groups": [
+  {
+   "alternate_gbp": 269370965652.60742,
+   "channel": "tax",
+   "effect_gbp": 30204773575.803284,
+   "literal_alternate_minus_modern_gbp": -30204773575.803284,
+   "modern_gbp": 299575739228.4107,
+   "obr_heads": [
+    "Income tax"
+   ],
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "alternate_gbp": 175416276917.31876,
+   "channel": "tax",
+   "effect_gbp": -2978446882.778333,
+   "literal_alternate_minus_modern_gbp": 2978446882.778333,
+   "modern_gbp": 172437830034.5404,
+   "obr_heads": [
+    "NICs"
+   ],
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "alternate_gbp": 23024432862.16057,
+   "channel": "tax",
+   "effect_gbp": 123220883.3142395,
+   "literal_alternate_minus_modern_gbp": -123220883.3142395,
+   "modern_gbp": 23147653745.474808,
+   "obr_heads": [
+    "Capital gains tax"
+   ],
+   "pe_variables": [
+    "capital_gains_tax"
+   ]
+  },
+  {
+   "alternate_gbp": 73741394727.47757,
+   "channel": "spending",
+   "effect_gbp": -467323223.79200745,
+   "literal_alternate_minus_modern_gbp": 467323223.79200745,
+   "modern_gbp": 74208717951.26958,
+   "obr_heads": [
+    "Welfare inside cap"
+   ],
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Budget 2021.",
+ "measure_key": "spring_budget_2021__income_tax_maintain_personal_allowance_and_higher_rate_threshold_at_2021",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+   "alternate_intended": 15230.0,
+   "alternate_processed": 15230.0,
+   "changes_modern_law": true,
+   "modern_processed": 12570,
+   "reached_simulation": true
+  },
+  "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+   "alternate_intended": 45800.0,
+   "alternate_processed": 45800.0,
+   "changes_modern_law": true,
+   "modern_processed": 37500,
+   "reached_simulation": true
+  },
+  "gov.hmrc.income_tax.rates.uk[1].threshold": {
+   "alternate_intended": 45800.0,
+   "alternate_processed": 45800.0,
+   "changes_modern_law": true,
+   "modern_processed": 37700,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+   "alternate_intended": 1173.65,
+   "alternate_processed": 1173.65,
+   "changes_modern_law": true,
+   "modern_processed": 966.73,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+   "alternate_intended": 61030.0,
+   "alternate_processed": 61030.0,
+   "changes_modern_law": true,
+   "modern_processed": 50270,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+   "2024-01-01.2024-12-31": 15230.0,
+   "2025-01-01.2025-12-31": 15490.0
+  },
+  "gov.hmrc.income_tax.rates.dividends[1].threshold": {
+   "2024-01-01.2024-12-31": 45800.0,
+   "2025-01-01.2025-12-31": 46600.0
+  },
+  "gov.hmrc.income_tax.rates.uk[1].threshold": {
+   "2024-01-01.2024-12-31": 45800.0,
+   "2025-01-01.2025-12-31": 46600.0
+  },
+  "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+   "2024-01-01.2024-12-31": 1173.65,
+   "2025-01-01.2025-12-31": 1194.04
+  },
+  "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+   "2024-01-01.2024-12-31": 61030.0,
+   "2025-01-01.2025-12-31": 62090.0
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2024
+}

@@ -1,0 +1,145 @@
+{
+ "event": "autumn_budget_2017",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2017.",
+ "obr_forecast_vintage": "November 2017",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2022-23",
+   "effect_gbp": -465342458.07928085,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -704416091.7212385,
+   "experiment_id": "ab2017_fuel_duty_freeze_2018",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -465342458.07928085
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__fuel_duty_freeze_for_2018_19",
+   "obr_mapped_gbp": -885000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.5258106870952326,
+   "ratio_scaled": 0.6606073648065279,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7959503861256932,
+     "obr_event_forecast_gbp": 30603666289.513332,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze for 2018-19",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2022-23",
+   "effect_gbp": -456078962.47278976,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -701029052.3072164,
+   "experiment_id": "ab2017_fuel_duty_freeze_2018",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "fuel_duty": -456078962.47278976
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__fuel_duty_freeze_for_2018_19",
+   "obr_mapped_gbp": -885000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.5153434604212314,
+   "ratio_scaled": 0.6505849664457549,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7921232229460072,
+     "obr_event_forecast_gbp": 30603666289.513332,
+     "obr_newest_forecast_gbp": 24241874775.213375,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze for 2018-19",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2022-23",
+   "effect_gbp": -729647467.6059952,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -557480107.8066636,
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -729647467.6059952
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__stamp_duty_land_tax_abolish_for_first_time_buyers_up_to_300_000",
+   "obr_mapped_gbp": -620000000.0,
+   "obr_unmapped_gbp": -50000000.0,
+   "ratio_raw": 1.176850754203218,
+   "ratio_scaled": 1.3088313957545548,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8991614642042961,
+     "obr_event_forecast_gbp": 16934667027.211826,
+     "obr_newest_forecast_gbp": 15227000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: abolish for First Time Buyers up to \u00a3300,000",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2022-23",
+   "effect_gbp": -736086537.625637,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -618997169.729493,
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -736086537.625637
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__stamp_duty_land_tax_abolish_for_first_time_buyers_up_to_300_000",
+   "obr_mapped_gbp": -620000000.0,
+   "obr_unmapped_gbp": -50000000.0,
+   "ratio_raw": 1.187236351009092,
+   "ratio_scaled": 1.189159779110643,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.998382531821763,
+     "obr_event_forecast_gbp": 16934667027.211826,
+     "obr_newest_forecast_gbp": 16907275742.186272,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: abolish for First Time Buyers up to \u00a3300,000",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

@@ -2,13 +2,14 @@
 
 **Policy experiments on the modern population: not replays or costings of any past event.**
 
-4 events, 68 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
+7 events, 78 experiment-years (certified_pair). Per-event detail is in each event's FINDINGS.md.
 
 ## Anomalies
 
 | Code | Diagnosed | Count |
 |---|---|---:|
 | `construction_noop` | diagnosed | 8 |
+| `magnitude_outside_3x` | diagnosed | 2 |
 
 ## Mirrors
 

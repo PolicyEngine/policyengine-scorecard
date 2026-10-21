@@ -889,8 +889,7 @@ def classify(
         and abs(pe) >= max(SIGN_MIN_PE, SIGN_MIN_PE_SHARE * abs(mapped))
     ):
         codes.append("sign_mismatch")
-    total_abs = abs(obr["mapped_gbp"]) + abs(obr["unmapped_gbp"])
-    mapped_share = abs(obr["mapped_gbp"]) / total_abs if total_abs else 0.0
+    mapped_share = mapped_head_share(obr)
     out["mapped_share"] = mapped_share
     if (
         magnitude_check == "scaled"
@@ -908,6 +907,26 @@ def classify(
             codes.append("magnitude_outside_3x")
     out["codes"] = codes
     return out
+
+
+def mapped_head_share(obr: dict) -> float:
+    """The share of the OBR's costing on the heads a group maps, by each
+    head's absolute value, so heads that offset (an incorporation response's
+    NICs gain against its income tax loss) do not hide what is mapped.
+    Without a per-head breakdown, the mapped and unmapped totals."""
+    by_head = obr.get("by_head_gbp")
+    if by_head:
+        mapped = {
+            h for group in obr.get("groups", []) for h in group.get("obr_heads", [])
+        }
+        total = sum(abs(v) for v in by_head.values())
+        return (
+            sum(abs(v) for h, v in by_head.items() if h in mapped) / total
+            if total
+            else 0.0
+        )
+    total = abs(obr["mapped_gbp"]) + abs(obr["unmapped_gbp"])
+    return abs(obr["mapped_gbp"]) / total if total else 0.0
 
 
 def severity(code: str, classification: dict) -> str:
