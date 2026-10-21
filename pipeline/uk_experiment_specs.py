@@ -335,6 +335,42 @@ def b2018_work_allowance(
 # 2012). Every later rate scales by the forgone factor.
 CB_FREEZE = 1.031 * 1.052 * 1.022
 
+# Working-age benefit uprating. A construction scales each amount's own
+# modern value (the harness's ``scale``), so every later uprating in the
+# engine's law is kept. Forgone CPI upratings use the previous September's
+# CPI (ONS): 2012 2.2%, 2013 2.7%, 2014 1.2%, 2015 -0.1% (no uprating),
+# 2016 1.0%, 2017 3.0%, 2018 2.4%.
+UC_FROZEN = [
+    *(
+        f"gov.dwp.universal_credit.standard_allowance.amount.{kind}"
+        for kind in ("SINGLE_YOUNG", "SINGLE_OLD", "COUPLE_YOUNG", "COUPLE_OLD")
+    ),
+    "gov.dwp.universal_credit.elements.child.amount",
+    "gov.dwp.universal_credit.elements.child.first.higher_amount",
+]
+CB_AMOUNTS = [
+    "gov.hmrc.child_benefit.amount.eldest",
+    "gov.hmrc.child_benefit.amount.additional",
+]
+HB_WORKING_AGE = [
+    f"gov.dwp.housing_benefit.allowances.{who}.{age}"
+    for who in ("single", "couple", "lone_parent")
+    for age in ("younger", "older")
+]
+TAX_CREDITS = [
+    "gov.dwp.tax_credits.child_tax_credit.elements.child_element",
+    *(
+        f"gov.dwp.tax_credits.working_tax_credit.elements.{element}"
+        for element in ("basic", "couple", "lone_parent", "worker")
+    ),
+]
+# Summer Budget 2015: four-year freeze from 2016-17 (Welfare Reform and Work
+# Act 2016 s. 11); April 2016's uprating would have been nil.
+FREEZE_2016_19 = 1.010 * 1.030 * 1.024
+# Autumn Statement 2012: 1% instead of CPI for 2014-15 and 2015-16 for child
+# benefit and Universal Credit (Welfare Benefits Up-rating Act 2013).
+ONE_PERCENT_2014_15 = (1.027 / 1.01) * (1.012 / 1.01)
+
 # Spending Review 2020: the standard minimum guarantee rose from £173.75 to
 # £177.10 (single) and £265.20 to £270.30 (couple) in April 2021, where the
 # statutory minimum, earnings growth, was negative and so a freeze (Social
@@ -1326,6 +1362,102 @@ def experiments() -> dict[str, dict]:
                 },
                 "2019-20",
             )
+        ],
+    }
+    a12 = "autumn_2012"
+    benefit_group = {
+        "obr_heads": ["Tax credits", "Welfare inside cap", "Welfare outside cap"],
+        "pe_variables": [
+            "universal_credit",
+            "child_tax_credit",
+            "working_tax_credit",
+            "child_benefit",
+            "housing_benefit",
+        ],
+        "channel": "spending",
+        "base_sheet": "Total welfare",
+        "pe_base_comparable": False,
+    }
+    specs[sb15]["experiments"].append(
+        carried(
+            {
+                "experiment_id": "sb2015_working_age_benefit_freeze",
+                "measure_key": f"{sb15}__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+                "construction": "reversal_on_modern_law",
+                "reform": {},
+                "scale": {
+                    path: FREEZE_2016_19
+                    for path in [*UC_FROZEN, *CB_AMOUNTS, *HB_WORKING_AGE, *TAX_CREDITS]
+                },
+                "years": [2024, 2025],
+                "heads": [benefit_group, hicbc_leg],
+                "magnitude_check": "scaled",
+                "note": (
+                    "Restores the CPI upratings the four-year freeze forwent (April "
+                    "2017-2019: 1.0%, 3.0%, 2.4%; April 2016's was nil): the Universal "
+                    "Credit standard allowances and child elements, child benefit, "
+                    "working-age housing benefit allowances and tax credit elements, "
+                    f"each at its modern value times {FREEZE_2016_19:.6f}. Disability "
+                    "and carer elements were outside the freeze. Missing legs: local "
+                    "housing allowance rates and legacy JSA, ESA and income support."
+                ),
+                "sources": [
+                    "Welfare Reform and Work Act 2016 s. 11 and Sch. 1",
+                    "ONS CPI annual rate, September 2015-2018: -0.1%, 1.0%, 3.0%, 2.4%",
+                ],
+            },
+            "2020-21",
+        )
+    )
+    specs[a12] = {
+        "obr_forecast_vintage": "December 2012",
+        "experiments": [
+            carried(
+                {
+                    "experiment_id": "as2012_universal_credit_one_percent",
+                    "measure_key": f"{a12}__universal_credit_finalise_disregards_and_increase_by_1_for_two_years_fro",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {},
+                    "scale": {path: ONE_PERCENT_2014_15 for path in UC_FROZEN},
+                    "years": [2024, 2025],
+                    "heads": [welfare(["universal_credit"])],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Restores CPI uprating of the Universal Credit standard "
+                        "allowances and child elements in April 2014 and 2015 (2.7%, "
+                        "1.2%) instead of 1%: each at its modern value times "
+                        f"{ONE_PERCENT_2014_15:.6f}. The measure's finalised disregards "
+                        "have no counterpart."
+                    ),
+                    "sources": [
+                        "Welfare Benefits Up-rating Act 2013 s. 1",
+                        "ONS CPI annual rate, September 2013 and 2014: 2.7%, 1.2%",
+                    ],
+                },
+                "2017-18",
+            ),
+            carried(
+                {
+                    "experiment_id": "as2012_child_benefit_one_percent",
+                    "measure_key": f"{a12}__child_benefit_increase_by_1_for_two_years_from_2014_15",
+                    "construction": "reversal_on_modern_law",
+                    "reform": {},
+                    "scale": {path: ONE_PERCENT_2014_15 for path in CB_AMOUNTS},
+                    "years": [2024, 2025],
+                    "heads": [welfare(["child_benefit"]), INCOME_TAX],
+                    "magnitude_check": "scaled",
+                    "note": (
+                        "Restores CPI uprating of child benefit in April 2014 and 2015 "
+                        "instead of 1%; the higher benefit raises the high-income charge "
+                        "(income tax)."
+                    ),
+                    "sources": [
+                        "Welfare Benefits Up-rating Act 2013 s. 1",
+                        "ONS CPI annual rate, September 2013 and 2014: 2.7%, 1.2%",
+                    ],
+                },
+                "2017-18",
+            ),
         ],
     }
     specs[b20] = {

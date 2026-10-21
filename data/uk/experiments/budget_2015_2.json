@@ -42,6 +42,73 @@
     2024,
     2025
    ]
+  },
+  {
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_working_age_benefit_freeze",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Tax credits",
+      "Welfare inside cap",
+      "Welfare outside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "child_tax_credit",
+      "working_tax_credit",
+      "child_benefit",
+      "housing_benefit"
+     ]
+    },
+    {
+     "channel": "tax",
+     "note": "The charge is income tax in PolicyEngine; the OBR books the measure as reduced benefit spending.",
+     "obr_heads": [],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+   "note": "Restores the CPI upratings the four-year freeze forwent (April 2017-2019: 1.0%, 3.0%, 2.4%; April 2016's was nil): the Universal Credit standard allowances and child elements, child benefit, working-age housing benefit allowances and tax credit elements, each at its modern value times 1.065267. Disability and carer elements were outside the freeze. Missing legs: local housing allowance rates and legacy JSA, ESA and income support.",
+   "reform": {},
+   "scale": {
+    "gov.dwp.housing_benefit.allowances.couple.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.couple.younger": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.lone_parent.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.lone_parent.younger": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.single.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.single.younger": 1.0652672,
+    "gov.dwp.tax_credits.child_tax_credit.elements.child_element": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.basic": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.couple": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.lone_parent": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.worker": 1.0652672,
+    "gov.dwp.universal_credit.elements.child.amount": 1.0652672,
+    "gov.dwp.universal_credit.elements.child.first.higher_amount": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 1.0652672,
+    "gov.hmrc.child_benefit.amount.additional": 1.0652672,
+    "gov.hmrc.child_benefit.amount.eldest": 1.0652672
+   },
+   "sources": [
+    "Welfare Reform and Work Act 2016 s. 11 and Sch. 1",
+    "ONS CPI annual rate, September 2015-2018: -0.1%, 1.0%, 3.0%, 2.4%"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
   }
  ],
  "kind": "uk_modern_population_policy_experiments",
