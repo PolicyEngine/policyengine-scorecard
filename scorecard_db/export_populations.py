@@ -38,6 +38,13 @@ external_value_pe_sign, the published value in that orientation (null for
 magnitude and unknown). The free-text conditions.sign_convention stays as
 the record.
 
+A UK row whose conditions.measure_key names a measure in a committed UK
+registry also carries that measure's ``measure`` block (issue #209): its
+programme, the model variables it heads, and the PolicyEngine parameter
+paths its construction sets, so a
+report that changes one of those parameters can find the row. The block is
+the registry's, verbatim; it is null for every other row.
+
 Also refreshes data/lanes.json via ingest_harvest.sync_lane_feed so the
 populace-reform-validation lane appears in mission control.
 
@@ -62,6 +69,51 @@ URBAN_SOURCE = "urban_sotsn"
 PMD_REGISTRY = "obr_pmd_all_events"
 PMD_REGISTRIES = frozenset({PMD_REGISTRY, "obr_pmd_march2026"})
 PMD_DIRECTORY = "populations-pmd"
+# The AB2025 registry is the one the AB2025 and OBR costings ingests join
+# through, so it decides its own keys. The replay registries under
+# data/uk/events/ restate many AB2025 keys with their own programme list;
+# they answer only the keys the AB2025 registry does not define.
+UK_MEASURE_REGISTRIES = (
+    REPO / "data" / "uk" / "ab2025_measures.json",
+    REPO / "data" / "uk" / "budget_2026_measures.json",
+)
+UK_EVENT_REGISTRIES = REPO / "data" / "uk" / "events"
+
+
+def uk_measures() -> dict[str, dict]:
+    """Every committed UK measure by key: its programme, computability, the
+    model variables it heads, and the sorted parameter paths of its reform
+    delta and baseline modifier."""
+    measures: dict[str, dict] = {}
+    owner: dict[str, Path] = {}
+
+    def add(path: Path, primary: bool) -> None:
+        for m in json.loads(path.read_text())["measures"]:
+            key = m["measure_key"]
+            if key in owner:
+                if not primary and owner[key] in UK_MEASURE_REGISTRIES:
+                    continue
+                raise ValueError(
+                    f"UK measure {key!r} is defined in both {owner[key].name}"
+                    f" and {path.name}"
+                )
+            owner[key] = path
+            measures[key] = {
+                "key": key,
+                "program": m.get("program"),
+                "computability": m.get("computability"),
+                "head_variables": list(m.get("head_variables") or []),
+                "parameter_paths": sorted(
+                    set(m.get("pe_reform_delta") or {})
+                    | set(m.get("pe_baseline_modifier") or {})
+                ),
+            }
+
+    for path in UK_MEASURE_REGISTRIES:
+        add(path, primary=True)
+    for path in sorted(UK_EVENT_REGISTRIES.glob("*_measures.json")):
+        add(path, primary=False)
+    return measures
 
 
 def _compact_rows(rows: list[dict]) -> dict:
@@ -172,6 +224,7 @@ def export(
         r["baseline_key"]: r["label"]
         for r in db.conn.execute("SELECT baseline_key, label FROM baselines")
     }
+    measures = uk_measures()
     rows = []
     by_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
@@ -283,6 +336,11 @@ def export(
                 "geography": c["geography"],
                 "program": c["program"],
                 "conditions": conditions,
+                "measure": (
+                    measures.get(conditions.get("measure_key"))
+                    if conditions.get("country") == "UK"
+                    else None
+                ),
                 "reform_framework": reform.get("framework"),
                 "reform_key": c["reform_key"],
                 "external_value": c["value"],
