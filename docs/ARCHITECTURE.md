@@ -205,6 +205,15 @@ Operating rules for the agent stage:
   10102's groups to its total. Claims flow through
   `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
 
+- **Pre-publish comparables** (`sources/analysis-<country>-<slug>/`,
+  lanes `analysis-comparables-uk` and `-us`; docs/COMPARABLES.md): one
+  directory per PolicyEngine analysis, holding every external estimate a
+  search of every listed producer found before the analysis was published,
+  the analysis's own pinned figures, and the cause of every gap over the
+  threshold. `scorecard_db/comparables.py` is the gate (an incomplete record
+  fails CI and the build) and writes `data/comparables/index.json`, which
+  policyengine-app-v2's CI reads before a research entry can merge.
+
 ### Staged for Chronicle, not claims
 
 Administrative outturn tables (caseloads, units, spending) are calibration

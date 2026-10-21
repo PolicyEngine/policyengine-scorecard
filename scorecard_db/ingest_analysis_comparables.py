@@ -138,6 +138,8 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
             reform = _reform(record, c["world"], c.get("baseline_policy"))
             conditions = {
                 **c["conditions"],
+                # the app files a row under conditions.country (US when absent)
+                "country": a["country"],
                 "analysis": a["id"],
                 "analysis_claim": c["key"],
                 "benchmark_class": c["benchmark_class"],

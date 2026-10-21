@@ -76,6 +76,14 @@ python pipeline/compute_tariff_counterparts.py   # parquet if present, else the 
 python pipeline/build_moments.py                 # -> app/public/data/moments.json
 ```
 
+## Pre-publish comparables
+
+Every PolicyEngine analysis is searched against every external producer
+before it is published, and each estimate found is recorded here with the
+cause of any gap over 25% (docs/COMPARABLES.md). One directory per
+analysis, `sources/analysis-<country>-<slug>/`; the validator and index are
+`scorecard_db/comparables.py`, and policyengine-app-v2's CI reads the index.
+
 ## Reproducing
 
 Python side (requires the policyengine.py-managed environment; heavy —

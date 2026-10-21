@@ -406,7 +406,10 @@ def test_integration_committed_db(tmp_path):
     # and FY2025) with CY2024 counterparts (#176).
     # The March 2026 PMD contributes only its 246 new cells; November's
     # historical/comprehensive claims and the existing main feed stay intact.
-    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246, "BE": 9, "NZ": 12}
+    # Pre-publish comparables (docs/COMPARABLES.md) add every staged claim of
+    # each analysis record: 20 for the £100,000 childcare dashboard (12 CenTax,
+    # 8 Centre for British Progress), with or without a result.
+    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246 + 20, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -441,7 +444,8 @@ def test_integration_committed_db(tmp_path):
     assert committed["summary"] == payload["summary"]
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
-    assert len(payload["rows"]) == 5719
+    # 5,719 + the 20 pre-publish comparables rows of the childcare record
+    assert len(payload["rows"]) == 5719 + 20
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()

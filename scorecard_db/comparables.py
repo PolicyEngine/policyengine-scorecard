@@ -1032,7 +1032,45 @@ def index_entry(record: AnalysisRecord, policy: dict) -> dict:
             {r["tracking_issue"] for r in rows if r["tracking_issue"]}
         ),
         "search_log": f"{REPO_URL}/blob/main/sources/{record.name}/search_log.json",
+        "comparisons": _comparisons(record, rows),
     }
+
+
+def _comparisons(record: AnalysisRecord, rows: list[dict]) -> list[dict]:
+    """Every staged estimate as a reader would see it: the producer's figure
+    as printed, ours where one compares, the gap and why. The data a "How we
+    compare" section on the analysis's page reads."""
+    claims = {c["key"]: c for c in record.claims}
+    estimates = {e["key"]: e for e in record.analysis["pe_estimates"]}
+    causes = {n["id"]: n["cause"] for n in record.annotations}
+    out = []
+    for row in rows:
+        c = claims[row["key"]]
+        est = estimates.get(row["estimate"]) if row["estimate"] else None
+        out.append(
+            {
+                "claim": c["key"],
+                "source": c["source"],
+                "publisher": c["publication"]["publisher"],
+                "title": c["publication"]["title"],
+                "url": c["publication"]["url"],
+                "locator": c["publication"]["locator"],
+                "metric": c.get("metric") or c.get("proposed_metric"),
+                "period": c["period"],
+                "fy": (c.get("conditions") or {}).get("fy"),
+                "value": c["value"],
+                "value_raw": c["value_raw"],
+                "sign_convention": (c.get("conditions") or {}).get("sign_convention"),
+                "estimate": row["estimate"],
+                "estimate_label": est["label"] if est else None,
+                "pe_value": est["value"] if est else None,
+                "gap": _round(row["gap"]),
+                "status": row["status"],
+                "cause": causes.get(row["annotation"]),
+                "pe_missing": c.get("pe_missing"),
+            }
+        )
+    return out
 
 
 def build_index(
