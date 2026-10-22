@@ -82,7 +82,7 @@ in_sandbox() {
     "$@"
 }
 
-# The account, outside the sandbox, for streaming files in and out.
+# The account, outside the sandbox, for streaming its output out.
 as_candidate() {
   sudo -n -u "$CANDIDATE" env -i HOME="$CANDIDATE_HOME" PATH=/usr/bin:/bin "$@"
 }
@@ -188,11 +188,14 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
     ;;
   replay)
     : "${DATASET_FILE:?}" "${VARIANT:?}" "${REPLAY_EVENT:?}" "${REPLAY_MEASURE:?}" "${REPLAY_YEAR:?}"
-    # The dataset enters a home in which nothing of the account runs, and
-    # the account itself streams it in: nothing runs as root inside its home.
+    # The dataset enters a home in which nothing of the account runs. The
+    # account writes it in from a pipe, inside the sandbox, so a link left in
+    # its copy cannot point the write anywhere else, and nothing runs as root
+    # inside its home.
     stop_candidate
-    as_candidate mkdir -p "$COPY/input"
-    as_candidate dd of="$COPY/input/dataset.h5" bs=1M status=none < "$DATASET_FILE"
+    # shellcheck disable=SC2016 # expanded by the sandboxed shell
+    /bin/cat "$DATASET_FILE" | in_sandbox --offline \
+      /bin/sh -c '/bin/mkdir -p "$HOME/scorecard/input" && exec /bin/cat > "$HOME/scorecard/input/dataset.h5"'
     # shellcheck disable=SC2016 # expanded by the sandboxed shell
     untrusted_output in_sandbox --offline PYTHONPATH=. RUNNER_TEMP="$CANDIDATE_HOME/tmp" \
       VARIANT="$VARIANT" REPLAY_EVENT="$REPLAY_EVENT" \

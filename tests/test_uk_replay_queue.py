@@ -926,19 +926,17 @@ SANDBOX_PROPERTIES = [
     "CapabilityBoundingSet=",
 ]
 OFFLINE_PROPERTIES = ["PrivateNetwork=yes", "InaccessiblePaths=-/run"]
-# sudo records what it is asked to run (and what it receives on stdin) and
-# runs nothing; systemd-run "runs" the sandboxed command by printing what the
+# sudo records what it is asked to run and what it receives on stdin, and
+# runs nothing; systemd-run "runs" the variant's script by printing what the
 # variant would, and exits with SANDBOX_EXIT.
 SUDO_STUB = """#!{python}
 import json, os, sys
 
 args = sys.argv[1:]
-entry = {{"argv": args}}
-if "dd" in args:
-    entry["stdin"] = sys.stdin.buffer.read().hex()
+entry = {{"argv": args, "stdin": sys.stdin.buffer.read().hex()}}
 with open(os.environ["SUDO_LOG"], "a") as handle:
     handle.write(json.dumps(entry) + "\\n")
-if args[:1] == ["systemd-run"]:
+if args[:1] == ["systemd-run"] and "uk_replay_determinism.sh" in args[-1]:
     print("::error::the variant's own output", flush=True)
     sys.exit(int(os.environ.get("SANDBOX_EXIT", "0")))
 """
@@ -973,6 +971,7 @@ def sandbox_mode(tmp_path, mode, settings, *, exit_status=0):
         ["bash", str(SANDBOX), mode],
         cwd=tmp_path,
         env=environment,
+        stdin=subprocess.DEVNULL,
         capture_output=True,
         text=True,
     )
@@ -1053,48 +1052,46 @@ def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
     ]
 
 
-def test_replay_streams_the_dataset_in_as_the_candidate_and_runs_offline(tmp_path):
+def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path):
     dataset = tmp_path / "the dataset.h5"
     dataset.write_bytes(bytes(range(256)) * 9)
     settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
     calls, result = sandbox_mode(tmp_path, "replay", settings)
     assert result.returncode == 0, result.stderr
     assert "::error::the variant's own output" in stopped_commands(result.stdout)
-    as_candidate = [
-        "-n",
-        "-u",
-        "replay-candidate",
-        "env",
-        "-i",
-        f"HOME={CANDIDATE_HOME}",
-        "PATH=/usr/bin:/bin",
-    ]
-    # Nothing of the account runs when the dataset goes in; the account
-    # itself makes the directory and writes the bytes it reads on stdin, so
-    # nothing runs as root inside its home.
-    assert [c["argv"] for c in calls[:3]] == [
+    # Nothing of the account runs when the dataset goes in. The account
+    # writes it in from a pipe, inside the offline sandbox, with absolute
+    # tools, so a link left in its copy cannot point the write anywhere
+    # else; nothing runs as root inside its home, and nothing as the account
+    # outside the sandbox.
+    assert [c["argv"][:4] for c in calls] == [
         ["pkill", "-KILL", "-u", "replay-candidate"],
-        [*as_candidate, "mkdir", "-p", f"{CANDIDATE_HOME}/scorecard/input"],
-        [
-            *as_candidate,
-            "dd",
-            f"of={CANDIDATE_HOME}/scorecard/input/dataset.h5",
-            "bs=1M",
-            "status=none",
-        ],
+        ["systemd-run", "--quiet", "--collect", "--pipe"],
+        ["systemd-run", "--quiet", "--collect", "--pipe"],
     ]
-    assert bytes.fromhex(calls[2]["stdin"]) == dataset.read_bytes()
-    assert len(calls) == 4
-    flags, environment, properties, command = systemd_run(calls[3]["argv"])
-    assert "--uid=replay-candidate" in flags and "--pipe" in flags
-    # Offline: no network but loopback and no /run, on top of every other
-    # property; the dataset's path and no token reach it.
-    assert properties == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
-    assert environment == {
+    handin, replay = (systemd_run(c["argv"]) for c in calls[1:])
+    base = {
         "HOME": CANDIDATE_HOME,
         "USER": "replay-candidate",
         "LANG": "C.UTF-8",
         "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
+    }
+    assert handin[1] == base
+    assert handin[2] == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
+    assert handin[3] == [
+        "/bin/sh",
+        "-c",
+        '/bin/mkdir -p "$HOME/scorecard/input" '
+        '&& exec /bin/cat > "$HOME/scorecard/input/dataset.h5"',
+    ]
+    assert bytes.fromhex(calls[1]["stdin"]) == dataset.read_bytes()
+    # Then the replay, offline, on top of every other property; neither the
+    # dataset's path on the runner nor any token reaches it.
+    flags, environment, properties, command = replay
+    assert "--uid=replay-candidate" in flags and "--wait" in flags
+    assert properties == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
+    assert environment == {
+        **base,
         "PYTHONPATH": ".",
         "RUNNER_TEMP": f"{CANDIDATE_HOME}/tmp",
         **{k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"},
@@ -1105,6 +1102,7 @@ def test_replay_streams_the_dataset_in_as_the_candidate_and_runs_offline(tmp_pat
         'mkdir -p "$RUNNER_TEMP" && cd "$HOME/scorecard" '
         "&& exec bash .github/scripts/uk_replay_determinism.sh replay",
     ]
+    assert calls[2]["stdin"] == ""
 
 
 @pytest.mark.parametrize("missing", sorted(REPLAY_SETTINGS))

@@ -672,7 +672,9 @@ sandbox` job runs `setup`, `run` and `collect` on the runner image on every
 pull request, with no secrets and a stub drain that does what a real run
 needs inside the sandbox (creates a uv environment and installs from PyPI,
 adds a git worktree of the copy, runs a multiprocessing pool) and leaves a
-process behind.
+process behind. `setup` also checks the offline form of the sandbox that the
+real replay uses ([the real replay in the
+sandbox](#the-real-replay-in-the-sandbox)).
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
@@ -717,15 +719,10 @@ through the wrapper's `PolicyEngine/policyengine.py` git source (which can
 name a fork's commit), or a malicious third-party dependency pulled in when
 installation falls back to free resolution.
 
-The real replay in `uk-replay-determinism.yml` is weaker: the variant's
-engine runs as the runner user, so code in a certified freeze could read the
-token from the runner's memory, where it stays until the job ends. Its fetch
-runs before any variant code, which keeps such code from redirecting the
-fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file, but not from
-that memory. The workflow runs only on pushes to main, with committed,
-certified freezes. CI's `replay engine` legs, which install and run each
-variant on pull requests too, are in a workflow that names no dataset token:
-the runner receives a secret its job names even in a step that never runs.
+The real replay in `uk-replay-determinism.yml` runs a certified variant's
+code in this same sandbox, its replay offline. [The real replay in the
+sandbox](#the-real-replay-in-the-sandbox) says how, and what a malicious
+freeze could still do there.
 
 In the qualification run's sandbox, the drain
 (`.github/scripts/uk_replay_drain.sh`) runs
@@ -998,12 +995,81 @@ pushes to main only:
   checkout, uv's setup and a read of the index, and before anything of the
   variant's is installed. It fetches the dataset into the Hugging Face hub
   cache by uv's absolute path in an emptied environment, with packages no
-  newer than a fixed date and the token on stdin. The variant's engine runs
-  in later steps, without the token in their environment, in a job with
-  `contents: read`, no persisted checkout credential and no cache. The
-  legacy leg replays nothing. Without the secret, or without a committed
-  sealed namespace, the fetch emits a notice stating that nothing was
-  replayed.
+  newer than a fixed date and the token on stdin. The variant's install and
+  replay then run as the unprivileged candidate account in the systemd
+  sandbox, the replay offline
+  ([below](#the-real-replay-in-the-sandbox)), and the runner's own Python
+  compares the artifact that comes back. The job has `contents: read`, no
+  persisted checkout credential and no cache. The legacy leg replays
+  nothing. Without the secret, or without a committed sealed namespace, the
+  fetch emits a notice stating that nothing was replayed.
+* `real replay sandbox`, in `ci.yml`, on every pull request, with no
+  secrets: the real replay's sandbox modes on the runner image, with a
+  stand-in dataset and a stub engine.
+
+#### The real replay in the sandbox
+
+The real replay in `uk-replay-determinism.yml` runs a certified variant's
+code as the receiver runs a candidate: as the unprivileged account in the
+systemd sandbox that [the receiver](#the-receiver) describes
+(`.github/scripts/uk_replay_sandbox.sh`). Its token step runs before any
+variant code, which keeps such code from redirecting the
+fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file. The job then
+finds the fetched dataset by size and SHA-256 (`find_dataset_bytes`, under
+the runner's own Python) and runs `setup`. The variant's code runs in two
+services after that:
+
+* `install` builds the variant's exact freeze in the account's copy, with
+  the network and without the dataset.
+* `replay` checks that nothing of the account is running and has the
+  account write the dataset into its copy from a pipe, inside an offline
+  service, so a link left in the copy cannot send the bytes anywhere else.
+  It then replays one measure-year from that file
+  (`compute_uk_event --dataset-file`), offline. The service gets its
+  own network namespace, whose only interface is loopback
+  (`PrivateNetwork`), and may open only IPv4, IPv6 and netlink sockets
+  (`RestrictAddressFamilies`). Without Unix sockets it cannot reach
+  systemd-resolved over D-Bus, which on the hosted image resolved a name
+  for the candidate under `PrivateNetwork` alone, or any other host service.
+  `setup` checks both properties from inside an offline service.
+
+Both print the variant's output with the runner's workflow commands stopped
+(`::stop-commands::` with a token generated outside the sandbox), so that
+output cannot set a step output or raise an annotation. `collect` then checks
+that no process of the account survives and streams `output/` back; an
+honest run leaves only the replayed artifact there. The runner's own Python
+(`/usr/bin/python3 -E -s`, standard library only) compares it with the
+committed artifact that the job names, and refuses anything but a regular
+file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or cached.
+
+So a compromised package among a certified freeze's pins cannot read the
+token. The token is not in the sandbox's environment, the runner's processes
+are invisible, sudo and setuid programs cannot raise privileges, and the
+runner's home, workspace, command files and every directory on its `PATH` are
+read-only or hidden. It cannot leave a process behind. The freeze pins
+versions, not file hashes (`docs/uk_replay/requirements/`), so this sandbox,
+not the pins, is what keeps such a package from the token.
+
+What such a package can still do:
+
+* It reads the dataset, as the engine must, and its output goes to the
+  workflow's public log, so it could print household-level data there.
+* It controls the bytes it hands back, and its copy of the repository holds
+  the committed artifact. So it can make the comparison pass: the check
+  catches an honest engine whose output drifts, not a malicious one.
+* During `install` it has the network, but not the dataset.
+
+The workflow runs only on pushes to main. CI's `replay engine` legs install
+and run each variant on pull requests too, so `ci.yml` names no dataset
+token: the runner receives a secret its job names even in a step that never
+runs. CI's `real replay sandbox` job runs `setup`, `install`, `replay` and
+`collect` on every pull request, with no secrets: a stand-in dataset, plus a
+one-package freeze and a stub engine module in the account's copy. The
+freeze installs from PyPI in the sandbox. The stub reports what it finds
+offline, leaves a process behind and prints workflow commands. The runner's
+comparison must find exactly loopback, no connection out, no Unix socket,
+the stand-in's SHA-256, a working process pool and the arguments the job
+passed, and the stub must have set no step output.
 
 ## Invariants
 
