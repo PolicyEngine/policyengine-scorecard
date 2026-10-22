@@ -1,0 +1,43 @@
+[
+  {
+    "id": "fcsuti-anchor-not-cpiu",
+    "claims": [
+      "census_wp22_fcsuti_rate_2025_all",
+      "census_wp22_fcsuti_change_from_2024_all",
+      "census_wp22_fcsuti_threshold_effect_all",
+      "census_wp22_fcsuti_rate_2025_under_18",
+      "census_wp22_fcsuti_change_from_2024_under_18",
+      "census_wp22_fcsuti_threshold_effect_under_18",
+      "census_wp22_fcsuti_rate_2025_age_18_64",
+      "census_wp22_fcsuti_change_from_2024_age_18_64",
+      "census_wp22_fcsuti_threshold_effect_age_18_64",
+      "census_wp22_fcsuti_rate_2025_age_65_plus",
+      "census_wp22_fcsuti_change_from_2024_age_65_plus",
+      "census_wp22_fcsuti_threshold_effect_age_65_plus",
+      "census_wp22_fcsuti_rate_2025_owner_mortgage",
+      "census_wp22_fcsuti_rate_2025_owner_no_mortgage",
+      "census_wp22_fcsuti_rate_2025_renter"
+    ],
+    "status": "concept_mismatch",
+    "explains_gap": false,
+    "cause": "Census's headline anchored series inflates the 2024 thresholds by BLS's FCSUti price index, the index of the threshold's own components, which rose 3.44 percent in 2025, so its 2025 anchored thresholds are about 1.0344 times the 2024 values ($40,581, $34,011 and $40,570, Table A.1). The post inflates them by CPI-U (1.02631, anchored_results.json cpi_factor) and C-CPI-U (1.0248). Higher thresholds against the same resources count at least as many people poor, so these rates and changes describe a different counterfactual from any the post publishes: Census's FCSUti-anchored 2025 rate is 12.6 percent against 12.4 in its own CPI-U table. The like-for-like comparison is Census's CPI-U table (A.4), compared directly.",
+    "basis": [
+      {
+        "kind": "document",
+        "ref": "https://www2.census.gov/library/working-papers/2026/demo/sehsd-wp2026-22.pdf#page=3"
+      },
+      {
+        "kind": "document",
+        "ref": "https://www2.census.gov/library/working-papers/2026/demo/sehsd-wp2026-22.pdf#page=9"
+      },
+      {
+        "kind": "document",
+        "ref": "https://www.bls.gov/pir/spm/spm_thresholds_2025.htm"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/spm-threshold-paper/blob/4b8df6615e2beca582835713d0b2ca3c1ab3bf9c/analysis/asec-2026-anchored-thresholds/anchored_results.json"
+      }
+    ]
+  }
+]

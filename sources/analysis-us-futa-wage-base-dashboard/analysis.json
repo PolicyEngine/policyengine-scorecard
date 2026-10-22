@@ -1,0 +1,1734 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "us/futa-wage-base-dashboard",
+  "country": "US",
+  "registry": {
+    "kind": "app",
+    "slug": "futa-wage-base-dashboard",
+    "country_id": "us"
+  },
+  "title": "FUTA taxable wage base dashboard",
+  "url": "https://policyengine.org/us/futa-wage-base-dashboard",
+  "published": "2026-09-17",
+  "owner": {
+    "author": "david-trimmer"
+  },
+  "scope": "federal",
+  "subject": "Federal revenue from raising the FUTA taxable wage base from $7,000 to $43,000 in 2026 and indexing it to the CPI-U, with the 0.6% net rate unchanged: the additional FUTA revenue by calendar year 2026-2035, adjusted (the headline, $251.1 billion over ten years) and unadjusted ($317.4 billion), counting the FUTA line only; the model's current-law FUTA revenue; and its fiscal-year validation against IRS collections for FY2024 and FY2025.",
+  "search_terms": [
+    "FUTA wage base increase revenue",
+    "raise FUTA taxable wage base CBO",
+    "unemployment insurance wage base revenue estimate",
+    "FUTA reform score",
+    "federal unemployment tax wage base $40,000 index wage growth",
+    "index the FUTA wage base inflation revenue",
+    "FUTA revenue projections"
+  ],
+  "worlds": {
+    "futa_base_43000_cpi_indexed": {
+      "policy": "us_futa_wage_base_43000_2026_cpiu_indexed",
+      "description": "The dashboard's reform: the FUTA taxable wage base raised from $7,000 to $43,000 in 2026 and, from 2027, set to $43,000 times the prior calendar year's average CPI-U over the 2025 average, rounded to the nearest $100 ($53,200 in 2035); the 6.0% rate and the 5.4% maximum state credit (0.6% net) unchanged."
+    },
+    "cbo_2016_option_futa_base_40000": {
+      "policy": "us_cbo_2016_option_futa_base_40000_2017_wage_indexed_net_rate_0167",
+      "description": "CBO, Options for Reducing the Deficit: 2017 to 2026, Revenues Option 24, second alternative: the FUTA wage base raised to $40,000 in January 2017 and indexed to wage growth, the net FUTA rate cut from 0.6% to 0.167%; states must raise their own wage bases to at least $40,000."
+    },
+    "cbo_2018_option_futa_base_40000": {
+      "policy": "us_cbo_2018_option_futa_base_40000_2019_wage_indexed_net_rate_0167",
+      "description": "CBO, Options for Reducing the Deficit: 2019 to 2028, Revenues Option 23: the FUTA wage base raised to $40,000 in January 2019 and indexed to wage growth, the net FUTA rate cut from 0.6% to 0.167%; states must raise their own wage bases to at least $40,000."
+    },
+    "futa_base_14000_unindexed": {
+      "policy": "us_futa_wage_base_14000_2026_unindexed",
+      "description": "The Budget Lab's largest option: the FUTA wage base raised to $14,000 in 2026 and not indexed, at the 0.6% net rate."
+    },
+    "futa_base_14000_chained_cpi_indexed": {
+      "policy": "us_futa_wage_base_14000_2026_chained_cpiu_indexed",
+      "description": "The Budget Lab: the FUTA wage base raised to $14,000 in 2026 and indexed to the chained CPI-U, at the 0.6% net rate."
+    },
+    "futa_base_14000_wage_indexed": {
+      "policy": "us_futa_wage_base_14000_2026_awi_indexed",
+      "description": "The Budget Lab: the FUTA wage base raised to $14,000 in 2026 and indexed to SSA's average wage index, at the 0.6% net rate."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "additional_revenue_adjusted_cy2026",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2026",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 20789010864.0,
+      "value_raw": "20789010864",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2026",
+        "wage_base": "$43,000",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2026, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2026",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2026",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 26445727221.164425,
+      "value_raw": "26445727221.164425",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2026",
+        "wage_base": "$43,000",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2026].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2027",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2027",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2027,
+      "time_basis": "annual",
+      "value": 21860102981.0,
+      "value_raw": "21860102981",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2027",
+        "wage_base": "$44,400",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2027, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2027",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2027",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2027,
+      "time_basis": "annual",
+      "value": 27775809923.729805,
+      "value_raw": "27775809923.729805",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2027",
+        "wage_base": "$44,400",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2027].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2028",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2028",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2028,
+      "time_basis": "annual",
+      "value": 22757333989.0,
+      "value_raw": "22757333989",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2028",
+        "wage_base": "$45,400",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2028, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2028",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2028",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2028,
+      "time_basis": "annual",
+      "value": 28871786578.340942,
+      "value_raw": "28871786578.340942",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2028",
+        "wage_base": "$45,400",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2028].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2029",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2029",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2029,
+      "time_basis": "annual",
+      "value": 23687523829.0,
+      "value_raw": "23687523829",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2029",
+        "wage_base": "$46,500",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2029, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2029",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2029",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2029,
+      "time_basis": "annual",
+      "value": 30010764288.81463,
+      "value_raw": "30010764288.81463",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2029",
+        "wage_base": "$46,500",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2029].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2030",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2030",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2030,
+      "time_basis": "annual",
+      "value": 24625256580.0,
+      "value_raw": "24625256580",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2030",
+        "wage_base": "$47,600",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2030, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2030",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2030",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2030,
+      "time_basis": "annual",
+      "value": 31157727278.0039,
+      "value_raw": "31157727278.0039",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2030",
+        "wage_base": "$47,600",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2030].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2031",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2031",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2031,
+      "time_basis": "annual",
+      "value": 25527109672.0,
+      "value_raw": "25527109672",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2031",
+        "wage_base": "$48,600",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2031, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2031",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2031",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2031,
+      "time_basis": "annual",
+      "value": 32253147838.69234,
+      "value_raw": "32253147838.69234",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2031",
+        "wage_base": "$48,600",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2031].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2032",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2032",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2032,
+      "time_basis": "annual",
+      "value": 26474385586.0,
+      "value_raw": "26474385586",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2032",
+        "wage_base": "$49,700",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2032, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2032",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2032",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2032,
+      "time_basis": "annual",
+      "value": 33407766959.18235,
+      "value_raw": "33407766959.18235",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2032",
+        "wage_base": "$49,700",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2032].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2033",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2033",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2033,
+      "time_basis": "annual",
+      "value": 27472028832.0,
+      "value_raw": "27472028832",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2033",
+        "wage_base": "$50,900",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2033, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2033",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2033",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2033,
+      "time_basis": "annual",
+      "value": 34625856446.449615,
+      "value_raw": "34625856446.449615",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2033",
+        "wage_base": "$50,900",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2033].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2034",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2034",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2034,
+      "time_basis": "annual",
+      "value": 28440721078.0,
+      "value_raw": "28440721078",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2034",
+        "wage_base": "$52,000",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2034, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2034",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2034",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2034,
+      "time_basis": "annual",
+      "value": 35799969047.833305,
+      "value_raw": "35799969047.833305",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2034",
+        "wage_base": "$52,000",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2034].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2035",
+      "label": "Additional FUTA revenue, adjusted (headline), calendar 2035",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 29455438168.0,
+      "value_raw": "29455438168",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2035",
+        "wage_base": "$53,200",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2035, adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2035",
+      "label": "Additional FUTA revenue, unadjusted model output, calendar 2035",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 37035407834.14354,
+      "value_raw": "37035407834.14354",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2035",
+        "wage_base": "$53,200",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2035].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2026",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2026",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 5917474348.0,
+      "value_raw": "5917474348",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2026",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2026, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2026",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2026",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 6820184824.3903475,
+      "value_raw": "6820184824.3903475",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2026",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2026].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2027",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2027",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2027,
+      "time_basis": "annual",
+      "value": 5968918170.0,
+      "value_raw": "5968918170",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2027",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2027, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2027",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2027",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2027,
+      "time_basis": "annual",
+      "value": 6870789894.265245,
+      "value_raw": "6870789894.265245",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2027",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2027].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2028",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2028",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2028,
+      "time_basis": "annual",
+      "value": 6013031722.0,
+      "value_raw": "6013031722",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2028",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2028, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2028",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2028",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2028,
+      "time_basis": "annual",
+      "value": 6913470019.150374,
+      "value_raw": "6913470019.150374",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2028",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2028].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2029",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2029",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2029,
+      "time_basis": "annual",
+      "value": 6051080997.0,
+      "value_raw": "6051080997",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2029",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2029, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2029",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2029",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2029,
+      "time_basis": "annual",
+      "value": 6949815158.545585,
+      "value_raw": "6949815158.545585",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2029",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2029].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2030",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2030",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2030,
+      "time_basis": "annual",
+      "value": 6088111620.0,
+      "value_raw": "6088111620",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2030",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2030, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2030",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2030",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2030,
+      "time_basis": "annual",
+      "value": 6984905249.686273,
+      "value_raw": "6984905249.686273",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2030",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2030].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2031",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2031",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2031,
+      "time_basis": "annual",
+      "value": 6123762803.0,
+      "value_raw": "6123762803",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2031",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2031, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2031",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2031",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2031,
+      "time_basis": "annual",
+      "value": 7018646642.922077,
+      "value_raw": "7018646642.922077",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2031",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2031].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2032",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2032",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2032,
+      "time_basis": "annual",
+      "value": 6158122935.0,
+      "value_raw": "6158122935",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2032",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2032, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2032",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2032",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2032,
+      "time_basis": "annual",
+      "value": 7050868168.878946,
+      "value_raw": "7050868168.878946",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2032",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2032].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2033",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2033",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2033,
+      "time_basis": "annual",
+      "value": 6189028903.0,
+      "value_raw": "6189028903",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2033",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2033, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2033",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2033",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2033,
+      "time_basis": "annual",
+      "value": 7080321728.574486,
+      "value_raw": "7080321728.574486",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2033",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2033].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2034",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2034",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2034,
+      "time_basis": "annual",
+      "value": 6217756724.0,
+      "value_raw": "6217756724",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2034",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2034, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2034",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2034",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2034,
+      "time_basis": "annual",
+      "value": 7107725250.240143,
+      "value_raw": "7107725250.240143",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2034",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2034].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_adjusted_cy2035",
+      "label": "Current-law FUTA revenue, adjusted, calendar 2035",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 6245556391.0,
+      "value_raw": "6245556391",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2035",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "calendar_year=2035, adjusted_baseline_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "baseline_revenue_unadjusted_cy2035",
+      "label": "Current-law FUTA revenue, unadjusted model output, calendar 2035",
+      "world": "baseline",
+      "metric": "tax_liability",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 7133790605.786127,
+      "value_raw": "7133790605.786127",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "2035",
+        "wage_base": "$7,000 (current law)",
+        "net_rate": "0.6% flat; credit-reduction surcharges not included",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "program": "futa",
+        "basis": "forecast",
+        "basis_note": "the model's current-law projection"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "results[year=2035].baseline_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_adjusted_cy2026_2035",
+      "label": "Additional FUTA revenue, adjusted (headline), ten-year total, calendar 2026-2035",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 251088911579.0,
+      "value_raw": "251088911579",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "CY2026-CY2035",
+        "window": "2026-2035",
+        "window_kind": "total",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "derivation": "sum of the file's ten annual figures; the page's TEN_YEAR_ADJUSTED (frontend/lib/data.ts) sums the same series unrounded, 251088911579.81, printed as $251.1B",
+        "file": "the page builds its CSV download from frontend/lib/results.json and frontend/lib/adjustments.json; frontend/__tests__/data.test.ts asserts it is this file byte for byte",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "analysis/futa_wage_base_estimates.csv",
+        "sha256": "e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "field": "sum over calendar_year=2026..2035 of adjusted_additional_revenue_usd",
+        "computed_at": "2026-09-17T16:32:38-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "additional_revenue_unadjusted_cy2026_2035",
+      "label": "Additional FUTA revenue, unadjusted model output, ten-year total, calendar 2026-2035",
+      "world": "futa_base_43000_cpi_indexed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2035,
+      "time_basis": "annual",
+      "value": 317383963416.35486,
+      "value_raw": "317383963416.35486",
+      "normalization": "as printed",
+      "conditions": {
+        "calendar_year": "CY2026-CY2035",
+        "window": "2026-2035",
+        "window_kind": "total",
+        "net_rate": "0.6%",
+        "basis": "static",
+        "scope": "FUTA line only (state unemployment taxes not counted)",
+        "sign_convention": "positive = higher government revenue",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "derivation": "sum of the file's ten annual figures in year order, the page's TEN_YEAR_TOTAL (frontend/lib/data.ts), printed as $317.4B",
+        "program": "futa",
+        "basis_note": "static, no behavioural response, gross of any income or payroll tax offset"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "sum over results[year=2026..2035].additional_revenue_flat_06",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "futa_collections_model_unadjusted_fy2024",
+      "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2024 (the validation cards)",
+      "world": "baseline",
+      "metric": "tax_collections",
+      "unit_concept": "usd",
+      "period": 2024,
+      "time_basis": "fiscal_year",
+      "value": 7840065243.642772,
+      "value_raw": "7840065243.642772",
+      "normalization": "as printed",
+      "conditions": {
+        "fiscal_year": "FY2024 (October 2023 to September 2024)",
+        "basis": "forecast",
+        "prior_year_surcharge": "2023 statutory credit-reduction rates applied to the 2024 wage distribution (the dataset has no 2023 weights)",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "program": "futa",
+        "basis_note": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "validation[fiscal_year=2024].model_fiscal_year_basis",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "futa_collections_model_adjusted_fy2024",
+      "label": "FUTA revenue on a fiscal-year basis, adjusted, FY2024 (the page states it as a gap below IRS collections)",
+      "world": "baseline",
+      "metric": "tax_collections",
+      "unit_concept": "usd",
+      "period": 2024,
+      "time_basis": "fiscal_year",
+      "value": 6747188910.6393585,
+      "value_raw": "6747188910.6393585",
+      "normalization": "as printed",
+      "conditions": {
+        "fiscal_year": "FY2024 (October 2023 to September 2024)",
+        "basis": "forecast",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "prior_year_surcharge": "2023 statutory credit-reduction rates applied to the 2024 wage distribution (the dataset has no 2023 weights)",
+        "published_as": "the page reads this file and prints the gap to IRS gross collections in whole percent ('17% below in fiscal 2024 and 2025'); gap_even_split_covered_wages = -0.1701",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "program": "futa",
+        "basis_note": "flat 0.6% base tax for calendar 2024 plus the credit-reduction surcharge for calendar 2023, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/adjustments.json",
+        "sha256": "ebd2d43e12865e9f73265dd928ea23a22ef1e504066d327b669fd4d723423245",
+        "field": "validation[fiscal_year=2024].model_even_split_covered_wages",
+        "computed_at": "2026-09-16T23:35:18-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "futa_collections_model_unadjusted_fy2025",
+      "label": "FUTA revenue on a fiscal-year basis, unadjusted model output, FY2025 (the validation cards)",
+      "world": "baseline",
+      "metric": "tax_collections",
+      "unit_concept": "usd",
+      "period": 2025,
+      "time_basis": "fiscal_year",
+      "value": 8493387632.705948,
+      "value_raw": "8493387632.705948",
+      "normalization": "as printed",
+      "conditions": {
+        "fiscal_year": "FY2025 (October 2024 to September 2025)",
+        "basis": "forecast",
+        "prior_year_surcharge": "modeled",
+        "series": "unadjusted: model output, all wages, one wage base per worker",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "program": "futa",
+        "basis_note": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/results.json",
+        "sha256": "6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "field": "validation[fiscal_year=2025].model_fiscal_year_basis",
+        "computed_at": "2026-09-15",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    },
+    {
+      "key": "futa_collections_model_adjusted_fy2025",
+      "label": "FUTA revenue on a fiscal-year basis, adjusted, FY2025 (the page states it as a gap below IRS collections)",
+      "world": "baseline",
+      "metric": "tax_collections",
+      "unit_concept": "usd",
+      "period": 2025,
+      "time_basis": "fiscal_year",
+      "value": 7301920494.985943,
+      "value_raw": "7301920494.985943",
+      "normalization": "as printed",
+      "conditions": {
+        "fiscal_year": "FY2025 (October 2024 to September 2025)",
+        "basis": "forecast",
+        "series": "adjusted: FUTA-exempt employers' wages removed and the wage base applied per employer (analysis/futa_adjustments.py, CPS ASEC 2023-2025 employer fields); the page's headline series",
+        "prior_year_surcharge": "modeled",
+        "published_as": "the page reads this file and prints the gap to IRS gross collections in whole percent ('17% below in fiscal 2024 and 2025'); gap_even_split_covered_wages = -0.1680",
+        "tax": "FUTA",
+        "sign_convention": "level",
+        "program": "futa",
+        "basis_note": "flat 0.6% base tax for calendar 2025 plus the credit-reduction surcharge for calendar 2024, which employers pay with the fourth-quarter deposit the following January; built to sit beside IRS gross collections"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/futa-wage-base-dashboard",
+        "commit": "72e31379e3cd4be6465fd449293369df425e7e55",
+        "path": "frontend/lib/adjustments.json",
+        "sha256": "ebd2d43e12865e9f73265dd928ea23a22ef1e504066d327b669fd4d723423245",
+        "field": "validation[fiscal_year=2025].model_even_split_covered_wages",
+        "computed_at": "2026-09-16T23:35:18-04:00",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine_us": "2.2.1"
+        },
+        "dataset": "populace-us-2024-spm-20260915"
+      }
+    }
+  ]
+}

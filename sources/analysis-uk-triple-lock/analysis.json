@@ -1,0 +1,1666 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "uk/triple-lock",
+  "country": "UK",
+  "registry": {
+    "kind": "app",
+    "slug": "triple-lock",
+    "country_id": "uk"
+  },
+  "title": "The Burnham plan vs the triple lock",
+  "url": "https://policyengine.org/uk/triple-lock",
+  "published": "2026-10-16",
+  "owner": {
+    "author": "vahid-ahmadi"
+  },
+  "scope": "uk_wide",
+  "subject": "The fiscal saving from the Burnham plan for the State Pension (from April 2030, rises of at least the higher of CPI and 2.5%, topped up to keep the 2029-30 value relative to earnings) against the triple lock to 2039-40: its expected value over paths of prices and earnings and its range across reweightings, the saving on the OBR central and OBR-wedge paths, what it would have saved had it started in 2012 or 2017, and which households have less income, from full PolicyEngine UK runs.",
+  "search_terms": [
+    "triple lock cost",
+    "Burnham state pension plan",
+    "state pension uprating cost",
+    "triple lock alternatives",
+    "pensioner poverty triple lock",
+    "adjusted triple lock 2030 savings"
+  ],
+  "worlds": {
+    "burnham_2030": {
+      "policy": "uk_state_pension_adjusted_triple_lock_from_2030",
+      "description": "The Burnham plan: from April 2030 the basic and new State Pension rise by at least the higher of CPI and 2.5%, and by more where needed to keep their 2029-30 value relative to earnings; scored against the triple lock (current law), which applies to every earlier April under both rules."
+    },
+    "burnham_since_2012": {
+      "policy": "uk_state_pension_adjusted_triple_lock_replayed_from_2012",
+      "description": "The plan's rule replayed on published inputs from April 2012 (the same path from any April 2012 to 2015), against the triple lock as paid; the dashboard's 'If the Burnham plan had started earlier' section."
+    },
+    "burnham_since_2017": {
+      "policy": "uk_state_pension_adjusted_triple_lock_replayed_from_2017",
+      "description": "The plan's rule replayed on published inputs from April 2017 (the same path from any April 2016 to 2018), against the triple lock as paid; the scenario envelope's last-decade replay."
+    },
+    "earnings_link_instead_of_triple_lock": {
+      "policy": "uk_state_pension_earnings_link",
+      "description": "The Resolution Foundation's approximation of the plan: the basic and new State Pension uprated in line with earnings instead of by the triple lock, with no CPI or 2.5% floor; scored against the triple lock."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "ev_gross_fy2031",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2031-32",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2032,
+      "time_basis": "fiscal_year",
+      "value": -217230570.25019464,
+      "value_raw": "0.21723057025019463",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2031-32",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2031.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2032",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2032-33",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2033,
+      "time_basis": "fiscal_year",
+      "value": -850021418.4095707,
+      "value_raw": "0.8500214184095707",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2032-33",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2032.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2033",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2033-34",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2034,
+      "time_basis": "fiscal_year",
+      "value": -1968205830.921824,
+      "value_raw": "1.968205830921824",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2033-34",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2033.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2034",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2034-35",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": -3211813254.6700063,
+      "value_raw": "3.2118132546700062",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2035",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2035-36",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2036,
+      "time_basis": "fiscal_year",
+      "value": -4406755640.831539,
+      "value_raw": "4.406755640831539",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2035-36",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2035.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2036",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2036-37",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2037,
+      "time_basis": "fiscal_year",
+      "value": -5885093637.713373,
+      "value_raw": "5.885093637713373",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2036-37",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2036.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2037",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2037-38",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2038,
+      "time_basis": "fiscal_year",
+      "value": -7484298447.570207,
+      "value_raw": "7.484298447570207",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2037-38",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2037.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2038",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2038-39",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2039,
+      "time_basis": "fiscal_year",
+      "value": -9271202074.210602,
+      "value_raw": "9.271202074210603",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2038-39",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2038.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_fy2039",
+      "label": "Expected gross saving, Burnham plan vs triple lock, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -11136863655.051073,
+      "value_raw": "11.136863655051073",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.gross.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2031",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2031-32",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2032,
+      "time_basis": "fiscal_year",
+      "value": 156417504.22159922,
+      "value_raw": "0.15641750422159922",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2031-32",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2031.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2032",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2032-33",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2033,
+      "time_basis": "fiscal_year",
+      "value": 608885510.6364938,
+      "value_raw": "0.6088855106364938",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2032-33",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2032.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2033",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2033-34",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2034,
+      "time_basis": "fiscal_year",
+      "value": 1414229874.178762,
+      "value_raw": "1.414229874178762",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2033-34",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2033.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2034",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2034-35",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 2296590901.1592994,
+      "value_raw": "2.2965909011592993",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2035",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2035-36",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2036,
+      "time_basis": "fiscal_year",
+      "value": 3156720894.1896734,
+      "value_raw": "3.1567208941896734",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2035-36",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2035.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2036",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2036-37",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2037,
+      "time_basis": "fiscal_year",
+      "value": 4195554287.92699,
+      "value_raw": "4.19555428792699",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2036-37",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2036.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2037",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2037-38",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2038,
+      "time_basis": "fiscal_year",
+      "value": 5327184898.630032,
+      "value_raw": "5.327184898630032",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2037-38",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2037.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2038",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2038-39",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2039,
+      "time_basis": "fiscal_year",
+      "value": 6572734215.313287,
+      "value_raw": "6.572734215313287",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2038-39",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2038.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_net_fy2039",
+      "label": "Expected net saving, Burnham plan vs triple lock, 2039-40",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 7860994216.190747,
+      "value_raw": "7.860994216190747",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.net.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_lowest_reweighting_fy2039",
+      "label": "Lowest expected gross saving across the reweightings of the same full runs, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -7051185677.507401,
+      "value_raw": "7.0511856775074016",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "the same full runs reweighted (shift_dynamics.2001_2025.covid_excluded); the lowest of the six reweightings the Summary tab's 'by weighting' chart shows (dataHelpers.js SENSITIVITY_LABELS)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.sensitivities[\"shift_dynamics.2001_2025.covid_excluded\"].gross.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "ev_gross_highest_reweighting_fy2039",
+      "label": "Highest expected gross saving across the reweightings of the same full runs, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -12413230769.264679,
+      "value_raw": "12.413230769264679",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "the same full runs reweighted (shift_dynamics.2010_2025.published); the highest of the six reweightings the Summary tab's 'by weighting' chart shows (dataHelpers.js SENSITIVITY_LABELS)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.sensitivities[\"shift_dynamics.2010_2025.published\"].gross.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_gross_fy2034",
+      "label": "Gross saving on the OBR central forecast path, 2034-35",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": -664875682.2009432,
+      "value_raw": "0.6648756822009432",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.saving_bn.2034.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_net_fy2034",
+      "label": "Net saving on the OBR central forecast path, 2034-35",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 463548410.26550275,
+      "value_raw": "0.46354841026550275",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.saving_bn.2034.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "obr_wedge_gross_fy2034",
+      "label": "Gross saving on the OBR-wedge path, 2034-35",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": -3166534783.5759687,
+      "value_raw": "3.166534783575969",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "one path: the central path, with the triple lock paying the OBR long-term economic determinants' 'Triple lock' row (March 2026)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.obr_wedge.run.saving_bn.2034.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "obr_wedge_net_fy2034",
+      "label": "Net saving on the OBR-wedge path, 2034-35",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 2272647263.687645,
+      "value_raw": "2.272647263687645",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "one path: the central path, with the triple lock paying the OBR long-term economic determinants' 'Triple lock' row (March 2026)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.obr_wedge.run.saving_bn.2034.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_gross_fy2039",
+      "label": "Gross saving on the OBR central forecast path, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -864839483.8525916,
+      "value_raw": "0.8648394838525917",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.saving_bn.2039.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_net_fy2039",
+      "label": "Net saving on the OBR central forecast path, 2039-40",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 623953294.6522104,
+      "value_raw": "0.6239532946522104",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.saving_bn.2039.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "obr_wedge_gross_fy2039",
+      "label": "Gross saving on the OBR-wedge path, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -10292565051.193663,
+      "value_raw": "10.292565051193662",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "one path: the central path, with the triple lock paying the OBR long-term economic determinants' 'Triple lock' row (March 2026)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.obr_wedge.run.saving_bn.2039.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "obr_wedge_net_fy2039",
+      "label": "Net saving on the OBR-wedge path, 2039-40",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 7276094234.114907,
+      "value_raw": "7.2760942341149075",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "one path: the central path, with the triple lock paying the OBR long-term economic determinants' 'Triple lock' row (March 2026)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.obr_wedge.run.saving_bn.2039.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_plus_half_gross_fy2034",
+      "label": "Expected gross saving with earnings growth +0.5 points a year from 2031, 2034-35",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": -3530567992.0874047,
+      "value_raw": "3.5305679920874047",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "expected value over the same paths with calendar earnings growth +0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_plus_0_5pp.scenario_path_set.gross.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_plus_half_net_fy2034",
+      "label": "Expected net saving with earnings growth +0.5 points a year from 2031, 2034-35",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 2521770072.8587217,
+      "value_raw": "2.521770072858722",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "expected value over the same paths with calendar earnings growth +0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_plus_0_5pp.scenario_path_set.net.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_plus_half_gross_fy2039",
+      "label": "Expected gross saving with earnings growth +0.5 points a year from 2031, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -11032301979.859085,
+      "value_raw": "11.032301979859085",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "expected value over the same paths with calendar earnings growth +0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_plus_0_5pp.scenario_path_set.gross.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_plus_half_net_fy2039",
+      "label": "Expected net saving with earnings growth +0.5 points a year from 2031, 2039-40",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 7739533490.641373,
+      "value_raw": "7.739533490641373",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "expected value over the same paths with calendar earnings growth +0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_plus_0_5pp.scenario_path_set.net.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_minus_half_gross_fy2034",
+      "label": "Expected gross saving with earnings growth -0.5 points a year from 2031, 2034-35",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": -2795002041.844587,
+      "value_raw": "2.7950020418445867",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "expected value over the same paths with calendar earnings growth -0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_minus_0_5pp.scenario_path_set.gross.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_minus_half_net_fy2034",
+      "label": "Expected net saving with earnings growth -0.5 points a year from 2031, 2034-35",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 1998290655.207842,
+      "value_raw": "1.998290655207842",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "expected value over the same paths with calendar earnings growth -0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_minus_0_5pp.scenario_path_set.net.2034.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_minus_half_gross_fy2039",
+      "label": "Expected gross saving with earnings growth -0.5 points a year from 2031, 2039-40",
+      "world": "burnham_2030",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": -10438500443.470476,
+      "value_raw": "10.438500443470476",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "expected value over the same paths with calendar earnings growth -0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_minus_0_5pp.scenario_path_set.gross.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "earnings_minus_half_net_fy2039",
+      "label": "Expected net saving with earnings growth -0.5 points a year from 2031, 2039-40",
+      "world": "burnham_2030",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 7409692041.497155,
+      "value_raw": "7.409692041497156",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "expected value over the same paths with calendar earnings growth -0.5 points a year from 2031 (mean_path_scenarios)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "mean_path_scenarios.scenarios.earnings_minus_0_5pp.scenario_path_set.net.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "history_since_2012_gross_fy2026",
+      "label": "Gross saving in 2026-27 had the Burnham plan applied from April 2012",
+      "world": "burnham_since_2012",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -7253585729.199216,
+      "value_raw": "7.253585729199216",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "the plan's rule replayed on published September CPI and May-July earnings from April 2012 (any start from April 2012 to April 2015 gives the same path); April 2022's earnings leg suspended under both rules, as in law"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "trajectories.history.groups[0].model_years.saving_bn.2026.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "history_since_2012_net_fy2026",
+      "label": "Net saving in 2026-27 had the Burnham plan applied from April 2012",
+      "world": "burnham_since_2012",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": 5239332032.375046,
+      "value_raw": "5.239332032375046",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2026-27",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "the plan's rule replayed on published September CPI and May-July earnings from April 2012 (any start from April 2012 to April 2015 gives the same path); April 2022's earnings leg suspended under both rules, as in law"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "trajectories.history.groups[0].model_years.saving_bn.2026.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "replay_since_2017_gross_fy2026",
+      "label": "Gross saving in 2026-27 had the Burnham plan applied from April 2017",
+      "world": "burnham_since_2017",
+      "metric": "benefit_cost_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -5993873234.776714,
+      "value_raw": "5.993873234776714",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints the saving as a positive number of pounds billion (gross: the fall in basic and new State Pension spending); benefit_cost_change is stated positive = increase in spending, so a saving is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "geography": "UK",
+        "measure": "gross: the fall in basic and new State Pension spending",
+        "basis": "static",
+        "sign_convention": "positive = increase in State Pension spending",
+        "program": "state_pension",
+        "basis_note": "historical legal replay of April 2017 to 2026 on published inputs (the scenario envelope's last-decade replay); not a forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.last_decade_replay.counterfactual.model_years.saving_bn.2026.gross",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "replay_since_2017_net_fy2026",
+      "label": "Net saving in 2026-27 had the Burnham plan applied from April 2017",
+      "world": "burnham_since_2017",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": 4328832665.8718,
+      "value_raw": "4.328832665871801",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "conditions": {
+        "fy": "2026-27",
+        "geography": "UK",
+        "measure": "net: the gross saving less lower income tax and higher Pension Credit, Housing Benefit, council tax reduction and other benefits",
+        "basis": "static",
+        "sign_convention": "positive = gain to the Exchequer",
+        "program": "state_pension_with_tax_and_benefits",
+        "basis_note": "historical legal replay of April 2017 to 2026 on published inputs (the scenario envelope's last-decade replay); not a forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "scenario_envelope.last_decade_replay.counterfactual.model_years.saving_bn.2026.net",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "households_losing_share_fy2039",
+      "label": "Expected share of UK households with less income under the plan, 2039-40",
+      "world": "burnham_2030",
+      "metric": "share_losing",
+      "unit_concept": "share",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 0.26957605883007135,
+      "value_raw": "26.957605883007133",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "unit_of_count": "households",
+        "basis": "static",
+        "program": "state_pension",
+        "basis_note": "model-conditional expected value over a distribution of 50,000 paths of prices and earnings (monthly VAR(1) with bootstrap shocks, means shifted to the OBR March 2026 central path), estimated from a 160-slot stratified sample of 161 unique full PolicyEngine UK runs; provisional pre-Budget release under ruling (c)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "expected_value.estimates.primary.households_losing_pct.2039.mean",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_pensioner_absolute_poverty_ahc_triple_lock_fy2034",
+      "label": "Pensioners in absolute poverty after housing costs under the triple lock, OBR central forecast path, 2034-35",
+      "world": "baseline",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 0.12121166229248047,
+      "value_raw": "12.121166229248047",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "subgroup": "pensioners",
+        "housing_costs": "ahc",
+        "poverty_line": "absolute, as results.json names it (pensioners_absolute_ahc)",
+        "basis": "static",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.poverty_pct.triple_lock.2034.pensioners_absolute_ahc",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_pensioner_absolute_poverty_ahc_triple_lock_fy2039",
+      "label": "Pensioners in absolute poverty after housing costs under the triple lock, OBR central forecast path, 2039-40",
+      "world": "baseline",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 0.08789018630981446,
+      "value_raw": "8.789018630981445",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "subgroup": "pensioners",
+        "housing_costs": "ahc",
+        "poverty_line": "absolute, as results.json names it (pensioners_absolute_ahc)",
+        "basis": "static",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.poverty_pct.triple_lock.2039.pensioners_absolute_ahc",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_pensioner_absolute_poverty_ahc_burnham_fy2034",
+      "label": "Pensioners in absolute poverty after housing costs under the Burnham plan, OBR central forecast path, 2034-35",
+      "world": "burnham_2030",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2035,
+      "time_basis": "fiscal_year",
+      "value": 0.12154651641845704,
+      "value_raw": "12.154651641845703",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "fy": "2034-35",
+        "geography": "UK",
+        "subgroup": "pensioners",
+        "housing_costs": "ahc",
+        "poverty_line": "absolute, as results.json names it (pensioners_absolute_ahc)",
+        "basis": "static",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.poverty_pct.burnham_2030.2034.pensioners_absolute_ahc",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    },
+    {
+      "key": "central_pensioner_absolute_poverty_ahc_burnham_fy2039",
+      "label": "Pensioners in absolute poverty after housing costs under the Burnham plan, OBR central forecast path, 2039-40",
+      "world": "burnham_2030",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2040,
+      "time_basis": "fiscal_year",
+      "value": 0.08826981544494629,
+      "value_raw": "8.826981544494629",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "fy": "2039-40",
+        "geography": "UK",
+        "subgroup": "pensioners",
+        "housing_costs": "ahc",
+        "poverty_line": "absolute, as results.json names it (pensioners_absolute_ahc)",
+        "basis": "static",
+        "program": "state_pension",
+        "basis_note": "one path: the OBR March 2026 central forecast"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-triple-lock",
+        "commit": "5a6acc5a62d43cb00c61a41f99622b9ac2b51d9d",
+        "path": "dashboard/public/data/results.json",
+        "sha256": "e35c1fac84f7191c1eadf88426ffde50e75503a38090e55285aabba717ce8781",
+        "field": "central.run.poverty_pct.burnham_2030.2039.pensioners_absolute_ahc",
+        "computed_at": "2026-10-15T14:44:51+00:00",
+        "engine": {
+          "policyengine": "6.2.6",
+          "policyengine_uk": "2.125.1",
+          "policyengine_core": "3.33.0"
+        },
+        "dataset": "enhanced_frs_2024_25@1.58.0 (runtime sha256 5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6)"
+      }
+    }
+  ]
+}

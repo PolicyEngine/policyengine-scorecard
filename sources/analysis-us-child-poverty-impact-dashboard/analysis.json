@@ -1,0 +1,1352 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "us/child-poverty-impact-dashboard",
+  "country": "US",
+  "registry": {
+    "kind": "app",
+    "slug": "child-poverty-impact-dashboard",
+    "country_id": "us"
+  },
+  "title": "Child poverty impact dashboard",
+  "url": "https://policyengine.org/us/child-poverty-impact-dashboard",
+  "published": "2026-09-15",
+  "owner": {
+    "author": "david-trimmer"
+  },
+  "scope": "state",
+  "subject": "How federal and state tax and benefit reforms (Child Tax Credits, EITCs, child allowances, dependent exemptions, SNAP) would change child poverty, household incomes and government budgets in a chosen state. The page has no default reform and no static results: every figure is computed on demand for the reform and state a user picks. The figures pinned here are the dashboard's own scorecard of seven representative reforms for 2026 (analysis/reform_scores/results.json, scored in California or New York) and its Build P audit's California figure for restoring the 2021 Child Tax Credit.",
+  "search_terms": [
+    "state child tax credit child poverty effect",
+    "child allowance child poverty estimate",
+    "state EITC cost child poverty",
+    "Columbia CPSP state child poverty",
+    "Urban TRIM child poverty reform",
+    "restore 2021 expanded child tax credit California child poverty",
+    "Working Parents Tax Relief Act state estimate",
+    "California Young Child Tax Credit increase cost",
+    "CalEITC adjustment factor 100 percent cost",
+    "Empire State Child Credit children under 4 $2,000",
+    "New York dependent exemption tax expenditure"
+  ],
+  "worlds": {
+    "arpa_ctc_restored": {
+      "policy": "us_ctc_arpa_amounts_restored_under_17",
+      "description": "The dashboard's 'Restore 2021 expanded CTC' option in 2026: it sets only the ARPA amounts ($3,600 under 6, $3,000 older), full refundability and the ARPA phase-out (frontend/lib/reforms.ts federal_ctc_expanded; gov.irs.credits.ctc.amount.arpa, refundable.fully_refundable, phase_out.arpa.in_effect). With full refundability each child's refundable maximum is the larger of the base and ARPA amounts (ctc_refundable_maximum). The age limit stays at 17: ctc_qualifying_child uses the top threshold of gov.irs.credits.ctc.amount.base, 17 from 2022, so 17-year-olds are not covered, although the option's description says ages 6-17 (policyengine-us at 1.729.5, commit 03b804dd)."
+    },
+    "arpa_ctc_2021": {
+      "policy": "us_ctc_arpa_2021_design",
+      "description": "The American Rescue Plan Child Tax Credit design of 2021 as the producers model it: $3,600 per child under 6, $3,000 for children 6 to 17 (17-year-olds included), fully refundable. What each claim measures it against is in its baseline_policy (null: the law in force in the year the producer scores) and its conditions."
+    },
+    "child_allowance_3000": {
+      "policy": "us_universal_child_allowance_3000_under_18",
+      "description": "A federal cash allowance of $3,000 a year for every child under 18 with no income test (gov.contrib.ubi_center.basic_income, three age tiers all at $3,000, cutoff 18), added to 2026 law."
+    },
+    "wptra": {
+      "policy": "us_working_parents_tax_relief_act",
+      "description": "Rep. McDonald Rivet's Working Parents Tax Relief Act from 2026: the federal EITC credit percentage rises for each qualifying child under 4 (42.24 points with one child; 30.07 points per young child, up to 3, with two or more) and the phase-out rate rises 5 points per young child (gov.contrib.congress.mcdonald_rivet.working_parents_tax_relief_act). ITEP describes the same bill as raising the maximum credit by $5,500 per child under 4, for up to 3 children."
+    },
+    "ca_yctc_2000": {
+      "policy": "ca_young_child_tax_credit_2000",
+      "description": "California's Young Child Tax Credit maximum raised to $2,000 per return in 2026 (current law $1,189 in 2025, indexed)."
+    },
+    "ny_escc_under4_2000": {
+      "policy": "ny_empire_state_child_credit_under_4_2000",
+      "description": "New York's Empire State Child Credit for children under 4 raised from $1,000 (the 2025 budget's amount for 2025-2027) to $2,000 in 2026."
+    },
+    "ca_eitc_100": {
+      "policy": "ca_eitc_adjustment_factor_100",
+      "description": "The CalEITC adjustment factor (gov.states.ca.tax.income.credits.earned_income.adjustment.factor) raised from 85% to 100% in 2026."
+    },
+    "ny_dependent_exemption_repealed": {
+      "policy": "ny_dependent_exemption_repealed",
+      "description": "New York's $1,000 personal income tax exemption per dependent (Tax Law section 616) removed in 2026."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "arpa_ctc_cost_2026",
+      "label": "Net budget cost of restoring the 2021 (ARPA) Child Tax Credit amounts, California households, 2026 (dashboard scorecard, June 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -8809704043.35559,
+      "value_raw": "8809704043.35559",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_ctc_expanded",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[0].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "arpa_ctc_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from restoring the 2021 (ARPA) Child Tax Credit amounts, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -3.375764846801757,
+      "value_raw": "-0.03375764846801757",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_ctc_expanded",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[0].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "arpa_ctc_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from restoring the 2021 (ARPA) Child Tax Credit amounts, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -14.135828382243613,
+      "value_raw": "0.14135828382243612",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_ctc_expanded",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[0].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "arpa_ctc_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from restoring the 2021 (ARPA) Child Tax Credit amounts, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -1.3451728820800786,
+      "value_raw": "-0.013451728820800785",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_ctc_expanded",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[0].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "arpa_ctc_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by restoring the 2021 (ARPA) Child Tax Credit amounts, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -300940.0,
+      "value_raw": "300940.0",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_ctc_expanded",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[0].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "child_allowance_3000_cost_2026",
+      "label": "Net budget cost of a universal $3,000 child allowance (children under 18), California households, 2026 (dashboard scorecard, June 2026)",
+      "world": "child_allowance_3000",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -26744160256.0,
+      "value_raw": "26744160256.0",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "child_allowance_3000",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "child_allowance_3000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[1].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "child_allowance_3000_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from a universal $3,000 child allowance (children under 18), California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "child_allowance_3000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -6.817230224609375,
+      "value_raw": "-0.06817230224609375",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "child_allowance_3000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "child_allowance_3000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[1].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "child_allowance_3000_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from a universal $3,000 child allowance (children under 18), California, 2026 (dashboard scorecard, June 2026)",
+      "world": "child_allowance_3000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -28.54677410028181,
+      "value_raw": "0.2854677410028181",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "child_allowance_3000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "child_allowance_3000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[1].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "child_allowance_3000_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from a universal $3,000 child allowance (children under 18), California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "child_allowance_3000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -2.776607513427734,
+      "value_raw": "-0.02776607513427734",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "child_allowance_3000",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "child_allowance_3000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[1].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "child_allowance_3000_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by a universal $3,000 child allowance (children under 18), California, 2026 (dashboard scorecard, June 2026)",
+      "world": "child_allowance_3000",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -607736.75,
+      "value_raw": "607736.75",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "child_allowance_3000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "child_allowance_3000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[1].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "wptra_cost_2026",
+      "label": "Net budget cost of the Working Parents Tax Relief Act, California households, 2026 (dashboard scorecard, June 2026)",
+      "world": "wptra",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -2400731391.718506,
+      "value_raw": "2400731391.718506",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_working_parents_tax_relief",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "wptra"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[2].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "wptra_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from the Working Parents Tax Relief Act, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "wptra",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -1.4185485839843748,
+      "value_raw": "-0.014185485839843748",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_working_parents_tax_relief",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "wptra"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[2].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "wptra_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from the Working Parents Tax Relief Act, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "wptra",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -5.940093651391528,
+      "value_raw": "0.05940093651391528",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_working_parents_tax_relief",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "wptra"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[2].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "wptra_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from the Working Parents Tax Relief Act, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "wptra",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.6164207458496107,
+      "value_raw": "-0.006164207458496107",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_working_parents_tax_relief",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "wptra"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[2].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "wptra_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by the Working Parents Tax Relief Act, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "wptra",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -126459.640625,
+      "value_raw": "126459.640625",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "federal_working_parents_tax_relief",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "wptra"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[2].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_yctc_2000_cost_2026",
+      "label": "Net budget cost of raising California's Young Child Tax Credit to $2,000, California households, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_yctc_2000",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -330901077.3715668,
+      "value_raw": "330901077.3715668",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_ctc_2000",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "ca_yctc_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[3].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_yctc_2000_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from raising California's Young Child Tax Credit to $2,000, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ca_yctc_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.16907501220702892,
+      "value_raw": "-0.0016907501220702892",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ca_yctc_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[3].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_yctc_2000_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from raising California's Young Child Tax Credit to $2,000, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_yctc_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.7079922520517493,
+      "value_raw": "0.0070799225205174935",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "ca_yctc_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[3].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_yctc_2000_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from raising California's Young Child Tax Credit to $2,000, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ca_yctc_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.06751632690429887,
+      "value_raw": "-0.0006751632690429887",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ca_yctc_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[3].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_yctc_2000_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by raising California's Young Child Tax Credit to $2,000, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_yctc_2000",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -15072.73046875,
+      "value_raw": "15072.73046875",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "ca_yctc_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[3].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_escc_under4_2000_cost_2026",
+      "label": "Net budget cost of raising New York's Empire State Child Credit for children under 4 to $2,000, New York households, 2026 (dashboard scorecard, June 2026)",
+      "world": "ny_escc_under4_2000",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -744249834.746376,
+      "value_raw": "744249834.746376",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_ctc_2000",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "ny_escc_under4_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[4].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_escc_under4_2000_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from raising New York's Empire State Child Credit for children under 4 to $2,000, New York, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ny_escc_under4_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.45414161682128806,
+      "value_raw": "-0.004541416168212881",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ny_escc_under4_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[4].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_escc_under4_2000_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from raising New York's Empire State Child Credit for children under 4 to $2,000, New York, 2026 (dashboard scorecard, June 2026)",
+      "world": "ny_escc_under4_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -2.0092329816951247,
+      "value_raw": "0.020092329816951245",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "ny_escc_under4_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[4].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_escc_under4_2000_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from raising New York's Empire State Child Credit for children under 4 to $2,000, New York, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ny_escc_under4_2000",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.1722564697265644,
+      "value_raw": "-0.0017225646972656439",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ny_escc_under4_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[4].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_escc_under4_2000_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by raising New York's Empire State Child Credit for children under 4 to $2,000, New York, 2026 (dashboard scorecard, June 2026)",
+      "world": "ny_escc_under4_2000",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -19224.458984375,
+      "value_raw": "19224.458984375",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_ctc_2000",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "ny_escc_under4_2000"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[4].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_eitc_100_cost_2026",
+      "label": "Net budget cost of raising the CalEITC adjustment factor from 85% to 100%, California households, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_eitc_100",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -97134188.40045166,
+      "value_raw": "97134188.40045166",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_eitc_100",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "ca_eitc_100"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[5].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_eitc_100_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from raising the CalEITC adjustment factor from 85% to 100%, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ca_eitc_100",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.054506301879880814,
+      "value_raw": "-0.0005450630187988081",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_eitc_100",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ca_eitc_100"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[5].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_eitc_100_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from raising the CalEITC adjustment factor from 85% to 100%, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_eitc_100",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.22824212114618447,
+      "value_raw": "0.0022824212114618448",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_eitc_100",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "ca_eitc_100"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[5].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_eitc_100_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from raising the CalEITC adjustment factor from 85% to 100%, California, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ca_eitc_100",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -0.021289825439455012,
+      "value_raw": "-0.00021289825439455012",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_eitc_100",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ca_eitc_100"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[5].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ca_eitc_100_children_lifted_2026",
+      "label": "Children lifted out of SPM poverty by raising the CalEITC adjustment factor from 85% to 100%, California, 2026 (dashboard scorecard, June 2026)",
+      "world": "ca_eitc_100",
+      "metric": "poverty_count_change",
+      "unit_concept": "children_under_18",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -4859.244140625,
+      "value_raw": "4859.244140625",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints children_lifted, the weighted count of children in SPM poverty under current law and not under the reform, as a positive number; poverty_count_change is stated positive = more people in poverty, so it is negative",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ca_eitc_100",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "count_basis": "gross: children in poverty under current law who are not under the reform; the file prints no count of children newly in poverty",
+        "sign_convention": "positive = more people in poverty",
+        "program": "ca_eitc_100"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[5].res.dashboard.children_lifted",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/CA.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_dependent_exemption_cost_2026",
+      "label": "Net budget cost of eliminating New York's dependent exemption, New York households, 2026 (dashboard scorecard, June 2026)",
+      "world": "ny_dependent_exemption_repealed",
+      "metric": "revenue_change",
+      "unit_concept": "usd",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 265890931.5627365,
+      "value_raw": "-265890931.5627365",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints annual_cost = -total_budgetary_impact (positive = costs money; score_reforms.py summarize_dashboard); revenue_change is stated positive = higher government revenue, so a cost is negative",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_dependent_exemption_eliminate",
+        "concept": "change in federal income tax plus state income tax minus household benefits for the state's households (scripts/modal_cpid_endpoint.py total_budgetary_impact)",
+        "sign_convention": "positive = higher government revenue",
+        "program": "ny_dependent_exemption"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[6].res.dashboard.annual_cost",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_dependent_exemption_child_poverty_pp_2026",
+      "label": "Change in the child SPM poverty rate from eliminating New York's dependent exemption, New York, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ny_dependent_exemption_repealed",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 0.18571090698242254,
+      "value_raw": "0.0018571090698242254",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_dependent_exemption_eliminate",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ny_dependent_exemption"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[6].res.dashboard.poverty_child_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_dependent_exemption_child_poverty_pct_2026",
+      "label": "Percent change in the child SPM poverty rate from eliminating New York's dependent exemption, New York, 2026 (dashboard scorecard, June 2026)",
+      "world": "ny_dependent_exemption_repealed",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percent",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 0.8216302262305856,
+      "value_raw": "-0.008216302262305856",
+      "normalization": "fraction x 100 -> percent",
+      "sign": -1,
+      "sign_basis": "results.json prints child_poverty_rel_reduction = -(reform - baseline) / baseline, a reduction as a positive fraction; poverty_rate_change is stated positive = more poverty, so a reduction is negative",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_dependent_exemption_eliminate",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "relative_percent",
+        "sign_convention": "positive = increase in poverty (relative to the current-law rate)",
+        "program": "ny_dependent_exemption"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[6].res.dashboard.child_poverty_rel_reduction",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "ny_dependent_exemption_all_poverty_pp_2026",
+      "label": "Change in the all-ages SPM poverty rate from eliminating New York's dependent exemption, New York, 2026, percentage points (dashboard scorecard, June 2026)",
+      "world": "ny_dependent_exemption_repealed",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": 0.07890892028808438,
+      "value_raw": "0.0007890892028808438",
+      "normalization": "fraction x 100 -> percent",
+      "conditions": {
+        "geography": "New York",
+        "year": "2026",
+        "basis": "static",
+        "source_file_scenario": "ny_dependent_exemption_eliminate",
+        "poverty_measure": "SPM",
+        "population": "all persons",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "ny_dependent_exemption"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/reform_scores/results.json",
+        "sha256": "b3066c11ca45a7e366cb7ef88ca8463f9ae6f97031f56eaa6883a92da32a576b",
+        "field": "rows[6].res.dashboard.poverty_all_delta",
+        "computed_at": "2026-06-25T16:43:04-04:00",
+        "engine": {
+          "policyengine-us": "~1.729.5"
+        },
+        "dataset": "hf://policyengine/policyengine-us-data/states/NY.h5 (per-state calibrated CPS file, loaded without a revision, so the file version is not recoverable; the backend used these files from 2026-05-29, 6bd1bf5, to 2026-07-07, 2d26cac, then a sparse Populace pin, 053baf6c, until Microcosm Build P on 2026-08-20, a4dce6a)",
+        "note": "results.json records no run time, engine or dataset. score_reforms.py posts each scenario to the deployed Modal endpoint, not the repository pin: analysis/reform_scores/SWEEP.md at the same commit (0525a73) says the deployed endpoint was 'behind the repo pin (1.739.4)', predates 1.731.0, and labels it about 1.729.5 (the pin moved to 1.742.0 on 24 June). results.json's New York dependent-exemption row equals sweep/1.729.5.json's NY:ny_dependent_exemption to every digit, which dates that row; every row has seconds 0, so all seven were written from the same uncommitted cache, and the other six are taken to share the deployment. The engine is therefore that deployment, version not recorded, about 1.729.5. computed_at is the commit time of the file. The dashboard's About page says results predating its August 2026 dataset switch are not comparable with what the live page computes."
+      }
+    },
+    {
+      "key": "arpa_ctc_child_poverty_pp_2026_buildp",
+      "label": "Change in the child SPM poverty rate from restoring the 2021 (ARPA) Child Tax Credit amounts, California, 2026, percentage points (Build P audit, August 2026)",
+      "world": "arpa_ctc_restored",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2026,
+      "time_basis": "annual",
+      "value": -4.2,
+      "value_raw": "−4.2pp",
+      "normalization": "percent as printed",
+      "conditions": {
+        "geography": "California",
+        "year": "2026",
+        "basis": "static",
+        "poverty_measure": "SPM",
+        "population": "children under 18",
+        "change_type": "percentage_point",
+        "sign_convention": "positive = increase in poverty (reform rate minus current-law rate)",
+        "program": "arpa_ctc"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/child-poverty-impact-dashboard",
+        "commit": "d918ca2b84b65525743aaf30f4ce4e0af23922ab",
+        "path": "analysis/state_audit/ANALYSIS_BUILDP.md",
+        "sha256": "bd4b4bf4403e4301fb0c1209764d93fe5932b2f8323c22a88a6800d5e6caab35",
+        "field": "Standing caveats, dataset transition note: 'restore-2021-CTC in CA: −6.5pp child poverty on the sparse pin → −4.2pp on Build P'",
+        "computed_at": "2026-08-20T14:29:49-04:00",
+        "engine": {
+          "policyengine-us": "1.808.0"
+        },
+        "dataset": "populace-us-2024-buildp-acs-local-592ae5d6-20260819T020303Z (Microcosm Build P, per-state slices)",
+        "note": "A figure printed in the dashboard's Build P production audit (commit 8145950, 2026-08-20), which ran policyengine-us 1.808.0 on the Build P release the live page still serves (backend /healthz on 2026-10-21: policyengine-us 1.825.2, same dataset release). No results file records this run; computed_at is the audit's commit time."
+      }
+    }
+  ]
+}

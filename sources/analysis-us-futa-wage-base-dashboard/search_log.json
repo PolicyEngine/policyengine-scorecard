@@ -1,0 +1,284 @@
+{
+  "schema": "comparables/search/1",
+  "searches": [
+    {
+      "date": "2026-10-21",
+      "kind": "backfill",
+      "by": "subfleet:20261021-113611-cmp-us-futa-wage-base-dashbo",
+      "producers": [
+        {
+          "producer": "cbo",
+          "result": "found",
+          "queries": [
+            "CBO option increase FUTA taxable wage base revenue estimate",
+            "site:cbo.gov \"Federal Unemployment Tax Act\" wage base option 2024 OR 2025 OR 2026",
+            "CBO estimate President's budget unemployment compensation proposals \"FUTA\" wage base site:cbo.gov",
+            "\"Expand FUTA Base\" CBO reestimate President's budget 2015 OR 2012 unemployment compensation",
+            "\"Unemployment Insurance Modernization and Recession Readiness Act\" FUTA wage base cost estimate CBO OR JCT",
+            "site:cbo.gov cost estimate \"Federal Unemployment Tax Act\" \"wage base\" increase bill",
+            "CBO baseline projections unemployment compensation 51316 unemployment pdf 2026",
+            "CBO February 2026 \"Revenue Projections, by Category\" 51138 xlsx"
+          ],
+          "checked": [
+            "https://www.cbo.gov/budget-options/2018/54809",
+            "https://www.cbo.gov/system/files/2019-06/54667-budgetoptions-2.pdf",
+            "https://www.cbo.gov/budget-options/2016/52270",
+            "https://www.cbo.gov/system/files/2018-09/52142-budgetoptions2.pdf",
+            "https://www.cbo.gov/budget-options/2014/49644",
+            "https://www.cbo.gov/budget-options/2013/44815",
+            "https://www.cbo.gov/system/files/2020-03/56253-2016-03-29-unemployment.pdf",
+            "https://www.cbo.gov/system/files/2020-03/56253-2015-03-12-unemployment.pdf",
+            "https://www.cbo.gov/publication/60776",
+            "https://www.cbo.gov/system/files/2025-01/60776-unemployment-insurance.pdf",
+            "https://www.cbo.gov/system/files/2025-01/60776-data.xlsx",
+            "https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx",
+            "https://www.cbo.gov/system/files/2024-12/60557-budget-options.pdf"
+          ],
+          "claims": [
+            "cbo_option_2018_futa_base_fy2026",
+            "cbo_option_2018_futa_base_fy2027",
+            "cbo_option_2018_futa_base_fy2028",
+            "cbo_option_2018_futa_base_fy2019_2028",
+            "cbo_option_2016_futa_base_fy2026",
+            "cbo_option_2016_futa_base_fy2017_2026",
+            "cbo_jan2025_futa_revenues_fy2025",
+            "cbo_jan2025_futa_revenues_fy2026",
+            "cbo_jan2025_futa_revenues_fy2027",
+            "cbo_jan2025_futa_revenues_fy2028",
+            "cbo_jan2025_futa_revenues_fy2029",
+            "cbo_jan2025_futa_revenues_fy2030",
+            "cbo_jan2025_futa_revenues_fy2031",
+            "cbo_jan2025_futa_revenues_fy2032",
+            "cbo_jan2025_futa_revenues_fy2033",
+            "cbo_jan2025_futa_revenues_fy2034",
+            "cbo_jan2025_futa_revenues_fy2035"
+          ],
+          "note": "Staged: CBO's two most recent FUTA wage-base options (December 2016 and December 2018: $40,000, wage-indexed, net rate 0.167%, state taxes counted), the years they share with the dashboard (2026-2028) and their ten-year totals; and the January 2025 baseline's FUTA revenues for FY2025-FY2035, FY2025 compared with the dashboard's fiscal-year validation figure. Not staged: CBO's estimate of the President's FY2017 budget ('Expand FUTA Base', -$1,060 million over 2017-2026; Treasury describes the proposal as a $40,000 base from 2018) is estimated after the budget's permanent FUTA surtax (its footnote c), a baseline scorecard_db/baselines.py does not register, so harvest rule 7 holds it out; the 2013 and 2014 options ($14,000 base, net rate 0.33%) and CBO's estimates of the FY2012-FY2016 budgets cover windows that end before 2026. The December 2024 options volume has no FUTA option, nor do the December 2020 and 2022 volumes; no CBO cost estimate of a bill raising the FUTA base was found. CBO's February 2026 revenue projections show only a combined unemployment-insurance line (state and federal), so the January 2025 UI report's FUTA series is the latest FUTA-only projection. All cbo.gov pages were read through Wayback Machine captures (cbo.gov blocks scripted fetches)."
+        },
+        {
+          "producer": "jct",
+          "result": "none_found",
+          "queries": [
+            "site:jct.gov FUTA wage base increase estimated revenue effects",
+            "Joint Committee on Taxation \"Estimated Budget Effects of the Revenue Provisions Contained in the President's\" budget proposal FUTA unemployment",
+            "jct.gov \"FUTA\" \"wage base\" estimated revenue effects JCX"
+          ],
+          "checked": [
+            "https://www.jct.gov/getattachment/0d9fc4f5-abc6-4579-b58e-1c77f770796f/x-15-16-4902.pdf",
+            "https://www.jct.gov/getattachment/3f1f8ba9-c73f-4093-874a-89e651ac5b60/x-50-15-4739.pdf"
+          ],
+          "claims": [],
+          "note": "JCT's revenue tables for the President's FY2012-FY2017 budgets (e.g. JCX-15-16, JCX-50-15) print the FUTA base proposals with the footnote 'Estimate provided by the Congressional Budget Office'; those are CBO's estimates, logged under cbo. No JCT estimate of its own and no JCT score of a bill raising the FUTA base was found."
+        },
+        {
+          "producer": "tpc",
+          "result": "none_found",
+          "queries": [
+            "site:taxpolicycenter.org FUTA wage base",
+            "TaxVox unemployment insurance taxable wage base raise $7,000 FUTA",
+            "\"federal unemployment\" tax wage base increase revenue estimate (taxpolicycenter.org)",
+            "Tax Proposals in the Budget FUTA wage base $40,000"
+          ],
+          "checked": [
+            "https://www.urban.org/sites/default/files/publication/26931/1001524-Tax-Proposals-in-the-Budget.PDF"
+          ],
+          "claims": [],
+          "note": "TPC's 'Tax Proposals in the 2012 Budget' (March 2011) restates Treasury's estimate of the FY2012 proposal ($15,000 base; '$46 billion' over 2012-2021); it is not TPC's own estimate and its window ends in 2021. TPC's payroll-tax briefing pages give total unemployment-insurance receipts, not FUTA."
+        },
+        {
+          "producer": "pwbm",
+          "result": "none_found",
+          "queries": [
+            "site:budgetmodel.wharton.upenn.edu unemployment insurance FUTA",
+            "\"Federal Unemployment Tax\" OR FUTA Penn Wharton Budget Model",
+            "PWBM unemployment insurance trust fund payroll tax wage base"
+          ],
+          "checked": [
+            "https://budgetmodel.wharton.upenn.edu/p/2024-04-22-policy-options-for-reducing-the-federal-debt-spring-2024/"
+          ],
+          "claims": [],
+          "note": "PWBM's debt-reduction options and expenditure modules have no FUTA option or FUTA revenue figure."
+        },
+        {
+          "producer": "budget_lab",
+          "result": "found",
+          "queries": [
+            "site:budgetlab.yale.edu FUTA unemployment wage base",
+            "\"Budget Lab\" FUTA wage base estimate indexing revenue 2026-2035",
+            "\"Federal Unemployment Tax Act\" Budget Lab Yale"
+          ],
+          "checked": [
+            "https://budgetlab.yale.edu/research/budgetary-effects-federal-unemployment-tax-act-reform",
+            "https://budgetlab.yale.edu/sites/default/files/2025-11/TBL-FUTA-20251120.pdf",
+            "https://www.niskanencenter.org/broaden-the-base-lower-the-improper-payment-rates/"
+          ],
+          "claims": [
+            "budget_lab_base_14000_no_index_cy2026",
+            "budget_lab_base_14000_no_index_cy2027",
+            "budget_lab_base_14000_no_index_cy2028",
+            "budget_lab_base_14000_no_index_cy2029",
+            "budget_lab_base_14000_no_index_cy2030",
+            "budget_lab_base_14000_no_index_cy2031",
+            "budget_lab_base_14000_no_index_cy2032",
+            "budget_lab_base_14000_no_index_cy2033",
+            "budget_lab_base_14000_no_index_cy2034",
+            "budget_lab_base_14000_no_index_cy2035",
+            "budget_lab_base_14000_no_index_cy2026_2035",
+            "budget_lab_base_14000_cpi_indexed_cy2026",
+            "budget_lab_base_14000_cpi_indexed_cy2027",
+            "budget_lab_base_14000_cpi_indexed_cy2028",
+            "budget_lab_base_14000_cpi_indexed_cy2029",
+            "budget_lab_base_14000_cpi_indexed_cy2030",
+            "budget_lab_base_14000_cpi_indexed_cy2031",
+            "budget_lab_base_14000_cpi_indexed_cy2032",
+            "budget_lab_base_14000_cpi_indexed_cy2033",
+            "budget_lab_base_14000_cpi_indexed_cy2034",
+            "budget_lab_base_14000_cpi_indexed_cy2035",
+            "budget_lab_base_14000_cpi_indexed_cy2026_2035",
+            "budget_lab_base_14000_wage_indexed_cy2026",
+            "budget_lab_base_14000_wage_indexed_cy2027",
+            "budget_lab_base_14000_wage_indexed_cy2028",
+            "budget_lab_base_14000_wage_indexed_cy2029",
+            "budget_lab_base_14000_wage_indexed_cy2030",
+            "budget_lab_base_14000_wage_indexed_cy2031",
+            "budget_lab_base_14000_wage_indexed_cy2032",
+            "budget_lab_base_14000_wage_indexed_cy2033",
+            "budget_lab_base_14000_wage_indexed_cy2034",
+            "budget_lab_base_14000_wage_indexed_cy2035",
+            "budget_lab_base_14000_wage_indexed_cy2026_2035",
+            "budget_lab_baseline_futa_revenue_cy2026_2035"
+          ],
+          "note": "'Budgetary effects of FUTA reform' (published November 20, 2025; a private analysis for the Niskanen Center dated August 4, 2025) scores bases of $8,000 to $14,000 under three indexing rules, calendar 2026-35, net of an income-tax offset. Staged: the $14,000 rows of Appendix Table 1 (the nearest to the dashboard's $43,000) under each indexing rule, and footnote 1's decade baseline. Not staged: the $8,000-$13,000 rows and Table 1, which rounds the same windows. The Niskanen Center's 'Broaden the base, lower the (improper payment) rates' (Will Raderman, November 20, 2025) restates Table 1."
+        },
+        {
+          "producer": "tax_foundation",
+          "result": "none_found",
+          "queries": [
+            "site:taxfoundation.org FUTA wage base federal unemployment tax raise revenue",
+            "Options for Reforming America's Tax Code unemployment tax FUTA"
+          ],
+          "checked": [
+            "https://taxfoundation.org/wp-content/uploads/2026/07/Options3_book_7-22.pdf"
+          ],
+          "claims": [],
+          "note": "Options for Reforming America's Tax Code 3.0 describes FUTA but has no FUTA option; its payroll options are Social Security and Medicare."
+        },
+        {
+          "producer": "urban",
+          "result": "none_found",
+          "queries": [
+            "site:urban.org FUTA wage base unemployment insurance financing Vroman",
+            "Urban Institute raise FUTA taxable wage base revenue",
+            "TRIM3 unemployment insurance tax FUTA simulation"
+          ],
+          "checked": [
+            "https://www.urban.org/sites/default/files/publication/26716/412450-Unemployment-Insurance-and-the-Great-Recession.PDF",
+            "https://www.urban.org/sites/default/files/publication/26046/901499-Unemployment-Insurance-Performance-and-Trust-Fund-Restoration.PDF"
+          ],
+          "claims": [],
+          "note": "Vroman (2011) sizes the federal taxable payroll under a $15,000 base in 2014 and the revenue-neutral rate, with no revenue estimate; TRIM3 has no FUTA tax module."
+        },
+        {
+          "producer": "cbpp",
+          "result": "none_found",
+          "queries": [
+            "site:cbpp.org FUTA taxable wage base raise unemployment insurance financing",
+            "site:cbpp.org federal unemployment tax wage base $7,000 index revenue billion"
+          ],
+          "checked": [
+            "https://www.cbpp.org/research/rebuilding-the-unemployment-insurance-system-a-deficit-neutral-plan-that-limits-tax"
+          ],
+          "claims": [],
+          "note": "CBPP's 2011 plan pairs a higher, wage-indexed base with a rate cut designed to be deficit neutral and gives no revenue estimate of the base increase."
+        },
+        {
+          "producer": "itep",
+          "result": "none_found",
+          "queries": [
+            "site:itep.org FUTA federal unemployment tax wage base",
+            "ITEP unemployment insurance tax wage base $7,000 regressive raise"
+          ],
+          "checked": [],
+          "claims": [],
+          "note": "ITEP's federal analyses include unemployment-insurance taxes in baseline distributions only; no estimate of a FUTA base change."
+        },
+        {
+          "producer": "cpsp",
+          "result": "none_found",
+          "queries": [
+            "site:povertycenter.columbia.edu unemployment insurance taxable wage base raise revenue",
+            "\"FUTA\" OR \"Federal Unemployment Tax\" Center on Poverty and Social Policy Columbia"
+          ],
+          "checked": [],
+          "claims": [],
+          "note": "CPSP's work on unemployment insurance covers benefits and poverty, not FUTA financing."
+        },
+        {
+          "producer": "crfb",
+          "result": "none_found",
+          "queries": [
+            "site:crfb.org FUTA wage base $40,000 President's budget unemployment insurance",
+            "site:crfb.org FUTA federal unemployment tax"
+          ],
+          "checked": [
+            "https://crfb.org/sites/default/files/cbo_analysis_presidents_fy_2015_budget.pdf",
+            "https://www.crfb.org/sites/default/files/analysis_of_the_presidents_fy2016_budget.pdf",
+            "https://crfb.org/sites/default/files/analysis_of_cbo_pb_reest_fy_2016.pdf"
+          ],
+          "claims": [],
+          "note": "CRFB's analyses of the FY2015 and FY2016 budgets restate OMB's and CBO's lines for the unemployment-tax reform (e.g. '-$60 billion' OMB, '-$20 billion' CBO, rounded to $5 billion, windows ending 2024-2025); no CRFB estimate of its own."
+        },
+        {
+          "producer": "state_fiscal_note",
+          "result": "not_applicable",
+          "queries": [],
+          "checked": [],
+          "claims": [],
+          "note": "A federal tax; state fiscal notes apply to state and local analyses."
+        },
+        {
+          "producer": "academic",
+          "result": "none_found",
+          "queries": [
+            "Hamilton Project FUTA wage base revenue",
+            "nber/ssrn \"federal taxable wage base\" unemployment insurance revenue",
+            "Guo Johnston unemployment insurance tax base FUTA",
+            "O'Leary Wandner 2018 Upjohn FUTA wage base",
+            "NBER/SSRN/IZA unemployment insurance wage base simulation"
+          ],
+          "checked": [
+            "https://www.hamiltonproject.org/assets/legacy/files/downloads_and_links/Reforming_Unemployment_Insurance_for_the_Twenty-First_Century_Workforce.pdf"
+          ],
+          "claims": [],
+          "note": "No working paper or article from the last five years estimates the revenue from a higher FUTA base. Kletzer and Rosen (Hamilton Project, 2006) put a $45,000 base 'while maintaining the same tax rate', then a 0.8% net rate ('making the effective FUTA tax rate 0.8 percent', with the 0.2-point surtax), at '$8.7 billion in increased revenue', with no year stated, twenty years before the dashboard's window. Upjohn Institute pages (O'Leary and Wandner 2018) could not be read (Cloudflare 403, including Wayback)."
+        },
+        {
+          "producer": "open_search",
+          "result": "found_not_staged",
+          "queries": [
+            "raise FUTA wage base $43,000 revenue Searchlight Institute unemployment insurance",
+            "\"FUTA\" \"wage base\" increase revenue estimate billion over ten years proposal 2025",
+            "Treasury General Explanations \"FUTA wage base\" $40,000 revenue estimate unemployment insurance reform budget proposal",
+            "\"raise the FUTA wage base\" billion",
+            "\"federal unemployment tax\" \"taxable wage base\" \"over 10 years\" -cbo",
+            "Searchlight Raderman FUTA",
+            "tcf.org FUTA billion",
+            "NELP wage base billion"
+          ],
+          "checked": [
+            "https://home.treasury.gov/system/files/131/General-Explanations-FY2017.pdf",
+            "https://www.searchlightinstitute.org/research/dignity-in-looking-for-work-enhancing-unemployment-insurance-benefits-the-jfk-way/",
+            "https://www.niskanencenter.org/back-to-the-base-ics-how-taxable-wage-base-reforms-can-strengthen-unemployment-program-solvency/"
+          ],
+          "claims": [],
+          "note": "Treasury's own estimate of the FY2017 budget's 'Expand Federal Unemployment Tax Act (FUTA) base and reform FUTA credit reduction rules' ($40,000 base from 2018, wage-indexed, net rate to 0.167%): $7,113 million in FY2026 and $46,292 million over 2017-26 (General Explanations FY2017, printed page 269). The primary was read and hashed (sha256 2938824787071eb15506d0526c0cb0e6e034e7c9325a7ddbccfa0e3bd75f6ca7), but the row is estimated after the budget's permanent FUTA surtax ('reduce the net Federal UI tax from 0.8 percent (after the proposed permanent reenactment and extension of the FUTA surtax)'), a baseline scorecard_db/baselines.py does not register; harvest rule 7 holds it out until it is registered. Searchlight Institute (Will Raderman, October 8, 2026; read through its Wayback capture, web.archive.org/web/20261008154132) restates the dashboard: 'north of $250 billion could be raised over a 10-year period' (footnote 60 cites PolicyEngine), so it is not an external estimate; its '$59 billion over 10 years' for a wage-indexed $14,000 base restates the Budget Lab (footnote 58). The Niskanen Center's February 23, 2026 piece has no estimate. No other producer's own estimate was found."
+        }
+      ],
+      "results_pins": [
+        "PolicyEngine/futa-wage-base-dashboard@72e31379e3cd4be6465fd449293369df425e7e55:6b796506bfbb43fb6a86ce06b20b30287c5b2ea62bf7b1151e70053b36a8d20c",
+        "PolicyEngine/futa-wage-base-dashboard@72e31379e3cd4be6465fd449293369df425e7e55:e5c17882bbd7eae1854b222797e0ea2fa83a9b36392a17bb776e9e726e17ba7b",
+        "PolicyEngine/futa-wage-base-dashboard@72e31379e3cd4be6465fd449293369df425e7e55:ebd2d43e12865e9f73265dd928ea23a22ef1e504066d327b669fd4d723423245"
+      ]
+    }
+  ]
+}

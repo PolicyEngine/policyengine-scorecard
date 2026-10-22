@@ -1,0 +1,39 @@
+[
+  {
+    "id": "fuel-duty-different-policies",
+    "claims": [
+      "ifs_fuel_duty_5p_permanent_and_freeze_obr_inflation",
+      "ifs_fuel_duty_5p_permanent_and_freeze_barclays_inflation",
+      "rf_fuel_duty_gradual_reversal_cost_fy2028"
+    ],
+    "status": "concept_mismatch",
+    "explains_gap": false,
+    "cause": "Each figure scores a different fuel duty policy. IFS costs making the 5p cut permanent together with freezing fuel duties for a further year; the amended fuel duty rates note (22 May 2026) reverses the cut on 1 January and 1 March 2027 and records that Budget 2025 announced RPI uprating in future years, so the IFS policy also forgoes an uprating. IFS names no year, and the figures are staged as 2027-28 on that reading. RF costs steady rises that reverse the cut gradually, at over £1 billion in 2027-28 against current policy. The analysis costs a 5p cut for the whole of 2027-28 at 5p on each vehicle-owning household's modelled petrol and diesel litres, £2.18bn in every scenario (compute_policies); its separate PolicyEngine reform cutting PolicyEngine's 2027-28 rate of 59.25p by 5p gives the same £2.18bn (parameters.fuel_duty_exchequer_cost).",
+    "basis": [
+      {
+        "kind": "document",
+        "ref": "https://ifs.org.uk/system/files/2026-10/IFS_Green_Budget_2026_0.pdf#page=89"
+      },
+      {
+        "kind": "document",
+        "ref": "https://www.resolutionfoundation.org/app/uploads/2026/10/Hitting-the-buffers.pdf#page=32"
+      },
+      {
+        "kind": "document",
+        "ref": "https://www.gov.uk/government/publications/amended-fuel-duty-rates-for-2026-to-2027/amended-fuel-duty-rates-2026-to-2027"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/impact-iran-war-living-standards/blob/45592bb72bdb0e6f4bca0facd1cceb7996eea515/src/iran_impact/pipeline.py#L692-L700"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/impact-iran-war-living-standards/blob/45592bb72bdb0e6f4bca0facd1cceb7996eea515/src/iran_impact/pipeline.py#L570"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/impact-iran-war-living-standards/blob/45592bb72bdb0e6f4bca0facd1cceb7996eea515/dashboard/public/data/iran_impact_results.json"
+      }
+    ]
+  }
+]
