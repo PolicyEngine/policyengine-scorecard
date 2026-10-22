@@ -137,7 +137,17 @@ OPEN_FINDERS = ("open_search", "academic")
 BANNED_SOURCES = ("open_search", "academic", "policyengine")
 # Everything that makes a claim and an estimate the same quantity.
 IDENTITY_FIELDS = ("metric", "unit_concept", "period", "time_basis", "world")
-IDENTITY_CONDITIONS = ("basis", "program")
+IDENTITY_CONDITIONS = ("basis", "program", "prices")
+# conditions.prices: the price base of a money figure. Absent means cash
+# (nominal); a figure in a base year's prices is "real", and a producer that
+# does not say is "unstated", which is never the same quantity as an estimate.
+PRICE_BASES = ("cash", "real", "unstated")
+
+
+def _condition(row: dict, f: str):
+    value = (row.get("conditions") or {}).get(f)
+    return "cash" if f == "prices" and value is None else value
+
 
 # What makes a policyengine.org entry publish an estimate, and when it may say
 # it publishes none. The same rule is in policyengine-app-v2's
@@ -711,6 +721,10 @@ def _check_identity(row: dict, where: str, bases: tuple = BASES) -> list[str]:
         errors.append(f"{where}: conditions.basis must be one of {bases}")
     if not _SLUG.match(conditions.get("program", "")):
         errors.append(f"{where}: conditions.program must name the programme (a slug)")
+    prices = conditions.get("prices")
+    allowed_prices = PRICE_BASES if "unstated" in bases else ("cash", "real")
+    if prices is not None and prices not in allowed_prices:
+        errors.append(f"{where}: conditions.prices must be one of {allowed_prices}")
     fy = conditions.get("fy")
     if fy is not None:
         match = _FY.match(fy)
@@ -770,9 +784,7 @@ def _check_estimate(e: dict, where: str, world_keys: set) -> list[str]:
 
 def _same_quantity(claim: dict, estimate: dict) -> bool:
     return all(claim.get(f) == estimate.get(f) for f in IDENTITY_FIELDS) and all(
-        (claim.get("conditions") or {}).get(f)
-        == (estimate.get("conditions") or {}).get(f)
-        for f in IDENTITY_CONDITIONS
+        _condition(claim, f) == _condition(estimate, f) for f in IDENTITY_CONDITIONS
     )
 
 
@@ -1322,8 +1334,8 @@ def validate(
                     "a different quantity is not compared"
                 )
         for f in IDENTITY_CONDITIONS:
-            mine = (c.get("conditions") or {}).get(f)
-            theirs = (est.get("conditions") or {}).get(f)
+            mine = _condition(c, f)
+            theirs = _condition(est, f)
             if mine != theirs:
                 errors.append(
                     f"{where}: {f} {mine!r} differs from {est['key']}'s {theirs!r}; "
@@ -1371,9 +1383,7 @@ def validate(
             "compare_to",
         )
         if any(low.get(f) != high.get(f) for f in shared) or any(
-            (low.get("conditions") or {}).get(f)
-            != (high.get("conditions") or {}).get(f)
-            for f in IDENTITY_CONDITIONS
+            _condition(low, f) != _condition(high, f) for f in IDENTITY_CONDITIONS
         ):
             errors.append(
                 f"{name}: range_group {group}'s bounds measure different things"

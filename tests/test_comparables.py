@@ -499,6 +499,7 @@ EVASIONS = {
     "basis relabelled to net": lambda r: claim0(r)["conditions"].update(
         basis="post_behavioural"
     ),
+    "price base relabelled": lambda r: claim0(r)["conditions"].update(prices="real"),
     "programme relabelled": lambda r: claim0(r)["conditions"].update(
         program="another_programme"
     ),
@@ -1014,6 +1015,24 @@ def test_an_issue_basis_is_a_github_issue():
         )
 
     assert any("GitHub issue or pull URL" in e for e in mutate(f))
+
+
+def test_a_price_base_is_part_of_a_figures_identity():
+    def real(r):
+        claim0(r)["conditions"]["prices"] = "real"
+
+    assert any("prices 'real' differs" in e for e in mutate(real))
+    # cash is the default on both sides
+    assert mutate(lambda r: claim0(r)["conditions"].update(prices="cash")) == []
+    assert any(
+        "conditions.prices must be one of" in e
+        for e in mutate(
+            lambda r: claim0(r)["conditions"].update(prices="2025-26 prices")
+        )
+    )
+    record = synthetic(-100.0, -105.0)
+    record.analysis["pe_estimates"][0]["conditions"]["prices"] = "unstated"
+    assert any("conditions.prices must be one of" in e for e in errors_of(record))
 
 
 def test_an_unstated_basis_is_never_the_same_quantity():

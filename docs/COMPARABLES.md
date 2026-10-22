@@ -91,6 +91,7 @@ Each estimate in `pe_estimates` names its `world`, `metric`, `unit_concept`, `pe
   figure counts (`thirty_hours`, `both_schemes`, or `ny_dependent_exemption_ny_state_income_tax`
   for a state tax expenditure beside a net budget effect).
 
+A money figure in a base year's prices has `conditions.prices: real`; absent means cash.
 When `conditions.fy` names a fiscal year, `period` is its end year and `time_basis` is
 `fiscal_year`. Each estimate is stated in PolicyEngine's own orientation for its metric; when the
 results file prints it the other way round (a cost as a positive number), the estimate carries
@@ -149,7 +150,8 @@ mechanically where they can be:
   `conditions.sign_convention`, in words `scorecard_db/signs.py` reads. A compared change metric
   needs a convention that starts `positive =` and says one thing.
 - **The same identity as an estimate**: `metric`, `unit_concept`, `period`, `time_basis`,
-  `conditions.basis` and `conditions.program`, with the same `conditions.fy` rule. The basis is
+  `conditions.basis`, `conditions.program` and `conditions.prices` (`cash` when absent, `real`,
+  or `unstated` when the producer does not say), with the same `conditions.fy` rule. The basis is
   one word; a fuller account of it goes in `conditions.basis_note`. A claim whose producer does
   not say whether it allows for behaviour has basis `unstated`: it is never the same quantity as
   an estimate, so it can only sit beside one with a stated mismatch.
