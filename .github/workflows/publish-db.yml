@@ -2,7 +2,7 @@ name: publish db
 
 # Publishes the database CI built for each push to main to the
 # `scorecard-artifacts` bucket on the PE Supabase project, as <sha>.db.gz
-# (gzipped ~6 MB from ~58 MB: the project is on the free plan, 50 MB
+# (gzipped ~14 MB from ~196 MB: the project is on the free plan, 50 MB
 # per-object cap) and a moving latest.db.gz, so consumers fetch and gunzip
 # instead of rebuilding.
 #
@@ -37,9 +37,11 @@ name: publish db
 #
 # The artifact exists only if CI's pytest job got to its last step, so a
 # run whose pytest job failed or was cancelled publishes nothing, with a
-# notice. Any other CI conclusion still publishes, as it did: a newer push
-# cancels the older run, often after its pytest job has passed. Re-running
-# an older main CI run publishes its database again, as latest.db.gz too.
+# notice. Any other CI conclusion still publishes <sha>.db.gz, as it did: a
+# newer push cancels the older run, often after its pytest job has passed.
+# latest.db.gz moves only for the commit that is still main's tip when CI
+# completes (GITHUB_SHA, in a workflow_run run), so neither a cancelled run
+# nor a re-run of an older one rolls it back.
 #
 # Skips with a notice when the secrets are unset. A failed upload is a
 # warning, not a failed run: nothing in this repository reads the published
@@ -57,12 +59,6 @@ on:
 permissions:
   contents: read
 
-# One publish at a time, so two uploads of latest.db.gz never interleave. A
-# publish waiting behind a running one gives way to a newer one.
-concurrency:
-  group: publish-db
-  cancel-in-progress: false
-
 jobs:
   publish-db:
     name: publish db to supabase storage
@@ -71,6 +67,12 @@ jobs:
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.path == '.github/workflows/ci.yml'
+    # One publish at a time, so two uploads of latest.db.gz never interleave.
+    # A publish waiting behind a running one gives way to a newer one. On the
+    # job, not the workflow, so a run the guard skips never takes a place.
+    concurrency:
+      group: publish-db
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     # Listing and downloading another run's artifact takes actions: read,
     # and nothing else is needed: there is no checkout.
@@ -95,9 +97,11 @@ jobs:
           else
             echo "found=true" >> "$GITHUB_OUTPUT"
           fi
+      # Pinned to a commit, as uk-replay-results.yml's propose job pins its
+      # actions, because it runs beside the key.
       - name: Download it
         if: steps.find.outputs.found == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: scorecard-db-${{ github.event.workflow_run.head_sha }}
           run-id: ${{ github.event.workflow_run.id }}
@@ -113,7 +117,13 @@ jobs:
             exit 0
           fi
           gzip -9 -c scorecard.db > scorecard.db.gz
-          for name in "${CI_SHA}.db.gz" "latest.db.gz"; do
+          set -- "${CI_SHA}.db.gz"
+          if [ "$CI_SHA" = "$GITHUB_SHA" ]; then
+            set -- "$@" latest.db.gz
+          else
+            echo "::notice::main is at $GITHUB_SHA now, not $CI_SHA: latest.db.gz is left to the run for main's tip"
+          fi
+          for name in "$@"; do
             status=0
             curl -sf -X POST \
               "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \

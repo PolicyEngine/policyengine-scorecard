@@ -28,7 +28,10 @@ PUBLISH = WORKFLOWS / "publish-db.yml"
 FIND = "Find the database CI built"
 DOWNLOAD = "Download it"
 UPLOAD = "Publish it"
+# v4.3.0, the commit actions/download-artifact's v4 tag also names.
+DOWNLOAD_ACTION = "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093"
 SHA = "0123456789abcdef0123456789abcdef01234567"
+NEWER = "fedcba9876543210fedcba9876543210fedcba98"
 RUN_ID = "39698300855"
 REPOSITORY = "PolicyEngine/policyengine-scorecard"
 HOST = "secret-project-ref.supabase.co"
@@ -59,10 +62,9 @@ def test_it_runs_when_ci_completes_on_main():
     }
     assert ci[True]["push"] == {"branches": ["main"]}
     assert list(workflow()["jobs"]) == ["publish-db"]
-    assert workflow()["concurrency"] == {
-        "group": "publish-db",
-        "cancel-in-progress": False,
-    }
+    # On the job, so a run its guard skips never displaces a waiting publish.
+    assert "concurrency" not in workflow()
+    assert job()["concurrency"] == {"group": "publish-db", "cancel-in-progress": False}
 
 
 def test_it_is_the_only_workflow_run_workflow():
@@ -91,7 +93,8 @@ GUARD = {
 
 def guard_admits(run: dict, repository: str = REPOSITORY) -> bool:
     """The job's `if`, evaluated: a conjunction of equalities, each between
-    a field of the triggering run and a quoted literal or github.repository."""
+    a field of the triggering run and a quoted literal or github.repository.
+    GitHub compares strings ignoring case, and so does this."""
     condition = job()["if"]
     assert "||" not in condition and "!" not in condition
     context = {"github": {"repository": repository, "event": {"workflow_run": run}}}
@@ -106,7 +109,7 @@ def guard_admits(run: dict, repository: str = REPOSITORY) -> bool:
         return node
 
     clauses = [c.split("==") for c in condition.split("&&")]
-    return all(value(left) == value(right) for left, right in clauses)
+    return all(value(left).lower() == value(right).lower() for left, right in clauses)
 
 
 def ci_run(**changes) -> dict:
@@ -149,7 +152,7 @@ def test_it_downloads_what_ci_uploaded_for_that_commit():
     assert upload["with"]["name"] == "scorecard-db-${{ github.sha }}"
     assert upload["with"]["path"] == "data/scorecard.db"
     download = step(DOWNLOAD)
-    assert download["uses"] == "actions/download-artifact@v4"
+    assert download["uses"] == DOWNLOAD_ACTION
     assert download["with"] == {
         "name": "scorecard-db-${{ github.event.workflow_run.head_sha }}",
         "run-id": "${{ github.event.workflow_run.id }}",
@@ -176,9 +179,7 @@ def test_the_job_runs_no_package_code():
     """No checkout and no package manager or interpreter: what runs beside
     the key is actions/download-artifact and the runner image's gh, gzip
     and curl."""
-    assert [s["uses"] for s in job()["steps"] if "uses" in s] == [
-        "actions/download-artifact@v4"
-    ]
+    assert [s["uses"] for s in job()["steps"] if "uses" in s] == [DOWNLOAD_ACTION]
     commands = re.compile(
         r"\b(uvx?|pip3?|python3?|bun|bunx|npm|npx|node|make|bash|sh|source)\b"
         r"|\.github/scripts|\./"
@@ -272,6 +273,7 @@ def run_step(tmp_path, name, *, env=(), script=None, gh_count="1", status=0):
         "GITHUB_SERVER_URL": "https://github.com",
         "CI_RUN_ID": RUN_ID,
         "CI_SHA": SHA,
+        "GITHUB_SHA": SHA,
         "GH_TOKEN": "ghs_runtoken",
         "SUPABASE_URL": f"https://{HOST}",
         "SUPABASE_KEY": KEY,
@@ -362,6 +364,22 @@ def test_publish_uploads_the_commits_database_then_latest(tmp_path):
             "@scorecard.db.gz",
         ]
         assert gzip.decompress(bytes.fromhex(call["sent"])) == database
+
+
+def test_latest_waits_for_mains_tip(tmp_path):
+    """GITHUB_SHA in a workflow_run run is main's tip. When main has moved on
+    (a newer push cancelled this run, or an older run was re-run), the
+    commit's own copy is uploaded and latest.db.gz is not rolled back."""
+    result, calls, _, summary, _ = run_step(tmp_path, UPLOAD, env={"GITHUB_SHA": NEWER})
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == (
+        f"::notice::main is at {NEWER} now, not {SHA}: latest.db.gz is left "
+        f"to the run for main's tip\nuploaded scorecard-artifacts/{SHA}.db.gz\n"
+    )
+    assert [call["argv"][3].rsplit("/", 1)[1] for call in calls["curl"]] == [
+        f"{SHA}.db.gz"
+    ]
+    assert summary == ""
 
 
 def test_a_failed_upload_is_a_warning_and_never_prints_the_host(tmp_path):

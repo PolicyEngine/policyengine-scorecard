@@ -47,7 +47,15 @@ NEEDS_MORE: dict[str, dict[str, str]] = {}
 # takes actions: read. It has no checkout, so it needs no contents scope.
 PUBLISH_NEEDS = {"publish-db": {"actions": "read"}}
 
-PULL_REQUEST_EVENTS = {"pull_request", "pull_request_target"}
+# The events a pull request starts runs for: opening or updating it, a review
+# or review comment on it, and adding it to a merge queue.
+PULL_REQUEST_EVENTS = {
+    "pull_request",
+    "pull_request_target",
+    "pull_request_review",
+    "pull_request_review_comment",
+    "merge_group",
+}
 # The secrets a workflow that runs on pull requests may name: none. A debug
 # re-run of #215's pull-request CI (job 119587048984) evaluated a secret its
 # job named only in a skipped step, so naming one anywhere in such a workflow
@@ -73,7 +81,21 @@ def triggers(workflow: dict) -> set[str]:
     return {on} if isinstance(on, str) else set(on)
 
 
-EXPRESSION = re.compile(r"\$\{\{(.*?)\}\}", re.S)
+def templates(text: str) -> list[str]:
+    """The body of each ${{ }} in ``text``, read as GitHub's parser reads
+    it: a }} inside a single-quoted string literal does not end it. An
+    escaped quote ('') toggles twice, which leaves the state as it was."""
+    found, start = [], text.find("${{")
+    while start != -1:
+        end, quoted = start + 3, False
+        while end < len(text) and (quoted or not text.startswith("}}", end)):
+            quoted ^= text[end] == "'"
+            end += 1
+        found.append(text[start + 3 : end])
+        start = text.find("${{", end + 2)
+    return found
+
+
 # The secrets context itself, not a property named secrets (inputs.secrets),
 # in any case, so Secrets.x or SECRETS.X cannot slip past.
 CONTEXT = re.compile(r"(?<![\w.])secrets\b", re.I)
@@ -86,8 +108,8 @@ NAMED = re.compile(
 
 def expressions(node, key=None):
     """Every expression in a parsed workflow: each ${{ }} in any key or
-    string, and each `if`, which GitHub evaluates with or without ${{ }}.
-    Comments are never evaluated, and YAML drops them."""
+    string, and each `if` whole, since GitHub evaluates it with or without
+    ${{ }}. Comments are never evaluated, and YAML drops them."""
     if isinstance(node, dict):
         for k, v in node.items():
             yield from expressions(k)
@@ -96,8 +118,7 @@ def expressions(node, key=None):
         for item in node:
             yield from expressions(item)
     elif isinstance(node, str):
-        found = EXPRESSION.findall(node)
-        yield from found if found or key != "if" else [node]
+        yield from [node] if key == "if" else templates(node)
 
 
 def named_secrets(workflow: dict) -> set[str]:
@@ -357,6 +378,15 @@ def test_only_publish_db_names_the_supabase_secrets():
         lambda w: w["jobs"].update(
             call={"uses": "./.github/workflows/x.yml", "secrets": "inherit"}
         ),
+        lambda w: w["jobs"]["app"]["steps"].append(
+            {"run": "echo ${{ format('}}', secrets.SUPABASE_SCORECARD_KEY) }}"}
+        ),
+        lambda w: w["jobs"]["app"]["steps"].append(
+            {"run": "echo ${{ format('it''s }}', secrets.ANY_TOKEN) }}"}
+        ),
+        lambda w: w["jobs"]["app"]["steps"].append(
+            {"if": "${{ '}}' != secrets.ANY_TOKEN }}", "run": "true"}
+        ),
     ],
     ids=[
         "step-env",
@@ -367,6 +397,9 @@ def test_only_publish_db_names_the_supabase_secrets():
         "bare-if",
         "case-and-spaces",
         "reusable-inherit",
+        "braces-in-a-string",
+        "escaped-quote-then-braces",
+        "braces-in-an-if",
     ],
 )
 def test_the_scanner_catches_every_way_to_name_a_secret(edit):
@@ -374,6 +407,13 @@ def test_the_scanner_catches_every_way_to_name_a_secret(edit):
     assert named_secrets(workflow) == set()
     edit(workflow)
     assert named_secrets(workflow) - SECRETS_ON_PULL_REQUESTS
+
+
+def test_the_template_reader_ends_where_github_does():
+    assert templates("a ${{ x }} b ${{ y }}") == [" x ", " y "]
+    assert templates("${{ format('}}', s) }}") == [" format('}}', s) "]
+    assert templates("${{ 'it''s }}' }} tail") == [" 'it''s }}' "]
+    assert templates("no expression }}") == []
 
 
 def test_the_scanner_ignores_what_names_no_secret():
