@@ -841,15 +841,20 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         "-p LockPersonality=yes",
     ):
         assert setting in code, setting
-    run = code[code.index("  run)") : code.index("  collect)")]
+    run = code[code.index("  run)") : code.index("  install)")]
     assert "in_sandbox PYTHONPATH=. " in run
     assert "exec bash .github/scripts/uk_replay_drain.sh" in run
     assert "sudo -n -u" not in run and "--preserve-env" not in code
-    # setup checks from inside the sandbox, over the runner's whole PATH.
+    # setup checks from inside the sandbox, over the runner's whole PATH,
+    # and that the real replay's offline sandbox has only loopback and no
+    # /run.
     setup = code[code.index("  setup)") : code.index("  run)")]
     assert "if in_sandbox sudo -n true" in setup
     assert 'IFS=: read -r -a path_entries <<< "$PATH"' in setup
     assert "writable=$(in_sandbox /bin/sh -c" in setup
+    assert "interfaces=$(in_sandbox --offline /bin/sh -c" in setup
+    assert "/proc/self/net/dev" in setup and '"$interfaces" != lo' in setup
+    assert "if in_sandbox --offline ls /run" in setup
     for target in (
         "/opt",
         "/usr",
@@ -895,6 +900,413 @@ def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
     assert "test -f output/probe.json" in joined
     assert "if pgrep -u replay-candidate" in joined
     assert "python3 -I .github/scripts/uk_replay_output_guard.py output" in joined
+
+
+# --- the real replay's way through the sandbox --------------------------------------------
+
+SANDBOX = ROOT / ".github/scripts/uk_replay_sandbox.sh"
+CANDIDATE_HOME = "/home/replay-candidate"
+# Every service property the sandbox sets, as systemd-run receives them.
+SANDBOX_PROPERTIES = [
+    "ProtectSystem=strict",
+    f"ReadWritePaths={CANDIDATE_HOME}",
+    "InaccessiblePaths=-/home/runner",
+    "PrivateTmp=yes",
+    "PrivateDevices=yes",
+    "NoNewPrivileges=yes",
+    "RestrictSUIDSGID=yes",
+    "ProtectProc=invisible",
+    "ProtectKernelTunables=yes",
+    "ProtectKernelModules=yes",
+    "ProtectKernelLogs=yes",
+    "ProtectClock=yes",
+    "ProtectControlGroups=yes",
+    "RestrictNamespaces=yes",
+    "LockPersonality=yes",
+    "CapabilityBoundingSet=",
+]
+OFFLINE_PROPERTIES = ["PrivateNetwork=yes", "InaccessiblePaths=-/run"]
+# sudo records what it is asked to run (and what it receives on stdin) and
+# runs nothing; systemd-run "runs" the sandboxed command by printing what the
+# variant would, and exits with SANDBOX_EXIT.
+SUDO_STUB = """#!{python}
+import json, os, sys
+
+args = sys.argv[1:]
+entry = {{"argv": args}}
+if "dd" in args:
+    entry["stdin"] = sys.stdin.buffer.read().hex()
+with open(os.environ["SUDO_LOG"], "a") as handle:
+    handle.write(json.dumps(entry) + "\\n")
+if args[:1] == ["systemd-run"]:
+    print("::error::the variant's own output", flush=True)
+    sys.exit(int(os.environ.get("SANDBOX_EXIT", "0")))
+"""
+REPLAY_SETTINGS = {
+    "DATASET_FILE": None,  # set per test
+    "VARIANT": "pe9.9.9_example",
+    "REPLAY_EVENT": "autumn_budget_2024",
+    "REPLAY_MEASURE": "autumn_budget_2024__private_school_vat_20pct",
+    "REPLAY_YEAR": "2026",
+}
+
+
+def sandbox_mode(tmp_path, mode, settings, *, exit_status=0):
+    """uk_replay_sandbox.sh MODE with sudo and pgrep replaced by stubs; the
+    sudo calls it made, its result."""
+    tools = tmp_path / "bin"
+    tools.mkdir(exist_ok=True)
+    (tools / "sudo").write_text(SUDO_STUB.format(python=sys.executable))
+    (tools / "pgrep").write_text("#!/bin/sh\nexit 1\n")
+    for tool in ("sudo", "pgrep"):
+        (tools / tool).chmod(0o755)
+    log = tmp_path / "sudo.jsonl"
+    log.unlink(missing_ok=True)
+    environment = {
+        "PATH": f"{tools}:/usr/bin:/bin",
+        "HOME": str(tmp_path),
+        "SUDO_LOG": str(log),
+        "SANDBOX_EXIT": str(exit_status),
+        **{key: value for key, value in settings.items() if value is not None},
+    }
+    result = subprocess.run(
+        ["bash", str(SANDBOX), mode],
+        cwd=tmp_path,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    calls = (
+        [json.loads(line) for line in log.read_text().splitlines()]
+        if log.exists()
+        else []
+    )
+    return calls, result
+
+
+def systemd_run(argv):
+    """(flags, environment, properties, command) of one systemd-run call."""
+    assert argv[0] == "systemd-run"
+    flags, environment, properties = [], {}, []
+    rest = argv[1:]
+    while rest and rest[0].startswith("-"):
+        option = rest.pop(0)
+        if option == "--setenv":
+            key, value = rest.pop(0).split("=", 1)
+            assert key not in environment
+            environment[key] = value
+        elif option == "-p":
+            properties.append(rest.pop(0))
+        else:
+            flags.append(option)
+    return flags, environment, properties, rest
+
+
+def stopped_commands(stdout):
+    """The variant's output lies between a stop-commands line and the token
+    that resumes them."""
+    lines = stdout.splitlines()
+    match = re.fullmatch(r"::stop-commands::([0-9a-f]{32})", lines[0])
+    assert match, lines[0]
+    assert lines[-1] == f"::{match.group(1)}::"
+    return lines[1:-1]
+
+
+@pytest.mark.parametrize("exit_status", [0, 3])
+def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
+    tmp_path, exit_status
+):
+    calls, result = sandbox_mode(
+        tmp_path,
+        "install",
+        {"REQUIREMENTS": "docs/uk_replay/requirements/x.txt"},
+        exit_status=exit_status,
+    )
+    # The sandbox's exit is the step's, and the variant's output is printed
+    # with workflow commands stopped either way.
+    assert result.returncode == exit_status, result.stderr
+    assert "::error::the variant's own output" in stopped_commands(result.stdout)
+    ((call,),) = [[c["argv"] for c in calls]]
+    flags, environment, properties, command = systemd_run(call)
+    assert flags == [
+        "--quiet",
+        "--collect",
+        "--pipe",
+        "--wait",
+        "--uid=replay-candidate",
+        "--gid=replay-candidate",
+        f"--working-directory={CANDIDATE_HOME}",
+    ]
+    # An environment built from nothing but these, and the network on.
+    assert environment == {
+        "HOME": CANDIDATE_HOME,
+        "USER": "replay-candidate",
+        "LANG": "C.UTF-8",
+        "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
+        "REQUIREMENTS": "docs/uk_replay/requirements/x.txt",
+    }
+    assert properties == SANDBOX_PROPERTIES
+    assert command == [
+        "/bin/bash",
+        "-c",
+        'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh install',
+    ]
+
+
+def test_replay_streams_the_dataset_in_as_the_candidate_and_runs_offline(tmp_path):
+    dataset = tmp_path / "the dataset.h5"
+    dataset.write_bytes(bytes(range(256)) * 9)
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
+    calls, result = sandbox_mode(tmp_path, "replay", settings)
+    assert result.returncode == 0, result.stderr
+    assert "::error::the variant's own output" in stopped_commands(result.stdout)
+    as_candidate = [
+        "-n",
+        "-u",
+        "replay-candidate",
+        "env",
+        "-i",
+        f"HOME={CANDIDATE_HOME}",
+        "PATH=/usr/bin:/bin",
+    ]
+    # Nothing of the account runs when the dataset goes in; the account
+    # itself makes the directory and writes the bytes it reads on stdin, so
+    # nothing runs as root inside its home.
+    assert [c["argv"] for c in calls[:3]] == [
+        ["pkill", "-KILL", "-u", "replay-candidate"],
+        [*as_candidate, "mkdir", "-p", f"{CANDIDATE_HOME}/scorecard/input"],
+        [
+            *as_candidate,
+            "dd",
+            f"of={CANDIDATE_HOME}/scorecard/input/dataset.h5",
+            "bs=1M",
+            "status=none",
+        ],
+    ]
+    assert bytes.fromhex(calls[2]["stdin"]) == dataset.read_bytes()
+    assert len(calls) == 4
+    flags, environment, properties, command = systemd_run(calls[3]["argv"])
+    assert "--uid=replay-candidate" in flags and "--pipe" in flags
+    # Offline: no network but loopback and no /run, on top of every other
+    # property; the dataset's path and no token reach it.
+    assert properties == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
+    assert environment == {
+        "HOME": CANDIDATE_HOME,
+        "USER": "replay-candidate",
+        "LANG": "C.UTF-8",
+        "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
+        "PYTHONPATH": ".",
+        "RUNNER_TEMP": f"{CANDIDATE_HOME}/tmp",
+        **{k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"},
+    }
+    assert command == [
+        "/bin/bash",
+        "-c",
+        'mkdir -p "$RUNNER_TEMP" && cd "$HOME/scorecard" '
+        "&& exec bash .github/scripts/uk_replay_determinism.sh replay",
+    ]
+
+
+@pytest.mark.parametrize("missing", sorted(REPLAY_SETTINGS))
+def test_replay_refuses_to_start_without_its_settings(tmp_path, missing):
+    dataset = tmp_path / "dataset.h5"
+    dataset.write_bytes(b"x")
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset), missing: None}
+    calls, result = sandbox_mode(tmp_path, "replay", settings)
+    assert result.returncode != 0 and missing in result.stderr
+    assert calls == []
+
+
+def test_each_stop_token_is_fresh(tmp_path):
+    tokens = set()
+    for _ in range(3):
+        _, result = sandbox_mode(tmp_path, "install", {"REQUIREMENTS": "r.txt"})
+        tokens.add(result.stdout.splitlines()[0])
+    assert len(tokens) == 3
+
+
+# The in-sandbox script, run as the sandbox runs it, from the candidate's
+# copy, with uv and the variant's Python replaced by recording stubs.
+RECORDER = """#!{python}
+import json, os, sys
+from pathlib import Path
+
+args = sys.argv[1:]
+with open({log!r}, "a") as handle:
+    handle.write(json.dumps({{"tool": {tool!r}, "argv": args, "cwd": os.getcwd()}}) + "\\n")
+if {tool!r} == "python":
+    assert sorted(os.listdir("output")) == [], os.listdir("output")
+    work = Path(args[args.index("--output-dir") + 1])
+    assert not work.exists()
+    if os.environ.get("ENGINE_EXIT"):
+        sys.exit(int(os.environ["ENGINE_EXIT"]))
+    work.mkdir(parents=True)
+    name = args[args.index("--measures") + 1] + "_" + args[args.index("--years") + 1]
+    (work / f"{{name}}.json").write_text('{{"replayed": true}}\\n')
+    (work / "RUN_MANIFEST.json").write_text("{{}}\\n")
+"""
+
+
+def in_sandbox_script(tmp_path, mode, settings, *, engine_exit=None):
+    copy = tmp_path / "scorecard"
+    (copy / ".github/scripts").mkdir(parents=True)
+    shutil.copyfile(
+        ROOT / ".github/scripts/uk_replay_determinism.sh",
+        copy / ".github/scripts/uk_replay_determinism.sh",
+    )
+    log = tmp_path / "calls.jsonl"
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (copy / ".venv-variant/bin").mkdir(parents=True)
+    for tool, path in (
+        ("uv", tools / "uv"),
+        ("python", copy / ".venv-variant/bin/python"),
+    ):
+        path.write_text(RECORDER.format(python=sys.executable, log=str(log), tool=tool))
+        path.chmod(0o755)
+    # Left by an earlier attempt: replay starts from neither.
+    (copy / "output").mkdir()
+    (copy / "output/stale.json").write_text("{}")
+    (copy / ".venv-replay-checks/determinism").mkdir(parents=True)
+    environment = {
+        "PATH": f"{tools}:/usr/bin:/bin",
+        **settings,
+        **({"ENGINE_EXIT": str(engine_exit)} if engine_exit else {}),
+    }
+    result = subprocess.run(
+        ["bash", ".github/scripts/uk_replay_determinism.sh", mode],
+        cwd=copy,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    calls = (
+        [json.loads(line) for line in log.read_text().splitlines()]
+        if log.exists()
+        else []
+    )
+    return copy, calls, result
+
+
+def test_the_sandboxed_install_builds_exactly_the_variants_freeze(tmp_path):
+    copy, calls, result = in_sandbox_script(
+        tmp_path, "install", {"REQUIREMENTS": "docs/x.txt"}
+    )
+    assert result.returncode == 0, result.stderr
+    assert [(c["tool"], c["argv"]) for c in calls] == [
+        ("uv", ["venv", "--python", "3.12", ".venv-variant"]),
+        (
+            "uv",
+            [
+                "pip",
+                "install",
+                "--python",
+                ".venv-variant/bin/python",
+                "-r",
+                "docs/x.txt",
+            ],
+        ),
+        (
+            "uv",
+            [
+                "pip",
+                "install",
+                "--python",
+                ".venv-variant/bin/python",
+                "rfc8785==0.1.4",
+                "jsonschema",
+            ],
+        ),
+    ]
+    assert {Path(c["cwd"]).resolve() for c in calls} == {copy.resolve()}
+
+
+def test_the_sandboxed_replay_returns_only_the_replayed_artifact(tmp_path):
+    settings = {k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"}
+    copy, calls, result = in_sandbox_script(tmp_path, "replay", settings)
+    assert result.returncode == 0, result.stderr
+    ((call,),) = [[c for c in calls if c["tool"] == "python"]]
+    assert call["argv"] == [
+        "-m",
+        "pipeline.compute_uk_event",
+        "--event",
+        "autumn_budget_2024",
+        "--variant",
+        "pe9.9.9_example",
+        "--measures",
+        "autumn_budget_2024__private_school_vat_20pct",
+        "--years",
+        "2026",
+        "--workers",
+        "1",
+        "--dataset-file",
+        "input/dataset.h5",
+        "--output-dir",
+        ".venv-replay-checks/determinism",
+    ]
+    name = "autumn_budget_2024__private_school_vat_20pct_2026.json"
+    assert sorted(p.name for p in (copy / "output").iterdir()) == [name]
+    assert (copy / "output" / name).read_text() == '{"replayed": true}\n'
+    assert not (copy / "output" / name).is_symlink()
+
+
+def test_a_failed_sandboxed_replay_returns_nothing(tmp_path):
+    settings = {k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"}
+    copy, _, result = in_sandbox_script(tmp_path, "replay", settings, engine_exit=4)
+    assert result.returncode == 4
+    assert list((copy / "output").iterdir()) == []
+
+
+def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
+    # install, replay and collect need sudo, useradd and systemd, so CI runs
+    # them on the runner image itself, with a stand-in dataset and, in the
+    # candidate's copy only, a small freeze and a stub engine module.
+    job = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())["jobs"][
+        "real-replay-sandbox"
+    ]
+    assert job["permissions"] == {"contents": "read"}
+    assert "secrets." not in json.dumps(job)
+    steps = job["steps"]
+    runs = [step.get("run", "") for step in steps]
+    joined = "\n".join(runs)
+    order = [
+        'echo "DATASET_FILE=$RUNNER_TEMP/dataset.h5" >> "$GITHUB_ENV"',
+        "bash .github/scripts/uk_replay_sandbox.sh setup",
+        "tee /home/replay-candidate/scorecard/pipeline/compute_uk_event.py",
+        "bash .github/scripts/uk_replay_sandbox.sh install",
+        "bash .github/scripts/uk_replay_sandbox.sh replay",
+        "bash .github/scripts/uk_replay_sandbox.sh collect",
+        "/usr/bin/python3 -E -s -m pipeline.uk_replay_determinism",
+    ]
+    assert [joined.index(line) for line in order] == sorted(
+        joined.index(line) for line in order
+    )
+    # The stub engine is written into the copy, never the runner's checkout,
+    # and imports the freeze the sandboxed install built.
+    assert "sudo -u replay-candidate tee /home/replay-candidate/scorecard/" in joined
+    assert "import rfc8785" in joined
+    # It reports what it finds offline, leaves a process and forges workflow
+    # commands; the runner expects exactly loopback, no connection, no /run,
+    # its own dataset's digest, a working pool and its own arguments.
+    for probe in (
+        "/proc/self/net/dev",
+        'socket.create_connection(("1.1.1.1", 443)',
+        'os.access("/run"',
+        'get_context("spawn").Pool(2)',
+        'subprocess.Popen(["sleep", "600"], start_new_session=True)',
+        "::error::forged by the stub engine",
+    ):
+        assert probe in joined, probe
+    for expectation in (
+        '"interfaces": ["lo"]',
+        '"connects_out": False',
+        '"run_opens": False',
+        '"pool": 3',
+        'sha256sum "$DATASET_FILE"',
+    ):
+        assert expectation in joined, expectation
+    assert "if pgrep -u replay-candidate" in joined
+    assert 'test "$(stat -c %U "$report")" = "$(id -un)"' in joined
 
 
 def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):
@@ -1042,9 +1454,9 @@ def test_the_data_token_is_used_only_outside_pull_requests():
             assert "secrets." not in json.dumps(job.get("env", {}))
             for step in job["steps"]:
                 assert "secrets.HUGGING_FACE_TOKEN" not in json.dumps(step)
-    # The job that runs a variant's engine beside the token reads only,
-    # keeps no checkout credential, and runs the engine in later steps than
-    # the token, which they do not hold.
+    # The job that runs a variant's engine in the same job as the token reads
+    # only, keeps no checkout credential, and runs the engine in later steps
+    # than the token, which they do not hold.
     engine = determinism["jobs"]["real-replay"]
     assert engine["permissions"] == {"contents": "read"}
     checkout = next(
@@ -1055,15 +1467,7 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     fetch = engine["steps"][
         names.index("Fetch the certified dataset for the real replay")
     ]
-    replay_step = engine["steps"][
-        names.index("One real measure-year replays byte for byte")
-    ]
-    assert names.index(fetch["name"]) < names.index(replay_step["name"])
-    assert replay_step["if"] == "steps.fetch.outputs.fetched == 'true'"
-    # A leg that fetched nothing (the legacy variant, an unsealed namespace,
-    # no token) installs nothing: the runner holds the token there too.
-    install = engine["steps"][names.index("Install the variant's exact environment")]
-    assert install["if"] == "steps.fetch.outputs.fetched == 'true'"
+    assert "huggingface_hub==2.2.0" in fetch["run"]
     # A pull request's CI says that no real replay ran there.
     (notice,) = [
         s
@@ -1073,21 +1477,19 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     assert notice["if"] == "env.LEGACY == 'False' && github.event_name != 'push'"
     assert "uk-replay-determinism.yml" in notice["run"]
     assert "nothing was replayed" in notice["run"]
-    assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]
     # The token step comes before any variant code: before the first step
-    # that touches the variant's environment, and after only the checkout,
-    # uv's setup and a read of the index, none of which installs or runs
-    # anything of the variant's. A package from the variant's requirements
-    # could otherwise write $GITHUB_ENV or $GITHUB_PATH, or plant a file,
-    # that the token step then runs. (It could still read the token from the
-    # runner's memory later in the job; see the job's comment.)
+    # that hands anything to the candidate account, and after only the
+    # checkout, uv's setup and a read of the index, none of which installs or
+    # runs anything of the variant's. A package from the variant's
+    # requirements could otherwise write $GITHUB_ENV or $GITHUB_PATH, or
+    # plant a file, that the token step then runs.
     fetch_index = names.index(fetch["name"])
-    variant_steps = [
+    sandboxed = [
         index
         for index, step in enumerate(engine["steps"])
-        if ".venv-variant" in json.dumps(step)
+        if "uk_replay_sandbox.sh" in step.get("run", "")
     ]
-    assert variant_steps and fetch_index < variant_steps[0]
+    assert sandboxed and fetch_index < sandboxed[0]
     before = engine["steps"][:fetch_index]
     assert [step.get("name") or step["uses"] for step in before] == [
         "actions/checkout@v4",
@@ -1097,6 +1499,66 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     installs = re.compile(r"\b(uvx?|pipx?|pip3|venv|pipeline)\b|\$\{?REQUIREMENTS\b")
     for step in before:
         assert not installs.search(step.get("run", "")), step
+    # After the fetch, the variant's code runs only as the candidate account
+    # in the sandbox, which cannot read the runner's memory: its install
+    # (with the network) and its replay (offline), then collect, which runs
+    # always so nothing of the account outlives the job's last step. Outside
+    # the sandbox only the runner's own /usr/bin/python3 runs, isolated, to
+    # find the dataset and to compare the replay that comes back; neither
+    # step holds the token, and nothing else installs or runs Python.
+    after = engine["steps"][fetch_index + 1 :]
+    fetched = "steps.fetch.outputs.fetched == 'true'"
+    assert [(step["name"], step["if"], step["run"]) for step in after] == [
+        (
+            "Find the fetched dataset by its digest",
+            fetched,
+            after[0]["run"],
+        ),
+        (
+            "Hand a private copy to the unprivileged candidate account",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh setup",
+        ),
+        (
+            "Install the variant's exact environment in the sandbox",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh install",
+        ),
+        (
+            "Replay one real measure-year in the sandbox, offline",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh replay",
+        ),
+        (
+            "Stop every candidate process and take its output back",
+            f"always() && {fetched}",
+            "bash .github/scripts/uk_replay_sandbox.sh collect",
+        ),
+        (
+            "One real measure-year replays byte for byte",
+            fetched,
+            after[-1]["run"],
+        ),
+    ]
+    assert all(set(step) == {"name", "if", "run"} for step in after)
+    find, compare = after[0]["run"], after[-1]["run"]
+    assert "rv.find_dataset_bytes(rv.get_variant(sys.argv[1]))" in find
+    assert 'echo "DATASET_FILE=$dataset" >> "$GITHUB_ENV"' in find
+    assert "/usr/bin/python3 -E -s -m pipeline.uk_replay_determinism" in compare
+    variant_code = re.compile(
+        r"\b(uvx?|pipx?|pip3|venv)\b|\.venv-variant|compute_uk_event|\$\{?REQUIREMENTS\b"
+    )
+    for text in (find, compare):
+        assert not variant_code.search(text), text
+        isolated = text.count("/usr/bin/python3 -I ")
+        isolated += text.count("/usr/bin/python3 -E -s ")
+        assert text.count("python") == isolated == 1, text
+    # The dataset stays on the runner: this workflow uploads and caches
+    # nothing.
+    for job in determinism["jobs"].values():
+        for step in job["steps"]:
+            uses = step.get("uses", "")
+            assert not uses.startswith(("actions/upload-artifact", "actions/cache"))
 
 
 # --- the real replay's dataset fetch, run as GitHub runs it -------------------------------

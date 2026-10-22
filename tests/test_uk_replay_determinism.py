@@ -1,6 +1,8 @@
 """CI's real-replay comparison (pipeline/uk_replay_determinism.py)."""
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -196,14 +198,123 @@ def test_main_exit_codes_and_notice(tmp_path, capsys):
 
 
 def test_ci_compares_the_real_replay_through_the_module():
+    # The replay runs in the candidate sandbox; the comparison runs outside
+    # it, under the runner's own Python (-E: no PYTHON* variables, -s: no
+    # user site), on the runner's checkout, against the committed artifact
+    # the job itself names.
     workflow = ROOT / ".github/workflows/uk-replay-determinism.yml"
-    jobs = yaml.safe_load(workflow.read_text())["jobs"]
-    steps = {s.get("name"): s for s in jobs["real-replay"]["steps"]}
+    job = yaml.safe_load(workflow.read_text())["jobs"]["real-replay"]
+    steps = {s.get("name"): s for s in job["steps"]}
     run = steps["One real measure-year replays byte for byte"]["run"]
-    assert "-m pipeline.uk_replay_determinism" in run
-    assert "cmp " not in run
+    assert run.split() == [
+        "/usr/bin/python3",
+        "-E",
+        "-s",
+        "-m",
+        "pipeline.uk_replay_determinism",
+        "\\",
+        '"output/${REPLAY_MEASURE}_${REPLAY_YEAR}.json"',
+        '"$RESULT_ROOT/$REPLAY_EVENT/${REPLAY_MEASURE}_${REPLAY_YEAR}.json"',
+    ]
+    assert {k: job["env"][k] for k in ("REPLAY_EVENT", "REPLAY_MEASURE")} == {
+        "REPLAY_EVENT": "autumn_budget_2024",
+        "REPLAY_MEASURE": KEY,
+    }
+    assert job["env"]["REPLAY_YEAR"] == "2026"
+    # Every sealed namespace holds the artifact the job compares against.
+    from pipeline import uk_replay_variants as rv
+
+    for variant in rv.load_document()["variants"]:
+        root = ROOT / variant["result_root"]
+        if (root / "REPLAY_RECEIPT.json").is_file():
+            assert (root / "autumn_budget_2024" / f"{KEY}_2026.json").is_file()
     # The engine matrix is every certified variant: CI lists them from the
     # index (tests/test_uk_replay_engine_matrix.py).
+
+
+def test_the_runners_python_needs_only_the_standard_library():
+    # Outside the sandbox the job imports these two modules under the
+    # runner's own Python, which has nothing installed. Without site (-S)
+    # nothing but the standard library can be imported.
+    program = (
+        "import sys; sys.path.insert(0, sys.argv[1]); "
+        "import pipeline.uk_replay_determinism, pipeline.uk_replay_variants; "
+        "print(sorted(name for name in sys.modules if name.startswith('pipeline')))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-I", "-S", "-c", program, str(ROOT)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == repr(
+        ["pipeline", "pipeline.uk_replay_determinism", "pipeline.uk_replay_variants"]
+    )
+
+
+json_values = st.recursive(
+    leaves,
+    lambda children: st.one_of(
+        st.lists(children, max_size=3),
+        st.dictionaries(st.text(max_size=8), children, max_size=3),
+    ),
+    max_leaves=12,
+)
+
+
+@settings(max_examples=300, deadline=None)
+@given(json_values)
+def test_the_comparisons_canonical_bytes_are_the_engines(value):
+    # Differential: the module's own copy against compute_uk_event's, which
+    # writes the committed artifacts.
+    assert determinism.canonical_bytes(value) == canonical_bytes(value)
+
+
+@pytest.mark.parametrize("value", [float("nan"), {"x": float("inf")}])
+def test_both_canonical_forms_refuse_what_json_cannot_hold(value):
+    for encode in (determinism.canonical_bytes, canonical_bytes):
+        with pytest.raises(ValueError):
+            encode(value)
+
+
+def test_main_takes_only_a_regular_file_as_the_replay(tmp_path, capsys):
+    committed = tmp_path / "committed.json"
+    committed.write_bytes(canonical_bytes({"a": 1}))
+    # A link to the committed artifact reproduces nothing.
+    link = tmp_path / "link.json"
+    link.symlink_to(committed)
+    assert determinism.main([str(link), str(committed)]) == 1
+    assert "not a regular file" in capsys.readouterr().err
+    directory = tmp_path / "directory.json"
+    directory.mkdir()
+    assert determinism.main([str(directory), str(committed)]) == 1
+    assert determinism.main([str(tmp_path / "absent.json"), str(committed)]) == 1
+    copy = tmp_path / "copy.json"
+    copy.write_bytes(committed.read_bytes())
+    assert determinism.main([str(copy), str(committed)]) == 0
+
+
+def test_the_module_runs_as_the_job_runs_it(tmp_path):
+    committed = tmp_path / "committed.json"
+    replayed = tmp_path / "replayed.json"
+    committed.write_bytes(canonical_bytes({"a": 1}))
+    replayed.write_bytes(canonical_bytes({"a": 1, **EVIDENCE}))
+    # The job's environment sets PYTHONPATH, which comes before the standard
+    # library; -E keeps an impostor json there from standing in for it.
+    impostor = tmp_path / "impostor"
+    impostor.mkdir()
+    (impostor / "json.py").write_text("raise SystemExit(97)")
+    environment = {"PATH": "/usr/bin:/bin", "PYTHONPATH": str(impostor)}
+    result = subprocess.run(
+        [sys.executable, "-E", "-s", "-m", "pipeline.uk_replay_determinism"]
+        + [str(replayed), str(committed)],
+        cwd=ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "::notice::" in result.stdout and "reproduces" in result.stdout
 
 
 @pytest.mark.parametrize("variant", [NEWEST])
