@@ -1,0 +1,781 @@
+{
+ "schema": "comparables/analysis/1",
+ "id": "uk/free-childcare-reform",
+ "country": "UK",
+ "registry": {
+  "kind": "app",
+  "slug": "free-childcare-reform",
+  "country_id": "uk"
+ },
+ "title": "Free childcare hours and a 75% subsidy",
+ "url": "https://policyengine.org/uk/free-childcare-reform",
+ "published": "2026-09-03",
+ "owner": {
+  "author": "vahid-ahmadi"
+ },
+ "scope": "uk_wide",
+ "subject": "The cost and household impact, 2027-28 to 2029-30, of a two-part childcare reform: 15 free hours a week for every child from 9 months to school age, with no work or income test (England), and a 75% subsidy of childcare costs replacing Tax-Free Childcare, with no work test, cap or £100,000 limit and the Universal Credit childcare element kept at 85% (UK-wide); each leg and both together, static and with a labour supply response.",
+ "search_terms": [
+  "75% childcare subsidy cost",
+  "replace Tax-Free Childcare cost",
+  "universal free childcare hours cost",
+  "childcare subsidy reform UK cost",
+  "15 free hours all children from nine months cost",
+  "extend free childcare to non-working parents cost",
+  "remove childcare work test cost"
+ ],
+ "worlds": {
+  "free_hours_from_9_months": {
+   "policy": "uk_free_childcare_15_hours_from_9_months",
+   "description": "Leg 1: 15 free hours a week for every child from 9 months to school age, regardless of parental work or income, plus a further 15 hours where parents work and earn under £100,000 (England). Costed from age 1: FRS ages are whole years, so the 9-month floor binds at 1 and the 9-to-12-month cohort is not costed (reforms.py)."
+  },
+  "subsidy_75_replacing_tfc": {
+   "policy": "uk_childcare_subsidy_75_replacing_tax_free_childcare",
+   "description": "Leg 2: a 75% subsidy of childcare costs replacing Tax-Free Childcare, with no work test, per-child cap or £100,000 limit; the Universal Credit childcare element kept at 85% (UK-wide)."
+  },
+  "both_legs": {
+   "policy": "uk_free_childcare_15_hours_from_9_months_and_75_subsidy",
+   "description": "Both legs run together, with the new free hours displacing paid care before the 75% subsidy applies."
+  },
+  "centax_first_15_hours_under_3s_actual_ani": {
+   "policy": "uk_free_childcare_first_15_hours_under_3s_100k_limit_removed_actual_ani",
+   "description": "CenTax section 4.2.3, primary results: the £100,000 limit removed for the first 15 hours for 9-month- to 2-year-olds of working parents and kept for the second 15 hours, with eligibility tested on actual rather than expected ANI (England)."
+  },
+  "centax_first_15_hours_under_3s_expected_ani": {
+   "policy": "uk_free_childcare_first_15_hours_under_3s_100k_limit_removed",
+   "description": "CenTax section 4.2.3, Appendix B: the £100,000 limit removed for the first 15 hours for 9-month- to 2-year-olds of working parents and kept for the second 15 hours, on today's expected-ANI test (England)."
+  },
+  "ippr_universal_15_hours_under_twos": {
+   "policy": "ippr_2022_universal_15_hours_under_twos",
+   "description": "IPPR (September 2022): a universal offer of 15 funded hours a week for every child under two, modelled from six months, added to the 2022 system (England)."
+  },
+  "ippr_universal_15_hours_two_year_olds": {
+   "policy": "ippr_2022_universal_15_hours_two_year_olds",
+   "description": "IPPR (September 2022): the 15-hour offer for disadvantaged two-year-olds made universal, added to the 2022 system (England)."
+  },
+  "ippr_reformed_subsidy_75_95": {
+   "policy": "ippr_2022_reformed_childcare_subsidy_75_95",
+   "description": "IPPR (September 2022): Tax-Free Childcare and the UC childcare element replaced by one subsidy paying 75% of costs for families not on means-tested benefits and 95% for families on them, in a world with 30 free hours for every child from six months to four (England)."
+  },
+  "nef_universal_family_childcare_promise": {
+   "policy": "nef_universal_family_childcare_promise",
+   "description": "NEF with Pregnant Then Screwed and JRF (July 2025): the funded hours, Tax-Free Childcare and UC childcare support replaced by 15 free hours for every child from 9 months to 4 plus a cap, at 5% (or 7.5%) of family earnings, on the cost of further hours for working families (England)."
+  }
+ },
+ "pe_estimates": [
+  {
+   "key": "free_hours_static_fy2027",
+   "label": "Static cost of 15 free hours for every child from 9 months (costed from age 1), England, 2027-28",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -1966000000,
+   "value_raw": "1.966",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "static",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.free_hours.static_cost_bn"
+   }
+  },
+  {
+   "key": "free_hours_static_fy2028",
+   "label": "Static cost of 15 free hours for every child from 9 months (costed from age 1), England, 2028-29",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -2013000000,
+   "value_raw": "2.013",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "static",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.free_hours.static_cost_bn"
+   }
+  },
+  {
+   "key": "free_hours_static_fy2029",
+   "label": "Static cost of 15 free hours for every child from 9 months (costed from age 1), England, 2029-30",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -2062000000,
+   "value_raw": "2.062",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "static",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.free_hours.static_cost_bn"
+   }
+  },
+  {
+   "key": "free_hours_dynamic_fy2027",
+   "label": "Cost of 15 free hours for every child from 9 months (costed from age 1) with the labour supply response, England, 2027-28",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -1931000000,
+   "value_raw": "1.931",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.free_hours.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "free_hours_dynamic_fy2028",
+   "label": "Cost of 15 free hours for every child from 9 months (costed from age 1) with the labour supply response, England, 2028-29",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -1978000000,
+   "value_raw": "1.978",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.free_hours.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "free_hours_dynamic_fy2029",
+   "label": "Cost of 15 free hours for every child from 9 months (costed from age 1) with the labour supply response, England, 2029-30",
+   "world": "free_hours_from_9_months",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -2024000000,
+   "value_raw": "2.024",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.free_hours.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_static_fy2027",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, UK, 2027-28",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -4839000000,
+   "value_raw": "4.839",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.subsidy.static_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_static_fy2028",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, UK, 2028-29",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -4956000000,
+   "value_raw": "4.956",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.subsidy.static_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_static_fy2029",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, UK, 2029-30",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -5088000000,
+   "value_raw": "5.088",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.subsidy.static_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_static_england_fy2027",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, England, 2027-28",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -4037800000,
+   "value_raw": "4.0378",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.subsidy.static_cost_by_country_bn.england"
+   }
+  },
+  {
+   "key": "subsidy_static_england_fy2028",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, England, 2028-29",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -4135400000,
+   "value_raw": "4.1354",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.subsidy.static_cost_by_country_bn.england"
+   }
+  },
+  {
+   "key": "subsidy_static_england_fy2029",
+   "label": "Static cost of a 75% childcare subsidy replacing Tax-Free Childcare, England, 2029-30",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -4242400000,
+   "value_raw": "4.2424",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "static",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "England",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.subsidy.static_cost_by_country_bn.england"
+   }
+  },
+  {
+   "key": "subsidy_dynamic_fy2027",
+   "label": "Cost of a 75% childcare subsidy replacing Tax-Free Childcare with the labour supply response, UK, 2027-28",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -4168000000,
+   "value_raw": "4.168",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.subsidy.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_dynamic_fy2028",
+   "label": "Cost of a 75% childcare subsidy replacing Tax-Free Childcare with the labour supply response, UK, 2028-29",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -4241000000,
+   "value_raw": "4.241",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.subsidy.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "subsidy_dynamic_fy2029",
+   "label": "Cost of a 75% childcare subsidy replacing Tax-Free Childcare with the labour supply response, UK, 2029-30",
+   "world": "subsidy_75_replacing_tfc",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -4347000000,
+   "value_raw": "4.347",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "childcare_subsidy_replacing_tax_free_childcare",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.subsidy.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_static_fy2027",
+   "label": "Static cost of both legs together, UK, 2027-28",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -6638000000,
+   "value_raw": "6.638",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "static",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.legs.combined.static_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_static_fy2028",
+   "label": "Static cost of both legs together, UK, 2028-29",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -6798000000,
+   "value_raw": "6.798",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "static",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.legs.combined.static_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_static_fy2029",
+   "label": "Static cost of both legs together, UK, 2029-30",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -6977000000,
+   "value_raw": "6.977",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "static",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.legs.combined.static_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_dynamic_fy2027",
+   "label": "Cost of both legs together with the labour supply response, UK, 2027-28",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "value": -5949000000,
+   "value_raw": "5.949",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2027-28",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2027.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_dynamic_fy2028",
+   "label": "Cost of both legs together with the labour supply response, UK, 2028-29",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "value": -6064000000,
+   "value_raw": "6.064",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2028-29",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2028.dynamic_cost.central.dynamic_cost_bn"
+   }
+  },
+  {
+   "key": "both_legs_dynamic_fy2029",
+   "label": "Cost of both legs together with the labour supply response, UK, 2029-30",
+   "world": "both_legs",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "value": -6216000000,
+   "value_raw": "6.216",
+   "normalization": "GBP bn x 1e9 -> GBP",
+   "sign": -1,
+   "sign_basis": "the results file prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+   "conditions": {
+    "fy": "2029-30",
+    "basis": "with labour supply responses: participation (OBR elasticities, central scale) and hours among parents in work (elasticity -0.042)",
+    "program": "free_childcare_hours_and_childcare_subsidy",
+    "geography": "UK",
+    "sign_convention": "positive = yield to the Exchequer"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/free-childcare-reform",
+    "commit": "1a832f1703b56c8cd044c8d3f87d469f70e3d3e8",
+    "path": "dashboard/public/data/free_childcare_reform_results.json",
+    "sha256": "c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285",
+    "computed_at": "2026-09-02T15:37:19+00:00",
+    "engine": {
+     "policyengine": "5.3.0",
+     "policyengine_uk": "2.94.0"
+    },
+    "dataset": "enhanced_frs_2024_25@7b0a06f0f08bec4bdb81c5d0fdb4057fe4e7fd1a",
+    "field": "by_year.2029.dynamic_cost.central.dynamic_cost_bn"
+   }
+  }
+ ]
+}

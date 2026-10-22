@@ -1,0 +1,60 @@
+[
+ {
+  "id": "centax-over-100k-group-inside-free-hours",
+  "claims": [
+   "centax_first_15_under_3s_actual_ani_static_fy2027",
+   "centax_first_15_under_3s_actual_ani_net_fy2027",
+   "centax_first_15_under_3s_actual_ani_static_fy2028",
+   "centax_first_15_under_3s_actual_ani_net_fy2028",
+   "centax_first_15_under_3s_actual_ani_static_fy2029",
+   "centax_first_15_under_3s_actual_ani_net_fy2029",
+   "centax_first_15_under_3s_expected_ani_static_fy2027",
+   "centax_first_15_under_3s_expected_ani_net_fy2027",
+   "centax_first_15_under_3s_expected_ani_static_fy2028",
+   "centax_first_15_under_3s_expected_ani_net_fy2028",
+   "centax_first_15_under_3s_expected_ani_static_fy2029",
+   "centax_first_15_under_3s_expected_ani_net_fy2029"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "CenTax's rows give the first 15 hours only to 9-month- to 2-year-olds of working parents above £100,000 (section 4.2.3), and Table 4.3's and B.1's also move the income test for the remaining hours from expected to actual ANI (printed page 43). The analysis's free-hours leg gives 15 hours to every child from age 1 (FRS ages are whole years, so its 9-month floor binds at 1: reforms.py) to school age, regardless of parental work or income (results file reform_definition.free_hours), and keeps the £100,000 limit on the second 15 hours, tested on the year's modelled adjusted net income (policyengine-uk 2.94.0 extended_childcare_entitlement_meets_income_requirements), as in CenTax's actual-ANI rows. It therefore also reaches under-threes whose parents do not meet the work test, whom CenTax's rows leave out, and does not reach the 9-to-12-month-olds CenTax includes. CenTax's net figures net off bunching and partners entering work; the analysis's dynamic figures net off participation and hours responses. The CenTax rows cost one group the leg also reaches, not the leg.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=44"
+   },
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=45"
+   },
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=46"
+   },
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=83"
+   },
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=84"
+   },
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=85"
+   },
+   {
+    "kind": "document",
+    "ref": "https://github.com/PolicyEngine/policyengine-uk/blob/2.94.0/policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/conditions/extended_childcare_entitlement_meets_income_requirements.py"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/free-childcare-reform/blob/1a832f1703b56c8cd044c8d3f87d469f70e3d3e8/src/free_childcare_reform/reforms.py#L56-L70"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/free-childcare-reform/blob/1a832f1703b56c8cd044c8d3f87d469f70e3d3e8/dashboard/public/data/free_childcare_reform_results.json"
+   }
+  ]
+ }
+]
