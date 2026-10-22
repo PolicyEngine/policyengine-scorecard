@@ -632,10 +632,13 @@ PREFLIGHT = {
         "changed or untracked path",
     ),
 }
-LISTED = 100
+# At most LISTED names of at most 200 characters per check: three full
+# lists (about 31,000 characters) leave the rest of the body well inside
+# GitHub's 65,536-character limit, and the job output inside its 1 MB.
+LISTED = 50
 # A name the pull request shows sits in a fenced block: printable ASCII, no
 # backtick (which could close the fence), no space at either end.
-LISTABLE = re.compile(r"[!-_a-~](?:[ -_a-~]{0,298}[!-_a-~])?")
+LISTABLE = re.compile(r"[!-_a-~](?:[ -_a-~]{0,198}[!-_a-~])?")
 SUMMARY = re.compile(r"^=+ short test summary info =+$", re.M)
 # ruff format --check names a file "Would reformat: PATH" before ruff 0.16
 # and in a diagnostic's "--> PATH:LINE:COLUMN" after it; CI's uvx ruff is

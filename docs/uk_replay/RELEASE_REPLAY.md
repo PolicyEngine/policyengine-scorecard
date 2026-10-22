@@ -926,8 +926,9 @@ which CI now reads from the index:
    not stop the run. The job reports each check's exit status, how many
    files, tests or paths failed (the node ids of pytest's last short test
    summary, the files ruff names, the paths `git status` lists) and the
-   first 100 that are printable ASCII without a backtick, as one line of
-   JSON. `propose` refuses a report of any other shape. Results pull
+   first 50 that are printable ASCII without a backtick and at most 200
+   characters long, as one line of JSON (three full lists keep the body
+   inside GitHub's 65,536-character limit). `propose` refuses a report of any other shape. Results pull
    requests #195, #204 and #206 opened ready and failed CI's `pytest` job;
    with these checks such a pull request opens as a draft that names the
    failures.

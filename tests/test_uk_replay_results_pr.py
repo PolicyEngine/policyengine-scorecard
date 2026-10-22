@@ -2245,7 +2245,7 @@ MALFORMED = {
     "a newline": lambda r: r["suite"].update(exit=1, count=1, names=["a\nb"]),
     "a leading space": lambda r: r["suite"].update(exit=1, count=1, names=[" a"]),
     "non-ASCII": lambda r: r["suite"].update(exit=1, count=1, names=["tést"]),
-    "a long name": lambda r: r["suite"].update(exit=1, count=1, names=["a" * 301]),
+    "a long name": lambda r: r["suite"].update(exit=1, count=1, names=["a" * 201]),
     "a number for a name": lambda r: r["suite"].update(exit=1, count=1, names=[1]),
 }
 
@@ -3981,6 +3981,36 @@ def test_a_failing_ci_check_opens_a_draft_that_names_it(
         assert f"\n  {name}\n" in body
     if not names:
         assert "the build job's log has its output" in body
+
+
+def test_the_body_fits_githubs_limit_when_every_list_is_full(remote):
+    # GitHub refuses a pull request body over 65,536 characters, and the
+    # branch would already be pushed. Every check failing with more names
+    # than LISTED, each of the longest listable length, still fits.
+    rid, _, _ = remote.certify()
+    longest = [f"tests/test_{i:03d}.py::test_" + "x" * 176 for i in range(80)]
+    assert all(len(name) == 200 for name in longest)
+    result = remote.run(
+        rid,
+        SUITE_FAILS=",".join(longest),
+        RUFF_UNFORMATTED=",".join(name.split("::")[0] + "x" * 172 for name in longest),
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    reported = json.loads(remote.outputs["preflight"])
+    assert reported["suite"]["count"] == reported["ruff"]["count"] == 80
+    body = remote.body()
+    assert f"\n  {longest[builder.LISTED - 1]}\n" in body
+    assert longest[builder.LISTED] not in body
+    assert "30 more are in the build job's log" in body
+    full = {
+        "exit": 1,
+        "count": 10**6,
+        "names": [n[:200] for n in longest[: builder.LISTED]],
+    }
+    worst = sum(len(builder.check_line(key, full)) for key in builder.PREFLIGHT)
+    assert (
+        len(body) - len(builder.check_line("drift", reported["drift"])) + worst < 65_536
+    )
 
 
 def test_incomplete_integrity_and_a_failing_check_say_both(remote):
