@@ -81,6 +81,12 @@ PYTHONPATH=. python -m scorecard_db.comparables scaffold --country uk --kind app
 
 The JSON files are strict: a repeated key fails the record.
 
+`analysis.json` may list `deployments`: the other https URLs the analysis is served from, such as
+its own Vercel deployment. PolicyEngine/newsletters holds a link to any of them to the record, so
+a dashboard taken off policyengine.org cannot be promoted through its deployment URL. A bill
+scored on the state legislative tracker, which no registry lists, is recorded with
+`registry.kind: tracker`; `due` lists such records by their `published` date.
+
 ### The estimates
 
 Each estimate in `pe_estimates` names its `world`, `metric`, `unit_concept`, `period` and
@@ -234,6 +240,9 @@ posts.json entry is printed by:
 PYTHONPATH=. python -m scorecard_db.comparables record analysis-uk-<slug>
 ```
 
+It cites the record's latest search; `--search-date` and `--search-kind` pick another. A revised
+analysis returning to the site cites the new search its results were compared in.
+
 ```json
 "comparables": {
   "status": "reviewed",
@@ -259,3 +268,6 @@ PYTHONPATH=. python -m scorecard_db.comparables due --apps apps.json --posts pos
 # what a re-harvest found since a date, and its gaps over the threshold
 PYTHONPATH=. python -m scorecard_db.comparables report analysis-uk-<slug> --since 2026-10-26
 ```
+
+`report` runs on a record whose only errors are gaps not yet explained, listing those errors on
+stderr; any other error refuses the record.

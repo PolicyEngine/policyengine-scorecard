@@ -1338,6 +1338,75 @@ def test_index_comparisons_are_every_staged_estimate(directory):
             assert c["cause"], f"{c['claim']} is over the threshold with no cause"
 
 
+def test_record_cites_the_latest_search_or_the_one_asked_for():
+    record = post_publication(synthetic(-100.0, -105.0), kind="prepromotion")
+    assert errors_of(record) == []
+    latest = cmp.app_record(record)
+    assert (latest["searchDate"], latest["searchKind"]) == (
+        "2026-10-22",
+        "prepromotion",
+    )
+    first = cmp.app_record(record, search_kind="prepublish")
+    assert (first["searchDate"], first["searchKind"]) == (SEARCH_DATE, "prepublish")
+    assert cmp.app_record(record, search_date=SEARCH_DATE)["searchKind"] == "prepublish"
+    with pytest.raises(ValueError, match="no backfill search"):
+        cmp.app_record(record, search_kind="backfill")
+
+
+def test_report_runs_while_gaps_are_unexplained(tmp_path, capsys, monkeypatch):
+    source = tmp_path / "analysis-uk-childcare-100k-threshold"
+    import shutil
+
+    shutil.copytree(CHILDCARE, source)
+    notes = json.loads((source / "annotations.json").read_text())
+    notes = [n for n in notes if n["id"] != "hours-draw-microcosm-1126"]
+    (source / "annotations.json").write_text(json.dumps(notes))
+    monkeypatch.setattr(cmp, "SOURCES", tmp_path)
+    assert cmp._main(["report", source.name, "--since", "2026-10-01"]) == 0
+    out = capsys.readouterr()
+    assert json.loads(out.out)["over_threshold"]
+    assert cmp.UNEXPLAINED in out.err
+    # any other error still refuses the record
+    (source / "search_log.json").write_text("{}")
+    assert cmp._main(["report", source.name, "--since", "2026-10-01"]) == 1
+
+
+def test_deployments_are_https_pages_listed_once():
+    good = "https://example-analysis.vercel.app/uk/example"
+    assert mutate(lambda r: r.analysis.update(deployments=[good])) == []
+    for bad in (
+        ["http://example.vercel.app/"],
+        [good, good],
+        "x",
+        ["https://localhost"],
+    ):
+        assert any(
+            "deployments lists" in e
+            for e in mutate(lambda r, b=bad: r.analysis.update(deployments=b))
+        ), bad
+    entry = json.loads(cmp.INDEX_PATH.read_text())["analyses"][CHILDCARE.name]
+    assert entry["deployments"] == [
+        "https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold"
+    ]
+
+
+def test_a_tracker_bill_is_recorded_and_due(tmp_path):
+    record = synthetic(-100.0, -105.0)
+    record.analysis["registry"]["kind"] = "tracker"
+    assert errors_of(record) == []
+    record.analysis["registry"]["kind"] = "calculator"
+    assert any("registry.kind must be one of" in e for e in errors_of(record))
+    directory = cmp.scaffold("us", "app", "mn-hf4621", "2026-10-20", root=tmp_path)
+    analysis = json.loads((directory / "analysis.json").read_text())
+    analysis["registry"]["kind"] = "tracker"
+    analysis["published"] = "2026-10-20"
+    (directory / "analysis.json").write_text(json.dumps(analysis))
+    rows = cmp.due([], [], "2026-10-21", 183, root=tmp_path)
+    assert [(r["kind"], r["source"]) for r in rows] == [
+        ("tracker", "analysis-us-mn-hf4621")
+    ]
+
+
 def test_scaffold_lists_every_producer(tmp_path):
     directory = cmp.scaffold("uk", "app", "new-dashboard", SEARCH_DATE, root=tmp_path)
     log = json.loads((directory / "search_log.json").read_text())

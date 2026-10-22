@@ -53,6 +53,9 @@
    "slug": "childcare-100k-threshold",
    "title": "Scrapping the childcare cliff edge",
    "url": "https://policyengine.org/uk/childcare-100k-threshold",
+   "deployments": [
+    "https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold"
+   ],
    "owner": "vahid-ahmadi",
    "published": "2026-10-12",
    "current_pins": [
