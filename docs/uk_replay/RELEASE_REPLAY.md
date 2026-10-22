@@ -956,8 +956,8 @@ gates: CI and an independent review.
 
 ### Replay in CI
 
-CI runs three kinds of replay check. `ci.yml` runs the first two on every
-pull request and push, and `uk-replay-determinism.yml` runs the third on
+CI runs four kinds of replay check. `ci.yml` runs the first three on every
+pull request and push, and `uk-replay-determinism.yml` runs the fourth on
 pushes to main only:
 
 * Engine-free, in the main job: every committed namespace with event run
@@ -987,6 +987,9 @@ pushes to main only:
   premises byte for byte. Non-legacy variants also regenerate the re-verified
   diagnostics. The legacy leg skips them. `ci.yml` names no dataset token,
   and a pull request's run emits a notice that nothing was replayed.
+* `real replay sandbox`, with no secrets: the real replay's sandbox modes
+  on the runner image, with a stand-in dataset and a stub engine
+  ([below](#the-real-replay-in-the-sandbox)).
 * `real replay`, in `uk-replay-determinism.yml`, on pushes to main only, one
   leg for each certified variant from the same listing. A non-legacy variant
   with a committed sealed namespace replays one real measure-year on the
@@ -1003,9 +1006,6 @@ pushes to main only:
   persisted checkout credential and no cache. The legacy leg replays
   nothing. Without the secret, or without a committed sealed namespace, the
   fetch emits a notice stating that nothing was replayed.
-* `real replay sandbox`, in `ci.yml`, on every pull request, with no
-  secrets: the real replay's sandbox modes on the runner image, with a
-  stand-in dataset and a stub engine.
 
 #### The real replay in the sandbox
 
