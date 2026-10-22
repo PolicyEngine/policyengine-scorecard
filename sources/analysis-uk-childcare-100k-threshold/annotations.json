@@ -1,0 +1,90 @@
+[
+ {
+  "id": "hours-draw-microcosm-1126",
+  "claims": [
+   "centax_static_central_fy2027",
+   "centax_static_central_fy2029",
+   "centax_static_high_cost_fy2027",
+   "centax_static_high_cost_fy2029",
+   "centax_static_low_cost_fy2027",
+   "centax_static_low_cost_fy2029",
+   "centax_static_central_fy2028"
+  ],
+  "status": "constructed",
+  "explains_gap": true,
+  "cause": "The published run's Microcosm release drew each family's use of the extended hours with a mean of about 15 of the 30 weekly hours (microcosm#1126, which derives DfE's mean as about 28.5), so the static cost of the 30 hours is about half what CenTax's take-up implies. The dashboard's own full-use sensitivity adds £0.60bn in 2027-28 and £0.70bn in 2029-30 (results.json budget.sensitivities.effects_bn.full_30_hour_usage). Reruns on later, uncertified releases with the corrected draw (uk-childcare-100k-threshold#8, 22 October 2026) put the 30-hours cost at £0.96bn in 2027-28 and £1.12bn in 2029-30 as shipped, and £0.87bn and £0.96bn on CenTax's basis (no hours for reception children, DfE's funding rates, pension contributions deducted from income, 9-11-month-olds added).",
+  "basis": [
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/microcosm/issues/1126"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/blob/f25f0dbd46c31d336bde06898d801a1887a8cf89/data/results.json"
+   },
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8#issuecomment-6337369324"
+   }
+  ]
+ },
+ {
+  "id": "centax-net-vs-dashboard-dynamic",
+  "claims": [
+   "centax_net_central_fy2027",
+   "centax_net_central_fy2029",
+   "centax_net_high_cost_fy2027",
+   "centax_net_high_cost_fy2029",
+   "centax_net_low_cost_fy2027",
+   "centax_net_low_cost_fy2029",
+   "centax_net_central_fy2028"
+  ],
+  "status": "concept_mismatch",
+  "explains_gap": false,
+  "cause": "CenTax's net fiscal cost is for the free hours alone and adds two responses: parents who stop holding income below £100,000 (bunching) and partners who enter work (Table 4.2 and notes). The dashboard's net figure covers both schemes and models the labour-supply response only; it lists bunching as not modelled (results.json labour_supply.not_modelled). The two measure different things; the like-for-like comparison is CenTax's static cost.",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf#page=42"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/blob/f25f0dbd46c31d336bde06898d801a1887a8cf89/data/results.json"
+   }
+  ]
+ },
+ {
+  "id": "cbp-bunching-vs-labour-supply",
+  "claims": [
+   "cbp_net_table2_fy2026",
+   "cbp_net_table2_fy2027",
+   "cbp_net_table2_fy2028",
+   "cbp_net_table2_fy2029",
+   "cbp_net_table3_fy2026",
+   "cbp_net_table3_fy2027",
+   "cbp_net_table3_fy2028",
+   "cbp_net_table3_fy2029"
+  ],
+  "status": "comparable",
+  "explains_gap": true,
+  "cause": "Both figures are the net fiscal effect of removing both limits after behavioural responses, and they have opposite signs: CBP finds a net gain to the Exchequer, the dashboard a net cost. CBP's gain comes from parents who stop holding income below £100,000, through pension contributions (Table 2) or hours worked (Table 3). The dashboard does not model that bunching response (results.json labour_supply.not_modelled) and starts from a static cost that the hours draw understates (microcosm#1126).",
+  "basis": [
+   {
+    "kind": "document",
+    "ref": "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf#page=8"
+   },
+   {
+    "kind": "document",
+    "ref": "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf#page=10"
+   },
+   {
+    "kind": "engine_metadata",
+    "ref": "https://github.com/PolicyEngine/uk-childcare-100k-threshold/blob/f25f0dbd46c31d336bde06898d801a1887a8cf89/data/results.json"
+   },
+   {
+    "kind": "issue",
+    "ref": "https://github.com/PolicyEngine/microcosm/issues/1126"
+   }
+  ]
+ }
+]

@@ -61,6 +61,17 @@ const SOURCE_SPECIAL: Record<string, string> = {
   loughborough_crsp: "Loughborough CRSP",
   trussell_wpi: "Trussell / WPI Economics",
   niesr: "NIESR",
+  // Pre-publish comparables (docs/COMPARABLES.md): producers on
+  // data/comparables/producers.json that no earlier lane staged. (The
+  // Centre for British Progress label arrives with #207.)
+  dfe: "DfE",
+  lse_case: "LSE CASE",
+  landman_economics: "Landman Economics",
+  academic: "Academic working paper",
+  urban: "Urban Institute",
+  cbpp: "CBPP",
+  itep: "ITEP",
+  crfb: "CRFB",
 };
 
 export function sourceLabel(s: string): string {

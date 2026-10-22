@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -577,6 +577,28 @@
    "running": false,
    "updated": "2026-10-15",
    "note": "88 of 132 claims computed \u2014 State individual income tax collections (T40) for 41 States, DC, NH and WA, FY2023-FY2025; FY2023 (a us-6.2.1 calibration target) and FY2025 compared with PE's CY2024 State income tax on us-6.2.1; adapter QC checks the US column against the 50 States on all 25 items; admin outturns staged as claims by decision on #176"
+  },
+  {
+   "id": "analysis-comparables-uk",
+   "source": "Pre-publish comparables",
+   "area": "every external estimate of each PolicyEngine analysis, found before it is published",
+   "mode": 2,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-21",
+   "note": "1 analysis searched, 22 claims, 22 PolicyEngine results beside them"
+  },
+  {
+   "id": "analysis-comparables-us",
+   "source": "Pre-publish comparables",
+   "area": "every external estimate of each PolicyEngine analysis, found before it is published",
+   "mode": 2,
+   "country": "US",
+   "stage": "registered",
+   "running": false,
+   "updated": "2026-10-21",
+   "note": "0 analyses searched, 0 claims, 0 PolicyEngine results beside them"
   }
  ]
 }

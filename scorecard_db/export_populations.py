@@ -227,6 +227,7 @@ def export(
     measures = uk_measures()
     rows = []
     by_source: dict[str, int] = {}
+    by_analysis_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
     by_sign: dict[str, int] = {}
     multi_release = 0
@@ -297,7 +298,15 @@ def export(
         )
         if len({r["data_bundle"] for r in results}) > 1:
             multi_release += 1
-        by_source[c["source"]] = by_source.get(c["source"], 0) + 1
+        # A comparables record re-stages a producer's figure for one analysis
+        # (docs/COMPARABLES.md); counting it again per source would count the
+        # producer-level claim twice, so those claims are tallied apart.
+        tally = (
+            by_analysis_source
+            if publication.get("registry") == "analysis_comparables"
+            else by_source
+        )
+        tally[c["source"]] = tally.get(c["source"], 0) + 1
         eff = latest["status_effective"]
         by_status[eff] = by_status.get(eff, 0) + 1
         # issue #198: the published value's sign against PolicyEngine's
@@ -440,6 +449,9 @@ def export(
             "claims": len(rows),
             "multi_release_claims": multi_release,
             "by_source": dict(sorted(by_source.items())),
+            "by_source_in_comparables_records": dict(
+                sorted(by_analysis_source.items())
+            ),
             "by_latest_status": dict(sorted(by_status.items())),
             "by_sign_relative_to_pe": dict(sorted(by_sign.items())),
             "by_country": {
