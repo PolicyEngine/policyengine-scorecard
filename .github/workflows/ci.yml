@@ -111,8 +111,11 @@ jobs:
     # real measure-year replays on pushes (the dataset token, the org secret
     # PE_UK_PRIVATE_HF_READ_TOKEN, is never used for pull requests) when the
     # variant has a committed sealed namespace; otherwise a notice says that
-    # no real replay ran. The dataset stays on the runner: it is never
-    # uploaded or cached.
+    # no real replay ran. The token step runs before any variant code: it
+    # follows only the checkout, uv's setup and a read of the index, so no
+    # package from the variant's requirements is on the runner while the
+    # token is. The dataset stays on the runner: it is never uploaded or
+    # cached.
     name: replay engine · ${{ matrix.variant }}
     needs: replay-variants
     runs-on: ubuntu-latest
@@ -130,9 +133,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@v5
+        id: uv
         with:
           enable-cache: false
-      - name: Install the variant's exact environment
+      - name: Read the variant's fields from the index
         run: |
           set -euo pipefail
           field() { python3 -c "import json,sys; d=json.load(open('data/uk/replay_variants.json')); v=[v for v in d['variants'] if v['variant_id']==sys.argv[1]][0]; print(eval(sys.argv[2], {'v': v}))" "$VARIANT" "$1"; }
@@ -140,7 +144,48 @@ jobs:
           echo "ENGINE=$(field "v['identity']['packages']['policyengine-uk']['version']")" >> "$GITHUB_ENV"
           echo "RESULT_ROOT=$(field "v['result_root']")" >> "$GITHUB_ENV"
           echo "LEGACY=$(field "v['layout'] == 'legacy_events'")" >> "$GITHUB_ENV"
-      - run: |
+      - name: No real replay on pull requests
+        if: env.LEGACY == 'False' && github.event_name != 'push'
+        run: echo "::notice::The dataset token is used on pushes only; nothing was replayed by the real replay determinism step"
+      # The token is in this step only, and it runs before anything installs
+      # or runs the variant's environment, so no package from the variant's
+      # requirements can have written $GITHUB_ENV or $GITHUB_PATH or planted
+      # a file this step runs. It fetches the certified dataset into the
+      # Hugging Face hub cache that the replay reads
+      # (uk_replay_variants.find_dataset_bytes), and the replay runs, in a
+      # later step, without the token. uv runs by its absolute path in an
+      # emptied environment with PATH=/usr/bin:/bin, with no project, config
+      # or cache, on /usr/bin/python3 in isolated mode (-I), and the token
+      # reaches Python on stdin, never as an argument.
+      - name: Fetch the certified dataset for the real replay
+        id: fetch
+        if: env.LEGACY == 'False' && github.event_name == 'push'
+        env:
+          HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
+          UV: ${{ steps.uv.outputs.uv-path }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HUGGING_FACE_TOKEN:-}" ]; then
+            echo "::notice::PE_UK_PRIVATE_HF_READ_TOKEN unavailable: nothing was replayed by the real replay determinism step"
+            exit 0
+          fi
+          if [ ! -f "$RESULT_ROOT/REPLAY_RECEIPT.json" ] || [ ! -f "$RESULT_ROOT/NAMESPACE_MANIFEST.json" ]; then
+            echo "::notice::The variant has no committed sealed namespace: nothing was replayed by the real replay determinism step"
+            exit 0
+          fi
+          printf '%s' "$HUGGING_FACE_TOKEN" | /usr/bin/env -i PATH=/usr/bin:/bin HOME="$HOME" VARIANT="$VARIANT" \
+            HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME:-$HOME/.cache/huggingface}/hub}" \
+            "$UV" run --no-project --isolated --no-config --no-cache --python /usr/bin/python3 \
+            --with huggingface_hub==2.2.0 python -I -c '
+          import json, os, sys
+          from huggingface_hub import hf_hub_download
+          d = json.load(open("data/uk/replay_variants.json"))
+          v = [v for v in d["variants"] if v["variant_id"] == os.environ["VARIANT"]][0]["identity"]["dataset"]
+          print(hf_hub_download(repo_id=v["repo_id"], repo_type=v["repo_type"], filename=v["path"], revision=v["revision"], token=sys.stdin.read()))
+          '
+          echo "fetched=true" >> "$GITHUB_OUTPUT"
+      - name: Install the variant's exact environment
+        run: |
           uv venv --python 3.12 .venv-variant
           uv pip install --python .venv-variant/bin/python -r "$REQUIREMENTS"
           uv pip install --python .venv-variant/bin/python rfc8785==0.1.4 jsonschema
@@ -164,35 +209,6 @@ jobs:
           set -euo pipefail
           .venv-variant/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine "$ENGINE" --output "$RUNNER_TEMP/MODEL_DIAGNOSTICS.json"
           cmp "$RUNNER_TEMP/MODEL_DIAGNOSTICS.json" "$RESULT_ROOT/MODEL_DIAGNOSTICS.json"
-      - name: No real replay on pull requests
-        if: env.LEGACY == 'False' && github.event_name != 'push'
-        run: echo "::notice::The dataset token is used on pushes only; nothing was replayed by the real replay determinism step"
-      # The token is in this step only: it fetches the certified dataset into
-      # the Hugging Face cache before the variant's engine runs, in the next
-      # step, without it.
-      - name: Fetch the certified dataset for the real replay
-        id: fetch
-        if: env.LEGACY == 'False' && github.event_name == 'push'
-        env:
-          HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [ -z "${HUGGING_FACE_TOKEN:-}" ]; then
-            echo "::notice::PE_UK_PRIVATE_HF_READ_TOKEN unavailable: nothing was replayed by the real replay determinism step"
-            exit 0
-          fi
-          if [ ! -f "$RESULT_ROOT/REPLAY_RECEIPT.json" ] || [ ! -f "$RESULT_ROOT/NAMESPACE_MANIFEST.json" ]; then
-            echo "::notice::The variant has no committed sealed namespace: nothing was replayed by the real replay determinism step"
-            exit 0
-          fi
-          uv run --with huggingface_hub==2.2.0 python - <<'PY'
-          import json, os
-          from huggingface_hub import hf_hub_download
-          d = json.load(open("data/uk/replay_variants.json"))
-          v = [v for v in d["variants"] if v["variant_id"] == os.environ["VARIANT"]][0]["identity"]["dataset"]
-          print(hf_hub_download(repo_id=v["repo_id"], repo_type=v["repo_type"], filename=v["path"], revision=v["revision"], token=os.environ["HUGGING_FACE_TOKEN"]))
-          PY
-          echo "fetched=true" >> "$GITHUB_OUTPUT"
       - name: One real measure-year replays byte for byte
         if: steps.fetch.outputs.fetched == 'true'
         run: |

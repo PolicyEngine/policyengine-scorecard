@@ -1036,3 +1036,249 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     assert names.index(fetch["name"]) < names.index(replay_step["name"])
     assert replay_step["if"] == "steps.fetch.outputs.fetched == 'true'"
     assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]
+    # The token step comes before any variant code: before the first step
+    # that touches the variant's environment, and after only the checkout,
+    # uv's setup, a read of the index and the pull-request notice, none of
+    # which installs or runs anything of the variant's. A package from the
+    # variant's requirements could otherwise write $GITHUB_ENV or
+    # $GITHUB_PATH, or plant a file, that the token step then runs.
+    fetch_index = names.index(fetch["name"])
+    variant_steps = [
+        index
+        for index, step in enumerate(engine["steps"])
+        if ".venv-variant" in json.dumps(step)
+    ]
+    assert variant_steps and fetch_index < variant_steps[0]
+    before = engine["steps"][:fetch_index]
+    assert [step.get("name") or step["uses"] for step in before] == [
+        "actions/checkout@v4",
+        "astral-sh/setup-uv@v5",
+        "Read the variant's fields from the index",
+        "No real replay on pull requests",
+    ]
+    for step in before:
+        for code in (
+            "pip install",
+            "uv venv",
+            "uv run",
+            "-m pipeline",
+            "$REQUIREMENTS",
+        ):
+            assert code not in json.dumps(step), (step, code)
+
+
+# --- the CI dataset fetch, run as GitHub runs it -------------------------------
+
+FETCH_STEP = "Fetch the certified dataset for the real replay"
+# What the fetch hands uv, then Python, before the -c program.
+FETCH_ARGV = [
+    "run",
+    "--no-project",
+    "--isolated",
+    "--no-config",
+    "--no-cache",
+    "--python",
+    "/usr/bin/python3",
+    "--with",
+    "huggingface_hub==2.2.0",
+    "python",
+    "-I",
+    "-c",
+]
+# The stub stands in for uv: it records what it was handed, then runs the -c
+# program as Python would, under the environment it was given, with a
+# huggingface_hub whose hf_hub_download records its arguments.
+UV_STUB = """#!{python} -I
+import io, json, os, sys, types
+
+record = {{"argv": sys.argv[1:], "env": dict(os.environ), "cwd": os.getcwd()}}
+record["stdin"] = sys.stdin.read()
+hub = types.ModuleType("huggingface_hub")
+
+
+def hf_hub_download(**kwargs):
+    record["download"] = kwargs
+    if {fail!r}:
+        raise OSError("401 Client Error")
+    return "/hub/the-certified-dataset.h5"
+
+
+hub.hf_hub_download = hf_hub_download
+sys.modules["huggingface_hub"] = hub
+sys.stdin = io.StringIO(record["stdin"])
+try:
+    program = sys.argv[sys.argv.index("-c") + 1]
+    exec(compile(program, "<-c>", "exec"), {{"__name__": "__main__"}})
+finally:
+    with open({record_path!r}, "w") as handle:
+        json.dump(record, handle)
+"""
+# Python itself adds these at startup to an environment without a locale:
+# PEP 538 locale coercion sets LC_CTYPE, and macOS adds its text encoding.
+INTERPRETER_ADDED = {"LC_CTYPE", "__CF_USER_TEXT_ENCODING"}
+
+
+def sealed_variant():
+    """The newest certified variant with a committed sealed namespace."""
+    from pipeline import uk_replay_variants as rv
+
+    sealed = [
+        v
+        for v in rv.load_document()["variants"]
+        if v["layout"] == "replay_namespace"
+        and (ROOT / v["result_root"] / "REPLAY_RECEIPT.json").is_file()
+        and (ROOT / v["result_root"] / "NAMESPACE_MANIFEST.json").is_file()
+    ]
+    assert sealed
+    return sealed[-1]
+
+
+def run_fetch(
+    tmp_path, *, token="hf_secret_token", result_root=None, env=(), fail=False
+):
+    """The fetch step's script under bash as GitHub runs it, from the checkout,
+    with uv a recording stub and an environment an earlier step made hostile:
+    impostor uv, env and python3 first on PATH, uv and Hugging Face settings
+    that point elsewhere, and PYTHONPATH on the checkout."""
+    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    (fetch,) = [
+        s for s in ci["jobs"]["replay-engine"]["steps"] if s.get("name") == FETCH_STEP
+    ]
+    script = tmp_path / "fetch.sh"
+    script.write_text(fetch["run"])
+    record_path = tmp_path / "record.json"
+    stub = tmp_path / "uv"
+    stub.write_text(
+        UV_STUB.format(python=sys.executable, fail=fail, record_path=str(record_path))
+    )
+    stub.chmod(0o755)
+    impostors = tmp_path / "impostors"
+    impostors.mkdir()
+    for tool in ("uv", "env", "python", "python3"):
+        (impostors / tool).write_text(
+            f"#!/bin/sh\ntouch {impostors}/ran-{tool}\nexit 97\n"
+        )
+        (impostors / tool).chmod(0o755)
+    home = tmp_path / "home dir"
+    output = tmp_path / "github_output"
+    output.touch()
+    variant = sealed_variant()
+    environment = {
+        "PATH": f"{impostors}:{os.environ['PATH']}",
+        "HOME": str(home),
+        "GITHUB_OUTPUT": str(output),
+        "PYTHONPATH": ".",
+        "VARIANT": variant["variant_id"],
+        "RESULT_ROOT": result_root or variant["result_root"],
+        "HUGGING_FACE_TOKEN": token,
+        "UV": str(stub),
+        "HF_ENDPOINT": "http://127.0.0.1:9",
+        "HTTPS_PROXY": "http://127.0.0.1:9",
+        "UV_INDEX_URL": "http://127.0.0.1:9/simple",
+        "UV_PYTHON": str(impostors / "python3"),
+        "LD_LIBRARY_PATH": str(impostors),
+        **dict(env),
+    }
+    result = subprocess.run(
+        ["bash", "--noprofile", "--norc", "-eo", "pipefail", str(script)],
+        cwd=ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    assert not list(impostors.glob("ran-*"))
+    record = json.loads(record_path.read_text()) if record_path.exists() else None
+    return result, record, output.read_text(), variant, home
+
+
+def test_the_fetch_hands_uv_only_a_fixed_environment_and_the_token_on_stdin(tmp_path):
+    result, record, outputs, variant, home = run_fetch(tmp_path)
+    assert result.returncode == 0, result.stderr
+    # uv by its absolute path, with no project, config or cache, on the
+    # system Python in isolated mode; the token is in no argument.
+    assert record["argv"][:-1] == FETCH_ARGV
+    assert not [arg for arg in record["argv"] if "hf_secret_token" in arg]
+    assert record["stdin"] == "hf_secret_token"
+    # Nothing the earlier step set reaches uv: only a fixed PATH, HOME, the
+    # variant, and the hub cache the replay reads.
+    env = {k: v for k, v in record["env"].items() if k not in INTERPRETER_ADDED}
+    assert env == {
+        "PATH": "/usr/bin:/bin",
+        "HOME": str(home),
+        "VARIANT": variant["variant_id"],
+        "HF_HUB_CACHE": f"{home}/.cache/huggingface/hub",
+    }
+    assert Path(record["cwd"]) == ROOT
+    # The program downloads exactly the variant's certified dataset with the
+    # token, and the step reports the fetch for the replay step's condition.
+    dataset = variant["identity"]["dataset"]
+    assert record["download"] == {
+        "repo_id": dataset["repo_id"],
+        "repo_type": dataset["repo_type"],
+        "filename": dataset["path"],
+        "revision": dataset["revision"],
+        "token": "hf_secret_token",
+    }
+    assert "/hub/the-certified-dataset.h5" in result.stdout
+    assert outputs == "fetched=true\n"
+
+
+def test_a_failed_download_fails_the_fetch_and_reports_nothing(tmp_path):
+    result, record, outputs, _, _ = run_fetch(tmp_path, fail=True)
+    assert result.returncode != 0
+    assert record["download"]["token"] == "hf_secret_token"
+    assert outputs == ""
+
+
+@pytest.mark.parametrize(
+    ("token", "unsealed", "notice"),
+    [
+        ("", False, "PE_UK_PRIVATE_HF_READ_TOKEN unavailable"),
+        ("hf_secret_token", True, "no committed sealed namespace"),
+    ],
+)
+def test_the_fetch_skips_with_a_notice_and_never_runs_uv(
+    tmp_path, token, unsealed, notice
+):
+    unsealed_root = tmp_path / "unsealed"
+    unsealed_root.mkdir()
+    result, record, outputs, _, _ = run_fetch(
+        tmp_path, token=token, result_root=str(unsealed_root) if unsealed else None
+    )
+    assert result.returncode == 0, result.stderr
+    assert "::notice::" in result.stdout and notice in result.stdout
+    assert "nothing was replayed" in result.stdout
+    assert record is None and outputs == ""
+
+
+CACHE_LOCATIONS = ("HF_HUB_CACHE", "HF_HOME", "XDG_CACHE_HOME")
+
+
+@pytest.mark.parametrize(
+    "present",
+    [
+        tuple(name for bit, name in enumerate(CACHE_LOCATIONS) if mask >> bit & 1)
+        for mask in range(2 ** len(CACHE_LOCATIONS))
+    ],
+)
+def test_the_fetch_writes_where_the_replay_reads(tmp_path, monkeypatch, present):
+    # For every combination of the cache variables set or unset in the job,
+    # the fetch hands Hugging Face the hub cache that find_dataset_bytes
+    # searches in the replay step, under that same job environment.
+    from pipeline import uk_replay_variants as rv
+
+    settings = {name: str(tmp_path / f"{name.lower()} dir") for name in present}
+    _, record, _, variant, home = run_fetch(tmp_path, env=settings)
+    monkeypatch.setenv("HOME", str(home))
+    for name in CACHE_LOCATIONS:
+        if name in settings:
+            monkeypatch.setenv(name, settings[name])
+        else:
+            monkeypatch.delenv(name, raising=False)
+    searched = []
+    monkeypatch.setattr(
+        rv, "_cache_candidates", lambda dataset, hub: searched.append(hub) or []
+    )
+    with pytest.raises(rv.VariantError):
+        rv.find_dataset_bytes(variant)
+    assert searched == [Path(record["env"]["HF_HUB_CACHE"])]
