@@ -837,6 +837,11 @@ def test_a_quote_must_print_the_whole_number_with_its_sign():
     assert not cmp.quote_contains("Cost -800m", "800m")
     assert cmp.quote_contains("Cost -800m and more", "-800m")
     assert cmp.quote_contains("Abolish Cliff 0.070 0.077 0.091", "0.077")
+    # a dash between two numbers is a range, not a sign
+    assert cmp.quote_contains("a net cost of ~£3-3.4bn compared", "3.4bn")
+    assert cmp.quote_contains("between £3bn – £3.4bn", "£3.4bn")
+    assert not cmp.quote_contains("a saving of -3.4bn", "3.4bn")
+    assert not cmp.quote_contains("costs £-3.4bn", "3.4bn")
 
 
 def test_an_unhashed_primary_fails():
@@ -1008,6 +1013,19 @@ def test_an_issue_basis_is_a_github_issue():
         )
 
     assert any("GitHub issue or pull URL" in e for e in mutate(f))
+
+
+def test_an_unstated_basis_is_never_the_same_quantity():
+    def unstated(r):
+        claim0(r)["conditions"].update(
+            basis="unstated", basis_note="the producer does not say"
+        )
+
+    errors = mutate(unstated)
+    assert any("different quantity is not compared" in e for e in errors)
+    record = synthetic(-100.0, -105.0)
+    record.analysis["pe_estimates"][0]["conditions"]["basis"] = "unstated"
+    assert any("conditions.basis must be one of" in e for e in errors_of(record))
 
 
 def test_a_basis_may_be_a_file_in_this_repository():

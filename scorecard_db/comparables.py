@@ -104,6 +104,10 @@ BASIS_KINDS = ("issue", "document", "engine_metadata", "diagnostic")
 # The basis of an estimate or claim: what it holds fixed. Required on every
 # estimate and claim, and part of what makes two figures the same quantity.
 BASES = ("static", "post_behavioural", "forecast", "outturn")
+# A producer that does not say whether its figure allows for behaviour: the
+# claim is staged, but it is never the same quantity as an estimate, so it
+# can only sit beside one with a stated mismatch.
+CLAIM_BASES = BASES + ("unstated",)
 # A claim compared with an estimate has one of these statuses; a mismatch
 # means it is not compared, so it never labels a compared claim.
 COMPARED_STATUSES = (
@@ -264,16 +268,28 @@ def printed_scale(value_raw: str) -> str | None:
     return None
 
 
+_RANGE_DASH_BEFORE = re.compile(
+    r"\d\s*(?:bn|billion|mn|m|million|k|thousand|tn|trillion|%)?\s*"
+    r"[" + _MINUS + r"]\s*[£$€]?\s*$",
+    re.I,
+)
+
+
 def quote_contains(quote: str, value_raw: str) -> bool:
     """Whether the quote prints this value as a whole number, sign included:
-    "0.07" is not in "10.07", and "800m" is not in "-800m"."""
+    "0.07" is not in "10.07", and "800m" is not in "-800m". A dash between two
+    numbers is a range, not a sign: "3.4bn" is in "£3-3.4bn"."""
     q = " ".join(str(quote).split())
     raw = " ".join(str(value_raw).split())
     if not raw:
         return False
-    lead = "" if raw[0] in _MINUS else _MINUS
-    pattern = rf"(?<![\d.,{re.escape(lead)}]){re.escape(raw)}(?![\d])"
-    return re.search(pattern, q) is not None
+    for match in re.finditer(rf"(?<![\d.,]){re.escape(raw)}(?![\d])", q):
+        before = q[: match.start()]
+        if raw[0] not in _MINUS and _SIGN_BEFORE.search(before):
+            if not _RANGE_DASH_BEFORE.search(before):
+                continue
+        return True
+    return False
 
 
 def check_value(row: dict, where: str, signed: bool = False) -> list[str]:
@@ -677,15 +693,16 @@ def _check_bases(bases, where: str) -> list[str]:
     return errors
 
 
-def _check_identity(row: dict, where: str) -> list[str]:
+def _check_identity(row: dict, where: str, bases: tuple = BASES) -> list[str]:
     """The conditions that, with metric, unit, period, time basis and world,
-    say what quantity a figure is."""
+    say what quantity a figure is. A free-text account of the basis goes in
+    conditions.basis_note."""
     errors = []
     conditions = row.get("conditions")
     if not _string_map(conditions):
         return [f"{where}: conditions must map strings to strings"]
-    if conditions.get("basis") not in BASES:
-        errors.append(f"{where}: conditions.basis must be one of {BASES}")
+    if conditions.get("basis") not in bases:
+        errors.append(f"{where}: conditions.basis must be one of {bases}")
     if not _SLUG.match(conditions.get("program", "")):
         errors.append(f"{where}: conditions.program must name the programme (a slug)")
     fy = conditions.get("fy")
@@ -1152,7 +1169,7 @@ def validate(
             errors.append(
                 f"{where}: time_basis {c.get('time_basis')!r} is not registered"
             )
-        errors.extend(_check_identity(c, where))
+        errors.extend(_check_identity(c, where, CLAIM_BASES))
         world = c.get("world")
         if world not in world_keys:
             errors.append(f"{where}: world {world!r} is not defined in analysis.json")

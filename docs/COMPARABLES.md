@@ -147,7 +147,10 @@ mechanically where they can be:
   `conditions.sign_convention`, in words `scorecard_db/signs.py` reads. A compared change metric
   needs a convention that starts `positive =` and says one thing.
 - **The same identity as an estimate**: `metric`, `unit_concept`, `period`, `time_basis`,
-  `conditions.basis` and `conditions.program`, with the same `conditions.fy` rule.
+  `conditions.basis` and `conditions.program`, with the same `conditions.fy` rule. The basis is
+  one word; a fuller account of it goes in `conditions.basis_note`. A claim whose producer does
+  not say whether it allows for behaviour has basis `unstated`: it is never the same quantity as
+  an estimate, so it can only sit beside one with a stated mismatch.
 - **Registered vocabulary** for `metric` and `unit_concept`, or `null` with a proposal (such a
   claim is staged but waits for its vocabulary decision before it reaches the database).
 - **Named baselines**: `baseline_policy` is a label in `scorecard_db/baselines.py`, or null for
