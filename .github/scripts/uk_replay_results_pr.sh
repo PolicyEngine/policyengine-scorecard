@@ -155,18 +155,44 @@ build() {
     echo "::error::scorecard_db.build_db is nondeterministic on the results branch" >&2
     exit 1
   fi
+  preflight
   # The verified commit, for the job that holds the token to reproduce.
   output base "$base_commit"
   output state "$state_commit"
   output tree "$(git -C "$TREE" rev-parse 'HEAD^{tree}')"
   output sealed "$(cat "$WORK/verify-sealed.txt")"
   output content_hash "$(content_hash "$WORK/build1.json")"
+  output preflight "$(cat "$WORK/preflight.json")"
   output action build
   echo "verified tree $(git -C "$TREE" rev-parse 'HEAD^{tree}') for $(plan branch)"
 }
 
+# CI's format check and suite on the commit, as ci.yml's python job runs them
+# (tests check the lines are its lines), then its no-drift check. A failure
+# is reported, not fatal: the pull request opens as a draft that names it
+# (review of 24434729, 3). This runs in the build job, which holds no write
+# credential, and in a subshell without the step's command files, so nothing
+# the checks run can set this job's outputs or a later step's environment.
+preflight() (
+  local RUFF=(uvx ruff format --check be nz scorecard_db tests pipeline)
+  local SUITE=(uv run --with pytest --with hypothesis --with pypdf --with pyyaml --with numpy --with psutil --with rfc8785==0.1.4 --with jsonschema pytest tests/ -q)
+  if [ -n "${GH_TOKEN:-}${GITHUB_TOKEN:-}" ]; then
+    echo "::error::CI's checks run with no GitHub token in the environment" >&2
+    exit 1
+  fi
+  unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY
+  local ruff=0 suite=0
+  (cd "$TREE" && "${RUFF[@]}") 2>&1 | tee "$WORK/ruff.log" || ruff=$?
+  (cd "$TREE" && PYTHONPATH=. "${SUITE[@]}") 2>&1 | tee "$WORK/suite.log" || suite=$?
+  git -C "$TREE" status --porcelain > "$WORK/porcelain.txt"
+  builder preflight --ruff-exit "$ruff" --ruff-log "$WORK/ruff.log" \
+    --suite-exit "$suite" --suite-log "$WORK/suite.log" \
+    --porcelain "$WORK/porcelain.txt" --output "$WORK/preflight.json"
+)
+
 rebuild() {
-  : "${BUILT_TREE:?}" "${BUILT_BASE:?}" "${BUILT_STATE:?}" "${BUILT_SEALED:?}" "${BUILT_CONTENT_HASH:?}"
+  : "${BUILT_TREE:?}" "${BUILT_BASE:?}" "${BUILT_STATE:?}" "${BUILT_SEALED:?}" "${BUILT_CONTENT_HASH:?}" \
+    "${BUILT_PREFLIGHT:?}"
   # The standard library alone: no site-packages, nothing installed. check
   # skips the schema and digest checks the build job made; the rest of the
   # builder needs no package in either job.
@@ -218,36 +244,46 @@ rebuild() {
       exit 0
     fi
   fi
-  python3 -I - "$WORK/validation.json" "$IDENTICAL" "$BUILT_SEALED" "$BUILT_CONTENT_HASH" <<'PY'
+  python3 -I - "$WORK/validation.json" "$IDENTICAL" "$BUILT_SEALED" "$BUILT_CONTENT_HASH" \
+    "$BUILT_PREFLIGHT" <<'PY'
 import json
 import sys
 
-path, identical, sealed, content_hash = sys.argv[1:]
+path, identical, sealed, content_hash, preflight = sys.argv[1:]
 with open(path, "w") as handle:
     json.dump(
         {
             "identical_files": int(identical),
             "verify_sealed": sealed,
             "content_hash": content_hash,
+            "preflight": preflight,
         },
         handle,
     )
 PY
-  python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py" body --request-dir "$STAGE/$REQUEST" \
-    --plan "$WORK/plan.json" --validation "$WORK/validation.json" --output "$WORK/BODY.md"
+  # body refuses a malformed preflight report, and says whether the pull
+  # request is a draft: integrity is not complete, or one of CI's checks fails.
+  local draft
+  draft=$(python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py" body --request-dir "$STAGE/$REQUEST" \
+    --plan "$WORK/plan.json" --validation "$WORK/validation.json" --output "$WORK/BODY.md")
   output commit "$(git -C "$TREE" rev-parse HEAD)"
   output branch "$(plan branch)"
+  output draft "$draft"
   output action build
   echo "rebuilt $(plan branch) at $(git -C "$TREE" rev-parse HEAD), tree $BUILT_TREE"
 }
 
 propose() {
-  : "${BUILT_COMMIT:?}" "${BUILT_BRANCH:?}" "${GH_TOKEN:?}"
+  : "${BUILT_COMMIT:?}" "${BUILT_BRANCH:?}" "${BUILT_DRAFT:?}" "${GH_TOKEN:?}"
   local branch=$BUILT_BRANCH head
   # Push exactly the commit this job assembled, on the main it assembled it on.
   head=$(git -C "$TREE" rev-parse HEAD)
   if [ "$head" != "$BUILT_COMMIT" ] || [ "$branch" != "$(plan branch)" ]; then
     echo "::error::the results commit changed after it was assembled" >&2
+    exit 1
+  fi
+  if [ "$BUILT_DRAFT" != true ] && [ "$BUILT_DRAFT" != false ]; then
+    echo "::error::BUILT_DRAFT must be true or false" >&2
     exit 1
   fi
   # The token reaches git only through gh, for these commands alone.
@@ -301,13 +337,18 @@ propose() {
   if [ -z "$number" ]; then
     local create=(--repo "$GITHUB_REPOSITORY" --base "$BASE" --head "$branch"
       --title "$title" --body-file "$WORK/BODY.md")
-    if [ "$(plan draft)" = True ]; then
+    if [ "$BUILT_DRAFT" = true ]; then
       create+=(--draft)
     fi
     gh pr create "${create[@]}"
   elif [ "$pushed" = true ]; then
     gh pr edit "$number" --repo "$GITHUB_REPOSITORY" --title "$title" \
       --body-file "$WORK/BODY.md"
+    # A rebuild that should be a draft turns a ready pull request back into
+    # one. Nothing here marks one ready: a person does, once CI passes.
+    if [ "$BUILT_DRAFT" = true ]; then
+      gh pr ready "$number" --repo "$GITHUB_REPOSITORY" --undo
+    fi
   fi
   echo "::notice::Results pull request for $REQUEST_ID on $branch at $head"
   if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then

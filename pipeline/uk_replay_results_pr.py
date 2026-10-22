@@ -21,8 +21,11 @@ the App token that pushes it has no ``workflows`` permission.
 
 ``check`` reads the request directory and a checkout of main and decides
 whether to build; ``apply`` makes edits 2 to 4 after the extraction;
-``scope`` refuses a commit that touches anything else; ``body`` renders the
-pull request. ``.github/scripts/uk_replay_results_pr.sh`` does the git work,
+``scope`` refuses a commit that touches anything else; ``preflight`` reports
+CI's format check, suite and no-drift check, which the build job runs on the
+commit; ``body`` renders the pull request, a draft when integrity is not
+complete or one of those checks fails, and prints whether it is one.
+``.github/scripts/uk_replay_results_pr.sh`` does the git work,
 the verification, the push and the pull request. Nothing here installs,
 imports or runs candidate or release code, and nothing here merges.
 
@@ -607,10 +610,163 @@ def scope(plan: dict, changed: list[str]) -> None:
     need(not missing, f"the commit lacks edits to {missing}")
 
 
+# --- CI's own checks on the commit ------------------------------------------------
+
+# The build job runs ci.yml's format check and suite on the results commit,
+# then its no-drift check (review of 24434729, 3). Each is reported as its
+# exit status (drift's is 1 when the tree is not clean), how many distinct
+# things failed and the first LISTED of them the pull request can show. A
+# failure opens the pull request as a draft that names them, where #195, #204
+# and #206 opened ready and failed CI.
+PREFLIGHT = {
+    "ruff": (
+        "CI's format check, `uvx ruff format --check be nz scorecard_db tests pipeline`",
+        "file",
+    ),
+    "suite": (
+        "CI's suite, `pytest tests/ -q` with CI's packages",
+        "failed or erroring test",
+    ),
+    "drift": (
+        "CI's no-drift check after the suite, `git status --porcelain`",
+        "changed or untracked path",
+    ),
+}
+LISTED = 100
+# A name the pull request shows sits in a fenced block: printable ASCII, no
+# backtick (which could close the fence), no space at either end.
+LISTABLE = re.compile(r"[!-_a-~](?:[ -_a-~]{0,298}[!-_a-~])?")
+SUMMARY = re.compile(r"^=+ short test summary info =+$", re.M)
+# ruff format --check names a file "Would reformat: PATH" before ruff 0.16
+# and in a diagnostic's "--> PATH:LINE:COLUMN" after it; CI's uvx ruff is
+# whichever is newest.
+UNFORMATTED = re.compile(r"^(?:Would reformat: (.+)|\s*--> (.+?):[0-9]+:[0-9]+)$", re.M)
+
+
+def node_id(text: str) -> str:
+    """A short-summary line's node id: the text before its " - " message,
+    outside any brackets (a parametrised id can hold " - ")."""
+    depth = 0
+    for at, character in enumerate(text):
+        if depth == 0 and text.startswith(" - ", at):
+            return text[:at]
+        depth = max(0, depth + {"[": 1, "]": -1}.get(character, 0))
+    return text
+
+
+def suite_failures(log: str) -> list[str]:
+    """The node ids pytest's last short test summary in ``log`` names as
+    FAILED or ERROR (a collection error names its module)."""
+    starts = [match.end() for match in SUMMARY.finditer(log)]
+    if not starts:
+        return []
+    return [
+        node_id(line.split(" ", 1)[1])
+        for line in log[starts[-1] :].splitlines()
+        if line.startswith(("FAILED ", "ERROR "))
+    ]
+
+
+def format_failures(log: str) -> list[str]:
+    """The files ``ruff format --check`` names in ``log``."""
+    return [old or new for old, new in UNFORMATTED.findall(log)]
+
+
+def drift_paths(porcelain: str) -> list[str]:
+    """The paths ``git status --porcelain`` lists, changed or untracked."""
+    return [line[3:] for line in porcelain.splitlines() if line.strip()]
+
+
+def report(status: int, names: list[str]) -> dict:
+    """One check: its exit status and, when it failed, how many distinct
+    names it gave and the first LISTED of those the pull request can show."""
+    distinct = list(dict.fromkeys(names)) if status else []
+    return {
+        "exit": status,
+        "count": len(distinct),
+        "names": [name for name in distinct if LISTABLE.fullmatch(name)][:LISTED],
+    }
+
+
+def preflight(
+    ruff_exit: int, ruff_log: str, suite_exit: int, suite_log: str, porcelain: str
+) -> dict:
+    """The build job's report of CI's checks on the results commit."""
+    return {
+        "ruff": report(ruff_exit, format_failures(ruff_log)),
+        "suite": report(suite_exit, suite_failures(suite_log)),
+        "drift": report(1 if porcelain.strip() else 0, drift_paths(porcelain)),
+    }
+
+
+def read_preflight(text: str) -> dict:
+    """The build job's report as the propose job receives it, a string:
+    refused unless it has exactly the shape ``preflight`` gives. The
+    counts and names are still the build job's word; CI on the pull request
+    runs the checks again."""
+    try:
+        value = json.loads(text)
+    except ValueError:
+        value = None
+
+    def shaped(condition: bool, what: str) -> None:
+        need(condition, f"the build job's outputs are malformed: preflight {what}")
+
+    shaped(isinstance(value, dict) and set(value) == set(PREFLIGHT), "checks")
+    for key, check in value.items():
+        shaped(
+            isinstance(check, dict) and set(check) == {"exit", "count", "names"},
+            f"{key} fields",
+        )
+        status, count, names = check["exit"], check["count"], check["names"]
+        shaped(type(status) is int and 0 <= status <= 255, f"{key} exit")
+        shaped(type(count) is int and 0 <= count <= 10**6, f"{key} count")
+        shaped(status != 0 or count == 0, f"{key} passes with failures")
+        shaped(
+            isinstance(names, list)
+            and len(names) <= min(count, LISTED)
+            and all(isinstance(n, str) and LISTABLE.fullmatch(n) for n in names)
+            and len(set(names)) == len(names),
+            f"{key} names",
+        )
+    return value
+
+
+def failed_checks(checks: dict) -> list[str]:
+    return [key for key in PREFLIGHT if checks[key]["exit"]]
+
+
+def is_draft(plan: dict, checks: dict) -> bool:
+    """A draft when integrity is not complete or any of CI's checks fails."""
+    return bool(plan["draft"] or failed_checks(checks))
+
+
+def check_line(key: str, check: dict) -> str:
+    """The check's line under "Validation in the results run": what failed,
+    in a fenced block."""
+    what, noun = PREFLIGHT[key]
+    if not check["exit"]:
+        return f"- {what}: passes."
+    line = f"- {what}: **fails**" + (
+        f" (exit {check['exit']})" if key != "drift" else ""
+    )
+    count, names = check["count"], check["names"]
+    if not count:
+        return f"{line}, naming no {noun}; the build job's log has its output."
+    line += f", {tally(count, noun)}:"
+    if not names:
+        return f"{line} none can be shown here; the build job's log lists them."
+    listing = "\n".join(f"  {name}" for name in names)
+    more = count - len(names)
+    rest = f"\n\n  {more:,} more are in the build job's log." if more else ""
+    return f"{line}\n\n  ```text\n{listing}\n  ```{rest}"
+
+
 # --- the pull request -----------------------------------------------------------
 
 
 def body(directory: Path, plan: dict, validation: dict) -> str:
+    reported = read_preflight(validation["preflight"])
     record = json.loads((directory / "results" / "VARIANT.json").read_bytes())
     receipt = json.loads((directory / variants.RECEIPT_NAME).read_bytes())
     packages = record["identity"]["packages"]
@@ -693,6 +849,7 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         "- CI's `.github/scripts/uk_replay_regenerate.sh` leaves the tree unchanged.",
         "- `scorecard_db.build_db`: two builds agree "
         f"(`{validation['content_hash'][:8]}…`), and there is no tracked-file drift.",
+        *(check_line(key, reported[key]) for key in PREFLIGHT),
     ]
     draft = (
         "\n\nIntegrity is not `complete`, so this pull request is a draft: decide "
@@ -700,6 +857,13 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         if plan["draft"]
         else ""
     )
+    if failed_checks(reported):
+        draft += (
+            "\n\nCI's own checks fail on this commit (see \"Validation in the "
+            'results run"), so this pull request is a draft. Fix them on main and '
+            "run the results workflow again for this request, which rebuilds this "
+            "branch on the new main; mark the pull request ready once CI passes."
+        )
     return (
         f"# {plan['title']}\n\n"
         f"This PR commits the receiver's sealed qualification of `{plan['variant_id']}`"
@@ -746,6 +910,13 @@ def main(argv: list[str] | None = None) -> int:
             sub.add_argument("--output", type=Path, required=True)
     scoped = commands.add_parser("scope")
     scoped.add_argument("--plan", type=Path, required=True)
+    # The build job's report of CI's checks, one line of JSON for job 2.
+    reported = commands.add_parser("preflight")
+    for name in ("ruff", "suite"):
+        reported.add_argument(f"--{name}-exit", type=int, required=True)
+        reported.add_argument(f"--{name}-log", type=Path, required=True)
+    reported.add_argument("--porcelain", type=Path, required=True)
+    reported.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "check":
@@ -768,10 +939,31 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "scope":
             plan = json.loads(args.plan.read_bytes())
             scope(plan, [line for line in sys.stdin.read().splitlines() if line])
+        elif args.command == "preflight":
+            text = json.dumps(
+                preflight(
+                    args.ruff_exit,
+                    args.ruff_log.read_text(errors="replace"),
+                    args.suite_exit,
+                    args.suite_log.read_text(errors="replace"),
+                    args.porcelain.read_text(errors="replace"),
+                ),
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+            # Never a report job 2 would refuse.
+            read_preflight(text)
+            args.output.write_text(text)
         else:
             plan = json.loads(args.plan.read_bytes())
             validation = json.loads(args.validation.read_bytes())
             args.output.write_text(body(args.request_dir, plan, validation))
+            # The propose job opens a draft on this word.
+            print(
+                "true"
+                if is_draft(plan, read_preflight(validation["preflight"]))
+                else "false"
+            )
     except (Refused, variants.VariantError) as problem:
         print(f"::error::{problem}", file=sys.stderr)
         return 1
