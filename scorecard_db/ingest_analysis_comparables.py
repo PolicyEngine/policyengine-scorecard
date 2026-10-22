@@ -1,4 +1,4 @@
-"""Ingest every pre-publish comparables record (docs/COMPARABLES.md).
+"""Ingest every comparables record (docs/COMPARABLES.md).
 
 Each ``sources/analysis-<country>-<slug>/`` directory records the external
 estimates found for one PolicyEngine analysis and the analysis's own
@@ -10,11 +10,17 @@ published estimates. This ingest puts them on the scorecard:
   ``conditions.analysis`` naming the analysis so its claims are retrievable
   together and never collide with a producer-level source staging the same
   publication;
-- every compared claim gets one PolicyEngine result: the analysis's own
-  published figure, read from the results file analysis.json pins, with the
-  comparison status its annotation gives (``comparable`` when none does);
-- a claim with no PolicyEngine counterpart is published without a result,
-  and ``conditions.pe_missing`` says why.
+- a compared claim gets the analysis's own figure as its result, read from
+  the results file analysis.json pins, with the status its annotation gives
+  (``comparable``, or ``constructed`` across two worlds, when none does; a
+  gap still pending on its issue keeps that status and says so);
+- an uncompared claim set beside its nearest estimate gets that figure as
+  its result, labelled with the mismatch its annotation states, so the
+  number is never hidden;
+- earlier figures of the same estimate (``superseded_estimates``) are kept
+  as older results on the same claim: history, not state;
+- a claim with no PolicyEngine figure near it is published without a
+  result, and ``conditions.pe_missing`` says why.
 
 Rows the database cannot hold are tallied, not dropped silently: a claim
 with a proposed metric or unit (harvest rule 2) waits for its vocabulary
@@ -67,6 +73,29 @@ LANE_FEED_META = {
     for country, lane in LANES.items()
 }
 FIRST_SEARCH_DATE = "2026-10-21"
+
+
+def _value_kind(unit: str) -> str:
+    """ExternalScore.value_kind for a unit concept (count | share | percent |
+    index | usd | gbp | eur | nzd), as the other ingests set it."""
+    if unit.startswith("gbp"):
+        return "gbp"
+    if unit.startswith("usd"):
+        return "usd"
+    if unit in ("eur", "nzd", "share"):
+        return unit
+    if unit.startswith("percent"):
+        return "percent"
+    if unit == "index_0_1":
+        return "index"
+    return "count"
+
+
+_PLURALS = {"analysis": "analyses"}
+
+
+def _plural(n: int, word: str) -> str:
+    return f"{n} {word if n == 1 else _PLURALS.get(word, word + 's')}"
 
 
 def _baseline_descriptor(label: str | None) -> dict | None:
@@ -148,6 +177,7 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
             if c["value_kind"] != "point":
                 conditions["estimate_kind"] = c["value_kind"]
             with_baseline_condition(conditions, reform)
+            row = evaluation[c["key"]]
             if not c.get("compare_to"):
                 conditions["pe_missing"] = c["pe_missing"]
             publication = {
@@ -162,7 +192,7 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
                 "country": a["country"],
                 "analysis_url": a["url"],
             }
-            if not c.get("compare_to"):
+            if not row["estimate"] and not row["nearest"]:
                 publication["publish_without_result"] = True
             score = ExternalScore(
                 source=c["source"],
@@ -177,12 +207,11 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
                 source_model=c.get("source_model"),
                 source_column=c["source_column"],
                 publication=publication,
-                value_kind=c["unit_concept"],
+                value_kind=_value_kind(c["unit_concept"]),
                 status="ok",
             )
             scores.append(score)
             t["claims"] += 1
-            row = evaluation[c["key"]]
             if not row["estimate"] and not row["nearest"]:
                 t["not_compared"] += 1
                 continue
@@ -198,42 +227,54 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
             if note:
                 annotations.append(f"{note['id']}: {note['cause']}")
                 if status == "pending":
-                    # the comparison is like for like; its gap is open on the owner's issue
-                    status = ComparisonStatus.COMPARABLE.value
+                    # pending is a state of the explanation, not of the
+                    # comparison: the comparison keeps its own status
+                    status = (
+                        ComparisonStatus.CONSTRUCTED.value
+                        if c["world"] != est["world"]
+                        else ComparisonStatus.COMPARABLE.value
+                    )
                     annotations.append(
                         f"gap unexplained, tracked at {note['tracking_issue']}"
                     )
             world_baseline = a["worlds"].get(est["world"], {}).get("baseline")
             executed = _baseline_descriptor(world_baseline) or CURRENT_LAW_DESCRIPTOR
-            prov = est["provenance"]
-            results.append(
-                PEResult(
-                    claim_id=score.claim_id(),
-                    computed_value=float(est["value"]),
-                    status=ComparisonStatus(status),
-                    engine_version=_engine_version(est),
-                    data_bundle=prov["dataset"],
-                    pe_construction=json.dumps(
-                        {
-                            "analysis": a["id"],
-                            "estimate": est["key"],
-                            "repo": prov["repo"],
-                            "commit": prov["commit"],
-                            "path": prov["path"],
-                            "sha256": prov["sha256"],
-                            "field": prov["field"],
-                            "relation": row["relation"],
-                            "compared": bool(row["estimate"]),
-                        },
-                        sort_keys=True,
-                    ),
-                    run_id=f"analysis:{a['id']}@{prov['commit'][:7]}",
-                    computed_at=prov["computed_at"],
-                    annotations=annotations,
-                    baseline_key=baseline_key(executed),
+            history = [
+                e
+                for e in a.get("superseded_estimates") or []
+                if e["key"] == est["key"]
+            ]
+            for version in [est, *history]:
+                prov = version["provenance"]
+                results.append(
+                    PEResult(
+                        claim_id=score.claim_id(),
+                        computed_value=float(version["value"]),
+                        status=ComparisonStatus(status),
+                        engine_version=_engine_version(version),
+                        data_bundle=prov["dataset"],
+                        pe_construction=json.dumps(
+                            {
+                                "analysis": a["id"],
+                                "estimate": version["key"],
+                                "repo": prov["repo"],
+                                "commit": prov["commit"],
+                                "path": prov["path"],
+                                "sha256": prov["sha256"],
+                                "field": prov["field"],
+                                "relation": row["relation"],
+                                "compared": bool(row["estimate"]),
+                                "superseded_on": version.get("superseded_on"),
+                            },
+                            sort_keys=True,
+                        ),
+                        run_id=f"analysis:{a['id']}@{prov['commit'][:7]}",
+                        computed_at=prov["computed_at"],
+                        annotations=annotations,
+                        baseline_key=baseline_key(executed),
+                    )
                 )
-            )
-            t["results"] += 1
+                t["results"] += 1
     return finish(scores, REGISTRY), results, tally
 
 
@@ -288,8 +329,9 @@ def ingest(db_path: Path) -> dict:
                 else ("ingested" if t["claims"] else "registered")
             )
             detail = (
-                f"{t['analyses']} analyses searched, {t['claims']} claims, "
-                f"{t['results']} with the analysis's own figure beside them"
+                f"{_plural(t['analyses'], 'analysis')} searched, "
+                f"{_plural(t['claims'], 'claim')}, "
+                f"{_plural(t['results'], 'PolicyEngine result')} beside them"
             )
             db.conn.execute(LANE_SQL, (lane, stage_name, detail, updated))
     sync_lane_feed(db, REPO / "data" / "lanes.json", updated, lanes=LANE_FEED_META)

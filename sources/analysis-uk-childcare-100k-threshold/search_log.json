@@ -5,6 +5,9 @@
    "date": "2026-10-21",
    "kind": "backfill",
    "by": "session:local_4b58a325-2146-422b-80fa-69a117a812aa",
+   "results_pins": [
+    "PolicyEngine/uk-childcare-100k-threshold@f25f0dbd46c31d336bde06898d801a1887a8cf89:4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a"
+   ],
    "producers": [
     {
      "producer": "obr",
@@ -112,9 +115,11 @@
       "centax_static_low_cost_fy2027",
       "centax_net_low_cost_fy2027",
       "centax_static_low_cost_fy2029",
-      "centax_net_low_cost_fy2029"
+      "centax_net_low_cost_fy2029",
+      "centax_static_central_fy2028",
+      "centax_net_central_fy2028"
      ],
-     "note": "Table 4.2: three scenarios x two tax years; static and net staged, the behavioural margins and bunching counts are in sources/centax-childcare-100k."
+     "note": "Table 4.2 (three scenarios x 2028 and 2030) and Table B.1's 2029 row, static and net. The behavioural margins and bunching counts are in sources/centax-childcare-100k. Table B.1's 2028 and 2030 rows repeat Table 4.2's central rows; its 2031 row is outside the dashboard's years. Table B.2 (expected ANI) prints the same abolition figures."
     },
     {
      "producer": "centre_for_british_progress",
