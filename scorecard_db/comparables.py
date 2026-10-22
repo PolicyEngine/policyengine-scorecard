@@ -95,8 +95,14 @@ VALUE_KINDS = (
     "range_high",
     "approx_chart_reading",
     "cumulative",
+    "lower_bound",
+    "upper_bound",
 )
 RANGE_KINDS = ("range_low", "range_high")
+# A figure that is not a single year's estimate of the quantity: a total over
+# years, or a one-sided bound ("over £1 billion"). It is set beside an
+# estimate, never compared with one.
+UNCOMPARED_KINDS = ("cumulative", "lower_bound", "upper_bound")
 ATTRIBUTIONS = ("own", "restated", "same_assumptions")
 BENCHMARK_CLASSES = ("different_model", "administrative_fact", "same_assumptions")
 PARSE_CONFIDENCE = ("high", "medium", "low")
@@ -1266,7 +1272,7 @@ def validate(
                 if (
                     _same_quantity(c, est)
                     and c.get("attribution") == "own"
-                    and value_kind not in ("cumulative",)
+                    and value_kind not in UNCOMPARED_KINDS
                     and baseline == worlds.get(est.get("world"), {}).get("baseline")
                 ):
                     errors.append(
@@ -1290,9 +1296,10 @@ def validate(
             errors.append(
                 f"{where}: only a producer's own estimate is compared ({c.get('attribution')})"
             )
-        if value_kind == "cumulative":
+        if value_kind in UNCOMPARED_KINDS:
             errors.append(
-                f"{where}: a cumulative figure is not compared with a single-year estimate"
+                f"{where}: a {value_kind} figure is not compared with a single-year "
+                "estimate; set it beside the nearest one"
             )
         if c.get("world") != est.get("world"):
             across = compare.get("across_worlds")

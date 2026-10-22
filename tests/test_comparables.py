@@ -515,6 +515,7 @@ EVASIONS = {
         sign_convention="positive = reduction in borrowing; negative = increase in borrowing"
     ),
     "cumulative": lambda r: claim0(r).update(value_kind="cumulative"),
+    "a one-sided bound": lambda r: claim0(r).update(value_kind="lower_bound"),
     "relabelled concept mismatch": lambda r: r.annotations.append(
         note("x", ["ext_cost_fy2027"], "concept_mismatch", explains=True)
     ),

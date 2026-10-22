@@ -87,7 +87,9 @@ Each estimate in `pe_estimates` names its `world`, `metric`, `unit_concept`, `pe
 `time_basis`, and two conditions:
 
 - `conditions.basis`: `static`, `post_behavioural`, `forecast` or `outturn`;
-- `conditions.program`: a slug for what is costed (`thirty_hours`, `both_schemes`).
+- `conditions.program`: a slug for what is costed: the programmes or taxes whose change the
+  figure counts (`thirty_hours`, `both_schemes`, or `ny_dependent_exemption_ny_state_income_tax`
+  for a state tax expenditure beside a net budget effect).
 
 When `conditions.fy` names a fiscal year, `period` is its end year and `time_basis` is
 `fiscal_year`. Each estimate is stated in PolicyEngine's own orientation for its metric; when the
@@ -161,7 +163,9 @@ mechanically where they can be:
 - **Primaries, hashed**: `publication.primary_sha256` is a line in `manifest.jsonl`, and
   `publication.date` is no later than the day the claim was found.
 - **Ranges**: a printed range is two claims, `value_kind` `range_low` and `range_high`, sharing a
-  `conditions.range_group`, the same identity and the same `compare_to`.
+  `conditions.range_group`, the same identity and the same `compare_to`. A one-sided figure
+  ("over £1 billion") is `lower_bound` or `upper_bound`, and like a `cumulative` total it is set
+  beside an estimate, never compared with one.
 
 ### The comparison
 
