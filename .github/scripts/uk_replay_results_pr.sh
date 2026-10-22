@@ -171,8 +171,11 @@ build() {
 # (tests check the lines are its lines), then its no-drift check. A failure
 # is reported, not fatal: the pull request opens as a draft that names it
 # (review of 24434729, 3). This runs in the build job, which holds no write
-# credential, and in a subshell without the step's command files, so nothing
-# the checks run can set this job's outputs or a later step's environment.
+# credential. The variables that name the step's command files are unset for
+# it, so a test or tool that writes $GITHUB_OUTPUT or $GITHUB_ENV by name
+# writes nowhere. That is hygiene, not a sandbox: a process that finds the
+# files on the runner's disk can still write them, which is why job 2 takes
+# every output of this job as its word, checked for shape.
 preflight() (
   local RUFF=(uvx ruff format --check be nz scorecard_db tests pipeline)
   local SUITE=(uv run --with pytest --with hypothesis --with pypdf --with pyyaml --with numpy --with psutil --with rfc8785==0.1.4 --with jsonschema pytest tests/ -q)

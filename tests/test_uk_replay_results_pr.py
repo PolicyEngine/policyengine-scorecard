@@ -3042,7 +3042,8 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     )
     assert [line.split()[0] for line in checks[1:3]] == ["build_db", "build_db"]
     # Review of 24434729 (3): then CI's format check and suite, its own
-    # lines, on that commit, with no token or command file in reach.
+    # lines, on that commit, with no token and no command file's variable
+    # in their environment.
     assert checks[3:] == [
         f"ruff {verified} - - {' '.join(script_array('RUFF')[2:])}",
         f"suite {verified} . - {' '.join(script_array('SUITE')[1:])}",

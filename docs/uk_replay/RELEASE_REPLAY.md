@@ -920,9 +920,12 @@ which CI now reads from the index:
    after the suite. A test checks that these are `ci.yml`'s lines word for
    word. They run in the `build` job, which holds no write credential: the
    script refuses to start them if `GH_TOKEN` or `GITHUB_TOKEN` is set, and
-   runs them without the step's command files (`$GITHUB_OUTPUT`,
-   `$GITHUB_ENV`, `$GITHUB_PATH`, `$GITHUB_STATE`, `$GITHUB_STEP_SUMMARY`),
-   so nothing the suite runs can set the job's outputs. Their failure does
+   unsets the variables that name the step's command files
+   (`$GITHUB_OUTPUT`, `$GITHUB_ENV`, `$GITHUB_PATH`, `$GITHUB_STATE`,
+   `$GITHUB_STEP_SUMMARY`), so a test that writes one by name writes
+   nowhere. That is hygiene, not a sandbox: a process that finds the files
+   on the runner's disk can still write them, and `propose` takes every
+   output of `build` as its word, checked for shape. Their failure does
    not stop the run. The job reports each check's exit status, how many
    files, tests or paths failed (the node ids of pytest's last short test
    summary, the files ruff names, the paths `git status` lists) and the
