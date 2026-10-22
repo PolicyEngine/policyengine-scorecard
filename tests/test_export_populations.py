@@ -14,6 +14,7 @@ from scorecard_db.export_populations import (
     _compact_rows,
     export,
     release_label,
+    uk_measures,
 )
 
 from scorecard_db.models import (
@@ -532,3 +533,66 @@ def test_export_carries_effective_status_downgrades(tmp_path):
         "baseline_unvalidated",
     )
     assert row["latest"]["status_effective"] == "baseline_unvalidated"
+
+
+def test_uk_measures_carry_programme_variables_and_paths():
+    """Issue #209: the registry's programme and parameter paths reach the feed."""
+    measures = uk_measures()
+    freeze = measures["ab2025__personal_tax_thresholds_freeze_to_2031"]
+    assert freeze["program"] == "income_tax"
+    assert freeze["computability"] == "expressible"
+    assert "income_tax" in freeze["head_variables"]
+    # the reform delta's NI legs and the baseline modifier's income tax legs
+    assert (
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount"
+        in (freeze["parameter_paths"])
+    )
+    assert (
+        "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit"
+        in (freeze["parameter_paths"])
+    )
+    assert freeze["parameter_paths"] == sorted(freeze["parameter_paths"])
+    # The AB2025 registry decides its own keys; the replay registry's
+    # restatement of the same key (programme "fuel_duty", no delta) loses.
+    fuel = measures["ab2025__fuel_duty_freeze_extension_2026_27"]
+    assert fuel["parameter_paths"] == ["gov.hmrc.fuel_duty.petrol_and_diesel"]
+    # a measure the engine cannot express has no parameter to change
+    assert all(
+        not m["parameter_paths"]
+        for m in measures.values()
+        if m["computability"] == "not_expressible"
+    )
+
+
+def test_export_attaches_the_measure_block_to_uk_rows_only(tmp_path):
+    db = ScorecardDB(tmp_path / "m.db")
+    key = "ab2025__personal_tax_thresholds_freeze_to_2031"
+    uk = _claim(
+        "hm_treasury",
+        "uk_measure",
+        3365.0,
+        conditions={"geography": "UK", "country": "UK", "measure_key": key},
+        publish_without_result=True,
+    )
+    unknown = _claim(
+        "hm_treasury",
+        "uk_unknown",
+        1.0,
+        conditions={"geography": "UK", "country": "UK", "measure_key": "nope"},
+        publish_without_result=True,
+    )
+    us = _claim(
+        "cbo",
+        "us_same_key",
+        1.0,
+        conditions={"geography": "US", "measure_key": key},
+        publish_without_result=True,
+    )
+    db.upsert_scores([uk, unknown, us])
+    db.close()
+    out = tmp_path / "populations.json"
+    export(tmp_path / "m.db", out_path=out, built="2026-10-21")
+    by_col = {r["source_column"]: r for r in json.loads(out.read_text())["rows"]}
+    assert by_col["uk_measure"]["measure"] == uk_measures()[key]
+    assert by_col["uk_unknown"]["measure"] is None
+    assert by_col["us_same_key"]["measure"] is None

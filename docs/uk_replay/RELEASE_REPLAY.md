@@ -273,11 +273,11 @@ Periods 2025 to 2029 (FY2025–26 to FY2029–30) fall wholly inside the window,
 so their reversal rates are the intended 0.10 and 0.20. A rerun with #186
 executes the revision and refuses any processed mismatch in an in-force year.
 
-CI's real replay of this variant (pushes only) recomputes one artifact with
-the current code, which also writes the processed-value evidence fields. A
-committed artifact from before that check is compared with exactly those
-fields removed, and the step says so in a notice; every other byte must match
-(`pipeline/uk_replay_determinism.py`).
+The real replay of this variant (`uk-replay-determinism.yml`, on pushes to
+main) recomputes one artifact with the current code, which also writes the
+processed-value evidence fields. A committed artifact from before that check
+is compared with exactly those fields removed, and the step says so in a
+notice; every other byte must match (`pipeline/uk_replay_determinism.py`).
 
 `results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
 the qualification of policyengine.py 6.5.0: request `d83eaf59…`, receipt
@@ -292,8 +292,17 @@ the blended FY2024–25 increase, with processed rates equal to intended in
 both worlds. Periods 2025 to 2029 carry only the construction flag, and their
 values are unchanged. No other row in any event moved. AB2025's high-value
 council tax surcharge artifacts for 2025 to 2027 record
-`processed_value_notes` (policyengine-uk#2435); their totals are zero. CI's
+`processed_value_notes` (policyengine-uk#2435); their totals are zero. The
 real replay of this variant compares whole bytes.
+
+`results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the qualification of policyengine.py 6.9.0: request `705e2b7a…`, receipt
+SHA-256 `e9883083…`, `replay-state` commit `755ceb7`. Integrity is complete
+with no failures, and all six events have complete supported grids and no
+inert measure-years. Its release diff is against
+`pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`, the newest certified
+variant with committed results at the time. That diff flags no rows. The
+results pull request wrote this paragraph from the receipt's counts.
 
 ## Version-scoped diagnoses
 
@@ -708,10 +717,19 @@ through the wrapper's `PolicyEngine/policyengine.py` git source (which can
 name a fork's commit), or a malicious third-party dependency pulled in when
 installation falls back to free resolution.
 
-CI's `replay engine` job is weaker: the variant's engine runs as the runner
-user, so code in a certified freeze could reach the token held by the fetch
-step's runner process. That job runs only on pushes to main, with committed,
-certified freezes. `pipeline/uk_replay_qualify.py run-request` then:
+The real replay in `uk-replay-determinism.yml` is weaker: the variant's
+engine runs as the runner user, so code in a certified freeze could read the
+token from the runner's memory, where it stays until the job ends. Its fetch
+runs before any variant code, which keeps such code from redirecting the
+fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file, but not from
+that memory. The workflow runs only on pushes to main, with committed,
+certified freezes. CI's `replay engine` legs, which install and run each
+variant on pull requests too, are in a workflow that names no dataset token:
+the runner receives a secret its job names even in a step that never runs.
+
+In the qualification run's sandbox, the drain
+(`.github/scripts/uk_replay_drain.sh`) runs
+`pipeline/uk_replay_qualify.py run-request`, which goes through these steps:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request
@@ -830,7 +848,7 @@ runs only the default branch's code.
 | Job | Authority and inputs |
 |---|---|
 | `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
-| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
+| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write` and `pull-requests: write`, to push that commit and open the pull request. |
 
 Neither job holds a dataset token, and neither installs, imports or runs
 release or candidate code; both read only committed public results from
@@ -844,19 +862,29 @@ The tree comparison catches an honest build job whose commit diverges; the
 job's word, checked only for shape. CI on the pull request runs the
 regeneration, both database builds and the drift check again.
 
-The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
-`ci.yml`, and only a token with `workflows` permission may push a change to a
-workflow file, which `GITHUB_TOKEN` can never hold. And a pull request opened
-with `GITHUB_TOKEN` starts no `pull_request` workflow
+The App token, not `GITHUB_TOKEN`, writes because a pull request opened with
+`GITHUB_TOKEN` starts no `pull_request` workflow
 ([GitHub documentation](https://docs.github.com/en/actions/concepts/security/github_token)),
 while checks from a `workflow_dispatch` run do not count for a pull request
 ([GitHub documentation](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)),
 so its pull request would never carry checks. The App's push and pull request
 start CI as any other pull request does.
 
+The token has no `workflows` permission, which an App needs to edit files in
+`.github/workflows`
+([GitHub documentation](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app)).
+The commit never touches `.github/`: CI's engine matrix is read from the
+variant index (see "Replay in CI"), and `scope` refuses a commit that touches
+anything outside the results and the four edits. So the token cannot push a
+workflow that reads a secret. It can still push to any branch of this
+repository, main included (main has no protection rule or ruleset), and the
+scripts and pipeline code that secret-holding jobs run live outside
+`.github/workflows`; without `workflows` it loses only the direct route.
+
 `.github/scripts/uk_replay_results_pr.sh` and
 `pipeline/uk_replay_results_pr.py` build the pull request as #188 (6.4.1) and
-#190 (6.5.0) were built by hand:
+#190 (6.5.0) were built by hand, less the `ci.yml` matrix entry each added,
+which CI now reads from the index:
 
 1. **Eligibility.** `STATUS.json` is `complete`; the receipt validates and is
    the one `STATUS.json` names; `REQUEST.json` hashes to the request id; and
@@ -888,20 +916,22 @@ start CI as any other pull request does.
    aggregates, and nothing is uploaded.
 3. **Edits.** `VARIANT.json` plus a `note` is appended to
    `data/uk/replay_variants.json` in canonical form
-   (`compute_uk_event.canonical_bytes`). The variant joins the
-   `replay-engine` matrix, which must then list exactly the certified
-   variants. `NEWEST` in `tests/test_uk_replay_qualify.py` and
+   (`compute_uk_event.canonical_bytes`). That is all CI needs to replay the
+   variant: the `replay-engine` matrix is the index's certified variants
+   (see "Replay in CI"), so no workflow changes. `NEWEST` in
+   `tests/test_uk_replay_qualify.py` and
    `tests/test_uk_replay_determinism.py` moves to it, and `COMMITTED` in
    `tests/test_uk_replay_variants.py` gains it. A paragraph under "Committed
    certified results" states the receipt's integrity, grid and diff-flag
    counts. Each edit checks the text it replaces and fails if the file has
-   another shape, and the commit may touch nothing else.
+   another shape, and the commit may touch nothing else, `.github/`
+   included.
 4. **Checks.** `uk_replay_qualify verify-sealed` (the new namespace, then
    every one), CI's `.github/scripts/uk_replay_regenerate.sh`, and two
    `scorecard_db.build_db` runs, which must agree on the content hash and
    leave no tracked-file drift.
 5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
-   standard library, skipping only the JSON Schema, RFC 8785 and YAML checks
+   standard library, skipping only the JSON Schema and RFC 8785 checks
    `build` made. Only when the tree matches is the App token minted. The
    commit, authored and committed as `github-actions[bot]` (the receiver's
    bot identity) with a `Replay-Request:` trailer and pushed with the App's
@@ -914,15 +944,24 @@ pushes nothing. A branch built on an older main is rebuilt and force-pushed,
 with a lease on the commit it read, only when it holds exactly one commit,
 authored and committed by the bot with this request's trailer; an added or
 amended commit is a person's, and the run fails and leaves the branch alone.
-Two certified requests built from the same main conflict in the index, the
-matrix and the tests: after the first merges, run the workflow again for the
+A rebuilt branch also carries main's commits since the branch was built.
+GitHub does not document whether it counts that as editing a workflow when
+one of those commits changed `.github/workflows`, even a change main later
+reverted; if it refuses such a push
+for want of `workflows`, the run fails with an error that says so and the
+branch stays as it was. Close the pull request, delete its branch and run the
+workflow again: a new branch holds only the bot's commit.
+Two certified requests built from the same main conflict in the index and
+the tests: after the first merges, run the workflow again for the
 second, unless the second is the older release, which the version check then
 refuses. Nothing merges automatically. The pull request lands on the normal
 gates: CI and an independent review.
 
 ### Replay in CI
 
-`ci.yml` runs two kinds of replay check on every pull request and push:
+CI runs three kinds of replay check. `ci.yml` runs the first two on every
+pull request and push, and `uk-replay-determinism.yml` runs the third on
+pushes to main only:
 
 * Engine-free, in the main job: every committed namespace with event run
   manifests (legacy and each variant) is re-staged and re-compared from its
@@ -930,21 +969,41 @@ gates: CI and an independent review.
   every present namespace indexed as `replay_namespace` must have a receipt
   and manifest matching its bytes. The no-drift gate uses
   `git status --porcelain`, so newly generated untracked files fail too.
-* `replay engine`, for each certified variant in its CI matrix: installs
-  each variant's exact
+* `replay engine`, one leg for each certified variant. The
+  `certified replay variants` job lists the certified variants of
+  `data/uk/replay_variants.json` in index order, and that list is the
+  matrix (`.github/scripts/uk_replay_engine_matrix.py`: the standard library
+  under the runner's own Python, in a job with `contents: read` that checks
+  out only that script and the index). No workflow names a variant, so the
+  index is the only list a new variant joins. The job fails, and with it
+  every leg, rather than list fewer variants, when a record is not an
+  object, an id is not plain (letters, digits, `.`, `_` and `-`, starting
+  with a letter or digit, no `..`, at most 120 characters; CI puts ids in
+  job names, environment variables, shell commands and paths, and two ids
+  joined by `__` name a release diff's directory), a status is not `certified`,
+  `candidate` or `retired`, an id repeats, nothing is certified, or the
+  matrix would exceed GitHub's 256 jobs
+  ([GitHub limits](https://docs.github.com/en/actions/reference/limits)).
+  Each leg installs the variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
   premises byte for byte. Non-legacy variants also regenerate the re-verified
-  diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
-  secret and a committed sealed namespace, replay one real measure-year on
-  the certified dataset and compare its artifact with the committed bytes.
-  The token is in one step that fetches the dataset into the Hugging Face
-  cache; the variant's engine runs in the next step, without it, in a job
-  with `contents: read`, no persisted checkout credential and no cache.
-  Pull requests never receive the token: their run emits a notice that
-  nothing was replayed. The legacy leg skips diagnostics and this
-  determinism step. Without the secret, or without a committed sealed
-  namespace, the step emits a notice stating that nothing was replayed.
+  diagnostics. The legacy leg skips them. `ci.yml` names no dataset token,
+  and a pull request's run emits a notice that nothing was replayed.
+* `real replay`, in `uk-replay-determinism.yml`, on pushes to main only, one
+  leg for each certified variant from the same listing. A non-legacy variant
+  with a committed sealed namespace replays one real measure-year on the
+  certified dataset and compares its artifact with the committed bytes. The
+  `PE_UK_PRIVATE_HF_READ_TOKEN` secret is in one step, the first after the
+  checkout, uv's setup and a read of the index, and before anything of the
+  variant's is installed. It fetches the dataset into the Hugging Face hub
+  cache by uv's absolute path in an emptied environment, with packages no
+  newer than a fixed date and the token on stdin. The variant's engine runs
+  in later steps, without the token in their environment, in a job with
+  `contents: read`, no persisted checkout credential and no cache. The
+  legacy leg replays nothing. Without the secret, or without a committed
+  sealed namespace, the fetch emits a notice stating that nothing was
+  replayed.
 
 ## Invariants
 
@@ -970,3 +1029,7 @@ Each has deterministic boundary cases and Hypothesis properties in
   output bytes.
 * **Sealed namespaces.** Every byte under a sealed namespace matches its
   receipt.
+* **Engine matrix.** For any index the lister accepts, CI's engine matrix is
+  exactly its certified ids in index order; one bad record refuses the whole
+  matrix; the lister's plain-id rule is the results pull request's on any
+  string; and no workflow names a variant.

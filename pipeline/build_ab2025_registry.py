@@ -2342,14 +2342,18 @@ o(
     pe_reform_delta={
         "gov.dwp.benefit_cap.single.outside_london": 10000000,
         "gov.dwp.benefit_cap.single.in_london": 10000000,
+        "gov.dwp.benefit_cap.non_single.outside_london": 10000000,
+        "gov.dwp.benefit_cap.non_single.in_london": 10000000,
     },
     delta_kind="absolute_value",
     engine_baseline_2026={
         "gov.dwp.benefit_cap.single.outside_london": 14753,
         "gov.dwp.benefit_cap.single.in_london": 16967,
+        "gov.dwp.benefit_cap.non_single.outside_london": 22020,
+        "gov.dwp.benefit_cap.non_single.in_london": 25323,
     },
     head_variables=["benefit_cap_reduction", "universal_credit"],
-    note="Removal expressed as an unreachable cap; the couple/family cap nodes are set alongside at compute (all gov.dwp.benefit_cap.* leaves).",
+    note="Removal expressed as an unreachable cap on all four gov.dwp.benefit_cap leaves. The non_single leaves cap couples and every claimant with children; nothing adds them at compute, so the delta names them.",
 )
 o(
     "raise_the_benefit_cap_to_living_wage_equivalent",
