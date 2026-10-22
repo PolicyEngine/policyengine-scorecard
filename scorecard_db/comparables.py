@@ -854,10 +854,22 @@ def validate(
             continue
         estimates[key] = e
         errors.extend(_check_estimate(e, f"{name}: estimate {key}", world_keys))
-    if not estimates:
+    # A household calculator computes figures for the household a reader
+    # describes and publishes no fixed estimate: its producers are still
+    # searched (decision d1816's default), but it may pin none.
+    calculator = a.get("calculator")
+    if calculator is not None and not (
+        isinstance(calculator, dict)
+        and set(calculator) == {"reason"}
+        and _nonempty_str(calculator.get("reason"), 20)
+    ):
         errors.append(
-            f"{name}: pe_estimates is empty; an analysis that publishes no estimate "
-            "is declared no_estimate in the registry, not recorded here"
+            f'{name}: calculator must be {{"reason": "<what the page computes>"}}'
+        )
+    if not estimates and calculator is None:
+        errors.append(
+            f"{name}: pe_estimates is empty; pin every figure the analysis publishes, "
+            "or declare a household calculator that publishes none (`calculator`)"
         )
     superseded_pins = set()
     for i, e in enumerate(a.get("superseded_estimates") or []):
@@ -956,9 +968,17 @@ def validate(
                     f"{where}: a {skind} search is dated after the first search ({first_date})"
                 )
         if not _nonempty_str(s.get("by")):
-            errors.append(f"{where}: by must name the session or Subfleet job")
+            errors.append(f"{where}: by must name the session or job that ran it")
         pins = s.get("results_pins")
-        if not (_string_list(pins) and pins and all(_PIN.match(p) for p in pins)):
+        no_results = calculator is not None and not estimates
+        if no_results and pins != []:
+            errors.append(
+                f"{where}: a calculator with no estimates compares no results file "
+                "(results_pins: [])"
+            )
+        elif not no_results and not (
+            _string_list(pins) and pins and all(_PIN.match(p) for p in pins)
+        ):
             errors.append(
                 f"{where}: results_pins must list the results files compared "
                 "(repo@commit:sha256; `comparables pins` prints them)"

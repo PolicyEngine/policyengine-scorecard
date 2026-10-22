@@ -723,6 +723,35 @@ def _search(record):
     return record.search_log["searches"][0]["producers"]
 
 
+def _calculator(record):
+    """The synthetic record as a household calculator: no fixed estimate."""
+    record.analysis["pe_estimates"] = []
+    record.analysis["calculator"] = {
+        "reason": "Computes the change for the household the reader describes."
+    }
+    record.search_log["searches"][0]["results_pins"] = []
+    claim0(record).update(
+        compare_to=None, pe_missing="the calculator publishes no aggregate"
+    )
+    return record
+
+
+def test_a_household_calculator_is_searched_with_no_estimates():
+    assert errors_of(_calculator(synthetic(-100.0, -105.0))) == []
+
+
+def test_only_a_declared_calculator_may_pin_no_estimates():
+    record = _calculator(synthetic(-100.0, -105.0))
+    record.analysis.pop("calculator")
+    assert any("pe_estimates is empty" in e for e in errors_of(record))
+    record = _calculator(synthetic(-100.0, -105.0))
+    record.analysis["calculator"] = {"reason": "short"}
+    assert any("calculator must be" in e for e in errors_of(record))
+    record = _calculator(synthetic(-100.0, -105.0))
+    record.search_log["searches"][0]["results_pins"] = [PIN]
+    assert any("compares no results file" in e for e in errors_of(record))
+
+
 def test_a_skipped_producer_fails():
     errors = mutate(lambda r: _search(r).pop(0))
     assert any("producers not searched: ['obr']" in e for e in errors)

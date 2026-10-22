@@ -97,6 +97,11 @@ results file prints it the other way round (a cost as a positive number), the es
 An estimate that a rerun replaced moves to `superseded_estimates` with `superseded_on`, and stays
 on the scorecard as history.
 
+A household calculator, which computes figures for the household a reader describes and
+publishes no fixed estimate, is still searched: it declares `"calculator": {"reason": "..."}`
+and may pin no estimates, its searches record `results_pins: []`, and every claim found says
+in `pe_missing` that the calculator publishes no aggregate.
+
 ### The search
 
 `data/comparables/producers.json` lists the producers for each country. A search logs every
