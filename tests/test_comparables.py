@@ -1098,6 +1098,36 @@ def test_ambiguous_conventions_do_not_orient(convention):
     assert cmp.orientation(claim, "UK")[0] == signs.UNKNOWN
 
 
+@pytest.mark.parametrize(
+    "metric, convention, relation",
+    [
+        (
+            "benefit_cost_change",
+            "positive = increase in federal revenue",
+            signs.UNKNOWN,
+        ),
+        ("benefit_cost_change", "positive = increase in tax receipts", signs.UNKNOWN),
+        ("benefit_cost_change", "positive = higher government expenditure", signs.SAME),
+        ("revenue_change", "positive = higher government revenue", signs.SAME),
+        ("revenue_change", "positive = increase in borrowing", signs.OPPOSITE),
+        ("avg_tax_change_usd", "positive = increase in tax credits", signs.UNKNOWN),
+        ("avg_tax_change_usd", "positive = tax increase", signs.SAME),
+    ],
+)
+def test_conventions_orient_only_when_they_say_one_thing(metric, convention, relation):
+    claim = {
+        "metric": metric,
+        "conditions": {"sign_convention": convention},
+        "source": "x",
+    }
+    assert cmp.orientation(claim, "US")[0] == relation
+
+
+def test_a_us_change_with_no_convention_does_not_orient():
+    claim = {"metric": "revenue_change", "conditions": {}, "source": "cbo"}
+    assert cmp.orientation(claim, "US")[0] == signs.UNKNOWN
+
+
 def test_the_policy_keeps_the_threshold_below_one(tmp_path):
     for bad in (1, 1.5, 0, True):
         path = tmp_path / "policy.json"

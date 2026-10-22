@@ -333,6 +333,14 @@ def check_value(row: dict, where: str, signed: bool = False) -> list[str]:
 # Words that turn a "positive = ..." phrase around, which signs.py's substring
 # match would otherwise read as the plain phrase ("positive = yield forgone").
 _INVERTING_WORDS = ("forgone", "foregone", "lost")
+# signs.py reads "positive = increase in ..." as the same direction for these
+# families whatever follows; a convention naming the other side of the
+# ledger ("positive = increase in federal revenue" for a spending metric)
+# is not that direction.
+_OTHER_SIDE_WORDS = {
+    "spending": ("revenue", "receipt", "yield", "tax"),
+    "tax_increase": ("credit", "refund", "benefit"),
+}
 
 
 def orientation(claim: dict, country: str) -> tuple[str, str]:
@@ -358,6 +366,8 @@ def orientation(claim: dict, country: str) -> tuple[str, str]:
             return signs.UNKNOWN, "convention matches both directions"
         if hits_same and any(w in text for w in _INVERTING_WORDS):
             return signs.UNKNOWN, "convention turns its phrase around"
+        if hits_same and any(w in text for w in _OTHER_SIDE_WORDS.get(family, ())):
+            return signs.UNKNOWN, "convention names the other side of the ledger"
     return signs.classify(
         {
             "metric": metric,
