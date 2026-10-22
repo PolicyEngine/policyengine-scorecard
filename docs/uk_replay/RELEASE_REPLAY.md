@@ -295,6 +295,15 @@ council tax surcharge artifacts for 2025 to 2027 record
 `processed_value_notes` (policyengine-uk#2435); their totals are zero. CI's
 real replay of this variant compares whole bytes.
 
+`results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the qualification of policyengine.py 6.9.0: request `705e2b7a…`, receipt
+SHA-256 `e9883083…`, `replay-state` commit `755ceb7`. Integrity is complete
+with no failures, and all six events have complete supported grids and no
+inert measure-years. Its release diff is against
+`pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`, the newest certified
+variant with committed results at the time. That diff flags no rows. The
+results pull request wrote this paragraph from the receipt's counts.
+
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
