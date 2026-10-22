@@ -61,9 +61,10 @@ jobs:
     # (.github/scripts/uk_replay_sandbox.sh), with no sudo, the runner's
     # processes invisible and its home inaccessible, and only its own home
     # writable. The install has the network and no dataset; the replay has
-    # the dataset and no network. Outside the sandbox, this job runs only the
-    # runner's own Python, isolated, on standard-library modules: to find the
-    # fetched dataset by its digest and to compare the replay that comes
+    # the dataset and no network. Outside the sandbox, the variant's code
+    # never runs: the job runs the runner's own Python, without PYTHON*
+    # variables or user site-packages, on standard-library modules, to find
+    # the fetched dataset by its digest and to compare the replay that comes
     # back with the committed artifact. A malicious freeze can still make
     # that comparison pass (it can copy the committed artifact) and print
     # what it reads, the dataset included, to this public log; see
@@ -73,7 +74,7 @@ jobs:
     name: real replay · ${{ matrix.variant }}
     needs: replay-variants
     runs-on: ubuntu-latest
-    # Collect runs on a timeout too, so a hung replay holds no runner.
+    # A hung install or replay holds the runner no longer than this.
     timeout-minutes: 90
     permissions:
       contents: read

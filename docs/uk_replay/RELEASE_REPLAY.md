@@ -1023,22 +1023,22 @@ services after that:
   the network and without the dataset.
 * `replay` checks that nothing of the account is running and has the account
   write the dataset into its copy from a pipe, inside an offline service,
-  into an `input/` it makes afresh, so neither a link nor a pipe left in the
-  copy can send the bytes elsewhere or stall the write. It then
-  replays one measure-year from that file (`compute_uk_event
-  --dataset-file`), offline. The service gets its own network namespace,
-  whose only interface is loopback (`PrivateNetwork`), and may open only
-  IPv4, IPv6 and netlink sockets (`RestrictAddressFamilies`; a
-  `socketpair`, which multiprocessing may use, still works). Without Unix
-  sockets it cannot reach systemd-resolved over D-Bus, which on the hosted
-  image resolved a name for the candidate under `PrivateNetwork` alone, or
-  any other host service. systemd enforces that on `socket(2)` only, so
-  the service may make only native system calls
-  (`SystemCallArchitectures=native`: the 32-bit x86 ABI's `socketcall`
-  would pass the filter) and none of io_uring's, which can open a socket
-  without `socket(2)`. `setup` checks from inside an offline service that
-  loopback is the only interface, that an IPv4 socket opens and a Unix
-  socket does not, and that `io_uring_setup` fails with `EPERM`.
+  into an `input/` it makes afresh: a link left in the copy can send the
+  bytes nowhere the sandbox cannot already write, and a pipe left there
+  cannot stall the write. It then replays one measure-year from that file
+  (`compute_uk_event --dataset-file`), offline. The service gets its own
+  network namespace, whose only interface is loopback (`PrivateNetwork`),
+  and may open only IPv4, IPv6 and netlink sockets
+  (`RestrictAddressFamilies`; a `socketpair`, which multiprocessing may use,
+  still works). Without Unix sockets it cannot reach systemd-resolved over
+  D-Bus, which on the hosted image resolved a name for the candidate under
+  `PrivateNetwork` alone, or any other host service. systemd enforces that
+  on `socket(2)` only, so the service may make only native system calls
+  (`SystemCallArchitectures=native`: the 32-bit x86 ABI's `socketcall` would
+  pass the filter) and none of io_uring's, which can open a socket without
+  `socket(2)`. `setup` checks from inside an offline service that loopback
+  is the only interface, that an IPv4 socket opens and a Unix socket does
+  not, and that `io_uring_setup` fails with `EPERM`.
 
 Both print the variant's output, its stderr joined to its stdout, with the
 runner's workflow commands stopped (`::stop-commands::` with a token
@@ -1053,14 +1053,15 @@ an honest run leaves only the replayed artifact there. The runner's own
 Python (`/usr/bin/python3 -E -s`, standard library only) compares it with
 the committed artifact that the job names, and refuses anything but a
 regular file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or
-cached. The job has a 90-minute timeout, and `collect` runs after a timeout
-too.
+cached. The job has a 90-minute timeout.
 
 So a compromised package among a certified freeze's pins cannot read the
-token. The token is not in the sandbox's environment, the runner's processes
-are invisible, sudo and setuid programs cannot raise privileges, and the
-runner's home, workspace, command files and every directory on its `PATH` are
-read-only or hidden. It cannot leave a process behind. The freeze pins
+token, short of a kernel exploit (below). The token is not in the sandbox's
+environment, the runner's processes are invisible, sudo and setuid programs
+cannot raise privileges, and the runner's home, workspace, command files and
+every directory on its `PATH` are read-only or hidden. It cannot leave a
+process behind; it can leave files in `/dev/shm` and `/dev/mqueue` and
+System V IPC objects, which nothing later in the job reads. The freeze pins
 versions, not file hashes (`docs/uk_replay/requirements/`), so this sandbox,
 not the pins, is what keeps such a package from the token.
 
@@ -1073,6 +1074,9 @@ What such a package can still do:
   catches an honest engine whose output drifts, not a malicious one.
 * During `install` it has the network, but not the dataset.
 * It can fail the job, or hold it until the timeout.
+* A kernel privilege escalation would defeat the sandbox, as it would any
+  sandbox on that kernel; the `install` service, unlike `replay`, also runs
+  without the system call filters.
 
 The workflow runs only on pushes to main. CI's `replay engine` legs install
 and run each variant on pull requests too, so `ci.yml` names no dataset

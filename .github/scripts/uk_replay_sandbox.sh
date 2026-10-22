@@ -219,9 +219,9 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
     : "${DATASET_FILE:?}" "${VARIANT:?}" "${REPLAY_EVENT:?}" "${REPLAY_MEASURE:?}" "${REPLAY_YEAR:?}"
     # The dataset enters a home in which nothing of the account runs. The
     # account writes it in from a pipe, inside the sandbox, into an input/
-    # made afresh, so neither a link nor a pipe left in its copy can send the
-    # bytes elsewhere or stall the write, and nothing runs as root inside its
-    # home.
+    # made afresh: a link left in its copy can send the bytes nowhere the
+    # sandbox cannot already write, a pipe left there cannot stall the write,
+    # and nothing runs as root inside its home.
     stop_candidate
     # shellcheck disable=SC2016 # expanded by the sandboxed shell
     /bin/cat "$DATASET_FILE" | in_sandbox --offline /bin/sh -c \
