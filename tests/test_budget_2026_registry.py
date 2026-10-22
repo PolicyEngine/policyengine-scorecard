@@ -265,6 +265,18 @@ def test_the_wealth_tax_is_not_scored_on_a_gross_base():
     assert "survey-imputed wealth" in m["caveat"]
 
 
+def test_the_triage_counts_match_the_entries():
+    """The triage block summarises the entries; a verdict that moves must
+    move the count with it."""
+    from collections import Counter
+
+    counts = Counter(m["computability"] for m in MEASURES.values())
+    for verdict in ("expressible", "partial", "not_expressible"):
+        assert REG["triage"][verdict] == counts[verdict], verdict
+    already = sum(bool(m.get("already_in_baseline")) for m in MEASURES.values())
+    assert REG["triage"]["already_in_baseline"] == already
+
+
 def test_gap_searches_cover_variables_not_only_parameters():
     """v2 searched the parameter tree alone. #106 showed why that is
     not enough: bus_subsidy_spending is a VARIABLE, and a
