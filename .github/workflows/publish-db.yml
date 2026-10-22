@@ -1,0 +1,131 @@
+name: publish db
+
+# Publishes the database CI built for each push to main to the
+# `scorecard-artifacts` bucket on the PE Supabase project, as <sha>.db.gz
+# (gzipped ~6 MB from ~58 MB: the project is on the free plan, 50 MB
+# per-object cap) and a moving latest.db.gz, so consumers fetch and gunzip
+# instead of rebuilding.
+#
+# WHY IT IS NOT IN ci.yml
+#
+# This is the only workflow that names SUPABASE_SCORECARD_URL and
+# SUPABASE_SCORECARD_KEY. ci.yml runs on pull requests and installs and runs
+# PyPI packages and each certified variant's pins, as a runner user with
+# passwordless sudo. A debug re-run of #215's pull-request CI showed a job's
+# runner receiving a secret the job named only in a skipped step, and GitHub
+# scrubs only the secrets "not referenced in the workflow". So while
+# publish-db was a push-only job of ci.yml, the pull-request runners there may
+# have held the key. No workflow that runs on pull requests names a secret
+# now (tests/test_ci_gates.py).
+#
+# WHY workflow_run, NOT A REBUILD
+#
+# It publishes the bytes CI built and tested, once CI's pytest job has
+# passed, as `needs: python` did inside ci.yml. A push workflow that rebuilt
+# the database would run the project's PyPI packages in the job that holds
+# the key, or in a sibling job of the workflow that names it, and would
+# publish a database whose suite had not run. This job runs no package code:
+# no checkout, no uv, no Python, only actions/download-artifact and the
+# runner image's gh, gzip and curl.
+#
+# workflow_run runs main's copy of this file with the repository's secrets,
+# whatever started the CI run, a fork's pull request included, and the
+# `branches` filter names a branch, not an event or a repository. So the
+# job runs only for ci.yml on a push to main of this repository, and no
+# script interpolates the triggering run's fields: the run id and commit go
+# to the scripts as environment variables (tests/test_publish_db.py).
+#
+# The artifact exists only if CI's pytest job got to its last step, so a
+# run whose pytest job failed or was cancelled publishes nothing, with a
+# notice. Any other CI conclusion still publishes, as it did: a newer push
+# cancels the older run, often after its pytest job has passed. Re-running
+# an older main CI run publishes its database again, as latest.db.gz too.
+#
+# Skips with a notice when the secrets are unset. A failed upload is a
+# warning, not a failed run: nothing in this repository reads the published
+# copy, and CI's run keeps the built database as an artifact for 30 days.
+# Every publish from 6 October 2026 failed with curl exit 6 (the storage host
+# no longer resolves; the last upload that worked was 28 September). curl
+# stays silent so the host name in the secret URL is never printed.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# One publish at a time, so two uploads of latest.db.gz never interleave. A
+# publish waiting behind a running one gives way to a newer one.
+concurrency:
+  group: publish-db
+  cancel-in-progress: false
+
+jobs:
+  publish-db:
+    name: publish db to supabase storage
+    if: >-
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.path == '.github/workflows/ci.yml'
+    runs-on: ubuntu-latest
+    # Listing and downloading another run's artifact takes actions: read,
+    # and nothing else is needed: there is no checkout.
+    permissions:
+      actions: read
+    env:
+      CI_RUN_ID: ${{ github.event.workflow_run.id }}
+      CI_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Find the database CI built
+        id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          artifact="scorecard-db-$CI_SHA"
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID/artifacts?name=$artifact" \
+            --jq '[.artifacts[] | select(.expired | not)] | length')
+          if [ "$count" -eq 0 ]; then
+            echo "::notice::CI run $CI_RUN_ID has no $artifact: its pytest job did not get as far as uploading it, so there is nothing to publish"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download it
+        if: steps.find.outputs.found == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: scorecard-db-${{ github.event.workflow_run.head_sha }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Publish it
+        if: steps.find.outputs.found == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_SCORECARD_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SCORECARD_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::notice::Supabase secrets not set — skipping publish"
+            exit 0
+          fi
+          gzip -9 -c scorecard.db > scorecard.db.gz
+          for name in "${CI_SHA}.db.gz" "latest.db.gz"; do
+            status=0
+            curl -sf -X POST \
+              "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
+              -H "Authorization: Bearer $SUPABASE_KEY" \
+              -H "Content-Type: application/gzip" \
+              -H "x-upsert: true" \
+              --data-binary @scorecard.db.gz > /dev/null || status=$?
+            if [ "$status" -ne 0 ]; then
+              message="curl exit $status uploading scorecard-artifacts/$name: the published database was not updated. The database CI built is the scorecard-db-$CI_SHA artifact of $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID."
+              echo "::warning title=Supabase publish failed::$message"
+              echo "**Supabase publish failed.** $message" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "uploaded scorecard-artifacts/$name"
+          done
