@@ -80,7 +80,19 @@
    "anomalies": [
     {
      "code": "modern_law_differs",
-     "diagnosis": null,
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "spring_budget_2021",
+      "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (37,500 against 37,700)",
+      "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+      "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the indexed counterfactual moves the dividend band from there rather than from \u00a337,700. 2.143.0, which has \u00a337,700, returns +\u00a326.91bn and +\u00a330.99bn against 2.132.6's +\u00a326.88bn and +\u00a330.97bn; the dividend band is one of the differences between the two models.",
+      "years": null
+     },
      "severity": "investigate"
     }
    ],
@@ -150,7 +162,19 @@
    "anomalies": [
     {
      "code": "modern_law_differs",
-     "diagnosis": null,
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "spring_budget_2021",
+      "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (37,500 against 37,700)",
+      "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+      "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the indexed counterfactual moves the dividend band from there rather than from \u00a337,700. 2.143.0, which has \u00a337,700, returns +\u00a326.91bn and +\u00a330.99bn against 2.132.6's +\u00a326.88bn and +\u00a330.97bn; the dividend band is one of the differences between the two models.",
+      "years": null
+     },
      "severity": "investigate"
     }
    ],

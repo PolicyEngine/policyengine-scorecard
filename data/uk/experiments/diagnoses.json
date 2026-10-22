@@ -168,6 +168,35 @@
    "status": "model_bug",
    "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the counterfactual's \u00a336,300 moves the dividend band by \u00a31,200, not the \u00a31,400 the main bands move. 2.143.0, which has \u00a337,700, returns -\u00a32.73bn and -\u00a32.97bn against 2.132.6's -\u00a32.69bn and -\u00a32.93bn; the dividend band is one of the differences between the two models.",
    "years": null
+  },
+  {
+   "code": "modern_law_differs",
+   "event": "spring_budget_2021",
+   "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (37,500 against 37,700)",
+   "experiment_id": "sb2021_personal_allowance_hrt_freeze",
+   "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+   "populations": [
+    "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "pe-uk 2.132.6 keeps the dividend higher-rate threshold at \u00a337,500 until April 2026, so the indexed counterfactual moves the dividend band from there rather than from \u00a337,700. 2.143.0, which has \u00a337,700, returns +\u00a326.91bn and +\u00a330.99bn against 2.132.6's +\u00a326.88bn and +\u00a330.97bn; the dividend band is one of the differences between the two models.",
+   "years": null
+  },
+  {
+   "code": "modern_law_differs",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (150,000 against 125,140)",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+   "populations": [
+    "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026, so restoring \u00a3150,000 leaves the dividend band unchanged in 2024-25 and 2025-26 and the effect is the main band's alone. The model swap measures the dividend leg (model_change on 2.143.0).",
+   "years": [
+    2024,
+    2025
+   ]
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",

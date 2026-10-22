@@ -33,7 +33,7 @@ already fixed there.
 | Finding | Status | Experiment that caught it |
 |---|---|---|
 | **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Present on main. | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, handed to the UK hub | `as2013_marriage_allowance` (`sign_mismatch`) |
-| pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26 | `as2022_additional_rate_threshold_125140` (model change) |
+| pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26, and the dividend leg of the allowance freezes starts from £37,500 instead of £37,700 | `as2022_additional_rate_threshold_125140` (model change), `b2018_personal_allowance_12500_hrt_50000` and `sb2021_personal_allowance_hrt_freeze` (`modern_law_differs` on 2.132.6) |
 | pe-uk 2.132.6 has no Growth Plan SDLT relief (23 September 2022 to 31 March 2025) | fixed upstream in 2.141.8 (4044d6ccf); the 2024-25 experiment goes from 0 (2.132.6) to −£1.234bn (2.143.0) against the OBR's −£1.048bn | `as2022_sdlt_nil_rate_bands_2024` (`construction_noop`, then model change) |
 | pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024), so the surcharge reversal removes 1pp, not 3pp | fixed upstream in 2.141.8 (4044d6ccf, the same commit as the Growth Plan relief); caught by the first review, now flagged `modern_law_differs` | `as2015_sdlt_additional_dwellings_surcharge` |
 | pe-uk 2.132.6 charges every home buyer's whole stock of other residential property as one additional-dwelling purchase at the higher rates, so its modern-law SDLT (£15.0bn in 2025-26) is overstated; its £0.94bn for the surcharge is a 1pp removal on that base, so not a comparison with the OBR | fixed upstream in 2.134.1 (52030637b, #2238). From then the purchase price is a dataset input: the interim cut lacks it, so on 2.143.0 SDLT is £8.1bn and the surcharge reversal is `inert`. Microcosm imputes it from #1308, so the pre-Budget cut carries it | `as2015_sdlt_additional_dwellings_surcharge` (model change, then `inert` on the swap) |
@@ -68,7 +68,7 @@ their scaled ratios fall inside the bands.
 |---|---|---|
 | Autumn Statement 2022 | reverse the 1.25pp NICs rise and the levy | 1.00, 0.90, 0.91, 0.92 |
 | | keep the basic rate at 20% | 1.05, 0.95, 0.99, 1.00 |
-| | additional-rate threshold £125,140 | 1.00, 1.10, 1.24, 1.24 |
+| | additional-rate threshold £125,140 | 1.00, 1.10, 1.24, 1.24 (2.143.0: 1.13, 1.24, 1.22, 1.22; 2.132.6 has no dividend leg until April 2026) |
 | | dividend allowance £500 | 0.91, 0.52, 0.55, 0.52 (OBR cash lags a year) |
 | | CGT allowance £3,000 | 2.25, 1.46, 1.44, 1.52 (OBR cash lags a year) |
 | | benefit cap uprating | 1.05, 1.21, 1.62, 1.68 |
@@ -161,6 +161,12 @@ populations:
   reversal also maps Universal Credit), so they compare only the groups both
   map.
 - **Current law the construction assumes** (above): `modern_law_differs`.
+  A test compares the two engines' current law on every parameter a
+  construction sets, in every year it sets it: 248 parameter-years, of which
+  the engines differ on 21. Each of the 21 is either declared in
+  `assumes_modern` (16) or set outright whatever the engine's law (5: Budget
+  2017's zero first-time-buyer limit and Autumn Statement 2022's 2024-25
+  pre-relief schedule).
 - **Integrity of the committed results** (from the review). `findings` refuses
   a run on another spec; `adopt` checks every download before copying any; a
   test regenerates every committed `FINDINGS` and `SUMMARY` file byte for

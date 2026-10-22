@@ -231,3 +231,9 @@ The tests state and check these for every input:
    `results/uk/experiments/<population>/<event>/` and `.venv-replay-checks/`.
 6. **Mirrors.** Mirrored experiments return exact negatives (checked on real
    runs in the findings).
+7. **Regeneration.** Every committed `FINDINGS` and `SUMMARY` file
+   regenerates byte for byte from the committed artifacts.
+8. **Declared current law.** Where a model swap and its certified pair differ
+   on the current law of a parameter a construction sets, the construction
+   declares the law it assumes (`assumes_modern`) or sets the parameter
+   outright (a list in the test, each entry with its reason).

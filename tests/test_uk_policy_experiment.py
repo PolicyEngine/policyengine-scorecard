@@ -867,13 +867,28 @@ SET_OUTRIGHT = {
         "ab2017_sdlt_first_time_buyers_relief",
         "gov.hmrc.stamp_duty.residential.purchase.main.first.max",
     ): "a zero price limit removes the relief on any schedule",
+    **{
+        ("as2022_sdlt_nil_rate_bands_2024", f"gov.hmrc.stamp_duty.{path}"): (
+            "the whole 2024-25 schedule without the Growth Plan relief; on an "
+            "engine without the relief it is construction_noop (diagnosed)"
+        )
+        for path in (
+            "residential.purchase.main.first.max",
+            "residential.purchase.main.first.rate[1].threshold",
+            "residential.purchase.main.subsequent[1].rate",
+            "residential.purchase.main.subsequent[1].threshold",
+        )
+    },
 }
 
 
 def test_engines_disagree_on_current_law_only_where_the_construction_says_so():
-    """Where a model swap and its certified pair (the same data) differ on a
-    touched parameter's current law, the construction either states the law it
-    assumes (assumes_modern) or sets the parameter outright."""
+    """Where a model swap and its certified pair (the same data) differ on the
+    current law of a parameter the construction sets that year, the
+    construction either states the law it assumes (assumes_modern) or sets the
+    parameter outright. Scaled paths follow each engine's own law by design."""
+    from pipeline import uk_construction_revisions as revisions
+
     records = ex.load_populations()["populations"]
     checked = 0
     for swap in (r for r in records if r.get("pairing") == "model_swap"):
@@ -901,6 +916,11 @@ def test_engines_disagree_on_current_law_only_where_the_construction_says_so():
                     a = json.loads((theirs / event / name).read_bytes())
                     b = json.loads((manifest.parent / name).read_bytes())
                     for path, record in a.get("parameters", {}).items():
+                        found, _ = revisions.window_value(
+                            experiment["reform"], path, f"{year}-01-01"
+                        )
+                        if not found:
+                            continue
                         checked += 1
                         if (
                             record["modern_processed"]
