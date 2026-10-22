@@ -7,60 +7,69 @@ before publishing an analysis - pe-wide").
 
 The case that prompted it: the £100,000 childcare dashboard went live on 12 October 2026 with the
 30 funded hours costing £0.43bn in 2027-28. CenTax had published £0.80bn in September, from HMRC
-administrative data. The dashboard even listed CenTax as a benchmark, but nothing required the
-gap to be explained, and the cause, a Microcosm hours draw ([microcosm#1126]), was found only
-after Arun Advani pointed it out. Its record is
+administrative data. The dashboard listed CenTax as a benchmark, but nothing required the gap to
+be explained. Its cause, a Microcosm hours draw, had been filed as [microcosm#1126] on
+7 October, five days before launch. The record is
 `sources/analysis-uk-childcare-100k-threshold/`; without the annotation it carries, the
-validator below fails it on six rows.
+validator below fails it on seven rows.
 
 [microcosm#1126]: https://github.com/PolicyEngine/microcosm/issues/1126
 
 ## How it is enforced
 
-1. **The search** runs before publishing, as the `policyengine-comparables-review` skill in
-   PolicyEngine/policyengine-skills (or a Subfleet research job from its brief). It writes a
-   directory here and opens a scorecard PR.
+1. **The search** runs before publishing, as the `policyengine-comparables-review` skill
+   (PolicyEngine/policyengine-skills#100), or as a research job built from that skill's brief. It
+   writes a directory here and opens a scorecard PR.
 2. **This repository's CI** validates every directory (`tests/test_comparables.py`, and the build,
    which refuses an incomplete record) and checks that `data/comparables/index.json` is exactly
    what the directories build. So everything on main is a complete record.
-3. **policyengine-app-v2's CI** checks every research entry dated on or after its cutover: the
-   entry's `comparables` block must name a directory that the index on this repository's main
-   lists, with the same search date, producers and count. The scorecard PR therefore lands
-   before the registry entry can.
-4. **After publishing**, a weekly launchd job (`comparables-reharvest`) searches again for every
-   analysis published in the last `reharvest_window_days` (183). A new comparable becomes a row
-   here; a new gap over the threshold also opens an issue for the analysis's owner.
+3. **policyengine-app-v2's CI** (PolicyEngine/policyengine-app-v2#1380) checks every research
+   entry that is not on its list of entries published before the cutover. The entry's
+   `comparables` block must name a directory that the index on this repository's main lists,
+   with the same search date, kind, producers and count. The scorecard PR therefore lands before
+   the registry entry can.
+4. **After publishing**, a weekly scheduled job searches again for every analysis published in the
+   last `reharvest_window_days` (183). A new comparable becomes a row here; a new gap over the
+   threshold also opens an issue for the analysis's owner.
 
 ## Before a push
 
 Publishing is not the only moment that counts. When an analysis that is already published is
 featured in a newsletter, a social campaign, a webinar or a press push, its comparables search is
 run again first (Max, 2026-10-21: "even if we've already published something, we should do a
-fresh comp review before big pushes like newsletters"). The 21 October UK newsletter promoted the
-childcare dashboard at £0.59bn. A fresh search that day would have put CenTax's £0.80bn static
-cost for the 30 hours alone beside it.
+fresh comp review before big pushes like newsletters"). The UK newsletter dated 21 October
+(PolicyEngine/newsletters `editions/2026-10-20-uk.html`) featured the childcare dashboard at
+£0.59bn for both schemes. A fresh search would have put CenTax's £0.80bn static cost for the
+30 hours alone beside it.
 
-- The search is appended to the analysis's `search_log.json` with `kind: prepromotion`, or the
+- The search is appended to the analysis's `search_log.json` with `kind: prepromotion`, or is the
   analysis's first search if it has none yet (`backfill`).
-- The push may go ahead only if a search is dated within `promotion_window_days`
-  (`data/comparables/policy.json`, 7 by default) before the push date, and no gap found by then
-  is still `pending`. `python -m scorecard_db.comparables fresh analysis-<country>-<slug> --on
-  <date>` says yes or why not.
-- PolicyEngine/newsletters' CI applies the same rule to every policyengine.org analysis an edition
-  links, for editions dated on or after its cutover. The index publishes the window
-  (`promotion_window_days`) and when each claim was found, so that check needs nothing but the
-  index.
+- The push may go ahead only when:
+  - a search is dated on the push date or in the `promotion_window_days` before it
+    (`data/comparables/policy.json`, 7 by default);
+  - that search compared the results files the analysis reads now (its `results_pins` equal
+    the index's `current_pins`);
+  - no gap found by the push date is still `pending`. A pending gap blocks the push until its
+    cause is written.
+- `python -m scorecard_db.comparables fresh analysis-<country>-<slug> --on <date>` says yes or why
+  not.
+- PolicyEngine/newsletters' CI (PolicyEngine/newsletters#29) applies the same rule to every
+  policyengine.org analysis an edition links, for editions dated on or after its cutover.
+  `tests/fixtures/comparables_fresh_cases.json` holds cases both implementations are tested
+  against. The index publishes the window, each search's pins and when each claim was found, so
+  that check needs nothing but the index.
 
 ## The directory
 
 `sources/analysis-<country>-<slug>/`, where `<slug>` is the analysis's slug on policyengine.org
-(the apps.json slug, or the post's filename without `.md`).
+(the apps.json slug, or the post's filename up to its first dot, lower-cased with underscores as
+hyphens).
 
 | File | What it holds |
 |---|---|
 | `analysis.json` | The registry entry, scope, search terms, the policy worlds it scores, and every PolicyEngine estimate it publishes, each pinned to its results file by repo, commit, path, field and SHA-256 |
-| `search_log.json` | Every search: date, kind (`prepublish`, `backfill`, `reharvest`, `prepromotion`), who ran it, and one entry per listed producer |
-| `manifest.jsonl` | One line per primary publication, with its SHA-256 |
+| `search_log.json` | Every search: date, kind (`prepublish`, `backfill`, `reharvest`, `prepromotion`), who ran it, the results files it compared, and one entry per listed producer |
+| `manifest.jsonl` | One line per primary publication, with its SHA-256; every line is cited by a claim |
 | `claims_staged.jsonl` | Every comparable found, staged under the harvest rules |
 | `annotations.json` | The status and cause of anything that is not a plain comparison, each citing a basis |
 
@@ -69,6 +78,24 @@ Start one with:
 ```bash
 PYTHONPATH=. python -m scorecard_db.comparables scaffold --country uk --kind app --slug <slug>
 ```
+
+The JSON files are strict: a repeated key fails the record.
+
+### The estimates
+
+Each estimate in `pe_estimates` names its `world`, `metric`, `unit_concept`, `period` and
+`time_basis`, and two conditions:
+
+- `conditions.basis`: `static`, `post_behavioural`, `forecast` or `outturn`;
+- `conditions.program`: a slug for what is costed (`thirty_hours`, `both_schemes`).
+
+When `conditions.fy` names a fiscal year, `period` is its end year and `time_basis` is
+`fiscal_year`. Each estimate is stated in PolicyEngine's own orientation for its metric; when the
+results file prints it the other way round (a cost as a positive number), the estimate carries
+`sign: -1` and a `sign_basis`.
+
+An estimate that a rerun replaced moves to `superseded_estimates` with `superseded_on`, and stays
+on the scorecard as history.
 
 ### The search
 
@@ -82,64 +109,105 @@ producer whose `added` date is on or before the search date, with one of:
 - `not_applicable`: only when the producer's `applies_to` excludes the analysis's scope (the
   Scottish Fiscal Commission for a UK-wide analysis, state fiscal notes for a federal one).
 
+The searches are in date order, and each is dated on a real day that is no later than today and
+no earlier than the country's producer list. Their kinds follow the analysis's life:
+
+| Kind | When |
+|---|---|
+| `prepublish` | The first search, on or before `published` |
+| `backfill` | The first search of an analysis already published, on or after `published` |
+| `reharvest` | A later search, after `published` and after the first search |
+| `prepromotion` | A later search before a push, after `published` and after the first search |
+
+Each search records `results_pins`, the results files it compared (`repo@commit:sha256`; `python
+-m scorecard_db.comparables pins <source>` prints them). The latest search's pins are the
+estimates' current pins: a new results file needs a new search.
+
 `open_search` and `academic` are on every list: a comparable from a producer not on the list is
-logged under them and keeps its producer's own slug. When an open search keeps finding one
-producer, add it to the list with a `why` (the first search added DfE this way).
+found under them and keeps its producer's own slug as `source`. A claim from a listed producer is
+logged under that producer's entry. `source` is never `open_search`, `academic` or
+`policyengine`. When an open search keeps finding one producer, add it to the list with a `why`
+(the first search added DfE this way).
 
 ### The claims
 
 Staged under the harvest rules (`sources/harvest-uk-ab2025-2026-09-24/README.md`), checked
 mechanically where they can be:
 
-- **Verbatim values.** `value_raw` is the string as printed; `value` is it under a registered
-  `normalization`; the validator parses one back to the other, and `quote` must contain the
-  printed value. A claim is never re-signed: its sign convention travels in
-  `conditions.sign_convention`, in words `scorecard_db/signs.py` reads.
+- **Verbatim values.** `value_raw` is the number as printed: a minus sign, the word "minus" or
+  parentheses make it negative, and a scale printed after it (`m`, `bn`, `%`) must match the
+  `normalization`. `value` is it under a registered `normalization`; the validator parses one back
+  to the other, for a chart reading too. `quote` must print the value as a whole number with its
+  sign, except for a chart reading. A claim is never re-signed: its sign convention travels in
+  `conditions.sign_convention`, in words `scorecard_db/signs.py` reads. A compared change metric
+  needs a convention that starts `positive =` and says one thing.
+- **The same identity as an estimate**: `metric`, `unit_concept`, `period`, `time_basis`,
+  `conditions.basis` and `conditions.program`, with the same `conditions.fy` rule.
 - **Registered vocabulary** for `metric` and `unit_concept`, or `null` with a proposal (such a
   claim is staged but waits for its vocabulary decision before it reaches the database).
 - **Named baselines**: `baseline_policy` is a label in `scorecard_db/baselines.py`, or null for
-  current law.
+  current law. A world in `analysis.json` may name its `baseline` the same way.
 - **Attribution and benchmark class.** Only a producer's own estimate (`attribution: own`) is
   compared. An administrative level is calibration material and belongs in a producer-level
   source, where `relationships.py` assigns it.
-- **Primaries, hashed**: `publication.primary_sha256` is a line in `manifest.jsonl`.
+- **Primaries, hashed**: `publication.primary_sha256` is a line in `manifest.jsonl`, and
+  `publication.date` is no later than the day the claim was found.
+- **Ranges**: a printed range is two claims, `value_kind` `range_low` and `range_high`, sharing a
+  `conditions.range_group`, the same identity and the same `compare_to`.
 
 ### The comparison
 
 A claim either names the PolicyEngine estimate it is compared with (`compare_to`), or says in
-`pe_missing` why there is none. A compared claim has the estimate's metric, unit, period and time
-basis. A claim that has all four in common with a published estimate but is not compared
-cannot be waved off with a sentence. It names that estimate in `nearest_estimate`, and an
-annotation with status `concept_mismatch` (or `pe_gap`) and a basis says why the two differ: a
-net-of-behaviour cost beside a static one, for example. On the scorecard it then appears beside
-that estimate, labelled with the mismatch, rather than blank. When the two score different policy worlds, `compare_to.across_worlds` gives the reason
-the quantities match and its basis, and the comparison is `constructed`, not `comparable`.
+`pe_missing` why there is none.
+
+- A compared claim has the estimate's full identity and baseline, is the producer's own, and is
+  not cumulative. When the two score different policy worlds, `compare_to.across_worlds` gives
+  the reason the quantities match and its basis, and the comparison is `constructed`, not
+  `comparable`.
+- An uncompared claim that has an estimate near it (the same period, and the same metric and
+  unit where the claim names them) cannot be waved off with a sentence. It names that estimate
+  in `nearest_estimate`, and an annotation with status `concept_mismatch` (or `pe_gap`) and a
+  basis says why the two differ: a net-of-behaviour cost beside a static one, for example. On
+  the scorecard it then appears beside that estimate, labelled with the mismatch, rather than
+  blank. A claim that is the same quantity as its nearest estimate must be compared instead.
 
 The gap is PolicyEngine's value over the external value, minus one, with the external value in
-PolicyEngine's orientation (`signs.py`; an unsigned magnitude compares absolute values). A
-nonzero estimate against a published zero is over any threshold. Each PolicyEngine estimate is
-stated in PolicyEngine's own orientation for its metric; when the results file prints it the
-other way round (a cost as a positive number), the estimate carries `sign: -1` and a
-`sign_basis`.
+PolicyEngine's orientation (`signs.py`; an unsigned level compares absolute values). A
+nonzero estimate against a published zero is over any threshold, and so is any pair whose signs
+disagree. A range is over only when the estimate lies outside it by more than the threshold,
+measured from the nearer bound.
 
 ### The threshold
 
-`data/comparables/policy.json` `gap_threshold`, 0.25 by default. A compared claim whose absolute
-gap exceeds it needs an annotation with `explains_gap: true`: its `cause`, and a `basis` that is a
-GitHub issue or pull request, engine metadata pinned to a commit, a document, or a measured
-diagnostic. This is the scorecard's existing rule against fabricated mechanisms: a cause that
-cannot cite one of those does not ship. A miss is allowed; an unexplained one is not.
+`data/comparables/policy.json` `gap_threshold`, 0.25 by default and always below 1, so that a
+sign disagreement is always over it. A compared claim whose absolute gap exceeds it needs an
+annotation with `explains_gap: true`: its `cause`, and a `basis` that is one of:
 
-A comparable that a post-publication re-harvest finds may instead carry a `pending` annotation
-naming the issue opened for the owner; the index counts it until the cause is written.
+- a GitHub issue or pull request URL;
+- engine metadata, as a GitHub blob pinned to a commit or a file in this repository;
+- a document or a measured diagnostic, as a URL with a path or a file in this repository.
+
+This is the scorecard's existing rule against fabricated mechanisms: a cause that cannot cite one
+of those does not ship. A miss is allowed; an unexplained one is not.
+
+A comparable that a search after publication finds (`backfill`, `reharvest` or `prepromotion`)
+may instead carry a `pending` annotation naming the `tracking_issue` opened for the owner. The
+index counts it, and it blocks any push, until the cause is written. Nothing found before
+publication can be pending.
 
 ### The database
 
 `scorecard_db/ingest_analysis_comparables.py` (build step `analysis_comparables`) puts every
-record on the scorecard: claims held out (another producer's estimate is a comparator, never a
-calibration target), with `conditions.analysis` naming the analysis; one result per compared
-claim, the analysis's own figure with its record's status; uncompared claims published without a
-result. Lanes `analysis-comparables-uk` and `analysis-comparables-us` show the tally.
+record on the scorecard. Claims are held out (another producer's estimate is a comparator, never
+a calibration target), with `conditions.analysis` naming the analysis. Each claim's result is:
+
+- for a compared claim, the analysis's own figure with its record's status (a pending gap shows
+  as `comparable` or `constructed`, with an annotation naming its tracking issue);
+- for a claim beside its nearest estimate, that estimate's figure, labelled with the mismatch;
+- for any other claim, none.
+
+A superseded estimate adds a history result. Lanes `analysis-comparables-uk` and
+`analysis-comparables-us` show the tally.
 
 ## The index and the app-v2 record
 
@@ -164,9 +232,10 @@ PYTHONPATH=. python -m scorecard_db.comparables record analysis-uk-<slug>
 }
 ```
 
-An entry that publishes no estimate (an event, an announcement) declares
-`{"status": "no_estimate", "reason": "..."}` instead; app-v2 refuses that for an entry tagged
-`policy`.
+A post that publishes no estimate (an event, an announcement) declares
+`{"status": "no_estimate", "reason": "..."}` instead. That is allowed only for a post tagged as
+one of those kinds (`org`, `event`, `giving`, `conferences`, `year-in-review`, `april-fools`) and
+no analysis tag; an app never declares it.
 
 ## Re-harvest support
 
