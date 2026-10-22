@@ -70,6 +70,13 @@ MANIFEST_NAME = "NAMESPACE_MANIFEST.json"
 POLICYENGINE_GIT = "https://github.com/PolicyEngine/policyengine.py"
 # Run in the candidate environment beside the engine, never resolved freely.
 RUNTIME_TOOLS = ("pytest", "hypothesis", "rfc8785==0.1.4", "jsonschema")
+# The corpus's peak memory per dataset and worker count, measured on Modal
+# (pipeline/modal_uk_replay_memory.py). Two year workers run only where it
+# shows they fit in this runner's memory.
+MEMORY_EVIDENCE = Path("docs/uk_replay/evidence/replay_memory.json")
+# A margin left for everything outside the corpus's process tree: the
+# runner's own services, the drain's control process and the page cache.
+MEMORY_RESERVE_BYTES = 2 * 2**30
 
 
 class Rejected(Exception):
@@ -514,6 +521,154 @@ def candidate_record(
     return record
 
 
+# --- memory ----------------------------------------------------------------------------
+
+
+def gib(value: int) -> str:
+    return f"{value / 2**30:.1f} GiB"
+
+
+def memory_total_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    """This machine's MemTotal; None where /proc/meminfo is absent."""
+    try:
+        for line in meminfo.read_text().splitlines():
+            if line.startswith("MemTotal:"):
+                return int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def simulation_workers(
+    request: dict, *, root: Path = ROOT, memory_total: int | None = None
+) -> tuple[int, str]:
+    """Two year workers only when the measured two-worker peak for this exact
+    dataset, plus the reserve, fits in this runner's memory; otherwise one.
+
+    Returns the count and the reason the receipt records. A dataset without
+    a measurement runs one worker: its memory is not known.
+    """
+    sha = request["candidate"]["data"]["sha256"]
+    try:
+        measured = json.loads((root / MEMORY_EVIDENCE).read_bytes())["datasets"]
+        peak = measured.get(sha, {}).get("two_worker_peak_rss_bytes")
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        return 1, f"memory evidence unreadable ({type(exc).__name__})"
+    if type(peak) is not int:
+        return 1, f"no measured two-worker peak for dataset {sha[:12]}"
+    if memory_total is None:
+        return 1, "this runner's memory is unknown"
+    need = (
+        f"measured two-worker peak {gib(peak)} plus {gib(MEMORY_RESERVE_BYTES)} reserve"
+    )
+    if peak + MEMORY_RESERVE_BYTES <= memory_total:
+        return 2, f"{need} fits in this runner's {gib(memory_total)}"
+    return 1, f"{need} exceeds this runner's {gib(memory_total)}"
+
+
+def process_tree_rss(root_pid: int, proc: Path = Path("/proc")) -> int | None:
+    """Summed VmRSS of root_pid and every descendant; None without /proc.
+
+    Pages two processes share count in both, so this bounds the tree's
+    resident memory from above."""
+    if not proc.is_dir():
+        return None
+    parents, rss = {}, {}
+    for entry in proc.iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            status = (entry / "status").read_text()
+        except OSError:
+            continue
+        fields = dict(line.split(":", 1) for line in status.splitlines() if ":" in line)
+        try:
+            parents[int(entry.name)] = int(fields["PPid"])
+            rss[int(entry.name)] = int(fields.get("VmRSS", "0 kB").split()[0]) * 1024
+        except (KeyError, ValueError, IndexError):
+            continue
+    tree, frontier = set(), {root_pid}
+    while frontier:
+        tree |= frontier
+        frontier = {pid for pid, ppid in parents.items() if ppid in frontier} - tree
+    return sum(rss.get(pid, 0) for pid in tree)
+
+
+def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    try:
+        for line in meminfo.read_text().splitlines():
+            if line.startswith("MemAvailable:"):
+                return int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def log_free(label: str) -> None:
+    free = shutil.which("free")
+    if free is not None:
+        print(f"[memory] {label}:", flush=True)
+        subprocess.run([free, "-m"], check=False)
+
+
+class EventMemory:
+    """Log memory around one event so a run that dies mid-event shows why.
+
+    ``free -m`` before and after; while it runs, the process tree under this
+    process (compute and its year workers) is sampled every second, and each
+    new whole GiB it reaches is printed with MemAvailable, so the last line a
+    lost runner streamed shows how close it came."""
+
+    def __init__(self, event: str, workers: int, interval: float = 1.0):
+        import threading
+
+        self.event, self.workers, self.interval = event, workers, interval
+        self.peak = 0
+        self.lowest_available: int | None = None
+        self.stop = threading.Event()
+        self.thread = threading.Thread(target=self._sample_until_stopped, daemon=True)
+
+    def sample(self) -> None:
+        tree = process_tree_rss(os.getpid())
+        available = memory_available_bytes()
+        if available is not None and (
+            self.lowest_available is None or available < self.lowest_available
+        ):
+            self.lowest_available = available
+        if tree is not None and tree > self.peak:
+            if tree // 2**30 > self.peak // 2**30:
+                print(
+                    f"[memory] {self.event}: process tree reached {gib(tree)}"
+                    + (f"; MemAvailable {gib(available)}" if available else ""),
+                    flush=True,
+                )
+            self.peak = tree
+
+    def _sample_until_stopped(self) -> None:
+        while not self.stop.wait(self.interval):
+            self.sample()
+
+    def __enter__(self) -> "EventMemory":
+        log_free(f"before {self.event}")
+        self.thread.start()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self.stop.set()
+        self.thread.join(timeout=5)
+        lowest = (
+            f", lowest MemAvailable {gib(self.lowest_available)}"
+            if self.lowest_available is not None
+            else ""
+        )
+        print(
+            f"[memory] after {self.event}: peak process tree {gib(self.peak)} "
+            f"with {self.workers} year worker(s){lowest}",
+            flush=True,
+        )
+        log_free(f"after {self.event}")
+
+
 # --- the corpus ------------------------------------------------------------------------
 
 
@@ -630,7 +785,8 @@ def run_corpus(
             ]
             if dataset_file is not None:
                 command += ["--dataset-file", str(dataset_file)]
-            run(command, cwd=root)
+            with EventMemory(event, workers):
+                run(command, cwd=root)
             run(
                 [
                     python,
@@ -1188,6 +1344,15 @@ def run_request(
                 "artifact_hash_mismatch",
                 "the fetched dataset bytes differ from the request",
             )
+        # The receipt's execution block carries the choice in its runner
+        # string: policyengine.py validates receipts against its vendored
+        # copy of the v1 schema, whose execution block admits no new key.
+        workers, reason = simulation_workers(
+            request, root=root, memory_total=memory_total_bytes()
+        )
+        runner = f"{runner}; {workers} simulation worker{'s' * (workers > 1)}: {reason}"
+        print(f"simulation workers: {workers} ({reason})", flush=True)
+        log_free("runner at the start of the request")
         checkout = fresh_checkout(work, root=root)
         digests = prepare(request, venv, wheels, root=checkout)
         (work / "wheels.json").write_bytes(canonical_bytes(digests))
@@ -1270,6 +1435,8 @@ def run_request(
                 str(diagnostics),
                 "--failures",
                 str(work / "failures.json"),
+                "--workers",
+                str(workers),
             ],
             cwd=checkout,
         )

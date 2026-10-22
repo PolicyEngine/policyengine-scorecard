@@ -655,6 +655,7 @@ def test_corpus_passes_candidate_and_work_variants_without_resume(
     compute = calls[0][0]
     assert "--allow-uncertified" in compute
     assert "--resume" not in compute
+    assert compute[compute.index("--workers") + 1] == "2"
     staging = calls[1][0]
     assert staging[staging.index("--variants-file") + 1] == str(work_variants)
     assert all(cwd == tmp_path for _, cwd in calls)
@@ -668,6 +669,50 @@ def test_corpus_passes_candidate_and_work_variants_without_resume(
     diagnose = next(i for i, c in enumerate(names) if "diagnose_uk_event_models" in c)
     (summary,) = [i for i, c in enumerate(names) if "--summary" in c]
     assert summary == len(calls) - 1 and summary > diagnose
+
+
+def test_corpus_logs_memory_around_each_event_with_its_worker_count(
+    tmp_path, monkeypatch, capsys
+):
+    record = rv.get_variant(CURRENT)
+    commands = []
+    monkeypatch.setattr(
+        qualify, "run", lambda command, *, cwd: commands.append(command)
+    )
+    readings = iter([3 * 2**30, 5 * 2**30 + 1, 5 * 2**30 + 2, 2**30])
+    monkeypatch.setattr(qualify, "process_tree_rss", lambda pid: next(readings, 2**30))
+    monkeypatch.setattr(qualify, "memory_available_bytes", lambda: 4 * 2**30)
+    monkeypatch.setattr(qualify, "log_free", lambda label: print(f"free {label}"))
+
+    class Sampled(qualify.EventMemory):
+        # Sample on entry instead of from the timer thread, deterministically.
+        def __enter__(self):
+            super().__enter__()
+            for _ in range(4):
+                self.sample()
+            return self
+
+    monkeypatch.setattr(qualify, "EventMemory", Sampled)
+    qualify.run_corpus(
+        record,
+        tmp_path / "variants.json",
+        workers=1,
+        events=(qualify.EVENTS[0],),
+        root=tmp_path,
+    )
+    event = qualify.EVENTS[0]
+    assert commands[0][commands[0].index("--workers") + 1] == "1"
+    out = capsys.readouterr().out.splitlines()
+    assert out[0] == f"free before {event}"
+    assert out[1:3] == [
+        f"[memory] {event}: process tree reached 3.0 GiB; MemAvailable 4.0 GiB",
+        f"[memory] {event}: process tree reached 5.0 GiB; MemAvailable 4.0 GiB",
+    ]
+    assert out[3] == (
+        f"[memory] after {event}: peak process tree 5.0 GiB with 1 year worker(s), "
+        "lowest MemAvailable 4.0 GiB"
+    )
+    assert out[4] == f"free after {event}"
 
 
 def local_runner(tmp_path, variant_id=CURRENT):
@@ -906,6 +951,40 @@ def test_run_request_with_identity_and_no_outputs_still_seals_failure(
     assert receipt["execution"] is not None
     assert any(
         f["code"] == "event_outputs_missing" for f in receipt["integrity"]["failures"]
+    )
+
+
+@pytest.mark.parametrize(
+    "peak_gib, workers",
+    [(9, 2), (15, 1), (None, 1)],
+)
+def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
+    tmp_path, monkeypatch, peak_gib, workers
+):
+    root, record, dataset, request = local_runner(tmp_path)
+    calls, _ = stub_candidate(monkeypatch, root, record)
+    sha = request["candidate"]["data"]["sha256"]
+    evidence = root / qualify.MEMORY_EVIDENCE
+    evidence.parent.mkdir(parents=True, exist_ok=True)
+    measured = {"two_worker_peak_rss_bytes": peak_gib * 2**30} if peak_gib else {}
+    evidence.write_text(json.dumps({"datasets": {sha: measured}}))
+    monkeypatch.setattr(qualify, "memory_total_bytes", lambda: 16 * 2**30)
+    receipt = qualify.run_request(
+        request,
+        tmp_path / "state",
+        tmp_path / "work",
+        runner="github-actions Linux X64",
+        dataset_file=dataset,
+        root=root,
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    (corpus,) = [command for command, _, _ in calls if "corpus" in command]
+    assert corpus[corpus.index("--workers") + 1] == str(workers)
+    expected = qualify.simulation_workers(request, root=root, memory_total=16 * 2**30)
+    assert expected[0] == workers
+    plural = "s" if workers == 2 else ""
+    assert receipt["execution"]["runner"] == (
+        f"github-actions Linux X64; {workers} simulation worker{plural}: {expected[1]}"
     )
 
 
