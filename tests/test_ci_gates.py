@@ -164,6 +164,9 @@ def test_every_real_replay_job_reads_the_repository_and_nothing_more():
             permissions={**READ, "actions": "read"}
         ),
         lambda w: w["jobs"]["replay-engine"].update(permissions={"id-token": "write"}),
+        lambda w: w["jobs"]["real-replay-sandbox"].update(
+            permissions={**READ, "actions": "write"}
+        ),
     ],
     ids=[
         "no-workflow-block",
@@ -175,6 +178,7 @@ def test_every_real_replay_job_reads_the_repository_and_nothing_more():
         "app-write-all",
         "publish-db-adds-actions",
         "replay-engine-id-token",
+        "real-replay-sandbox-adds-actions",
     ],
 )
 def test_the_check_catches_every_wider_token(edit):
