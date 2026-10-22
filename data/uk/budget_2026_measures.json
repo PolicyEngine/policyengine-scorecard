@@ -127,18 +127,13 @@
    "reported_status": "unlikely",
    "source_note": "Reported as divisive with cabinet opposition; revenue estimates range from nil to £26bn, which is itself the finding — the spread is about behaviour and coverage, not arithmetic.",
    "program": "wealth_tax",
-   "computability": "expressible",
-   "pe_reform_delta": {
-    "gov.contrib.ubi_center.wealth_tax": "bracket: 0.02 above 10_000_000"
-   },
-   "delta_kind": "bracket_schedule",
-   "engine_baseline_2026": {
-    "gov.contrib.ubi_center.wealth_tax": "empty schedule"
-   },
-   "caveat": "Expressible does NOT mean credible: the engine applies the schedule to total_wealth from survey-imputed wealth, which is the weakest data in the certified world for exactly the population this measure targets. A PE number here should be published with that stated, or not published.",
-   "head_variables": [
-    "wealth_tax"
-   ]
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The measure taxes NET assets above £10m, and no parameter levies a tax on net wealth. gov.contrib.ubi_center.wealth_tax is applied by the wealth_tax variable to total_wealth, which is GROSS: property, corporate and savings wealth (and private pension wealth from later engines), with no mortgage, consumer or student loan debt deducted, although the variable's documentation says net wealth. Scoring this measure through that parameter would tax the wrong base: a synthetic household with £15m of property and a £6m mortgage (net wealth £9m) pays £100,000 on policyengine-uk 2.143.0. Found by the UK hub's Budget-relevance review (finding S4); filed upstream as policyengine-uk#2556. The verdict reverts to expressible once a schedule can be levied on net_wealth.",
+   "policyengine_uk_development_item": true,
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /wealth/. At the pin, policyengine-uk 2.89.2: parameters gov.contrib.ubi_center.wealth_tax, gov.contrib.cec.non_primary_residence_wealth_tax and household.wealth.{corporate_wealth,property_wealth}; variables corporate_wealth, gross_financial_wealth, household_wealth_decile, net_financial_wealth, non_primary_residence_wealth_tax, property_wealth, total_wealth and wealth_tax, with no net_wealth. At 2.143.0 the same parameters, plus the variables net_wealth, corporate_sector_wealth and private_pension_wealth. Neither tax parameter is levied on net_wealth: wealth_tax reads total_wealth, and non_primary_residence_wealth_tax reads total_wealth less main_residence_value, also with no debt deducted. Re-run on 22 October 2026.",
+   "action_link": "https://github.com/PolicyEngine/policyengine-uk/issues/2556",
+   "caveat": "Expressible does NOT mean credible: the engine applies the schedule to total_wealth from survey-imputed wealth, which is the weakest data in the certified world for exactly the population this measure targets. A PE number here should be published with that stated, or not published."
   },
   {
    "measure_key": "ab2026__council_tax_and_sdlt_to_land_value_tax",
