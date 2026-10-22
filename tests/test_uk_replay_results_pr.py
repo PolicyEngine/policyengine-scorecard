@@ -321,12 +321,13 @@ PROPOSE_RUNS = {
 GIT_RUNS = {"diff", "fetch", "log", "ls-remote", "rev-list", "rev-parse"}
 PUSHGIT_RUNS = {"push"}
 GH_RUNS = {("pr", "create"), ("pr", "edit"), ("pr", "list"), ("pr", "ready")}
-# git -c may set only the credential helper pushgit hands the token through,
-# and no git option may name a program for git to run.
+# git -c may set only the credential helper pushgit hands the token through.
+# No option of git's may name a program for it to run or a file for it to
+# write, however it is quoted or abbreviated (git takes any unambiguous
+# prefix of a long option), and none of gh's may open an editor or browser.
 GIT_CONFIG = {"credential.helper=", "'credential.helper=!gh auth git-credential'"}
-GIT_RUNS_PROGRAM = re.compile(
-    r"""^['"]?(?:--upload-pack|--receive-pack|--exec\b|-u$)"""
-)
+GIT_OPTIONS_TO_AVOID = ("upload-pack", "receive-pack", "exec", "output")
+GH_OPTIONS_TO_AVOID = {"--editor", "-e", "--web", "-w"}
 PUSHGIT = (
     'pushgit() { git -C "$TREE" -c credential.helper= '
     "-c 'credential.helper=!gh auth git-credential' \"$@\"; }"
@@ -339,13 +340,33 @@ WORD_END = frozenset(" \t\n;&|()<>")
 # &> and &>> are redirections, not & and a redirection.
 OPERATOR = re.compile(r"&&|\|\||;;|\|&|[;|\n]|&(?!>)")
 REDIRECT = re.compile(r"[0-9]*(?:&>>|&>|>>|>&|<&|<>|>\||<<<|>|<)")
-ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[^]]*\])?\+?=")
+# Bash evaluates an array subscript, a substring offset and ${!name} as
+# arithmetic, and arithmetic runs a command substitution held in a value
+# (x='a[$(cmd)]'; ${a[x]}). So a subscript is @, * or digits, and a
+# parameter expansion is a name with at most a default, alternative or error
+# word holding no quote, expansion, brace or bracket.
+ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]+\])?\+?=")
 LOCAL_NAME = re.compile(r"[a-z_][a-z0-9_]*")
-# A parameter expansion holding no quote, expansion or brace of its own.
 PARAMETER = re.compile(
-    r"\$\{[#!]?(?:[A-Za-z_][A-Za-z0-9_]*|[0-9@*#?$!-])"
-    r"(?:\[[^]\s'\"$`\\]*\])?[^{}'\"$`\\]*\}"
+    r"\$\{#?(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*#?$-])(?:\[(?:[@*]|[0-9]+)\])?"
+    r"(?::?[-+?][^{}\[\]'\"$`\\]*)?\}"
 )
+
+
+def unquoted(word):
+    """``word`` less its quotes and backslashes: what a literal word is to
+    the program that receives it."""
+    return re.sub(r"[\\'\"]", "", word)
+
+
+def avoided_git_option(word):
+    """An option, however quoted or abbreviated, that has git run a program
+    or write a file."""
+    plain = unquoted(word)
+    name = plain[2:].split("=", 1)[0] if plain.startswith("--") else ""
+    return plain == "-u" or (
+        bool(name) and any(option.startswith(name) for option in GIT_OPTIONS_TO_AVOID)
+    )
 
 
 class Commands:
@@ -356,9 +377,9 @@ class Commands:
     ``>(...)``, bash 5.3 ``${ ...; }`` and ``${|...;}``. A command word is
     whatever starts a command, after an operator, a newline, ``!`` or a
     reserved word, and after any assignments and redirections before it.
-    What it does not model (case, for, arithmetic, a parameter expansion
-    holding quotes or expansions, a word after a compound command) raises
-    Unlexed, so it is flagged rather than read past."""
+    What it does not model (case, for, arithmetic, an array element's
+    index, a parameter expansion beyond PARAMETER, a word after a compound
+    command) raises Unlexed, so it is flagged rather than read past."""
 
     def __init__(self, text):
         self.text, self.commands, self.functions = text, [], []
@@ -521,7 +542,7 @@ class Commands:
 
     def dollar(self, i, function):
         t = self.text
-        if t.startswith("$((", i):
+        if t.startswith(("$((", "$["), i):
             raise Unlexed("arithmetic")
         if t.startswith("$(", i):
             return self.sequence(i + 2, ")", function)
@@ -545,6 +566,9 @@ class Commands:
                 i += 1
             elif i < len(t) and t[i] == ")":
                 return i + 1
+            elif i < len(t) and t[i] == "[":
+                # ([expr]=value): the index is arithmetic.
+                raise Unlexed("an array element's index")
             else:
                 _, i = self.word(i, function)
 
@@ -585,10 +609,19 @@ def disallowed(commands):
                     bound.group().rstrip("+=") if bound else arg
                 ):
                     found.append(f"{shown} declares {arg}")
-        elif name == "printf" and args[:1] and args[0].startswith("-v"):
-            found.append(f"{shown} sets a variable")
-        elif name == "gh" and tuple(args[:2]) not in GH_RUNS:
-            found.append(f"{shown} runs gh {' '.join(args[:2])}")
+        elif name == "printf" and (
+            not args or "$" in args[0] or unquoted(args[0]).startswith("-")
+        ):
+            # printf -v sets a variable, and a format that expands may be -v.
+            found.append(f"{shown} has no literal format")
+        elif name == "gh":
+            if tuple(args[:2]) not in GH_RUNS:
+                found.append(f"{shown} runs gh {' '.join(args[:2])}")
+            found += [
+                f"{shown} opens a program: {arg}"
+                for arg in args
+                if unquoted(arg).split("=", 1)[0] in GH_OPTIONS_TO_AVOID
+            ]
         elif name in ("git", "pushgit"):
             if name == "pushgit" and (wrapper is None or wrapper > command["at"]):
                 found.append(f"{shown} runs pushgit where it is not defined")
@@ -602,9 +635,9 @@ def disallowed(commands):
             if args[at : at + 1] == [] or args[at] not in runs:
                 found.append(f"{shown} runs {name} {' '.join(args[at : at + 1])}")
             found += [
-                f"{shown} hands git a program: {arg}"
+                f"{shown} has git run or write something: {arg}"
                 for arg in args[at:]
-                if GIT_RUNS_PROGRAM.match(arg)
+                if avoided_git_option(arg)
             ]
     return found
 
@@ -810,6 +843,23 @@ def test_propose_runs_only_the_commands_it_lists():
         f"pushgit push\n{PUSHGIT}",
         f"if :; then\n  {PUSHGIT}\nfi\npushgit push",
         f"{PUSHGIT}\npushgit fetch origin",
+        # Arithmetic runs a substitution held in a value (x='a[$(cmd)]'),
+        # wherever bash evaluates one: each of these ran `touch` under
+        # bash 3.2 with that x.
+        'x=y\n: "${create[x]}"',
+        ': "${y:x}"',
+        ': "${!x}"',
+        "create[x]=1",
+        ": $[x]",
+        "create+=([x]=v)",
+        # Quoting or abbreviating an option, or a format that may expand to
+        # one, is the option.
+        'printf "-v" PATH x',
+        'printf "$f" x',
+        "git ls-remote --upl\\oad-pack=x .",
+        "git ls-remote --upl=x .",
+        "git log -1 --ou=/tmp/x",
+        "gh pr create --editor",
         # What the parser does not model is flagged, not read past.
         "for x in a; do :; done",
         "case x in x) : ;; esac",
@@ -834,7 +884,14 @@ def test_propose_runs_only_the_commands_it_lists():
     # once: pushgit as PUSHGIT, and plan as field on the plan. field, which
     # plan runs, is the isolated runner's Python on a fixed program that
     # imports json and sys alone.
-    defined = re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\(\) \{", script, re.M)
+    defined = [
+        keyword or plain
+        for keyword, plain in re.findall(
+            r"^\s*(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>\"'$`]+)\s*\(\s*\))",
+            script,
+            re.M,
+        )
+    ]
     assert set(defined) & PROPOSE_RUNS == {"plan", "pushgit"}
     assert defined.count("plan") == defined.count("pushgit") == 1
     assert defined.count("field") == 1
