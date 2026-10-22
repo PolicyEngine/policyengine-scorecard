@@ -174,7 +174,7 @@ jobs:
     # stub drain that leaves a process behind. No secrets, so it runs on pull
     # requests too: setup checks the account has no sudo, no supplementary
     # groups and no write access to the runner's files, and that offline it
-    # has only loopback and no /run; collect must kill everything and bring
+    # has only loopback and no Unix socket; collect must kill everything and bring
     # a guarded output back.
     name: receiver sandbox
     runs-on: ubuntu-latest
@@ -231,7 +231,7 @@ jobs:
     # and, in the candidate's copy only, a small freeze and a stub engine
     # module. install builds that freeze from PyPI in the sandbox. The stub
     # replay imports it, and reports what it finds offline (its interfaces,
-    # whether a connection out or /run opens, the SHA-256 of the dataset
+    # whether a connection out or to D-Bus opens, the SHA-256 of the dataset
     # handed in, a multiprocessing pool, the arguments it was given). It
     # also leaves a process behind and prints workflow commands. collect
     # must kill everything, and the runner's own Python must find that the
@@ -265,7 +265,7 @@ jobs:
           set -euo pipefail
           echo rfc8785==0.1.4 | sudo -u replay-candidate tee /home/replay-candidate/scorecard/stub-requirements.txt > /dev/null
           sudo -u replay-candidate tee /home/replay-candidate/scorecard/pipeline/compute_uk_event.py > /dev/null <<'PY'
-          import argparse, hashlib, json, multiprocessing, os, socket, subprocess
+          import argparse, hashlib, json, multiprocessing, socket, subprocess
           from pathlib import Path
 
           import rfc8785  # the freeze, installed in the sandbox
@@ -274,6 +274,15 @@ jobs:
           def connects():
               try:
                   socket.create_connection(("1.1.1.1", 443), timeout=5).close()
+                  return True
+              except OSError:
+                  return False
+
+
+          def reaches_dbus():
+              try:
+                  with socket.socket(socket.AF_UNIX) as client:
+                      client.connect("/run/dbus/system_bus_socket")
                   return True
               except OSError:
                   return False
@@ -293,11 +302,11 @@ jobs:
                   "interfaces": interfaces,
                   "pool": sum(multiprocessing.get_context("spawn").Pool(2).map(abs, [-1, -2])),
                   "rfc8785": rfc8785.dumps({"b": 1, "a": 2}).decode(),
-                  "run_opens": os.access("/run", os.R_OK | os.X_OK),
+                  "reaches_dbus": reaches_dbus(),
               }
               subprocess.Popen(["sleep", "600"], start_new_session=True)
               print("::error::forged by the stub engine")
-              print("::set-output name=forged::true")
+              print("::set-" "output name=forged::true")  # deprecated, still honoured
               output = Path(args.output_dir)
               output.mkdir(parents=True, exist_ok=True)
               text = json.dumps(report, indent=1, sort_keys=True) + "\n"
@@ -338,7 +347,7 @@ jobs:
               "interfaces": ["lo"],
               "pool": 3,
               "rfc8785": '{"a":2,"b":1}',
-              "run_opens": False,
+              "reaches_dbus": False,
           }
           print(json.dumps(expected, indent=1, sort_keys=True))
           PY

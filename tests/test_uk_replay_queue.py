@@ -847,14 +847,17 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
     assert "sudo -n -u" not in run and "--preserve-env" not in code
     # setup checks from inside the sandbox, over the runner's whole PATH,
     # and that the real replay's offline sandbox has only loopback and no
-    # /run.
+    # Unix socket.
     setup = code[code.index("  setup)") : code.index("  run)")]
     assert "if in_sandbox sudo -n true" in setup
     assert 'IFS=: read -r -a path_entries <<< "$PATH"' in setup
     assert "writable=$(in_sandbox /bin/sh -c" in setup
     assert "interfaces=$(in_sandbox --offline /bin/sh -c" in setup
     assert "/proc/self/net/dev" in setup and '"$interfaces" != lo' in setup
-    assert "if in_sandbox --offline ls /run" in setup
+    assert (
+        "if in_sandbox --offline /usr/bin/python3 -I -c "
+        "'import socket; socket.socket(socket.AF_UNIX)'" in setup
+    )
     for target in (
         "/opt",
         "/usr",
@@ -925,7 +928,14 @@ SANDBOX_PROPERTIES = [
     "LockPersonality=yes",
     "CapabilityBoundingSet=",
 ]
-OFFLINE_PROPERTIES = ["PrivateNetwork=yes", "InaccessiblePaths=-/run"]
+# Offline: loopback only, and no Unix socket (systemd-resolved, over D-Bus,
+# resolved a name for the account on the runner with PrivateNetwork alone).
+OFFLINE_PROPERTIES = [
+    "PrivateNetwork=yes",
+    "RestrictAddressFamilies=AF_INET",
+    "RestrictAddressFamilies=AF_INET6",
+    "RestrictAddressFamilies=AF_NETLINK",
+]
 # sudo records what it is asked to run and what it receives on stdin, and
 # runs nothing; systemd-run "runs" the variant's script by printing what the
 # variant would, and exits with SANDBOX_EXIT.
@@ -1284,12 +1294,12 @@ def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_sec
     assert "sudo -u replay-candidate tee /home/replay-candidate/scorecard/" in joined
     assert "import rfc8785" in joined
     # It reports what it finds offline, leaves a process and forges workflow
-    # commands; the runner expects exactly loopback, no connection, no /run,
-    # its own dataset's digest, a working pool and its own arguments.
+    # commands; the runner expects exactly loopback, no connection out or to
+    # D-Bus, its own dataset's digest, a working pool and its own arguments.
     for probe in (
         "/proc/self/net/dev",
         'socket.create_connection(("1.1.1.1", 443)',
-        'os.access("/run"',
+        'client.connect("/run/dbus/system_bus_socket")',
         'get_context("spawn").Pool(2)',
         'subprocess.Popen(["sleep", "600"], start_new_session=True)',
         "::error::forged by the stub engine",
@@ -1298,7 +1308,7 @@ def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_sec
     for expectation in (
         '"interfaces": ["lo"]',
         '"connects_out": False',
-        '"run_opens": False',
+        '"reaches_dbus": False',
         '"pool": 3',
         'sha256sum "$DATASET_FILE"',
     ):

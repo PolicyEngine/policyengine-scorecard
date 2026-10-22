@@ -25,11 +25,11 @@
 # engine the same way. `install` builds the variant's environment in the
 # copy, with the network and without the dataset. `replay` hands the dataset
 # in and replays one measure-year offline: no network interface but
-# loopback, and nothing under /run, where D-Bus, systemd-resolved and other
-# host services listen, so nothing in the sandbox can send the dataset out
-# over the network. Both print the variant's output with the runner's
-# workflow commands stopped, so it can neither set a step output nor raise
-# an annotation.
+# loopback, and no Unix socket, so nothing in the sandbox can send the
+# dataset out over the network, or ask a host service to (systemd-resolved,
+# over D-Bus, resolves names for it even without a network interface). Both
+# print the variant's output with the runner's workflow commands stopped,
+# so it can neither set a step output nor raise an annotation.
 #
 #   uk_replay_sandbox.sh setup     # after the dataset fetch, before any candidate code
 #   uk_replay_sandbox.sh run       # the drain, in the sandbox
@@ -43,12 +43,15 @@ COPY=$CANDIDATE_HOME/scorecard
 
 # Run a command as the candidate in the sandbox, with an environment built
 # from nothing but the arguments given before the command (VAR=value ...).
-# A first argument --offline also leaves it no network but loopback and no
-# /run. (${a[@]+"${a[@]}"} is an empty array under set -u in bash 3.2 too.)
+# A first argument --offline also leaves it no network but loopback and only
+# IPv4, IPv6 and netlink sockets, so no Unix socket to a host service
+# (socketpair still works). (${a[@]+"${a[@]}"} is an empty array under set -u
+# in bash 3.2 too.)
 in_sandbox() {
   local offline=() settings=()
   if [ "${1:-}" = --offline ]; then
-    offline=(-p PrivateNetwork=yes -p InaccessiblePaths=-/run)
+    offline=(-p PrivateNetwork=yes -p RestrictAddressFamilies=AF_INET
+      -p RestrictAddressFamilies=AF_INET6 -p RestrictAddressFamilies=AF_NETLINK)
     shift
   fi
   while [ "$#" -gt 0 ] && [[ "$1" == *=* ]]; do
@@ -158,18 +161,18 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
       echo "::error::$CANDIDATE can write, in the sandbox: $(echo "$writable" | sort -u | tr '\n' ' ')"
       exit 1
     fi
-    # Offline, the network namespace's only interface is loopback, and /run
-    # cannot be opened.
+    # Offline, the network namespace's only interface is loopback, and no
+    # Unix socket can be opened.
     interfaces=$(in_sandbox --offline /bin/sh -c 'tail -n +3 /proc/self/net/dev | cut -d: -f1 | tr -d " "')
     if [ "$interfaces" != lo ]; then
       echo "::error::$CANDIDATE has network interfaces offline: $(echo "$interfaces" | tr '\n' ' ')"
       exit 1
     fi
-    if in_sandbox --offline ls /run > /dev/null 2>&1; then
-      echo "::error::$CANDIDATE can open /run offline"
+    if in_sandbox --offline /usr/bin/python3 -I -c 'import socket; socket.socket(socket.AF_UNIX)' > /dev/null 2>&1; then
+      echo "::error::$CANDIDATE can open a Unix socket offline"
       exit 1
     fi
-    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked); offline, only loopback and no /run"
+    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked); offline, only loopback and no Unix socket"
     ;;
   run)
     status=0
