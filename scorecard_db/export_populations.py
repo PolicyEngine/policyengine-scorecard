@@ -168,6 +168,7 @@ _RELEASE_TOKEN = (
     "f0af251",
     "microcosm_be_v02",
     "microcosm_be_v05h",
+    "parameter-tree",
 )
 
 

@@ -588,6 +588,17 @@
    "running": false,
    "updated": "2026-10-19",
    "note": "5 of 5 claims computed \u2014 FTB revenue estimates for the young child tax credit bills AB 397 and AB 1690 (as introduced; via Assembly Revenue and Taxation analyses), against PE's reform-minus-baseline ca_income_tax for the tax year filed in each fiscal year, on us-6.2.1; LAO CalWORKs costs and LAO ranges are later tranches"
+  },
+  {
+   "id": "uk-benefit-uprating",
+   "source": "ONS + OBR + HMT + RF",
+   "area": "benefit uprating and September CPI",
+   "mode": 1,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-22",
+   "note": "2 claims (ONS September 2026 CPI, OBR's March 2026 forecast of it) and 17 PE results, 15 of them on the HM Treasury and Resolution Foundation uprating claims; parameter-tree read-back on policyengine-uk 2.147.2"
   }
  ]
 }

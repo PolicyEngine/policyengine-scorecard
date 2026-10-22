@@ -1,0 +1,26 @@
+{
+  "id": "uk-benefit-uprating",
+  "name": "UK benefit uprating — September 2026 CPI (ONS outturn and OBR's March 2026 forecast), and PolicyEngine-UK's benefit rates against the published April upratings",
+  "organization": "Office for National Statistics (CPI); Office for Budget Responsibility (forecast)",
+  "country": "UK",
+  "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23",
+  "data_urls": [
+    "https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23/data",
+    "https://obr.uk/download/march-2026-economic-and-fiscal-outlook-detailed-forecast-tables-economy/"
+  ],
+  "raw_sha256": {
+    "ons_d7g7_cpi_annual_rate.json": "f05709a7d468e40599e8f9fe385ce8c42667b8bd49264e65b4ec0c6c5e787604",
+    "obr_efo_march2026_detailed_forecast_tables_economy.xlsx": "fde1de4bc5424dcf16c7b5c42eb75a35198e347f54db47690e95ede7541db510"
+  },
+  "fetched": "2026-10-22",
+  "access_note": "obr.uk returns a Cloudflare challenge to scripted fetches; the OBR workbook is the Wayback Machine capture of 2026-04-23 (web.archive.org/web/20260423152500id_/https://obr.uk/docs/d055fbf02d5b3g6jq8l2/efo-march-2026-detailed-forecast-tables-economy.xlsx). The ONS JSON is the series' own data endpoint.",
+  "model": {
+    "name": "ONS Consumer Prices Index (outturn); OBR March 2026 economy forecast",
+    "open_source": false,
+    "method": "D7G7 is the CPI all-items 12-month rate as published (ONS does not revise published CPI). OBR Table 1.7 forecasts the CPI year-on-year growth by quarter; 2026 Q3 holds the September the April 2027 uprating uses.",
+    "method_basis": "ONS D7G7 metadata; EFO March 2026 detailed forecast tables, economy, Table 1.7"
+  },
+  "boundary_note": "The ONS rate is an official outturn, which the 2026-08-02 boundary rule sends to the Chronicle ledger. It is staged as a claim by decision (2026-10-22), as the Census STC collections were on #176: September CPI is the threshold an April uprating is judged against, and PolicyEngine-UK has a direct counterpart, its own April 2027 uprating.",
+  "attaches_to": "The lane also attaches PolicyEngine-UK read-backs to the HM Treasury Budget 2025 uprating claims (lane uk-ab2025-official) and the Resolution Foundation uprating claims (lane uk-thinktanks); it never edits those claims.",
+  "diagnosis_upstream": "A gap between PolicyEngine-UK's uprating inputs and the published rates is an input-currency issue in policyengine-uk (gov.economic_assumptions), reported upstream."
+}

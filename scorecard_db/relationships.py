@@ -696,6 +696,21 @@ def uk_relationship(source, metric, program=None, kind=None):
         return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
     if source == "obr_pmd":
         return _OBR_PMD_HELD
+    if source == "ons_cpi":
+        return (
+            CR.CONSUMED_AS_TARGET,
+            "policyengine-uk enters ONS D7G7 September rates as statutory "
+            "uprating inputs (gov.economic_assumptions.statutory_uprating_"
+            "inputs.cpi_september); a match checks that the input is current, "
+            "not model skill.",
+        )
+    if source == "obr_efo_economy":
+        return (
+            CR.CONSUMED_AS_TARGET,
+            "policyengine-uk uprates by the OBR economy determinants "
+            "(gov.economic_assumptions.yoy_growth.obr.*) of the EFO it last "
+            "loaded; a match checks the vintage, not model skill.",
+        )
     if source in _AB2025_HELD:
         return _AB2025_HELD[source]
     if source == "dwp":
