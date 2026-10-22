@@ -33,6 +33,7 @@ from pipeline import uk_replay_variants as rv
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / ".github/scripts/uk_replay_engine_matrix.py"
 CI = ROOT / ".github/workflows/ci.yml"
+DETERMINISM = ROOT / ".github/workflows/uk-replay-determinism.yml"
 INDEX = "data/uk/replay_variants.json"
 
 _spec = importlib.util.spec_from_file_location("uk_replay_engine_matrix", SCRIPT)
@@ -293,8 +294,17 @@ def test_the_document_and_matrix_limits_are_refused():
 # --- the wiring ---------------------------------------------------------------------
 
 
-def test_the_engine_matrix_is_the_listing_jobs_output():
-    jobs = yaml.safe_load(CI.read_text())["jobs"]
+@pytest.mark.parametrize(
+    ("workflow", "job", "name"),
+    [
+        (CI, "replay-engine", "replay engine · ${{ matrix.variant }}"),
+        (DETERMINISM, "real-replay", "real replay · ${{ matrix.variant }}"),
+    ],
+)
+def test_the_engine_matrix_is_the_listing_jobs_output(workflow, job, name):
+    # CI's engine checks and the push-only real replay each list the
+    # certified variants the same way, from the index alone.
+    jobs = yaml.safe_load(workflow.read_text())["jobs"]
     lister = jobs["replay-variants"]
     assert lister["permissions"] == {"contents": "read"}
     assert lister["outputs"] == {"variants": "${{ steps.list.outputs.variants }}"}
@@ -314,9 +324,9 @@ def test_the_engine_matrix_is_the_listing_jobs_output():
     assert step["run"].startswith("set -euo pipefail\n")
     assert f"$(python3 -I .github/scripts/{SCRIPT.name} {INDEX})" in step["run"]
     assert "${{" not in step["run"]
-    engine = jobs["replay-engine"]
+    engine = jobs[job]
     assert engine["needs"] == "replay-variants"
-    assert engine["name"] == "replay engine · ${{ matrix.variant }}"
+    assert engine["name"] == name
     assert engine["strategy"] == {
         "fail-fast": False,
         "matrix": {

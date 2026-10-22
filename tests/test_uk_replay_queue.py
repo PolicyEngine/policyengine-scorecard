@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from pipeline import uk_replay_interface as interface
 from pipeline import uk_replay_queue as queue
 
 ROOT = Path(__file__).resolve().parent.parent
+DETERMINISM = ROOT / ".github/workflows/uk-replay-determinism.yml"
 RUN = "https://github.com/PolicyEngine/policyengine-scorecard/actions/runs/1"
 
 
@@ -282,7 +284,9 @@ def test_ci_checks_untracked_regeneration_and_announces_skipped_real_replay():
     assert "git status --porcelain" in steps[regeneration_index + 1]["run"]
     fetch = next(
         step
-        for step in workflow["jobs"]["replay-engine"]["steps"]
+        for step in yaml.safe_load(DETERMINISM.read_text())["jobs"]["real-replay"][
+            "steps"
+        ]
         if step.get("name") == "Fetch the certified dataset for the real replay"
     )
     assert '"$RESULT_ROOT/REPLAY_RECEIPT.json"' in fetch["run"]
@@ -960,8 +964,8 @@ def test_only_public_metadata_request_and_guarded_output_cross_jobs():
         "Record the outcome and continue the queue"
     )
     # No cache crosses jobs: setup-uv caches by default (v5: enable-cache
-    # auto), so every use here turns it off, as does the CI job that runs a
-    # variant's engine; nothing uses actions/cache.
+    # auto), so every use here turns it off, as do the CI and determinism
+    # jobs that run a variant's engine; nothing uses actions/cache.
     uses = [
         step
         for job in workflow["jobs"].values()
@@ -970,28 +974,38 @@ def test_only_public_metadata_request_and_guarded_output_cross_jobs():
     ]
     assert len(uses) == 6
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    determinism = yaml.safe_load(DETERMINISM.read_text())
     uses += [
         step
         for step in ci["jobs"]["replay-engine"]["steps"]
+        + determinism["jobs"]["real-replay"]["steps"]
         if step.get("uses", "").startswith("astral-sh/setup-uv")
     ]
+    assert len(uses) == 8
     assert all(step.get("with", {}).get("enable-cache") is False for step in uses)
-    for document in (workflow, ci):
+    for document in (workflow, ci, determinism):
         for job in document["jobs"].values():
             for step in job["steps"]:
                 assert not step.get("uses", "").startswith("actions/cache")
 
 
+def triggers(document) -> set:
+    """A workflow's events. PyYAML reads the bare key `on` as True."""
+    on = document[True]
+    return {on} if isinstance(on, str) else set(on)
+
+
 def test_the_data_token_is_used_only_outside_pull_requests():
     replay = yaml.safe_load((ROOT / ".github/workflows/uk-replay.yml").read_text())
-    # PyYAML reads the bare key `on` as True.
-    assert set(replay[True]) == {"repository_dispatch", "workflow_dispatch", "schedule"}
+    assert triggers(replay) == {"repository_dispatch", "workflow_dispatch", "schedule"}
+    determinism = yaml.safe_load(DETERMINISM.read_text())
+    assert determinism[True] == {"push": {"branches": ["main"]}}
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
     token = "secrets.PE_UK_PRIVATE_HF_READ_TOKEN"
     # Exactly three steps hold it, each with exactly this condition.
     holders = {
         (step["name"], step["if"])
-        for document in (replay, ci)
+        for document in (replay, determinism, ci)
         for job in document["jobs"].values()
         for step in job["steps"]
         if token in json.dumps(step)
@@ -1008,19 +1022,30 @@ def test_the_data_token_is_used_only_outside_pull_requests():
         ),
         (
             "Fetch the certified dataset for the real replay",
-            "env.LEGACY == 'False' && github.event_name == 'push'",
+            "env.LEGACY == 'False'",
         ),
     }
-    for document in (replay, ci):
+    # No workflow that runs on a pull request names it, even in a step that
+    # never runs: the runner receives a secret its job names regardless (a
+    # debug run of ci.yml's pull-request job evaluated it from a skipped
+    # step), and those workflows install and run third-party packages.
+    for path in sorted((ROOT / ".github/workflows").glob("*.y*ml")):
+        if triggers(yaml.safe_load(path.read_text())) & {
+            "pull_request",
+            "pull_request_target",
+        }:
+            assert "PE_UK_PRIVATE_HF_READ_TOKEN" not in path.read_text(), path
+    for document in (replay, determinism, ci):
         # Never at workflow or job level, where every step would see it.
         assert "secrets." not in json.dumps(document.get("env", {}))
         for job in document["jobs"].values():
             assert "secrets." not in json.dumps(job.get("env", {}))
             for step in job["steps"]:
                 assert "secrets.HUGGING_FACE_TOKEN" not in json.dumps(step)
-    # The CI job that runs a variant's engine reads only, keeps no checkout
-    # credential, and runs the engine in a later step than the token.
-    engine = ci["jobs"]["replay-engine"]
+    # The job that runs a variant's engine beside the token reads only,
+    # keeps no checkout credential, and runs the engine in later steps than
+    # the token, which they do not hold.
+    engine = determinism["jobs"]["real-replay"]
     assert engine["permissions"] == {"contents": "read"}
     checkout = next(
         s for s in engine["steps"] if s.get("uses") == "actions/checkout@v4"
@@ -1038,10 +1063,11 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]
     # The token step comes before any variant code: before the first step
     # that touches the variant's environment, and after only the checkout,
-    # uv's setup, a read of the index and the pull-request notice, none of
-    # which installs or runs anything of the variant's. A package from the
-    # variant's requirements could otherwise write $GITHUB_ENV or
-    # $GITHUB_PATH, or plant a file, that the token step then runs.
+    # uv's setup and a read of the index, none of which installs or runs
+    # anything of the variant's. A package from the variant's requirements
+    # could otherwise write $GITHUB_ENV or $GITHUB_PATH, or plant a file,
+    # that the token step then runs. (It could still read the token from the
+    # runner's memory later in the job; see the job's comment.)
     fetch_index = names.index(fetch["name"])
     variant_steps = [
         index
@@ -1054,20 +1080,13 @@ def test_the_data_token_is_used_only_outside_pull_requests():
         "actions/checkout@v4",
         "astral-sh/setup-uv@v5",
         "Read the variant's fields from the index",
-        "No real replay on pull requests",
     ]
+    installs = re.compile(r"\b(uvx?|pipx?|pip3|venv|pipeline)\b|\$\{?REQUIREMENTS\b")
     for step in before:
-        for code in (
-            "pip install",
-            "uv venv",
-            "uv run",
-            "-m pipeline",
-            "$REQUIREMENTS",
-        ):
-            assert code not in json.dumps(step), (step, code)
+        assert not installs.search(step.get("run", "")), step
 
 
-# --- the CI dataset fetch, run as GitHub runs it -------------------------------
+# --- the real replay's dataset fetch, run as GitHub runs it -------------------------------
 
 FETCH_STEP = "Fetch the certified dataset for the real replay"
 # What the fetch hands uv, then Python, before the -c program.
@@ -1079,6 +1098,8 @@ FETCH_ARGV = [
     "--no-cache",
     "--python",
     "/usr/bin/python3",
+    "--exclude-newer",
+    "2026-10-15T00:00:00Z",
     "--with",
     "huggingface_hub==2.2.0",
     "python",
@@ -1125,7 +1146,8 @@ def sealed_variant():
     sealed = [
         v
         for v in rv.load_document()["variants"]
-        if v["layout"] == "replay_namespace"
+        if v["status"] == "certified"
+        and v["layout"] == "replay_namespace"
         and (ROOT / v["result_root"] / "REPLAY_RECEIPT.json").is_file()
         and (ROOT / v["result_root"] / "NAMESPACE_MANIFEST.json").is_file()
     ]
@@ -1136,13 +1158,17 @@ def sealed_variant():
 def run_fetch(
     tmp_path, *, token="hf_secret_token", result_root=None, env=(), fail=False
 ):
-    """The fetch step's script under bash as GitHub runs it, from the checkout,
-    with uv a recording stub and an environment an earlier step made hostile:
-    impostor uv, env and python3 first on PATH, uv and Hugging Face settings
-    that point elsewhere, and PYTHONPATH on the checkout."""
-    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    """The fetch step's script under `bash -e`, the shell GitHub's log shows
+    for it, from the checkout, with uv a recording stub, in a job environment
+    that would redirect an unshielded uv or Python: impostor uv, env and
+    python3 first on PATH, uv and Hugging Face settings that point elsewhere,
+    and PYTHONPATH on the checkout. What runs in bash before the script's
+    first line (BASH_ENV, LD_PRELOAD, a bash earlier on PATH) is outside the
+    step's reach; the step order alone keeps variant code from setting it."""
     (fetch,) = [
-        s for s in ci["jobs"]["replay-engine"]["steps"] if s.get("name") == FETCH_STEP
+        s
+        for s in yaml.safe_load(DETERMINISM.read_text())["jobs"]["real-replay"]["steps"]
+        if s.get("name") == FETCH_STEP
     ]
     script = tmp_path / "fetch.sh"
     script.write_text(fetch["run"])
@@ -1180,7 +1206,7 @@ def run_fetch(
         **dict(env),
     }
     result = subprocess.run(
-        ["bash", "--noprofile", "--norc", "-eo", "pipefail", str(script)],
+        ["bash", "-e", str(script)],
         cwd=ROOT,
         env=environment,
         capture_output=True,
@@ -1199,6 +1225,22 @@ def test_the_fetch_hands_uv_only_a_fixed_environment_and_the_token_on_stdin(tmp_
     assert record["argv"][:-1] == FETCH_ARGV
     assert not [arg for arg in record["argv"] if "hf_secret_token" in arg]
     assert record["stdin"] == "hf_secret_token"
+    # The shell's own printf feeds it: the token is in no process's arguments.
+    (fetch,) = [
+        s
+        for s in yaml.safe_load(DETERMINISM.read_text())["jobs"]["real-replay"]["steps"]
+        if s.get("name") == FETCH_STEP
+    ]
+    uses = [
+        line.strip()
+        for line in fetch["run"].splitlines()
+        if "HUGGING_FACE_TOKEN" in line
+    ]
+    assert uses == [
+        'if [ -z "${HUGGING_FACE_TOKEN:-}" ]; then',
+        "printf '%s' \"$HUGGING_FACE_TOKEN\" | /usr/bin/env -i PATH=/usr/bin:/bin "
+        'HOME="$HOME" VARIANT="$VARIANT" \\',
+    ]
     # Nothing the earlier step set reaches uv: only a fixed PATH, HOME, the
     # variant, and the hub cache the replay reads.
     env = {k: v for k, v in record["env"].items() if k not in INTERPRETER_ADDED}
@@ -1261,14 +1303,20 @@ CACHE_LOCATIONS = ("HF_HUB_CACHE", "HF_HOME", "XDG_CACHE_HOME")
         for mask in range(2 ** len(CACHE_LOCATIONS))
     ],
 )
-def test_the_fetch_writes_where_the_replay_reads(tmp_path, monkeypatch, present):
-    # For every combination of the cache variables set or unset in the job,
-    # the fetch hands Hugging Face the hub cache that find_dataset_bytes
-    # searches in the replay step, under that same job environment.
+def test_the_fetch_names_the_hub_cache_the_replay_searches(
+    tmp_path, monkeypatch, present
+):
+    # For every combination of the cache variables unset or set to a plain
+    # absolute path in the job, the fetch hands Hugging Face, as HF_HUB_CACHE,
+    # the hub cache that find_dataset_bytes searches in the replay step under
+    # that same job environment. (An empty HF_HOME, or ~ or $VARS inside a
+    # value, which huggingface_hub expands and find_dataset_bytes does not,
+    # would part them; the hosted image sets none of these variables.)
     from pipeline import uk_replay_variants as rv
 
     settings = {name: str(tmp_path / f"{name.lower()} dir") for name in present}
-    _, record, _, variant, home = run_fetch(tmp_path, env=settings)
+    result, record, _, variant, home = run_fetch(tmp_path, env=settings)
+    assert result.returncode == 0, result.stderr
     monkeypatch.setenv("HOME", str(home))
     for name in CACHE_LOCATIONS:
         if name in settings:
