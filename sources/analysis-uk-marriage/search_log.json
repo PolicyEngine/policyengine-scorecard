@@ -1,0 +1,466 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-22",
+   "kind": "backfill",
+   "by": "subfleet:20261022-125054-cmp2-uk-marriage",
+   "results_pins": [],
+   "producers": [
+    {
+     "producer": "obr",
+     "result": "none_found",
+     "queries": [
+      "site:obr.uk \"couple penalty\" benefits marriage",
+      "site:obr.uk marriage allowance policy costings supplementary briefing papers"
+     ],
+     "checked": [
+      "https://obr.uk/data/",
+      "https://obr.uk/category/policy-costings/",
+      "https://obr.uk/forecasts-in-depth/brief-explainers/"
+     ],
+     "claims": [],
+     "note": "No estimate of the tax-benefit difference between coupled and separate households found. Search results cover the policy-measures database, EFO costings/supplementary material and briefing/working papers; Marriage Allowance policy costings are a single tax-policy change rather than the couple-formation contrast. Direct attempts at data/costing pages returned 403 and the explainer URL was inaccessible: this part of the search used indexed text, not downloaded OBR tables."
+    },
+    {
+     "producer": "hm_treasury",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"HM Treasury\" \"couple penalty\"",
+      "site:gov.uk \"HM Treasury\" marriage allowance budget policy costings impact households"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/publications/supporting-documents-for-budget-2025",
+      "https://www.gov.uk/government/publications/supporting-documents-for-spring-statement-2025/spring-statement-2025-policy-costings",
+      "https://www.gov.uk/government/publications/supporting-documents-for-spring-statement-2025/impact-on-households-distributional-analysis-to-accompany-spring-statement-2025"
+     ],
+     "claims": [],
+     "note": "Checked costings, scorecard and distributional-analysis publication locations. No coupled-versus-separated estimate found. Budget 2014 transferable-Marriage-Allowance introduction and current allowance indexation are policy reforms/parameters, not the joint tax-benefit change on household formation; current distributional charts score government policy packages against a policy baseline."
+    },
+    {
+     "producer": "uk_hmrc",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"tax information and impact note\" marriage allowance couples",
+      "site:gov.uk HMRC \"couple penalty\" \"marriage\"",
+      "site:gov.uk HMRC direct effects illustrative tax changes marriage allowance statistics"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/collections/tax-information-and-impact-notes-tiins",
+      "https://www.gov.uk/government/statistics/direct-effects-of-illustrative-tax-changes/direct-effects-of-illustrative-tax-changes-bulletin-january-2025",
+      "https://www.gov.uk/government/statistics/tax-reliefs/tax-relief-statistics-january-2026"
+     ],
+     "claims": [],
+     "note": "No HMRC estimate of couple formation versus living apart found. The ready reckoner prices tax-rate/allowance reforms. Tax-relief statistics section 3.32 gives Marriage Allowance costs and successful-claimant administrative counts, not a modeled couple penalty; these are calibration material for a producer-level source under docs/COMPARABLES.md and are not staged here. The 2014 introduction TIIN scores introducing one relief, not the full coupled/separated contrast."
+    },
+    {
+     "producer": "dwp",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"impact assessment\" DWP \"couple penalty\"",
+      "site:gov.uk DWP \"living together\" \"Universal Credit\" penalty estimate households",
+      "site:gov.uk DWP benefit expenditure caseload tables 2026 couples"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/publications/benefit-expenditure-and-caseload-tables-2026",
+      "https://www.gov.uk/government/publications/universal-credit-and-couples-an-introduction/universal-credit-further-information-for-couples",
+      "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1167979/living-together-fraud-household-formation.pdf",
+      "https://www.gov.uk/government/consultations/pathways-to-work-reforming-benefits-and-support-to-get-britain-working-green-paper/spring-statement-2025-health-and-disability-benefit-reforms-impacts"
+     ],
+     "claims": [],
+     "note": "The DWP/RAND evidence review concerns household formation, fraud/error and perceptions of the Living Together as a Married Couple policy; no own modeled couple-formation tax-benefit amount or affected-population estimate found. Guidance explains joint assessment; caseload/expenditure releases are administrative or baseline levels. Disability-reform impact assessments score a different policy change."
+    },
+    {
+     "producer": "dfe",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"Department for Education\" \"couple penalty\" OR \"marriage penalty\"",
+      "site:explore-education-statistics.service.gov.uk living together couples funded early education",
+      "site:gov.uk \"Department for Education\" marriage living together impact assessment parliamentary FOI"
+     ],
+     "checked": [
+      "https://explore-education-statistics.service.gov.uk/methodology/funded-early-education-and-childcare",
+      "https://www.gov.uk/government/organisations/department-for-education/about/publication-scheme",
+      "https://www.gov.uk/government/publications/childrens-wellbeing-and-schools-act-impact-assessments"
+     ],
+     "claims": [],
+     "note": "Checked childcare statistics/methodology, impact-assessment publication locations, and the publication scheme listing parliamentary answers and FOI releases. No DfE coupled-versus-separated tax-benefit estimate found; funded-childcare take-up levels and education/social-care policy assessments measure other quantities."
+    },
+    {
+     "producer": "scottish_fiscal_commission",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "The producer list applies only to Scotland-scoped analyses; this analysis is uk_wide."
+    },
+    {
+     "producer": "ifs",
+     "result": "found",
+     "queries": [
+      "site:ifs.org.uk \"couple penalty\"",
+      "site:ifs.org.uk \"marriage penalty\" benefits",
+      "site:ifs.org.uk living together benefits couples penalty Green Budget working paper"
+     ],
+     "checked": [
+      "https://ifs.org.uk/publications/couple-penalties-and-premiums-uk-tax-and-benefit-system",
+      "https://ifs.org.uk/sites/default/files/output_url_files/bn102.pdf",
+      "https://ifs.org.uk/publications/green-budget-2026-full-report",
+      "https://ifs.org.uk/research-and-analysis/working-papers"
+     ],
+     "claims": [
+      "ifs_2010_11_scenario_a_working_age_no_children_penalty_share",
+      "ifs_2010_11_scenario_a_working_age_no_children_premium_share",
+      "ifs_2010_11_scenario_a_working_age_no_children_neutral_share",
+      "ifs_2010_11_scenario_a_working_age_no_children_net_penalty_mean",
+      "ifs_2010_11_scenario_a_working_age_children_penalty_share",
+      "ifs_2010_11_scenario_a_working_age_children_premium_share",
+      "ifs_2010_11_scenario_a_working_age_children_neutral_share",
+      "ifs_2010_11_scenario_a_working_age_children_net_penalty_mean",
+      "ifs_2010_11_scenario_a_pensioner_couples_penalty_share",
+      "ifs_2010_11_scenario_a_pensioner_couples_premium_share",
+      "ifs_2010_11_scenario_a_pensioner_couples_neutral_share",
+      "ifs_2010_11_scenario_a_pensioner_couples_net_penalty_mean",
+      "ifs_2010_11_scenario_a_all_couples_penalty_share",
+      "ifs_2010_11_scenario_a_all_couples_premium_share",
+      "ifs_2010_11_scenario_a_all_couples_neutral_share",
+      "ifs_2010_11_scenario_a_all_couples_net_penalty_mean",
+      "ifs_2010_11_scenario_b_working_age_no_children_penalty_share",
+      "ifs_2010_11_scenario_b_working_age_no_children_premium_share",
+      "ifs_2010_11_scenario_b_working_age_no_children_neutral_share",
+      "ifs_2010_11_scenario_b_working_age_no_children_net_penalty_mean",
+      "ifs_2010_11_scenario_b_working_age_children_penalty_share",
+      "ifs_2010_11_scenario_b_working_age_children_premium_share",
+      "ifs_2010_11_scenario_b_working_age_children_neutral_share",
+      "ifs_2010_11_scenario_b_working_age_children_net_penalty_mean",
+      "ifs_2010_11_scenario_b_pensioner_couples_penalty_share",
+      "ifs_2010_11_scenario_b_pensioner_couples_premium_share",
+      "ifs_2010_11_scenario_b_pensioner_couples_neutral_share",
+      "ifs_2010_11_scenario_b_pensioner_couples_net_penalty_mean",
+      "ifs_2010_11_scenario_b_all_couples_penalty_share",
+      "ifs_2010_11_scenario_b_all_couples_premium_share",
+      "ifs_2010_11_scenario_b_all_couples_neutral_share",
+      "ifs_2010_11_scenario_b_all_couples_net_penalty_mean",
+      "ifs_2010_11_scenario_a_annual_net_penalty",
+      "ifs_2010_11_scenario_a_annual_gross_penalties",
+      "ifs_2010_11_scenario_a_annual_gross_premiums"
+     ],
+     "note": "Directly relevant historical TAXBEN study of couple penalties and premiums. Staged the central main family-type shares/mean penalties for both household-separation assumptions, plus the three printed aggregate annual amounts; retained each printed number. These are 2010-11 policy-system estimates, not current-year claims. Detailed distribution quantiles, income-band cells, tax-component decompositions, 1997-98 policy counterfactuals and hypothetical individual matching exercises are not replicated; the main central aggregate distribution is covered. Calculator publishes no aggregate."
+    },
+    {
+     "producer": "resolution_foundation",
+     "result": "none_found",
+     "queries": [
+      "site:resolutionfoundation.org \"couple penalty\" benefits",
+      "site:resolutionfoundation.org \"marriage penalty\" OR \"living together\" benefits",
+      "site:resolutionfoundation.org reports universal credit couples budget penalty"
+     ],
+     "checked": [
+      "https://www.resolutionfoundation.org/publications/saving-penalties/",
+      "https://www.resolutionfoundation.org/app/uploads/2025/04/Saving-penalties.pdf",
+      "https://www.resolutionfoundation.org/publications/listen-and-learn/",
+      "https://www.resolutionfoundation.org/app/uploads/2015/06/UC-FINAL-REPORT1.pdf"
+     ],
+     "claims": [],
+     "note": "No quantified together-versus-apart penalty found in reports/briefings or UC budget/reform material. Saving penalties estimates couples affected by capital means-testing relative to no capital test, not the loss caused by forming a couple. Listen and learn and Making the most of UC cost administrative and design reforms; those policies differ from the calculator contrast."
+    },
+    {
+     "producer": "centax",
+     "result": "none_found",
+     "queries": [
+      "site:centax.org.uk \"couple penalty\" OR \"marriage penalty\" OR \"marriage allowance\"",
+      "site:centax.org.uk couples living together tax benefits reports estimates"
+     ],
+     "checked": [
+      "https://centax.org.uk/research/",
+      "https://centax.org.uk/policy/"
+     ],
+     "claims": [],
+     "note": "Research and policy-publication catalogues and subject searches found no coupled-versus-separated tax-benefit estimate. Business partnership income, inheritance-tax spouse transferability and childcare threshold reforms score other tax bases or policy changes."
+    },
+    {
+     "producer": "centre_for_british_progress",
+     "result": "none_found",
+     "queries": [
+      "\"Centre for British Progress\" \"couple penalty\" OR \"marriage\" OR \"living together\"",
+      "site:britishprogress.org marriage couple benefits penalty estimate"
+     ],
+     "checked": [
+      "https://www.britishprogress.org/",
+      "https://britishprogress.org/reports/rates-and-wrongs-fixing-uk-tax-cliff-edges-and-tap",
+      "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf"
+     ],
+     "claims": [],
+     "note": "No estimate of couple formation found. Rates and wrongs and its technical appendix model childcare/earnings cliff and taper reforms, not living together versus apart. The www homepage was inaccessible; the report and appendix on the bare domain were readable."
+    },
+    {
+     "producer": "ippr",
+     "result": "none_found",
+     "queries": [
+      "site:ippr.org \"couple penalty\" OR \"marriage penalty\"",
+      "site:ippr.org \"living together\" tax benefits couples penalty"
+     ],
+     "checked": [
+      "https://www.ippr.org/research",
+      "https://www.ippr.org/research-and-ideas"
+     ],
+     "claims": [],
+     "note": "No own coupled-versus-separated tax-benefit estimate found in research and briefings; targeted exact-phrase searches returned no results."
+    },
+    {
+     "producer": "fabian_society",
+     "result": "none_found",
+     "queries": [
+      "site:fabians.org.uk \"couple penalty\" OR \"marriage penalty\"",
+      "site:fabians.org.uk living together couples benefits tax universal credit"
+     ],
+     "checked": [
+      "https://fabians.org.uk/publications/",
+      "https://fabians.org.uk/publication/in-the-shadows/"
+     ],
+     "claims": [],
+     "note": "No direct coupled-versus-separated tax-benefit contrast found. In the shadows compares working/no-earnings families and tax-free allowances/social-security payments, not otherwise identical adults living together/apart."
+    },
+    {
+     "producer": "niesr",
+     "result": "none_found",
+     "queries": [
+      "site:niesr.ac.uk \"couple penalty\" OR \"marriage penalty\"",
+      "site:niesr.ac.uk \"living together\" benefits couples tax",
+      "site:niesr.ac.uk publications household universal credit marriage couples",
+      "site:niesr.ac.uk \"marriage allowance\""
+     ],
+     "checked": [
+      "https://niesr.ac.uk/publications",
+      "https://www.niesr.ac.uk/publications",
+      "https://niesr.ac.uk/publications/uk-living-standards-review-2025-part-two"
+     ],
+     "claims": [],
+     "note": "No couple-formation amount/count/share found. Publication listings returned 403; indexed living-standards and household research discusses benefit adequacy, household composition and UC rules without estimating the coupled/separated contrast. This producer could be checked only through indexed text and search snippets, not a complete publications download."
+    },
+    {
+     "producer": "ukmod",
+     "result": "none_found",
+     "queries": [
+      "site:microsimulation.ac.uk \"couple penalty\" OR \"marriage penalty\" OR \"living together\"",
+      "UKMOD CeMPA working paper marriage penalty universal credit couples",
+      "site:microsimulation.ac.uk UKMOD country report couples tax benefit"
+     ],
+     "checked": [
+      "https://www.microsimulation.ac.uk/publications/",
+      "https://www.iser.essex.ac.uk/research/publications/publication-547705",
+      "https://www.iser.essex.ac.uk/research/publications/working-papers/cempa/cempa11-26"
+     ],
+     "claims": [],
+     "note": "CeMPA working-paper and UKMOD country-report locations checked via the ISER publisher after microsimulation.ac.uk failed. Country reports describe model implementation; the recent UC-rollout paper measures mental health, not the tax-benefit penalty from couple formation. No own UKMOD/CeMPA quantified comparator found. The older EUROMOD study found in academic is attributed to its authors/OECD, not to the newer UKMOD producer."
+    },
+    {
+     "producer": "lse_case",
+     "result": "none_found",
+     "queries": [
+      "site:sticerd.lse.ac.uk/case \"couple penalty\" OR \"marriage penalty\"",
+      "\"LSE CASE paper\" living together couples benefits penalty"
+     ],
+     "checked": [
+      "https://sticerd.lse.ac.uk/case/_new/publications/"
+     ],
+     "claims": [],
+     "note": "CASE paper/report catalogue and subject searches found no own couple-formation tax-benefit estimate. Retrieved work on cohabitation law, housing, child poverty and household needs covers other outcomes; authors with LSE affiliations publishing outside CASE are not attributed to CASE."
+    },
+    {
+     "producer": "jrf",
+     "result": "found",
+     "queries": [
+      "site:jrf.org.uk \"couple penalty\"",
+      "site:jrf.org.uk \"marriage penalty\" OR \"living together\" benefits",
+      "\"benefits-tax-families-full.pdf\"",
+      "\"Does the tax and benefit system create\" filetype:pdf",
+      "JRF Hirsch 2012 couple penalty 220 KB benefits tax families"
+     ],
+     "checked": [
+      "https://www.jrf.org.uk/care/does-the-tax-and-benefit-system-create-a-couple-penalty",
+      "https://www.donaldhirsch.com/couple.pdf"
+     ],
+     "claims": [
+      "jrf_2011_minimum_wage_state_support_couple_penalty",
+      "jrf_2011_nine_pounds_hour_state_support_couple_penalty"
+     ],
+     "note": "Official landing and migrated PDF paths returned 404; the author-hosted JRF primary was recovered and read. Appendix 3 Table 10 prints two unadjusted weekly state-support losses, staged as illustrative household transfers. Headline needs-adjusted MIS/OECD income-adequacy penalties are different quantities, not ordinary cash-income changes or population shares. No differences were calculated from tables that print only together/apart levels."
+    },
+    {
+     "producer": "landman_economics",
+     "result": "none_found",
+     "queries": [
+      "\"Landman Economics\" \"couple penalty\" OR \"marriage penalty\"",
+      "site:landmaneconomics.co.uk \"living together\" OR \"marriage allowance\"",
+      "\"Landman Economics\" couple penalty benefits report"
+     ],
+     "checked": [
+      "https://www.landmaneconomics.co.uk/",
+      "https://www.gov.scot/publications/tackling-child-poverty-delivery-plan-forecasting-child-poverty-scotland/pages/8/"
+     ],
+     "claims": [],
+     "note": "Homepage inaccessible. Subject searches and commissioned-report results (including IPPR/RF/Fabian work) found tax-policy-package impacts and poverty forecasts, not an own together-versus-apart comparison. Read the commissioned Scottish forecast methodology identifying Landman TTM and its policy-reform contrast; no couple-formation amount/count/share found."
+    },
+    {
+     "producer": "tax_policy_associates",
+     "result": "none_found",
+     "queries": [
+      "site:taxpolicy.org.uk \"couple penalty\" OR \"marriage penalty\" OR \"marriage allowance\"",
+      "site:taxpolicy.org.uk couples living together benefits tax estimate"
+     ],
+     "checked": [
+      "https://taxpolicy.org.uk/reports/",
+      "https://taxpolicy.org.uk/2024/04/12/living_with_spouse/",
+      "https://taxpolicy.org.uk/2025/11/12/the-budget-2025-tax-calculator/"
+     ],
+     "claims": [],
+     "note": "Report index URL inaccessible; articles and calculator description readable. Living with your spouse explains CGT legal definitions without estimating the couple-formation income effect. Budget tax calculator accepts individual earnings and excludes means-tested working-age benefits other than Child Benefit. No fixed coupled/separated numeric comparator found."
+    },
+    {
+     "producer": "academic",
+     "result": "found",
+     "queries": [
+      "Google Scholar UK couple penalty benefits marriage 2021 2022 2023 2024 2025 2026",
+      "SSRN UK marriage penalty universal credit living together",
+      "IZA discussion papers UK couple penalty cohabitation tax benefits",
+      "CEPR VoxEU ISER working papers UK marriage cohabitation tax benefit penalty 2021 2026",
+      "site:papers.ssrn.com UK \"couple penalty\" benefits",
+      "site:scholar.google.com UK \"marriage penalty\" universal credit",
+      "site:iser.essex.ac.uk \"couple penalty\" 2021 OR 2022 OR 2023 OR 2024 OR 2025 OR 2026",
+      "\"An Evaluation of the Tax-Transfer Treatment\" OECD published date 2009 2008",
+      "site:oecd.org \"An Evaluation of the Tax-Transfer Treatment of Married Couples\" 2009 date"
+     ],
+     "checked": [
+      "https://cepr.org/publications/dp18138",
+      "https://www.iza.org/publications/dp/3965/an-evaluation-of-the-tax-transfer-treatment-of-married-couples-in-european-countries",
+      "https://docs.iza.org/dp3965.pdf",
+      "https://www.oecd.org/en/publications/an-evaluation-of-the-tax-transfer-treatment-of-married-couples-in-european-countries_227200406151.html",
+      "https://www.oecd.org/content/dam/oecd/en/publications/reports/2009/01/an-evaluation-of-the-tax-transfer-treatment-of-married-couples-in-european-countries_g17a1c7d/227200406151.pdf",
+      "https://journals.sagepub.com/doi/full/10.1177/09589287231159492"
+     ],
+     "claims": [
+      "oecd_1998_children_2_pe_0_se_0_penalty",
+      "oecd_1998_children_2_pe_p10_se_0_penalty",
+      "oecd_1998_children_2_pe_p10_se_p10_penalty",
+      "oecd_1998_children_2_pe_p50_se_0_penalty",
+      "oecd_1998_children_2_pe_p50_se_p10_penalty",
+      "oecd_1998_children_2_pe_p50_se_p50_penalty",
+      "oecd_1998_children_2_pe_p90_se_0_penalty",
+      "oecd_1998_children_2_pe_p90_se_p10_penalty",
+      "oecd_1998_children_2_pe_p90_se_p50_penalty",
+      "oecd_1998_children_2_pe_p90_se_p90_penalty",
+      "oecd_1998_children_0_pe_0_se_0_penalty",
+      "oecd_1998_children_0_pe_p10_se_0_penalty",
+      "oecd_1998_children_0_pe_p10_se_p10_penalty",
+      "oecd_1998_children_0_pe_p50_se_0_penalty",
+      "oecd_1998_children_0_pe_p50_se_p10_penalty",
+      "oecd_1998_children_0_pe_p50_se_p50_penalty",
+      "oecd_1998_children_0_pe_p90_se_0_penalty",
+      "oecd_1998_children_0_pe_p90_se_p10_penalty",
+      "oecd_1998_children_0_pe_p90_se_p50_penalty",
+      "oecd_1998_children_0_pe_p90_se_p90_penalty"
+     ],
+     "note": "Searched the required recent five-year working-paper/journal locations and followed a directly relevant older EUROMOD paper. Staged its UK annual specimen-household marriage penalties in 1998 rules, in real 2007 euros, from the OECD edition whose cover and landing supply the exact publication day; the IZA edition gives only a month. CEPR DP18138 studies the US federal income tax. The 2023 EU marriage/cohabitation paper considers marital status among cohabitants, not separate-household formation; its full-text fetch timed out, so only indexed abstract/description checked. IFS results remain logged under ifs."
+    },
+    {
+     "producer": "open_search",
+     "result": "found",
+     "queries": [
+      "UK couple penalty benefits living together number households estimate 2026",
+      "marriage penalty universal credit UK estimate households cost marriage foundation",
+      "couple penalty benefits UK Centre Social Justice cost 2025 2026",
+      "\"couple penalty\" benefits estimate cost households",
+      "\"marriage penalty\" \"Universal Credit\" estimate",
+      "site:marriagefoundation.org.uk \"couple penalty\"",
+      "site:centreforsocialjustice.org.uk \"couple penalty\"",
+      "\"couple penalty\" cost estimate poverty UK 2026 -site:reddit.com -site:ifs.org.uk -site:wikipedia.org",
+      "\"living together penalty\" UK benefits estimate",
+      "\"marriage penalty\" \"Universal Credit\" \"£\" -site:reddit.com -site:wikipedia.org",
+      "site:centreforsocialjustice.org.uk \"The Stability Advantage\"",
+      "\"Harry Benson\" \"Stability Advantage\" \"2026\"",
+      "site:policyexchange.org.uk \"Taxing Families Fairly\" \"2022\"",
+      "\"Marriage Foundation\" \"couple penalty\" \"7,100\"",
+      "site:centreforsocialjustice.org.uk \"Dynamic Benefits\" \"2009\" \"1,336\"",
+      "\"Dynamic Benefits\" \"September\" \"2009\" \"16\"",
+      "site:centreforsocialjustice.org.uk/library \"Dynamic Benefits\"",
+      "site:centreforsocialjustice.org.uk \"Dynamic Benefits\" \"September 16\""
+     ],
+     "checked": [
+      "https://marriagefoundation.org.uk/research/election-special-refocus-the-marriage-allowance/",
+      "https://www.centreforsocialjustice.org.uk/wp-content/uploads/2018/03/MarriagePaperFINAL_ii_.pdf",
+      "https://www.civitas.org.uk/content/files/Reform-the-Marriage-Allowance.pdf",
+      "https://iea.org.uk/wp-content/uploads/2016/07/IEA%20Redefining%20Poverty%20Debate.pdf",
+      "https://www.familyeducationtrust.org.uk/media/latest-news-statements/five-to-one-65-per-cent-of-the-public-want-the-welfare-couple-penalty-abolished-new-poll-finds/",
+      "https://commonslibrary.parliament.uk/research-briefings/SN03372/",
+      "https://www.royallondon.com/siteassets/site-docs/media-centre/policy-papers/royal-london-policy-paper-1-the-living-together-penalty.pdf",
+      "https://care.org.uk/cause/marriage-and-family/cares-work-on-marriage-and-family",
+      "https://policyengine.org/uk/marriage",
+      "https://api.github.com/repos/PolicyEngine/marriage/commits/2864e4092d6a9dd259845fd76925878bcb69e852/status",
+      "https://api.github.com/repos/PolicyEngine/marriage/deployments/6348928002/statuses",
+      "https://api.github.com/repos/PolicyEngine/marriage/git/trees/2864e4092d6a9dd259845fd76925878bcb69e852?recursive=1",
+      "https://github.com/PolicyEngine/marriage/blob/2864e4092d6a9dd259845fd76925878bcb69e852/app/MarriageApp.jsx",
+      "https://github.com/PolicyEngine/marriage/blob/2864e4092d6a9dd259845fd76925878bcb69e852/app/components/ResultsDisplay.jsx",
+      "https://github.com/PolicyEngine/marriage/blob/2864e4092d6a9dd259845fd76925878bcb69e852/lib/api.js",
+      "https://github.com/PolicyEngine/marriage/blob/2864e4092d6a9dd259845fd76925878bcb69e852/lib/countries.js",
+      "https://github.com/PolicyEngine/marriage/blob/2864e4092d6a9dd259845fd76925878bcb69e852/backend/uk.py",
+      "https://www.centreforsocialjustice.org.uk/wp-content/uploads/2026/07/CSJ-Poverty_and_Family_Stability.pdf",
+      "https://marriagefoundation.org.uk/wp-content/uploads/2019/09/MF-paper-better-off-apart.pdf",
+      "https://policyexchange.org.uk/wp-content/uploads/2022/08/Taxing-Families-Fairly.pdf",
+      "https://marriagefoundation.org.uk/wp-content/uploads/2024/06/MF-policy-brief-Refocus-the-Marriage-Allowance.pdf",
+      "https://www.centreforsocialjustice.org.uk/newsroom/10000-couple-penalty-shatters-wedding-prospects-for-low-income-british-couples",
+      "https://marriagefoundation.org.uk/research/quarter-of-a-million-couples-pretend-to-live-apart/",
+      "https://www.centreforsocialjustice.org.uk/library/the-stability-advantage",
+      "https://policyexchange.org.uk/publication/taxing-families-fairly/",
+      "https://www.centreforsocialjustice.org.uk/library/dynamic-benefits-towards-welfare-that-works",
+      "https://www.centreforsocialjustice.org.uk/wp-content/uploads/2018/03/CSJ-dynamic-benefits.pdf",
+      "https://researchbriefings.files.parliament.uk/documents/CBP-9090/CBP-9090.pdf?download=1"
+     ],
+     "claims": [
+      "csj_2026_mother_loss_father_20000",
+      "csj_2026_mother_loss_father_30000",
+      "policy_exchange_2021_no_income_fulltime_income_loss",
+      "policy_exchange_2021_no_income_fulltime_uc_loss",
+      "policy_exchange_2021_no_income_unemployed_income_loss",
+      "policy_exchange_2021_no_income_unemployed_uc_loss",
+      "policy_exchange_2021_parttime_fulltime_income_loss",
+      "policy_exchange_2021_parttime_fulltime_uc_loss",
+      "policy_exchange_2021_parttime_unemployed_income_loss",
+      "policy_exchange_2021_parttime_unemployed_uc_loss",
+      "marriage_foundation_2013_no_income_support_father_5k",
+      "marriage_foundation_2013_no_income_support_father_10k",
+      "marriage_foundation_2013_no_income_support_father_15k",
+      "marriage_foundation_2013_no_income_support_father_20k",
+      "marriage_foundation_2013_no_income_support_father_25k",
+      "marriage_foundation_2013_no_income_support_father_30k",
+      "marriage_foundation_2013_income_support_father_5k",
+      "marriage_foundation_2013_income_support_father_10k",
+      "marriage_foundation_2013_income_support_father_15k",
+      "marriage_foundation_2013_income_support_father_20k",
+      "marriage_foundation_2013_income_support_father_25k",
+      "marriage_foundation_2013_income_support_father_30k",
+      "marriage_foundation_2013_part_time_father_5k",
+      "marriage_foundation_2013_part_time_father_10k",
+      "marriage_foundation_2013_part_time_father_15k",
+      "marriage_foundation_2013_part_time_father_20k",
+      "marriage_foundation_2013_part_time_father_25k",
+      "marriage_foundation_2013_part_time_father_30k",
+      "marriage_foundation_2013_full_time_father_5k",
+      "marriage_foundation_2013_full_time_father_10k",
+      "marriage_foundation_2013_full_time_father_15k",
+      "marriage_foundation_2013_full_time_father_20k",
+      "marriage_foundation_2013_full_time_father_25k",
+      "marriage_foundation_2013_full_time_father_30k",
+      "csj_2009_material_penalty_couples",
+      "csj_2009_average_equivalised_shortfall",
+      "csj_2009_aggregate_equivalised_shortfall",
+      "marriage_foundation_2013_1_children_penalty_maximum",
+      "marriage_foundation_2013_2_children_penalty_maximum",
+      "marriage_foundation_2013_3_children_penalty_maximum"
+     ],
+     "note": "Own household examples traced to CSJ, Policy Exchange (via Civitas), and Marriage Foundation, keeping each producer attribution. IFS restatements in Civitas/CARE/CSJ are not duplicated under open_search. Family Education Trust is an opinion poll, Commons Library explains legal status/demographic levels, and Royal London costs bereavement eligibility for cohabitants versus married couples, not two living adults together versus apart. CARE international family tax-wedge comparisons and IEA needs/working-tax-credit illustrations measure other contrasts. PolicyEngine live page/code/deployment records checked here to establish calculator status, not as external comparators. Further primary URLs and specimen scopes are recorded in the claims. Historical CSJ Dynamic Benefits material-penalty count, average and aggregate are staged in their own needs-adjusted world; the exact release date is corroborated in Commons Library CBP9090 footnote 33. Marriage Foundation direct Appendix A differences and its three headline amounts are staged separately; the first two headlines are upper bounds. The report’s fraudulent-claimant discrepancy, Appendix B reform costings, and the 2024 marriage-allowance reform are different quantities and not staged. For CSJ July 2026 examples, no underlying calculator input record, component decomposition or exact tax year is published; for the Marriage Foundation two-/three-child web figures, assumptions and exact tax year are unstated. These limits are retained in claim conditions, without inventing them."
+    }
+   ]
+  }
+ ]
+}
