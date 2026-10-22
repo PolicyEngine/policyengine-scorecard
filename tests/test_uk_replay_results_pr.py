@@ -322,9 +322,12 @@ GIT_RUNS = {"diff", "fetch", "log", "ls-remote", "rev-list", "rev-parse"}
 PUSHGIT_RUNS = {"push"}
 GH_RUNS = {("pr", "create"), ("pr", "edit"), ("pr", "list"), ("pr", "ready")}
 # git -c may set only the credential helper pushgit hands the token through.
-# No option of git's may name a program for it to run or a file for it to
-# write, however it is quoted or abbreviated (git takes any unambiguous
-# prefix of a long option), and none of gh's may open an editor or browser.
+# No word propose writes, as an argument, a variable's value or an array's
+# element, may be an option that has git run a program or write a file, or
+# gh open an editor or a browser, however it is quoted, escaped, abbreviated
+# (git takes any unambiguous prefix of a long option) or bundled (gh -dw).
+# An option assembled at run time (u=--w; u+=eb) is beyond any rule on
+# words, so these rules cover options written as words.
 GIT_CONFIG = {"credential.helper=", "'credential.helper=!gh auth git-credential'"}
 GIT_OPTIONS_TO_AVOID = ("upload-pack", "receive-pack", "exec", "output")
 GH_OPTIONS_TO_AVOID = {"--editor", "-e", "--web", "-w"}
@@ -349,23 +352,28 @@ ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]+\])?\+?=")
 LOCAL_NAME = re.compile(r"[a-z_][a-z0-9_]*")
 PARAMETER = re.compile(
     r"\$\{#?(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*#?$-])(?:\[(?:[@*]|[0-9]+)\])?"
-    r"(?::?[-+?][^{}\[\]'\"$`\\]*)?\}"
+    r"(?::?[-+?][^{}\[\]'\"$`\\<>()]*)?\}"
 )
 
 
 def unquoted(word):
     """``word`` less its quotes and backslashes: what a literal word is to
     the program that receives it."""
-    return re.sub(r"[\\'\"]", "", word)
+    return re.sub(r"\\\n|[\\'\"]", "", word)
 
 
-def avoided_git_option(word):
-    """An option, however quoted or abbreviated, that has git run a program
-    or write a file."""
+def avoided_option(word):
+    """``word``, unquoted, as an option that has git run a program or write
+    a file (any prefix of one of GIT_OPTIONS_TO_AVOID), or one of gh's that
+    opens a program, alone or in a bundle of short options."""
     plain = unquoted(word)
-    name = plain[2:].split("=", 1)[0] if plain.startswith("--") else ""
-    return plain == "-u" or (
-        bool(name) and any(option.startswith(name) for option in GIT_OPTIONS_TO_AVOID)
+    option = plain.split("=", 1)[0]
+    name = option[2:] if option.startswith("--") else ""
+    return (
+        bool(name) and any(avoided.startswith(name) for avoided in GIT_OPTIONS_TO_AVOID)
+    ) or (
+        option in GH_OPTIONS_TO_AVOID
+        or bool(re.fullmatch(r"-[A-Za-z]*[ew][A-Za-z]*", option))
     )
 
 
@@ -382,7 +390,7 @@ class Commands:
     command) raises Unlexed, so it is flagged rather than read past."""
 
     def __init__(self, text):
-        self.text, self.commands, self.functions = text, [], []
+        self.text, self.commands, self.functions, self.words = text, [], [], []
         self.sequence(0, None, function=None)
 
     def blank(self, i):
@@ -521,12 +529,15 @@ class Commands:
                 i = self.quoted(i + 1, function)
             elif t[i] == "$":
                 i = self.dollar(i, function)
+            elif t[i] == "{" and t[i + 1 : i + 2] not in ("", *WORD_END):
+                raise Unlexed(f"a brace expansion at {t[i : i + 20]!r}")
             else:
                 i += 1
             if t[i : i + 1] == "(" and ASSIGNMENT.fullmatch(t[start:i]):
                 i = self.array(i + 1, function)
         if i == start:
             raise Unlexed(f"no word at {t[i : i + 10]!r}")
+        self.words.append(t[start:i])
         return t[start:i], i
 
     def quoted(self, i, function):
@@ -578,6 +589,13 @@ def disallowed(commands):
     PROPOSE_WRITES, as a list of findings. pushgit's body is PUSHGIT, at the
     top level, before any call; nothing else may be defined."""
     found, wrapper = [], None
+    # An option reaches git or gh from any word: an argument, a variable's
+    # value or an array's element.
+    for word in commands.words:
+        bound = ASSIGNMENT.match(word)
+        if avoided_option(word) or bound and avoided_option(word[bound.end() :]):
+            found.append(f"{word} is an option that runs or writes something")
+    declared = []
     for function in commands.functions:
         if function["text"] == PUSHGIT and function["top"] and wrapper is None:
             wrapper = function["at"]
@@ -602,9 +620,17 @@ def disallowed(commands):
             found.append(f"{shown} sets its command's environment")
         if name not in PROPOSE_RUNS:
             found.append(f"{shown} runs {name}")
+        elif name == "[" and any(unquoted(arg) == "-v" for arg in args):
+            found.append(f"{shown} evaluates a subscript")
         elif name == "local":
             for arg in args:
                 bound = ASSIGNMENT.match(arg)
+                local = (bound.group().rstrip("+=") if bound else arg).split("[")[0]
+                if local in declared:
+                    # A second local of an array reads a quoted value as
+                    # a compound assignment: local a='($(cmd))'.
+                    found.append(f"{shown} declares {local} again")
+                declared.append(local)
                 if not LOCAL_NAME.fullmatch(
                     bound.group().rstrip("+=") if bound else arg
                 ):
@@ -614,14 +640,8 @@ def disallowed(commands):
         ):
             # printf -v sets a variable, and a format that expands may be -v.
             found.append(f"{shown} has no literal format")
-        elif name == "gh":
-            if tuple(args[:2]) not in GH_RUNS:
-                found.append(f"{shown} runs gh {' '.join(args[:2])}")
-            found += [
-                f"{shown} opens a program: {arg}"
-                for arg in args
-                if unquoted(arg).split("=", 1)[0] in GH_OPTIONS_TO_AVOID
-            ]
+        elif name == "gh" and tuple(args[:2]) not in GH_RUNS:
+            found.append(f"{shown} runs gh {' '.join(args[:2])}")
         elif name in ("git", "pushgit"):
             if name == "pushgit" and (wrapper is None or wrapper > command["at"]):
                 found.append(f"{shown} runs pushgit where it is not defined")
@@ -634,11 +654,6 @@ def disallowed(commands):
             runs = GIT_RUNS if name == "git" else PUSHGIT_RUNS
             if args[at : at + 1] == [] or args[at] not in runs:
                 found.append(f"{shown} runs {name} {' '.join(args[at : at + 1])}")
-            found += [
-                f"{shown} has git run or write something: {arg}"
-                for arg in args[at:]
-                if avoided_git_option(arg)
-            ]
     return found
 
 
@@ -784,6 +799,18 @@ def test_the_builder_runs_no_release_code_and_never_merges():
 
 
 GROUP = '{\necho "::error::; builder check"\n}'
+# A function definition, wherever in a line it starts.
+DEFINITION = re.compile(
+    r"(?:^|[\s;&|(){}'\"])"
+    r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>\"'$`]+)\s*\(\s*\))",
+    re.M,
+)
+
+
+def definitions(text):
+    return [keyword or plain for keyword, plain in DEFINITION.findall(text)]
+
+
 # pushgit, defined with another program in git's place.
 NOT_PUSHGIT = PUSHGIT.replace("git -C", "b''ash -C")
 
@@ -797,25 +824,13 @@ def test_propose_runs_only_the_commands_it_lists():
     assert {c["name"] for c in commands.commands if c["name"]} == PROPOSE_RUNS
     # Review of 24434729 (2): bash removes the quotes and runs bash. Every
     # spelling or other route to a program, a variable or a file beyond
-    # PROPOSE_RUNS and PROPOSE_WRITES is flagged.
+    # PROPOSE_RUNS and PROPOSE_WRITES is flagged. The property test below
+    # covers other names and spellings in every command position.
     for runs in (
         f"{GROUP} | b''ash",
         f"{GROUP} | b\\ash",
-        f'{GROUP} | "b"ash',
         f"{GROUP} | $SHELL",
-        f"{GROUP} | env bash",
-        f"{GROUP} | command bash",
-        f"{GROUP} | xargs -0 sh -c",
         f"{GROUP} | /bin/bash",
-        f"{GROUP} | python3 -c 'import os'",
-        f"if :; then\n  {GROUP} | b''ash\nfi",
-        f"while :; do\n  {GROUP} | b''ash\ndone",
-        # Substitutions and subshells, where no message is set aside.
-        "x=\"${ b''ash x; }\"",
-        "x=${|b''ash x;}",
-        "x=$(b''ash x)",
-        "cat <(b''ash x)",
-        "(\n  b''ash x\n)",
         # A command's environment, or a variable bash or a program reads.
         "PATH=/tmp git rev-parse HEAD",
         'PATH="$WORK"',
@@ -867,6 +882,21 @@ def test_propose_runs_only_the_commands_it_lists():
         "echo $((1 + 2))",
         "echo \"${x:-$(b''ash)}\"",
         "{ :; } x",
+        # Review of cf8066bc: each ran touch under bash 5.2 (test -v, 4.2+)
+        # or 3.2 to 5.3 (the rest).
+        "[ -v 'a[$(touch m)]' ]",
+        "local create=(p)\nlocal create='($(touch m))'",
+        ": ${x:-<(touch m)}",
+        ": ${x:->(touch m)}",
+        "printf {-v,PATH} %s x",
+        "local u='--upload-pack=x'\ngit ls-remote \"$u\" .",
+        'local o=(--upload-pack=x)\ngit ls-remote "${o[@]}" .',
+        "git ls-remote --{upload-pack=x,quiet} .",
+        "git ls-remote --upl\\\noad-pack=x .",
+        "gh pr list -dw",
+        'local c=(--web)\ngh pr list "${c[@]}"',
+        "gh pr list --{web,draft}",
+        "gh pr list --we\\\nb",
     ):
         assert runs_pipeline_code(runs), runs
     for inert in (
@@ -881,17 +911,22 @@ def test_propose_runs_only_the_commands_it_lists():
         assert not runs_pipeline_code(inert), (inert, runs_pipeline_code(inert))
     # A function shadows a program or builtin of the same name, so none in
     # the script has one of those names but plan and pushgit, each defined
-    # once: pushgit as PUSHGIT, and plan as field on the plan. field, which
-    # plan runs, is the isolated runner's Python on a fixed program that
-    # imports json and sys alone.
-    defined = [
-        keyword or plain
-        for keyword, plain in re.findall(
-            r"^\s*(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>\"'$`]+)\s*\(\s*\))",
-            script,
-            re.M,
-        )
-    ]
+    # once: pushgit as PUSHGIT, and plan as field on the plan. A definition
+    # counts wherever it starts (after ;, &&, a quote...), and the script
+    # holds no eval, source or . that could define one from text it builds
+    # (review of cf8066bc, 2). field, which plan runs, is the isolated
+    # runner's Python on a fixed program that imports json and sys alone.
+    code = "\n".join(
+        line for line in script.splitlines() if not line.lstrip().startswith("#")
+    )
+    assert not re.findall(r"(?:^|[\s;&|({])(?:eval|source|\.)\s", code, re.M)
+    for elsewhere in (
+        ": ; cat() { :; }",
+        "true && cat() { :; }",
+        "eval 'cat() { :; }'",
+    ):
+        assert definitions(elsewhere) == ["cat"], elsewhere
+    defined = definitions(script)
     assert set(defined) & PROPOSE_RUNS == {"plan", "pushgit"}
     assert defined.count("plan") == defined.count("pushgit") == 1
     assert defined.count("field") == 1
@@ -1027,8 +1062,14 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         "scorecard_db.build_db",
         "the checks changed tracked files",
         "nondeterministic",
+        # Review of cf8066bc (6): what it verified is read before the suite
+        # runs in the tree, so the suite cannot change it.
+        "verified=$(git",
+        'sealed=$(cat "$WORK/verify-sealed.txt")',
+        'hash=$(content_hash "$WORK/build1.json")',
+        "branch=$(plan branch)",
         "preflight",
-        "output tree",
+        'output tree "$verified"',
         "output preflight",
         "output action build",
     )
@@ -1038,8 +1079,10 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         phase(script, "preflight"),
         "no GitHub token in the environment",
         "unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY",
+        'echo "::stop-commands::$resume"',
         '"${RUFF[@]}"',
         '"${SUITE[@]}"',
+        'echo "::$resume::"',
         'git -C "$TREE" status --porcelain',
         "builder preflight ",
     )
@@ -1069,11 +1112,16 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
     order(
         phase(script, "propose"),
         "the results commit changed after it was assembled",
+        "gh pr list",
         "pushgit push -q origin",
         "holds work this builder did not write",
+        "gh pr ready",
         "pushgit push -q --force-with-lease",
         "gh pr create",
     )
+    # It only ever turns a pull request into a draft, never marks one ready.
+    ready = [line for line in script.splitlines() if "gh pr ready" in line]
+    assert ready and all(line.rstrip().endswith("--undo") for line in ready)
 
 
 class ImportScan:
@@ -2090,6 +2138,7 @@ SUITE_LOG = (
     + "  line - message\n"
     + "assert 1 == 2\n"
     + "FAILED tests/test_toy.py::test_p[a - b] - AssertionError: assert 'a - b' == 'z'\n"
+    + "FAILED tests/test_toy.py::test_q[a[b] - AssertionError: [1] - [2]\n"
     + "ERROR tests/test_toy.py::test_err - RuntimeError: setup\n"
     + "ERROR tests/test_broken.py\n"
     + "3 failed, 1 passed, 2 errors in 0.01s\n"
@@ -2123,6 +2172,7 @@ def test_the_failures_are_what_the_last_summary_and_ruff_and_git_name():
     assert builder.suite_failures(SUITE_LOG) == [
         "tests/test_toy.py::test_bad",
         "tests/test_toy.py::test_p[a - b]",
+        "tests/test_toy.py::test_q[a[b]",
         "tests/test_toy.py::test_err",
         "tests/test_broken.py",
     ]
@@ -2140,10 +2190,17 @@ def test_the_failures_are_what_the_last_summary_and_ruff_and_git_name():
     ]
     # A passing check reports nothing, whatever its log holds.
     assert builder.report(0, ["tests/a.py"]) == {"exit": 0, "count": 0, "names": []}
+    # A test that fails and then errors in teardown is one failure.
+    assert builder.report(1, ["t::a", "t::a", "t::b"]) == {
+        "exit": 1,
+        "count": 2,
+        "names": ["t::a", "t::b"],
+    }
 
 
+# A parameter may hold " - " and an unmatched "[", but no "]".
 PARAMETER_TEXT = st.text(
-    st.characters(min_codepoint=32, max_codepoint=126, exclude_characters="[]`"),
+    st.characters(min_codepoint=32, max_codepoint=126, exclude_characters="]`"),
     max_size=20,
 )
 NODE_IDS = st.builds(
@@ -2168,8 +2225,10 @@ MESSAGE_LINE = st.text(
 )
 def test_the_suites_failures_round_trip_through_its_summary(names, messages):
     # Invariant: the node ids of pytest's short summary come back exactly,
-    # in order, whatever the messages hold (a " - ", more lines) and
-    # whatever a parametrised id holds (a " - " inside its brackets).
+    # in order, whatever the messages hold (" - ", "]", more lines) and
+    # whatever a parametrised id holds (" - " or an unmatched "[" inside its
+    # brackets). A message line that starts FAILED or ERROR is the stated
+    # limit, so the messages here hold none.
     lines = []
     for name, message in zip(names, messages):
         word = "ERROR" if "::" not in name else "FAILED"
@@ -2864,7 +2923,9 @@ class Remote:
         temp.mkdir()
         self.gh_log, self.check_log = temp / "gh.jsonl", temp / "checks.log"
         self.checkout(self.runner, sha)
-        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        # Every command file a step has, as the runner sets them.
+        files = {name: str(temp / name.lower()) for name in EXPOSED[2:]}
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **files, **overrides})
         return self.step(self.runner, "build", env, temp / "build-output.txt")
 
     def rebuild_job(self, rid, received, sha, name, **overrides):
@@ -3051,6 +3112,13 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert json.loads(remote.outputs["preflight"]) == {
         key: {"exit": 0, "count": 0, "names": []} for key in builder.PREFLIGHT
     }
+    # Their output sits between a pause of workflow commands and its resume,
+    # by a token the checks never see (review of cf8066bc, 8).
+    paused = re.search(r"^::stop-commands::([0-9a-f]{32})$", result.stdout, re.M)
+    assert paused
+    resumed = result.stdout.index(f"\n::{paused.group(1)}::\n")
+    assert paused.end() < result.stdout.index("3 passed in 0.01s") < resumed
+    assert paused.group(1) not in remote.check_log.read_text()
     assert remote.rebuilt["draft"] == "false"
     calls = remote.gh_calls()
     assert [call[:2] for call in calls] == [["pr", "list"], ["pr", "create"]]
@@ -3256,7 +3324,8 @@ def test_without_workflows_a_rebuild_over_mains_workflow_change_says_what_to_do(
         result.stderr
     )
     assert remote.branch(record) == rebuilt
-    assert remote.gh_calls() == []
+    # It only read which pull request is open.
+    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"]]
     # The way out: with the branch deleted, the run pushes a new one, which
     # holds only the bot's commit on the new main.
     branch = f"refs/heads/{builder.BRANCH_PREFIX}{record['variant_id']}"
@@ -4032,13 +4101,15 @@ def test_a_failing_rebuild_turns_its_open_pull_request_back_into_a_draft(remote)
     move_main(remote)
     result = remote.run(rid, GH_OPEN_PR="999", SUITE_FAILS="tests/test_a.py::test_x")
     assert result.returncode == 0, result.stdout + result.stderr
+    # Back to a draft before the push that makes it fail (review of
+    # cf8066bc, 7), then the body that says why.
     calls = remote.gh_calls()
     assert [call[:2] for call in calls] == [
         ["pr", "list"],
-        ["pr", "edit"],
         ["pr", "ready"],
+        ["pr", "edit"],
     ]
-    assert calls[2] == ["pr", "ready", "999", "--repo", REPOSITORY, "--undo"]
+    assert calls[1] == ["pr", "ready", "999", "--repo", REPOSITORY, "--undo"]
     move_main(remote, "main moved again\n")
     result = remote.run(rid, GH_OPEN_PR="999")
     assert result.returncode == 0, result.stdout + result.stderr

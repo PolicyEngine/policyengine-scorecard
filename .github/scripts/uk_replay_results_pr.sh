@@ -155,16 +155,22 @@ build() {
     echo "::error::scorecard_db.build_db is nondeterministic on the results branch" >&2
     exit 1
   fi
+  # What this job verified, read before CI's checks run in its tree.
+  local verified sealed hash branch
+  verified=$(git -C "$TREE" rev-parse 'HEAD^{tree}')
+  sealed=$(cat "$WORK/verify-sealed.txt")
+  hash=$(content_hash "$WORK/build1.json")
+  branch=$(plan branch)
   preflight
   # The verified commit, for the job that holds the token to reproduce.
   output base "$base_commit"
   output state "$state_commit"
-  output tree "$(git -C "$TREE" rev-parse 'HEAD^{tree}')"
-  output sealed "$(cat "$WORK/verify-sealed.txt")"
-  output content_hash "$(content_hash "$WORK/build1.json")"
+  output tree "$verified"
+  output sealed "$sealed"
+  output content_hash "$hash"
   output preflight "$(cat "$WORK/preflight.json")"
   output action build
-  echo "verified tree $(git -C "$TREE" rev-parse 'HEAD^{tree}') for $(plan branch)"
+  echo "verified tree $verified for $branch"
 }
 
 # CI's format check and suite on the commit, as ci.yml's python job runs them
@@ -184,9 +190,15 @@ preflight() (
     exit 1
   fi
   unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY
-  local ruff=0 suite=0
+  # Their output goes to the log, where GitHub would act on a line that is a
+  # workflow command (::set-output, ::add-mask:: ...): a token only this
+  # shell holds pauses those until the checks are done.
+  local ruff=0 suite=0 resume
+  resume=$(python3 -I -c 'import os; print(os.urandom(16).hex())')
+  echo "::stop-commands::$resume"
   (cd "$TREE" && "${RUFF[@]}") 2>&1 | tee "$WORK/ruff.log" || ruff=$?
   (cd "$TREE" && PYTHONPATH=. "${SUITE[@]}") 2>&1 | tee "$WORK/suite.log" || suite=$?
+  echo "::$resume::"
   git -C "$TREE" status --porcelain > "$WORK/porcelain.txt"
   builder preflight --ruff-exit "$ruff" --ruff-log "$WORK/ruff.log" \
     --suite-exit "$suite" --suite-log "$WORK/suite.log" \
@@ -292,6 +304,12 @@ propose() {
   # The token reaches git only through gh, for these commands alone.
   pushgit() { git -C "$TREE" -c credential.helper= -c 'credential.helper=!gh auth git-credential' "$@"; }
 
+  # The open pull request on this branch, if any. Nothing here merges it.
+  local title number
+  title=$(plan title)
+  number=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --base "$BASE" \
+    --state open --json number --jq '.[0].number // empty')
+
   # Push: a new branch, or a rebuild over the one commit this builder wrote.
   local remote pushed=false
   remote=$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)
@@ -315,6 +333,13 @@ propose() {
         echo "::error::$branch holds work this builder did not write; update the branch by hand" >&2
         exit 1
       fi
+      # A rebuild that should be a draft turns its open pull request back
+      # into one before the push, so it is never ready on a commit whose
+      # checks failed. Nothing here marks one ready: a person does, once CI
+      # passes.
+      if [ -n "$number" ] && [ "$BUILT_DRAFT" = true ]; then
+        gh pr ready "$number" --repo "$GITHUB_REPOSITORY" --undo
+      fi
       # The token has no workflows permission. This commit changes no
       # workflow, but the rebuilt branch also carries main's commits since
       # $remote; if one changed .github/workflows (even one main later
@@ -332,11 +357,6 @@ propose() {
   fi
 
   # The pull request: opening it, or the push to its branch, starts CI on it.
-  # Nothing here merges it.
-  local title number
-  title=$(plan title)
-  number=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --base "$BASE" \
-    --state open --json number --jq '.[0].number // empty')
   if [ -z "$number" ]; then
     local create=(--repo "$GITHUB_REPOSITORY" --base "$BASE" --head "$branch"
       --title "$title" --body-file "$WORK/BODY.md")
@@ -347,11 +367,6 @@ propose() {
   elif [ "$pushed" = true ]; then
     gh pr edit "$number" --repo "$GITHUB_REPOSITORY" --title "$title" \
       --body-file "$WORK/BODY.md"
-    # A rebuild that should be a draft turns a ready pull request back into
-    # one. Nothing here marks one ready: a person does, once CI passes.
-    if [ "$BUILT_DRAFT" = true ]; then
-      gh pr ready "$number" --repo "$GITHUB_REPOSITORY" --undo
-    fi
   fi
   echo "::notice::Results pull request for $REQUEST_ID on $branch at $head"
   if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then

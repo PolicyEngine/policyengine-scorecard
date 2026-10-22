@@ -646,20 +646,23 @@ SUMMARY = re.compile(r"^=+ short test summary info =+$", re.M)
 UNFORMATTED = re.compile(r"^(?:Would reformat: (.+)|\s*--> (.+?):[0-9]+:[0-9]+)$", re.M)
 
 
+# A node id: a path and names, which hold no space or "[", then, when it is
+# parametrised, its brackets up to the first "]" its " - " message (or the
+# line's end) follows. A parameter may hold " - " or an unmatched "[".
+NODE_ID = re.compile(r"[^\s\[]+(?:\[.*?\])?(?= - |$)")
+
+
 def node_id(text: str) -> str:
-    """A short-summary line's node id: the text before its " - " message,
-    outside any brackets (a parametrised id can hold " - ")."""
-    depth = 0
-    for at, character in enumerate(text):
-        if depth == 0 and text.startswith(" - ", at):
-            return text[:at]
-        depth = max(0, depth + {"[": 1, "]": -1}.get(character, 0))
-    return text
+    """A short-summary line's node id, less its " - " message."""
+    match = NODE_ID.match(text)
+    return match.group() if match else text.split(" - ", 1)[0]
 
 
 def suite_failures(log: str) -> list[str]:
     """The node ids pytest's last short test summary in ``log`` names as
-    FAILED or ERROR (a collection error names its module)."""
+    FAILED or ERROR (a collection error names its module). On CI pytest
+    prints whole messages, over lines; a message line that itself starts
+    with FAILED or ERROR is read as another id."""
     starts = [match.end() for match in SUMMARY.finditer(log)]
     if not starts:
         return []
@@ -723,7 +726,7 @@ def read_preflight(text: str) -> dict:
         )
         status, count, names = check["exit"], check["count"], check["names"]
         shaped(type(status) is int and 0 <= status <= 255, f"{key} exit")
-        shaped(type(count) is int and 0 <= count <= 10**6, f"{key} count")
+        shaped(type(count) is int and 0 <= count < 10**9, f"{key} count")
         shaped(status != 0 or count == 0, f"{key} passes with failures")
         shaped(
             isinstance(names, list)
