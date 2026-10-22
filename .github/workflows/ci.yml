@@ -12,9 +12,11 @@ concurrency:
 # GITHUB_TOKEN reads the repository and nothing else in every job without
 # its own block. The repository's default is write, which the pytest job
 # would otherwise hold (persisted by checkout) while it runs PyPI packages
-# on pushes to main. Uploading the built database and publish-db's download
-# of it from this run use the Actions runtime token, not GITHUB_TOKEN, so
-# neither needs the actions scope (tests/test_ci_gates.py pins all of this).
+# on pushes to main. Uploading the built database uses the Actions runtime
+# token, not GITHUB_TOKEN, so it needs no actions scope. publish-db.yml
+# publishes it after this workflow completes on a push to main: it holds the
+# Supabase secrets, and no workflow that runs on pull requests names any
+# secret (tests/test_ci_gates.py pins all of this).
 permissions:
   contents: read
 
@@ -65,6 +67,7 @@ jobs:
           PYTHONPATH: .
         run: bash .github/scripts/uk_replay_regenerate.sh
       - run: test -z "$(git status --porcelain)"
+      # publish-db.yml downloads it from this run by this name.
       - name: Upload built database
         uses: actions/upload-artifact@v4
         with:
@@ -235,52 +238,3 @@ jobs:
       - run: bun run lint
       - run: bun test src
       - run: bun run build
-
-  publish-db:
-    name: publish db to supabase storage
-    needs: python
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: scorecard-db-${{ github.sha }}
-      # Storage bucket `scorecard-artifacts` on the PE Supabase project:
-      # every main commit's built DB (gzipped ~6 MB from ~58 MB — the
-      # project is on the free plan, 50 MB per-object cap) at <sha>.db.gz
-      # plus a moving latest.db.gz, so consumers fetch + gunzip instead
-      # of rebuilding. Skips with a notice until the
-      # SUPABASE_SCORECARD_URL/KEY secrets are set.
-      #
-      # A failed upload is a warning, not a failed run: nothing in this
-      # repository reads the published copy, and the built database is
-      # already attached to the run as an artifact. Every main run from
-      # 6 October 2026 failed here with curl exit 6 (the storage host no
-      # longer resolves; the last upload that worked was 28 September),
-      # which hid whether main was otherwise green. curl stays silent so
-      # the host name in the secret URL is never printed.
-      - run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
-            echo "::notice::Supabase secrets not set — skipping publish"
-            exit 0
-          fi
-          gzip -9 -c scorecard.db > scorecard.db.gz
-          for name in "${GITHUB_SHA}.db.gz" "latest.db.gz"; do
-            status=0
-            curl -sf -X POST \
-              "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
-              -H "Authorization: Bearer $SUPABASE_KEY" \
-              -H "Content-Type: application/gzip" \
-              -H "x-upsert: true" \
-              --data-binary @scorecard.db.gz > /dev/null || status=$?
-            if [ "$status" -ne 0 ]; then
-              message="curl exit $status uploading scorecard-artifacts/$name: the published database was not updated. This run's built database is its scorecard-db artifact."
-              echo "::warning title=Supabase publish failed::$message"
-              echo "**Supabase publish failed.** $message" >> "$GITHUB_STEP_SUMMARY"
-              exit 0
-            fi
-            echo "uploaded scorecard-artifacts/$name"
-          done
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_SCORECARD_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_SCORECARD_KEY }}
