@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "183e5f5ed636d8a2100e83642c1c7410f874b88e7457435edfada57190174999",
+  "COMPARISON.json": "48af2c808062cc995d04c52e1e8139c77cedf7b33a5156d48e8d6c1076ee3d12",
+  "COMPARISON.md": "245aa417cc255ee97e487ffbd8d9a4c149ac215f5445ad7244a5d039c397d9d5"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "0fa0b9b0e8d9d963a9b1273da902a07dd3452ae2ecb0a11eb331edfd11bf43a5",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "2893ebc6d942186fa6a052061d55a76813c41b95982c4b6c2fc8946f770ed0ad",
+ "staging_manifest_path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "87b26c065d4c8c6e0b9277651e0f5aec0557aa64742db1382f927a3a187c2c52"
+}
