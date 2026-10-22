@@ -1,0 +1,219 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-21",
+   "kind": "backfill",
+   "by": "subfleet:20261021-113611-cmp-us-2025-supplemental-pov",
+   "producers": [
+    {
+     "producer": "cbo",
+     "result": "none_found",
+     "queries": [
+      "site:cbo.gov supplemental poverty measure thresholds 2025",
+      "CBO poverty measure 1979 2021 in-kind transfers employer-sponsored health insurance fixed thresholds report"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No CBO estimate for 2025 found. Cato's 16 September 2026 blog (read via the Wayback Machine, logged under open_search) cites a CBO poverty measure with fixed thresholds that found 0.5 percent of Americans poor in 2021, averaged over 1979 to 2021; search results point to CBO's 'Reconciling the Official Poverty Measure and CBO's Distributional Analysis of Household Income' (cbo.gov/publication/61157), which returns HTTP 403 to direct fetches and was not read."
+    },
+    {
+     "producer": "jct",
+     "result": "none_found",
+     "queries": [
+      "site:jct.gov supplemental poverty measure poverty thresholds"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No JCT page returned."
+    },
+    {
+     "producer": "tpc",
+     "result": "none_found",
+     "queries": [
+      "site:taxpolicycenter.org supplemental poverty measure 2025 thresholds inflation",
+      "site:taxpolicycenter.org OR site:crfb.org OR site:bipartisanpolicy.org OR site:brookings.edu \"supplemental poverty measure\" 2025 thresholds"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No Tax Policy Center page returned."
+    },
+    {
+     "producer": "pwbm",
+     "result": "none_found",
+     "queries": [
+      "site:budgetmodel.wharton.upenn.edu supplemental poverty measure 2025"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No Penn Wharton Budget Model page returned."
+    },
+    {
+     "producer": "budget_lab",
+     "result": "none_found",
+     "queries": [
+      "site:budgetlab.yale.edu poverty supplemental poverty measure 2025"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No Budget Lab page returned."
+    },
+    {
+     "producer": "tax_foundation",
+     "result": "none_found",
+     "queries": [
+      "site:taxfoundation.org supplemental poverty measure 2025 Census poverty"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No Tax Foundation page returned."
+    },
+    {
+     "producer": "urban",
+     "result": "none_found",
+     "queries": [
+      "site:urban.org supplemental poverty measure 2025 thresholds Census release",
+      "urban.org 2025 poverty Census release September 2026 SPM \"thresholds\""
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No Urban Institute page returned."
+    },
+    {
+     "producer": "cbpp",
+     "result": "found_not_staged",
+     "queries": [
+      "CBPP poverty 2025 Census data supplemental poverty measure September 2026",
+      "\"anchored Supplemental Poverty Measure\" CBPP 2025 \"12.6 percent\"",
+      "site:cbpp.org supplemental poverty measure thresholds 2025 anchored poverty fell"
+     ],
+     "checked": [
+      "https://www.cbpp.org/blog/official-poverty-measure-and-anchored-supplemental-poverty-measure-show-poverty-rate-declined",
+      "https://www.cbpp.org/sites/default/files/9-10-26pov.pdf",
+      "https://www.cbpp.org/sites/default/files/9-15-26pov-stmt.pdf",
+      "https://www.cbpp.org/blog/analyzing-the-census-bureaus-2025-poverty-income-and-health-insurance-data"
+     ],
+     "claims": [],
+     "note": "CBPP's blog of 16 September 2026, 'Official Poverty Measure and Anchored Supplemental Poverty Measure Show Poverty Rate Declined in 2025', restates Census's FCSUti-anchored SPM ('By Census' anchored SPM, the poverty rate fell to 12.6 percent in 2025, from 13.0 percent in 2024', citing SEHSD-WP2026-22) and says the lagged spending factor added 'a sizeable 0.5 percentage points to the poverty rate'. The figures are Census's FCSUti-anchored rates, staged from the Census paper under open_search. The blog returns HTTP 403 (a Cloudflare challenge) to direct fetches and has no Wayback capture, so it was read only through a reader proxy (r.jina.ai) and is not staged (harvest rule 8). The 10 September preview (9-10-26pov.pdf, read) has no estimate: it expected the SPM to rise because thresholds rose 4.4 to 6.3 percent. Parrott's statement of 15 September (9-15-26pov-stmt.pdf, read) has no anchored figure. CBPP's live blog 'Analyzing the Census Bureau's 2025 Poverty, Income, and Health Insurance Data' (16 September; read through the same proxy) excerpts the anchored post and links to it, with no further figure on these quantities."
+    },
+    {
+     "producer": "itep",
+     "result": "none_found",
+     "queries": [
+      "site:itep.org supplemental poverty measure 2025 Census"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No ITEP page returned."
+    },
+    {
+     "producer": "cpsp",
+     "result": "none_found",
+     "queries": [
+      "site:povertycenter.columbia.edu 2025 supplemental poverty measure anchored Census release",
+      "Columbia Center on Poverty and Social Policy 2025 SPM poverty September 2026 brief thresholds",
+      "povertycenter.columbia.edu \"2025 poverty rates in historical perspective\" anchored SPM pdf",
+      "Columbia poverty center anchored SPM 2025 poverty rate 2024 2025 historical SPM fell rose September 2026"
+     ],
+     "checked": [
+      "https://povertycenter.columbia.edu/sites/default/files/content/Publications/2025-Poverty-Rates-in-Historical-Perspective-Databook_CPSP-2026.pdf"
+     ],
+     "claims": [],
+     "note": "CPSP's 'Databook: 2025 Poverty Rates in Historical Perspective' (Ortiz, Collyer, Wimer and Vinh, 15 September 2026, anchored results updated 12 October 2026 for a threshold error) anchors SPM thresholds in 2025 and carries them back by inflation. Its charts label only 1967 and 2025; Figure 1 Panel B labels 2025 at 13.1 percent, the published rate. Panel B also plots an unlabelled 2024 point: a 2024 rate at 2025 real thresholds, which the post does not estimate, and a change taken from it would be derived from two numbers (harvest rule 1). The databook prints no 2025 rate at 2024 thresholds, no 2024-to-2025 change and no threshold effect, so there is no figure on the post's quantities. (The databook page itself returns a Cloudflare challenge; its PDF downloads directly.)"
+    },
+    {
+     "producer": "crfb",
+     "result": "none_found",
+     "queries": [
+      "site:crfb.org poverty supplemental poverty measure 2025"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No CRFB page returned."
+    },
+    {
+     "producer": "state_fiscal_note",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "A federal analysis; state fiscal notes apply to state and local analyses."
+    },
+    {
+     "producer": "academic",
+     "result": "none_found",
+     "queries": [
+      "NBER OR SSRN working paper 2026 supplemental poverty measure threshold growth relative absolute poverty 2025",
+      "\"anchored\" \"supplemental poverty measure\" 2025 rate Corinth OR Meyer OR Burkhauser OR Wimer paper 2026"
+     ],
+     "checked": [
+      "https://www.nber.org/papers/w34759"
+     ],
+     "claims": [],
+     "note": "No working paper or article estimates 2025 SPM poverty at fixed real thresholds: Burkhauser and Corinth (NBER w34759, January 2026) run to 2023. Census working papers are logged under open_search."
+    },
+    {
+     "producer": "open_search",
+     "result": "found",
+     "queries": [
+      "2025 supplemental poverty measure thresholds rose faster than inflation poverty would have fallen",
+      "SPM thresholds inflation-adjusted counterfactual 2025 poverty rate Census P60-290",
+      "Winship AEI supplemental poverty measure 2025 thresholds relative inflation September 2026",
+      "aei.org 2025 poverty Census supplemental poverty measure thresholds \"anchored\" OR \"inflation\" September 2026",
+      "Cato \"Census Poverty Report Paints an Inaccurate Picture\" 2026 supplemental poverty measure",
+      "\"Fact Focus\" poverty rate all-time low 2025 supplemental poverty measure thresholds experts",
+      "SPM poverty 2025 \"would have\" fallen thresholds \"beyond inflation\" OR \"only for inflation\" analysis economist",
+      "heritage.org OR manhattan-institute.org OR epi.org OR peoplespolicyproject.org 2025 supplemental poverty measure thresholds Census September 2026",
+      "\"supplemental poverty measure\" 2025 thresholds CPI-U \"12.4 percent\" OR \"12.3 percent\" anchored",
+      "census.gov research-matters 2026 blog supplemental poverty measure thresholds updating 2025 anchored",
+      "Institute for Research on Poverty OR Brookings OR Niskanen 2025 SPM poverty thresholds rose faster than CPI analysis",
+      "Horpedahl OR Bruenig OR Winship SPM 2025 thresholds \"CPI\" poverty would have fallen",
+      "SPM poverty thresholds 2025 renters 6.3 percent poverty effect tenure analysis blog",
+      "\"comparing poverty measures\" Census blog September 2026 anchored SPM"
+     ],
+     "checked": [
+      "https://www2.census.gov/library/working-papers/2026/demo/sehsd-wp2026-22.pdf",
+      "https://www.census.gov/library/working-papers/2026/demo/sehsd-wp2026-22.html",
+      "https://www2.census.gov/library/publications/2026/demo/p60-290.pdf",
+      "https://www2.census.gov/library/working-papers/2026/demo/sehsd-wp2026-09.pdf",
+      "https://www.census.gov/newsroom/blogs/random-samplings/2026/09/comparing-poverty-measures.html",
+      "https://www.congress.gov/crs_external_products/IN/PDF/IN12737/IN12737.1.pdf",
+      "https://www.americanprogress.org/article/poverty-rates-diverged-in-2025-but-will-likely-rise-following-the-one-big-beautiful-bill-acts-implementation/",
+      "https://scottwinship.substack.com/p/how-not-to-redefine-poverty",
+      "https://web.archive.org/web/20260916215249/https://www.cato.org/blog/census-bureaus-measure-paints-inaccurate-picture-poverty-america",
+      "https://www.bls.gov/pir/spm/spm_thresholds_2025.htm"
+     ],
+     "claims": [
+      "census_wp22_cpiu_rate_2025_all",
+      "census_wp22_cpiu_change_from_2024_all",
+      "census_wp22_cpiu_rate_2025_under_18",
+      "census_wp22_cpiu_change_from_2024_under_18",
+      "census_wp22_cpiu_rate_2025_age_18_64",
+      "census_wp22_cpiu_change_from_2024_age_18_64",
+      "census_wp22_cpiu_rate_2025_age_65_plus",
+      "census_wp22_cpiu_change_from_2024_age_65_plus",
+      "census_wp22_cpiu_rate_2025_owner_mortgage",
+      "census_wp22_cpiu_rate_2025_owner_no_mortgage",
+      "census_wp22_cpiu_rate_2025_renter",
+      "census_wp22_fcsuti_rate_2025_all",
+      "census_wp22_fcsuti_change_from_2024_all",
+      "census_wp22_fcsuti_threshold_effect_all",
+      "census_wp22_fcsuti_rate_2025_under_18",
+      "census_wp22_fcsuti_change_from_2024_under_18",
+      "census_wp22_fcsuti_threshold_effect_under_18",
+      "census_wp22_fcsuti_rate_2025_age_18_64",
+      "census_wp22_fcsuti_change_from_2024_age_18_64",
+      "census_wp22_fcsuti_threshold_effect_age_18_64",
+      "census_wp22_fcsuti_rate_2025_age_65_plus",
+      "census_wp22_fcsuti_change_from_2024_age_65_plus",
+      "census_wp22_fcsuti_threshold_effect_age_65_plus",
+      "census_wp22_fcsuti_rate_2025_owner_mortgage",
+      "census_wp22_fcsuti_rate_2025_owner_no_mortgage",
+      "census_wp22_fcsuti_rate_2025_renter"
+     ],
+     "note": "Census SEHSD-WP2026-22 (DiTommaso, released with P60-290 on 15 September 2026) is the one comparable: Table A.4 anchors the 2024 thresholds with CPI-U, the post's own world (staged and compared), and Tables A.2 and A.3 with the FCSUti price index (staged, annotated concept_mismatch). Only the rows the post estimates are staged (all people, under 18, 18 to 64, 65 and over, and the three tenure groups' 2025 rates); the sex, race, education and work rows, the tenure changes and the 2024 and 2025 production columns (Census's published rates, survey levels) are not. P60-290 states only that faster growth in the threshold's components raises SPM thresholds more than CPI-U would; SEHSD-WP2026-09 (Creamer, May 2026) runs to 2024; the 9 September Census blog predates the data; CRS IN12737 (16 September 2026) describes the difference in threshold updating in words, with no figure; the Center for American Progress (15 September 2026) restates BLS's 4.4 to 6.3 percent threshold growth with no poverty effect; Winship's 'How Not to Redefine Poverty' is from November 2025. Cato's 16 September blog (Boccia and Turman; direct fetch blocked by an Incapsula challenge, read via the Wayback Machine) argues that SPM thresholds rise in real terms and gives the 2025 official and SPM rates, with no figure on the post's quantities. A New Mexico legislative handout on the poverty release returned 404 and is out of scope for a federal analysis."
+    }
+   ]
+  }
+ ]
+}

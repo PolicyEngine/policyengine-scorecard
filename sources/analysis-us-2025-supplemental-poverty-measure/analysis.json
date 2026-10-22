@@ -1,0 +1,3151 @@
+{
+ "schema": "comparables/analysis/1",
+ "id": "us/2025-supplemental-poverty-measure",
+ "country": "US",
+ "registry": {
+  "kind": "post",
+  "slug": "2025-supplemental-poverty-measure",
+  "country_id": "us"
+ },
+ "title": "2025 Supplemental Poverty Measure: what Census reported, and what threshold growth did to it",
+ "url": "https://policyengine.org/us/research/2025-supplemental-poverty-measure",
+ "published": "2026-09-18",
+ "owner": {
+  "author": "max-ghenis"
+ },
+ "scope": "federal",
+ "subject": "Census's 2025 Supplemental Poverty Measure rates by age, housing tenure and state, PolicyEngine's recomputation of them from the 2026 CPS ASEC public-use file (with finer age groups), and its estimate of what threshold growth beyond inflation did: the 2025 SPM rate at 2024 thresholds grown by CPI-U (12.31 percent, 0.69 points below Census's 2024 rate of 13.0) and by C-CPI-U, and the points that threshold growth beyond CPI-U adds to the 2025 rate (0.80 for all people) by age, tenure and state.",
+ "search_terms": [
+  "2025 SPM threshold growth effect",
+  "SPM threshold inflation counterfactual",
+  "supplemental poverty measure 2025 analysis",
+  "SPM thresholds rose faster than inflation",
+  "anchored supplemental poverty measure 2025",
+  "SPM 2025 poverty rate if thresholds adjusted only for inflation",
+  "how updating annual poverty thresholds affects poverty rates 2024-2025"
+ ],
+ "worlds": {
+  "thresholds_anchored_cpiu": {
+   "policy": "us_spm_2025_thresholds_anchored_2024_cpiu",
+   "description": "The post's counterfactual: 2025 SPM poverty with each tenure group's national base threshold set to its corrected 2024 BLS value grown by CPI-U (32,649/31,812, 1.02631); the equivalence scale, the geographic adjustment and every unit's resources stay at their published 2025 values. The baseline is the published 2025 SPM."
+  },
+  "thresholds_anchored_ccpiu": {
+   "policy": "us_spm_2025_thresholds_anchored_2024_chained_cpiu",
+   "description": "The post's chained variant: as thresholds_anchored_cpiu, with the 2024 bases grown by C-CPI-U (1.0248, an eleven-month 2025 mean)."
+  },
+  "thresholds_anchored_fcsuti": {
+   "policy": "us_spm_2025_thresholds_anchored_2024_fcsuti",
+   "description": "Census SEHSD-WP2026-22's headline counterfactual: the corrected 2024 SPM thresholds inflated to 2025 by BLS's FCSUti price index (3.44 percent; Table A.1: $40,581, $34,011 and $40,570). The post publishes no figure in this world."
+  }
+ },
+ "pe_estimates": [
+  {
+   "key": "rate_anchored_cpiu_all",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, all people",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1231,
+   "value_raw": "12.31",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_anchored_2024_thresholds.all",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_under_18",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, children under 18",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1231,
+   "value_raw": "12.31",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_anchored_2024_thresholds.children",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_age_18_64",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, people 18 to 64",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1155,
+   "value_raw": "11.55",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_anchored_2024_thresholds.18-64",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_age_65_plus",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, people 65 and over",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1466,
+   "value_raw": "14.66",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_anchored_2024_thresholds.65+",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_owner_mortgage",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, owners with a mortgage",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.0567,
+   "value_raw": "5.67",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_owner_with_mortgage",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.owner_with_mortgage.anchored",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_owner_no_mortgage",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, owners without a mortgage",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1149,
+   "value_raw": "11.49",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_owner_without_mortgage",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.owner_without_mortgage.anchored",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_cpiu_renter",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by CPI-U, renters",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.2213,
+   "value_raw": "22.13",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_renter",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.renter.anchored",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_all",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, all people (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.008,
+   "value_raw": "0.8",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "anchored_results.json prints threshold_effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "threshold_effect_pp.all",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_under_18",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, children under 18 (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0108,
+   "value_raw": "1.08",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "anchored_results.json prints threshold_effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "threshold_effect_pp.children",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_age_18_64",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, people 18 to 64 (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0073,
+   "value_raw": "0.73",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "anchored_results.json prints threshold_effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "threshold_effect_pp.18-64",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_age_65_plus",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, people 65 and over (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0072,
+   "value_raw": "0.72",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "anchored_results.json prints threshold_effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "threshold_effect_pp.65+",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_age_0_3",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, children under 4 (ages 0 to 3) (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0123,
+   "value_raw": "1.23",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "state_age_results.json prints by_age.<group>.effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_0_3",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.2",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_0_3.effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_under_6",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, children under 6 (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.012,
+   "value_raw": "1.2",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "state_age_results.json prints by_age.<group>.effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_6",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.17",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.under_6.effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_age_6_17",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, children 6 to 17 (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0103,
+   "value_raw": "1.03",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "state_age_results.json prints by_age.<group>.effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_6_17",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.12",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_6_17.effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_age_75_plus",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, people 75 and over (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0075,
+   "value_raw": "0.75",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "state_age_results.json prints by_age.<group>.effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_75_plus",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.1",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_75_plus.effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_al",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, AL, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0171,
+   "value_raw": "1.71",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "AL",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.52",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=AL, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ak",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, AK, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0035,
+   "value_raw": "0.35",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "AK",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.34",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=AK, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_az",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, AZ, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0136,
+   "value_raw": "1.36",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "AZ",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.51",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=AZ, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ar",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, AR, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.008,
+   "value_raw": "0.8",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "AR",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.33",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=AR, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ca",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, CA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0108,
+   "value_raw": "1.08",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "CA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.2",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=CA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_co",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, CO, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0046,
+   "value_raw": "0.46",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "CO",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.29",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=CO, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ct",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, CT, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0081,
+   "value_raw": "0.81",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "CT",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.31",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=CT, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_de",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, DE, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0137,
+   "value_raw": "1.37",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "DE",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.72",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=DE, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_dc",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, DC, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0112,
+   "value_raw": "1.12",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "DC",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.46",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=DC, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_fl",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, FL, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0101,
+   "value_raw": "1.01",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "FL",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.17",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=FL, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ga",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, GA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0074,
+   "value_raw": "0.74",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "GA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.27",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=GA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_hi",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, HI, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0114,
+   "value_raw": "1.14",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "HI",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.43",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=HI, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_id",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, ID, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0058,
+   "value_raw": "0.58",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "ID",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.3",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=ID, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_il",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, IL, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0061,
+   "value_raw": "0.61",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "IL",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.25",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=IL, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_in",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, IN, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0138,
+   "value_raw": "1.38",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "IN",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.67",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=IN, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ia",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, IA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0107,
+   "value_raw": "1.07",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "IA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.47",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=IA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ks",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, KS, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0008,
+   "value_raw": "0.08",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "KS",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.08",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=KS, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ky",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, KY, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0063,
+   "value_raw": "0.63",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "KY",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.32",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=KY, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_la",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, LA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0113,
+   "value_raw": "1.13",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "LA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.37",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=LA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_me",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, ME, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0007,
+   "value_raw": "0.07",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "ME",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.07",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=ME, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_md",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MD, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0055,
+   "value_raw": "0.55",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MD",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.32",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MD, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ma",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0083,
+   "value_raw": "0.83",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.27",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_mi",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MI, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0044,
+   "value_raw": "0.44",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MI",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.22",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MI, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_mn",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MN, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0015,
+   "value_raw": "0.15",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MN",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.1",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MN, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ms",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MS, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.007,
+   "value_raw": "0.7",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MS",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.27",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MS, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_mo",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MO, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0097,
+   "value_raw": "0.97",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MO",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.3",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MO, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_mt",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, MT, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0147,
+   "value_raw": "1.47",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "MT",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.59",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=MT, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ne",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NE, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.0,
+   "value_raw": "0.0",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NE",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.0",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NE, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nv",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NV, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0121,
+   "value_raw": "1.21",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NV",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.43",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NV, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nh",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NH, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.01,
+   "value_raw": "1.0",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NH",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.53",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NH, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nj",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NJ, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0058,
+   "value_raw": "0.58",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NJ",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.23",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NJ, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nm",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NM, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.007,
+   "value_raw": "0.7",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NM",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.46",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NM, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ny",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NY, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.015,
+   "value_raw": "1.5",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NY",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.37",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NY, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nc",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, NC, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0046,
+   "value_raw": "0.46",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "NC",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.22",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=NC, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_nd",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, ND, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0029,
+   "value_raw": "0.29",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "ND",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.17",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=ND, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_oh",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, OH, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0048,
+   "value_raw": "0.48",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "OH",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.33",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=OH, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ok",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, OK, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.006,
+   "value_raw": "0.6",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "OK",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.33",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=OK, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_or",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, OR, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0041,
+   "value_raw": "0.41",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "OR",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.19",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=OR, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_pa",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, PA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0031,
+   "value_raw": "0.31",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "PA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.15",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=PA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ri",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, RI, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0087,
+   "value_raw": "0.87",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "RI",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.47",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=RI, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_sc",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, SC, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.008,
+   "value_raw": "0.8",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "SC",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.34",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=SC, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_sd",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, SD, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0039,
+   "value_raw": "0.39",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "SD",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.33",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=SD, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_tn",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, TN, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0075,
+   "value_raw": "0.75",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "TN",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.27",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=TN, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_tx",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, TX, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0102,
+   "value_raw": "1.02",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "TX",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.22",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=TX, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_ut",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, UT, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0031,
+   "value_raw": "0.31",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "UT",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.13",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=UT, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_vt",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, VT, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0032,
+   "value_raw": "0.32",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "VT",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.2",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=VT, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_va",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, VA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0024,
+   "value_raw": "0.24",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "VA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.12",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=VA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_wa",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, WA, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0014,
+   "value_raw": "0.14",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "WA",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.13",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=WA, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_wv",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, WV, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0108,
+   "value_raw": "1.08",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "WV",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.4",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=WV, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_wi",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, WI, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0021,
+   "value_raw": "0.21",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "WI",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.17",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=WI, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "threshold_effect_cpiu_state_wy",
+   "label": "2025 SPM poverty at 2024 thresholds grown by CPI-U minus the published rate, WY, single-year estimate (the post's threshold effect, sign reversed)",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.0043,
+   "value_raw": "0.43",
+   "normalization": "percent / 100 -> fraction",
+   "sign": -1,
+   "sign_basis": "by_state.csv prints effect_pp as the published 2025 rate minus the rate at 2024 thresholds grown by CPI-U (the points threshold growth beyond CPI-U adds); poverty_rate_change is stated as the anchored world minus the published 2025 SPM, positive = increase in poverty, so the effect is negative",
+   "conditions": {
+    "geography": "WY",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus the published 2025 rate, single CPS ASEC year",
+    "sign_convention": "positive = increase in poverty (anchored world minus published 2025 SPM)",
+    "standard_error_pp": "0.27",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/by_state.csv",
+    "sha256": "3834da7303242fda849230ac5d93b2c9e8f96a6ff999b196015c98dd857531ce",
+    "field": "state=WY, column effect_pp",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "change_from_2024_anchored_cpiu_all",
+   "label": "Change in SPM poverty from 2024 to 2025 at 2024 thresholds grown by CPI-U, all people",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.006911,
+   "value_raw": "-0.6911",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus Census's 2024 rate (P60-290, restated on Vintage 2025 population controls)",
+    "sign_convention": "positive = increase in poverty (2025 anchored rate minus the 2024 rate)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "file_note": "no script in the repository writes waterfall_data.json (waterfall.py reads it); its anchored_2025 and published_2025 values round to anchored_results.json's",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/waterfall_data.json",
+    "sha256": "f448d5f5d6910536e61d99190222c4e8f66f29c9f34fcbb2c561d9274b897a4b",
+    "field": "All people.resources_step",
+    "computed_at": "2026-09-18T18:31:45-04:00",
+    "engine": {
+     "spm-threshold-paper": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv; 2024 rates from Census P60-290"
+   }
+  },
+  {
+   "key": "change_from_2024_anchored_cpiu_under_18",
+   "label": "Change in SPM poverty from 2024 to 2025 at 2024 thresholds grown by CPI-U, children under 18",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.01194,
+   "value_raw": "-1.194",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus Census's 2024 rate (P60-290, restated on Vintage 2025 population controls)",
+    "sign_convention": "positive = increase in poverty (2025 anchored rate minus the 2024 rate)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "file_note": "no script in the repository writes waterfall_data.json (waterfall.py reads it); its anchored_2025 and published_2025 values round to anchored_results.json's",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/waterfall_data.json",
+    "sha256": "f448d5f5d6910536e61d99190222c4e8f66f29c9f34fcbb2c561d9274b897a4b",
+    "field": "Under 18.resources_step",
+    "computed_at": "2026-09-18T18:31:45-04:00",
+    "engine": {
+     "spm-threshold-paper": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv; 2024 rates from Census P60-290"
+   }
+  },
+  {
+   "key": "change_from_2024_anchored_cpiu_age_18_64",
+   "label": "Change in SPM poverty from 2024 to 2025 at 2024 thresholds grown by CPI-U, people 18 to 64",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.006518,
+   "value_raw": "-0.6518",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus Census's 2024 rate (P60-290, restated on Vintage 2025 population controls)",
+    "sign_convention": "positive = increase in poverty (2025 anchored rate minus the 2024 rate)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "file_note": "no script in the repository writes waterfall_data.json (waterfall.py reads it); its anchored_2025 and published_2025 values round to anchored_results.json's",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/waterfall_data.json",
+    "sha256": "f448d5f5d6910536e61d99190222c4e8f66f29c9f34fcbb2c561d9274b897a4b",
+    "field": "18 to 64.resources_step",
+    "computed_at": "2026-09-18T18:31:45-04:00",
+    "engine": {
+     "spm-threshold-paper": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv; 2024 rates from Census P60-290"
+   }
+  },
+  {
+   "key": "change_from_2024_anchored_cpiu_age_65_plus",
+   "label": "Change in SPM poverty from 2024 to 2025 at 2024 thresholds grown by CPI-U, people 65 and over",
+   "world": "thresholds_anchored_cpiu",
+   "metric": "poverty_rate_change",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": -0.004399,
+   "value_raw": "-0.4399",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "change_type": "percentage_point",
+    "comparison": "2025 rate at 2024 thresholds grown by CPI-U minus Census's 2024 rate (P60-290, restated on Vintage 2025 population controls)",
+    "sign_convention": "positive = increase in poverty (2025 anchored rate minus the 2024 rate)",
+    "threshold_basis": "national base thresholds set to the corrected 2024 BLS values (39,231 / 32,879 / 39,220) times 32,649/31,812 (1.02631), by tenure; equivalence scale, geographic adjustment and resources at their published 2025 values",
+    "file_note": "no script in the repository writes waterfall_data.json (waterfall.py reads it); its anchored_2025 and published_2025 values round to anchored_results.json's",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/waterfall_data.json",
+    "sha256": "f448d5f5d6910536e61d99190222c4e8f66f29c9f34fcbb2c561d9274b897a4b",
+    "field": "65 and over.resources_step",
+    "computed_at": "2026-09-18T18:31:45-04:00",
+    "engine": {
+     "spm-threshold-paper": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv; 2024 rates from Census P60-290"
+   }
+  },
+  {
+   "key": "rate_anchored_ccpiu_all",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by C-CPI-U, all people",
+   "world": "thresholds_anchored_ccpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1229,
+   "value_raw": "12.29",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "threshold_basis": "as thresholds_anchored_cpiu with C-CPI-U (SUUR0000SA0) annual means, 178.697/174.372 = 1.0248; the 2025 mean uses eleven months",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results_chained.json",
+    "sha256": "a03efe127158a5cb2d595678896dbb9e98ac70bd4aac23881e5d3a0f826c0d4f",
+    "field": "spm_anchored_2024_thresholds.all",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_ccpiu_under_18",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by C-CPI-U, children under 18",
+   "world": "thresholds_anchored_ccpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.123,
+   "value_raw": "12.3",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "threshold_basis": "as thresholds_anchored_cpiu with C-CPI-U (SUUR0000SA0) annual means, 178.697/174.372 = 1.0248; the 2025 mean uses eleven months",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results_chained.json",
+    "sha256": "a03efe127158a5cb2d595678896dbb9e98ac70bd4aac23881e5d3a0f826c0d4f",
+    "field": "spm_anchored_2024_thresholds.children",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_ccpiu_age_18_64",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by C-CPI-U, people 18 to 64",
+   "world": "thresholds_anchored_ccpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1153,
+   "value_raw": "11.53",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "threshold_basis": "as thresholds_anchored_cpiu with C-CPI-U (SUUR0000SA0) annual means, 178.697/174.372 = 1.0248; the 2025 mean uses eleven months",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results_chained.json",
+    "sha256": "a03efe127158a5cb2d595678896dbb9e98ac70bd4aac23881e5d3a0f826c0d4f",
+    "field": "spm_anchored_2024_thresholds.18-64",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_anchored_ccpiu_age_65_plus",
+   "label": "2025 SPM poverty rate at 2024 thresholds grown by C-CPI-U, people 65 and over",
+   "world": "thresholds_anchored_ccpiu",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1462,
+   "value_raw": "14.62",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "threshold_basis": "as thresholds_anchored_cpiu with C-CPI-U (SUUR0000SA0) annual means, 178.697/174.372 = 1.0248; the 2025 mean uses eleven months",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results_chained.json",
+    "sha256": "a03efe127158a5cb2d595678896dbb9e98ac70bd4aac23881e5d3a0f826c0d4f",
+    "field": "spm_anchored_2024_thresholds.65+",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_all",
+   "label": "2025 SPM poverty rate, all people, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1311,
+   "value_raw": "13.11",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_published_replication.all",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_under_18",
+   "label": "2025 SPM poverty rate, children under 18, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1339,
+   "value_raw": "13.39",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_published_replication.children",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_age_18_64",
+   "label": "2025 SPM poverty rate, people 18 to 64, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1228,
+   "value_raw": "12.28",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_published_replication.18-64",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_age_65_plus",
+   "label": "2025 SPM poverty rate, people 65 and over, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1538,
+   "value_raw": "15.38",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "spm_published_replication.65+",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_owner_mortgage",
+   "label": "2025 SPM poverty rate, owners with a mortgage, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.06,
+   "value_raw": "6.0",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_owner_with_mortgage",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.owner_with_mortgage.published",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_owner_no_mortgage",
+   "label": "2025 SPM poverty rate, owners without a mortgage, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1189,
+   "value_raw": "11.89",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_owner_without_mortgage",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.owner_without_mortgage.published",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_renter",
+   "label": "2025 SPM poverty rate, renters, recomputed from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.2396,
+   "value_raw": "23.96",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "tenure_renter",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/anchored_results.json",
+    "sha256": "b2868dcf5718d49c4ce6cb2ff65cea62f532ab54d1c606f7ffbf0b2c904e883e",
+    "field": "by_tenure.renter.published",
+    "computed_at": "2026-09-15T13:17:52-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/replicate_and_anchor.py": "13ca491bd80edeaa898a8aa33208360fd590863f"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv"
+   }
+  },
+  {
+   "key": "rate_published_age_0_3",
+   "label": "2025 SPM poverty rate, children under 4 (ages 0 to 3), from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1413,
+   "value_raw": "14.13",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_0_3",
+    "standard_error_pp": "0.57",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_0_3.published",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "rate_published_under_6",
+   "label": "2025 SPM poverty rate, children under 6, from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1415,
+   "value_raw": "14.15",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_6",
+    "standard_error_pp": "0.52",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.under_6.published",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "rate_published_age_6_17",
+   "label": "2025 SPM poverty rate, children 6 to 17, from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1306,
+   "value_raw": "13.06",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_6_17",
+    "standard_error_pp": "0.39",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_6_17.published",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "rate_published_age_75_plus",
+   "label": "2025 SPM poverty rate, people 75 and over, from the public-use file",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2025,
+   "time_basis": "annual",
+   "value": 0.1657,
+   "value_raw": "16.57",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_75_plus",
+    "standard_error_pp": "0.47",
+    "threshold_basis": "published 2025 SPM thresholds (SPM_POOR)",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "4b8df6615e2beca582835713d0b2ca3c1ab3bf9c",
+    "path": "analysis/asec-2026-anchored-thresholds/state_age_results.json",
+    "sha256": "2b5a8700d7d93dee01e59028baaa5eb3ea484d07465c44fd9e39462c5c9a2e83",
+    "field": "by_age.age_75_plus.published",
+    "computed_at": "2026-09-16T07:26:14-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/asec-2026-anchored-thresholds/state_age_anchored.py": "4dd83566c10220365be19558f1a2a9625fa755ae"
+    },
+    "dataset": "2026 CPS ASEC public-use file (asecpub26csv.zip): pppub26.csv, hhpub26.csv, asec_csv_repwgt_2026.csv"
+   }
+  },
+  {
+   "key": "rate_2024_from_2025_file_all",
+   "label": "2024 SPM poverty rate, all people, recomputed from the 2025 public-use file (earlier population controls)",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "value": 0.1293,
+   "value_raw": "12.93",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "threshold_basis": "2024 SPM thresholds as carried in the 2025 file (SPM_POOR)",
+    "file_note": "the post prints this figure (footnote 2, or the under-6 row of its by-age table) but does not link this file; the prediction-grade analysis in the same repository committed it with the same bytes on 2026-09-17 (a79c03a), before the post",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+    "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+    "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+    "field": "replication_2024_published_flag.all",
+    "computed_at": "2026-09-17T17:35:59-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/prediction-grade-2025/raw_aging.py": "22d8b7a1b9f97d94f796042bc067813b649a2f20"
+    },
+    "dataset": "2025 CPS ASEC public-use file (asecpub25csv.zip): pppub25.csv"
+   }
+  },
+  {
+   "key": "rate_2024_from_2025_file_under_18",
+   "label": "2024 SPM poverty rate, children under 18, recomputed from the 2025 public-use file (earlier population controls)",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "value": 0.1335,
+   "value_raw": "13.35",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_18",
+    "threshold_basis": "2024 SPM thresholds as carried in the 2025 file (SPM_POOR)",
+    "file_note": "the post prints this figure (footnote 2, or the under-6 row of its by-age table) but does not link this file; the prediction-grade analysis in the same repository committed it with the same bytes on 2026-09-17 (a79c03a), before the post",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+    "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+    "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+    "field": "replication_2024_published_flag.under_18",
+    "computed_at": "2026-09-17T17:35:59-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/prediction-grade-2025/raw_aging.py": "22d8b7a1b9f97d94f796042bc067813b649a2f20"
+    },
+    "dataset": "2025 CPS ASEC public-use file (asecpub25csv.zip): pppub25.csv"
+   }
+  },
+  {
+   "key": "rate_2024_from_2025_file_under_6",
+   "label": "2024 SPM poverty rate, children under 6, recomputed from the 2025 public-use file (earlier population controls)",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "value": 0.145,
+   "value_raw": "14.5",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "children_under_6",
+    "threshold_basis": "2024 SPM thresholds as carried in the 2025 file (SPM_POOR)",
+    "file_note": "the post prints this figure (footnote 2, or the under-6 row of its by-age table) but does not link this file; the prediction-grade analysis in the same repository committed it with the same bytes on 2026-09-17 (a79c03a), before the post",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+    "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+    "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+    "field": "replication_2024_published_flag.under_6",
+    "computed_at": "2026-09-17T17:35:59-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/prediction-grade-2025/raw_aging.py": "22d8b7a1b9f97d94f796042bc067813b649a2f20"
+    },
+    "dataset": "2025 CPS ASEC public-use file (asecpub25csv.zip): pppub25.csv"
+   }
+  },
+  {
+   "key": "rate_2024_from_2025_file_age_18_64",
+   "label": "2024 SPM poverty rate, people 18 to 64, recomputed from the 2025 public-use file (earlier population controls)",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "value": 0.1216,
+   "value_raw": "12.16",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_18_64",
+    "threshold_basis": "2024 SPM thresholds as carried in the 2025 file (SPM_POOR)",
+    "file_note": "the post prints this figure (footnote 2, or the under-6 row of its by-age table) but does not link this file; the prediction-grade analysis in the same repository committed it with the same bytes on 2026-09-17 (a79c03a), before the post",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+    "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+    "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+    "field": "replication_2024_published_flag.age_18_64",
+    "computed_at": "2026-09-17T17:35:59-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/prediction-grade-2025/raw_aging.py": "22d8b7a1b9f97d94f796042bc067813b649a2f20"
+    },
+    "dataset": "2025 CPS ASEC public-use file (asecpub25csv.zip): pppub25.csv"
+   }
+  },
+  {
+   "key": "rate_2024_from_2025_file_age_65_plus",
+   "label": "2024 SPM poverty rate, people 65 and over, recomputed from the 2025 public-use file (earlier population controls)",
+   "world": "baseline",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "value": 0.1495,
+   "value_raw": "14.95",
+   "normalization": "percent / 100 -> fraction",
+   "conditions": {
+    "geography": "US",
+    "poverty_measure": "spm",
+    "subgroup": "age_65_plus",
+    "threshold_basis": "2024 SPM thresholds as carried in the 2025 file (SPM_POOR)",
+    "file_note": "the post prints this figure (footnote 2, or the under-6 row of its by-age table) but does not link this file; the prediction-grade analysis in the same repository committed it with the same bytes on 2026-09-17 (a79c03a), before the post",
+    "method": "recomputation from the Census public-use microdata (Census's own SPM_RESOURCES, SPM_POVTHRESHOLD and SPM_POOR); no PolicyEngine microsimulation model is involved; pandas and numpy versions are not pinned in the repository"
+   },
+   "provenance": {
+    "repo": "PolicyEngine/spm-threshold-paper",
+    "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+    "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+    "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+    "field": "replication_2024_published_flag.age_65_plus",
+    "computed_at": "2026-09-17T17:35:59-04:00",
+    "engine": {
+     "spm-threshold-paper/analysis/prediction-grade-2025/raw_aging.py": "22d8b7a1b9f97d94f796042bc067813b649a2f20"
+    },
+    "dataset": "2025 CPS ASEC public-use file (asecpub25csv.zip): pppub25.csv"
+   }
+  }
+ ]
+}
