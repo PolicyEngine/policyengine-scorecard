@@ -42,11 +42,34 @@ a token returned 401 on 21 October 2026.
 
 ## Gross receipts are absent from both data lines
 
-Column names only, read with h5py from the two cuts:
+`column_check.py` lists which of four variables a dataset carries, by name
+only:
 
-| Column | Microcosm UK 2024-25 (`810ba980…`) | policyengine-uk-data enhanced FRS 2024-25 (HF cache snapshot `2526edbb…`) |
+    uvx --with h5py python -I column_check.py <dataset.h5>
+
+Output on 22 October 2026:
+
+| Column | Microcosm UK 2024-25 (SHA-256 `810ba980…`) | policyengine-uk-data enhanced FRS 2024-25 (HF cache snapshot `2526edbb…`) |
 |---|---|---|
 | `self_employment_gross_receipts` | absent | absent |
 | `uses_property_allowance` | absent | absent |
 | `self_employment_income` | present | present |
 | `property_income` | present | present |
+
+## Model-swap mechanisms
+
+`swap_mechanisms.py` puts two synthetic households through policyengine-uk
+2.132.6 and 2.143.0 in 2025:
+
+    uvx --python 3.12 --with policyengine-uk==<version> --with policyengine-core==3.33.3 python -I swap_mechanisms.py
+
+Output on 22 October 2026:
+
+| Household | 2.132.6 | 2.143.0 |
+|---|---|---|
+| £20,000 of earnings, £3,000 of interest | starting-rate income £3,000; income tax £1,486 with or without the personal savings allowance | starting-rate income £0; income tax £1,886, or £2,086 without the allowance |
+| £62,000 of earnings, £4,000 of employee pension contributions, one child | adjusted net income £62,000; child benefit charge £135 | adjusted net income £58,000; charge £0 |
+
+The first is the savings starting-rate taper (35f992c6a, #1799). The second is
+relieved pension contributions in adjusted net income (1dbc88172). Both are in
+`data/uk/experiments/diagnoses.json`.

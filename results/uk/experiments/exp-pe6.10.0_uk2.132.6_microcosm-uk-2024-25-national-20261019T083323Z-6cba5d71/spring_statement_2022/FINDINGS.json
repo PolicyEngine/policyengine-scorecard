@@ -213,7 +213,7 @@
    "anomalies": [],
    "carried_forward": false,
    "comparison_fy": "2024-25",
-   "effect_gbp": -2148993954.302406,
+   "effect_gbp": -2150655881.5489974,
    "error_message": null,
    "error_type": null,
    "expected_gbp": -5083962340.11225,
@@ -221,15 +221,15 @@
    "fy": "2024-25",
    "group_effects_gbp": {
     "income_tax": -0.0,
-    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -2148993954.302406
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -2150655881.5489974
    },
    "magnitude_check": "sign_only",
    "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
    "modern_assumption_failures": [],
    "obr_mapped_gbp": -4919254724.8316145,
    "obr_unmapped_gbp": -105108513.80992068,
-   "ratio_raw": 0.4368535630925202,
-   "ratio_scaled": 0.4227006044767353,
+   "ratio_raw": 0.43719140435904424,
+   "ratio_scaled": 0.42302750053445765,
    "scales": [
     {
      "base_sheet": "NICS",
@@ -336,22 +336,22 @@
    "anomalies": [],
    "carried_forward": false,
    "comparison_fy": "2024-25",
-   "effect_gbp": 73127307.84770203,
+   "effect_gbp": 73249819.6053009,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 187149605.57833886,
    "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
    "fy": "2024-25",
    "group_effects_gbp": {
-    "universal_credit": 73127307.84770203
+    "universal_credit": 73249819.6053009
    },
    "magnitude_check": "sign_only",
    "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l_2",
    "modern_assumption_failures": [],
    "obr_mapped_gbp": 161830781.31191796,
    "obr_unmapped_gbp": 8404324.37680919,
-   "ratio_raw": 0.4518751454752854,
-   "ratio_scaled": 0.3907425165108975,
+   "ratio_raw": 0.4526321816621326,
+   "ratio_scaled": 0.3913971358846348,
    "scales": [
     {
      "base_sheet": "Welfare in",

@@ -45,6 +45,20 @@ non-residential purchase prices, and salary sacrifice returned to income. On
 the swap each is nil for every record (`model_swap_input_gaps` on the
 population record). The pre-Budget pair has no such gap for the first two.
 
+**What else the model swap changed.** On the same data, every experiment-year
+whose effect moved by at least £10m and 5% between 2.132.6 and 2.143.0 is a
+model change. Besides the rows above, four:
+
+| Experiment | Change, 2.132.6 → 2.143.0 | Cause |
+|---|---|---|
+| `b2010_vat_standard_rate_20` | +£28.7bn → +£23.2bn (2024-25); ratio 1.31 → 1.06 | VAT on recorded consumption is divided by a grossing factor, 0.38 at 2.132.6. policyengine-uk#1996 (2.135.7) splits it into survey coverage times the household share of receipts, 0.67 × 0.7 = 0.469. Modern-law VAT falls by 0.810, which is 0.38 / 0.469. pe-uk documents the derivation in `docs/engineering/vat-coverage.md`. |
+| `b2015_personal_savings_allowance` | −£0.46bn → −£0.77bn (2024-25); ratio 0.43 → 0.73 | 2.132.6 started the savings starting-rate taper only above £17,570 of taxable non-savings income (the personal allowance plus the band), so it kept the 0% band too often and the allowance had less to relieve. Fixed in 35f992c6a (#1799, 2.139.2). A synthetic saver shows it (evidence folder). |
+| `as2010_high_income_child_benefit_charge` | +£2.28bn → +£2.15bn (2024-25) | Adjusted net income now deducts relieved pension contributions (ITA 2007 s. 58, which the variable cites), so fewer parents pay the charge. Fixed in 1dbc88172 (2.134.8). A synthetic parent shows it. |
+| `ab2017_sdlt_first_time_buyers_relief` | −£0.73bn → −£0.56bn (2024-25 only) | 2.143.0 has the Growth Plan's first-time-buyer limits in 2024-25 (4044d6ccf), so zeroing them removes a smaller relief. |
+
+The VAT and savings allowance ratios on 2.132.6, listed as clean below, rest on
+those older behaviours; the swap's are the ones to compare.
+
 The 2.132.6 currency gaps confirm the brief's point: the interim pair's model
 is about 630 commits behind main, and only the newest model catches current
 bugs. Every anomaly on the interim pair was therefore checked against
@@ -69,8 +83,8 @@ their scaled ratios fall inside the bands.
 | Autumn Statement 2022 | reverse the 1.25pp NICs rise and the levy | 1.00, 0.90, 0.91, 0.92 |
 | | keep the basic rate at 20% | 1.05, 0.95, 0.99, 1.00 |
 | | additional-rate threshold £125,140 | 1.00, 1.10, 1.24, 1.24 (2.143.0: 1.13, 1.24, 1.22, 1.22; 2.132.6 has no dividend leg until April 2026) |
-| | dividend allowance £500 | 0.91, 0.52, 0.55, 0.52 (OBR cash lags a year) |
-| | CGT allowance £3,000 | 2.25, 1.46, 1.44, 1.52 (OBR cash lags a year) |
+| | dividend allowance £500 | 0.91, 0.52, 0.55, 0.52 |
+| | CGT allowance £3,000 | 2.25, 1.46, 1.44, 1.52 |
 | | benefit cap uprating | 1.05, 1.21, 1.62, 1.68 |
 | | employer threshold freeze (2024-25) | 0.69 |
 | | end the Growth Plan SDLT relief | 1.36, 0.88, 0.83 |
@@ -94,14 +108,14 @@ their scaled ratios fall inside the bands.
 | | fuel duty freeze 2018-19 | 0.66, 0.65 |
 | Autumn Statement 2016 | fuel duty freeze 2017-18 | 0.61, 0.60 |
 | Budget 2016 | fuel duty freeze 2016 | 0.64, 0.63 |
-| Budget 2015 | personal savings allowance | 0.43, 0.45 |
+| Budget 2015 | personal savings allowance | 0.43, 0.45 (2.143.0: 0.73, 0.74; below) |
 | Summer Budget 2015 | two-child limit (sign only) | 0.90, 0.94 |
 | | working-age benefit freeze (scaled amounts) | 0.68, 0.65 |
 | | 30-hour childcare entitlement (ages 3 and 4) | 1.38, 1.40 |
 | Autumn Statement 2012 | Universal Credit at 1% (scaled amounts) | 0.51, 0.50 |
 | | child benefit at 1% (scaled amounts) | 0.51, 0.49 |
 | Autumn Statement 2010 | high-income child benefit charge | 0.58, 0.61 |
-| Budget 2010 | VAT at 20% | 1.31, 1.31 |
+| Budget 2010 | VAT at 20% | 1.31, 1.31 (2.143.0: 1.06, 1.06; below) |
 | | child benefit three-year freeze | 0.91, 0.86 |
 
 The fuel-duty ratios near 0.5–0.7 are expected: pe-uk's fuel duty is
@@ -117,9 +131,9 @@ both hold.
 
 **The population.** PolicyEngine's modern income tax base is 0.94 to 0.98
 of the OBR's March 2026 forecast, and NICs 1.01 to 1.05. Capital gains tax is
-1.69 in 2024-25, but that compares liabilities with cash receipts, which lag
-disposals by about a year; against the OBR's 2025-26 cash forecast (£21.8bn)
-the 2024-25 liability (£23.1bn) is 1.06.
+1.69 in 2024-25 and 1.18 to 1.40 after; the OBR's 2024-25 row (£13.7bn) is
+far below its 2025-26 row (£21.8bn), and the comparison is not diagnosed
+further.
 
 ## Corrections from the first review
 
@@ -139,15 +153,35 @@ populations:
   Autumn Statement 2022's hold ("maintain thresholds at 2023-24 levels until
   April 2028") from April 2026; one uprating in April 2023, then the hold;
   or no uprating after 2022-23. The construction had the second. It now has
-  the first (£11,607, then £11,804), as the file's Spring Budget 2021
-  counterfactual indexes the allowance through 2025-26. The yield depends on
-  that reading and on outturn inflation since the event, so both
-  experiments are now sign only.
+  the first (£11,596, then £11,804 for the lower profits limit), held from
+  April 2026 by convention. The yield depends on that reading and on
+  outturn inflation since the event, so both experiments are now sign only.
 - **Budget 2018's work allowance** removed the April 2019 uprating with the
   £1,000 measure. Without the measure the allowances would have been £203
   and £419 a month (the 2018 levels uprated by 2.4%), not £198 and £409.
 - **The 30-hour childcare entitlement** zeroed only the age-3 bracket; it now
   zeroes the age-4 bracket too.
+
+## Corrections from the second review
+
+An Opus 5.5 review of `767a695e` confirmed the first round's fixes and found
+two claims too broad:
+
+- **The swap's model changes.** Seven experiment-years moved between the
+  engines with no diagnosis, while the log said every flag was diagnosed.
+  They are diagnosed above (VAT grossing, the savings starting-rate taper,
+  adjusted net income, the Growth Plan first-time-buyer limits).
+- **Undeclared current law.** Only four experiments stated the current law
+  they were written against; the others assumed it silently, so an engine
+  one uprating ahead would have passed unflagged. Every reform value now
+  states it (204 path-years over 50 parameters, all equal on both engines),
+  or is set outright (Budget 2017's zero first-time-buyer limit, Autumn
+  Statement 2022's 2024-25 pre-relief schedule). The 17 events whose specs
+  changed were rerun on both populations.
+- Smaller: the lower profits limit is now 52 times the weekly primary
+  threshold (£11,596 in 2024-25, not £11,607), the threshold's hold from
+  April 2026 is stated as a convention, and containment compares replay-root
+  names case-insensitively (macOS).
 
 ## Harness fixes the runs forced
 
@@ -161,6 +195,11 @@ populations:
   reversal also maps Universal Credit), so they compare only the groups both
   map.
 - **Current law the construction assumes** (above): `modern_law_differs`.
+  After the second review, every value a reform sets states its current law
+  for every year the experiment can run, or is set outright with a reason
+  (`set_outright`); `validate_spec` refuses anything else. So the detector
+  works on any population, including the pre-Budget pair, which has no swap
+  to compare with.
   A test compares the two engines' current law on every parameter a
   construction sets, in every year it sets it: 248 parameter-years, of which
   the engines differ on 21. Each of the 21 is either declared in

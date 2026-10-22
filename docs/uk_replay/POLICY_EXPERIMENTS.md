@@ -140,12 +140,22 @@ measures whose value depends on the event's own inflation forecast are
 
 ## When an engine's current law is not the assumed one
 
-A construction may state the current-law values its counterfactual is
-written against (`assumes_modern`), for example the 5pp additional-dwellings
-surcharge, or the £125,140 dividend additional-rate threshold. When an
-engine's processed value differs, the experiment-year gets
-`modern_law_differs` (investigate), whatever its other codes. The effect
-measures that engine's current law, not the measure.
+Every value a reform sets is written against some current law: a reversal
+restores the pre-measure value on top of later changes, and a forward
+construction adds the measure to today's law. So for every reform path and
+every year the experiment can run, the construction states the current law
+it assumes (`assumes_modern`), or names the path in `set_outright` with the
+reason the value holds whatever the current law is (a zero limit that removes
+a relief, a whole pre-measure schedule). `validate_spec` refuses a spec that
+does neither. `pipeline/uk_experiment_specs.py` fills `assumes_modern` from one
+table, `CURRENT_LAW`, which policyengine-uk 2.132.6 and 2.143.0 share for
+every one of its path-years. An experiment that assumes a different value
+(the statutory one where 2.132.6 is behind) states its own.
+
+When an engine's processed value differs from the stated one, the
+experiment-year gets `modern_law_differs` (investigate), whatever its other
+codes: the effect measures that engine's current law, not the measure. This
+works on any population, with or without a model swap to compare.
 
 ## Integrity of the committed results
 
@@ -233,7 +243,7 @@ The tests state and check these for every input:
    runs in the findings).
 7. **Regeneration.** Every committed `FINDINGS` and `SUMMARY` file
    regenerates byte for byte from the committed artifacts.
-8. **Declared current law.** Where a model swap and its certified pair differ
-   on the current law of a parameter a construction sets, the construction
-   declares the law it assumes (`assumes_modern`) or sets the parameter
-   outright (a list in the test, each entry with its reason).
+8. **Declared current law.** Every value a reform sets, in every year the
+   experiment can run, states the current law it assumes or is set outright
+   with a reason; and wherever a model swap and its certified pair differ on
+   such a value, the experiment has declared it.
