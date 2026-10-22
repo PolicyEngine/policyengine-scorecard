@@ -847,7 +847,7 @@ runs only the default branch's code.
 
 | Job | Authority and inputs |
 |---|---|
-| `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
+| `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need, CI's own format check and suite among them. Outputs the verified tree, the main and `replay-state` commits it used, two check results and its report of CI's checks. |
 | `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It refuses unless its tree is `build`'s, then decides again against main's current tip, reading only the request it extracted and guarded. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write` and `pull-requests: write`, to push that commit and open the pull request. |
 
 Neither job holds a dataset token, and neither installs, imports or runs
@@ -858,9 +858,10 @@ runner: whatever the checks' packages did there (a `$GITHUB_PATH` or
 the token. Job 2 receives only job 1's outputs, as strings it validates, and
 pushes only what this code builds from main's and `replay-state`'s history.
 The tree comparison catches an honest build job whose commit diverges; the
-`verify-sealed` and content-hash lines in the pull request body are the build
-job's word, checked only for shape. CI on the pull request runs the
-regeneration, both database builds and the drift check again.
+`verify-sealed` and content-hash lines and the report of CI's checks in the
+pull request body are the build job's word, checked only for shape. CI on the
+pull request runs the regeneration, both database builds, the format check,
+the suite and the drift checks again.
 
 The App token, not `GITHUB_TOKEN`, writes because a pull request opened with
 `GITHUB_TOKEN` starts no `pull_request` workflow
@@ -929,7 +930,34 @@ which CI now reads from the index:
 4. **Checks.** `uk_replay_qualify verify-sealed` (the new namespace, then
    every one), CI's `.github/scripts/uk_replay_regenerate.sh`, and two
    `scorecard_db.build_db` runs, which must agree on the content hash and
-   leave no tracked-file drift.
+   leave no tracked-file drift. A failure of any of these stops the run.
+   Then CI's own checks on the same tree, as `ci.yml`'s `python` job runs
+   them on every pull request: `uvx ruff format --check be nz scorecard_db
+   tests pipeline`, the suite (`uv run --with pytest … pytest tests/ -q`,
+   with `PYTHONPATH=.`), and its no-drift check, `git status --porcelain`
+   after the suite. A test checks that these are `ci.yml`'s lines word for
+   word. They run in the `build` job, which holds no write credential: the
+   script refuses to start them if `GH_TOKEN` or `GITHUB_TOKEN` is set, and
+   unsets the variables that name the step's command files
+   (`$GITHUB_OUTPUT`, `$GITHUB_ENV`, `$GITHUB_PATH`, `$GITHUB_STATE`,
+   `$GITHUB_STEP_SUMMARY`), so a test that writes one by name writes
+   nowhere. That is hygiene, not a sandbox: a process that finds the files
+   on the runner's disk can still write them, and `propose` takes every
+   output of `build` as its word, checked for shape. Their output goes to
+   the step log with workflow commands paused (`::stop-commands::`, by a
+   token only the script holds), so a line the suite prints is not acted
+   on as one, and what `build` outputs about the commit is read before they
+   run. Their failure does not stop the run. The job reports each check's
+   exit status, how many files, tests or paths failed (the node ids of
+   pytest's last short test summary, the files ruff names, the paths
+   `git status` lists) and the first 50 that are printable ASCII without a
+   backtick, with no space at either end and at most 200 characters long,
+   as one line of JSON (three full lists keep the body inside GitHub's
+   65,536-character limit). On CI pytest prints whole messages over lines;
+   a message line that itself starts with `FAILED` or `ERROR` is read as
+   another node id. `propose` refuses a report of any other shape. Results pull requests #195, #204 and #206 opened ready
+   and failed CI's `pytest` job; with these checks such a pull request
+   opens as a draft that names the failures.
 5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
    standard library, skipping only the JSON Schema and RFC 8785 checks
    `build` made. Only when the tree matches is the App token minted. The
@@ -937,13 +965,26 @@ which CI now reads from the index:
    bot identity) with a `Replay-Request:` trailer and pushed with the App's
    token, goes to `uk-replay-results/<variant_id>`, and a pull request
    against main follows; CI runs on it as on any pull request, without the
-   dataset token. It is a draft when integrity is not `complete`.
+   dataset token. It is a draft when integrity is not `complete`, or when
+   one of CI's checks in step 4 fails; its body then lists what failed,
+   under "Validation in the results run", in a fenced block, with the
+   count of any it could not list. Fix those on main and run the workflow
+   again for the same request: it rebuilds the branch on the new main.
+   The builder never marks a pull request ready; a person does, once CI
+   passes.
 
 Running the workflow again for the same request is safe. An identical tree
 pushes nothing. A branch built on an older main is rebuilt and force-pushed,
 with a lease on the commit it read, only when it holds exactly one commit,
 authored and committed by the bot with this request's trailer; an added or
 amended commit is a person's, and the run fails and leaves the branch alone.
+A rebuild that pushes edits the open pull request's title and body. One that
+is a draft (integrity not `complete`, or one of CI's checks failing) first
+turns a ready pull request back into a draft (`gh pr ready --undo`), before
+the push, so it is never ready on a commit whose checks failed; one that is
+not leaves it as it is. A rerun on
+an unchanged main pushes nothing, so it leaves the body as it was, even when
+the earlier run's suite failed only by chance.
 A rebuilt branch also carries main's commits since the branch was built.
 GitHub does not document whether it counts that as editing a workflow when
 one of those commits changed `.github/workflows`, even a change main later
