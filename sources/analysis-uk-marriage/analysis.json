@@ -1,0 +1,55 @@
+{
+ "schema": "comparables/analysis/1",
+ "id": "uk/marriage",
+ "country": "UK",
+ "registry": {
+  "kind": "app",
+  "slug": "marriage",
+  "country_id": "uk"
+ },
+ "title": "Marriage calculator",
+ "url": "https://policyengine.org/uk/marriage",
+ "published": "2026-09-11",
+ "owner": {
+  "author": "max-ghenis"
+ },
+ "scope": "uk_wide",
+ "subject": "For a couple described by the user, compares taxes, benefits and net household income when living together against the combined income of two separate households. The income grid varies those household earnings; it is not a population distribution.",
+ "search_terms": [
+  "UK couple penalty benefits",
+  "marriage penalty universal credit",
+  "living together penalty",
+  "marriage allowance claims",
+  "couple penalty number of households"
+ ],
+ "worlds": {
+  "living_together": {
+   "policy": "uk_couple_living_together",
+   "description": "Two adults live together as one couple and household under the tax-benefit rules for the selected year, compared with the same adults living in separate households. The app keeps children with the first adult when separated; external specimens record their own child-allocation assumptions."
+  },
+  "living_apart": {
+   "policy": "uk_couple_living_apart",
+   "description": "The two adults live in separate households under the same tax-benefit rules, with household-specific earnings, children and housing arrangements."
+  },
+  "ifs_scenario_a": {
+   "policy": "uk_2010_11_couple_penalty_same_household",
+   "description": "IFS 2010–11 Scenario A: compare an existing mixed-sex couple with the same adults assessed as single people while remaining in the same household. Children stay with the woman; characteristics, income sources and asset ownership otherwise stay fixed."
+  },
+  "ifs_scenario_b": {
+   "policy": "uk_2010_11_couple_penalty_separate_households",
+   "description": "IFS 2010–11 Scenario B: compare an existing mixed-sex couple with the same adults assessed as single people in separate single-adult households, with housing costs assigned from matched households. Children stay with the woman; characteristics, income sources and asset ownership otherwise stay fixed."
+  },
+  "oecd_1998_hypothetical_couples": {
+   "policy": "uk_1998_couple_penalty_hypothetical_families",
+   "description": "OECD WP76 section5: fixed-earnings hypothetical couples under 1998 UK tax-transfer rules, comparing married/cohabiting status with two separated single adults. Rent is divided equally; in the two-child cases each separated adult has custody of one child. The ten income configurations use primary- and secondary-earner earnings percentiles; money values are converted to 2007 euros using compensation-per-employee indices and exchange rates."
+  },
+  "csj_2009_equivalised_comparison": {
+   "policy": "uk_2009_couple_material_penalty_needs_adjusted",
+   "description": "CSJ Dynamic Benefits current-system 2009 snapshot: existing FRS couples compared with synthetic separation after equivalising income to allow for savings from living together. Material penalties concern a lower standard of living, not unadjusted combined cash transfers. The input survey is 2005/06; the publication does not supply an exact policy fiscal year."
+  }
+ },
+ "pe_estimates": [],
+ "calculator": {
+  "reason": "The live UK page computes taxes, benefits and net-income changes for the household the user enters, together and as two separate households, including an income-grid chart for that household. It publishes no fixed population count, fiscal cost, share or specimen-household estimate and reads no aggregate results file. The live HTML deployment ID dpl_6F85da9qGCBcVmpyNtGAY3Lwo9Ms matches the successful Vercel status on PolicyEngine/marriage commit 2864e4092d6a9dd259845fd76925878bcb69e852. At that commit app/MarriageApp.jsx initializes results to null and calculates on submission; lib/api.js computes the couple and two separate households through the runtime service, lib/countries.js selects /uk/calculate, and backend/uk.py accepts exactly one household. Code and deployment evidence URLs and hashes are recorded with the open_search checks; there is no results file to pin."
+ }
+}
