@@ -252,6 +252,41 @@ def test_the_runners_python_needs_only_the_standard_library():
     )
 
 
+def test_the_find_step_runs_on_the_standard_library_alone(tmp_path):
+    # The job's own program, under the runner's Python without site-packages
+    # (-S), reaches find_dataset_bytes: with an empty hub cache it reports
+    # the missing dataset, not a missing module.
+    workflow = ROOT / ".github/workflows/uk-replay-determinism.yml"
+    job = yaml.safe_load(workflow.read_text())["jobs"]["real-replay"]
+    (find,) = [
+        s
+        for s in job["steps"]
+        if s.get("name") == "Find the fetched dataset by its digest"
+    ]
+    program = find["run"].split("/usr/bin/python3 -I -c '", 1)[1].split("'", 1)[0]
+    from pipeline import uk_replay_variants as rv
+
+    variant = [
+        v["variant_id"]
+        for v in rv.load_document()["variants"]
+        if v["layout"] == "replay_namespace"
+    ][-1]
+    result = subprocess.run(
+        [sys.executable, "-I", "-S", "-c", program, variant],
+        cwd=ROOT,
+        env={
+            "PATH": "/usr/bin:/bin",
+            "HOME": str(tmp_path),
+            "HF_HUB_CACHE": str(tmp_path),
+        },
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 1
+    assert "VariantError" in result.stderr and "no local file holds" in result.stderr
+    assert "ModuleNotFoundError" not in result.stderr
+
+
 json_values = st.recursive(
     leaves,
     lambda children: st.one_of(

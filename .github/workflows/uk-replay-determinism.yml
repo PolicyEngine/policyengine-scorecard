@@ -73,6 +73,8 @@ jobs:
     name: real replay · ${{ matrix.variant }}
     needs: replay-variants
     runs-on: ubuntu-latest
+    # Collect runs on a timeout too, so a hung replay holds no runner.
+    timeout-minutes: 90
     permissions:
       contents: read
     strategy:

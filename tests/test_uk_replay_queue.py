@@ -1,5 +1,6 @@
 """Queue bounds and control-job behavior against local git repositories."""
 
+import ast
 import json
 import os
 import re
@@ -978,14 +979,15 @@ REPLAY_SETTINGS = {
 }
 
 
-def sandbox_mode(tmp_path, mode, settings, *, exit_status=0):
+def sandbox_mode(tmp_path, mode, settings, *, exit_status=0, survivors=False):
     """uk_replay_sandbox.sh MODE with sudo and pgrep replaced by stubs; the
     sudo calls it made, its result."""
     tools = tmp_path / "bin"
     tools.mkdir(exist_ok=True)
     (tools / "sudo").write_text(SUDO_STUB.format(python=sys.executable))
-    (tools / "pgrep").write_text("#!/bin/sh\nexit 1\n")
-    for tool in ("sudo", "pgrep"):
+    (tools / "pgrep").write_text(f"#!/bin/sh\nexit {0 if survivors else 1}\n")
+    (tools / "sleep").write_text("#!/bin/sh\nexit 0\n")
+    for tool in ("sudo", "pgrep", "sleep"):
         (tools / tool).chmod(0o755)
     log = tmp_path / "sudo.jsonl"
     log.unlink(missing_ok=True)
@@ -1119,7 +1121,7 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
     assert handin[3] == [
         "/bin/sh",
         "-c",
-        '/bin/mkdir -p "$HOME/scorecard/input" '
+        '/bin/rm -rf "$HOME/scorecard/input" && /bin/mkdir "$HOME/scorecard/input" '
         '&& exec /bin/cat > "$HOME/scorecard/input/dataset.h5"',
     ]
     assert bytes.fromhex(calls[1]["stdin"]) == dataset.read_bytes()
@@ -1131,16 +1133,24 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
     assert environment == {
         **base,
         "PYTHONPATH": ".",
-        "RUNNER_TEMP": f"{CANDIDATE_HOME}/tmp",
         **{k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"},
     }
     assert command == [
         "/bin/bash",
         "-c",
-        'mkdir -p "$RUNNER_TEMP" && cd "$HOME/scorecard" '
-        "&& exec bash .github/scripts/uk_replay_determinism.sh replay",
+        'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay',
     ]
     assert calls[2]["stdin"] == ""
+
+
+def test_replay_hands_nothing_in_while_a_process_of_the_account_survives(tmp_path):
+    dataset = tmp_path / "dataset.h5"
+    dataset.write_bytes(b"x")
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
+    calls, result = sandbox_mode(tmp_path, "replay", settings, survivors=True)
+    assert result.returncode == 1
+    assert "replay-candidate processes survive" in result.stdout
+    assert [c["argv"] for c in calls] == [["pkill", "-KILL", "-u", "replay-candidate"]]
 
 
 @pytest.mark.parametrize("missing", sorted(REPLAY_SETTINGS))
@@ -1335,20 +1345,70 @@ def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_sec
         "raise Forged('an annotation from the stub engine')",
     ):
         assert probe in joined, probe
-    # The forged output is read back: it must be empty.
+    # The forged output is read back: it must be empty, beside a control
+    # that shows the runner still honours the deprecated command outside the
+    # fence (else an empty output would prove nothing).
+    by_id = {s.get("id"): s for s in steps}
+    control, replay = by_id["control"], by_id["replay"]
+    assert control["run"] == 'echo "::set-""output name=honoured::yes"'
+    assert steps.index(control) < steps.index(replay)
     check = next(s for s in steps if "FORGED" in s.get("env", {}))
-    assert check["env"]["FORGED"] == "${{ steps.replay.outputs.forged }}"
-    assert 'if [ -n "$FORGED" ]' in check["run"]
-    for expectation in (
-        '"interfaces": ["lo"]',
-        '"connects_out": False',
-        '"reaches_dbus": False',
-        '"pool": 3',
-        'sha256sum "$DATASET_FILE"',
-    ):
-        assert expectation in joined, expectation
-    assert "if pgrep -u replay-candidate" in joined
-    assert 'test "$(stat -c %U "$report")" = "$(id -un)"' in joined
+    assert check["env"] == {
+        "CONTROL": "${{ steps.control.outputs.honoured }}",
+        "FORGED": "${{ steps.replay.outputs.forged }}",
+    }
+    assert 'if [ "$CONTROL" != yes ] || [ -n "$FORGED" ]; then' in check["run"]
+    assert "if pgrep -u replay-candidate" in check["run"]
+    assert 'test "$(stat -c %U "$report")" = "$(id -un)"' in check["run"]
+    # The stub reports exactly the fields the runner expects, and the runner
+    # expects these values; the stub really starts a process.
+    stub = heredoc(next(r for r in runs if "compute_uk_event.py" in r))
+    expected = heredoc(check["run"])
+    assert dict_keys(stub, "report") == dict_keys(expected, "expected")
+    values = dict_values(expected, "expected")
+    assert values["interfaces"] == ["lo"]
+    assert values["pool"] == 3 and values["rfc8785"] == '{"a":2,"b":1}'
+    assert not any(values[k] for k in ("connects_out", "reaches_dbus", "resolves"))
+    assert "dataset_sha256" in values and 'sha256sum "$DATASET_FILE"' in check["run"]
+    assert any(
+        isinstance(node, ast.Call)
+        and ast.unparse(node.func) == "subprocess.Popen"
+        and "start_new_session" in {k.arg for k in node.keywords}
+        for node in ast.walk(ast.parse(stub))
+    )
+
+
+def heredoc(run: str) -> str:
+    """The Python program a step's run feeds through <<'PY'."""
+    body = run.split("<<'PY'\n", 1)[1]
+    return body[: body.index("\nPY")]
+
+
+def dict_literal(source: str, name: str) -> ast.Dict:
+    (node,) = [
+        node.value
+        for node in ast.walk(ast.parse(source))
+        if isinstance(node, ast.Assign)
+        and [getattr(target, "id", None) for target in node.targets] == [name]
+    ]
+    assert isinstance(node, ast.Dict)
+    return node
+
+
+def dict_keys(source: str, name: str) -> list[str]:
+    return sorted(key.value for key in dict_literal(source, name).keys)
+
+
+def dict_values(source: str, name: str) -> dict:
+    """``name``'s dict, each value a literal or None."""
+    literal = dict_literal(source, name)
+    values = {}
+    for key, value in zip(literal.keys, literal.values):
+        try:
+            values[key.value] = ast.literal_eval(value)
+        except ValueError:
+            values[key.value] = None
+    return values
 
 
 def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):

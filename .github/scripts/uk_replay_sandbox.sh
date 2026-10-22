@@ -218,18 +218,19 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
   replay)
     : "${DATASET_FILE:?}" "${VARIANT:?}" "${REPLAY_EVENT:?}" "${REPLAY_MEASURE:?}" "${REPLAY_YEAR:?}"
     # The dataset enters a home in which nothing of the account runs. The
-    # account writes it in from a pipe, inside the sandbox, so a link left in
-    # its copy cannot point the write anywhere else, and nothing runs as root
-    # inside its home.
+    # account writes it in from a pipe, inside the sandbox, into an input/
+    # made afresh, so neither a link nor a pipe left in its copy can send the
+    # bytes elsewhere or stall the write, and nothing runs as root inside its
+    # home.
     stop_candidate
     # shellcheck disable=SC2016 # expanded by the sandboxed shell
-    /bin/cat "$DATASET_FILE" | in_sandbox --offline \
-      /bin/sh -c '/bin/mkdir -p "$HOME/scorecard/input" && exec /bin/cat > "$HOME/scorecard/input/dataset.h5"'
+    /bin/cat "$DATASET_FILE" | in_sandbox --offline /bin/sh -c \
+      '/bin/rm -rf "$HOME/scorecard/input" && /bin/mkdir "$HOME/scorecard/input" && exec /bin/cat > "$HOME/scorecard/input/dataset.h5"'
     # shellcheck disable=SC2016 # expanded by the sandboxed shell
-    untrusted_output in_sandbox --offline PYTHONPATH=. RUNNER_TEMP="$CANDIDATE_HOME/tmp" \
+    untrusted_output in_sandbox --offline PYTHONPATH=. \
       VARIANT="$VARIANT" REPLAY_EVENT="$REPLAY_EVENT" \
       REPLAY_MEASURE="$REPLAY_MEASURE" REPLAY_YEAR="$REPLAY_YEAR" \
-      /bin/bash -c 'mkdir -p "$RUNNER_TEMP" && cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay'
+      /bin/bash -c 'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay'
     ;;
   collect)
     # systemd killed what was left in the service; make sure nothing of the

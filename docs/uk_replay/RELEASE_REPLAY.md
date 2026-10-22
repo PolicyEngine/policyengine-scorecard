@@ -1023,7 +1023,8 @@ services after that:
   the network and without the dataset.
 * `replay` checks that nothing of the account is running and has the account
   write the dataset into its copy from a pipe, inside an offline service,
-  so a link left in the copy cannot send the bytes anywhere else. It then
+  into an `input/` it makes afresh, so neither a link nor a pipe left in the
+  copy can send the bytes elsewhere or stall the write. It then
   replays one measure-year from that file (`compute_uk_event
   --dataset-file`), offline. The service gets its own network namespace,
   whose only interface is loopback (`PrivateNetwork`), and may open only
@@ -1052,7 +1053,8 @@ an honest run leaves only the replayed artifact there. The runner's own
 Python (`/usr/bin/python3 -E -s`, standard library only) compares it with
 the committed artifact that the job names, and refuses anything but a
 regular file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or
-cached.
+cached. The job has a 90-minute timeout, and `collect` runs after a timeout
+too.
 
 So a compromised package among a certified freeze's pins cannot read the
 token. The token is not in the sandbox's environment, the runner's processes
@@ -1070,6 +1072,7 @@ What such a package can still do:
   the committed artifact. So it can make the comparison pass: the check
   catches an honest engine whose output drifts, not a malicious one.
 * During `install` it has the network, but not the dataset.
+* It can fail the job, or hold it until the timeout.
 
 The workflow runs only on pushes to main. CI's `replay engine` legs install
 and run each variant on pull requests too, so `ci.yml` names no dataset
@@ -1080,10 +1083,11 @@ one-package freeze and a stub engine module in the account's copy. The
 freeze installs from PyPI in the sandbox. The stub reports what it finds
 offline, leaves a process behind, and forges workflow commands (on stdout,
 and on stderr with no newline) and a traceback the matcher would read. The
-runner's
-comparison must find exactly loopback, no connection out or to D-Bus, the
-stand-in's SHA-256, a working process pool and the arguments the job
-passed, and the stub must have set no step output.
+runner's comparison must find exactly loopback, no connection out, no name
+lookup and no D-Bus, the stand-in's SHA-256, a working process pool and the
+arguments the job passed. The stub must have set no step output, while a
+control step outside the fence sets one the same deprecated way. No step can
+read the job's annotations, so the job does not check them.
 
 ## Invariants
 

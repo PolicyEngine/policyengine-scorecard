@@ -227,19 +227,20 @@ jobs:
     # The real replay's way through the same sandbox
     # (uk-replay-determinism.yml: uk_replay_sandbox.sh install, replay and
     # collect, which run .github/scripts/uk_replay_determinism.sh as the
-    # candidate) on a real runner image, with no secrets: a stand-in dataset
-    # and, in the candidate's copy only, a small freeze and a stub engine
-    # module. install builds that freeze from PyPI in the sandbox. The stub
-    # replay imports it, and reports what it finds offline (its interfaces,
-    # whether a connection out or to D-Bus opens, the SHA-256 of the dataset
-    # handed in, a multiprocessing pool, the arguments it was given). It
-    # also leaves a process behind and forges workflow commands, on stdout
-    # and on stderr with no newline, and a traceback that setup-uv's problem
-    # matcher would read. collect
-    # must kill everything, and the runner's own Python must find that the
+    # candidate) on a real runner image, with no secrets: a stand-in
+    # dataset and, in the candidate's copy only, a small freeze and a stub
+    # engine module. install builds that freeze from PyPI in the sandbox.
+    # The stub replay imports it, and reports what it finds offline (its
+    # interfaces, whether a connection out, a name lookup or D-Bus works,
+    # the SHA-256 of the dataset handed in, a multiprocessing pool, the
+    # arguments it was given). It also leaves a process behind and forges
+    # workflow commands, on stdout and on stderr with no newline, and a
+    # traceback that setup-uv's problem matcher would read. collect must
+    # kill everything, and the runner's own Python must find that the
     # report reproduces, byte for byte, the one the runner expects.
     name: real replay sandbox
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     env:
@@ -281,6 +282,14 @@ jobs:
                   return False
 
 
+          def resolves():
+              try:
+                  socket.getaddrinfo("pypi.org", 443)
+                  return True
+              except OSError:
+                  return False
+
+
           def reaches_dbus():
               try:
                   with socket.socket(socket.AF_UNIX) as client:
@@ -305,6 +314,7 @@ jobs:
                   "pool": sum(multiprocessing.get_context("spawn").Pool(2).map(abs, [-1, -2])),
                   "rfc8785": rfc8785.dumps({"b": 1, "a": 2}).decode(),
                   "reaches_dbus": reaches_dbus(),
+                  "resolves": resolves(),
               }
               subprocess.Popen(["sleep", "600"], start_new_session=True)
               # Workflow commands, and two lines setup-uv's problem matcher
@@ -326,11 +336,18 @@ jobs:
           PY
       - name: Install the stub freeze in the sandbox
         run: bash .github/scripts/uk_replay_sandbox.sh install
+      # The control: outside the fence, the runner still honours the
+      # deprecated command the stub forges, so an empty forged output below
+      # means the fence held.
+      - name: Set a step output the deprecated way
+        id: control
+        run: echo "::set-""output name=honoured::yes"
       - name: Replay with the stub engine in the sandbox, offline
         id: replay
         run: bash .github/scripts/uk_replay_sandbox.sh replay
       - name: Nothing survives and the report comes back
         env:
+          CONTROL: ${{ steps.control.outputs.honoured }}
           FORGED: ${{ steps.replay.outputs.forged }}
         run: |
           set -euo pipefail
@@ -339,8 +356,8 @@ jobs:
             echo "::error::candidate processes survive collect"
             exit 1
           fi
-          if [ -n "$FORGED" ]; then
-            echo "::error::the stub engine set a step output"
+          if [ "$CONTROL" != yes ] || [ -n "$FORGED" ]; then
+            echo "::error::the control set [$CONTROL] and the stub engine [$FORGED]"
             exit 1
           fi
           report="output/${REPLAY_MEASURE}_${REPLAY_YEAR}.json"
@@ -356,6 +373,7 @@ jobs:
               "pool": 3,
               "rfc8785": '{"a":2,"b":1}',
               "reaches_dbus": False,
+              "resolves": False,
           }
           print(json.dumps(expected, indent=1, sort_keys=True))
           PY
