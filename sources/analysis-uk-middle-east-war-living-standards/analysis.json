@@ -1,0 +1,1708 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "uk/middle-east-war-living-standards",
+  "country": "UK",
+  "registry": {
+    "kind": "app",
+    "slug": "middle-east-war-living-standards",
+    "country_id": "uk"
+  },
+  "title": "Impact of the Middle East war on UK living standards",
+  "url": "https://policyengine.org/uk/middle-east-war-living-standards",
+  "published": "2026-09-25",
+  "owner": {
+    "author": "vahid-ahmadi"
+  },
+  "scope": "uk_wide",
+  "subject": "What energy, motor fuel and food price rises from the Middle East conflict and Strait of Hormuz disruption would cost UK households in 2027-28 under three annual stress-test scenarios (cost per household, the energy channel and people newly below an anchored poverty line), and the gross cost of ten policy responses.",
+  "search_terms": [
+    "Middle East war UK living standards",
+    "Strait of Hormuz energy prices households",
+    "energy shock household incomes 2027",
+    "oil price shock UK households cost",
+    "Iran war cost UK households",
+    "energy price guarantee 2026 cost",
+    "electricity VAT cut cost",
+    "fuel duty 5p cut extension cost",
+    "social tariff energy 2026 cost",
+    "energy price shock poverty UK households"
+  ],
+  "worlds": {
+    "epg": {
+      "policy": "uk_mew_epg_bill_rise_capped_at_10pct",
+      "description": "The analysis's stylised Energy Price Guarantee: government pays each household's energy bill rise above 10% of its baseline energy spending (EPG_CAP_PCT = 0.10), for 2027-28."
+    },
+    "flat_rebate": {
+      "policy": "uk_mew_flat_energy_rebate_400",
+      "description": "A flat £400 energy rebate to every household in 2027-28, modelled on the 2022 Energy Bills Support Scheme."
+    },
+    "ct_rebate": {
+      "policy": "uk_mew_council_tax_rebate_300_bands_a_to_d",
+      "description": "A £300 rebate to every household in council tax bands A to D, UK-wide (stylised; the 2022 scheme paid £150 in England)."
+    },
+    "uc_uplift": {
+      "policy": "uk_mew_uc_uplift_20_per_week",
+      "description": "A £20 a week uplift to every Universal Credit recipient household for 2027-28, matching the 2020-21 uplift."
+    },
+    "fuel_duty_cut": {
+      "policy": "uk_mew_fuel_duty_5p_cut_2027_28",
+      "description": "A 5p a litre fuel duty cut for the whole of 2027-28, after the cut in force to 31 December 2026. The pinned outlay is 5p on each vehicle-owning household's modelled petrol and diesel litres (compute_policies); a separate PolicyEngine reform cutting PolicyEngine's 2027-28 rate of 59.25p by 5p gives the same £2.18bn (parameters.fuel_duty_exchequer_cost)."
+    },
+    "means_tested": {
+      "policy": "uk_mew_means_tested_payment_650",
+      "description": "A £650 cost-of-living payment in two instalments (£326 and £324) to households on a benefit that qualified for the 2022 payment, each paid at an assumed 85% per-window entitlement rate."
+    },
+    "elec_vat_cut": {
+      "policy": "uk_mew_domestic_electricity_vat_zero_2027_28",
+      "description": "VAT on domestic electricity at 0% rather than 5% for the whole of 2027-28, extending the cut in force from 1 October 2026 to 31 March 2027, for every UK household: compute_policies applies it with no region filter, so Northern Ireland is included, while the enacted cut covers Great Britain only."
+    },
+    "accelerated_uprating": {
+      "policy": "uk_mew_accelerated_cpi_benefit_uprating",
+      "description": "CPI-uprated benefit rates raised at once by each scenario's residual CPI addition (the part of the shock September 2026 CPI did not capture), for 2027-28."
+    },
+    "social_tariff": {
+      "policy": "uk_mew_social_tariff_half_of_energy_rise",
+      "description": "Households on Universal Credit or with household net income below £20,000 have half of their energy price rise offset."
+    },
+    "combined": {
+      "policy": "uk_mew_combined_package",
+      "description": "The eight measures other than the social tariff applied together, the Energy Price Guarantee capping the bill before the electricity VAT relief applies to it."
+    },
+    "elec_vat_cut_six_months": {
+      "policy": "uk_domestic_electricity_vat_zero_oct_2026_mar_2027",
+      "description": "The enacted temporary zero rate of VAT on domestic electricity in Great Britain from 1 October 2026 to 31 March 2027 (announced 21 July 2026)."
+    },
+    "elec_vat_cut_gb_continued": {
+      "policy": "uk_domestic_electricity_vat_zero_rate_gb_continued_after_march_2027",
+      "description": "The Great Britain zero rate of VAT on domestic electricity continued after 31 March 2027: IFS's 'permanent' cut, and RF's annual cost of the cut in future years."
+    },
+    "fuel_duty_gradual_reversal": {
+      "policy": "uk_rf_fuel_duty_quarterly_rises_reversing_5p_cut",
+      "description": "Resolution Foundation: small quarterly fuel duty rises that reverse the 5p cut and then raise duty by, say, 3 per cent a year, costed against current policy."
+    },
+    "uc_and_pension_credit_uprating_brought_forward": {
+      "policy": "uk_rf_uc_above_inflation_rise_brought_forward_sept_2026",
+      "description": "Resolution Foundation: the Parliament's planned above-inflation rises in the Universal Credit standard allowance brought forward to September 2026, with an equivalent temporary boost for Pension Credit."
+    },
+    "fuel_duty_5p_permanent_and_freeze": {
+      "policy": "uk_fuel_duty_5p_cut_permanent_and_2027_freeze",
+      "description": "IFS Green Budget 2026: the 5p fuel duty cut made permanent and fuel duty rates frozen for a further year instead of rising with RPI."
+    },
+    "fuel_duty_freeze_to_2030": {
+      "policy": "uk_fuel_duty_5p_cut_permanent_and_freeze_to_2029_30",
+      "description": "IFS Green Budget 2026: the 5p fuel duty cut made permanent and the freeze extended until 2029-30."
+    },
+    "epg_style_cap_at_april_2026": {
+      "policy": "uk_jrf_epg_style_cap_at_april_2026_price_cap",
+      "description": "JRF: an Energy Price Guarantee-style intervention capping energy prices at the April 2026 Ofgem price cap, on July 2026 cost projections."
+    },
+    "energy_discounts_offset_cpi_rise": {
+      "policy": "uk_rf_energy_price_discounts_offset_1_5pp_cpi",
+      "description": "Resolution Foundation: energy price discounts large enough to offset the roughly 1.5 percentage point rise in the Bank of England's inflation outlook for Q3 2026, continued for a year."
+    },
+    "uc_uplift_10_six_months": {
+      "policy": "uk_niesr_uc_uplift_10_per_week_six_months",
+      "description": "NIESR: a temporary £10 a week uplift to Universal Credit for six months over the autumn and winter."
+    },
+    "tuc_standard_social_tariff": {
+      "policy": "uk_tuc_standard_social_tariff_25_15",
+      "description": "TUC: a 25% bill reduction for households below the relative poverty line and 15% for those between it and median income (equivalised BHC household income)."
+    },
+    "tuc_energy_crisis_social_tariff": {
+      "policy": "uk_tuc_energy_crisis_social_tariff_30_20_10",
+      "description": "TUC: during an energy crisis, a 30%, 20% or 10% bill reduction for households below the relative poverty line, below median income and below mean income respectively."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "household_cost_low",
+      "label": "Mean direct cost of the energy, fuel and food price rises per household, Summer 2026 prices, 2027-28",
+      "world": "baseline",
+      "metric": "average_household_income_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -538.0,
+      "value_raw": "538",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints the cost of the price rises as a positive £ per household (summary.mean_net_impact); average_household_income_change is positive = gain to households, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "income_concept": "cost netted off household resources at fixed consumption; nominal income unchanged (the poverty measure nets the same cost off HBAI income, metadata.poverty_definition)",
+        "sign_convention": "positive = gain to households",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.low_shock.summary.mean_net_impact"
+      }
+    },
+    {
+      "key": "energy_bill_rise_low",
+      "label": "Mean rise in household gas and electricity spending, Summer 2026 prices, 2027-28",
+      "world": "baseline",
+      "metric": "energy_bill_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 238.0,
+      "value_raw": "238",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "channel": "energy: the scenario percentage applied to each household's own baseline gas and electricity spending, not a price-cap calculation (metadata.energy_channel_basis)",
+        "sign_convention": "positive = increase in annual household energy spending",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.low_shock.channel_decomposition.energy_shock"
+      }
+    },
+    {
+      "key": "newly_below_line_persons_low",
+      "label": "People newly below the anchored poverty line, Summer 2026 prices, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "persons",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 379109.0,
+      "value_raw": "379,109",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.low_shock.summary.n_pushed_into_poverty"
+      }
+    },
+    {
+      "key": "newly_below_line_households_low",
+      "label": "Households newly below the anchored poverty line, Summer 2026 prices, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "households",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 185699.0,
+      "value_raw": "185,699",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.low_shock.summary.n_households_newly_below_anchored_line"
+      }
+    },
+    {
+      "key": "household_cost_central",
+      "label": "Mean direct cost of the energy, fuel and food price rises per household, Sustained escalation, 2027-28",
+      "world": "baseline",
+      "metric": "average_household_income_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -1334.0,
+      "value_raw": "1334",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints the cost of the price rises as a positive £ per household (summary.mean_net_impact); average_household_income_change is positive = gain to households, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "income_concept": "cost netted off household resources at fixed consumption; nominal income unchanged (the poverty measure nets the same cost off HBAI income, metadata.poverty_definition)",
+        "sign_convention": "positive = gain to households",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.central_shock.summary.mean_net_impact"
+      }
+    },
+    {
+      "key": "energy_bill_rise_central",
+      "label": "Mean rise in household gas and electricity spending, Sustained escalation, 2027-28",
+      "world": "baseline",
+      "metric": "energy_bill_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 713.0,
+      "value_raw": "713",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "channel": "energy: the scenario percentage applied to each household's own baseline gas and electricity spending, not a price-cap calculation (metadata.energy_channel_basis)",
+        "sign_convention": "positive = increase in annual household energy spending",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.central_shock.channel_decomposition.energy_shock"
+      }
+    },
+    {
+      "key": "newly_below_line_persons_central",
+      "label": "People newly below the anchored poverty line, Sustained escalation, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "persons",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 1508923.0,
+      "value_raw": "1,508,923",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.central_shock.summary.n_pushed_into_poverty"
+      }
+    },
+    {
+      "key": "newly_below_line_households_central",
+      "label": "Households newly below the anchored poverty line, Sustained escalation, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "households",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 750843.0,
+      "value_raw": "750,843",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.central_shock.summary.n_households_newly_below_anchored_line"
+      }
+    },
+    {
+      "key": "household_cost_severe",
+      "label": "Mean direct cost of the energy, fuel and food price rises per household, Severe escalation, 2027-28",
+      "world": "baseline",
+      "metric": "average_household_income_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2304.0,
+      "value_raw": "2304",
+      "normalization": "as printed",
+      "sign": -1,
+      "sign_basis": "results.json prints the cost of the price rises as a positive £ per household (summary.mean_net_impact); average_household_income_change is positive = gain to households, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "income_concept": "cost netted off household resources at fixed consumption; nominal income unchanged (the poverty measure nets the same cost off HBAI income, metadata.poverty_definition)",
+        "sign_convention": "positive = gain to households",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.severe_shock.summary.mean_net_impact"
+      }
+    },
+    {
+      "key": "energy_bill_rise_severe",
+      "label": "Mean rise in household gas and electricity spending, Severe escalation, 2027-28",
+      "world": "baseline",
+      "metric": "energy_bill_change",
+      "unit_concept": "gbp_per_household",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 1426.0,
+      "value_raw": "1426",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "statistic": "mean over all households",
+        "channel": "energy: the scenario percentage applied to each household's own baseline gas and electricity spending, not a price-cap calculation (metadata.energy_channel_basis)",
+        "sign_convention": "positive = increase in annual household energy spending",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.severe_shock.channel_decomposition.energy_shock"
+      }
+    },
+    {
+      "key": "newly_below_line_persons_severe",
+      "label": "People newly below the anchored poverty line, Severe escalation, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "persons",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 2337905.0,
+      "value_raw": "2,337,905",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.severe_shock.summary.n_pushed_into_poverty"
+      }
+    },
+    {
+      "key": "newly_below_line_households_severe",
+      "label": "Households newly below the anchored poverty line, Severe escalation, 2027-28",
+      "world": "baseline",
+      "metric": "poverty_count_change",
+      "unit_concept": "households",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 1159588.0,
+      "value_raw": "1,159,588",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "poverty_line": "60% of the 2027-28 pre-shock person-weighted median equivalised HBAI household net income (BHC), held fixed; modelled costs netted off income (metadata.poverty_definition)",
+        "housing_costs": "bhc",
+        "sign_convention": "positive = increase in the number below the anchored poverty line",
+        "program": "middle_east_war_price_shock",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "scenarios.severe_shock.summary.n_households_newly_below_anchored_line"
+      }
+    },
+    {
+      "key": "epg_cost_low",
+      "label": "Gross outlay of the Energy Price Guarantee, Summer 2026 prices, 2027-28",
+      "world": "epg",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2500000000.0,
+      "value_raw": "2.5",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_price_guarantee",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.epg.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "flat_rebate_cost_low",
+      "label": "Gross outlay of the flat £400 energy rebate, Summer 2026 prices, 2027-28",
+      "world": "flat_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -12630000000.0,
+      "value_raw": "12.63",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "flat_energy_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.flat_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "ct_rebate_cost_low",
+      "label": "Gross outlay of the £300 council tax rebate (bands A-D), Summer 2026 prices, 2027-28",
+      "world": "ct_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -7580000000.0,
+      "value_raw": "7.58",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "council_tax_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.ct_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "uc_uplift_cost_low",
+      "label": "Gross outlay of the £20 a week Universal Credit uplift, Summer 2026 prices, 2027-28",
+      "world": "uc_uplift",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -6280000000.0,
+      "value_raw": "6.28",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "universal_credit_uplift",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.uc_uplift.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "fuel_duty_cut_cost_low",
+      "label": "Gross outlay of the 5p fuel duty cut extension, Summer 2026 prices, 2027-28",
+      "world": "fuel_duty_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2180000000.0,
+      "value_raw": "2.18",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "fuel_duty",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.fuel_duty_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "means_tested_cost_low",
+      "label": "Gross outlay of the £650 means-tested cost-of-living payment, Summer 2026 prices, 2027-28",
+      "world": "means_tested",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -4320000000.0,
+      "value_raw": "4.32",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "cost_of_living_payment",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.means_tested.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "elec_vat_cut_cost_low",
+      "label": "Gross outlay of the electricity VAT cut extension, Summer 2026 prices, 2027-28",
+      "world": "elec_vat_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -1550000000.0,
+      "value_raw": "1.55",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "domestic_electricity_vat",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.elec_vat_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "accelerated_uprating_cost_low",
+      "label": "Gross outlay of the accelerated benefit uprating, Summer 2026 prices, 2027-28",
+      "world": "accelerated_uprating",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -660000000.0,
+      "value_raw": "0.66",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "benefit_uprating",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.accelerated_uprating.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "social_tariff_cost_low",
+      "label": "Gross outlay of the social tariff, Summer 2026 prices, 2027-28",
+      "world": "social_tariff",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -710000000.0,
+      "value_raw": "0.71",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_social_tariff",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.social_tariff.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "combined_cost_low",
+      "label": "Gross outlay of the combined package, Summer 2026 prices, 2027-28",
+      "world": "combined",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -37630000000.0,
+      "value_raw": "37.63",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Summer 2026 prices",
+        "scenario_key": "low_shock",
+        "price_assumptions": "energy +15%, motor fuel +22%, food +2% (scenarios.low_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "combined_support_package",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.low_shock.combined.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "epg_cost_central",
+      "label": "Gross outlay of the Energy Price Guarantee, Sustained escalation, 2027-28",
+      "world": "epg",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -17510000000.0,
+      "value_raw": "17.51",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_price_guarantee",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.epg.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "flat_rebate_cost_central",
+      "label": "Gross outlay of the flat £400 energy rebate, Sustained escalation, 2027-28",
+      "world": "flat_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -12630000000.0,
+      "value_raw": "12.63",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "flat_energy_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.flat_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "ct_rebate_cost_central",
+      "label": "Gross outlay of the £300 council tax rebate (bands A-D), Sustained escalation, 2027-28",
+      "world": "ct_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -7580000000.0,
+      "value_raw": "7.58",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "council_tax_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.ct_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "uc_uplift_cost_central",
+      "label": "Gross outlay of the £20 a week Universal Credit uplift, Sustained escalation, 2027-28",
+      "world": "uc_uplift",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -6280000000.0,
+      "value_raw": "6.28",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "universal_credit_uplift",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.uc_uplift.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "fuel_duty_cut_cost_central",
+      "label": "Gross outlay of the 5p fuel duty cut extension, Sustained escalation, 2027-28",
+      "world": "fuel_duty_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2180000000.0,
+      "value_raw": "2.18",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "fuel_duty",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.fuel_duty_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "means_tested_cost_central",
+      "label": "Gross outlay of the £650 means-tested cost-of-living payment, Sustained escalation, 2027-28",
+      "world": "means_tested",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -4320000000.0,
+      "value_raw": "4.32",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "cost_of_living_payment",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.means_tested.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "elec_vat_cut_cost_central",
+      "label": "Gross outlay of the electricity VAT cut extension, Sustained escalation, 2027-28",
+      "world": "elec_vat_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -1950000000.0,
+      "value_raw": "1.95",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "domestic_electricity_vat",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.elec_vat_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "accelerated_uprating_cost_central",
+      "label": "Gross outlay of the accelerated benefit uprating, Sustained escalation, 2027-28",
+      "world": "accelerated_uprating",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -3640000000.0,
+      "value_raw": "3.64",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "benefit_uprating",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.accelerated_uprating.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "social_tariff_cost_central",
+      "label": "Gross outlay of the social tariff, Sustained escalation, 2027-28",
+      "world": "social_tariff",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2120000000.0,
+      "value_raw": "2.12",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_social_tariff",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.social_tariff.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "combined_cost_central",
+      "label": "Gross outlay of the combined package, Sustained escalation, 2027-28",
+      "world": "combined",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -55610000000.0,
+      "value_raw": "55.61",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Sustained escalation",
+        "scenario_key": "central_shock",
+        "price_assumptions": "energy +45%, motor fuel +46%, food +4% (scenarios.central_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "combined_support_package",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.central_shock.combined.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "epg_cost_severe",
+      "label": "Gross outlay of the Energy Price Guarantee, Severe escalation, 2027-28",
+      "world": "epg",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -40020000000.0,
+      "value_raw": "40.02",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_price_guarantee",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.epg.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "flat_rebate_cost_severe",
+      "label": "Gross outlay of the flat £400 energy rebate, Severe escalation, 2027-28",
+      "world": "flat_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -12630000000.0,
+      "value_raw": "12.63",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "flat_energy_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.flat_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "ct_rebate_cost_severe",
+      "label": "Gross outlay of the £300 council tax rebate (bands A-D), Severe escalation, 2027-28",
+      "world": "ct_rebate",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -7580000000.0,
+      "value_raw": "7.58",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "council_tax_rebate",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.ct_rebate.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "uc_uplift_cost_severe",
+      "label": "Gross outlay of the £20 a week Universal Credit uplift, Severe escalation, 2027-28",
+      "world": "uc_uplift",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -6280000000.0,
+      "value_raw": "6.28",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "universal_credit_uplift",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.uc_uplift.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "fuel_duty_cut_cost_severe",
+      "label": "Gross outlay of the 5p fuel duty cut extension, Severe escalation, 2027-28",
+      "world": "fuel_duty_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2180000000.0,
+      "value_raw": "2.18",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "fuel_duty",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.fuel_duty_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "means_tested_cost_severe",
+      "label": "Gross outlay of the £650 means-tested cost-of-living payment, Severe escalation, 2027-28",
+      "world": "means_tested",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -4320000000.0,
+      "value_raw": "4.32",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "cost_of_living_payment",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.means_tested.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "elec_vat_cut_cost_severe",
+      "label": "Gross outlay of the electricity VAT cut extension, Severe escalation, 2027-28",
+      "world": "elec_vat_cut",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -2560000000.0,
+      "value_raw": "2.56",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "domestic_electricity_vat",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.elec_vat_cut.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "accelerated_uprating_cost_severe",
+      "label": "Gross outlay of the accelerated benefit uprating, Severe escalation, 2027-28",
+      "world": "accelerated_uprating",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -7270000000.0,
+      "value_raw": "7.27",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "benefit_uprating",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.accelerated_uprating.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "social_tariff_cost_severe",
+      "label": "Gross outlay of the social tariff, Severe escalation, 2027-28",
+      "world": "social_tariff",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -4250000000.0,
+      "value_raw": "4.25",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "energy_social_tariff",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.social_tariff.gross_outlay_bn"
+      }
+    },
+    {
+      "key": "combined_cost_severe",
+      "label": "Gross outlay of the combined package, Severe escalation, 2027-28",
+      "world": "combined",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -81760000000.0,
+      "value_raw": "81.76",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each policy's gross outlay as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "scenario": "Severe escalation",
+        "scenario_key": "severe_shock",
+        "price_assumptions": "energy +90%, motor fuel +62%, food +6.5% (scenarios.severe_shock.params)",
+        "basis": "static",
+        "cost_basis": "gross modelled household transfer, before tax and benefit interactions, take-up, behavioural response, administration, non-household use and financing",
+        "sign_convention": "positive = yield to the Exchequer",
+        "program": "combined_support_package",
+        "basis_note": "annual stress test: full-year 2027-28 price rises at fixed consumption, no time path or behavioural response (metadata.scenario_type)"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/impact-iran-war-living-standards",
+        "commit": "45592bb72bdb0e6f4bca0facd1cceb7996eea515",
+        "path": "dashboard/public/data/iran_impact_results.json",
+        "sha256": "382d64b98cd35a1d8bfd3064f2e4eec2895155abb1ba7de9613fdee0b94afead",
+        "computed_at": "2026-09-28T17:09:48+00:00",
+        "engine": {
+          "policyengine": "5.3.0",
+          "policyengine_uk": "2.90.2"
+        },
+        "dataset": "enhanced_frs_2024_25 policyengine-uk-data-1.56.16 (bundle uk-5.3.0)",
+        "field": "policy_responses.severe_shock.combined.gross_outlay_bn"
+      }
+    }
+  ]
+}

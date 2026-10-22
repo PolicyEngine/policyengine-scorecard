@@ -1,0 +1,342 @@
+{
+  "schema": "comparables/search/1",
+  "searches": [
+    {
+      "date": "2026-10-21",
+      "kind": "backfill",
+      "by": "subfleet:20261021-113610-cmp-uk-free-childcare-reform",
+      "producers": [
+        {
+          "producer": "obr",
+          "result": "none_found",
+          "queries": [
+            "site:obr.uk childcare expansion costing free hours working parents 9 months Spring Budget 2023 labour supply",
+            "site:obr.uk Tax-Free Childcare costing",
+            "site:obr.uk childcare \"free hours\" costing uncertainty policy costings March 2023 supplementary",
+            "site:obr.uk November 2023 EFO childcare measure re-estimated welfare savings"
+          ],
+          "checked": [],
+          "claims": [],
+          "note": "No OBR costing of either leg: neither is government policy. The OBR's March 2023 costing of the working-parent expansion scores the system this analysis takes as its baseline. obr.uk answered every fetch with a Cloudflare challenge, so OBR pages were seen in search results only."
+        },
+        {
+          "producer": "hm_treasury",
+          "result": "none_found",
+          "queries": [
+            "Spring Budget 2023 policy costings childcare expansion free hours nine months HM Treasury",
+            "Autumn Budget 2025 childcare review Tax-Free Childcare free hours policy costing red book",
+            "Spending Review 2015 policy costings \"Tax-Free Childcare\" eligibility minimum income £100,000 costing note",
+            "gov.uk search API, HM Treasury: childcare cost; policy costings; the analysis's search terms",
+            "Parliament written questions API: \"Tax-Free Childcare\" (Treasury answers)"
+          ],
+          "checked": [
+            "https://assets.publishing.service.gov.uk/media/6419c8dde90e0769ea4a4eb6/Print_Budget_2023.pdf",
+            "https://assets.publishing.service.gov.uk/media/6411603be90e076ccf66d781/Costing_Document_-_Spring_Budget_2023.pdf",
+            "https://questions-statements-api.parliament.uk/api/writtenquestions/questions/1605950"
+          ],
+          "claims": [],
+          "note": "The Treasury has published no costing of either leg. Asked the cost of raising Tax-Free Childcare to 25% or 30% of childcare costs (written answer 170766, 28 March 2023), it replied 'Up-to-date estimates are not readily available and could only be provided at disproportionate cost.' Spring Budget 2023 Table 4.1 costs the working-parent expansion already in the analysis's baseline."
+        },
+        {
+          "producer": "uk_hmrc",
+          "result": "none_found",
+          "queries": [
+            "Tax-Free Childcare tax information and impact note",
+            "\"Tax-Free Childcare\" budget policy costing HMRC change 2025 OR 2026",
+            "gov.uk search API, HMRC: impact assessments, policy papers and FOI releases on Tax-Free Childcare"
+          ],
+          "checked": [
+            "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/652939/Tax-free_childcare_Impact_Assessment-March_2017.pdf"
+          ],
+          "claims": [],
+          "note": "No tax information and impact note or HMRC costing of any change to Tax-Free Childcare's rate, cap, work test or income limit. HMRC's Tax-Free Childcare statistics are the outturn the analysis benchmarks its baseline against, not estimates of a reform."
+        },
+        {
+          "producer": "dwp",
+          "result": "none_found",
+          "queries": [
+            "Universal Credit childcare costs upfront raise cap 2023 impact assessment DWP costing",
+            "gov.uk search API, DWP: childcare impact assessments and equality analyses"
+          ],
+          "checked": [
+            "https://www.legislation.gov.uk/uksi/2023/593/pdfs/uksiem_20230593_en_002.pdf"
+          ],
+          "claims": [],
+          "note": "The 75% subsidy leg keeps the Universal Credit childcare element at 85%; DWP's costings of the 2023 changes to that element score a different measure."
+        },
+        {
+          "producer": "dfe",
+          "result": "none_found",
+          "queries": [
+            "written question estimate cost extending free childcare hours to children of non-working parents Department for Education",
+            "\"Early Education and Childcare Review\" Department for Education 2026",
+            "Parliament written questions API, Department for Education: non-working parents; universal childcare; free childcare; funded hours; nine months; 15 hours; childcare subsidy; 75 per cent",
+            "site:gov.uk 75% childcare subsidy cost OR replace Tax-Free Childcare cost OR universal free childcare hours cost OR extend free childcare non-working parents cost"
+          ],
+          "checked": [
+            "https://assets.publishing.service.gov.uk/media/66221ba8252f0d71cf757d2b/Spring_budget_2023_childcare_expansion_costing_note_information.pdf",
+            "https://questions-statements-api.parliament.uk/api/writtenquestions/questions/1926266",
+            "https://questions-statements-api.parliament.uk/api/writtenquestions/questions/1939139"
+          ],
+          "claims": [],
+          "note": "DfE has published no costing of extending free hours to every child from 9 months. Asked the annual cost of extending the 30 hours to non-working parents (written answer 17308, 4 August 2026), it gave none; the answer says 'Nearly 1.5 million children aged 9 months to school age are excluded from the full 30-hour entitlement'. Its 2023 expansion costing note (about £4.1bn by 2027-28) scores the baseline. Written answer 28019 (14 September 2026) values the 30 hours the £100,000 limit withholds at £446m to £874m in 2025/26, at full take-up and full use: a different quantity from the analysis's 15 hours for all."
+        },
+        {
+          "producer": "scottish_fiscal_commission",
+          "result": "not_applicable",
+          "queries": [],
+          "checked": [],
+          "claims": [],
+          "note": "The SFC's list applies to Scotland-scoped analyses; this one is UK-wide."
+        },
+        {
+          "producer": "ifs",
+          "result": "none_found",
+          "queries": [
+            "site:ifs.org.uk remove work test childcare cost free hours non-working parents",
+            "site:ifs.org.uk tax-free childcare reform cost increase rate cap",
+            "IFS universal childcare cost all children 15 hours \"regardless of\" work status England estimate billion",
+            "IFS 2025 OR 2026 childcare entitlements cost extending to non-working families under-threes Farquharson Drayton",
+            "IFS Green Budget 2025 childcare chapter early years entitlements cost options",
+            "IFS \"Fair Start\" Sutton Trust 2021 remove work test 30 hours cost"
+          ],
+          "checked": [
+            "https://www.ifs.org.uk/sites/default/files/output_url_files/BN264-proposals-for-the-early-years-in-england.pdf",
+            "https://www.ifs.org.uk/sites/default/files/2023-09/IFS-R274-Early-years-spending-update-Budget-reforms-and-beyond.pdf",
+            "https://www.suttontrust.com/wp-content/uploads/2021/08/Costing-options-for-extending-the-30-hour-entitlement.pdf"
+          ],
+          "claims": [],
+          "note": "The IFS costings found score other reforms: BN264 (November 2019) prices the 2019 parties' 30- and 35-hour pledges against the pre-2023 system; Farquharson's costing for the Sutton Trust (August 2021) prices removing the work test from the 30 hours for 3-4 year olds (about £250m in 2024-25), an age group whose hours the analysis does not change; R274 (September 2023) prices the 2023 expansion. No IFS costing of 15 hours for every child from 9 months or of replacing Tax-Free Childcare. ifs.org.uk HTML pages refuse plain fetches; they were read through a reader proxy, the PDFs directly."
+        },
+        {
+          "producer": "resolution_foundation",
+          "result": "none_found",
+          "queries": [
+            "site:resolutionfoundation.org childcare tax-free childcare reform cost",
+            "Resolution Foundation childcare extend free hours non-working parents cost billion report",
+            "resolutionfoundation.org \"tax-free childcare\" cost scrap OR replace OR reform 2026",
+            "Resolution Foundation childcare 2026 report \"funded hours\" OR \"free hours\" cost extend"
+          ],
+          "checked": [
+            "https://www.resolutionfoundation.org/publications/hard-lessons/"
+          ],
+          "claims": [],
+          "note": "Hard lessons (November 2024) costs an extra 15 hours for 3-4 year olds of student parents (£130m in 2024/25), a different reform. No RF costing of extending the entitlements to non-working parents or of reforming Tax-Free Childcare."
+        },
+        {
+          "producer": "centax",
+          "result": "found",
+          "queries": [
+            "site:centax.org.uk childcare",
+            "CenTax childcare tax-free childcare reform cost cliff edge report taper options"
+          ],
+          "checked": [
+            "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf",
+            "https://centax.org.uk/removing-the-childcare-cliff-edge-impacts-and-cost-of-reform/"
+          ],
+          "claims": [
+            "centax_first_15_under_3s_actual_ani_static_fy2027",
+            "centax_first_15_under_3s_actual_ani_net_fy2027",
+            "centax_first_15_under_3s_actual_ani_static_fy2028",
+            "centax_first_15_under_3s_actual_ani_net_fy2028",
+            "centax_first_15_under_3s_actual_ani_static_fy2029",
+            "centax_first_15_under_3s_actual_ani_net_fy2029",
+            "centax_first_15_under_3s_expected_ani_static_fy2027",
+            "centax_first_15_under_3s_expected_ani_net_fy2027",
+            "centax_first_15_under_3s_expected_ani_static_fy2028",
+            "centax_first_15_under_3s_expected_ani_net_fy2028",
+            "centax_first_15_under_3s_expected_ani_static_fy2029",
+            "centax_first_15_under_3s_expected_ani_net_fy2029"
+          ],
+          "note": "The row 'Abolish the threshold for the first 15 Hours to Under-3s' costs one group the free-hours leg also reaches, static and net, central scenario: on actual ANI (Table 4.3, the report's primary results, and Table B.1 for 2029) and on expected ANI, today's test (Table B.2), for 2027-28 to 2029-30. The report does not cost Tax-Free Childcare changes, and no other CenTax childcare publication was found."
+        },
+        {
+          "producer": "centre_for_british_progress",
+          "result": "none_found",
+          "queries": [
+            "Centre for British Progress \"Rates and Wrongs\" childcare",
+            "britishprogress.org childcare tax-free childcare free hours cost"
+          ],
+          "checked": [
+            "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf"
+          ],
+          "claims": [],
+          "note": "Rates and Wrongs (March 2026) costs removing the £100,000 limit from both the working-parent 30 hours and Tax-Free Childcare, net of behaviour; it is staged in sources/analysis-uk-childcare-100k-threshold. It changes neither Tax-Free Childcare's rate nor its work test, and its free-hours side gives the over-£100,000 families all 30 hours, which this analysis does not."
+        },
+        {
+          "producer": "ippr",
+          "result": "found",
+          "queries": [
+            "site:ippr.org childcare cost universal free hours extend all children",
+            "IPPR universal childcare guarantee report cost 2026",
+            "IPPR \"tax-free childcare\" reform replace co-payment scheme cost 2025 OR 2026",
+            "IPPR 2025 OR 2026 childcare report free hours non-working parents universal entitlement cost billion"
+          ],
+          "checked": [
+            "https://files.ippr.org/production/Downloads/towards-a-childcare-guarantee-sept-22.pdf",
+            "https://files.ippr.org/production/Downloads/delivering-a-childcare-guarantee-dec-22.pdf",
+            "https://www.ippr.org/articles/towards-a-childcare-guarantee",
+            "https://www.ippr.org/articles/delivering-a-childcare-guarantee"
+          ],
+          "claims": [
+            "ippr_universal_15_hours_under_twos_fy2022",
+            "ippr_universal_15_hours_two_year_olds_fy2022",
+            "ippr_reformed_subsidy_75_95_fy2022"
+          ],
+          "note": "Towards a childcare guarantee (September 2022) has the only costing found of a 75% childcare subsidy (with 95% for families on means-tested benefits, replacing Tax-Free Childcare and the UC element) and of universal 15 hours for under-twos and two-year-olds, all on the 2022 system. Its 30% and 60% subsidy rows and its 30-hour and 48-week variants are not staged. Delivering a childcare guarantee (December 2022) repeats the hours costings and gives its 60% subsidy scheme's cost as a total 'not accounting for current spending'. IPPR's Childcare challenge (December 2024) proposes extending the entitlement to all two-year-olds below £100,000 without a cost."
+        },
+        {
+          "producer": "fabian_society",
+          "result": "none_found",
+          "queries": [
+            "site:fabians.org.uk childcare cost universal free hours",
+            "site:fabians.org.uk Tax-Free Childcare replace subsidy cost",
+            "Fabian Society childcare report cost billion free hours all children",
+            "\"Fabian Society\" childcare 2026 report free hours universal cost"
+          ],
+          "checked": [
+            "https://fabians.org.uk/wp-content/uploads/2023/10/FABP10686-Tract-Plans-for-power-230925-WEB.pdf",
+            "https://fabians.org.uk/wp-content/uploads/2025/05/FIRST-STEPS-PDF-23-May.pdf"
+          ],
+          "claims": [],
+          "note": "Plans for Power (2023) proposes 30 hours from 9 months for low-income children 'irrespective of parents' employment status' with no cost; First Steps (2025) costs social security options only."
+        },
+        {
+          "producer": "niesr",
+          "result": "none_found",
+          "queries": [
+            "site:niesr.ac.uk childcare cost free hours reform",
+            "site:niesr.ac.uk Tax-Free Childcare subsidy",
+            "NIESR childcare policy costing employment effect universal childcare UK",
+            "NIESR \"Living Standards Review\" 2026 childcare"
+          ],
+          "checked": [
+            "https://niesr.ac.uk/wp-content/uploads/2025/03/JC871-NIESR-UK-Living-Standards-Review-2025-final-version.pdf"
+          ],
+          "claims": [],
+          "note": ""
+        },
+        {
+          "producer": "ukmod",
+          "result": "none_found",
+          "queries": [
+            "site:microsimulation.ac.uk childcare UKMOD",
+            "UKMOD childcare subsidy simulation CeMPA working paper",
+            "UKMOD \"childcare\" policy reform cost estimate \"Tax-Free Childcare\" microsimulation"
+          ],
+          "checked": [],
+          "claims": [],
+          "note": "CeMPA has published no childcare costing. De Henau's UKMOD simulation of universal full-time childcare (2022, a journal article) is logged under academic."
+        },
+        {
+          "producer": "lse_case",
+          "result": "found_not_staged",
+          "queries": [
+            "Paull CASE Early Education and Childcare Coalition report reforming childcare support single system Universal Credit Tax-Free Childcare October 2026",
+            "\"Reforming childcare subsidies\" Early Education and Childcare Coalition CASE report pdf",
+            "LSE CASE Kitty Stewart cost extending free childcare hours to all children non-working families"
+          ],
+          "checked": [
+            "https://www.lse.ac.uk/research-shows-how-childcare-support-could-be-improved-without-substantial-government-cost",
+            "https://sticerd.lse.ac.uk/case/_new/news/abstract/?index=1560"
+          ],
+          "claims": [],
+          "note": "Reforming childcare subsidies (Gillian Paull, CASE, with the Early Education and Childcare Coalition, 19 October 2026) models replacing Tax-Free Childcare and UC childcare support with one subsidy for working families that tapers with earnings. The LSE release gives its cost only as a percentage of an unstated base ('the increase in subsidy costs for the Government is estimated to be 15% for an hourly subsidy compared to 56% for the smooth subsidy rate'), on Family Resources Survey data updated to 2026/27, assuming parents do not change their work patterns or childcare use. The report at https://www.earlyeducationchildcare.org/reforming-childcare-subsidies refused every fetch (403), so there is no primary to stage (harvest rule 8). Its options cover working families, taper the rate with earnings and absorb the UC element, unlike the analysis's flat 75% subsidy for all."
+        },
+        {
+          "producer": "jrf",
+          "result": "none_found",
+          "queries": [
+            "site:jrf.org.uk childcare cost free hours universal",
+            "site:jrf.org.uk Tax-Free Childcare reform cost",
+            "site:jrf.org.uk Universal Family Childcare Promise",
+            "JRF childcare offer extend to non-working parents cost estimate child poverty strategy funded hours"
+          ],
+          "checked": [
+            "https://www.jrf.org.uk/sites/default/files/pdfs/a-new-social-contract-in-the-childcare-system-afab9ab8d7e504eb213769c1abdf9965.pdf"
+          ],
+          "claims": [],
+          "note": "JRF co-developed NEF's Universal Family Childcare Promise; the costing is NEF's and is staged under open_search with source nef. JRF's own childcare costings score other reforms (a Scottish offer, 2024; workforce and market reforms, 2024)."
+        },
+        {
+          "producer": "landman_economics",
+          "result": "none_found",
+          "queries": [
+            "\"Landman Economics\" childcare free hours cost universal Howard Reed",
+            "\"Landman Economics\" \"Tax-Free Childcare\" OR \"childcare subsidy\" modelling TUC OR IPPR OR \"Women's Budget Group\""
+          ],
+          "checked": [
+            "http://www.landman-economics.co.uk/"
+          ],
+          "claims": [],
+          "note": "Landman's model appears only inside other producers' work (De Henau's WBG costings, 2017 and 2019; Fabian reports), none of which costs either leg."
+        },
+        {
+          "producer": "tax_policy_associates",
+          "result": "none_found",
+          "queries": [
+            "site:taxpolicy.org.uk childcare cliff Tax-Free Childcare £100,000",
+            "site:taxpolicy.org.uk free childcare hours cost reform",
+            "Tax Policy Associates childcare cliff edge cost of fixing Dan Neidle"
+          ],
+          "checked": [
+            "https://taxpolicy.org.uk/2024/10/17/reform-income-tax-end-the-scandal-of-high-marginal-rates/"
+          ],
+          "claims": [],
+          "note": "TPA's 'somewhere between £5-10bn' (October 2024) is an unsourced range for making child benefit, the personal allowance and childcare subsidies universal together; no cost of either leg."
+        },
+        {
+          "producer": "academic",
+          "result": "none_found",
+          "queries": [
+            "\"Simulating employment and fiscal effects of public investment in high-quality universal childcare in the UK\" De Henau",
+            "microsimulation childcare subsidy reform UK maternal labour supply fiscal cost structural model working paper 2022 2023 2024",
+            "\"Tax-Free Childcare\" reform simulation paper labour supply UK IZA OR ISER OR \"working paper\"",
+            "\"universal childcare\" UK \"under-threes\" fiscal cost simulation journal article employment effects",
+            "IZA discussion paper free childcare England maternal labour supply 30 hours"
+          ],
+          "checked": [
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC8853244/"
+          ],
+          "claims": [],
+          "note": "De Henau (2022, International Journal of Child Care and Education Policy) costs free universal childcare at 40 hours a week, 48 weeks a year, from six months, with staff pay reform (gross £26.6bn to £49.4bn, UK, 2018): not either leg. Brewer, Cattan, Crawford and Rabe (2022) estimate employment effects of free hours, not a cost. No paper costs universal 15 hours from 9 months or a flat-rate subsidy in the UK."
+        },
+        {
+          "producer": "open_search",
+          "result": "found",
+          "queries": [
+            "75% childcare subsidy replace Tax-Free Childcare cost UK",
+            "universal 15 free childcare hours from 9 months all children no work test cost estimate £bn",
+            "childcare subsidy reform UK cost replace tax-free childcare single subsidy think tank 2026",
+            "\"75 per cent of childcare costs\" OR \"75% of childcare costs\" UK proposal subsidy 2025 OR 2026",
+            "extend 30 hours free childcare to families on benefits non-working parents cost £bn 2026 government plan",
+            "Sutton Trust extend free childcare hours non-working families cost Frontier Economics",
+            "Women's Budget Group De Henau universal free childcare cost billion",
+            "Onward \"First Steps\" fixing childcare tax-free childcare report cost",
+            "Policy Exchange July 2026 childcare report",
+            "Liberal Democrat 2024 manifesto costings free childcare all parents nine months regardless of work cost billion"
+          ],
+          "checked": [
+            "https://new-economicsf.files.svdcdn.com/production/files/The-Universal-Family-Childcare-Promise-final.pdf?dm=1753872465",
+            "https://neweconomics.org/2025/07/the-universal-family-childcare-promise",
+            "https://www.suttontrust.com/wp-content/uploads/2024/05/Opportunity-for-all-TechnicalAppendix.pdf",
+            "https://wbg.org.uk/wp-content/uploads/2017/02/De_Henau_WBG_childcare_briefing3_2017_02_20-1.pdf",
+            "https://policyexchange.org.uk/wp-content/uploads/A-Matter-of-Choice_.pdf",
+            "https://www.ukonward.com/wp-content/uploads/2022/12/Onward-First-Steps-Version-1.pdf",
+            "https://www.libdems.org.uk/fileadmin/groups/2_Federal_Party/Documents/PolicyPapers/Manifesto_2024/Funding_a_Fair_Deal_-_Liberal_Democrat_Manifesto_Costings_2024.pdf",
+            "https://www.openanursery.co.uk/government-considers-extending-30-hours-free-childcare-to-families-on-benefits",
+            "https://streamlinefeed.co.ke/news/uk-labour-urged-to-halt-15-billion-plan-for-universal-childcare-benefits"
+          ],
+          "claims": [
+            "nef_ufcp_net_cost_low_fy2025",
+            "nef_ufcp_net_cost_high_fy2025"
+          ],
+          "note": "NEF's Universal Family Childcare Promise (July 2025, source nef) is staged. Checked and not comparable: the Sutton Trust's BCG costings (May 2024: 30 hours for two-year-olds, 20 hours for 2-4 year olds with a sliding subsidy); the Women's Budget Group's universal full-time childcare (2017, 2020); Policy Exchange's cost-neutral replacement of every scheme with a payment card (July 2026); Onward's childcare credit (December 2022, no cost for all 1-4 year olds); the Liberal Democrats' 2024 costings (no free hours from 9 months); the HM Treasury and OBR costing of the 2023 expansion, which the analysis cites as a cost anchor. A July 2026 press figure of '£15 billion' for 30 hours for families on benefits names no producer and has no primary. No other UK proposal of a 75% childcare subsidy was found."
+        }
+      ],
+      "results_pins": [
+        "PolicyEngine/free-childcare-reform@1a832f1703b56c8cd044c8d3f87d469f70e3d3e8:c559e6f07417bcaf7ac89d68d6c1fa61d182a34bcfb85d666f75cce818816285"
+      ]
+    }
+  ]
+}

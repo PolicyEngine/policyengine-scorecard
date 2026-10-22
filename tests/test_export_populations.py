@@ -410,7 +410,7 @@ def test_integration_committed_db(tmp_path):
     # Pre-publish comparables (docs/COMPARABLES.md) add every staged claim of
     # each analysis record: 20 for the £100,000 childcare dashboard (12 CenTax,
     # 8 Centre for British Progress), with or without a result.
-    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246 + 22, "BE": 9, "NZ": 12}
+    assert dist == {"US": 535 + 90, "UK": 5163 + 23_752 + 246 + 128, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -445,8 +445,8 @@ def test_integration_committed_db(tmp_path):
     assert committed["summary"] == payload["summary"]
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
-    # 5,719 + the 22 pre-publish comparables rows of the childcare record
-    assert len(payload["rows"]) == 5719 + 22
+    # 5,719 + the 218 rows of the comparables records (128 UK, 90 US)
+    assert len(payload["rows"]) == 5719 + 218
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()

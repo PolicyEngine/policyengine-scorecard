@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ny-dependent-exemption-scope",
+    "claims": [
+      "ny_dependent_exemptions_tax_expenditure_2026"
+    ],
+    "status": "concept_mismatch",
+    "explains_gap": false,
+    "cause": "The two figures are close (+0.7%) but measure different things. The report's tax expenditure is New York State personal income tax liability alone, from a study file of full-year resident, part-year resident and nonresident returns. The dashboard's figure is the net budget effect for New York resident households: the change in federal income tax plus state income tax minus household benefits (total_budgetary_impact in scripts/modal_cpid_endpoint.py at 0525a73). Its state income tax includes New York City income tax (state_income_tax_before_refundable_credits lists nyc_income_tax_before_refundable_credits; nyc_taxable_income adds ny_taxable_income), which applies to households the dataset places in the five NYC counties (in_nyc reads county_str); whether the June state file placed households in those counties is not recorded. The run did not save the state-only change (state_tax_change), so the components cannot be separated from results.json.",
+    "basis": [
+      {
+        "kind": "document",
+        "ref": "https://www.tax.ny.gov/pdf/research/stats/expenditure-reports/fy27ter.pdf#page=17"
+      },
+      {
+        "kind": "document",
+        "ref": "https://www.tax.ny.gov/pdf/research/stats/expenditure-reports/fy27ter.pdf#page=6"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/child-poverty-impact-dashboard/blob/0525a73cb25f50cfad5cbb77355837f32ca95e0c/scripts/modal_cpid_endpoint.py"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/policyengine-us/blob/03b804ddeaeffc98dec9cdd0861c7c80dcbb6f2d/policyengine_us/parameters/gov/states/household/state_income_tax_before_refundable_credits.yaml"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/policyengine-us/blob/03b804ddeaeffc98dec9cdd0861c7c80dcbb6f2d/policyengine_us/variables/gov/local/ny/nyc/tax/income/taxable_income/nyc_taxable_income.py"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/policyengine-us/blob/03b804ddeaeffc98dec9cdd0861c7c80dcbb6f2d/policyengine_us/variables/household/demographic/geographic/in_nyc.py"
+      }
+    ]
+  }
+]
