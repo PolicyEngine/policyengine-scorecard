@@ -99,6 +99,10 @@ VALUE_KINDS = (
     "upper_bound",
 )
 RANGE_KINDS = ("range_low", "range_high")
+# Where the analysis is listed: an apps.json app, a posts.json post, or a bill
+# scored on the state legislative tracker (/reform-pipeline's tracker route),
+# which no registry lists.
+REGISTRY_KINDS = ("app", "post", "tracker")
 # A figure that is not a single year's estimate of the quantity: a total over
 # years, or a one-sided bound ("over £1 billion"). It is set beside an
 # estimate, never compared with one.
@@ -200,6 +204,9 @@ _GITHUB_PINNED = re.compile(
 _URL = re.compile(r"^https?://\S+$")
 # A document or diagnostic URL names a page, not just a host.
 _URL_WITH_PATH = re.compile(r"^https://[^/\s]+\.[^/\s]+/\S+$")
+# a page an analysis is served from: an https host with a dot, any path
+_PAGE_URL = re.compile(r"^https://[a-z0-9-]+(?:\.[a-z0-9-]+)+(?::\d+)?(?:/\S*)?$")
+UNEXPLAINED = "no annotation explains it"
 
 # Harvest rule 1: ``value`` is ``value_raw`` normalised to the unit, with the
 # conversion named, and the scale a printed value states must be the one the
@@ -826,8 +833,8 @@ def validate(
         return errors
     registry = a.get("registry") or {}
     kind, slug = registry.get("kind"), registry.get("slug")
-    if kind not in ("app", "post"):
-        errors.append(f"{name}: registry.kind must be 'app' or 'post'")
+    if kind not in REGISTRY_KINDS:
+        errors.append(f"{name}: registry.kind must be one of {REGISTRY_KINDS}")
     if not (isinstance(slug, str) and _REGISTRY_SLUG.match(slug)):
         errors.append(f"{name}: registry.slug {slug!r} is not a policyengine.org slug")
     if registry.get("country_id") != country.lower():
@@ -839,6 +846,16 @@ def validate(
         errors.append(f"{name}: id must be {country.lower()}/{slug}")
     if not (isinstance(a.get("url"), str) and a["url"].startswith("https://")):
         errors.append(f"{name}: url must be the analysis's https URL")
+    deployments = a.get("deployments", [])
+    if not (
+        _string_list(deployments)
+        and all(_PAGE_URL.match(u) for u in deployments)
+        and len(set(deployments)) == len(deployments)
+    ):
+        errors.append(
+            f"{name}: deployments lists each https URL the analysis is also served "
+            "from (its own deployment, a preview host), once"
+        )
     if not _nonempty_str(a.get("title")):
         errors.append(f"{name}: title is empty")
     scope = a.get("scope")
@@ -1493,7 +1510,7 @@ def validate(
             errors.append(
                 f"{name}: claim {row['key']} is {shown} from {row['estimate']}"
                 f"{' (its sign disagrees)' if row['sign_disagrees'] else ''} "
-                f"(threshold {policy['gap_threshold']:.0%}) and no annotation explains it"
+                f"(threshold {policy['gap_threshold']:.0%}) and {UNEXPLAINED}"
             )
         elif note["status"] != "pending" and not note.get("explains_gap"):
             errors.append(
@@ -1632,6 +1649,7 @@ def index_entry(record: AnalysisRecord, policy: dict) -> dict:
         "slug": a["registry"]["slug"],
         "title": a["title"],
         "url": a["url"],
+        "deployments": a.get("deployments", []),
         "owner": a["owner"]["author"],
         "published": a.get("published"),
         "current_pins": current_pins(a),
@@ -1759,14 +1777,24 @@ def render_index(index: dict) -> str:
 # --- the app-v2 record ------------------------------------------------------------
 
 
-def app_record(record: AnalysisRecord, search_date: str | None = None) -> dict:
-    """The ``comparables`` block for the analysis's apps.json / posts.json entry."""
-    searches = [s for s in record.search_log["searches"] if s["kind"] in FIRST_KINDS]
+def app_record(
+    record: AnalysisRecord,
+    search_date: str | None = None,
+    search_kind: str | None = None,
+) -> dict:
+    """The ``comparables`` block for the analysis's apps.json / posts.json entry:
+    the latest search, or the latest on ``search_date`` of ``search_kind``. A
+    listing cites the search made before it; a revised analysis returning to
+    the site cites the new search its results were compared in."""
+    searches = list(record.search_log["searches"])
     if search_date:
         searches = [s for s in searches if s["date"] == search_date]
+    if search_kind:
+        searches = [s for s in searches if s["kind"] == search_kind]
     if not searches:
         raise ValueError(
-            f"{record.name}: no prepublish or backfill search on {search_date}"
+            f"{record.name}: no {search_kind or ''} search"
+            f"{' on ' + search_date if search_date else ''}".replace("  ", " ")
         )
     summary = _search_summary(searches[-1])
     return {
@@ -1959,6 +1987,30 @@ def due(
                 "recorded": (root / name).is_dir(),
             }
         )
+    # bills scored on the state legislative tracker are listed in no registry;
+    # their records say when they were published
+    for directory in analysis_dirs(root):
+        record = load_analysis(directory)
+        a = record.analysis
+        registry = a.get("registry") or {}
+        published = a.get("published")
+        if registry.get("kind") != "tracker" or not published:
+            continue
+        if not (start <= published <= today):
+            continue
+        rows.append(
+            {
+                "kind": "tracker",
+                "country_ids": [registry.get("country_id")],
+                "slug": registry.get("slug"),
+                "date": published,
+                "title": a.get("title", ""),
+                "authors": [(a.get("owner") or {}).get("author")],
+                "tags": [],
+                "source": directory.name,
+                "recorded": True,
+            }
+        )
     return sorted(rows, key=lambda r: (r["date"], r["source"]))
 
 
@@ -2057,6 +2109,7 @@ def _main(argv: list[str]) -> int:
     p_record = sub.add_parser("record", help="print the app-v2 comparables block")
     p_record.add_argument("source")
     p_record.add_argument("--search-date")
+    p_record.add_argument("--search-kind", choices=SEARCH_KINDS)
     p_due = sub.add_parser("due", help="analyses due for re-harvest")
     p_due.add_argument("--apps", required=True)
     p_due.add_argument("--posts", required=True)
@@ -2107,13 +2160,21 @@ def _main(argv: list[str]) -> int:
         record = load_analysis(SOURCES / args.source)
         policy = load_policy()
         errors = validate(record, policy=policy)
+        # a report is what a search found, gaps it has not yet explained
+        # included; any other error means the record cannot be read
+        unexplained = [e for e in errors if UNEXPLAINED in e]
+        if args.cmd == "report" and errors and len(unexplained) == len(errors):
+            print("\n".join(unexplained), file=sys.stderr)
+            errors = []
         if errors:
             print("\n".join(errors), file=sys.stderr)
             return 1
         if args.cmd == "record":
             print(
                 json.dumps(
-                    app_record(record, args.search_date), indent=2, ensure_ascii=False
+                    app_record(record, args.search_date, args.search_kind),
+                    indent=2,
+                    ensure_ascii=False,
                 )
             )
             return 0
