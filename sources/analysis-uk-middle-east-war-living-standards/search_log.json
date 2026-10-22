@@ -1,0 +1,336 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-21",
+   "kind": "backfill",
+   "by": "subfleet:20261021-113609-cmp-uk-middle-east-war-livin",
+   "producers": [
+    {
+     "producer": "obr",
+     "result": "none_found",
+     "queries": [
+      "site:obr.uk Middle East conflict energy prices households 2026",
+      "OBR Strait of Hormuz oil price shock UK fiscal outlook 2026 energy",
+      "obr.uk \"energy prices\" 2026 forecast household energy bills Iran conflict briefing",
+      "OBR fiscal risks and sustainability July 2026 energy price shock scenario Middle East",
+      "site:obr.uk Iran energy prices 2026 March forecast scenario household energy",
+      "OBR \"forecast evaluation report\" June 2026 energy prices Middle East conflict household energy bills inflation estimate"
+     ],
+     "checked": [
+      "https://assets.publishing.service.gov.uk/media/6a4cb4c74889d85e75ab40e0/E03599617_OBR_FRS_2026_Accessible.pdf",
+      "https://obr.uk/fer/forecast-evaluation-report-june-2026/"
+     ],
+     "claims": [],
+     "note": "No OBR estimate of the household cost, poverty effect or support-policy costs. The Fiscal risks and sustainability report (July 2026) names the conflict as a risk without a household estimate; the forecast evaluation report (June 2026) returned 403 and was not read. The OBR's only war-specific figure seen is David Miles's 10 March 2026 evidence (prices about 1 per cent higher by end-2026), quoted on the dashboard, not read at its source. The dashboard sets it beside its CPI additions, which are scenario parameters (parameters.registry: the Summer 2026 prices value is the Bank of England's June 2026 projection of about 1 point, raised to the 1.28 point first-round effect of the scenario's own prices; the two escalation values are set at that first-round effect) that it says are not forecasts and uses only to size the uprating shortfall; they are not pinned, so no inflation figure is staged. The Autumn Budget is on 28 October 2026 (the analysis's config.py), after this search."
+    },
+    {
+     "producer": "hm_treasury",
+     "result": "found",
+     "queries": [
+      "site:gov.uk \"HM Treasury\" energy bills Middle East conflict support households 2026",
+      "gov.uk \"cuts tax on household electricity bills\" breathing space cost of living £850 million",
+      "gov.uk fuel duty 5p cut maintained until end of 2026 written ministerial statement cost 2026-27",
+      "fuel duty 5p cut extended end of 2026 May 2026 Treasury cost £210 million gov.uk announcement"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/news/new-pm-cuts-tax-on-household-electricity-bills-to-give-breathing-space-on-cost-of-living",
+      "https://www.gov.uk/government/news/chancellor-protects-drivers-and-businesses-from-rising-fuel-costs"
+     ],
+     "claims": [
+      "hmt_elec_vat_cut_cost_fy2027",
+      "hmt_elec_vat_cut_bill_saving_oct2026"
+     ],
+     "note": "The 21 July 2026 announcement costs the six-month electricity VAT cut. Its 0.10 point CPI effect is an inflation figure and is not staged (see obr). The 20 May 2026 release extending the 5p fuel duty cut to 31 December 2026 gives no cost; the figures quoted elsewhere (IFS Green Budget 'around £200 million', RF's table '£210m in 2026-27') have no Treasury primary found, so none is staged."
+    },
+    {
+     "producer": "uk_hmrc",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk HMRC \"tax information and impact note\" VAT domestic electricity zero rate 2026",
+      "fuel duty 5p cut extension 2026 cost Treasury HMRC tax information and impact note",
+      "\"amended fuel duty rates\" 2026 to 2027 gov.uk cost exchequer extension 5p"
+     ],
+     "checked": [
+      "https://www.gov.uk/government/publications/temporary-zero-rate-of-vat-for-domestic-electricity-in-great-britain/temporary-zero-rate-of-vat-in-great-britain-for-domestic-electricity",
+      "https://www.gov.uk/government/publications/amended-fuel-duty-rates-for-2026-to-2027/amended-fuel-duty-rates-2026-to-2027"
+     ],
+     "claims": [],
+     "note": "Both notes leave the Exchequer impact to a future fiscal event: the tax information and impact note for the temporary zero rate (8 September 2026) gives no figure, and the amended fuel duty rates note (22 May 2026) prints a blank Exchequer impact table. The fuel duty note's CPI effect (0.04 points lower in Q4 2026) is an inflation figure and is not staged."
+    },
+    {
+     "producer": "dwp",
+     "result": "none_found",
+     "queries": [
+      "DWP cost of living payment 2026 impact assessment Middle East energy universal credit",
+      "cost of living payment 2026 £650 means-tested benefits cost estimate Iran energy crisis UK",
+      "benefit uprating April 2027 September 2026 CPI inflation energy shock households lose out cost of early uprating estimate"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No DWP estimate of the shock or of a cost-of-living payment, UC uplift or early uprating in 2026; no 2026 payment scheme exists to cost."
+    },
+    {
+     "producer": "dfe",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"Department for Education\" energy prices households 2026 Middle East cost of living"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "The analysis has no education or childcare element; no DfE estimate bears on it."
+    },
+    {
+     "producer": "scottish_fiscal_commission",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "A UK-wide analysis of reserved tax, benefit and energy measures; the SFC covers devolved Scottish measures only."
+    },
+    {
+     "producer": "ifs",
+     "result": "found",
+     "queries": [
+      "IFS energy price shock 2026 Iran war households cost of living",
+      "site:ifs.org.uk energy bills support options 2026 cost price cap households targeted",
+      "IFS 2026 energy price shock \"who is most exposed\" households energy bills distribution analysis Middle East",
+      "IFS Green Budget 2026 energy prices living standards 2027-28 households cost of living",
+      "\"Temporary VAT cut on household electricity bills\" IFS response Zaranko richest poorest households gain"
+     ],
+     "checked": [
+      "https://ifs.org.uk/system/files/2026-10/IFS_Green_Budget_2026_0.pdf",
+      "https://ifs.org.uk/system/files/2026-09/IFS%20Green%20Budget%20Chapter%202026%20-%20Electricity%20prices.pdf",
+      "https://ifs.org.uk/articles/temporary-vat-cut-household-electricity-bills-ifs-response"
+     ],
+     "claims": [
+      "ifs_vat_cut_permanent_annual_cost",
+      "ifs_fuel_duty_5p_permanent_and_freeze_obr_inflation",
+      "ifs_fuel_duty_5p_permanent_and_freeze_barclays_inflation",
+      "ifs_fuel_duty_freeze_to_2030_obr_inflation",
+      "ifs_fuel_duty_freeze_to_2030_barclays_inflation"
+     ],
+     "note": "Green Budget chapter 2 costs a permanent electricity VAT cut and fuel duty freezes. The electricity prices chapter (8) has no costing of the analysis's measures. IFS's response to the VAT cut (ifs.org.uk/articles/temporary-vat-cut-household-electricity-bills-ifs-response) could not be read: Cloudflare returned 403 to both a direct fetch and WebFetch, and the Wayback Machine has no copy. Not staged: chapter 2's unattributed 'one-off cost of around £200 million' for the four-month fuel duty extension (RF's annex gives £210m 'as announced by the Government'; no Government primary was found) and the Treasury's £850 million, which IFS attributes to the Treasury and which is staged from the Government's own release. Chapter 1 (Barclays) forecasts the economy, not households."
+    },
+    {
+     "producer": "resolution_foundation",
+     "result": "found",
+     "queries": [
+      "Resolution Foundation Middle East war energy price shock households cost 2026",
+      "Resolution Foundation £480 worse off typical household Middle East energy prices April 2026",
+      "Resolution Foundation \"Billing me softly\" targeted energy discounts cost",
+      "Resolution Foundation \"Losing energy\" fuel-price shocks households 2026",
+      "Resolution Foundation living standards outlook summer 2026 poverty projections energy prices 2027-28"
+     ],
+     "checked": [
+      "https://www.resolutionfoundation.org/press-releases/war-in-middle-east-threatens-bumper-year-of-living-standards-growth-for-lower-income-families/",
+      "https://www.resolutionfoundation.org/press-releases/poorest-households-are-set-to-see-inflation-nearly-a-third-higher-than-the-richest/",
+      "https://www.resolutionfoundation.org/press-releases/higher-energy-prices-could-leave-typical-british-households-480-worse-off-this-year/",
+      "https://www.resolutionfoundation.org/comment/higher-energy-prices-could-leave-typical-british-households-480-worse-off-this-year/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/04/MPO-Q2-2026.pdf",
+      "https://www.resolutionfoundation.org/press-releases/further-deterioration-in-middle-east-conflict-could-deal-a-16-billion-hit-to-the-public-finances/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/03/Power-struggle.pdf",
+      "https://www.resolutionfoundation.org/comment/trimming-the-vat/",
+      "https://www.resolutionfoundation.org/app/uploads/2026/08/Billing-me-softly.pdf",
+      "https://www.resolutionfoundation.org/app/uploads/2026/10/Counting-the-cost.pdf",
+      "https://www.resolutionfoundation.org/app/uploads/2026/10/Hitting-the-buffers.pdf"
+     ],
+     "claims": [
+      "rf_median_working_age_income_loss_fy2027",
+      "rf_typical_bill_rise_if_sustained",
+      "rf_price_cap_rise_best_case_jul2026",
+      "rf_price_cap_rise_high_case_jul2026",
+      "rf_price_cap_rise_current_prices_mar2026",
+      "rf_uc_pc_uprating_brought_forward_cost",
+      "rf_household_energy_fuel_spending_2026",
+      "rf_energy_discounts_offset_cpi_cost",
+      "rf_vat_cut_share_richest_fifth",
+      "rf_vat_cut_share_poorest_fifth",
+      "rf_vat_cut_annual_cost_future_years",
+      "rf_fuel_duty_gradual_reversal_cost_fy2028"
+     ],
+     "note": "Not staged: the £3.75 billion option envelopes in 'Power struggle' and the £2 billion Targeted Energy Discounts scheme ('Billing me softly', 'Hitting the buffers'), budgets RF chose rather than estimates of a policy's cost; restated Government and historical figures ('Hitting the buffers' annex: £850m VAT cut, £210m fuel duty extension; 'Counting the cost' Table 1: the 2022-24 schemes and the 5p cut at £2.5bn a year); options with no counterpart among the analysis's ten ('Power struggle': moving Renewables Obligation and Warm Home Discount costs into taxation at £2 billion a year and removing the carbon price support at about £200 million, a £3.4 billion combined scenario; 'Billing me softly': removing the remaining electricity levies, about £2.6 billion); figures RF repeats from others ('Hitting the buffers': about £900 million to double the Warm Home Discount, from press reports; 'Trimming the VAT': the VAT cut 'worth around £45 per year for the typical household', the Government's figure, staged from its release); and the £16 billion borrowing scenario, a public-finance effect. The analysis's dashboard links the 2 April release for RF's ~£500 bill rise, which is in the 4 March release."
+    },
+    {
+     "producer": "centax",
+     "result": "none_found",
+     "queries": [
+      "site:centax.org.uk energy fuel duty VAT 2026"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "centre_for_british_progress",
+     "result": "none_found",
+     "queries": [
+      "\"Centre for British Progress\" energy prices 2026 Middle East households"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "ippr",
+     "result": "none_found",
+     "queries": [
+      "IPPR 2026 energy bills Middle East war households support cost analysis",
+      "site:ippr.org energy bills 2026 Middle East households support"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "fabian_society",
+     "result": "none_found",
+     "queries": [
+      "site:fabians.org.uk energy prices 2026 Iran households cost of living",
+      "Fabian Society 2026 energy bills cost of living war Iran policy proposal cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "niesr",
+     "result": "found",
+     "queries": [
+      "NIESR Economic Outlook spring 2026 absolute poverty households oil price shock 200,000",
+      "niesr.ac.uk 2026 energy price shock households poverty destitution Middle East analysis"
+     ],
+     "checked": [
+      "https://niesr.ac.uk/reports/economic-outlook-spring-2026",
+      "https://niesr.ac.uk/reports/economic-outlook-summer-2026",
+      "https://niesr.ac.uk/blog/what-actually-happening-uk-living-standards"
+     ],
+     "claims": [
+      "niesr_absolute_poverty_households_fy2027",
+      "niesr_relative_poverty_households_fy2027",
+      "niesr_uc_uplift_10_six_months_cost",
+      "niesr_energy_fuel_spending_rise_decile_1",
+      "niesr_energy_fuel_spending_rise_decile_2",
+      "niesr_energy_fuel_spending_rise_decile_3"
+     ],
+     "note": "Spring 2026 Box B. The Summer 2026 outlook and the living standards blog carry no estimate of the shock's household cost or poverty effect. NIESR's CPI scenarios (about 3, 4 or 5 per cent from July 2026, as the analysis quotes them in parameters.registry.central_shock; the NIESR blog itself was not read) are total inflation rates that the analysis cites for context only, and no inflation figure is staged (see obr). Not staged: the £377 million and £1.3 billion top-ups to affected households (no counterpart policy in the analysis)."
+    },
+    {
+     "producer": "ukmod",
+     "result": "none_found",
+     "queries": [
+      "UKMOD CeMPA energy price shock 2026 households microsimulation Middle East Iran"
+     ],
+     "checked": [
+      "https://www.microsimulation.ac.uk/research/publications/cempa-working-paper-series/"
+     ],
+     "claims": [],
+     "note": "No 2026 CeMPA working paper (to CEMPA11/26, September 2026) models the energy shock or the support options."
+    },
+    {
+     "producer": "lse_case",
+     "result": "none_found",
+     "queries": [
+      "LSE CASE 2026 energy prices low income households analysis cost of living Middle East"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "jrf",
+     "result": "found",
+     "queries": [
+      "JRF addressing the 2026 energy price crisis households energy bills",
+      "site:jrf.org.uk 2026 energy price rise households low income cost Middle East essentials guarantee"
+     ],
+     "checked": [
+      "https://www.jrf.org.uk/cost-of-living/addressing-the-2026-energy-price-crisis"
+     ],
+     "claims": [
+      "jrf_epg_style_cap_cost"
+     ],
+     "note": "The £5 billion is JRF's estimate of an EPG-style cap's cost, then used as the budget for each option it models. The article's 'possible £288 annual increase' in bills, which the analysis's dashboard lists as 'JRF: +£288 predicted', is not JRF's own estimate: 'Current predictions suggest' links to Cornwall Insight's price cap predictions page, which could not be read (see open_search), so it is not staged."
+    },
+    {
+     "producer": "landman_economics",
+     "result": "none_found",
+     "queries": [
+      "Landman Economics 2026 energy price shock distributional analysis households"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "tax_policy_associates",
+     "result": "none_found",
+     "queries": [
+      "site:taxpolicy.org.uk fuel duty VAT energy 2026",
+      "Tax Policy Associates Dan Neidle VAT electricity cut 2026 fuel duty cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "academic",
+     "result": "none_found",
+     "queries": [
+      "working paper 2026 UK households energy price shock Iran distributional impact microsimulation Living Costs and Food Survey",
+      "VoxEU OR CEPR OR IZA 2026 UK energy price shock Middle East household welfare loss estimate"
+     ],
+     "checked": [
+      "https://www.lse.ac.uk/CFM/assets/pdf/CFM-Discussion-Papers-2026/CFMDP2026-13-Summary.pdf",
+      "https://joint-research-centre.ec.europa.eu/jrc-news-and-updates/war-middle-east-economic-impact-hits-low-income-households-hardest-2026-07-10_en"
+     ],
+     "claims": [],
+     "note": "No UK estimate. The 2026 papers found are for other countries: Chankova and Komatsu (LSE CFM DP 2026-13, US Consumer Expenditure Survey) and the European Commission Joint Research Centre's analysis of EU households (10 July 2026 news release)."
+    },
+    {
+     "producer": "open_search",
+     "result": "found",
+     "queries": [
+      "Middle East war UK living standards",
+      "Strait of Hormuz energy prices households",
+      "energy shock household incomes 2027",
+      "oil price shock UK households cost",
+      "Middle East war cost UK households per household 2027 estimate energy fuel food poverty analysis",
+      "\"2027-28\" UK energy bills households cost Middle East conflict estimate per household think tank",
+      "Energy Price Guarantee 2026 cost estimate £ billion reintroduce cap Iran war UK think tank",
+      "£20 universal credit uplift 2026 cost £ billion reinstate energy crisis estimate",
+      "£400 energy bill rebate 2026 every household cost estimate council tax rebate cost of living package Middle East",
+      "social tariff energy 2026 cost estimate £ billion households below income threshold discount UK proposal analysis",
+      "Iran war UK child poverty increase estimate 2026 2027 energy prices pushed into poverty analysis charity",
+      "Policy in Practice OR CPAG OR Trussell 2026 energy price rise Middle East households poverty estimate",
+      "National Energy Action OR Citizens Advice 2026 Iran conflict energy bills households fuel poverty estimate million",
+      "New Economics Foundation 2026 energy bills Iran war households cost analysis windfall",
+      "Institute for Government 2026 energy bill support options cost Middle East households"
+     ],
+     "checked": [
+      "https://cebr.com/blogs/forecasting-eye-the-cost-of-war-middle-east-conflict-to-strip-70-4-billion-from-uk-households-real-disposable-incomes/",
+      "https://www.tuc.org.uk/sites/default/files/2026-05/Domestic_energy_support_policy_proposal.pdf",
+      "https://www.rsmuk.com/insights/economic-voice/conflict-in-the-middle-east-household-incomes-under-pressure",
+      "https://www.oecd.org/content/dam/oecd/en/publications/reports/2026/04/energy-prices-are-spiking-again_04fdd46b/a68e5c37-en.pdf",
+      "https://www.endfuelpoverty.org.uk/damage-already-done-to-uk-household-finances-from-iran-conflict/",
+      "https://www.energy-uk.org.uk/wp-content/uploads/2026/03/Energy-UK-A-better-approach-to-energy-bill-support-March-2026.pdf",
+      "https://www.cornwall-insight.com/predictions-and-insights-into-the-default-tariff-cap/",
+      "https://www.cornwall-insight.com/press-releases/fall-in-wholesale-market-lowers-price-cap-forecasts-but-big-rises-still-expected-in-july/",
+      "https://cornwall-insight.com/press-and-media/press-release/july-price-cap-forecast-rises-to-1800-as-conflict-in-the-middle-east-drives-up-gas-prices"
+     ],
+     "claims": [
+      "cebr_avg_household_real_income_loss_2026",
+      "cebr_avg_household_real_income_loss_2027",
+      "cebr_aggregate_real_income_erosion_2026",
+      "cebr_aggregate_real_income_erosion_2027",
+      "tuc_standard_social_tariff_cost_low",
+      "tuc_standard_social_tariff_cost_high",
+      "tuc_crisis_social_tariff_cost_low",
+      "tuc_crisis_social_tariff_cost_high"
+     ],
+     "note": "Staged: Cebr (real-income loss per household and in aggregate, 2026 and 2027) and the TUC's social tariff costings. Price-cap figures are staged where their primary can be read (RF's and HM Treasury's), as energy_bill_change claims: the dashboard sets such figures beside its energy channel in its own comparison table. Cornwall Insight's forecasts, the source JRF cites for £288, could not be read: its press releases and predictions page returned 401 to both a direct fetch and WebFetch. Ofgem's announced caps are administrative outturns (the July 2026 rise of 13.5% anchors the Summer 2026 prices scenario, parameters.registry.low_shock) and are not staged. Seen and not staged: RSM's 2026 real household disposable income scenarios (aggregate macro scenarios); the OECD's April 2026 report (describes UK measures, gives no UK estimate); the End Fuel Poverty Coalition's 8 April 2026 post (prices only; fuel-poverty counts attributed to the Coalition appeared only in search results, and the analysis publishes no fuel poverty figure, metadata.fuel_poverty); Energy UK's March 2026 paper (401, not read)."
+    }
+   ]
+  }
+ ]
+}
