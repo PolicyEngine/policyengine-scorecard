@@ -1060,6 +1060,19 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     ]
     assert names.index(fetch["name"]) < names.index(replay_step["name"])
     assert replay_step["if"] == "steps.fetch.outputs.fetched == 'true'"
+    # A leg that fetched nothing (the legacy variant, an unsealed namespace,
+    # no token) installs nothing: the runner holds the token there too.
+    install = engine["steps"][names.index("Install the variant's exact environment")]
+    assert install["if"] == "steps.fetch.outputs.fetched == 'true'"
+    # A pull request's CI says that no real replay ran there.
+    (notice,) = [
+        s
+        for s in ci["jobs"]["replay-engine"]["steps"]
+        if s.get("name") == "No real replay on pull requests"
+    ]
+    assert notice["if"] == "env.LEGACY == 'False' && github.event_name != 'push'"
+    assert "uk-replay-determinism.yml" in notice["run"]
+    assert "nothing was replayed" in notice["run"]
     assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]
     # The token step comes before any variant code: before the first step
     # that touches the variant's environment, and after only the checkout,

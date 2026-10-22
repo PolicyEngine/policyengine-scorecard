@@ -726,7 +726,10 @@ that memory. The workflow runs only on pushes to main, with committed,
 certified freezes. CI's `replay engine` legs, which install and run each
 variant on pull requests too, are in a workflow that names no dataset token:
 the runner receives a secret its job names even in a step that never runs.
-`pipeline/uk_replay_qualify.py run-request` then:
+
+In the qualification run's sandbox, the drain
+(`.github/scripts/uk_replay_drain.sh`) runs
+`pipeline/uk_replay_qualify.py run-request`, which goes through these steps:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request
@@ -956,7 +959,9 @@ gates: CI and an independent review.
 
 ### Replay in CI
 
-`ci.yml` runs two kinds of replay check on every pull request and push:
+CI runs three kinds of replay check. `ci.yml` runs the first two on every
+pull request and push, and `uk-replay-determinism.yml` runs the third on
+pushes to main only:
 
 * Engine-free, in the main job: every committed namespace with event run
   manifests (legacy and each variant) is re-staged and re-compared from its
