@@ -1,15 +1,15 @@
 {
- "built": "2026-10-21",
+ "built": "2026-10-22",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 29717,
+  "claims": 29722,
   "multi_release_claims": 270,
   "by_source": {
    "aspe_welfare_indicators": 14,
    "az_admin": 1,
    "barclays": 1,
    "ca_admin": 2,
-   "ca_fiscal_note": 1,
+   "ca_fiscal_note": 6,
    "capital_economics": 2,
    "cbo": 10,
    "cebr": 10,
@@ -108,14 +108,14 @@
   "by_latest_status": {
    "comparable": 42,
    "concept_mismatch": 17,
-   "constructed": 1662,
+   "constructed": 1667,
    "not_computed": 27107,
    "pe_gap": 889
   },
   "by_sign_relative_to_pe": {
    "magnitude": 14,
    "opposite": 489,
-   "same": 28945,
+   "same": 28950,
    "unknown": 269
   },
   "by_country": {
@@ -141,9 +141,9 @@
     "multi_release_claims": 0
    },
    "US": {
-    "claims": 535,
-    "with_result": 535,
-    "with_value": 535,
+    "claims": 540,
+    "with_result": 540,
+    "with_value": 540,
     "without_result": 0,
     "multi_release_claims": 270
    }
@@ -3475,6 +3475,334 @@
    }
   },
   {
+   "claim_id": "43bccb3194d42f0ce03d",
+   "source": "ca_fiscal_note",
+   "country": "US",
+   "source_column": "arev_898_ab397.pdf: FISCAL EFFECT: The FTB estimates General Fund revenue losses of $220 million in fiscal year (FY) 2025-26, $370 million in FY 2026-27, and $550 million in FY 2027-28.",
+   "name": "CA AB 397 \u2014 young child tax credit age limit",
+   "window": "FY 2025-26",
+   "publication_title": "Assembly Committee on Revenue and Taxation analysis of AB 397 (Mark Gonz\u00e1lez, et al.), as introduced 2025-02-03; hearing 2025-04-28",
+   "url": "https://arev.assembly.ca.gov/media/898",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "CA",
+   "program": "ca_yctc",
+   "conditions": {
+    "fy": "2025-26",
+    "geography": "CA",
+    "measure": "AB 397 (as introduced 2025-02-03)",
+    "period_basis": "state_fiscal_year",
+    "program": "ca_yctc"
+   },
+   "measure": null,
+   "reform_framework": "policy_ref",
+   "reform_key": "7f95f4126bc253b7",
+   "external_value": -220000000.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "us_signed_change",
+   "external_value_pe_sign": -220000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": -325397044.6854553,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2025-26 <- tax year 2025.",
+    "policyengine_variables": [
+     "ca_yctc"
+    ],
+    "computed_at": "2026-10-19T22:50:17.506603+00:00",
+    "annotations": [
+     "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+     "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+     "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+     "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+     "Measured: PolicyEngine tax year 2025 with the age limit at 10: 305 thousand more tax units with a YCTC and $325 million more credit, on a baseline YCTC of $643 million."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.4790774758429788,
+    "delta": -105397044.68545532
+   },
+   "results": [
+    {
+     "value": -325397044.6854553,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2025-26 <- tax year 2025.",
+     "policyengine_variables": [
+      "ca_yctc"
+     ],
+     "computed_at": "2026-10-19T22:50:17.506603+00:00",
+     "annotations": [
+      "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+      "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+      "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+      "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+      "Measured: PolicyEngine tax year 2025 with the age limit at 10: 305 thousand more tax units with a YCTC and $325 million more credit, on a baseline YCTC of $643 million."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6649aa4419f859fe78d6",
+   "source": "ca_fiscal_note",
+   "country": "US",
+   "source_column": "arev_898_ab397.pdf: FISCAL EFFECT: The FTB estimates General Fund revenue losses of $220 million in fiscal year (FY) 2025-26, $370 million in FY 2026-27, and $550 million in FY 2027-28.",
+   "name": "CA AB 397 \u2014 young child tax credit age limit",
+   "window": "FY 2026-27",
+   "publication_title": "Assembly Committee on Revenue and Taxation analysis of AB 397 (Mark Gonz\u00e1lez, et al.), as introduced 2025-02-03; hearing 2025-04-28",
+   "url": "https://arev.assembly.ca.gov/media/898",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "CA",
+   "program": "ca_yctc",
+   "conditions": {
+    "fy": "2026-27",
+    "geography": "CA",
+    "measure": "AB 397 (as introduced 2025-02-03)",
+    "period_basis": "state_fiscal_year",
+    "program": "ca_yctc"
+   },
+   "measure": null,
+   "reform_framework": "policy_ref",
+   "reform_key": "7f95f4126bc253b7",
+   "external_value": -370000000.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "us_signed_change",
+   "external_value_pe_sign": -370000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": -611108797.7138672,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2026-27 <- tax year 2026.",
+    "policyengine_variables": [
+     "ca_yctc"
+    ],
+    "computed_at": "2026-10-19T22:50:17.506603+00:00",
+    "annotations": [
+     "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+     "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+     "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+     "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+     "Measured: PolicyEngine tax year 2026 with the age limit at 13: 545 thousand more tax units with a YCTC and $611 million more credit, on a baseline YCTC of $658 million."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.651645399226668,
+    "delta": -241108797.7138672
+   },
+   "results": [
+    {
+     "value": -611108797.7138672,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2026-27 <- tax year 2026.",
+     "policyengine_variables": [
+      "ca_yctc"
+     ],
+     "computed_at": "2026-10-19T22:50:17.506603+00:00",
+     "annotations": [
+      "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+      "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+      "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+      "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+      "Measured: PolicyEngine tax year 2026 with the age limit at 13: 545 thousand more tax units with a YCTC and $611 million more credit, on a baseline YCTC of $658 million."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "64e2e34b6c178ec3436b",
+   "source": "ca_fiscal_note",
+   "country": "US",
+   "source_column": "arev_898_ab397.pdf: FISCAL EFFECT: The FTB estimates General Fund revenue losses of $220 million in fiscal year (FY) 2025-26, $370 million in FY 2026-27, and $550 million in FY 2027-28.",
+   "name": "CA AB 397 \u2014 young child tax credit age limit",
+   "window": "FY 2027-28",
+   "publication_title": "Assembly Committee on Revenue and Taxation analysis of AB 397 (Mark Gonz\u00e1lez, et al.), as introduced 2025-02-03; hearing 2025-04-28",
+   "url": "https://arev.assembly.ca.gov/media/898",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "CA",
+   "program": "ca_yctc",
+   "conditions": {
+    "fy": "2027-28",
+    "geography": "CA",
+    "measure": "AB 397 (as introduced 2025-02-03)",
+    "period_basis": "state_fiscal_year",
+    "program": "ca_yctc"
+   },
+   "measure": null,
+   "reform_framework": "policy_ref",
+   "reform_key": "7f95f4126bc253b7",
+   "external_value": -550000000.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "us_signed_change",
+   "external_value_pe_sign": -550000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": -840426142.3583679,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2027-28 <- tax year 2027.",
+    "policyengine_variables": [
+     "ca_yctc"
+    ],
+    "computed_at": "2026-10-19T22:50:17.506603+00:00",
+    "annotations": [
+     "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+     "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+     "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+     "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+     "Measured: PolicyEngine tax year 2027 with the age limit at 16: 700 thousand more tax units with a YCTC and $840 million more credit, on a baseline YCTC of $659 million."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.528047531560669,
+    "delta": -290426142.3583679
+   },
+   "results": [
+    {
+     "value": -840426142.3583679,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2027-28 <- tax year 2027.",
+     "policyengine_variables": [
+      "ca_yctc"
+     ],
+     "computed_at": "2026-10-19T22:50:17.506603+00:00",
+     "annotations": [
+      "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+      "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+      "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+      "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+      "Measured: PolicyEngine tax year 2027 with the age limit at 16: 700 thousand more tax units with a YCTC and $840 million more credit, on a baseline YCTC of $659 million."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "a9a35949327ea626b6a3",
+   "source": "ca_fiscal_note",
+   "country": "US",
+   "source_column": "arev_969_ab1690.pdf: FISCAL EFFECT: The FTB estimates General Fund revenue losses of $60 million in fiscal year (FY) 2027-28 and $130 million in FY 2028-29.",
+   "name": "CA AB 1690 \u2014 young child tax credit age limit",
+   "window": "FY 2027-28",
+   "publication_title": "Assembly Committee on Revenue and Taxation analysis of AB 1690 (Ahrens), as introduced 2026-02-03; hearing 2026-03-16",
+   "url": "https://arev.assembly.ca.gov/media/969",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "CA",
+   "program": "ca_yctc",
+   "conditions": {
+    "fy": "2027-28",
+    "geography": "CA",
+    "measure": "AB 1690 (as introduced 2026-02-03)",
+    "period_basis": "state_fiscal_year",
+    "program": "ca_yctc"
+   },
+   "measure": null,
+   "reform_framework": "policy_ref",
+   "reform_key": "7a477ac9eea4f5a6",
+   "external_value": -60000000.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "us_signed_change",
+   "external_value_pe_sign": -60000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": -43005002.122528076,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2027-28 <- tax year 2027.",
+    "policyengine_variables": [
+     "ca_yctc"
+    ],
+    "computed_at": "2026-10-19T22:50:17.506603+00:00",
+    "annotations": [
+     "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+     "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+     "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+     "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+     "Measured: PolicyEngine tax year 2027 with the age limit at 7: 34 thousand more tax units with a YCTC and $43 million more credit, on a baseline YCTC of $659 million."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.7167500353754679,
+    "delta": 16994997.877471924
+   },
+   "results": [
+    {
+     "value": -43005002.122528076,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2027-28 <- tax year 2027.",
+     "policyengine_variables": [
+      "ca_yctc"
+     ],
+     "computed_at": "2026-10-19T22:50:17.506603+00:00",
+     "annotations": [
+      "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+      "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+      "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+      "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+      "Measured: PolicyEngine tax year 2027 with the age limit at 7: 34 thousand more tax units with a YCTC and $43 million more credit, on a baseline YCTC of $659 million."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
    "claim_id": "c9b762228722c8e68305",
    "source": "ca_fiscal_note",
    "country": "US",
@@ -3582,6 +3910,88 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
      "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "d83782d7c4ebcd066dfe",
+   "source": "ca_fiscal_note",
+   "country": "US",
+   "source_column": "arev_969_ab1690.pdf: FISCAL EFFECT: The FTB estimates General Fund revenue losses of $60 million in fiscal year (FY) 2027-28 and $130 million in FY 2028-29.",
+   "name": "CA AB 1690 \u2014 young child tax credit age limit",
+   "window": "FY 2028-29",
+   "publication_title": "Assembly Committee on Revenue and Taxation analysis of AB 1690 (Ahrens), as introduced 2026-02-03; hearing 2026-03-16",
+   "url": "https://arev.assembly.ca.gov/media/969",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "CA",
+   "program": "ca_yctc",
+   "conditions": {
+    "fy": "2028-29",
+    "geography": "CA",
+    "measure": "AB 1690 (as introduced 2026-02-03)",
+    "period_basis": "state_fiscal_year",
+    "program": "ca_yctc"
+   },
+   "measure": null,
+   "reform_framework": "policy_ref",
+   "reform_key": "7a477ac9eea4f5a6",
+   "external_value": -130000000.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "us_signed_change",
+   "external_value_pe_sign": -130000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": -137673426.48529053,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2028-29 <- tax year 2028.",
+    "policyengine_variables": [
+     "ca_yctc"
+    ],
+    "computed_at": "2026-10-19T22:50:17.506603+00:00",
+    "annotations": [
+     "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+     "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+     "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+     "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+     "Measured: PolicyEngine tax year 2028 with the age limit at 8: 108 thousand more tax units with a YCTC and $138 million more credit, on a baseline YCTC of $661 million."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.0590263575791579,
+    "delta": -7673426.485290527
+   },
+   "results": [
+    {
+     "value": -137673426.48529053,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response). Fiscal year 2028-29 <- tax year 2028.",
+     "policyengine_variables": [
+      "ca_yctc"
+     ],
+     "computed_at": "2026-10-19T22:50:17.506603+00:00",
+     "annotations": [
+      "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+      "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+      "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+      "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+      "Measured: PolicyEngine tax year 2028 with the age limit at 8: 108 thousand more tax units with a YCTC and $138 million more credit, on a baseline YCTC of $661 million."
+     ],
      "baseline": "current_law",
      "status_effective": "constructed"
     }

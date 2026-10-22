@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -577,6 +577,17 @@
    "running": false,
    "updated": "2026-10-15",
    "note": "88 of 132 claims computed \u2014 State individual income tax collections (T40) for 41 States, DC, NH and WA, FY2023-FY2025; FY2023 (a us-6.2.1 calibration target) and FY2025 compared with PE's CY2024 State income tax on us-6.2.1; adapter QC checks the US column against the 50 States on all 25 items; admin outturns staged as claims by decision on #176"
+  },
+  {
+   "id": "ca-fiscal-notes",
+   "source": "CA FTB",
+   "area": "State fiscal notes (YCTC bills)",
+   "mode": 2,
+   "country": "US",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-19",
+   "note": "5 of 5 claims computed \u2014 FTB revenue estimates for the young child tax credit bills AB 397 and AB 1690 (as introduced; via Assembly Revenue and Taxation analyses), against PE's reform-minus-baseline ca_income_tax for the tax year filed in each fiscal year, on us-6.2.1; LAO CalWORKs costs and LAO ranges are later tranches"
   }
  ]
 }
