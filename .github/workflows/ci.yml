@@ -324,6 +324,7 @@ jobs:
               print("    raise Forged('an annotation from the stub engine')")
               print("::error::forged by the stub engine")
               print("::set-" "output name=forged::true")  # deprecated, still honoured
+              sys.stdout.flush()  # so the stderr fragment is the stream's last line
               sys.stderr.write("::set-" "output name=forged::from stderr")
               output = Path(args.output_dir)
               output.mkdir(parents=True, exist_ok=True)

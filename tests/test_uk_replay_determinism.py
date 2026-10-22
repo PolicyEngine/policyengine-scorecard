@@ -269,7 +269,7 @@ def test_the_find_step_runs_on_the_standard_library_alone(tmp_path):
     variant = [
         v["variant_id"]
         for v in rv.load_document()["variants"]
-        if v["layout"] == "replay_namespace"
+        if v["status"] == "certified" and v["layout"] == "replay_namespace"
     ][-1]
     result = subprocess.run(
         [sys.executable, "-I", "-S", "-c", program, variant],
