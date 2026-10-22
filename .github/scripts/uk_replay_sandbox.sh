@@ -21,8 +21,20 @@
 # process of the account survives, and only a copy of its output/, streamed
 # out by the account, comes back to be checked by the runner's own guard.
 #
+# The real replay (uk-replay-determinism.yml) runs a certified variant's
+# engine the same way. `install` builds the variant's environment in the
+# copy, with the network and without the dataset. `replay` hands the dataset
+# in and replays one measure-year offline: no network interface but
+# loopback, and nothing under /run, where D-Bus, systemd-resolved and other
+# host services listen, so nothing in the sandbox can send the dataset out
+# over the network. Both print the variant's output with the runner's
+# workflow commands stopped, so it can neither set a step output nor raise
+# an annotation.
+#
 #   uk_replay_sandbox.sh setup     # after the dataset fetch, before any candidate code
 #   uk_replay_sandbox.sh run       # the drain, in the sandbox
+#   uk_replay_sandbox.sh install   # the real replay's environment, in the sandbox
+#   uk_replay_sandbox.sh replay    # the real replay's measure-year, in the sandbox, offline
 #   uk_replay_sandbox.sh collect   # make sure nothing survives, copy output/ back
 set -euo pipefail
 CANDIDATE=replay-candidate
@@ -31,8 +43,14 @@ COPY=$CANDIDATE_HOME/scorecard
 
 # Run a command as the candidate in the sandbox, with an environment built
 # from nothing but the arguments given before the command (VAR=value ...).
+# A first argument --offline also leaves it no network but loopback and no
+# /run. (${a[@]+"${a[@]}"} is an empty array under set -u in bash 3.2 too.)
 in_sandbox() {
-  local settings=()
+  local offline=() settings=()
+  if [ "${1:-}" = --offline ]; then
+    offline=(-p PrivateNetwork=yes -p InaccessiblePaths=-/run)
+    shift
+  fi
   while [ "$#" -gt 0 ] && [[ "$1" == *=* ]]; do
     settings+=(--setenv "$1")
     shift
@@ -43,7 +61,7 @@ in_sandbox() {
     --setenv HOME="$CANDIDATE_HOME" --setenv USER="$CANDIDATE" \
     --setenv LANG=C.UTF-8 \
     --setenv PATH="$CANDIDATE_HOME/bin:/usr/local/bin:/usr/bin:/bin" \
-    "${settings[@]}" \
+    ${settings[@]+"${settings[@]}"} \
     -p ProtectSystem=strict \
     -p ReadWritePaths="$CANDIDATE_HOME" \
     -p InaccessiblePaths=-/home/runner \
@@ -60,15 +78,40 @@ in_sandbox() {
     -p RestrictNamespaces=yes \
     -p LockPersonality=yes \
     -p CapabilityBoundingSet= \
+    ${offline[@]+"${offline[@]}"} \
     "$@"
 }
 
-# The account, outside the sandbox, for streaming its output out.
+# The account, outside the sandbox, for streaming files in and out.
 as_candidate() {
   sudo -n -u "$CANDIDATE" env -i HOME="$CANDIDATE_HOME" PATH=/usr/bin:/bin "$@"
 }
 
-case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
+# Make sure nothing of the account runs anywhere.
+stop_candidate() {
+  sudo pkill -KILL -u "$CANDIDATE" || true
+  for _ in $(seq 30); do
+    pgrep -u "$CANDIDATE" > /dev/null || break
+    sleep 1
+  done
+  if pgrep -u "$CANDIDATE" > /dev/null; then
+    echo "::error::$CANDIDATE processes survive"
+    exit 1
+  fi
+}
+
+# Run a command whose output the variant writes, with the runner's workflow
+# commands stopped until a token the variant never sees.
+untrusted_output() {
+  local token status=0
+  token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+  echo "::stop-commands::$token"
+  "$@" || status=$?
+  printf '\n::%s::\n' "$token"
+  return "$status"
+}
+
+case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
   setup)
     sudo useradd --create-home --shell /bin/bash "$CANDIDATE"
     # No scheduled jobs that could outlive `collect`.
@@ -115,7 +158,18 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
       echo "::error::$CANDIDATE can write, in the sandbox: $(echo "$writable" | sort -u | tr '\n' ' ')"
       exit 1
     fi
-    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked)"
+    # Offline, the network namespace's only interface is loopback, and /run
+    # cannot be opened.
+    interfaces=$(in_sandbox --offline /bin/sh -c 'tail -n +3 /proc/self/net/dev | cut -d: -f1 | tr -d " "')
+    if [ "$interfaces" != lo ]; then
+      echo "::error::$CANDIDATE has network interfaces offline: $(echo "$interfaces" | tr '\n' ' ')"
+      exit 1
+    fi
+    if in_sandbox --offline ls /run > /dev/null 2>&1; then
+      echo "::error::$CANDIDATE can open /run offline"
+      exit 1
+    fi
+    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked); offline, only loopback and no /run"
     ;;
   run)
     status=0
@@ -127,18 +181,28 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
     # The drain records its own exit; the recorder handles a missing outcome.
     echo "candidate drain exited $status"
     ;;
+  install)
+    # shellcheck disable=SC2016 # expanded by the sandboxed shell
+    untrusted_output in_sandbox REQUIREMENTS="${REQUIREMENTS:?}" \
+      /bin/bash -c 'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh install'
+    ;;
+  replay)
+    : "${DATASET_FILE:?}" "${VARIANT:?}" "${REPLAY_EVENT:?}" "${REPLAY_MEASURE:?}" "${REPLAY_YEAR:?}"
+    # The dataset enters a home in which nothing of the account runs, and
+    # the account itself streams it in: nothing runs as root inside its home.
+    stop_candidate
+    as_candidate mkdir -p "$COPY/input"
+    as_candidate dd of="$COPY/input/dataset.h5" bs=1M status=none < "$DATASET_FILE"
+    # shellcheck disable=SC2016 # expanded by the sandboxed shell
+    untrusted_output in_sandbox --offline PYTHONPATH=. RUNNER_TEMP="$CANDIDATE_HOME/tmp" \
+      VARIANT="$VARIANT" REPLAY_EVENT="$REPLAY_EVENT" \
+      REPLAY_MEASURE="$REPLAY_MEASURE" REPLAY_YEAR="$REPLAY_YEAR" \
+      /bin/bash -c 'mkdir -p "$RUNNER_TEMP" && cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay'
+    ;;
   collect)
     # systemd killed what was left in the service; make sure nothing of the
     # account runs anywhere.
-    sudo pkill -KILL -u "$CANDIDATE" || true
-    for _ in $(seq 30); do
-      pgrep -u "$CANDIDATE" > /dev/null || break
-      sleep 1
-    done
-    if pgrep -u "$CANDIDATE" > /dev/null; then
-      echo "::error::$CANDIDATE processes survive"
-      exit 1
-    fi
+    stop_candidate
     rm -rf output
     # The account streams its own output/ out (tar keeps links as links and
     # special files as special files, which the guard refuses); nothing runs
@@ -150,7 +214,7 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
     fi
     ;;
   *)
-    echo "usage: uk_replay_sandbox.sh setup|run|collect" >&2
+    echo "usage: uk_replay_sandbox.sh setup|run|install|replay|collect" >&2
     exit 2
     ;;
 esac

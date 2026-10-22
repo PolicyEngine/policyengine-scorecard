@@ -53,16 +53,23 @@ jobs:
     # The token step runs before any variant code: only the checkout, uv's
     # setup and a read of the index come before it, so no package from the
     # variant's requirements can have written $GITHUB_ENV or $GITHUB_PATH,
-    # or planted a file, that the step then runs. The order secures that
-    # much. The variant's engine still runs later in this job as the runner
-    # user, which has passwordless sudo, and the runner holds the job's
-    # secrets in memory until the job ends, so a compromised package among
-    # the variant's pins could read the token from there. Running the
-    # install and the replay as uk-replay.yml runs its candidate, as an
-    # unprivileged account (.github/scripts/uk_replay_sandbox.sh), closes
-    # that. The legacy variant and a variant with no committed sealed
-    # namespace replay nothing. The dataset stays on the runner: it is never
-    # uploaded or cached.
+    # or planted a file, that the step then runs. The runner user has
+    # passwordless sudo, and the runner holds the job's secrets in memory
+    # until the job ends, so the variant's code never runs as that user:
+    # its install and its replay run as uk-replay.yml runs a candidate, as
+    # an unprivileged account in a systemd sandbox
+    # (.github/scripts/uk_replay_sandbox.sh), with no sudo, the runner's
+    # processes invisible and its home inaccessible, and only its own home
+    # writable. The install has the network and no dataset; the replay has
+    # the dataset and no network. Outside the sandbox, this job runs only the
+    # runner's own Python, isolated, on standard-library modules: to find the
+    # fetched dataset by its digest and to compare the replay that comes
+    # back with the committed artifact. A malicious freeze can still make
+    # that comparison pass (it can copy the committed artifact) and print
+    # what it reads, the dataset included, to this public log; see
+    # docs/uk_replay/RELEASE_REPLAY.md. The legacy variant and a variant
+    # with no committed sealed namespace replay nothing. The dataset stays
+    # on the runner: it is never uploaded or cached.
     name: real replay · ${{ matrix.variant }}
     needs: replay-variants
     runs-on: ubuntu-latest
@@ -75,6 +82,11 @@ jobs:
     env:
       PYTHONPATH: .
       VARIANT: ${{ matrix.variant }}
+      # The measure-year replayed and the committed artifact it must
+      # reproduce, chosen here, outside the sandbox.
+      REPLAY_EVENT: autumn_budget_2024
+      REPLAY_MEASURE: autumn_budget_2024__private_school_vat_20pct
+      REPLAY_YEAR: "2026"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -91,15 +103,15 @@ jobs:
           echo "RESULT_ROOT=$(field "v['result_root']")" >> "$GITHUB_ENV"
           echo "LEGACY=$(field "v['layout'] == 'legacy_events'")" >> "$GITHUB_ENV"
       # The token is in this step only. It fetches the certified dataset into
-      # the Hugging Face hub cache that the replay reads
-      # (uk_replay_variants.find_dataset_bytes); the replay runs, in a later
-      # step, without the token. uv runs by its absolute path in an emptied
-      # environment with PATH=/usr/bin:/bin, with no project, config or
-      # cache, on /usr/bin/python3 in isolated mode (-I), so nothing in the
-      # job's own environment (PYTHONPATH on the checkout, setup-uv's
-      # settings) redirects it. Every package it loads is one published by
-      # the --exclude-newer date, and the token reaches Python on stdin,
-      # never as an argument.
+      # the Hugging Face hub cache that the next step searches
+      # (uk_replay_variants.find_dataset_bytes); the variant's code runs in
+      # later steps, in the sandbox, without the token. uv runs by its
+      # absolute path in an emptied environment with PATH=/usr/bin:/bin,
+      # with no project, config or cache, on /usr/bin/python3 in isolated
+      # mode (-I), so nothing in the job's own environment (PYTHONPATH on the
+      # checkout, setup-uv's settings) redirects it. Every package it loads
+      # is one published by the --exclude-newer date, and the token reaches
+      # Python on stdin, never as an argument.
       - name: Fetch the certified dataset for the real replay
         id: fetch
         if: env.LEGACY == 'False'
@@ -127,23 +139,33 @@ jobs:
           print(hf_hub_download(repo_id=v["repo_id"], repo_type=v["repo_type"], filename=v["path"], revision=v["revision"], token=sys.stdin.read()))
           '
           echo "fetched=true" >> "$GITHUB_OUTPUT"
-      - name: Install the variant's exact environment
-        if: steps.fetch.outputs.fetched == 'true'
-        run: |
-          uv venv --python 3.12 .venv-variant
-          uv pip install --python .venv-variant/bin/python -r "$REQUIREMENTS"
-          uv pip install --python .venv-variant/bin/python rfc8785==0.1.4 jsonschema
-      # compute_uk_event's preflight checks the installed environment is
-      # exactly the variant's before it simulates anything.
-      - name: One real measure-year replays byte for byte
+      # find_dataset_bytes searches the hub cache the fetch named, by size
+      # and SHA-256; the standard library under the runner's own Python.
+      - name: Find the fetched dataset by its digest
         if: steps.fetch.outputs.fetched == 'true'
         run: |
           set -euo pipefail
-          key=autumn_budget_2024__private_school_vat_20pct
-          .venv-variant/bin/python -m pipeline.compute_uk_event --event autumn_budget_2024 --variant "$VARIANT" \
-            --measures "$key" --years 2026 --workers 1 --output-dir .venv-replay-checks/determinism
-          # A namespace sealed before the processed-value check is compared
-          # without that check's evidence fields, with a notice
-          # (pipeline/uk_replay_determinism.py); every other byte must match.
-          .venv-variant/bin/python -m pipeline.uk_replay_determinism \
-            ".venv-replay-checks/determinism/${key}_2026.json" "$RESULT_ROOT/autumn_budget_2024/${key}_2026.json"
+          dataset=$(/usr/bin/python3 -I -c 'import sys; sys.path.insert(0, "."); from pipeline import uk_replay_variants as rv; print(rv.find_dataset_bytes(rv.get_variant(sys.argv[1])))' "$VARIANT")
+          echo "DATASET_FILE=$dataset" >> "$GITHUB_ENV"
+      - name: Hand a private copy to the unprivileged candidate account
+        if: steps.fetch.outputs.fetched == 'true'
+        run: bash .github/scripts/uk_replay_sandbox.sh setup
+      - name: Install the variant's exact environment in the sandbox
+        if: steps.fetch.outputs.fetched == 'true'
+        run: bash .github/scripts/uk_replay_sandbox.sh install
+      # compute_uk_event's preflight checks the installed environment is
+      # exactly the variant's before it simulates anything.
+      - name: Replay one real measure-year in the sandbox, offline
+        if: steps.fetch.outputs.fetched == 'true'
+        run: bash .github/scripts/uk_replay_sandbox.sh replay
+      - name: Stop every candidate process and take its output back
+        if: always() && steps.fetch.outputs.fetched == 'true'
+        run: bash .github/scripts/uk_replay_sandbox.sh collect
+      # A namespace sealed before the processed-value check is compared
+      # without that check's evidence fields, with a notice
+      # (pipeline/uk_replay_determinism.py); every other byte must match.
+      - name: One real measure-year replays byte for byte
+        if: steps.fetch.outputs.fetched == 'true'
+        run: |
+          /usr/bin/python3 -E -s -m pipeline.uk_replay_determinism \
+            "output/${REPLAY_MEASURE}_${REPLAY_YEAR}.json" "$RESULT_ROOT/$REPLAY_EVENT/${REPLAY_MEASURE}_${REPLAY_YEAR}.json"
