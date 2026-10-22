@@ -156,12 +156,12 @@ def contained_output_dir(
         raise ExperimentError("event must be a lowercase underscore-separated slug")
     chosen = (requested or canonical).resolve()
     repository = root.resolve()
+    # Compared case-insensitively: on a case-insensitive filesystem (macOS)
+    # results/uk/Events is results/uk/events.
+    parts = tuple(part.casefold() for part in chosen.parts)
     for replay in REPLAY_ROOTS:
-        segments = Path(replay).parts
-        if any(
-            chosen.parts[i : i + len(segments)] == segments
-            for i in range(len(chosen.parts))
-        ):
+        segments = tuple(part.casefold() for part in Path(replay).parts)
+        if any(parts[i : i + len(segments)] == segments for i in range(len(parts))):
             raise ExperimentError(f"{chosen} is inside a replay root ({replay})")
     checks = (repository / ".venv-replay-checks").resolve()
     if (
@@ -467,6 +467,42 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
                 not unknown,
                 where + f"assumes_modern names untouched paths {sorted(unknown)}",
             )
+        # Every value a reform sets is written against some current law: the
+        # construction states it (assumes_modern) for every year it can run,
+        # or says why the value holds whatever the current law is.
+        outright = experiment.get("set_outright") or {}
+        need(
+            isinstance(outright, dict)
+            and all(isinstance(r, str) and r.strip() for r in outright.values()),
+            where + "set_outright must map paths to reasons",
+        )
+        if isinstance(outright, dict) and isinstance(assumes, dict):
+            need(
+                not set(outright) - set(reform or {}),
+                where + "set_outright names paths the reform does not set",
+            )
+            need(
+                not set(outright) & set(assumes),
+                where + "a path is both assumed and set outright",
+            )
+            try:
+                annual = event_runner.annual_reform(reform)
+                stated = event_runner.annual_reform(assumes) if assumes else {}
+            except (TypeError, ValueError):
+                annual = None  # reported above
+            if isinstance(reform, dict) and annual is not None:
+                from pipeline import uk_construction_revisions as revisions
+
+                for path in sorted(set(reform) - set(outright)):
+                    for year in planned_years(experiment, registry):
+                        sets, _ = revisions.window_value(annual, path, f"{year}-01-01")
+                        if not sets:
+                            continue
+                        found, _ = revisions.window_value(stated, path, f"{year}-01-01")
+                        need(
+                            found,
+                            where + f"no current law stated for {path} in {year}",
+                        )
         heads = experiment.get("heads") or []
         need(bool(heads), where + "no heads")
         variables: list[str] = []
@@ -555,17 +591,23 @@ def experiment_years(registry: dict, population: dict) -> list[int]:
     return sorted(year for year in registry["calendar_years"] if year in data)
 
 
+def planned_years(experiment: dict, registry: dict) -> list[int]:
+    """The years an experiment runs on any population that covers them: the
+    event's calendar years (limited to the years it names, if any), or, for
+    one carried forward past the window, the years it names."""
+    if experiment.get("carried_from_fy"):
+        return sorted(experiment["years"])
+    limit = experiment.get("years")
+    return sorted(y for y in registry["calendar_years"] if limit is None or y in limit)
+
+
 def experiment_grid_years(
     experiment: dict, registry: dict, population: dict
 ) -> list[int]:
-    """An experiment's years: the event's window on the population, or, for
-    one carried forward past the window, the years it names."""
+    """An experiment's years on a population: its planned years the data
+    covers."""
     data = set(population["data_years"])
-    if experiment.get("carried_from_fy"):
-        return sorted(y for y in experiment["years"] if y in data)
-    window = experiment_years(registry, population)
-    limit = experiment.get("years")
-    return [y for y in window if limit is None or y in limit]
+    return [y for y in planned_years(experiment, registry) if y in data]
 
 
 def comparison_fy(experiment: dict, registry: dict, year: int) -> str:
@@ -1642,8 +1684,10 @@ def render_summary(document: dict) -> str:
         "",
         f"**{document['label_text']}**",
         "",
-        f"{len(document['events'])} events, {document['experiment_years']} experiment-years "
-        f"({document['pairing']}). Per-event detail is in each event's FINDINGS.md.",
+        (
+            f"{len(document['events'])} events, {document['experiment_years']} experiment-years "
+            f"({document['pairing']}). Per-event detail is in each event's FINDINGS.md."
+        ),
         "",
         "## Anomalies",
         "",

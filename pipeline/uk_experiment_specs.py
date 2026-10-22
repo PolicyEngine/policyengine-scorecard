@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import sys
 from pathlib import Path
 
@@ -133,18 +132,17 @@ BASIC_19_SOURCES = [
 # Primary threshold and lower profits limit without the July 2022 alignment.
 # Before it, the primary threshold was indexed each April by the previous
 # September's CPI (ONS: 10.1% 2022, 6.7% 2023, 1.7% 2024), from £190 a week
-# and £9,880 a year in 2022-23: £209, £223 and £227 a week (whole pounds, as
-# the weekly thresholds are set) and £10,878, £11,607 and £11,804 a year for
-# 2023-24 to 2025-26. Autumn Statement 2022 then holds the 2025-26 levels for
-# a further two years from April 2026, as it does the personal allowance.
+# in 2022-23: £209, £223 and £227 a week (whole pounds, as the weekly
+# thresholds are set). The lower profits limit is 52 times the weekly
+# threshold, as pe-uk has it in 2021-22 (52 x 184 = 9,568) and 2022-23
+# (52 x 190 = 9,880): £10,868, £11,596 and £11,804. Held at the 2025-26
+# levels from April 2026 (a convention: no law set an unaligned threshold
+# after 2022-23; the rulings log records the choice).
 def indexed_pt():
-    weekly, annual, out_w, out_a = 190.0, 9880.0, {}, {}
+    weekly, out_w, out_a = 190.0, {}, {}
     for year, rate in zip(range(2023, 2026), (0.101, 0.067, 0.017)):
-        weekly, annual = (
-            float(round(weekly * (1 + rate))),
-            float(round(annual * (1 + rate))),
-        )
-        out_w[year], out_a[year] = weekly, annual
+        weekly = float(round(weekly * (1 + rate)))
+        out_w[year], out_a[year] = weekly, 52 * weekly
     for year in (2026, 2027):
         out_w[year], out_a[year] = out_w[2025], out_a[2025]
     return out_w, out_a
@@ -188,6 +186,216 @@ SMG_COUPLE = {2024: 332.95, 2025: 346.60, 2026: 363.25}
 # scales each modern amount by 293/335 or 515/557, rounded to £1 as DWP does.
 WA_WITH = {2024: 404, 2025: 411, 2026: 427}
 WA_WITHOUT = {2024: 673, 2025: 684, 2026: 710}
+
+# The current law each construction is written against, for every parameter
+# a reform sets, in the years the experiments run: policyengine-uk's
+# processed values, which 2.132.6 and 2.143.0 share for every one of these
+# path-years (read back from the committed experiment artifacts, 22 October
+# 2026). An experiment that assumes a different value (the statutory one
+# where 2.132.6 is behind) states it in its own `assumes_modern`, and one that
+# sets a parameter whatever the current law names it in `set_outright`.
+# Every other reform path takes its assumption from here, so an engine whose
+# current law differs is flagged `modern_law_differs`.
+CURRENT_LAW = {
+    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {2024: 30.0, 2025: 30.0},
+    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {2024: 30.0, 2025: 30.0},
+    "gov.dwp.benefit_cap.non_single.in_london": {
+        2024: 25323.0,
+        2025: 25323.0,
+        2026: 25323.0,
+        2027: 25323.0,
+    },
+    "gov.dwp.benefit_cap.non_single.outside_london": {
+        2024: 22020.0,
+        2025: 22020.0,
+        2026: 22020.0,
+        2027: 22020.0,
+    },
+    "gov.dwp.benefit_cap.single.in_london": {
+        2024: 16967.0,
+        2025: 16967.0,
+        2026: 16967.0,
+        2027: 16967.0,
+    },
+    "gov.dwp.benefit_cap.single.outside_london": {
+        2024: 14753.0,
+        2025: 14753.0,
+        2026: 14753.0,
+        2027: 14753.0,
+    },
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+        2024: 332.95,
+        2025: 346.6,
+        2026: 363.25,
+    },
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+        2024: 218.15,
+        2025: 227.1,
+        2026: 238.0,
+    },
+    "gov.dwp.state_pension.basic_state_pension.amount": {
+        2024: 169.5,
+        2025: 176.45,
+        2026: 184.9,
+    },
+    "gov.dwp.state_pension.new_state_pension.amount": {
+        2024: 221.2,
+        2025: 230.25,
+        2026: 241.3,
+    },
+    "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {2024: 2.0, 2025: 2.0},
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {2024: 2.0, 2025: 2.0},
+    "gov.dwp.universal_credit.means_test.reduction_rate": {
+        2024: 0.55,
+        2025: 0.55,
+        2026: 0.55,
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+        2024: 404.0,
+        2025: 411.0,
+        2026: 427.0,
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+        2024: 673.0,
+        2025: 684.0,
+        2026: 710.0,
+    },
+    "gov.hmrc.cgt.annual_exempt_amount": {
+        2024: 3000.0,
+        2025: 3000.0,
+        2026: 3000.0,
+        2027: 3000.0,
+    },
+    "gov.hmrc.child_benefit.amount.additional": {2024: 16.95, 2025: 17.25},
+    "gov.hmrc.child_benefit.amount.eldest": {2024: 25.6, 2025: 26.05},
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {2024: 0.5295, 2025: 0.5295},
+    "gov.hmrc.income_tax.allowances.dividend_allowance": {
+        2024: 500.0,
+        2025: 500.0,
+        2026: 500.0,
+        2027: 500.0,
+    },
+    "gov.hmrc.income_tax.allowances.marriage_allowance.max": {2024: 0.1, 2025: 0.1},
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic": {
+        2024: 1000.0,
+        2025: 1000.0,
+    },
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.higher": {
+        2024: 500.0,
+        2025: 500.0,
+    },
+    "gov.hmrc.income_tax.allowances.property_allowance": {2024: 1000.0, 2025: 1000.0},
+    "gov.hmrc.income_tax.allowances.trading_allowance": {2024: 1000.0, 2025: 1000.0},
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {2024: 80000.0, 2025: 80000.0},
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+        2024: 60000.0,
+        2025: 60000.0,
+    },
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+        2024: 0.0875,
+        2025: 0.0875,
+        2026: 0.1075,
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+        2024: 0.3375,
+        2025: 0.3375,
+        2026: 0.3575,
+    },
+    "gov.hmrc.income_tax.rates.dividends[2].rate": {
+        2024: 0.3935,
+        2025: 0.3935,
+        2026: 0.3935,
+    },
+    "gov.hmrc.income_tax.rates.dividends[3].rate": {
+        2024: 0.3935,
+        2025: 0.3935,
+        2026: 0.3935,
+    },
+    "gov.hmrc.income_tax.rates.property.additional": {2024: 0.45, 2025: 0.45},
+    "gov.hmrc.income_tax.rates.property.basic": {
+        2024: 0.2,
+        2025: 0.2,
+        2026: 0.2,
+        2027: 0.22,
+    },
+    "gov.hmrc.income_tax.rates.savings.additional": {2024: 0.45, 2025: 0.45},
+    "gov.hmrc.income_tax.rates.savings.basic": {
+        2024: 0.2,
+        2025: 0.2,
+        2026: 0.2,
+        2027: 0.22,
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+        2024: 0.2,
+        2025: 0.2,
+        2026: 0.2,
+        2027: 0.2,
+    },
+    "gov.hmrc.income_tax.rates.uk[2].rate": {2024: 0.45, 2025: 0.45},
+    "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+        2024: 0.02,
+        2025: 0.02,
+        2026: 0.02,
+        2027: 0.02,
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+        2024: 0.08,
+        2025: 0.08,
+        2026: 0.08,
+        2027: 0.08,
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+        2024: 0.138,
+        2025: 0.15,
+        2026: 0.15,
+        2027: 0.15,
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+        2024: 241.73,
+        2025: 241.73,
+        2026: 241.73,
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {2024: 175.0},
+    "gov.hmrc.national_insurance.class_4.rates.additional": {
+        2024: 0.02,
+        2025: 0.02,
+        2026: 0.02,
+        2027: 0.02,
+    },
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+        2024: 0.06,
+        2025: 0.06,
+        2026: 0.06,
+        2027: 0.06,
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+        2024: 12570.0,
+        2025: 12570.0,
+        2026: 12570.0,
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
+        2025: 500000.0,
+        2026: 500000.0,
+        2027: 500000.0,
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": {
+        2025: 300000.0,
+        2026: 300000.0,
+        2027: 300000.0,
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": {
+        2025: 0.02,
+        2026: 0.02,
+        2027: 0.02,
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
+        2025: 125000.0,
+        2026: 125000.0,
+        2027: 125000.0,
+    },
+    "gov.hmrc.vat.standard_rate": {2024: 0.2, 2025: 0.2},
+}
+
 
 SDLT_PRE_2022 = {
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": 0.02,
@@ -336,8 +544,9 @@ B2018_BRL = BRL_B2018[2021]
 
 # Budget 2018's £1,000 a year work-allowance increase: without it the April
 # 2019 allowances would have been £198 and £409 uprated by September 2018 CPI
-# (2.4%, ONS), £203 and £419 a month, instead of £287 and £503: the measure
-# added £84 to each (198 x 1.024 + 83.33 = 286.1, 409 x 1.024 + 83.33 = 502.2). Each modern
+# (2.4%, ONS), £203 and £419 a month, instead of £287 and £503. With the
+# measure's £83.33 a month those are £286.33 and £502.33, set at £287 and
+# £503, so the counterfactual removes £84 from each (287 - 203, 503 - 419). Each modern
 # allowance keeps the later upratings and Autumn Budget 2021's £500, so the
 # counterfactual removes the 2019 difference carried forward: x (293/287)
 # to April 2021, then the allowance's own growth from its November 2021
@@ -574,8 +783,9 @@ def experiments() -> dict[str, dict]:
                         + ", £".join(f"{PT_CF_ANNUAL[y]:,.0f}" for y in (2024, 2025))
                         + " a year (£"
                         + ", £".join(f"{PT_CF_WEEKLY[y]:.0f}" for y in (2024, 2025))
-                        + " a week) in 2024-25 and 2025-26, held from April 2026 by "
-                        "Autumn Statement 2022's extension. Modern law has £12,570."
+                        + " a week) in 2024-25 and 2025-26, held at those levels from "
+                        "April 2026 (a convention: no law set an unaligned threshold "
+                        "after 2022-23). Modern law has £12,570."
                     ),
                     "sources": [
                         "National Insurance Contributions (Increase of Thresholds) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/16)",
@@ -764,6 +974,13 @@ def experiments() -> dict[str, dict]:
                     "reform": {
                         path: {window(2024, 2024): value}
                         for path, value in SDLT_PRE_2022.items()
+                    },
+                    "set_outright": {
+                        path: (
+                            "the whole 2024-25 schedule without the Growth Plan "
+                            "relief, which holds whatever 2024-25 current law has"
+                        )
+                        for path in SDLT_PRE_2022
                     },
                     "heads": [stamp_duty_group()],
                     "magnitude_check": "scaled",
@@ -990,6 +1207,11 @@ def experiments() -> dict[str, dict]:
                         "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
                             window(2024, 2025): 0.0
                         }
+                    },
+                    "set_outright": {
+                        "gov.hmrc.stamp_duty.residential.purchase.main.first.max": (
+                            "a zero price limit removes the relief on any schedule"
+                        )
                     },
                     "years": [2024, 2025],
                     "heads": [stamp_duty_group()],
@@ -1572,6 +1794,73 @@ def experiments() -> dict[str, dict]:
     return specs
 
 
+def check_current_law() -> None:
+    """The constants the constructions are built from agree with CURRENT_LAW."""
+    pairs = [
+        ("gov.dwp.state_pension.new_state_pension.amount", NEW_SP),
+        ("gov.dwp.state_pension.basic_state_pension.amount", BASIC_SP),
+        (
+            "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE",
+            SMG_SINGLE,
+        ),
+        (
+            "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE",
+            SMG_COUPLE,
+        ),
+        ("gov.dwp.universal_credit.means_test.work_allowance.with_housing", WA_WITH),
+        (
+            "gov.dwp.universal_credit.means_test.work_allowance.without_housing",
+            WA_WITHOUT,
+        ),
+    ]
+    for path, constant in pairs:
+        for year, value in CURRENT_LAW[path].items():
+            if year in constant and abs(constant[year] - value) > 1e-9:
+                raise ValueError(f"{path} {year}: {constant[year]} against {value}")
+
+
+def declare_current_law(experiment: dict, years: list[int]) -> None:
+    """Give every reform path the current law it assumes in each run year,
+    unless the experiment states its own or sets the path outright."""
+    from pipeline import uk_construction_revisions as revisions
+
+    assumes = experiment.setdefault("assumes_modern", {})
+    outright = experiment.get("set_outright") or {}
+    for path in sorted(experiment["reform"]):
+        if path in assumes or path in outright:
+            continue
+        values = {}
+        for year in years:
+            found, _ = revisions.window_value(
+                experiment["reform"], path, f"{year}-01-01"
+            )
+            if not found:
+                continue
+            if year not in CURRENT_LAW.get(path, {}):
+                raise ValueError(
+                    f"{experiment['experiment_id']}: no current law for {path} in {year}"
+                )
+            values[year] = CURRENT_LAW[path][year]
+        if values:
+            assumes[path] = runs(values)
+    if not assumes:
+        del experiment["assumes_modern"]
+
+
+def runs(values: dict[int, float]) -> dict[str, float]:
+    """Yearly values as windows, one per run of equal consecutive years."""
+    out, start, previous = {}, None, None
+    for year in sorted(values):
+        if start is not None and year == previous + 1 and values[year] == values[start]:
+            previous = year
+            continue
+        if start is not None:
+            out[window(start, previous)] = values[start]
+        start = previous = year
+    out[window(start, previous)] = values[start]
+    return out
+
+
 def registry_ref(event: str) -> dict:
     """The event's registry, or the inventory for an event without one."""
     relative = f"data/uk/events/{event}_measures.json"
@@ -1591,12 +1880,17 @@ def registry_ref(event: str) -> dict:
 def build() -> dict[str, bytes]:
     from pipeline import uk_policy_experiment as experiments_module
 
+    check_current_law()
     out = {}
     for event, body in experiments().items():
         reference = registry_ref(event)
         registry, _ = experiments_module.load_registry(
             {"registry": reference, "event_slug": event}
         )
+        for experiment in body["experiments"]:
+            declare_current_law(
+                experiment, experiments_module.planned_years(experiment, registry)
+            )
         spec = {
             "schema_version": 1,
             "kind": experiments_module.SPEC_KIND,

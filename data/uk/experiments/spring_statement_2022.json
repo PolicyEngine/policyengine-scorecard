@@ -3,6 +3,17 @@
  "event_slug": "spring_statement_2022",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2024-01-01.2026-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2024-01-01.2026-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+     "2024-01-01.2026-12-31": 0.2
+    }
+   },
    "construction": "forward_on_modern_law",
    "experiment_id": "ss2022_basic_rate_19",
    "heads": [
@@ -41,6 +52,17 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.rates.property.basic": {
+     "2024-01-01.2026-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.savings.basic": {
+     "2024-01-01.2026-12-31": 0.2
+    },
+    "gov.hmrc.income_tax.rates.uk[0].rate": {
+     "2024-01-01.2026-12-31": 0.2
+    }
+   },
    "construction": "forward_on_modern_law",
    "experiment_id": "ss2022_basic_rate_19_welfare",
    "heads": [
@@ -78,6 +100,14 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2024-01-01.2026-12-31": 241.73
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2024-01-01.2026-12-31": 12570.0
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ss2022_nics_primary_threshold_lpl",
    "heads": [
@@ -111,7 +141,7 @@
    "magnitude_check": "sign_only",
    "magnitude_reason": "A threshold set against an indexed path: its yield depends on inflation since the event (outturn CPI of 10.1% in September 2022 against the March 2022 forecast), and the modern employee rate is 8% against 12% plus the 1.25% levy when the OBR costed it (PLAN.md names this case).",
    "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
-   "note": "Without the July 2022 alignment the primary threshold and lower profits limit stay indexed by CPI: \u00a311,607, \u00a311,804 a year (\u00a3223, \u00a3227 a week) in 2024-25 and 2025-26, held from April 2026 by Autumn Statement 2022's extension. Modern law has \u00a312,570.",
+   "note": "Without the July 2022 alignment the primary threshold and lower profits limit stay indexed by CPI: \u00a311,596, \u00a311,804 a year (\u00a3223, \u00a3227 a week) in 2024-25 and 2025-26, held at those levels from April 2026 (a convention: no law set an unaligned threshold after 2022-23). Modern law has \u00a312,570.",
    "reform": {
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
      "2024-01-01.2024-12-31": 223.0,
@@ -119,7 +149,7 @@
      "2026-01-01.2026-12-31": 227.0
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-     "2024-01-01.2024-12-31": 11607.0,
+     "2024-01-01.2024-12-31": 11596.0,
      "2025-01-01.2025-12-31": 11804.0,
      "2026-01-01.2026-12-31": 11804.0
     }
@@ -131,6 +161,14 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2024-01-01.2026-12-31": 241.73
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2024-01-01.2026-12-31": 12570.0
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ss2022_nics_primary_threshold_lpl_welfare",
    "heads": [
@@ -157,7 +195,7 @@
      "2026-01-01.2026-12-31": 227.0
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
-     "2024-01-01.2024-12-31": 11607.0,
+     "2024-01-01.2024-12-31": 11596.0,
      "2025-01-01.2025-12-31": 11804.0,
      "2026-01-01.2026-12-31": 11804.0
     }

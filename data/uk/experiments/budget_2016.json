@@ -3,6 +3,14 @@
  "event_slug": "budget_2016",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.allowances.property_allowance": {
+     "2024-01-01.2025-12-31": 1000.0
+    },
+    "gov.hmrc.income_tax.allowances.trading_allowance": {
+     "2024-01-01.2025-12-31": 1000.0
+    }
+   },
    "carried_from_fy": "2020-21",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",
@@ -55,6 +63,11 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2025-12-31": 0.5295
+    }
+   },
    "carried_from_fy": "2020-21",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",

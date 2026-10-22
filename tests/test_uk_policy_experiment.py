@@ -82,6 +82,22 @@ def test_a_spec_never_edits_or_replaces_its_registry():
         ),
         (lambda e: e.update(mirror_of="no colon"), "mirror_of"),
         (lambda e: e.update(sources=[]), "sources"),
+        (
+            lambda e: e["assumes_modern"].pop(sorted(e["assumes_modern"])[0]),
+            "no current law stated",
+        ),
+        (
+            lambda e: e.update(set_outright={sorted(e["assumes_modern"])[0]: "why"}),
+            "both assumed and set outright",
+        ),
+        (
+            lambda e: e.update(set_outright={sorted(e["reform"])[0]: " "}),
+            "set_outright must map paths to reasons",
+        ),
+        (
+            lambda e: e.update(set_outright={"gov.not.set": "why"}),
+            "does not set",
+        ),
     ],
 )
 def test_validate_spec_refuses_a_broken_experiment(mutation, message):
@@ -443,6 +459,10 @@ paths = st.lists(
             "uk",
             "events",
             "replays",
+            "Results",
+            "UK",
+            "Events",
+            "REPLAYS",
             "experiments",
             "..",
             "x",
@@ -471,10 +491,10 @@ def test_no_output_directory_resolves_into_a_replay_root(
         return
     for replay in ex.REPLAY_ROOTS:
         assert not chosen.is_relative_to((root / replay).resolve())
-        segments = Path(replay).parts
+        segments = tuple(part.casefold() for part in Path(replay).parts)
+        folded = tuple(part.casefold() for part in chosen.parts)
         assert all(
-            chosen.parts[i : i + len(segments)] != segments
-            for i in range(len(chosen.parts))
+            folded[i : i + len(segments)] != segments for i in range(len(folded))
         )
     if chosen.is_relative_to(root.resolve()):
         assert chosen.is_relative_to(
@@ -482,14 +502,50 @@ def test_no_output_directory_resolves_into_a_replay_root(
         ) or chosen.is_relative_to((root / ".venv-replay-checks").resolve())
 
 
+def test_every_value_a_construction_sets_states_its_current_law():
+    """For every planned year, each reform path is assumed or set outright,
+    so an engine whose current law differs is flagged on any population."""
+    from pipeline import uk_construction_revisions as revisions
+
+    for event in EVENTS:
+        spec, registry = spec_and_registry(event)
+        for experiment in spec["experiments"]:
+            assumed = experiment.get("assumes_modern") or {}
+            outright = experiment.get("set_outright") or {}
+            for path in experiment["reform"]:
+                if path in outright:
+                    continue
+                for year in ex.planned_years(experiment, registry):
+                    date = f"{year}-01-01"
+                    if revisions.window_value(experiment["reform"], path, date)[0]:
+                        assert revisions.window_value(assumed, path, date)[0], (
+                            experiment["experiment_id"],
+                            path,
+                            year,
+                        )
+
+
+def test_the_grid_is_the_planned_years_the_data_covers():
+    population = {"data_years": [2024, 2025]}
+    registry = {"calendar_years": [2023, 2024, 2025, 2026]}
+    assert ex.planned_years({}, registry) == [2023, 2024, 2025, 2026]
+    assert ex.experiment_grid_years({}, registry, population) == [2024, 2025]
+    limited = {"years": [2025, 2026]}
+    assert ex.experiment_grid_years(limited, registry, population) == [2025]
+    carried = {"carried_from_fy": "2019-20", "years": [2026, 2024]}
+    assert ex.planned_years(carried, registry) == [2024, 2026]
+    assert ex.experiment_grid_years(carried, registry, population) == [2024]
+
+
 def test_another_checkouts_replay_root_is_refused_too(tmp_path):
     root = tmp_path / "repo"
     for replay in ex.REPLAY_ROOTS:
-        elsewhere = tmp_path / "other-checkout" / replay / "x"
-        with pytest.raises(ex.ExperimentError, match="inside a replay root"):
-            ex.contained_output_dir(
-                "exp-a", "autumn_statement_2022", elsewhere, root=root
-            )
+        for spelling in (replay, replay.upper(), replay.title()):
+            elsewhere = tmp_path / "other-checkout" / spelling / "x"
+            with pytest.raises(ex.ExperimentError, match="inside a replay root"):
+                ex.contained_output_dir(
+                    "exp-a", "autumn_statement_2022", elsewhere, root=root
+                )
 
 
 def test_the_canonical_output_directory_is_the_experiment_namespace():
@@ -696,6 +752,9 @@ def test_a_carried_forward_experiment_runs_its_named_years_against_its_named_fy(
     experiment.update(
         years=[2028, 2029], carried_from_fy="2027-28", carry_reason="steady state"
     )
+    # The current law it assumes, stated for the years it now runs.
+    for windows in experiment["assumes_modern"].values():
+        windows["2028-01-01.2029-12-31"] = list(windows.values())[-1]
     carried = {**spec, "experiments": [experiment]}
     ex.validate_spec(carried, registry, ex.load_bases())
     planned = ex.plan(carried, registry, population)
@@ -860,28 +919,6 @@ def test_committed_summaries_regenerate_byte_for_byte(population):
     assert ex.render_summary(document) == (root / "SUMMARY.md").read_text()
 
 
-# Touched parameters a construction sets outright, whatever the engine's
-# current law, so two engines may disagree on them without an assumption.
-SET_OUTRIGHT = {
-    (
-        "ab2017_sdlt_first_time_buyers_relief",
-        "gov.hmrc.stamp_duty.residential.purchase.main.first.max",
-    ): "a zero price limit removes the relief on any schedule",
-    **{
-        ("as2022_sdlt_nil_rate_bands_2024", f"gov.hmrc.stamp_duty.{path}"): (
-            "the whole 2024-25 schedule without the Growth Plan relief; on an "
-            "engine without the relief it is construction_noop (diagnosed)"
-        )
-        for path in (
-            "residential.purchase.main.first.max",
-            "residential.purchase.main.first.rate[1].threshold",
-            "residential.purchase.main.subsequent[1].rate",
-            "residential.purchase.main.subsequent[1].threshold",
-        )
-    },
-}
-
-
 def test_engines_disagree_on_current_law_only_where_the_construction_says_so():
     """Where a model swap and its certified pair (the same data) differ on the
     current law of a parameter the construction sets that year, the
@@ -927,7 +964,8 @@ def test_engines_disagree_on_current_law_only_where_the_construction_says_so():
                             == b["parameters"][path]["modern_processed"]
                         ):
                             continue
-                        assert path in assumed or (eid, path) in SET_OUTRIGHT, (
+                        outright = experiment.get("set_outright") or {}
+                        assert path in assumed or path in outright, (
                             event,
                             eid,
                             year,

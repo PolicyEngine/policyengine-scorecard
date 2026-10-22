@@ -3,6 +3,17 @@
  "event_slug": "budget_2012",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.rates.property.additional": {
+     "2024-01-01.2025-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.savings.additional": {
+     "2024-01-01.2025-12-31": 0.45
+    },
+    "gov.hmrc.income_tax.rates.uk[2].rate": {
+     "2024-01-01.2025-12-31": 0.45
+    }
+   },
    "carried_from_fy": "2016-17",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",

@@ -3,6 +3,14 @@
  "event_slug": "budget_2015_2",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+     "2024-01-01.2025-12-31": 2.0
+    },
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2024-01-01.2025-12-31": 2.0
+    }
+   },
    "carried_from_fy": "2020-21",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",
@@ -111,6 +119,14 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+     "2024-01-01.2025-12-31": 30.0
+    },
+    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {
+     "2024-01-01.2025-12-31": 30.0
+    }
+   },
    "carried_from_fy": "2020-21",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",

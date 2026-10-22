@@ -3,6 +3,11 @@
  "event_slug": "autumn_2013",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.allowances.marriage_allowance.max": {
+     "2024-01-01.2025-12-31": 0.1
+    }
+   },
    "carried_from_fy": "2018-19",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",

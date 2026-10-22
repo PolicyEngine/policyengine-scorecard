@@ -28,6 +28,9 @@
      "2024-01-01.2025-12-31": 0.0
     }
    },
+   "set_outright": {
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": "a zero price limit removes the relief on any schedule"
+   },
    "sources": [
     "Finance Act 2018 s. 41 (https://www.legislation.gov.uk/ukpga/2018/3/section/41)",
     "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/first/max.yaml"
@@ -38,6 +41,11 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2025-12-31": 0.5295
+    }
+   },
    "carried_from_fy": "2022-23",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "reversal_on_modern_law",

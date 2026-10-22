@@ -3,6 +3,24 @@
  "event_slug": "autumn_budget_2021",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+     "2024-01-01.2026-12-31": 0.02
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+     "2024-01-01.2026-12-31": 0.08
+    },
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2024-01-01.2024-12-31": 0.138,
+     "2025-01-01.2026-12-31": 0.15
+    },
+    "gov.hmrc.national_insurance.class_4.rates.additional": {
+     "2024-01-01.2026-12-31": 0.02
+    },
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2026-12-31": 0.06
+    }
+   },
    "construction": "forward_on_modern_law",
    "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
    "heads": [
@@ -61,6 +79,22 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2024-01-01.2025-12-31": 0.0875,
+     "2026-01-01.2026-12-31": 0.1075
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2024-01-01.2025-12-31": 0.3375,
+     "2026-01-01.2026-12-31": 0.3575
+    },
+    "gov.hmrc.income_tax.rates.dividends[2].rate": {
+     "2024-01-01.2026-12-31": 0.3935
+    },
+    "gov.hmrc.income_tax.rates.dividends[3].rate": {
+     "2024-01-01.2026-12-31": 0.3935
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
    "heads": [
@@ -101,6 +135,21 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.dwp.universal_credit.means_test.reduction_rate": {
+     "2024-01-01.2026-12-31": 0.55
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.with_housing": {
+     "2024-01-01.2024-12-31": 404.0,
+     "2025-01-01.2025-12-31": 411.0,
+     "2026-01-01.2026-12-31": 427.0
+    },
+    "gov.dwp.universal_credit.means_test.work_allowance.without_housing": {
+     "2024-01-01.2024-12-31": 673.0,
+     "2025-01-01.2025-12-31": 684.0,
+     "2026-01-01.2026-12-31": 710.0
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
    "heads": [
@@ -140,6 +189,28 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+     "2024-01-01.2024-12-31": 332.95,
+     "2025-01-01.2025-12-31": 346.6,
+     "2026-01-01.2026-12-31": 363.25
+    },
+    "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+     "2024-01-01.2024-12-31": 218.15,
+     "2025-01-01.2025-12-31": 227.1,
+     "2026-01-01.2026-12-31": 238.0
+    },
+    "gov.dwp.state_pension.basic_state_pension.amount": {
+     "2024-01-01.2024-12-31": 169.5,
+     "2025-01-01.2025-12-31": 176.45,
+     "2026-01-01.2026-12-31": 184.9
+    },
+    "gov.dwp.state_pension.new_state_pension.amount": {
+     "2024-01-01.2024-12-31": 221.2,
+     "2025-01-01.2025-12-31": 230.25,
+     "2026-01-01.2026-12-31": 241.3
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ab2021_state_pension_double_lock",
    "heads": [
@@ -197,6 +268,11 @@
    ]
   },
   {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2025-12-31": 0.5295
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "ab2021_fuel_duty_freeze_2022",
    "heads": [

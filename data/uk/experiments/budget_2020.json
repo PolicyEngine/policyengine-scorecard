@@ -3,6 +3,11 @@
  "event_slug": "budget_2020",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2024-12-31": 0.5295
+    }
+   },
    "construction": "reversal_on_modern_law",
    "experiment_id": "b2020_fuel_duty_freeze_2020",
    "heads": [

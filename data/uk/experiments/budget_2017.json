@@ -3,6 +3,11 @@
  "event_slug": "budget_2017",
  "experiments": [
   {
+   "assumes_modern": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2025-12-31": 0.06
+    }
+   },
    "carried_from_fy": "2021-22",
    "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
    "construction": "forward_on_modern_law",
