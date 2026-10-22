@@ -1,8 +1,8 @@
 """Whether a replayed measure-year artifact reproduces a committed one.
 
-CI's real-replay step (`.github/workflows/ci.yml`, "One real measure-year
-replays byte for byte") recomputes one committed artifact with the current
-code and compares the bytes. A namespace sealed before the processed-value
+The real-replay step (`.github/workflows/uk-replay-determinism.yml`, job
+`real-replay`, "One real measure-year replays byte for byte") recomputes one
+committed artifact with the current code and compares the bytes. A namespace sealed before the processed-value
 check (#186) holds artifacts without that check's evidence fields, which the
 current code writes on every variant run. The replay is then compared with
 exactly those fields removed, and a notice says so; every other byte must

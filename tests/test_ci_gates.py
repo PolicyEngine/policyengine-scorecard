@@ -26,6 +26,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 CI = ROOT / ".github" / "workflows" / "ci.yml"
+DETERMINISM = ROOT / ".github" / "workflows" / "uk-replay-determinism.yml"
 FRESHNESS = ROOT / ".github" / "workflows" / "gate-freshness.yml"
 
 READ = {"contents": "read"}
@@ -138,6 +139,14 @@ def test_every_ci_job_reads_the_repository_and_nothing_more():
     workflow = ci()
     assert workflow["permissions"] == READ
     assert set(NEEDS_MORE) <= set(workflow["jobs"]), "NEEDS_MORE names a gone job"
+    assert overreach(workflow) == []
+
+
+def test_every_real_replay_job_reads_the_repository_and_nothing_more():
+    """The push-only real replay holds the dataset token beside the
+    variant's engine; its GITHUB_TOKEN reads and nothing more."""
+    workflow = yaml.safe_load(DETERMINISM.read_text())
+    assert not set(NEEDS_MORE) & set(workflow["jobs"])
     assert overreach(workflow) == []
 
 

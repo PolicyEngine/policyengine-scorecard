@@ -1,9 +1,10 @@
 """The replay-engine matrix: every certified variant in the variant index.
 
-CI's ``replay-engine`` job runs once for each id this prints: the certified
-variants of ``data/uk/replay_variants.json``, in index order, as a JSON list
-on one line. A results pull request adds a variant to the index alone, and
-CI replays it from there, so nothing has to edit a workflow file.
+CI's ``replay-engine`` job, and the ``real-replay`` job of
+``uk-replay-determinism.yml``, run once for each id this prints: the
+certified variants of ``data/uk/replay_variants.json``, in index order, as a
+JSON list on one line. A results pull request adds a variant to the index
+alone, and CI replays it from there, so nothing has to edit a workflow file.
 
 Standard library only, run with the runner's own Python (``python3 -I``) in
 a job that installs nothing. CI puts each id in a job name, an environment
