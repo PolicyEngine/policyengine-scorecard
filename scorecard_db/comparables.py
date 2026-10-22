@@ -1360,10 +1360,22 @@ def validate(
     for key in claim_found:
         if key not in claims_by_key:
             errors.append(f"{name}: search lists claim {key}, which is not staged")
+    # A hashed primary is used when a claim cites it, an annotation's basis
+    # links it, or a search lists it among the pages it checked.
+    linked = set()
+    for n in record.annotations if isinstance(record.annotations, list) else []:
+        for basis in n.get("basis") or [] if isinstance(n, dict) else []:
+            if isinstance(basis, dict) and isinstance(basis.get("ref"), str):
+                linked.add(basis["ref"].split("#")[0])
+    for s in searches if isinstance(searches, list) else []:
+        for p in (s.get("producers") or []) if isinstance(s, dict) else []:
+            if isinstance(p, dict) and _string_list(p.get("checked")):
+                linked.update(p["checked"])
     for sha, m in manifest.items():
-        if sha not in used_primaries:
+        if sha not in used_primaries and m.get("url") not in linked:
             errors.append(
-                f"{name}: manifest line for {m.get('url')} is cited by no claim"
+                f"{name}: manifest line for {m.get('url')} is cited by no claim, "
+                "annotation basis or checked page"
             )
     for group, members in range_groups.items():
         kinds = sorted(m.get("value_kind") for m in members)

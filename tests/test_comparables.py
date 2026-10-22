@@ -823,6 +823,25 @@ def test_an_unused_primary_fails():
 
     assert any("cited by no claim" in e for e in mutate(f))
 
+    def checked(r):
+        f(r)
+        _search(r)[0]["checked"] = ["https://example.org/other.pdf"]
+
+    assert mutate(checked) == []
+
+    def linked(r):
+        f(r)
+        r.annotations.append(
+            {
+                **note("x", ["ext_cost_fy2027"], "comparable"),
+                "basis": [
+                    {"kind": "document", "ref": "https://example.org/other.pdf#page=2"}
+                ],
+            }
+        )
+
+    assert not any("cited by no claim" in e for e in mutate(linked))
+
 
 def test_a_value_that_is_not_what_was_printed_fails():
     errors = mutate(lambda r: claim0(r).update(value=-999.0))

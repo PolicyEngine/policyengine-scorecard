@@ -69,7 +69,7 @@ hyphens).
 |---|---|
 | `analysis.json` | The registry entry, scope, search terms, the policy worlds it scores, and every PolicyEngine estimate it publishes, each pinned to its results file by repo, commit, path, field and SHA-256 |
 | `search_log.json` | Every search: date, kind (`prepublish`, `backfill`, `reharvest`, `prepromotion`), who ran it, the results files it compared, and one entry per listed producer |
-| `manifest.jsonl` | One line per primary publication, with its SHA-256; every line is cited by a claim |
+| `manifest.jsonl` | One line per primary publication, with its SHA-256; every line is cited by a claim, an annotation basis or a page a search checked |
 | `claims_staged.jsonl` | Every comparable found, staged under the harvest rules |
 | `annotations.json` | The status and cause of anything that is not a plain comparison, each citing a basis |
 
