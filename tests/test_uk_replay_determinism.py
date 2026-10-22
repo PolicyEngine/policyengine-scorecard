@@ -18,7 +18,7 @@ PRE_EVIDENCE = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
 POST_EVIDENCE = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 # The newest certified variant; the results pull request
 # (pipeline/uk_replay_results_pr.py) moves it to each newly certified one.
-NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1"
 KEY = "autumn_budget_2024__private_school_vat_20pct"
 COMMITTED = (
     ROOT
@@ -196,17 +196,14 @@ def test_main_exit_codes_and_notice(tmp_path, capsys):
 
 
 def test_ci_compares_the_real_replay_through_the_module():
-    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
-    steps = {s.get("name"): s for s in ci["jobs"]["replay-engine"]["steps"]}
+    workflow = ROOT / ".github/workflows/uk-replay-determinism.yml"
+    jobs = yaml.safe_load(workflow.read_text())["jobs"]
+    steps = {s.get("name"): s for s in jobs["real-replay"]["steps"]}
     run = steps["One real measure-year replays byte for byte"]["run"]
     assert "-m pipeline.uk_replay_determinism" in run
     assert "cmp " not in run
-    # Every certified replay-namespace variant is in the engine matrix.
-    document = json.loads((ROOT / "data/uk/replay_variants.json").read_text())
-    certified = [
-        v["variant_id"] for v in document["variants"] if v["status"] == "certified"
-    ]
-    assert ci["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"] == certified
+    # The engine matrix is every certified variant: CI lists them from the
+    # index (tests/test_uk_replay_engine_matrix.py).
 
 
 @pytest.mark.parametrize("variant", [NEWEST])

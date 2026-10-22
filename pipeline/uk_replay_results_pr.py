@@ -4,28 +4,32 @@ When a request on the ``replay-state`` branch reaches terminal status
 ``complete`` and its ``results/VARIANT.json`` is ``certified``, its sealed
 results become one pull request against main, built as
 PolicyEngine/policyengine-scorecard#188 (6.4.1) and #190 (6.5.0) were built
-by hand:
+by hand, less the ``ci.yml`` matrix entry each added:
 
 1. ``requests/<request_id>/results/{results,docs}``, byte for byte (the
    workflow extracts them with ``git archive``);
 2. ``VARIANT.json`` plus a ``note``, appended to
    ``data/uk/replay_variants.json`` in canonical form;
-3. the variant added to CI's ``replay-engine`` matrix;
-4. the tests that name the newest certified variant, moved to it;
-5. a "Committed certified results" paragraph in RELEASE_REPLAY.md from the
+3. the tests that name the newest certified variant, moved to it;
+4. a "Committed certified results" paragraph in RELEASE_REPLAY.md from the
    receipt's counts.
 
+CI's ``replay-engine`` matrix is the index's certified variants
+(``.github/scripts/uk_replay_engine_matrix.py``), so edit 2 is all CI needs
+to replay the variant. The commit touches nothing under ``.github/``, and
+the App token that pushes it has no ``workflows`` permission.
+
 ``check`` reads the request directory and a checkout of main and decides
-whether to build; ``apply`` makes edits 2 to 5 after the extraction;
+whether to build; ``apply`` makes edits 2 to 4 after the extraction;
 ``scope`` refuses a commit that touches anything else; ``body`` renders the
 pull request. ``.github/scripts/uk_replay_results_pr.sh`` does the git work,
 the verification, the push and the pull request. Nothing here installs,
 imports or runs candidate or release code, and nothing here merges.
 
-With ``--stdlib``, ``check`` and ``apply`` skip what needs a third-party
-package (JSON Schema and RFC 8785 digests, the YAML comparison), so the job
-that holds the App token can rebuild the same commit under ``python3 -I -S``.
-The build job runs them in full on the same inputs.
+With ``--stdlib``, ``check`` skips what needs a third-party package (JSON
+Schema and RFC 8785 digests), so the job that holds the App token can rebuild
+the same commit under ``python3 -I -S``; ``apply`` needs no package in either
+job. The build job runs ``check`` in full on the same inputs.
 """
 
 from __future__ import annotations
@@ -48,7 +52,6 @@ from pipeline import uk_replay_qualify as qualify  # noqa: E402
 from pipeline import uk_replay_variants as variants  # noqa: E402
 
 INDEX = "data/uk/replay_variants.json"
-CI = ".github/workflows/ci.yml"
 DOC = "docs/uk_replay/RELEASE_REPLAY.md"
 # Tests whose NEWEST constant names the newest certified variant.
 NEWEST_TESTS = (
@@ -57,15 +60,23 @@ NEWEST_TESTS = (
 )
 # The test whose COMMITTED tuple lists every committed variant, oldest first.
 COMMITTED_TEST = "tests/test_uk_replay_variants.py"
-EDITED = (INDEX, CI, DOC, *NEWEST_TESTS, COMMITTED_TEST)
+EDITED = (INDEX, DOC, *NEWEST_TESTS, COMMITTED_TEST)
+# Workflows, and the scripts they run: never in a results commit.
+UNTOUCHED = ".github/"
 SECTION = "### Committed certified results"
 BRANCH_PREFIX = "uk-replay-results/"
 TRAILER = "Replay-Request"
-AXIOM = "axiom: n/a: replay results and CI matrix; no policy encoding."
+AXIOM = "axiom: n/a: replay results and the variant index; no policy encoding."
 
 NEWEST = re.compile(r'^NEWEST = "([^"\n]*)"$', re.M)
 COMMITTED = re.compile(r"^COMMITTED = \(\n((?:    [^\n]+,\n)+)\)$", re.M)
-MATRIX = re.compile(r"^( +)variant:\n((?:\1  - [^\n]+\n)+)", re.M)
+# A variant id names a branch, paths and CI's matrix legs: plain characters,
+# no traversal, and short enough that two ids joined by "__" (the release
+# diff's directory) fit one 255-byte path component.
+# .github/scripts/uk_replay_engine_matrix.py applies the same rule to every
+# id in the index; a test checks they agree.
+VARIANT_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+MAX_VARIANT_ID_LENGTH = 120
 WORDS = "zero one two three four five six seven eight nine ten".split()
 
 
@@ -118,6 +129,16 @@ def version_key(version: str) -> tuple[int, ...]:
     while len(parts) > 1 and parts[-1] == 0:
         parts.pop()
     return tuple(parts)
+
+
+def plain_variant_id(variant_id: object) -> bool:
+    """An id that can name a branch, paths and a CI matrix leg."""
+    return (
+        isinstance(variant_id, str)
+        and len(variant_id) <= MAX_VARIANT_ID_LENGTH
+        and VARIANT_ID.fullmatch(variant_id) is not None
+        and ".." not in variant_id
+    )
 
 
 def wrapper_version(record: dict) -> str:
@@ -249,10 +270,9 @@ def check(
         raise Ineligible(f"{record['variant_id']} is already in {INDEX}")
     need(record["layout"] == "replay_namespace", "a certified result needs a namespace")
     need("note" not in record, "VARIANT.json already carries a note")
-    # The id names a branch and paths: plain characters, no traversal.
+    # The id names a branch, paths and a CI matrix leg.
     need(
-        bool(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", record["variant_id"]))
-        and ".." not in record["variant_id"],
+        plain_variant_id(record["variant_id"]),
         f"variant_id {record['variant_id']!r} cannot name a branch and paths",
     )
     need(
@@ -388,36 +408,6 @@ def append_variant(raw: bytes, record: dict, note_text: str) -> bytes:
     return canonical_bytes(document)
 
 
-def add_matrix_variant(
-    text: str, variant_id: str, certified: list[str], *, strict: bool = True
-) -> str:
-    """Append ``variant_id`` to the replay-engine matrix; the matrix must
-    then list exactly ``certified`` (a test requires it). ``strict`` also
-    parses both workflows and requires that nothing else changed."""
-    matches = list(MATRIX.finditer(text))
-    need(len(matches) == 1, f"{CI} must have exactly one matrix variant list")
-    match = matches[0]
-    listed = [line.split("- ", 1)[1] for line in match.group(2).splitlines()]
-    need(
-        [*listed, variant_id] == certified,
-        "the engine matrix would not list every certified variant",
-    )
-    entry = f"{match.group(1)}  - {variant_id}\n"
-    edited = text[: match.end()] + entry + text[match.end() :]
-    if not strict:
-        return edited
-    import yaml
-
-    before, after = yaml.safe_load(text), yaml.safe_load(edited)
-    old = before["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"]
-    new = after["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"]
-    need(new == [*old, variant_id], "the matrix edit did not append the variant")
-    need(new == certified, "the engine matrix would not list every certified variant")
-    after["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"] = old
-    need(after == before, f"the matrix edit changed something else in {CI}")
-    return edited
-
-
 def replace_newest(text: str, previous: str, variant_id: str, *, name: str) -> str:
     matches = list(NEWEST.finditer(text))
     need(len(matches) == 1, f"{name} must define NEWEST exactly once")
@@ -544,9 +534,10 @@ def commit_message(plan: dict) -> str:
             f"{plan['receipt_sha256']}, receipt commit {plan['receipt_commit']}): "
             "its results"
             + (" and release diff" if diff else "")
-            + " and requirements freeze byte for byte, the variant record, the CI "
-            "matrix entry, the tests that name the newest certified variant and a "
-            "RELEASE_REPLAY.md paragraph from the receipt's counts.",
+            + " and requirements freeze byte for byte, the variant record (which "
+            "adds it to CI's replay-engine matrix), the tests that name the newest "
+            "certified variant and a RELEASE_REPLAY.md paragraph from the "
+            "receipt's counts.",
             width=72,
             break_long_words=False,
             break_on_hyphens=False,
@@ -555,8 +546,9 @@ def commit_message(plan: dict) -> str:
     )
 
 
-def apply(directory: Path, checkout: Path, plan: dict, *, strict: bool = True) -> None:
-    """Edits 2 to 5, after the workflow extracted the results into checkout."""
+def apply(directory: Path, checkout: Path, plan: dict) -> None:
+    """Edits 2 to 4, after the workflow extracted the results into checkout.
+    The standard library alone, in both jobs."""
     record = json.loads((directory / "results" / "VARIANT.json").read_bytes())
     receipt = json.loads((directory / variants.RECEIPT_NAME).read_bytes())
     for key in ("namespace", "diff", "requirements"):
@@ -569,13 +561,6 @@ def apply(directory: Path, checkout: Path, plan: dict, *, strict: bool = True) -
     index.write_bytes(append_variant(index.read_bytes(), record, note(record, plan)))
     document = variants.load_document(index)
     variants.validate_record(document["variants"][-1], root=checkout)
-    certified = [
-        v["variant_id"] for v in document["variants"] if v["status"] == "certified"
-    ]
-    ci = checkout / CI
-    ci.write_text(
-        add_matrix_variant(ci.read_text(), plan["variant_id"], certified, strict=strict)
-    )
     for name in NEWEST_TESTS:
         path = checkout / name
         path.write_text(
@@ -597,7 +582,15 @@ def apply(directory: Path, checkout: Path, plan: dict, *, strict: bool = True) -
 
 
 def scope(plan: dict, changed: list[str]) -> None:
-    """The commit touches the extracted results and the five edits, nothing else."""
+    """The commit touches the extracted results and the four edits, nothing
+    else, and never anything under ``.github/``: the token that pushes it has
+    no ``workflows`` permission, and nothing here edits what a workflow runs."""
+    workflow_paths = [path for path in changed if path.startswith(UNTOUCHED)]
+    need(
+        not workflow_paths,
+        f"the commit touches {UNTOUCHED}, which a results commit never does: "
+        f"{workflow_paths[:10]}",
+    )
     paths = plan["paths"]
     trees = [f"{paths['namespace']}/"] + (
         [f"{paths['diff']}/"] if paths["diff"] else []
@@ -681,8 +674,9 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         + ".",
         f"- `{paths['requirements']}`: the variant's requirements freeze.",
         f"- `{INDEX}`: the variant record, the qualification's `VARIANT.json` "
-        "exactly plus a `note`, in canonical form.",
-        f"- `{CI}`: the replay-engine matrix gains the variant.",
+        "exactly plus a `note`, in canonical form. CI's replay-engine matrix "
+        "lists the index's certified variants, so it replays this one too; no "
+        "workflow changes.",
         f"- `{NEWEST_TESTS[0]}` and `{NEWEST_TESTS[1]}` (`NEWEST`) and "
         f"`{COMMITTED_TEST}` (`COMMITTED`): the tests that name the newest "
         "certified variant move to it.",
@@ -744,7 +738,7 @@ def main(argv: list[str] | None = None) -> int:
             sub.add_argument("--state-commit", required=True)
         if name == "apply":
             sub.add_argument("--commit-message", type=Path, required=True)
-        if name != "body":
+        if name == "check":
             # The propose job: standard library only (python3 -I -S).
             sub.add_argument("--stdlib", action="store_true")
         if name == "body":
@@ -769,7 +763,7 @@ def main(argv: list[str] | None = None) -> int:
             print(plan["action"], plan.get("reason", plan.get("variant_id")))
         elif args.command == "apply":
             plan = json.loads(args.plan.read_bytes())
-            apply(args.request_dir, args.checkout, plan, strict=not args.stdlib)
+            apply(args.request_dir, args.checkout, plan)
             args.commit_message.write_text(commit_message(plan))
         elif args.command == "scope":
             plan = json.loads(args.plan.read_bytes())

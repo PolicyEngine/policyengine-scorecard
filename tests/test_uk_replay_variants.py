@@ -33,6 +33,7 @@ COMMITTED = (
     CURRENT,
     "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
     "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
 )
 DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 

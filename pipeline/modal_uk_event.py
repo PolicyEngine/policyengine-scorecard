@@ -48,7 +48,12 @@ REMOTE_ROOT = "/replay"
 REMOTE_PYTHON = "/opt/replay-venv/bin/python"
 PYTHON_VERSION = "3.12.13"
 MODAL_VERSION = "1.3.2"
-UV_VERSION = "0.11.21"
+# The image build downloads Python and every pinned package with this uv,
+# which verifies HTTPS against its own compiled-in CA list. uv before 0.13.4
+# trusts emSign ECC Root CA - G3, whose eMudhra intermediate CA private keys
+# are recoverable from the public certificates (disclosed 2026-10-20,
+# https://emudhra.we-have-a-problem.com).
+UV_VERSION = "0.13.4"
 HF_COMMIT = "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f"
 HF_REPO_CACHE = "datasets--policyengine--populace-uk-private"
 HF_CACHE_RELATIVE = ".cache/huggingface/hub"

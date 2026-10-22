@@ -2,8 +2,9 @@ name: UK replay results PR
 
 # Proposes a certified qualification's sealed results to main as a pull
 # request, as #188 (6.4.1) and #190 (6.5.0) were proposed by hand: the
-# request's results and requirements trees byte for byte, the variant record,
-# the CI matrix entry, the tests that name the newest certified variant and a
+# request's results and requirements trees byte for byte, the variant record
+# (CI's replay-engine matrix lists the index's certified variants, so no
+# workflow changes), the tests that name the newest certified variant and a
 # RELEASE_REPLAY.md paragraph from the receipt's counts
 # (.github/scripts/uk_replay_results_pr.sh, pipeline/uk_replay_results_pr.py).
 # The receiver's record job dispatches it when a request completes; it can
@@ -21,16 +22,17 @@ name: UK replay results PR
 # (`build`'s other outputs are its word, checked for shape; CI on the pull
 # request reruns the checks), decides again against main's tip from the
 # request it guarded, and only then mints a short-lived token for the
-# organisation's policyengine GitHub App, scoped to this repository:
+# organisation's policyengine GitHub App, scoped to this repository, with
 # contents and pull-requests to push its own uk-replay-results/<variant>
-# branch and open the pull request, workflows because the commit adds the
-# variant to ci.yml's matrix (GITHUB_TOKEN can never hold workflows). A
-# pull request opened with GITHUB_TOKEN would also start no pull_request
-# run, so it would never carry checks; the App's does. The actions in
+# branch and open the pull request. A pull request opened with GITHUB_TOKEN
+# would start no pull_request run, so it would never carry checks; the
+# App's does. The token has no workflows permission: the commit touches
+# nothing under .github/ (the builder's scope refuses it). The actions in
 # `propose` are pinned to commits. Nothing here merges: merging stays on
 # the normal gates, CI and an independent review.
 # https://docs.github.com/en/actions/concepts/security/github_token
 # https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks
+# https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app
 
 on:
   workflow_dispatch:
@@ -112,7 +114,6 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           permission-contents: write
           permission-pull-requests: write
-          permission-workflows: write
       - name: Push the rebuilt commit and open the pull request
         if: steps.rebuild.outputs.action == 'build'
         env:
