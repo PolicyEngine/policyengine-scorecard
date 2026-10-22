@@ -62,7 +62,8 @@ def test_it_runs_when_ci_completes_on_main():
     }
     assert ci[True]["push"] == {"branches": ["main"]}
     assert list(workflow()["jobs"]) == ["publish-db"]
-    # On the job, so a run its guard skips never displaces a waiting publish.
+    # On the job: a workflow-level group would hold every run of the file,
+    # the ones the guard skips included.
     assert "concurrency" not in workflow()
     assert job()["concurrency"] == {"group": "publish-db", "cancel-in-progress": False}
 

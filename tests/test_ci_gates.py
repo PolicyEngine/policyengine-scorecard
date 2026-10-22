@@ -48,12 +48,14 @@ NEEDS_MORE: dict[str, dict[str, str]] = {}
 PUBLISH_NEEDS = {"publish-db": {"actions": "read"}}
 
 # The events a pull request starts runs for: opening or updating it, a review
-# or review comment on it, and adding it to a merge queue.
+# or review comment on it, a comment on its conversation (issue_comment), and
+# adding it to a merge queue.
 PULL_REQUEST_EVENTS = {
     "pull_request",
     "pull_request_target",
     "pull_request_review",
     "pull_request_review_comment",
+    "issue_comment",
     "merge_group",
 }
 # The secrets a workflow that runs on pull requests may name: none. A debug

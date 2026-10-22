@@ -69,7 +69,8 @@ jobs:
       github.event.workflow_run.path == '.github/workflows/ci.yml'
     # One publish at a time, so two uploads of latest.db.gz never interleave.
     # A publish waiting behind a running one gives way to a newer one. On the
-    # job, not the workflow, so a run the guard skips never takes a place.
+    # job, not the workflow: a workflow-level group would hold every run of
+    # this file, the ones the guard skips included.
     concurrency:
       group: publish-db
       cancel-in-progress: false
