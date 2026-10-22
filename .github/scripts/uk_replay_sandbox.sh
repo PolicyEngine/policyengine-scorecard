@@ -28,8 +28,9 @@
 # loopback, and no Unix socket, so nothing in the sandbox can send the
 # dataset out over the network, or ask a host service to (systemd-resolved,
 # over D-Bus, resolves names for it even without a network interface). Both
-# print the variant's output with the runner's workflow commands stopped,
-# so it can neither set a step output nor raise an annotation.
+# print the variant's output, stdout and stderr together, with the runner's
+# workflow commands stopped and setup-uv's problem matcher removed, so that
+# output can neither set a step output nor raise an annotation.
 #
 #   uk_replay_sandbox.sh setup     # after the dataset fetch, before any candidate code
 #   uk_replay_sandbox.sh run       # the drain, in the sandbox
@@ -40,18 +41,37 @@ set -euo pipefail
 CANDIDATE=replay-candidate
 CANDIDATE_HOME=/home/$CANDIDATE
 COPY=$CANDIDATE_HOME/scorecard
+# Prints its last line only when an IPv4 socket opens, a Unix socket does
+# not, and io_uring_setup (425 in every Linux ABI) fails with EPERM.
+OFFLINE_PROBE='import ctypes, errno, socket
+socket.socket(socket.AF_INET).close()
+try:
+    socket.socket(socket.AF_UNIX).close()
+    raise SystemExit("a Unix socket opens")
+except OSError:
+    pass
+libc = ctypes.CDLL(None, use_errno=True)
+if libc.syscall(425, 1, ctypes.create_string_buffer(120)) != -1 or ctypes.get_errno() != errno.EPERM:
+    raise SystemExit("io_uring_setup is not refused")
+print("unix and io_uring refused")'
 
 # Run a command as the candidate in the sandbox, with an environment built
 # from nothing but the arguments given before the command (VAR=value ...).
 # A first argument --offline also leaves it no network but loopback and only
 # IPv4, IPv6 and netlink sockets, so no Unix socket to a host service
-# (socketpair still works). (${a[@]+"${a[@]}"} is an empty array under set -u
-# in bash 3.2 too.)
+# (socketpair still works). systemd filters socket(2) for that, so the
+# service may make only native system calls (the 32-bit x86 ABI's socketcall
+# would pass the filter) and none of io_uring's (which can open a socket
+# without socket(2)); those fail with EPERM. (${a[@]+"${a[@]}"} is an empty
+# array under set -u in bash 3.2 too.)
 in_sandbox() {
   local offline=() settings=()
   if [ "${1:-}" = --offline ]; then
     offline=(-p PrivateNetwork=yes -p RestrictAddressFamilies=AF_INET
-      -p RestrictAddressFamilies=AF_INET6 -p RestrictAddressFamilies=AF_NETLINK)
+      -p RestrictAddressFamilies=AF_INET6 -p RestrictAddressFamilies=AF_NETLINK
+      -p SystemCallArchitectures=native
+      -p "SystemCallFilter=~io_uring_setup io_uring_enter io_uring_register"
+      -p SystemCallErrorNumber=EPERM)
     shift
   fi
   while [ "$#" -gt 0 ] && [[ "$1" == *=* ]]; do
@@ -104,12 +124,17 @@ stop_candidate() {
 }
 
 # Run a command whose output the variant writes, with the runner's workflow
-# commands stopped until a token the variant never sees.
+# commands stopped until a token the variant never sees. Its stderr joins
+# stdout: the runner reads stderr as a second stream, where a last line
+# without a newline would reach it only after the token. setup-uv registers
+# a problem matcher (owner python) for the rest of the job, and matchers
+# read plain lines, which stopping commands does not stop, so it goes first.
 untrusted_output() {
   local token status=0
   token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+  echo "::remove-matcher owner=python::"
   echo "::stop-commands::$token"
-  "$@" || status=$?
+  "$@" 2>&1 || status=$?
   printf '\n::%s::\n' "$token"
   return "$status"
 }
@@ -161,18 +186,19 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
       echo "::error::$CANDIDATE can write, in the sandbox: $(echo "$writable" | sort -u | tr '\n' ' ')"
       exit 1
     fi
-    # Offline, the network namespace's only interface is loopback, and no
-    # Unix socket can be opened.
+    # Offline, the network namespace's only interface is loopback, an IPv4
+    # socket opens but a Unix socket does not, and io_uring is refused.
     interfaces=$(in_sandbox --offline /bin/sh -c 'tail -n +3 /proc/self/net/dev | cut -d: -f1 | tr -d " "')
     if [ "$interfaces" != lo ]; then
       echo "::error::$CANDIDATE has network interfaces offline: $(echo "$interfaces" | tr '\n' ' ')"
       exit 1
     fi
-    if in_sandbox --offline /usr/bin/python3 -I -c 'import socket; socket.socket(socket.AF_UNIX)' > /dev/null 2>&1; then
-      echo "::error::$CANDIDATE can open a Unix socket offline"
+    refused=$(in_sandbox --offline /usr/bin/python3 -I -c "$OFFLINE_PROBE" 2>&1 || true)
+    if [ "$refused" != "unix and io_uring refused" ]; then
+      echo "::error::$CANDIDATE offline: $refused"
       exit 1
     fi
-    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked); offline, only loopback and no Unix socket"
+    echo "$CANDIDATE: no sudo, no supplementary groups, nothing writable outside its home (${#targets[@]} paths checked); offline, only loopback, no Unix socket and no io_uring"
     ;;
   run)
     status=0

@@ -854,10 +854,22 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
     assert "writable=$(in_sandbox /bin/sh -c" in setup
     assert "interfaces=$(in_sandbox --offline /bin/sh -c" in setup
     assert "/proc/self/net/dev" in setup and '"$interfaces" != lo' in setup
+    # The probe passes only by printing its last line: a probe that cannot
+    # run at all fails the job.
     assert (
-        "if in_sandbox --offline /usr/bin/python3 -I -c "
-        "'import socket; socket.socket(socket.AF_UNIX)'" in setup
+        'refused=$(in_sandbox --offline /usr/bin/python3 -I -c "$OFFLINE_PROBE"'
+        in setup
     )
+    assert '[ "$refused" != "unix and io_uring refused" ]' in setup
+    probe = script[script.index("OFFLINE_PROBE='") : script.index("refused\")'")]
+    for check in (
+        "socket.socket(socket.AF_INET).close()",
+        "socket.socket(socket.AF_UNIX).close()",
+        "libc.syscall(425, 1,",
+        "ctypes.get_errno() != errno.EPERM",
+    ):
+        assert check in probe, check
+    compile(probe[len("OFFLINE_PROBE='") :] + 'refused")', "<probe>", "exec")
     for target in (
         "/opt",
         "/usr",
@@ -930,11 +942,17 @@ SANDBOX_PROPERTIES = [
 ]
 # Offline: loopback only, and no Unix socket (systemd-resolved, over D-Bus,
 # resolved a name for the account on the runner with PrivateNetwork alone).
+# systemd filters socket(2) for that; only native system calls (the 32-bit
+# ABI's socketcall passes the filter) and no io_uring (which opens sockets
+# without socket(2)).
 OFFLINE_PROPERTIES = [
     "PrivateNetwork=yes",
     "RestrictAddressFamilies=AF_INET",
     "RestrictAddressFamilies=AF_INET6",
     "RestrictAddressFamilies=AF_NETLINK",
+    "SystemCallArchitectures=native",
+    "SystemCallFilter=~io_uring_setup io_uring_enter io_uring_register",
+    "SystemCallErrorNumber=EPERM",
 ]
 # sudo records what it is asked to run and what it receives on stdin, and
 # runs nothing; systemd-run "runs" the variant's script by printing what the
@@ -948,6 +966,7 @@ with open(os.environ["SUDO_LOG"], "a") as handle:
     handle.write(json.dumps(entry) + "\\n")
 if args[:1] == ["systemd-run"] and "uk_replay_determinism.sh" in args[-1]:
     print("::error::the variant's own output", flush=True)
+    sys.stderr.write("::set-output name=forged::on stderr, with no newline")
     sys.exit(int(os.environ.get("SANDBOX_EXIT", "0")))
 """
 REPLAY_SETTINGS = {
@@ -1013,12 +1032,13 @@ def systemd_run(argv):
 
 def stopped_commands(stdout):
     """The variant's output lies between a stop-commands line and the token
-    that resumes them."""
+    that resumes them, after setup-uv's problem matcher is removed."""
     lines = stdout.splitlines()
-    match = re.fullmatch(r"::stop-commands::([0-9a-f]{32})", lines[0])
-    assert match, lines[0]
+    assert lines[0] == "::remove-matcher owner=python::"
+    match = re.fullmatch(r"::stop-commands::([0-9a-f]{32})", lines[1])
+    assert match, lines[1]
     assert lines[-1] == f"::{match.group(1)}::"
-    return lines[1:-1]
+    return lines[2:-1]
 
 
 @pytest.mark.parametrize("exit_status", [0, 3])
@@ -1032,9 +1052,14 @@ def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
         exit_status=exit_status,
     )
     # The sandbox's exit is the step's, and the variant's output is printed
-    # with workflow commands stopped either way.
+    # with workflow commands stopped either way: its stderr too, joined to
+    # stdout, so a last line there with no newline is still inside the fence.
     assert result.returncode == exit_status, result.stderr
-    assert "::error::the variant's own output" in stopped_commands(result.stdout)
+    assert stopped_commands(result.stdout) == [
+        "::error::the variant's own output",
+        "::set-output name=forged::on stderr, with no newline",
+    ]
+    assert result.stderr == ""
     ((call,),) = [[c["argv"] for c in calls]]
     flags, environment, properties, command = systemd_run(call)
     assert flags == [
@@ -1068,7 +1093,10 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
     settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
     calls, result = sandbox_mode(tmp_path, "replay", settings)
     assert result.returncode == 0, result.stderr
-    assert "::error::the variant's own output" in stopped_commands(result.stdout)
+    assert stopped_commands(result.stdout) == [
+        "::error::the variant's own output",
+        "::set-output name=forged::on stderr, with no newline",
+    ]
     # Nothing of the account runs when the dataset goes in. The account
     # writes it in from a pipe, inside the offline sandbox, with absolute
     # tools, so a link left in its copy cannot point the write anywhere
@@ -1129,7 +1157,7 @@ def test_each_stop_token_is_fresh(tmp_path):
     tokens = set()
     for _ in range(3):
         _, result = sandbox_mode(tmp_path, "install", {"REQUIREMENTS": "r.txt"})
-        tokens.add(result.stdout.splitlines()[0])
+        tokens.add(result.stdout.splitlines()[1])
     assert len(tokens) == 3
 
 
@@ -1303,8 +1331,14 @@ def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_sec
         'get_context("spawn").Pool(2)',
         'subprocess.Popen(["sleep", "600"], start_new_session=True)',
         "::error::forged by the stub engine",
+        'sys.stderr.write("::set-" "output name=forged::from stderr")',
+        "raise Forged('an annotation from the stub engine')",
     ):
         assert probe in joined, probe
+    # The forged output is read back: it must be empty.
+    check = next(s for s in steps if "FORGED" in s.get("env", {}))
+    assert check["env"]["FORGED"] == "${{ steps.replay.outputs.forged }}"
+    assert 'if [ -n "$FORGED" ]' in check["run"]
     for expectation in (
         '"interfaces": ["lo"]',
         '"connects_out": False',

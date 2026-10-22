@@ -233,7 +233,9 @@ jobs:
     # replay imports it, and reports what it finds offline (its interfaces,
     # whether a connection out or to D-Bus opens, the SHA-256 of the dataset
     # handed in, a multiprocessing pool, the arguments it was given). It
-    # also leaves a process behind and prints workflow commands. collect
+    # also leaves a process behind and forges workflow commands, on stdout
+    # and on stderr with no newline, and a traceback that setup-uv's problem
+    # matcher would read. collect
     # must kill everything, and the runner's own Python must find that the
     # report reproduces, byte for byte, the one the runner expects.
     name: real replay sandbox
@@ -265,7 +267,7 @@ jobs:
           set -euo pipefail
           echo rfc8785==0.1.4 | sudo -u replay-candidate tee /home/replay-candidate/scorecard/stub-requirements.txt > /dev/null
           sudo -u replay-candidate tee /home/replay-candidate/scorecard/pipeline/compute_uk_event.py > /dev/null <<'PY'
-          import argparse, hashlib, json, multiprocessing, socket, subprocess
+          import argparse, hashlib, json, multiprocessing, socket, subprocess, sys
           from pathlib import Path
 
           import rfc8785  # the freeze, installed in the sandbox
@@ -305,8 +307,14 @@ jobs:
                   "reaches_dbus": reaches_dbus(),
               }
               subprocess.Popen(["sleep", "600"], start_new_session=True)
+              # Workflow commands, and two lines setup-uv's problem matcher
+              # would turn into an annotation; then a command on stderr with
+              # no newline, which the runner reads as a separate stream.
+              print('  File "forged.py", line 1, in forged')
+              print("    raise Forged('an annotation from the stub engine')")
               print("::error::forged by the stub engine")
               print("::set-" "output name=forged::true")  # deprecated, still honoured
+              sys.stderr.write("::set-" "output name=forged::from stderr")
               output = Path(args.output_dir)
               output.mkdir(parents=True, exist_ok=True)
               text = json.dumps(report, indent=1, sort_keys=True) + "\n"

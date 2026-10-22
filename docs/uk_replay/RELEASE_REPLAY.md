@@ -1021,27 +1021,38 @@ services after that:
 
 * `install` builds the variant's exact freeze in the account's copy, with
   the network and without the dataset.
-* `replay` checks that nothing of the account is running and has the
-  account write the dataset into its copy from a pipe, inside an offline
-  service, so a link left in the copy cannot send the bytes anywhere else.
-  It then replays one measure-year from that file
-  (`compute_uk_event --dataset-file`), offline. The service gets its own
-  network namespace, whose only interface is loopback (`PrivateNetwork`),
-  and may open only IPv4, IPv6 and netlink sockets
-  (`RestrictAddressFamilies`; a `socketpair`, which multiprocessing may use,
-  still works). Without Unix sockets it cannot reach
-  systemd-resolved over D-Bus, which on the hosted image resolved a name
-  for the candidate under `PrivateNetwork` alone, or any other host service.
-  `setup` checks both properties from inside an offline service.
+* `replay` checks that nothing of the account is running and has the account
+  write the dataset into its copy from a pipe, inside an offline service,
+  so a link left in the copy cannot send the bytes anywhere else. It then
+  replays one measure-year from that file (`compute_uk_event
+  --dataset-file`), offline. The service gets its own network namespace,
+  whose only interface is loopback (`PrivateNetwork`), and may open only
+  IPv4, IPv6 and netlink sockets (`RestrictAddressFamilies`; a
+  `socketpair`, which multiprocessing may use, still works). Without Unix
+  sockets it cannot reach systemd-resolved over D-Bus, which on the hosted
+  image resolved a name for the candidate under `PrivateNetwork` alone, or
+  any other host service. systemd enforces that on `socket(2)` only, so
+  the service may make only native system calls
+  (`SystemCallArchitectures=native`: the 32-bit x86 ABI's `socketcall`
+  would pass the filter) and none of io_uring's, which can open a socket
+  without `socket(2)`. `setup` checks from inside an offline service that
+  loopback is the only interface, that an IPv4 socket opens and a Unix
+  socket does not, and that `io_uring_setup` fails with `EPERM`.
 
-Both print the variant's output with the runner's workflow commands stopped
-(`::stop-commands::` with a token generated outside the sandbox), so that
-output cannot set a step output or raise an annotation. `collect` then checks
-that no process of the account survives and streams `output/` back; an
-honest run leaves only the replayed artifact there. The runner's own Python
-(`/usr/bin/python3 -E -s`, standard library only) compares it with the
-committed artifact that the job names, and refuses anything but a regular
-file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or cached.
+Both print the variant's output, its stderr joined to its stdout, with the
+runner's workflow commands stopped (`::stop-commands::` with a token
+generated outside the sandbox). The runner reads stderr as a separate
+stream, where a last line with no newline would reach it after the token.
+They first remove the problem matcher that setup-uv registers for the rest
+of the job (owner `python`), because matchers read plain lines, which
+stopping commands does not stop. So that output cannot set a step output or
+raise an annotation, through a workflow command or a matcher. `collect` then
+checks that no process of the account survives and streams `output/` back;
+an honest run leaves only the replayed artifact there. The runner's own
+Python (`/usr/bin/python3 -E -s`, standard library only) compares it with
+the committed artifact that the job names, and refuses anything but a
+regular file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or
+cached.
 
 So a compromised package among a certified freeze's pins cannot read the
 token. The token is not in the sandbox's environment, the runner's processes
@@ -1067,7 +1078,9 @@ runs. CI's `real replay sandbox` job runs `setup`, `install`, `replay` and
 `collect` on every pull request, with no secrets: a stand-in dataset, plus a
 one-package freeze and a stub engine module in the account's copy. The
 freeze installs from PyPI in the sandbox. The stub reports what it finds
-offline, leaves a process behind and prints workflow commands. The runner's
+offline, leaves a process behind, and forges workflow commands (on stdout,
+and on stderr with no newline) and a traceback the matcher would read. The
+runner's
 comparison must find exactly loopback, no connection out or to D-Bus, the
 stand-in's SHA-256, a working process pool and the arguments the job
 passed, and the stub must have set no step output.
