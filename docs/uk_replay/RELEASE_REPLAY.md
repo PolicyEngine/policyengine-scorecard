@@ -1013,10 +1013,10 @@ The real replay in `uk-replay-determinism.yml` runs a certified variant's
 code as the receiver runs a candidate: as the unprivileged account in the
 systemd sandbox that [the receiver](#the-receiver) describes
 (`.github/scripts/uk_replay_sandbox.sh`). Its token step runs before any
-variant code, which keeps such code from redirecting the
-fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file. The job then
-finds the fetched dataset by size and SHA-256 (`find_dataset_bytes`, under
-the runner's own Python) and runs `setup`. The variant's code runs in two
+variant code, which keeps such code from redirecting the fetch through
+`$GITHUB_ENV`, `$GITHUB_PATH` or a planted file. The job then finds the
+fetched dataset by size and SHA-256 (`find_dataset_bytes`, under the
+runner's own Python) and runs `setup`. The variant's code runs in two
 services after that:
 
 * `install` builds the variant's exact freeze in the account's copy, with
@@ -1025,10 +1025,11 @@ services after that:
   account write the dataset into its copy from a pipe, inside an offline
   service, so a link left in the copy cannot send the bytes anywhere else.
   It then replays one measure-year from that file
-  (`compute_uk_event --dataset-file`), offline. The service gets its
-  own network namespace, whose only interface is loopback
-  (`PrivateNetwork`), and may open only IPv4, IPv6 and netlink sockets
-  (`RestrictAddressFamilies`). Without Unix sockets it cannot reach
+  (`compute_uk_event --dataset-file`), offline. The service gets its own
+  network namespace, whose only interface is loopback (`PrivateNetwork`),
+  and may open only IPv4, IPv6 and netlink sockets
+  (`RestrictAddressFamilies`; a `socketpair`, which multiprocessing may use,
+  still works). Without Unix sockets it cannot reach
   systemd-resolved over D-Bus, which on the hosted image resolved a name
   for the candidate under `PrivateNetwork` alone, or any other host service.
   `setup` checks both properties from inside an offline service.
@@ -1067,8 +1068,8 @@ runs. CI's `real replay sandbox` job runs `setup`, `install`, `replay` and
 one-package freeze and a stub engine module in the account's copy. The
 freeze installs from PyPI in the sandbox. The stub reports what it finds
 offline, leaves a process behind and prints workflow commands. The runner's
-comparison must find exactly loopback, no connection out, no Unix socket,
-the stand-in's SHA-256, a working process pool and the arguments the job
+comparison must find exactly loopback, no connection out or to D-Bus, the
+stand-in's SHA-256, a working process pool and the arguments the job
 passed, and the stub must have set no step output.
 
 ## Invariants
