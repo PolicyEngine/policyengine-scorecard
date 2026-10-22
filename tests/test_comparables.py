@@ -144,7 +144,10 @@ def synthetic(
         "subject": "The cost of a test reform",
         "search_terms": ["test reform cost"],
         "worlds": {
-            "test_reform": {"policy": "uk_test_reform", "description": "A test reform world"}
+            "test_reform": {
+                "policy": "uk_test_reform",
+                "description": "A test reform world",
+            }
         },
         "pe_estimates": [
             {
@@ -220,7 +223,12 @@ def synthetic(
                 "status": "comparable",
                 "explains_gap": True,
                 "cause": "A documented difference in the test populations explains it.",
-                "basis": [{"kind": "issue", "ref": "https://github.com/PolicyEngine/test/issues/1"}],
+                "basis": [
+                    {
+                        "kind": "issue",
+                        "ref": "https://github.com/PolicyEngine/test/issues/1",
+                    }
+                ],
             }
         )
     return cmp.AnalysisRecord(
@@ -280,7 +288,9 @@ def note(nid, keys, status, explains=False, **extra):
         "status": status,
         "explains_gap": explains,
         "cause": "a cause long enough to count as one",
-        "basis": [{"kind": "issue", "ref": "https://github.com/PolicyEngine/test/issues/9"}],
+        "basis": [
+            {"kind": "issue", "ref": "https://github.com/PolicyEngine/test/issues/9"}
+        ],
         **extra,
     }
 
@@ -322,6 +332,15 @@ def test_index_lists_every_record_and_only_records():
     assert index["promotion_window_days"] == WINDOW
 
 
+def test_the_index_publishes_the_entry_rules_the_validator_applies():
+    rules = json.loads(cmp.INDEX_PATH.read_text())["entry_rules"]
+    assert set(rules["analysis_tags"]) == cmp.ANALYSIS_TAGS
+    assert set(rules["no_estimate_tags"]) == cmp.NO_ESTIMATE_TAGS
+    assert rules["country_tags"] == list(cmp.COUNTRY_TAGS)
+    assert rules["default_country"] == cmp.DEFAULT_COUNTRY
+    assert rules["search_kinds"] == list(cmp.SEARCH_KINDS)
+
+
 def test_the_index_is_strict_json():
     with pytest.raises(ValueError):
         cmp.render_index({"x": float("nan")})
@@ -337,9 +356,13 @@ def test_max_producer_list_is_kept():
 def test_every_producer_is_complete():
     for country, producers in PRODUCERS["countries"].items():
         for p in producers:
-            assert p["name"] and p["kind"] and p["search_hints"] and p["where_to_look"], p["slug"]
+            assert (
+                p["name"] and p["kind"] and p["search_hints"] and p["where_to_look"]
+            ), p["slug"]
             if p["slug"] not in MAX_LIST[country] and p["slug"] != "open_search":
-                assert p.get("why"), f"{p['slug']} was added beyond Max's list without a reason"
+                assert p.get("why"), (
+                    f"{p['slug']} was added beyond Max's list without a reason"
+                )
 
 
 def test_a_producer_cannot_be_added_in_the_future(tmp_path):
@@ -352,7 +375,10 @@ def test_a_producer_cannot_be_added_in_the_future(tmp_path):
 
 
 def test_state_fiscal_note_sources_belong_to_state_fiscal_note():
-    assert cmp.producer_for_source(PRODUCERS, "US", "ca_fiscal_note") == "state_fiscal_note"
+    assert (
+        cmp.producer_for_source(PRODUCERS, "US", "ca_fiscal_note")
+        == "state_fiscal_note"
+    )
     assert cmp.producer_for_source(PRODUCERS, "UK", "obr_efo") == "obr"
     assert cmp.producer_for_source(PRODUCERS, "UK", "unlisted_tank") is None
 
@@ -362,7 +388,9 @@ def test_state_fiscal_note_sources_belong_to_state_fiscal_note():
 
 def test_childcare_gap_fails_the_gate_without_its_explanation():
     record = childcare()
-    record.annotations = [n for n in record.annotations if n["id"] != "hours-draw-microcosm-1126"]
+    record.annotations = [
+        n for n in record.annotations if n["id"] != "hours-draw-microcosm-1126"
+    ]
     unexplained = [e for e in errors_of(record) if "no annotation explains it" in e]
     # three central years, and the two scenario ranges
     assert len(unexplained) == 7
@@ -371,19 +399,35 @@ def test_childcare_gap_fails_the_gate_without_its_explanation():
 
 def test_childcare_figures_are_what_the_published_files_imply():
     rows = {r["key"]: r for r in cmp.evaluate(childcare(), POLICY)}
-    assert rows["centax_static_central_fy2027"]["gap"] == pytest.approx(0.434 / 0.80 - 1)
-    assert rows["centax_static_central_fy2029"]["gap"] == pytest.approx(0.505 / 0.98 - 1)
-    assert rows["centax_static_central_fy2028"]["gap"] == pytest.approx(0.484 / 0.88 - 1)
+    assert rows["centax_static_central_fy2027"]["gap"] == pytest.approx(
+        0.434 / 0.80 - 1
+    )
+    assert rows["centax_static_central_fy2029"]["gap"] == pytest.approx(
+        0.505 / 0.98 - 1
+    )
+    assert rows["centax_static_central_fy2028"]["gap"] == pytest.approx(
+        0.484 / 0.88 - 1
+    )
     # the scenario range is over by its nearer bound, the low-cost scenario
-    assert rows["centax_static_low_cost_fy2027"]["group_gap"] == pytest.approx(0.434 / 0.58 - 1)
+    assert rows["centax_static_low_cost_fy2027"]["group_gap"] == pytest.approx(
+        0.434 / 0.58 - 1
+    )
     # compared across two worlds, so constructed rather than comparable
     assert rows["centax_static_central_fy2027"]["status"] == "constructed"
     # net of behaviour beside the dashboard's net figure, labelled a mismatch
-    assert rows["centax_net_central_fy2027"]["nearest"] == "both_schemes_dynamic_central_fy2027"
+    assert (
+        rows["centax_net_central_fy2027"]["nearest"]
+        == "both_schemes_dynamic_central_fy2027"
+    )
     assert rows["centax_net_central_fy2027"]["status"] == "concept_mismatch"
-    assert rows["centax_net_central_fy2027"]["nearest_gap"] == pytest.approx(-0.479 / -0.520 - 1)
+    assert rows["centax_net_central_fy2027"]["nearest_gap"] == pytest.approx(
+        -0.479 / -0.520 - 1
+    )
     # CBP's net gain against the dashboard's net cost: compared, signs disagree
-    assert rows["cbp_net_table3_fy2027"]["estimate"] == "both_schemes_dynamic_central_fy2027"
+    assert (
+        rows["cbp_net_table3_fy2027"]["estimate"]
+        == "both_schemes_dynamic_central_fy2027"
+    )
     assert rows["cbp_net_table3_fy2027"]["sign_disagrees"]
     assert rows["cbp_net_table3_fy2027"]["over"]
 
@@ -442,20 +486,31 @@ def _evade(fn):
 
 EVASIONS = {
     "null metric": lambda r: claim0(r).update(
-        metric=None, proposed_metric="cost", compare_to=None, pe_missing="a different metric entirely"
+        metric=None,
+        proposed_metric="cost",
+        compare_to=None,
+        pe_missing="a different metric entirely",
     ),
     "uncompared with a one-line reason": lambda r: claim0(r).update(
         compare_to=None, pe_missing="a different concept, says the stager"
     ),
     "time basis annual": lambda r: claim0(r).update(time_basis="annual"),
     "period moved, fy kept": lambda r: claim0(r).update(period=2031),
-    "basis relabelled to net": lambda r: claim0(r)["conditions"].update(basis="post_behavioural"),
-    "programme relabelled": lambda r: claim0(r)["conditions"].update(program="another_programme"),
+    "basis relabelled to net": lambda r: claim0(r)["conditions"].update(
+        basis="post_behavioural"
+    ),
+    "programme relabelled": lambda r: claim0(r)["conditions"].update(
+        program="another_programme"
+    ),
     "chart reading at a different value": lambda r: claim0(r).update(
-        value_kind="approx_chart_reading", value=-299.0, note="read off the chart by eye"
+        value_kind="approx_chart_reading",
+        value=-299.0,
+        note="read off the chart by eye",
     ),
     "NaN value": lambda r: claim0(r).update(value=float("nan")),
-    "unsigned magnitude": lambda r: claim0(r)["conditions"].update(change_direction="unsigned"),
+    "unsigned magnitude": lambda r: claim0(r)["conditions"].update(
+        change_direction="unsigned"
+    ),
     "two-sided convention": lambda r: claim0(r)["conditions"].update(
         sign_convention="positive = reduction in borrowing; negative = increase in borrowing"
     ),
@@ -472,41 +527,74 @@ EVASIONS = {
         r.annotations.append(note("x", ["ext_cost_fy2027"], "concept_mismatch")),
     ),
     "placeholder basis": lambda r: r.annotations.append(
-        {**note("x", ["ext_cost_fy2027"], "comparable", explains=True), "basis": [{"kind": "document", "ref": "#"}]}
+        {
+            **note("x", ["ext_cost_fy2027"], "comparable", explains=True),
+            "basis": [{"kind": "document", "ref": "#"}],
+        }
     ),
     "a directory as basis": lambda r: r.annotations.append(
-        {**note("x", ["ext_cost_fy2027"], "comparable", explains=True), "basis": [{"kind": "document", "ref": "sources"}]}
+        {
+            **note("x", ["ext_cost_fy2027"], "comparable", explains=True),
+            "basis": [{"kind": "document", "ref": "sources"}],
+        }
     ),
     "a bare host as basis": lambda r: r.annotations.append(
-        {**note("x", ["ext_cost_fy2027"], "comparable", explains=True), "basis": [{"kind": "document", "ref": "https://example.com"}]}
+        {
+            **note("x", ["ext_cost_fy2027"], "comparable", explains=True),
+            "basis": [{"kind": "document", "ref": "https://example.com"}],
+        }
     ),
     "pending before publication": lambda r: r.annotations.append(
-        note("x", ["ext_cost_fy2027"], "pending", tracking_issue="https://github.com/PolicyEngine/test/issues/9")
+        note(
+            "x",
+            ["ext_cost_fy2027"],
+            "pending",
+            tracking_issue="https://github.com/PolicyEngine/test/issues/9",
+        )
     ),
     "same-day reharvest": lambda r: (
         post_publication(r, later=SEARCH_DATE),
         r.annotations.append(
-            note("x", ["ext_cost_fy2027"], "pending", tracking_issue="https://github.com/PolicyEngine/test/issues/9")
+            note(
+                "x",
+                ["ext_cost_fy2027"],
+                "pending",
+                tracking_issue="https://github.com/PolicyEngine/test/issues/9",
+            )
         ),
     ),
     "future-dated reharvest": lambda r: (
         post_publication(r, later="2099-12-31"),
         r.annotations.append(
-            note("x", ["ext_cost_fy2027"], "pending", tracking_issue="https://github.com/PolicyEngine/test/issues/9")
+            note(
+                "x",
+                ["ext_cost_fy2027"],
+                "pending",
+                tracking_issue="https://github.com/PolicyEngine/test/issues/9",
+            )
         ),
     ),
     "reharvest with no publication date": lambda r: (
         post_publication(r),
         r.analysis.update(published=None),
         r.annotations.append(
-            note("x", ["ext_cost_fy2027"], "pending", tracking_issue="https://github.com/PolicyEngine/test/issues/9")
+            note(
+                "x",
+                ["ext_cost_fy2027"],
+                "pending",
+                tracking_issue="https://github.com/PolicyEngine/test/issues/9",
+            )
         ),
     ),
     "logged under open_search": lambda r: (
         claim0(r).update(found_by="open_search"),
-        r.search_log["searches"][0].update(producers=_producers("open_search", ["ext_cost_fy2027"])),
+        r.search_log["searches"][0].update(
+            producers=_producers("open_search", ["ext_cost_fy2027"])
+        ),
     ),
-    "scale word disagrees": lambda r: claim0(r).update(value_raw="-100bn", quote="Cost -100bn"),
+    "scale word disagrees": lambda r: claim0(r).update(
+        value_raw="-100bn", quote="Cost -100bn"
+    ),
 }
 
 
@@ -536,7 +624,9 @@ def test_a_search_cannot_predate_the_producer_list():
 
 def test_a_prepublish_search_comes_before_publication():
     errors = mutate(lambda r: r.analysis.update(published="2026-10-20"))
-    assert any("a prepublish search is dated on or before publication" in e for e in errors)
+    assert any(
+        "a prepublish search is dated on or before publication" in e for e in errors
+    )
 
 
 def test_a_backfill_needs_and_follows_publication():
@@ -589,7 +679,12 @@ def test_a_backfill_find_may_wait_on_its_issue():
     record = synthetic(-100.0, -300.0)
     f(record)
     record.annotations.append(
-        note("x", ["ext_cost_fy2027"], "pending", tracking_issue="https://github.com/PolicyEngine/test/issues/4")
+        note(
+            "x",
+            ["ext_cost_fy2027"],
+            "pending",
+            tracking_issue="https://github.com/PolicyEngine/test/issues/4",
+        )
     )
     assert errors_of(record) == []
 
@@ -636,7 +731,12 @@ def test_a_skipped_producer_fails():
 def test_an_unlisted_producer_fails():
     errors = mutate(
         lambda r: _search(r).append(
-            {"producer": "made_up", "result": "none_found", "queries": ["q"], "claims": []}
+            {
+                "producer": "made_up",
+                "result": "none_found",
+                "queries": ["q"],
+                "claims": [],
+            }
         )
     )
     assert any("not on the UK list" in e for e in errors)
@@ -685,7 +785,9 @@ def test_a_source_names_a_real_producer(source):
 
 def test_an_unused_primary_fails():
     def f(r):
-        extra = dict(r.manifest[0], sha256="d" * 64, url="https://example.org/other.pdf")
+        extra = dict(
+            r.manifest[0], sha256="d" * 64, url="https://example.org/other.pdf"
+        )
         r.manifest.append(extra)
 
     assert any("cited by no claim" in e for e in mutate(f))
@@ -714,13 +816,22 @@ def test_an_unhashed_primary_fails():
 
 
 def test_a_publication_date_is_real_and_not_after_its_finding():
-    assert any("real YYYY-MM-DD" in e for e in mutate(lambda r: claim0(r)["publication"].update(date="2026-02-31")))
-    assert any("after it was found" in e for e in mutate(lambda r: claim0(r)["publication"].update(date="2026-10-30")))
+    assert any(
+        "real YYYY-MM-DD" in e
+        for e in mutate(lambda r: claim0(r)["publication"].update(date="2026-02-31"))
+    )
+    assert any(
+        "after it was found" in e
+        for e in mutate(lambda r: claim0(r)["publication"].update(date="2026-10-30"))
+    )
 
 
 def test_a_different_world_needs_a_reason():
     def f(r):
-        r.analysis["worlds"]["other"] = {"policy": "uk_other", "description": "another world here"}
+        r.analysis["worlds"]["other"] = {
+            "policy": "uk_other",
+            "description": "another world here",
+        }
         claim0(r)["world"] = "other"
 
     assert any("compare across worlds only with" in e for e in mutate(f))
@@ -728,13 +839,23 @@ def test_a_different_world_needs_a_reason():
 
 def test_a_cross_world_comparison_is_not_plainly_comparable():
     def f(r):
-        r.analysis["worlds"]["other"] = {"policy": "uk_other", "description": "another world here"}
+        r.analysis["worlds"]["other"] = {
+            "policy": "uk_other",
+            "description": "another world here",
+        }
         claim0(r)["world"] = "other"
         claim0(r)["compare_to"]["across_worlds"] = {
             "reason": "the quantities are the same in both worlds, as measured",
-            "basis": [{"kind": "issue", "ref": "https://github.com/PolicyEngine/test/issues/2"}],
+            "basis": [
+                {
+                    "kind": "issue",
+                    "ref": "https://github.com/PolicyEngine/test/issues/2",
+                }
+            ],
         }
-        r.annotations.append(note("x", ["ext_cost_fy2027"], "comparable", explains=True))
+        r.annotations.append(
+            note("x", ["ext_cost_fy2027"], "comparable", explains=True)
+        )
 
     assert any("constructed, not comparable" in e for e in mutate(f))
 
@@ -745,12 +866,16 @@ def test_baselines_must_agree():
 
 
 def test_a_world_baseline_is_registered():
-    errors = mutate(lambda r: r.analysis["worlds"]["test_reform"].update(baseline="not_a_world"))
+    errors = mutate(
+        lambda r: r.analysis["worlds"]["test_reform"].update(baseline="not_a_world")
+    )
     assert any("is not registered" in e for e in errors)
 
 
 def test_an_unregistered_claim_baseline_fails():
-    errors = mutate(lambda r: claim0(r).update(baseline_policy="not_a_registered_world"))
+    errors = mutate(
+        lambda r: claim0(r).update(baseline_policy="not_a_registered_world")
+    )
     assert any("is not registered" in e for e in errors)
 
 
@@ -760,7 +885,11 @@ def test_a_restated_figure_is_not_compared():
 
 
 def test_an_administrative_level_belongs_to_a_producer_source():
-    errors = mutate(lambda r: claim0(r).update(benchmark_class="administrative_fact", world="baseline"))
+    errors = mutate(
+        lambda r: claim0(r).update(
+            benchmark_class="administrative_fact", world="baseline"
+        )
+    )
     assert any("calibration material" in e for e in errors)
 
 
@@ -795,7 +924,9 @@ def test_a_claim_beside_its_nearest_estimate_needs_a_cited_mismatch():
 
     def annotate(r):
         name_it(r)
-        r.annotations.append(note("net-vs-static", ["ext_cost_fy2027"], "concept_mismatch"))
+        r.annotations.append(
+            note("net-vs-static", ["ext_cost_fy2027"], "concept_mismatch")
+        )
 
     assert mutate(annotate) == []
 
@@ -805,7 +936,9 @@ def test_a_range_needs_both_bounds_and_is_judged_as_a_range():
         claim0(r).update(value_kind="range_low")
         claim0(r)["conditions"]["range_group"] = "g"
 
-    assert any("needs exactly one range_low and one range_high" in e for e in mutate(lone))
+    assert any(
+        "needs exactly one range_low and one range_high" in e for e in mutate(lone)
+    )
 
     def pair(pe, low, high):
         record = synthetic(pe, low)
@@ -814,7 +947,13 @@ def test_a_range_needs_both_bounds_and_is_judged_as_a_range():
         c["conditions"]["range_group"] = "g"
         other = copy.deepcopy(c)
         printed = ("-" if high < 0 else "") + repr(abs(high))
-        other.update(key="ext_cost_high_fy2027", value_kind="range_high", value=high, value_raw=printed, quote=f"Cost {printed}")
+        other.update(
+            key="ext_cost_high_fy2027",
+            value_kind="range_high",
+            value=high,
+            value_raw=printed,
+            quote=f"Cost {printed}",
+        )
         record.claims.append(other)
         for p in _search(record):
             if p["producer"] == "ifs":
@@ -833,24 +972,39 @@ def test_a_range_needs_both_bounds_and_is_judged_as_a_range():
 def test_an_issue_basis_is_a_github_issue():
     def f(r):
         r.annotations.append(
-            {**note("x", ["ext_cost_fy2027"], "comparable", explains=True), "basis": [{"kind": "issue", "ref": "https://example.org/ticket/1"}]}
+            {
+                **note("x", ["ext_cost_fy2027"], "comparable", explains=True),
+                "basis": [{"kind": "issue", "ref": "https://example.org/ticket/1"}],
+            }
         )
 
     assert any("GitHub issue or pull URL" in e for e in mutate(f))
 
 
 def test_a_basis_may_be_a_file_in_this_repository():
-    assert cmp._check_basis({"kind": "document", "ref": "docs/COMPARABLES.md#the-gap"}, "t") == []
+    assert (
+        cmp._check_basis(
+            {"kind": "document", "ref": "docs/COMPARABLES.md#the-gap"}, "t"
+        )
+        == []
+    )
     assert cmp._check_basis({"kind": "document", "ref": "docs"}, "t") != []
     assert cmp._check_basis({"kind": "document", "ref": "../../etc/passwd"}, "t") != []
 
 
 def test_a_staged_claim_is_never_re_signed():
-    assert cmp.check_value({"value": 1, "value_raw": "1", "normalization": "as printed", "sign": -1}, "t")
+    assert cmp.check_value(
+        {"value": 1, "value_raw": "1", "normalization": "as printed", "sign": -1}, "t"
+    )
 
 
 def test_an_estimate_may_be_re_signed_with_a_reason():
-    row = {"value": -434e6, "value_raw": "0.434", "normalization": "GBP bn x 1e9 -> GBP", "sign": -1}
+    row = {
+        "value": -434e6,
+        "value_raw": "0.434",
+        "normalization": "GBP bn x 1e9 -> GBP",
+        "sign": -1,
+    }
     assert any("sign_basis" in e for e in cmp.check_value(row, "t", signed=True))
     row["sign_basis"] = "printed as a positive cost"
     assert cmp.check_value(row, "t", signed=True) == []
@@ -870,7 +1024,9 @@ def test_duplicate_json_keys_fail(tmp_path):
 
 # --- the gap rule ----------------------------------------------------------------------
 
-nonzero = st.floats(min_value=-1e12, max_value=1e12, allow_nan=False).filter(lambda x: abs(x) > 1e-3)
+nonzero = st.floats(min_value=-1e12, max_value=1e12, allow_nan=False).filter(
+    lambda x: abs(x) > 1e-3
+)
 
 
 @given(x=nonzero)
@@ -887,12 +1043,16 @@ def test_gap_is_invariant_to_rescaling_both_values(pe, ext, k):
 
 @given(pe=nonzero, ext=nonzero)
 def test_opposite_convention_is_the_value_negated(pe, ext):
-    assert cmp.relative_gap(pe, -ext, signs.OPPOSITE) == cmp.relative_gap(pe, ext, signs.SAME)
+    assert cmp.relative_gap(pe, -ext, signs.OPPOSITE) == cmp.relative_gap(
+        pe, ext, signs.SAME
+    )
 
 
 @given(pe=nonzero, ext=nonzero)
 def test_magnitudes_ignore_sign(pe, ext):
-    assert cmp.relative_gap(pe, ext, signs.MAGNITUDE) == cmp.relative_gap(abs(pe), abs(ext), signs.SAME)
+    assert cmp.relative_gap(pe, ext, signs.MAGNITUDE) == cmp.relative_gap(
+        abs(pe), abs(ext), signs.SAME
+    )
 
 
 @given(pe=nonzero, ext=nonzero, t=st.floats(0.001, 0.999))
@@ -930,7 +1090,11 @@ def test_no_rule_no_gap():
     ],
 )
 def test_ambiguous_conventions_do_not_orient(convention):
-    claim = {"metric": "revenue_change", "conditions": {"sign_convention": convention}, "source": "x"}
+    claim = {
+        "metric": "revenue_change",
+        "conditions": {"sign_convention": convention},
+        "source": "x",
+    }
     assert cmp.orientation(claim, "UK")[0] == signs.UNKNOWN
 
 
@@ -942,9 +1106,10 @@ def test_the_policy_keeps_the_threshold_below_one(tmp_path):
             cmp.load_policy(path)
 
 
-def test_the_policy_rejects_a_bad_window(tmp_path):
+@pytest.mark.parametrize("days", [0, 91, 7.5, True, "7"])
+def test_the_policy_rejects_a_bad_window(tmp_path, days):
     path = tmp_path / "policy.json"
-    path.write_text(json.dumps(dict(POLICY, promotion_window_days=0)))
+    path.write_text(json.dumps(dict(POLICY, promotion_window_days=days)))
     with pytest.raises(ValueError, match="promotion_window_days"):
         cmp.load_policy(path)
 
@@ -998,11 +1163,17 @@ def test_printed_forms(raw, value):
 
 @pytest.mark.parametrize(
     "raw, normalization",
-    [("£800m", "GBP bn x 1e9 -> GBP"), ("2.1%", "GBP bn x 1e9 -> GBP"), ("£0.8bn", "as printed")],
+    [
+        ("£800m", "GBP bn x 1e9 -> GBP"),
+        ("2.1%", "GBP bn x 1e9 -> GBP"),
+        ("£0.8bn", "as printed"),
+    ],
 )
 def test_a_printed_scale_must_match_the_normalization(raw, normalization):
     value = cmp.parse_printed(raw) * cmp.NORMALIZATIONS[normalization][0]
-    errors = cmp.check_value({"value": value, "value_raw": raw, "normalization": normalization}, "t")
+    errors = cmp.check_value(
+        {"value": value, "value_raw": raw, "normalization": normalization}, "t"
+    )
     assert any("states the scale" in e for e in errors)
 
 
@@ -1019,7 +1190,11 @@ def test_app_record_and_index_cite_the_same_search(directory):
     record = cmp.load_analysis(directory)
     block = cmp.app_record(record)
     entry = json.loads(cmp.INDEX_PATH.read_text())["analyses"][directory.name]
-    search = next(s for s in entry["searches"] if s["date"] == block["searchDate"] and s["kind"] == block["searchKind"])
+    search = next(
+        s
+        for s in entry["searches"]
+        if s["date"] == block["searchDate"] and s["kind"] == block["searchKind"]
+    )
     assert block["scorecardSource"] == directory.name
     assert block["producersSearched"] == search["producers_searched"]
     assert block["found"] == search["found"]
@@ -1031,7 +1206,9 @@ def test_index_comparisons_are_every_staged_estimate(directory):
     record = cmp.load_analysis(directory)
     entry = json.loads(cmp.INDEX_PATH.read_text())["analyses"][directory.name]
     rows = {r["key"]: r for r in cmp.evaluate(record, POLICY)}
-    assert [c["claim"] for c in entry["comparisons"]] == [c["key"] for c in record.claims]
+    assert [c["claim"] for c in entry["comparisons"]] == [
+        c["key"] for c in record.claims
+    ]
     assert entry["current_pins"] == cmp.current_pins(record.analysis)
     for c in entry["comparisons"]:
         row = rows[c["claim"]]
@@ -1049,7 +1226,9 @@ def test_scaffold_lists_every_producer(tmp_path):
     directory = cmp.scaffold("uk", "app", "new-dashboard", SEARCH_DATE, root=tmp_path)
     log = json.loads((directory / "search_log.json").read_text())
     logged = [p["producer"] for p in log["searches"][0]["producers"]]
-    assert logged == [p["slug"] for p in cmp.required_producers(PRODUCERS, "UK", SEARCH_DATE)]
+    assert logged == [
+        p["slug"] for p in cmp.required_producers(PRODUCERS, "UK", SEARCH_DATE)
+    ]
     assert directory.name == "analysis-uk-new-dashboard"
 
 
@@ -1072,15 +1251,47 @@ def test_no_estimate_is_only_for_posts_that_are_not_analyses():
 
 def test_due_lists_recent_estimates_only(tmp_path):
     apps = [
-        {"slug": "a", "countryId": "uk", "date": "2026-10-12 12:00:00", "displayWithResearch": True, "tags": ["uk", "policy"]},
-        {"slug": "old", "countryId": "uk", "date": "2026-01-01", "displayWithResearch": True, "tags": ["uk", "policy"]},
-        {"slug": "tool", "countryId": "us", "date": "2026-10-01", "displayWithResearch": True, "tags": ["us"]},
-        {"slug": "unlisted", "countryId": "us", "date": "2026-10-03", "tags": ["us", "policy"]},
+        {
+            "slug": "a",
+            "countryId": "uk",
+            "date": "2026-10-12 12:00:00",
+            "displayWithResearch": True,
+            "tags": ["uk", "policy"],
+        },
+        {
+            "slug": "old",
+            "countryId": "uk",
+            "date": "2026-01-01",
+            "displayWithResearch": True,
+            "tags": ["uk", "policy"],
+        },
+        {
+            "slug": "tool",
+            "countryId": "us",
+            "date": "2026-10-01",
+            "displayWithResearch": True,
+            "tags": ["us"],
+        },
+        {
+            "slug": "unlisted",
+            "countryId": "us",
+            "date": "2026-10-03",
+            "tags": ["us", "policy"],
+        },
     ]
     posts = [
         {"filename": "Some_Post.md", "date": "2026-10-02", "tags": ["us", "policy"]},
-        {"filename": "budget-costing.md", "date": "2026-10-04", "tags": ["uk", "autumn-budget"]},
-        {"filename": "event.md", "date": "2026-10-03", "tags": ["uk", "event"], "comparables": {"status": "no_estimate", "reason": "x"}},
+        {
+            "filename": "budget-costing.md",
+            "date": "2026-10-04",
+            "tags": ["uk", "autumn-budget"],
+        },
+        {
+            "filename": "event.md",
+            "date": "2026-10-03",
+            "tags": ["uk", "event"],
+            "comparables": {"status": "no_estimate", "reason": "x"},
+        },
         {"filename": "untagged.md", "date": "2026-10-05", "tags": ["technical"]},
     ]
     rows = cmp.due(apps, posts, "2026-10-21", 183, root=tmp_path)
@@ -1094,7 +1305,15 @@ def test_due_lists_recent_estimates_only(tmp_path):
 
 
 def test_due_refuses_two_entries_sharing_a_record(tmp_path):
-    apps = [{"slug": "x", "countryId": "uk", "date": "2026-10-12", "displayWithResearch": True, "tags": ["uk", "policy"]}]
+    apps = [
+        {
+            "slug": "x",
+            "countryId": "uk",
+            "date": "2026-10-12",
+            "displayWithResearch": True,
+            "tags": ["uk", "policy"],
+        }
+    ]
     posts = [{"filename": "x.md", "date": "2026-10-13", "tags": ["uk", "policy"]}]
     with pytest.raises(ValueError, match="would share the record analysis-uk-x"):
         cmp.due(apps, posts, "2026-10-21", 183, root=tmp_path)
@@ -1107,7 +1326,11 @@ def _entry(search_dates, pending=(), pins_match=True):
     return {
         "current_pins": [PIN],
         "searches": [
-            {"date": d, "kind": "reharvest", "results_pins": [PIN] if pins_match else ["x"]}
+            {
+                "date": d,
+                "kind": "reharvest",
+                "results_pins": [PIN] if pins_match else ["x"],
+            }
             for d in search_dates
         ],
         "comparisons": [
@@ -1128,7 +1351,11 @@ def test_fresh_exactly_when_a_search_falls_in_the_window(offsets, window):
     assert (cmp.fresh(_entry(dates), PUSH, window) == []) == in_window
 
 
-@given(offsets=st.lists(days_st, min_size=1, max_size=6), w1=st.integers(1, 60), w2=st.integers(1, 60))
+@given(
+    offsets=st.lists(days_st, min_size=1, max_size=6),
+    w1=st.integers(1, 60),
+    w2=st.integers(1, 60),
+)
 def test_a_wider_window_is_never_stricter(offsets, w1, w2):
     dates = sorted(shift(PUSH, o) for o in offsets)
     narrow, wide = sorted((w1, w2))
@@ -1219,7 +1446,11 @@ def test_db_holds_exactly_the_records_claims(db):
         claims = {c["key"]: c for c in record.claims}
         for row in cmp.evaluate(record, POLICY):
             c = claims[row["key"]]
-            if c["attribution"] == "restated" or c.get("metric") is None or c.get("unit_concept") is None:
+            if (
+                c["attribution"] == "restated"
+                or c.get("metric") is None
+                or c.get("unit_concept") is None
+            ):
                 continue
             expected[(record.analysis["id"], row["key"])] = (row, c)
     seen = set()
@@ -1229,11 +1460,14 @@ def test_db_holds_exactly_the_records_claims(db):
         seen.add(key)
         row, claim = expected[key]
         results = db.execute(
-            "SELECT status, computed_value FROM pe_results WHERE claim_id = ?", (r["claim_id"],)
+            "SELECT status, computed_value FROM pe_results WHERE claim_id = ?",
+            (r["claim_id"],),
         ).fetchall()
         history = 1 + sum(
             1
-            for e in cmp.load_analysis(cmp.SOURCES / f"analysis-{key[0].replace('/', '-')}").analysis.get("superseded_estimates", [])
+            for e in cmp.load_analysis(
+                cmp.SOURCES / f"analysis-{key[0].replace('/', '-')}"
+            ).analysis.get("superseded_estimates", [])
             if e["key"] in (row["estimate"], row["nearest"])
         )
         if row["estimate"] or row["nearest"]:

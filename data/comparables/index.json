@@ -3,6 +3,48 @@
  "schema": "comparables/index/1",
  "gap_threshold": 0.25,
  "promotion_window_days": 7,
+ "entry_rules": {
+  "analysis_tags": [
+   "2024-election",
+   "autumn-budget",
+   "behavioral-responses",
+   "benefit",
+   "benefit-access",
+   "child-tax-credit",
+   "election",
+   "healthcare",
+   "inflation",
+   "interactives",
+   "policy",
+   "reconciliation",
+   "tariffs",
+   "tax",
+   "technical",
+   "vat"
+  ],
+  "no_estimate_tags": [
+   "april-fools",
+   "conferences",
+   "event",
+   "giving",
+   "org",
+   "year-in-review"
+  ],
+  "country_tags": [
+   "uk",
+   "us",
+   "ca",
+   "ng",
+   "il"
+  ],
+  "default_country": "us",
+  "search_kinds": [
+   "prepublish",
+   "backfill",
+   "reharvest",
+   "prepromotion"
+  ]
+ },
  "analyses": {
   "analysis-uk-childcare-100k-threshold": {
    "id": "uk/childcare-100k-threshold",

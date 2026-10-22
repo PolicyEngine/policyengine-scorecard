@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -587,7 +587,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-10-21",
-   "note": "1 analyses searched, 20 claims, 20 with the analysis's own figure beside them"
+   "note": "1 analysis searched, 22 claims, 22 PolicyEngine results beside them"
   },
   {
    "id": "analysis-comparables-us",
@@ -598,7 +598,7 @@
    "stage": "registered",
    "running": false,
    "updated": "2026-10-21",
-   "note": "0 analyses searched, 0 claims, 0 with the analysis's own figure beside them"
+   "note": "0 analyses searched, 0 claims, 0 PolicyEngine results beside them"
   }
  ]
 }

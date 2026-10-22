@@ -206,7 +206,10 @@ _SCALE_WORDS = (
     (re.compile(r"^\s*(?:tn|trillion)\b", re.I), "tn"),
     (re.compile(r"^\s*(?:m|mn|million)\b", re.I), "m"),
     (re.compile(r"^\s*(?:k|thousand)\b", re.I), "k"),
-    (re.compile(r"^\s*(?:%|per\s?cent\b|percent\b|pp\b|percentage points?\b)", re.I), "pct"),
+    (
+        re.compile(r"^\s*(?:%|per\s?cent\b|percent\b|pp\b|percentage points?\b)", re.I),
+        "pct",
+    ),
 )
 
 _NUMBER = re.compile(r"\d+(?:,\d{3})*(?:\.\d+)?|\.\d+")
@@ -449,10 +452,16 @@ def load_policy(path: Path = POLICY_PATH) -> dict:
         raise ValueError(
             f"{path}: gap_threshold must be a number between 0 and 1: {threshold!r}"
         )
-    for key in ("promotion_window_days", "reharvest_window_days"):
+    # PolicyEngine/newsletters refuses an index whose window is outside
+    # 1-90 days, so a mistyped window cannot make an old search count
+    for key, most in (("promotion_window_days", 90), ("reharvest_window_days", 366)):
         days = policy.get(key)
-        if not (isinstance(days, int) and not isinstance(days, bool) and days > 0):
-            raise ValueError(f"{path}: {key} must be a positive whole number: {days!r}")
+        if not (
+            isinstance(days, int) and not isinstance(days, bool) and 0 < days <= most
+        ):
+            raise ValueError(
+                f"{path}: {key} must be a whole number of days from 1 to {most}: {days!r}"
+            )
     return policy
 
 
@@ -549,7 +558,9 @@ def load_analysis(directory: Path) -> AnalysisRecord:
             continue
         try:
             parts[name] = (
-                _read_jsonl(path) if name.endswith(".jsonl") else _loads(path.read_text())
+                _read_jsonl(path)
+                if name.endswith(".jsonl")
+                else _loads(path.read_text())
             )
         except (ValueError, json.JSONDecodeError) as exc:
             errors.append(f"{directory.name}: {name} does not parse: {exc}")
@@ -647,7 +658,9 @@ def _check_basis(basis: dict, where: str) -> list[str]:
 
 def _check_bases(bases, where: str) -> list[str]:
     if not (isinstance(bases, list) and bases):
-        return [f"{where}: basis must cite at least one source (no fabricated mechanisms)"]
+        return [
+            f"{where}: basis must cite at least one source (no fabricated mechanisms)"
+        ]
     errors = []
     for b in bases:
         errors.extend(_check_basis(b if isinstance(b, dict) else {}, where))
@@ -669,7 +682,9 @@ def _check_identity(row: dict, where: str) -> list[str]:
     if fy is not None:
         match = _FY.match(fy)
         if not match or (int(match.group(1)) + 1) % 100 != int(match.group(2)):
-            errors.append(f"{where}: conditions.fy {fy!r} is not a financial year like 2027-28")
+            errors.append(
+                f"{where}: conditions.fy {fy!r} is not a financial year like 2027-28"
+            )
         else:
             end = int(match.group(1)) + 1
             if row.get("period") != end:
@@ -690,7 +705,9 @@ def _check_estimate(e: dict, where: str, world_keys: set) -> list[str]:
     if not _registered(Metric, e.get("metric")):
         errors.append(f"{where}: metric {e.get('metric')!r} is not registered")
     if not _registered(UnitConcept, e.get("unit_concept")):
-        errors.append(f"{where}: unit_concept {e.get('unit_concept')!r} is not registered")
+        errors.append(
+            f"{where}: unit_concept {e.get('unit_concept')!r} is not registered"
+        )
     if not _registered(TimeBasis, e.get("time_basis")):
         errors.append(f"{where}: time_basis {e.get('time_basis')!r} is not registered")
     if type(e.get("period")) is not int:
@@ -707,7 +724,10 @@ def _check_estimate(e: dict, where: str, world_keys: set) -> list[str]:
     for f in ("path", "field", "dataset"):
         if not _nonempty_str(prov.get(f)):
             errors.append(f"{where}: provenance.{f} is empty")
-    if not (isinstance(prov.get("computed_at"), str) and _DATETIME.match(prov["computed_at"])):
+    if not (
+        isinstance(prov.get("computed_at"), str)
+        and _DATETIME.match(prov["computed_at"])
+    ):
         errors.append(f"{where}: provenance.computed_at must be an ISO date or time")
     engine = prov.get("engine")
     if not (_string_map(engine) and engine):
@@ -717,7 +737,8 @@ def _check_estimate(e: dict, where: str, world_keys: set) -> list[str]:
 
 def _same_quantity(claim: dict, estimate: dict) -> bool:
     return all(claim.get(f) == estimate.get(f) for f in IDENTITY_FIELDS) and all(
-        (claim.get("conditions") or {}).get(f) == (estimate.get("conditions") or {}).get(f)
+        (claim.get("conditions") or {}).get(f)
+        == (estimate.get("conditions") or {}).get(f)
         for f in IDENTITY_CONDITIONS
     )
 
@@ -790,7 +811,9 @@ def validate(
         errors.append(f"{name}: owner.author must be the app-v2 authors.json key")
     published = a.get("published")
     if published is not None and not (_is_date(published) and published <= today):
-        errors.append(f"{name}: published must be a real date no later than today, or null")
+        errors.append(
+            f"{name}: published must be a real date no later than today, or null"
+        )
         published = None
     worlds = a.get("worlds")
     if not isinstance(worlds, dict):
@@ -815,7 +838,9 @@ def validate(
     for i, e in enumerate(a.get("pe_estimates") or []):
         key = e.get("key")
         if not (isinstance(key, str) and _KEY.match(key)) or key in estimates:
-            errors.append(f"{name}: pe_estimates[{i}]: key {key!r} missing, malformed or repeated")
+            errors.append(
+                f"{name}: pe_estimates[{i}]: key {key!r} missing, malformed or repeated"
+            )
             continue
         estimates[key] = e
         errors.extend(_check_estimate(e, f"{name}: estimate {key}", world_keys))
@@ -830,11 +855,17 @@ def validate(
         if e.get("key") not in estimates:
             errors.append(f"{where}: key {e.get('key')!r} is not a current estimate's")
         if not (_is_date(e.get("superseded_on")) and e["superseded_on"] <= today):
-            errors.append(f"{where}: superseded_on must be a real date no later than today")
+            errors.append(
+                f"{where}: superseded_on must be a real date no later than today"
+            )
         errors.extend(_check_estimate(e, where, world_keys))
         if not any(err.startswith(where) and "provenance" in err for err in errors):
             superseded_pins.add(pin(e["provenance"]))
-    pins_now = set(current_pins(a)) if not any("provenance" in err for err in errors) else set()
+    pins_now = (
+        set(current_pins(a))
+        if not any("provenance" in err for err in errors)
+        else set()
+    )
 
     # manifest ----------------------------------------------------------------
     manifest: dict[str, dict] = {}
@@ -872,7 +903,9 @@ def validate(
         if date > today:
             errors.append(f"{where}: dated {date}, after today ({today})")
         if date < earliest:
-            errors.append(f"{where}: dated {date}, before the {country} producer list ({earliest})")
+            errors.append(
+                f"{where}: dated {date}, before the {country} producer list ({earliest})"
+            )
         if date < previous_date:
             errors.append(f"{where}: searches must be in date order")
         previous_date = date
@@ -881,7 +914,9 @@ def validate(
         if i == 0:
             first_date = date
             if skind not in FIRST_KINDS:
-                errors.append(f"{where}: the first search is a prepublish or backfill search")
+                errors.append(
+                    f"{where}: the first search is a prepublish or backfill search"
+                )
         elif skind in FIRST_KINDS:
             errors.append(f"{where}: only the first search is {skind}")
         if skind == "prepublish" and published is not None and date > published:
@@ -890,16 +925,26 @@ def validate(
             )
         if skind == "backfill":
             if published is None:
-                errors.append(f"{where}: a backfill search needs analysis.json published")
+                errors.append(
+                    f"{where}: a backfill search needs analysis.json published"
+                )
             elif date < published:
-                errors.append(f"{where}: a backfill search is dated after publication ({published})")
+                errors.append(
+                    f"{where}: a backfill search is dated after publication ({published})"
+                )
         if skind in LATER_KINDS:
             if published is None:
-                errors.append(f"{where}: a {skind} search needs analysis.json published")
+                errors.append(
+                    f"{where}: a {skind} search needs analysis.json published"
+                )
             elif date <= published:
-                errors.append(f"{where}: a {skind} search is dated after publication ({published})")
+                errors.append(
+                    f"{where}: a {skind} search is dated after publication ({published})"
+                )
             if first_date is not None and date <= first_date:
-                errors.append(f"{where}: a {skind} search is dated after the first search ({first_date})")
+                errors.append(
+                    f"{where}: a {skind} search is dated after the first search ({first_date})"
+                )
         if not _nonempty_str(s.get("by")):
             errors.append(f"{where}: by must name the session or Subfleet job")
         pins = s.get("results_pins")
@@ -909,7 +954,9 @@ def validate(
                 "(repo@commit:sha256; `comparables pins` prints them)"
             )
         elif pins_now and not set(pins) <= pins_now | superseded_pins:
-            errors.append(f"{where}: results_pins name a results file no estimate is read from")
+            errors.append(
+                f"{where}: results_pins name a results file no estimate is read from"
+            )
         entries = s.get("producers")
         if not isinstance(entries, list):
             errors.append(f"{where}: producers must be a list")
@@ -922,7 +969,9 @@ def validate(
         if missing:
             errors.append(f"{where}: producers not searched: {missing}")
         if unknown:
-            errors.append(f"{where}: producers not on the {country} list on {date}: {unknown}")
+            errors.append(
+                f"{where}: producers not on the {country} list on {date}: {unknown}"
+            )
         if len(logged) != len(set(logged)):
             errors.append(f"{where}: a producer is logged twice")
         by_slug = {p["slug"]: p for p in required}
@@ -936,8 +985,12 @@ def validate(
             claims = entry.get("claims", [])
             queries = entry.get("queries", [])
             checked = entry.get("checked", [])
-            if not (_string_list(claims) and _string_list(queries) and _string_list(checked)):
-                errors.append(f"{pwhere}: claims, queries and checked are lists of strings")
+            if not (
+                _string_list(claims) and _string_list(queries) and _string_list(checked)
+            ):
+                errors.append(
+                    f"{pwhere}: claims, queries and checked are lists of strings"
+                )
                 continue
             if result not in RESULTS:
                 errors.append(f"{pwhere}: result {result!r} not in {RESULTS}")
@@ -957,14 +1010,18 @@ def validate(
                     errors.append(f"{pwhere}: not_applicable with claims")
                 continue
             if not (queries or checked):
-                errors.append(f"{pwhere}: {result} with no query run and no page checked")
+                errors.append(
+                    f"{pwhere}: {result} with no query run and no page checked"
+                )
             if result == "none_found" and claims:
                 errors.append(f"{pwhere}: none_found with claims")
             if result == "found_not_staged":
                 if claims:
                     errors.append(f"{pwhere}: found_not_staged with claims")
                 if not checked:
-                    errors.append(f"{pwhere}: found_not_staged lists the pages it was seen on")
+                    errors.append(
+                        f"{pwhere}: found_not_staged lists the pages it was seen on"
+                    )
                 if not _nonempty_str(entry.get("note"), 20):
                     errors.append(
                         f"{pwhere}: found_not_staged says what was found and why it is not staged"
@@ -973,7 +1030,9 @@ def validate(
                 errors.append(f"{pwhere}: found with no claims")
             for key in claims:
                 if key in claim_found:
-                    errors.append(f"{pwhere}: claim {key} already found by an earlier search")
+                    errors.append(
+                        f"{pwhere}: claim {key} already found by an earlier search"
+                    )
                 claim_found[key] = (date, skind, slug_)
     if searches and pins_now:
         latest = searches[-1].get("results_pins")
@@ -1001,9 +1060,13 @@ def validate(
             errors.append(f"{where}: no search entry lists this claim")
         else:
             if c.get("found_on") != found[0]:
-                errors.append(f"{where}: found_on must be {found[0]}, the search that found it")
+                errors.append(
+                    f"{where}: found_on must be {found[0]}, the search that found it"
+                )
             if c.get("found_by") != found[2]:
-                errors.append(f"{where}: found_by must be {found[2]}, the producer logged")
+                errors.append(
+                    f"{where}: found_by must be {found[2]}, the producer logged"
+                )
         source = c.get("source")
         found_by = c.get("found_by")
         if not (isinstance(source, str) and _SLUG.match(source)):
@@ -1030,13 +1093,17 @@ def validate(
             if not _nonempty_str(c.get("proposed_metric")):
                 errors.append(f"{where}: metric null needs proposed_metric")
         elif not _registered(Metric, metric):
-            errors.append(f"{where}: metric {metric!r} is not registered; use proposed_metric")
+            errors.append(
+                f"{where}: metric {metric!r} is not registered; use proposed_metric"
+            )
         unit = c.get("unit_concept")
         if unit is None:
             if not _nonempty_str(c.get("proposed_unit")):
                 errors.append(f"{where}: unit_concept null needs proposed_unit")
         elif not _registered(UnitConcept, unit):
-            errors.append(f"{where}: unit_concept {unit!r} is not registered; use proposed_unit")
+            errors.append(
+                f"{where}: unit_concept {unit!r} is not registered; use proposed_unit"
+            )
         value_kind = c.get("value_kind")
         if value_kind not in VALUE_KINDS:
             errors.append(f"{where}: value_kind {value_kind!r} not in {VALUE_KINDS}")
@@ -1052,20 +1119,32 @@ def validate(
         if type(c.get("period")) is not int:
             errors.append(f"{where}: period must be an integer year (FY end year)")
         if not _registered(TimeBasis, c.get("time_basis")):
-            errors.append(f"{where}: time_basis {c.get('time_basis')!r} is not registered")
+            errors.append(
+                f"{where}: time_basis {c.get('time_basis')!r} is not registered"
+            )
         errors.extend(_check_identity(c, where))
         world = c.get("world")
         if world not in world_keys:
             errors.append(f"{where}: world {world!r} is not defined in analysis.json")
         if world != BASELINE_WORLD and not _nonempty_str(c.get("reform_hint")):
-            errors.append(f"{where}: reform_hint must quote the producer's own words for the world")
+            errors.append(
+                f"{where}: reform_hint must quote the producer's own words for the world"
+            )
         if c.get("attribution") not in ATTRIBUTIONS:
-            errors.append(f"{where}: attribution {c.get('attribution')!r} not in {ATTRIBUTIONS}")
+            errors.append(
+                f"{where}: attribution {c.get('attribution')!r} not in {ATTRIBUTIONS}"
+            )
         bclass = c.get("benchmark_class")
         if bclass not in BENCHMARK_CLASSES:
-            errors.append(f"{where}: benchmark_class {bclass!r} not in {BENCHMARK_CLASSES}")
-        if (c.get("attribution") == "same_assumptions") != (bclass == "same_assumptions"):
-            errors.append(f"{where}: same_assumptions attribution and benchmark_class go together")
+            errors.append(
+                f"{where}: benchmark_class {bclass!r} not in {BENCHMARK_CLASSES}"
+            )
+        if (c.get("attribution") == "same_assumptions") != (
+            bclass == "same_assumptions"
+        ):
+            errors.append(
+                f"{where}: same_assumptions attribution and benchmark_class go together"
+            )
         if bclass == "administrative_fact" and world == BASELINE_WORLD:
             errors.append(
                 f"{where}: an administrative level is calibration material; stage it "
@@ -1078,7 +1157,9 @@ def validate(
                 "scorecard_db/baselines.py (harvest rule 7: register it first)"
             )
         if "proposed_baseline" in c:
-            errors.append(f"{where}: register the baseline before staging (harvest rule 7)")
+            errors.append(
+                f"{where}: register the baseline before staging (harvest rule 7)"
+            )
         pub = c.get("publication") or {}
         for f in ("title", "url", "publisher", "locator", "access"):
             if not _nonempty_str(pub.get(f)):
@@ -1086,14 +1167,20 @@ def validate(
         if not _is_date(pub.get("date")):
             errors.append(f"{where}: publication.date must be a real YYYY-MM-DD date")
         elif _is_date(c.get("found_on")) and pub["date"] > c["found_on"]:
-            errors.append(f"{where}: published {pub['date']}, after it was found ({c['found_on']})")
+            errors.append(
+                f"{where}: published {pub['date']}, after it was found ({c['found_on']})"
+            )
         sha = pub.get("primary_sha256")
         if sha not in manifest:
-            errors.append(f"{where}: publication.primary_sha256 is not in manifest.jsonl")
+            errors.append(
+                f"{where}: publication.primary_sha256 is not in manifest.jsonl"
+            )
         else:
             used_primaries.add(sha)
             if manifest[sha].get("url") != pub.get("url"):
-                errors.append(f"{where}: publication.url differs from its manifest line")
+                errors.append(
+                    f"{where}: publication.url differs from its manifest line"
+                )
         for f in ("source_table", "source_column", "quote"):
             if not _nonempty_str(c.get(f)):
                 errors.append(f"{where}: {f} is empty")
@@ -1104,7 +1191,9 @@ def validate(
         if value_kind in RANGE_KINDS:
             group = (c.get("conditions") or {}).get("range_group")
             if not (isinstance(group, str) and _SLUG.match(group)):
-                errors.append(f"{where}: a range bound names its range_group in conditions")
+                errors.append(
+                    f"{where}: a range bound names its range_group in conditions"
+                )
             else:
                 range_groups[group].append(c)
         compare = c.get("compare_to")
@@ -1121,7 +1210,9 @@ def validate(
                     "nearest_estimate and annotate why they differ"
                 )
             elif not near and nearest is not None:
-                errors.append(f"{where}: nearest_estimate {nearest!r} is not near this claim")
+                errors.append(
+                    f"{where}: nearest_estimate {nearest!r} is not near this claim"
+                )
             elif near:
                 must_annotate.append(key)
                 est = estimates[nearest]
@@ -1149,9 +1240,13 @@ def validate(
             continue
         compared_keys.append(key)
         if c.get("attribution") != "own":
-            errors.append(f"{where}: only a producer's own estimate is compared ({c.get('attribution')})")
+            errors.append(
+                f"{where}: only a producer's own estimate is compared ({c.get('attribution')})"
+            )
         if value_kind == "cumulative":
-            errors.append(f"{where}: a cumulative figure is not compared with a single-year estimate")
+            errors.append(
+                f"{where}: a cumulative figure is not compared with a single-year estimate"
+            )
         if c.get("world") != est.get("world"):
             across = compare.get("across_worlds")
             if not isinstance(across, dict):
@@ -1162,7 +1257,9 @@ def validate(
                 )
             else:
                 if not _nonempty_str(across.get("reason"), 20):
-                    errors.append(f"{where}: across_worlds.reason must say why the quantities match")
+                    errors.append(
+                        f"{where}: across_worlds.reason must say why the quantities match"
+                    )
                 errors.extend(_check_bases(across.get("basis"), where))
         for f in ("metric", "unit_concept", "period", "time_basis"):
             if c.get(f) != est.get(f):
@@ -1199,19 +1296,34 @@ def validate(
             errors.append(f"{name}: search lists claim {key}, which is not staged")
     for sha, m in manifest.items():
         if sha not in used_primaries:
-            errors.append(f"{name}: manifest line for {m.get('url')} is cited by no claim")
+            errors.append(
+                f"{name}: manifest line for {m.get('url')} is cited by no claim"
+            )
     for group, members in range_groups.items():
         kinds = sorted(m.get("value_kind") for m in members)
         if kinds != ["range_high", "range_low"]:
-            errors.append(f"{name}: range_group {group} needs exactly one range_low and one range_high")
+            errors.append(
+                f"{name}: range_group {group} needs exactly one range_low and one range_high"
+            )
             continue
         low, high = members
-        shared = ("source", "metric", "unit_concept", "period", "time_basis", "world", "compare_to")
+        shared = (
+            "source",
+            "metric",
+            "unit_concept",
+            "period",
+            "time_basis",
+            "world",
+            "compare_to",
+        )
         if any(low.get(f) != high.get(f) for f in shared) or any(
-            (low.get("conditions") or {}).get(f) != (high.get("conditions") or {}).get(f)
+            (low.get("conditions") or {}).get(f)
+            != (high.get("conditions") or {}).get(f)
             for f in IDENTITY_CONDITIONS
         ):
-            errors.append(f"{name}: range_group {group}'s bounds measure different things")
+            errors.append(
+                f"{name}: range_group {group}'s bounds measure different things"
+            )
 
     # annotations -------------------------------------------------------------------
     annotated: dict[str, dict] = {}
@@ -1233,9 +1345,16 @@ def validate(
             errors.append(f"{where}: explains_gap must be true or false")
         if status == "pending":
             if n.get("explains_gap"):
-                errors.append(f"{where}: a pending annotation does not explain the gap yet")
-            if not (isinstance(n.get("tracking_issue"), str) and _GITHUB_ISSUE.match(n["tracking_issue"])):
-                errors.append(f"{where}: pending needs the tracking_issue opened for the owner")
+                errors.append(
+                    f"{where}: a pending annotation does not explain the gap yet"
+                )
+            if not (
+                isinstance(n.get("tracking_issue"), str)
+                and _GITHUB_ISSUE.match(n["tracking_issue"])
+            ):
+                errors.append(
+                    f"{where}: pending needs the tracking_issue opened for the owner"
+                )
         keys = n.get("claims")
         if not (isinstance(keys, list) and keys):
             errors.append(f"{where}: claims must list the claim keys it covers")
@@ -1245,7 +1364,9 @@ def validate(
                 errors.append(f"{where}: claim {key} is not staged")
                 continue
             if key in annotated:
-                errors.append(f"{where}: claim {key} already has a status from {annotated[key]['id']}")
+                errors.append(
+                    f"{where}: claim {key} already has a status from {annotated[key]['id']}"
+                )
                 continue
             annotated[key] = n
             c = claims_by_key[key]
@@ -1256,7 +1377,9 @@ def validate(
                         f"{COMPARED_STATUSES}; a concept mismatch is not compared"
                     )
                 est = estimates[c["compare_to"]["pe_estimate"]]
-                if status == ComparisonStatus.COMPARABLE.value and c.get("world") != est.get("world"):
+                if status == ComparisonStatus.COMPARABLE.value and c.get(
+                    "world"
+                ) != est.get("world"):
                     errors.append(
                         f"{where}: {key} is compared across worlds, so it is constructed, "
                         "not comparable"
@@ -1265,7 +1388,10 @@ def validate(
                 errors.append(
                     f"{where}: {key} is not compared, so its status is one of {MISMATCH_STATUSES}"
                 )
-            if status == "pending" and claim_found.get(key, ("", ""))[1] not in POST_PUBLICATION_KINDS:
+            if (
+                status == "pending"
+                and claim_found.get(key, ("", ""))[1] not in POST_PUBLICATION_KINDS
+            ):
                 errors.append(
                     f"{where}: {key} was found before publication; its gap is "
                     "explained before the analysis is listed, not left pending"
@@ -1442,8 +1568,12 @@ def index_entry(record: AnalysisRecord, policy: dict) -> dict:
         "explained": sum(1 for r in over if r["explains_gap"]),
         "pending": sum(1 for r in rows if r["status"] == "pending"),
         "unbounded_gaps": sum(1 for g in gaps if math.isinf(g)),
-        "max_abs_gap": _round(max((g for g in gaps if not math.isinf(g)), default=None)),
-        "tracking_issues": sorted({r["tracking_issue"] for r in rows if r["tracking_issue"]}),
+        "max_abs_gap": _round(
+            max((g for g in gaps if not math.isinf(g)), default=None)
+        ),
+        "tracking_issues": sorted(
+            {r["tracking_issue"] for r in rows if r["tracking_issue"]}
+        ),
         "search_log": f"{REPO_URL}/blob/main/sources/{record.name}/search_log.json",
         "comparisons": _comparisons(record, rows),
     }
@@ -1531,6 +1661,16 @@ def build_index(
         "schema": INDEX_SCHEMA,
         "gap_threshold": policy["gap_threshold"],
         "promotion_window_days": policy["promotion_window_days"],
+        # The rules for which policyengine.org entries need a record, so the
+        # sites that check entries against this index can check they apply
+        # the same ones (research_entries, may_declare_no_estimate).
+        "entry_rules": {
+            "analysis_tags": sorted(ANALYSIS_TAGS),
+            "no_estimate_tags": sorted(NO_ESTIMATE_TAGS),
+            "country_tags": list(COUNTRY_TAGS),
+            "default_country": DEFAULT_COUNTRY,
+            "search_kinds": list(SEARCH_KINDS),
+        },
         "analyses": analyses,
     }
 
@@ -1549,7 +1689,9 @@ def app_record(record: AnalysisRecord, search_date: str | None = None) -> dict:
     if search_date:
         searches = [s for s in searches if s["date"] == search_date]
     if not searches:
-        raise ValueError(f"{record.name}: no prepublish or backfill search on {search_date}")
+        raise ValueError(
+            f"{record.name}: no prepublish or backfill search on {search_date}"
+        )
     summary = _search_summary(searches[-1])
     return {
         "status": "reviewed",
@@ -1565,7 +1707,9 @@ def app_record(record: AnalysisRecord, search_date: str | None = None) -> dict:
 # --- scaffolding -----------------------------------------------------------------
 
 
-def scaffold(country: str, kind: str, slug: str, today: str, root: Path = SOURCES) -> Path:
+def scaffold(
+    country: str, kind: str, slug: str, today: str, root: Path = SOURCES
+) -> Path:
     """A skeleton directory for a new search, with every producer to log."""
     producers = load_producers()
     country = country.upper()
@@ -1575,7 +1719,9 @@ def scaffold(country: str, kind: str, slug: str, today: str, root: Path = SOURCE
         )
     directory = root / f"{DIR_PREFIX}{country.lower()}-{slug}"
     if directory.exists():
-        raise SystemExit(f"{directory} exists; add a search to its search_log.json instead")
+        raise SystemExit(
+            f"{directory} exists; add a search to its search_log.json instead"
+        )
     directory.mkdir(parents=True)
     analysis = {
         "schema": ANALYSIS_SCHEMA,
@@ -1614,8 +1760,12 @@ def scaffold(country: str, kind: str, slug: str, today: str, root: Path = SOURCE
             }
         ],
     }
-    (directory / "analysis.json").write_text(json.dumps(analysis, indent=1, ensure_ascii=False) + "\n")
-    (directory / "search_log.json").write_text(json.dumps(log, indent=1, ensure_ascii=False) + "\n")
+    (directory / "analysis.json").write_text(
+        json.dumps(analysis, indent=1, ensure_ascii=False) + "\n"
+    )
+    (directory / "search_log.json").write_text(
+        json.dumps(log, indent=1, ensure_ascii=False) + "\n"
+    )
     (directory / "manifest.jsonl").write_text("")
     (directory / "claims_staged.jsonl").write_text("")
     (directory / "annotations.json").write_text("[]\n")
@@ -1686,7 +1836,9 @@ def publishes_estimate(entry: dict) -> bool:
         entry["kind"], entry["tags"]
     ):
         return False
-    return record.get("status") == "reviewed" or bool(set(entry["tags"]) & ANALYSIS_TAGS)
+    return record.get("status") == "reviewed" or bool(
+        set(entry["tags"]) & ANALYSIS_TAGS
+    )
 
 
 def due(
@@ -1702,15 +1854,27 @@ def due(
     rows = []
     sources: dict[str, str] = {}
     for e in research_entries(apps, posts):
-        if not e["date"] or not (start <= e["date"] <= today) or not publishes_estimate(e):
+        if (
+            not e["date"]
+            or not (start <= e["date"] <= today)
+            or not publishes_estimate(e)
+        ):
             continue
         record = e.get("comparables") or {}
         candidates = [f"{DIR_PREFIX}{c}-{e['slug']}" for c in e["country_ids"]]
-        name = record.get("scorecardSource") if record.get("status") == "reviewed" else None
-        name = name or next((n for n in candidates if (root / n).is_dir()), candidates[0])
+        name = (
+            record.get("scorecardSource")
+            if record.get("status") == "reviewed"
+            else None
+        )
+        name = name or next(
+            (n for n in candidates if (root / n).is_dir()), candidates[0]
+        )
         label = f"{e['kind']} {e['slug']}"
         if name in sources and sources[name] != label:
-            raise ValueError(f"{sources[name]} and {label} would share the record {name}")
+            raise ValueError(
+                f"{sources[name]} and {label} would share the record {name}"
+            )
         sources[name] = label
         rows.append(
             {
@@ -1734,7 +1898,9 @@ def fresh(entry: dict, on: str, window_days: int) -> list[str]:
     pins = sorted(entry.get("current_pins") or [])
     recent = [s for s in entry["searches"] if start <= s["date"] <= on]
     if not recent:
-        last = max((s["date"] for s in entry["searches"] if s["date"] <= on), default=None)
+        last = max(
+            (s["date"] for s in entry["searches"] if s["date"] <= on), default=None
+        )
         reasons.append(
             f"no comparables search between {start} and {on} (last: {last or 'none'}); "
             "run a prepromotion search before the push"
@@ -1798,9 +1964,13 @@ def _main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="python -m scorecard_db.comparables")
     sub = parser.add_subparsers(dest="cmd", required=True)
     p_check = sub.add_parser("check", help="validate analysis directories")
-    p_check.add_argument("dirs", nargs="*", help="directories (default: every sources/analysis-*)")
+    p_check.add_argument(
+        "dirs", nargs="*", help="directories (default: every sources/analysis-*)"
+    )
     p_index = sub.add_parser("index", help="write data/comparables/index.json")
-    p_index.add_argument("--check", action="store_true", help="fail if the committed index is stale")
+    p_index.add_argument(
+        "--check", action="store_true", help="fail if the committed index is stale"
+    )
     p_scaffold = sub.add_parser("scaffold", help="start a record for a new analysis")
     p_scaffold.add_argument("--country", required=True)
     p_scaffold.add_argument("--kind", required=True, choices=("app", "post"))
@@ -1841,7 +2011,9 @@ def _main(argv: list[str]) -> int:
         text = render_index(build_index())
         if args.check:
             if not INDEX_PATH.exists() or INDEX_PATH.read_text() != text:
-                print(f"{INDEX_PATH} is stale: run python -m scorecard_db.comparables index")
+                print(
+                    f"{INDEX_PATH} is stale: run python -m scorecard_db.comparables index"
+                )
                 return 1
             print(f"{INDEX_PATH} is current")
             return 0
@@ -1863,12 +2035,25 @@ def _main(argv: list[str]) -> int:
             print("\n".join(errors), file=sys.stderr)
             return 1
         if args.cmd == "record":
-            print(json.dumps(app_record(record, args.search_date), indent=2, ensure_ascii=False))
+            print(
+                json.dumps(
+                    app_record(record, args.search_date), indent=2, ensure_ascii=False
+                )
+            )
             return 0
         if args.cmd == "report":
-            print(json.dumps(report(record, args.since, policy), indent=1, ensure_ascii=False, default=str))
+            print(
+                json.dumps(
+                    report(record, args.since, policy),
+                    indent=1,
+                    ensure_ascii=False,
+                    default=str,
+                )
+            )
             return 0
-        reasons = fresh(index_entry(record, policy), args.on, policy["promotion_window_days"])
+        reasons = fresh(
+            index_entry(record, policy), args.on, policy["promotion_window_days"]
+        )
         for reason in reasons:
             print(f"NOT FRESH {args.source}: {reason}")
         if not reasons:
@@ -1878,7 +2063,11 @@ def _main(argv: list[str]) -> int:
         apps = _loads(Path(args.apps).read_text())
         posts = _loads(Path(args.posts).read_text())
         window = load_policy()["reharvest_window_days"]
-        print(json.dumps(due(apps, posts, args.today, window), indent=1, ensure_ascii=False))
+        print(
+            json.dumps(
+                due(apps, posts, args.today, window), indent=1, ensure_ascii=False
+            )
+        )
         return 0
     return 2
 

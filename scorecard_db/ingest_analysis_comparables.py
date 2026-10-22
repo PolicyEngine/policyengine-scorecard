@@ -240,9 +240,7 @@ def stage(root: Path = cmp.SOURCES) -> tuple[list[ExternalScore], list[PEResult]
             world_baseline = a["worlds"].get(est["world"], {}).get("baseline")
             executed = _baseline_descriptor(world_baseline) or CURRENT_LAW_DESCRIPTOR
             history = [
-                e
-                for e in a.get("superseded_estimates") or []
-                if e["key"] == est["key"]
+                e for e in a.get("superseded_estimates") or [] if e["key"] == est["key"]
             ]
             for version in [est, *history]:
                 prov = version["provenance"]
