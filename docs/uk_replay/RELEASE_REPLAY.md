@@ -928,10 +928,10 @@ which CI now reads from the index:
    summary, the files ruff names, the paths `git status` lists) and the
    first 50 that are printable ASCII without a backtick and at most 200
    characters long, as one line of JSON (three full lists keep the body
-   inside GitHub's 65,536-character limit). `propose` refuses a report of any other shape. Results pull
-   requests #195, #204 and #206 opened ready and failed CI's `pytest` job;
-   with these checks such a pull request opens as a draft that names the
-   failures.
+   inside GitHub's 65,536-character limit). `propose` refuses a report of
+   any other shape. Results pull requests #195, #204 and #206 opened ready
+   and failed CI's `pytest` job; with these checks such a pull request
+   opens as a draft that names the failures.
 5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
    standard library, skipping only the JSON Schema and RFC 8785 checks
    `build` made. Only when the tree matches is the App token minted. The
@@ -952,9 +952,10 @@ pushes nothing. A branch built on an older main is rebuilt and force-pushed,
 with a lease on the commit it read, only when it holds exactly one commit,
 authored and committed by the bot with this request's trailer; an added or
 amended commit is a person's, and the run fails and leaves the branch alone.
-A rebuild that pushes edits the open pull request's title and body, and a
-rebuild whose checks fail also turns a ready pull request back into a draft
-(`gh pr ready --undo`); one whose checks pass leaves it as it is. A rerun on
+A rebuild that pushes edits the open pull request's title and body, and one
+that is a draft (integrity not `complete`, or one of CI's checks failing)
+also turns a ready pull request back into a draft (`gh pr ready --undo`);
+one that is not leaves it as it is. A rerun on
 an unchanged main pushes nothing, so it leaves the body as it was, even when
 the earlier run's suite failed only by chance.
 A rebuilt branch also carries main's commits since the branch was built.
