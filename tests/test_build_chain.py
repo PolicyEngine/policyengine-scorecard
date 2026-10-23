@@ -41,6 +41,7 @@ STEPS = (
     "uk_deductions",
     "dwp_pensions",
     "lpc_minimum_wage",
+    "dwp_uc_health",
     "hmt_distributional",
     "obr_divergence",
     "uk_reform_validation",

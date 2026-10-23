@@ -213,6 +213,17 @@ Operating rules for the agent stage:
   the letter's quoted deciles against the workbook, and adds section
   10102's groups to its total. Claims flow through
   `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
+- **DWP UC Health statistics** (`sources/dwp-uc-health/`, lane
+  `dwp-uc-health`, issue #87): the UC health element (LCWRA) caseload by
+  the entitlement rate the Universal Credit Act 2025 created, April to June
+  2026 (Table 2), and the lower (new-claimant) rate's share of the June
+  total. The QC adds each month's rates to its total (within 10 people)
+  and checks Table 2 against Table 1. The counts are administrative
+  outturns, staged as claims by decision (2026-10-23), a departure from the
+  boundary rule below. They are held out: the certified bundle has no DWP
+  target. The share's counterpart is PE-UK's `new_claimant_share`, read
+  from the parameter tree (`pipeline/compute_uk_uc_health_readback.py`);
+  the caseloads publish without a result until a certified-bundle run.
 
 ### Staged for Chronicle, not claims
 

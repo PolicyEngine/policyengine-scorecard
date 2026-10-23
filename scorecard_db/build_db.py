@@ -30,6 +30,8 @@ Chain order is dependency order and is part of the contract:
     uk_deductions FRR family
     dwp_pensions  workplace pension participation (ASHE, GB)
     lpc_minimum_wage  LPC coverage + bite (jobs, not people)
+    dwp_uc_health  DWP UC health element caseload by rate + PE-UK's
+                new-claimant share
     hmt_distributional    HMT Budget distributional analysis (zero claims,
                           declared: 132 chart cells, none digitized)
     obr_divergence        OBR costings divergence decomposition (#59)
@@ -81,6 +83,7 @@ from . import (
     ingest_uk_deductions,
     ingest_uk_externals,
     ingest_dwp_pensions,
+    ingest_dwp_uc_health,
     ingest_lpc_minimum_wage,
     ingest_uk_ab2025,
     ingest_uk_thinktanks,
@@ -208,6 +211,7 @@ def build(db_path: Path) -> dict:
         # Low Pay Commission (#88): the first external validation of
         # PE-UK's minimum-wage machinery.
         ("lpc_minimum_wage", lambda: ingest_lpc_minimum_wage.ingest(db_path)),
+        ("dwp_uc_health", lambda: ingest_dwp_uc_health.ingest(db_path)),
         # A ZERO-claim lane, registered on purpose: HMT publishes the
         # Budget decile impacts as unlabeled chart bars, and without this
         # step a fresh build contained no trace of the lane at all —
