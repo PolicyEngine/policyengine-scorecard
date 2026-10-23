@@ -59,6 +59,11 @@ NO_NETWORK = {
     )
 }
 PROXY_EXCEPTIONS = ("NO_PROXY", "no_proxy")
+# policyengine.py#704 lets POLICYENGINE_<COUNTRY>_DATA_MANIFEST_FILE select a
+# local data release manifest in place of the fetched one. A replay must
+# certify against the wrapper's packaged certification, never a file the
+# host happens to point at, so isolation removes it for every country.
+LOCAL_MANIFEST_VARIABLE = re.compile(r"POLICYENGINE_[A-Z0-9]+_DATA_MANIFEST_FILE")
 ENGINE_MODULES = {
     "policyengine": "policyengine",
     "policyengine-uk": "policyengine_uk",
@@ -735,11 +740,15 @@ def isolate_certification_environment(environ=os.environ) -> list[str]:
     (OFFLINE_BUNDLE_AUDIT.json records the 5.0.2 case; 6.2.6 behaves alike).
     Without a token a private data repository answers 401; a public one
     would still answer, so the proxy variables (NO_NETWORK) make the fetch
-    fail for both. Call before importing policyengine; returns the
-    variables removed."""
+    fail for both. A local data release manifest setting
+    (LOCAL_MANIFEST_VARIABLE) is removed too. Call before importing
+    policyengine; returns the variables removed."""
+    local_manifests = sorted(
+        name for name in environ if LOCAL_MANIFEST_VARIABLE.fullmatch(name)
+    )
     removed = [
         name
-        for name in (*TOKEN_VARIABLES, *PROXY_EXCEPTIONS)
+        for name in (*TOKEN_VARIABLES, *PROXY_EXCEPTIONS, *local_manifests)
         if environ.pop(name, None) is not None
     ]
     environ.update(OFFLINE_VARIABLES)
