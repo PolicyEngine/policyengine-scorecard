@@ -58,6 +58,9 @@ Same data, so each row is a model change between the engines: a fix or a bug.
 | autumn_budget_2017 | `ab2017_sdlt_first_time_buyers_relief` | 2024-25 | -0.730 | -0.565 | +0.165 | model_bug: policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps') |
 | autumn_statement_2022 | `as2022_additional_rate_threshold_125140` | 2024-25 | +0.853 | +0.959 | +0.106 | model_bug: policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds') |
 | autumn_statement_2022 | `as2022_additional_rate_threshold_125140` | 2025-26 | +0.950 | +1.071 | +0.121 | model_bug: policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds') |
+| autumn_statement_2022 | `as2022_sdlt_end_growth_plan_relief` | 2025-26 | +0.949 | +1.341 | +0.392 | data_issue:  |
+| autumn_statement_2022 | `as2022_sdlt_end_growth_plan_relief` | 2026-27 | +0.986 | +1.382 | +0.396 | data_issue:  |
+| autumn_statement_2022 | `as2022_sdlt_end_growth_plan_relief` | 2027-28 | +1.053 | +1.426 | +0.373 | data_issue:  |
 | autumn_statement_2022 | `as2022_sdlt_nil_rate_bands_2024` | 2024-25 | +0.000 | -1.234 | -1.234 | model_bug: policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps') |
 | budget_2010_2 | `b2010_vat_standard_rate_20` | 2024-25 | +28.670 | +23.229 | -5.441 | expected:  |
 | budget_2010_2 | `b2010_vat_standard_rate_20` | 2025-26 | +29.858 | +24.192 | -5.666 | expected:  |

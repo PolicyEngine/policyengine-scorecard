@@ -1262,25 +1262,58 @@
    "year": 2024
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15%) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback; docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py",
+      "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "Keeping the relief merges the additional-dwellings bands at current law's 5% first band (after Autumn Budget 2024's +2pp). pe-uk 2.132.6 lacks the +2pp (3% and 5%), so on it the construction also raises the first band, and its additional-dwelling leg raises tax where it should lower it (a \u00a3200,000 purchase: \u00a37,500 to \u00a310,000). The main-scale and lease legs are right on both engines.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": false,
    "comparison_fy": "2025-26",
-   "effect_gbp": 1366895306.4303417,
+   "effect_gbp": 948638550.6198711,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1005435677.2800543,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2025-26",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1366895306.4303417
+    "stamp_duty_land_tax": 948638550.6198711
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
-   "modern_assumption_failures": [],
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    }
+   ],
    "obr_mapped_gbp": 873000000.0,
    "obr_unmapped_gbp": -23000000.0,
-   "ratio_raw": 1.5657449100003915,
-   "ratio_scaled": 1.3595054734163827,
+   "ratio_raw": 1.0866420969299784,
+   "ratio_scaled": 0.943509935102131,
    "scales": [
     {
      "base_sheet": "PTT",
@@ -1296,25 +1329,58 @@
    "year": 2025
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15%) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback; docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py",
+      "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "Keeping the relief merges the additional-dwellings bands at current law's 5% first band (after Autumn Budget 2024's +2pp). pe-uk 2.132.6 lacks the +2pp (3% and 5%), so on it the construction also raises the first band, and its additional-dwelling leg raises tax where it should lower it (a \u00a3200,000 purchase: \u00a37,500 to \u00a310,000). The main-scale and lease legs are right on both engines.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": false,
    "comparison_fy": "2026-27",
-   "effect_gbp": 1406717993.7265816,
+   "effect_gbp": 986257273.0271969,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1592195398.7945716,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2026-27",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1406717993.7265816
+    "stamp_duty_land_tax": 986257273.0271969
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
-   "modern_assumption_failures": [],
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    }
+   ],
    "obr_mapped_gbp": 1442000000.0,
    "obr_unmapped_gbp": 1000000.0,
-   "ratio_raw": 0.9755325892694741,
-   "ratio_scaled": 0.8835083902337537,
+   "ratio_raw": 0.6839509521686525,
+   "ratio_scaled": 0.6194323094853045,
    "scales": [
     {
      "base_sheet": "PTT",
@@ -1330,25 +1396,58 @@
    "year": 2026
   },
   {
-   "anomalies": [],
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15%) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback; docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py",
+      "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "Keeping the relief merges the additional-dwellings bands at current law's 5% first band (after Autumn Budget 2024's +2pp). pe-uk 2.132.6 lacks the +2pp (3% and 5%), so on it the construction also raises the first band, and its additional-dwelling leg raises tax where it should lower it (a \u00a3200,000 purchase: \u00a37,500 to \u00a310,000). The main-scale and lease legs are right on both engines.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "investigate"
+    }
+   ],
    "carried_forward": false,
    "comparison_fy": "2027-28",
-   "effect_gbp": 1476049899.490488,
+   "effect_gbp": 1053340188.5476017,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1772346205.9730084,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2027-28",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1476049899.490488
+    "stamp_duty_land_tax": 1053340188.5476017
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
-   "modern_assumption_failures": [],
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    }
+   ],
    "obr_mapped_gbp": 1631000000.0,
    "obr_unmapped_gbp": 5000000.0,
-   "ratio_raw": 0.9049968727716052,
-   "ratio_scaled": 0.8328225571934151,
+   "ratio_raw": 0.6458247630580023,
+   "ratio_scaled": 0.5943196566211079,
    "scales": [
     {
      "base_sheet": "PTT",

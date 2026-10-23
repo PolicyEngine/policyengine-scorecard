@@ -251,6 +251,39 @@
    "years": [
     2024
    ]
+  },
+  {
+   "code": "modern_law_differs",
+   "event": "autumn_statement_2022",
+   "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15%) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback; docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+   "populations": [
+    "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "model_bug",
+   "summary": "Keeping the relief merges the additional-dwellings bands at current law's 5% first band (after Autumn Budget 2024's +2pp). pe-uk 2.132.6 lacks the +2pp (3% and 5%), so on it the construction also raises the first band, and its additional-dwelling leg raises tax where it should lower it (a \u00a3200,000 purchase: \u00a37,500 to \u00a310,000). The main-scale and lease legs are right on both engines.",
+   "years": [
+    2025,
+    2026,
+    2027
+   ]
+  },
+  {
+   "code": "model_change",
+   "event": "autumn_statement_2022",
+   "evidence": "Both populations' artifacts before and after the third review's correction: the certified pair +\u00a31.367bn (main scale only) to +\u00a30.949bn (all three legs) in 2025-26; the model swap +\u00a31.341bn to +\u00a31.341bn. docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py for the per-purchase legs.",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "populations": [
+    "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "status": "data_issue",
+   "summary": "The difference is the additional-dwellings leg. On 2.132.6 it raises tax by about \u00a30.42bn: the construction merges the bands at current law's 5%, above that engine's 3% (no Autumn Budget 2024 +2pp, fixed in 2.141.8), on its overstated purchase base (policyengine-uk#2238). On 2.143.0 it is nil, because the interim cut carries no additional-dwelling purchases (model_swap_input_gaps; microcosm#1308). The main-scale and lease legs agree: +\u00a31.367bn on the pair against +\u00a31.341bn on the swap before the correction.",
+   "years": [
+    2025,
+    2026,
+    2027
+   ]
   }
  ],
  "kind": "uk_policy_experiment_diagnoses",

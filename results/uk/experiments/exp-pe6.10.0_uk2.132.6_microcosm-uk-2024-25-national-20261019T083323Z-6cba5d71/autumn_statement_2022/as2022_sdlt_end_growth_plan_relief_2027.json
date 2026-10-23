@@ -5,7 +5,7 @@
  "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
  "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
  "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
- "effect_gbp": 1476049899.490488,
+ "effect_gbp": 1053340188.5476017,
  "engine_version": "2.132.6",
  "event": "autumn_statement_2022",
  "event_name": "Autumn Statement 2022",
@@ -13,10 +13,10 @@
  "fy": "2027-28",
  "head_groups": [
   {
-   "alternate_gbp": 15247815920.861938,
+   "alternate_gbp": 15670525631.804825,
    "channel": "tax",
-   "effect_gbp": 1476049899.490488,
-   "literal_alternate_minus_modern_gbp": -1476049899.490488,
+   "effect_gbp": 1053340188.5476017,
+   "literal_alternate_minus_modern_gbp": -1053340188.5476017,
    "modern_gbp": 16723865820.352427,
    "obr_heads": [
     "Stamp duty"
@@ -33,6 +33,20 @@
  "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
  "pairing": "certified_pair",
  "parameters": {
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+   "alternate_intended": 0.05,
+   "alternate_processed": 0.05,
+   "changes_modern_law": true,
+   "modern_processed": 0.03,
+   "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+   "alternate_intended": 0.05,
+   "alternate_processed": 0.05,
+   "changes_modern_law": false,
+   "modern_processed": 0.05,
+   "reached_simulation": true
+  },
   "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
    "alternate_intended": 625000.0,
    "alternate_processed": 625000.0,
@@ -60,11 +74,24 @@
    "changes_modern_law": false,
    "modern_processed": 125000,
    "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
+   "alternate_intended": 250000.0,
+   "alternate_processed": 250000.0,
+   "changes_modern_law": true,
+   "modern_processed": 125000,
+   "reached_simulation": true
   }
  },
  "policyengine_version": "6.10.0",
  "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
  "reform": {
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+   "2025-01-01.2035-12-31": 0.05
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+   "2025-01-01.2035-12-31": 0.05
+  },
   "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
    "2025-01-01.2035-12-31": 625000.0
   },
@@ -76,6 +103,9 @@
   },
   "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
    "2025-01-01.2035-12-31": 125000.0
+  },
+  "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
+   "2025-01-01.2035-12-31": 250000.0
   }
  },
  "registry_sha256": "25c3d327d53e180934acd159fae54b5c3f4cf7e10383a4eb750d2ba6a6c629f1",

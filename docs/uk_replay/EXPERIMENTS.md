@@ -47,7 +47,7 @@ population record). The pre-Budget pair has no such gap for the first two.
 
 **What else the model swap changed.** On the same data, every experiment-year
 whose effect moved by at least £10m and 5% between 2.132.6 and 2.143.0 is a
-model change. Besides the rows above, four:
+model change. Besides the rows above, five:
 
 | Experiment | Change, 2.132.6 → 2.143.0 | Cause |
 |---|---|---|
@@ -55,6 +55,7 @@ model change. Besides the rows above, four:
 | `b2015_personal_savings_allowance` | −£0.46bn → −£0.77bn (2024-25); ratio 0.43 → 0.73 | 2.132.6 started the savings starting-rate taper only above £17,570 of taxable non-savings income (the personal allowance plus the band), so it kept the 0% band too often and the allowance had less to relieve. Fixed in 35f992c6a (#1799, 2.139.2). A synthetic saver shows it (evidence folder). |
 | `as2010_high_income_child_benefit_charge` | +£2.28bn → +£2.15bn (2024-25) | Adjusted net income now deducts relieved pension contributions (ITA 2007 s. 58, which the variable cites), so fewer parents pay the charge. Fixed in 1dbc88172 (2.134.8). A synthetic parent shows it. |
 | `ab2017_sdlt_first_time_buyers_relief` | −£0.73bn → −£0.56bn (2024-25 only) | 2.143.0 has the Growth Plan's first-time-buyer limits in 2024-25 (4044d6ccf), so zeroing them removes a smaller relief. |
+| `as2022_sdlt_end_growth_plan_relief` | +£0.95bn → +£1.34bn (2025-26) | The additional-dwellings leg: on 2.132.6 it raises tax by about £0.42bn (the construction's 5% first band is above that engine's 3%, on #2238's overstated base); on 2.143.0 it is nil, because the interim cut has no additional-dwelling purchases. The main-scale and lease legs agree (+£1.367bn against +£1.341bn before the third review's correction). |
 
 The VAT and savings allowance ratios on 2.132.6, listed as clean below, rest on
 those older behaviours; the swap's are the ones to compare.
@@ -87,7 +88,7 @@ their scaled ratios fall inside the bands.
 | | CGT allowance £3,000 | 2.25, 1.46, 1.44, 1.52 |
 | | benefit cap uprating | 1.05, 1.21, 1.62, 1.68 |
 | | employer threshold freeze (2024-25) | 0.69 |
-| | end the Growth Plan SDLT relief | 1.36, 0.88, 0.83 |
+| | end the Growth Plan SDLT relief (all three legs) | 2.143.0: 1.33, 0.87, 0.80; 2.132.6 is flagged `modern_law_differs` (no Autumn Budget 2024 +2pp on additional dwellings) |
 | Autumn Budget 2021 | Health and Social Care Levy | 1.00, 0.90, 0.91 |
 | | dividend rates +1.25pp | 1.16, 0.99, 0.92 |
 | | UC taper 55% and £500 work allowance | 0.98, 0.88, 0.84 |

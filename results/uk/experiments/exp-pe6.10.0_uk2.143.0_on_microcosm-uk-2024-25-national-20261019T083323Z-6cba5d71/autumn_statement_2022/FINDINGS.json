@@ -1211,22 +1211,22 @@
    "anomalies": [],
    "carried_forward": false,
    "comparison_fy": "2025-26",
-   "effect_gbp": 1340570648.0135784,
+   "effect_gbp": 1340578157.5575228,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1005435677.2800543,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2025-26",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1340570648.0135784
+    "stamp_duty_land_tax": 1340578157.5575228
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
    "modern_assumption_failures": [],
    "obr_mapped_gbp": 873000000.0,
    "obr_unmapped_gbp": -23000000.0,
-   "ratio_raw": 1.535590662100319,
-   "ratio_scaled": 1.333323133748491,
+   "ratio_raw": 1.5355992640979643,
+   "ratio_scaled": 1.3333306026936598,
    "scales": [
     {
      "base_sheet": "PTT",
@@ -1245,22 +1245,22 @@
    "anomalies": [],
    "carried_forward": false,
    "comparison_fy": "2026-27",
-   "effect_gbp": 1382401169.3392353,
+   "effect_gbp": 1382415257.1631393,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1592195398.7945716,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2026-27",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1382401169.3392353
+    "stamp_duty_land_tax": 1382415257.1631393
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
    "modern_assumption_failures": [],
    "obr_mapped_gbp": 1442000000.0,
    "obr_unmapped_gbp": 1000000.0,
-   "ratio_raw": 0.9586693268649343,
-   "ratio_scaled": 0.8682358775724585,
+   "ratio_raw": 0.9586790965070314,
+   "ratio_scaled": 0.8682447256220852,
    "scales": [
     {
      "base_sheet": "PTT",
@@ -1279,22 +1279,22 @@
    "anomalies": [],
    "carried_forward": false,
    "comparison_fy": "2027-28",
-   "effect_gbp": 1426397271.4468937,
+   "effect_gbp": 1426420424.6227427,
    "error_message": null,
    "error_type": null,
    "expected_gbp": 1772346205.9730084,
    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
    "fy": "2027-28",
    "group_effects_gbp": {
-    "stamp_duty_land_tax": 1426397271.4468937
+    "stamp_duty_land_tax": 1426420424.6227427
    },
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
    "modern_assumption_failures": [],
    "obr_mapped_gbp": 1631000000.0,
    "obr_unmapped_gbp": 5000000.0,
-   "ratio_raw": 0.874553814498402,
-   "ratio_scaled": 0.8048073602323138,
+   "ratio_raw": 0.874568010191749,
+   "ratio_scaled": 0.8048204238063328,
    "scales": [
     {
      "base_sheet": "PTT",

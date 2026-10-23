@@ -35,9 +35,9 @@ Population `exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323
 | `as2022_reverse_nics_1_25pp` | 2026-27 | -18.952 | -16.746 | -20.726 | 0.91 |  |
 | `as2022_reverse_nics_1_25pp` | 2027-28 | -19.624 | -17.208 | -21.218 | 0.92 |  |
 | `as2022_sdlt_end_growth_plan_relief` | 2024-25 | +0.000 | +0.199 | +0.245 | 0.00 | construction_noop (note; expected) |
-| `as2022_sdlt_end_growth_plan_relief` | 2025-26 | +1.367 | +0.873 | +1.005 | 1.36 |  |
-| `as2022_sdlt_end_growth_plan_relief` | 2026-27 | +1.407 | +1.442 | +1.592 | 0.88 |  |
-| `as2022_sdlt_end_growth_plan_relief` | 2027-28 | +1.476 | +1.631 | +1.772 | 0.83 |  |
+| `as2022_sdlt_end_growth_plan_relief` | 2025-26 | +0.949 | +0.873 | +1.005 | 0.94 | modern_law_differs (investigate; model_bug) |
+| `as2022_sdlt_end_growth_plan_relief` | 2026-27 | +0.986 | +1.442 | +1.592 | 0.62 | modern_law_differs (investigate; model_bug) |
+| `as2022_sdlt_end_growth_plan_relief` | 2027-28 | +1.053 | +1.631 | +1.772 | 0.59 | modern_law_differs (investigate; model_bug) |
 | `as2022_sdlt_nil_rate_bands_2024` | 2024-25 | +0.000 | -1.048 | -1.288 | -0.00 | construction_noop (note; model_bug) |
 | `as2022_sdlt_nil_rate_bands_2024` | 2025-26 | +0.000 | -1.198 | -1.380 | -0.00 | construction_noop (note; expected) |
 | `as2022_sdlt_nil_rate_bands_2024` | 2026-27 | +0.000 | -1.442 | -1.592 | -0.00 | construction_noop (note; expected) |
