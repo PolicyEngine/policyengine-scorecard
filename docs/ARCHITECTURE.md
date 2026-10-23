@@ -213,6 +213,19 @@ Operating rules for the agent stage:
   the letter's quoted deciles against the workbook, and adds section
   10102's groups to its total. Claims flow through
   `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
+- **UK benefit uprating** (`sources/uk-benefit-uprating/`, lane
+  `uk-benefit-uprating`): the CPI rate for September 2026, which sets the
+  April 2027 uprating of most working-age benefits. Two claims: the ONS
+  outturn (D7G7) and OBR's March 2026 forecast for 2026 Q3 (Table 1.7,
+  from a Wayback copy, as obr.uk refuses scripted fetches). The ONS rate is
+  an official outturn, staged as a claim by decision (2026-10-22), a
+  departure from the boundary rule below. The counterpart is a parameter-tree
+  read-back with no simulation (`pipeline/compute_uk_uprating_readback.py`):
+  the April rise of each rate PolicyEngine-UK holds. The lane also attaches
+  read-backs to the HM Treasury and Resolution Foundation uprating claims of
+  other lanes, by claim_id, without editing them. Both CPI claims are
+  `consumed_as_target`: PolicyEngine-UK takes ONS September rates and OBR
+  determinants as inputs, so a match checks the input, not model skill.
 
 ### Staged for Chronicle, not claims
 
