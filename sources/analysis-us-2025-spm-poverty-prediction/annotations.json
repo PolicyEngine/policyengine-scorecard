@@ -1,0 +1,57 @@
+[
+  {
+    "id": "monthly-spm-versus-annual-prediction",
+    "claims": [
+      "cpsp_monthly_overall_2025_01",
+      "cpsp_monthly_children_2025_01",
+      "cpsp_monthly_older_2025_01",
+      "cpsp_monthly_overall_2025_02",
+      "cpsp_monthly_children_2025_02",
+      "cpsp_monthly_older_2025_02",
+      "cpsp_monthly_overall_2025_03",
+      "cpsp_monthly_children_2025_03",
+      "cpsp_monthly_older_2025_03",
+      "cpsp_monthly_overall_2025_04",
+      "cpsp_monthly_children_2025_04",
+      "cpsp_monthly_older_2025_04",
+      "cpsp_monthly_overall_2025_05",
+      "cpsp_monthly_children_2025_05",
+      "cpsp_monthly_older_2025_05",
+      "cpsp_monthly_overall_2025_06",
+      "cpsp_monthly_children_2025_06",
+      "cpsp_monthly_older_2025_06",
+      "cpsp_monthly_overall_2025_07",
+      "cpsp_monthly_children_2025_07",
+      "cpsp_monthly_older_2025_07",
+      "cpsp_monthly_overall_2025_08",
+      "cpsp_monthly_children_2025_08",
+      "cpsp_monthly_older_2025_08",
+      "cpsp_monthly_overall_2025_09",
+      "cpsp_monthly_children_2025_09",
+      "cpsp_monthly_older_2025_09",
+      "cpsp_monthly_overall_2025_11",
+      "cpsp_monthly_children_2025_11",
+      "cpsp_monthly_older_2025_11",
+      "cpsp_monthly_overall_2025_12",
+      "cpsp_monthly_children_2025_12",
+      "cpsp_monthly_older_2025_12"
+    ],
+    "status": "concept_mismatch",
+    "explains_gap": false,
+    "cause": "Columbia estimates poverty using family income and resources available during each month, including the month of tax-credit receipt; PolicyEngine predicts Census calendar-year SPM poverty based on annual resources. These are different resource accounting periods, so the monthly rates sit beside the annual prediction for the same age group. They are not annual forecasts and no gap ratio is computed. The producer publishes no October 2025 observation because that month's CPS was not collected.",
+    "basis": [
+      {
+        "kind": "document",
+        "ref": "https://povertycenter.columbia.edu/monthly-poverty-data"
+      },
+      {
+        "kind": "document",
+        "ref": "https://povertycenter.columbia.edu/sites/povertycenter.columbia.edu/files/content/Data/Monthly%20SPM%20Technical%20Note%20for%202024_updated%2010%2013%2025.pdf"
+      },
+      {
+        "kind": "engine_metadata",
+        "ref": "https://github.com/PolicyEngine/spm-threshold-paper/blob/22d8b7a1b9f97d94f796042bc067813b649a2f20/data/predictions/2025-spm-poverty-rates-2026-09-11.json"
+      }
+    ]
+  }
+]

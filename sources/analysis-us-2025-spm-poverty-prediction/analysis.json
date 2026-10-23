@@ -1,0 +1,3276 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "us/2025-spm-poverty-prediction",
+  "country": "US",
+  "registry": {
+    "kind": "post",
+    "slug": "2025-spm-poverty-prediction",
+    "country_id": "us"
+  },
+  "title": "Our 2025 poverty prediction, graded",
+  "url": "https://policyengine.org/us/research/2025-spm-poverty-prediction",
+  "published": "2026-09-29",
+  "owner": {
+    "author": "max-ghenis"
+  },
+  "scope": "federal",
+  "subject": "Pre-registered 2025 Supplemental Poverty Measure poverty forecasts for all people, children under 18 and people age 65+, graded against Census; includes the prior model, model and survey threshold/resource decomposition, raw-survey aging, senior-deduction counterfactual and income-uprating sensitivity diagnostics.",
+  "search_terms": [
+    "2025 SPM poverty projection",
+    "2025 poverty nowcast",
+    "child poverty 2025 projection",
+    "supplemental poverty measure forecast 2025",
+    "2025 senior deduction poverty",
+    "2025 SPM threshold resource decomposition",
+    "2025 pensions self-employment poverty growth forecast",
+    "2025 children noncitizen poverty"
+  ],
+  "worlds": {
+    "current_law": {
+      "policy": "us_current_law_2025",
+      "description": "2025 federal current law, as modeled for the registered prediction and diagnostics; model and anchoring variants are named in each estimate."
+    },
+    "legacy_model": {
+      "policy": "us_current_law_2025",
+      "description": "Current law as modeled by the then-production policyengine-us 1.764.6 with CPI-aged 2025 thresholds."
+    },
+    "survey_diagnostic": {
+      "policy": "us_current_law_2025_survey_diagnostic",
+      "description": "Public-use CPS ASEC diagnostic with observed 2025 thresholds and reported resources, including counterfactual threshold or composition calculations."
+    },
+    "raw_uniform_growth": {
+      "policy": "us_current_law_2025_raw_survey_uniform_resource_growth",
+      "description": "Diagnostic aging the calendar-2024 raw survey to 2025 BLS thresholds and uniformly raising SPM resources by the model near-line median (4.61%); this was calculated after the Census release."
+    },
+    "senior_deduction_removed": {
+      "policy": "us_current_law_2025_without_senior_deduction",
+      "description": "2025 law except the enhanced senior deduction amount is zero."
+    },
+    "ss_cola_pension_cpi": {
+      "policy": "us_2025_uprating_ss_cola_pension_cpi",
+      "description": "Sensitivity run on current law. Social Security grows with the modeled COLA, pensions and retirement distributions with January-over-January CPI-U."
+    },
+    "se_like_wages": {
+      "policy": "us_2025_uprating_se_like_wages",
+      "description": "Sensitivity run on current law. Self-employment income grows with wages."
+    },
+    "all_three": {
+      "policy": "us_2025_uprating_all_three",
+      "description": "Sensitivity run on current law. Social Security at the COLA, pensions at January-over-January CPI-U, and self-employment grown with wages."
+    },
+    "all_three_ss_66plus": {
+      "policy": "us_2025_uprating_all_three_ss_66plus",
+      "description": "Sensitivity run on current law. Social Security at the age-adjusted survey rate for recipients age 66+, pensions at annual-average CPI-U, and self-employment grown with wages."
+    },
+    "wages_by_decile": {
+      "policy": "us_2025_uprating_wages_by_decile",
+      "description": "Sensitivity run on current law. Wages grow by the survey mean-wage growth within wage deciles."
+    },
+    "wages_by_family_decile": {
+      "policy": "us_2025_uprating_wages_by_family_decile",
+      "description": "Sensitivity run on current law. Wages grow by the survey mean-wage growth within deciles of SPM resources relative to threshold."
+    },
+    "all_four": {
+      "policy": "us_2025_uprating_all_four",
+      "description": "Sensitivity run on current law. Social Security at the COLA, pensions at annual-average CPI-U, self-employment with wages, and wages by survey deciles of family resources."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "registered_change_all",
+      "label": "All people registered 2024-to-2025 modeled SPM poverty-rate change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.2172174,
+      "value_raw": "0.21721740",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.modeled_change_2024_to_2025_pp.all",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded. The post rounds this result to two decimals in the chart and tables and one decimal in its opening paragraph."
+      }
+    },
+    {
+      "key": "registered_prediction_all",
+      "label": "All people registered 2025 SPM poverty prediction (corrected 2024 Census anchor)",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.132,
+      "value_raw": "13.2",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "corrected Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.corrected_anchor.all",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "original_anchor_prediction_all",
+      "label": "All people 2025 SPM prediction using original Census anchor",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.131,
+      "value_raw": "13.1",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "original Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.original_anchor.all",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_all",
+      "label": "All people 2024-to-2025 SPM change from prior production model",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.53,
+      "value_raw": "-0.53",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "for_comparison_legacy_production_model.modeled_change_2024_to_2025_pp.all",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "registered_change_miss_all",
+      "label": "All people registered change minus Census change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.15,
+      "value_raw": "0.15",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.all.miss_in_change_pp.unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_miss_all",
+      "label": "All people prior-model change minus Census change",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.6,
+      "value_raw": "-0.6",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "prior model change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.all.legacy_model.miss_in_change_pp_unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "registered_level_miss_all",
+      "label": "All people registered level minus Census level",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.1,
+      "value_raw": "0.1",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered predicted level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.all.miss_in_level_pp",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded. Opening prose reports the absolute level miss for seniors (0.8 points); this file stores the signed miss (-0.8 points)."
+      }
+    },
+    {
+      "key": "model_level_all",
+      "label": "All people model own unanchored 2025 SPM poverty rate",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.13235361599999998,
+      "value_raw": "13.23536160",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "unanchored model simulated poverty rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.simulated_rates_percent.2025.all",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "model_threshold_effect_all",
+      "label": "All people modeled 2024-to-2025 threshold effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.7043,
+      "value_raw": "0.7043",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_threshold_effect",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.all.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_threshold_effect_all",
+      "label": "All people survey-based 2024-to-2025 threshold effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.8,
+      "value_raw": "0.8",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_all_people_threshold_effect",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.all.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "model_resource_effect_all",
+      "label": "All people modeled 2024-to-2025 resource effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.487083,
+      "value_raw": "-0.487083",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_resource_effect",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.all.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_resource_effect_all",
+      "label": "All people survey-based 2024-to-2025 resource effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.73,
+      "value_raw": "-0.73",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_all_people_resource_effect",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.all.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "near_line_median_resource_growth_all",
+      "label": "All people median nominal resource growth for people at 75-150% of the 2024 SPM line",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 4.61,
+      "value_raw": "4.61",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_near_line_resource_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "All people",
+        "statistic": "weighted median of SPM unit nominal resource growth",
+        "population_band": "75% to 150% of 2024 SPM threshold"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/near_line_growth.json",
+        "sha256": "f0a48a4eb8fc022ce0948e8209e7a262a4f66efa5ad2b2a003356e6766357bbf",
+        "field": "all.median_resource_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "uniform_growth_matching_census_all",
+      "label": "All people uniform resource growth required to reproduce 2025 Census poverty rate",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 4.93,
+      "value_raw": "4.93",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_uniform_resource_growth_matching_census",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "All people",
+        "statistic": "uniform nominal resource growth factor solved to match observed Census 2025 rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "uniform_resource_growth_pct_that_matches_actual_2025.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_prediction_all",
+      "label": "All people raw-survey diagnostic 2025 SPM rate at uniform model median resource growth",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.1319,
+      "value_raw": "13.19",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "uniform 4.61% resource growth, 2025 BLS thresholds"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.projected_2025_uniform.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. A diagnostic calculated after release, not a second preregistered forecast. Post displays one-decimal rates."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_error_all",
+      "label": "All people raw-survey diagnostic level minus Census level",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.08,
+      "value_raw": "0.08",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "raw-survey uniform-growth projected level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.error_uniform_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. Post displays one-decimal errors."
+      }
+    },
+    {
+      "key": "registered_change_under_18",
+      "label": "Children under 18 registered 2024-to-2025 modeled SPM poverty-rate change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.85663851,
+      "value_raw": "0.85663851",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.modeled_change_2024_to_2025_pp.under_18",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded. The post rounds this result to two decimals in the chart and tables and one decimal in its opening paragraph."
+      }
+    },
+    {
+      "key": "registered_prediction_under_18",
+      "label": "Children under 18 registered 2025 SPM poverty prediction (corrected 2024 Census anchor)",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.14300000000000002,
+      "value_raw": "14.3",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "corrected Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.corrected_anchor.under_18",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "original_anchor_prediction_under_18",
+      "label": "Children under 18 2025 SPM prediction using original Census anchor",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.14300000000000002,
+      "value_raw": "14.3",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "original Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.original_anchor.under_18",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change from prior production model",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.24,
+      "value_raw": "-0.24",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "for_comparison_legacy_production_model.modeled_change_2024_to_2025_pp.under_18",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "registered_change_miss_under_18",
+      "label": "Children under 18 registered change minus Census change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.92,
+      "value_raw": "0.92",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.under_18.miss_in_change_pp.unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_miss_under_18",
+      "label": "Children under 18 prior-model change minus Census change",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.18,
+      "value_raw": "-0.18",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "prior model change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.under_18.legacy_model.miss_in_change_pp_unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "registered_level_miss_under_18",
+      "label": "Children under 18 registered level minus Census level",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.9,
+      "value_raw": "0.9",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered predicted level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.under_18.miss_in_level_pp",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded. Opening prose reports the absolute level miss for seniors (0.8 points); this file stores the signed miss (-0.8 points)."
+      }
+    },
+    {
+      "key": "model_level_under_18",
+      "label": "Children under 18 model own unanchored 2025 SPM poverty rate",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.16566759399999997,
+      "value_raw": "16.56675940",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "unanchored model simulated poverty rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.simulated_rates_percent.2025.under_18",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "model_threshold_effect_under_18",
+      "label": "Children under 18 modeled 2024-to-2025 threshold effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 1.398562,
+      "value_raw": "1.398562",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_threshold_effect",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.under_18.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_threshold_effect_under_18",
+      "label": "Children under 18 survey-based 2024-to-2025 threshold effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 1.09,
+      "value_raw": "1.09",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_children_under_18_threshold_effect",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.under_18.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "model_resource_effect_under_18",
+      "label": "Children under 18 modeled 2024-to-2025 resource effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.541924,
+      "value_raw": "-0.541924",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_resource_effect",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.under_18.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_resource_effect_under_18",
+      "label": "Children under 18 survey-based 2024-to-2025 resource effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -1.15,
+      "value_raw": "-1.15",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_children_under_18_resource_effect",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.under_18.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "near_line_median_resource_growth_under_18",
+      "label": "Children under 18 median nominal resource growth for people at 75-150% of the 2024 SPM line",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 3.74,
+      "value_raw": "3.74",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_near_line_resource_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "Children under 18",
+        "statistic": "weighted median of SPM unit nominal resource growth",
+        "population_band": "75% to 150% of 2024 SPM threshold"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/near_line_growth.json",
+        "sha256": "f0a48a4eb8fc022ce0948e8209e7a262a4f66efa5ad2b2a003356e6766357bbf",
+        "field": "under_18.median_resource_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "uniform_growth_matching_census_under_18",
+      "label": "Children under 18 uniform resource growth required to reproduce 2025 Census poverty rate",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 5.47,
+      "value_raw": "5.47",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_uniform_resource_growth_matching_census",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "Children under 18",
+        "statistic": "uniform nominal resource growth factor solved to match observed Census 2025 rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "uniform_resource_growth_pct_that_matches_actual_2025.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_prediction_under_18",
+      "label": "Children under 18 raw-survey diagnostic 2025 SPM rate at uniform model median resource growth",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.1369,
+      "value_raw": "13.69",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "uniform 4.61% resource growth, 2025 BLS thresholds"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.projected_2025_uniform.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. A diagnostic calculated after release, not a second preregistered forecast. Post displays one-decimal rates."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_error_under_18",
+      "label": "Children under 18 raw-survey diagnostic level minus Census level",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.29,
+      "value_raw": "0.29",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "raw-survey uniform-growth projected level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.error_uniform_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. Post displays one-decimal errors."
+      }
+    },
+    {
+      "key": "registered_change_age_65_plus",
+      "label": "People age 65 and over registered 2024-to-2025 modeled SPM poverty-rate change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.52166134,
+      "value_raw": "-0.52166134",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.modeled_change_2024_to_2025_pp.age_65_plus",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded. The post rounds this result to two decimals in the chart and tables and one decimal in its opening paragraph."
+      }
+    },
+    {
+      "key": "registered_prediction_age_65_plus",
+      "label": "People age 65 and over registered 2025 SPM poverty prediction (corrected 2024 Census anchor)",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.146,
+      "value_raw": "14.6",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "corrected Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.corrected_anchor.age_65_plus",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "original_anchor_prediction_age_65_plus",
+      "label": "People age 65 and over 2025 SPM prediction using original Census anchor",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.145,
+      "value_raw": "14.5",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "original Census 2024 anchor plus modeled change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "prediction_2025_percent.original_anchor.age_65_plus",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change from prior production model",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -1.24,
+      "value_raw": "-1.24",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "for_comparison_legacy_production_model.modeled_change_2024_to_2025_pp.age_65_plus",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "registered_change_miss_age_65_plus",
+      "label": "People age 65 and over registered change minus Census change",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.76,
+      "value_raw": "-0.76",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.age_65_plus.miss_in_change_pp.unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "legacy_change_miss_age_65_plus",
+      "label": "People age 65 and over prior-model change minus Census change",
+      "world": "legacy_model",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -1.48,
+      "value_raw": "-1.48",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "prior model change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.age_65_plus.legacy_model.miss_in_change_pp_unrounded",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine-us": "1.764.6",
+          "spm-calculator": "0.3.1"
+        },
+        "dataset": "api.policyengine.org economy baseline, pulled 2026-09-08; population version not recorded in the registered file",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded."
+      }
+    },
+    {
+      "key": "registered_level_miss_age_65_plus",
+      "label": "People age 65 and over registered level minus Census level",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.8,
+      "value_raw": "-0.8",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "registered predicted level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+        "sha256": "1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "field": "groups.age_65_plus.miss_in_level_pp",
+        "computed_at": "2026-09-17",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The grade file records graded = 2026-09-17. computed_at is its grading date; exact calculation time is not recorded. Opening prose reports the absolute level miss for seniors (0.8 points); this file stores the signed miss (-0.8 points)."
+      }
+    },
+    {
+      "key": "model_level_age_65_plus",
+      "label": "People age 65 and over model own unanchored 2025 SPM poverty rate",
+      "world": "current_law",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.10902244809999999,
+      "value_raw": "10.90224481",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "unanchored model simulated poverty rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+        "sha256": "a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "field": "model.simulated_rates_percent.2025.age_65_plus",
+        "computed_at": "2026-09-11",
+        "engine": {
+          "policyengine-us": "2.0.0 candidate (wheel sha256 05c729ae04eefc7b295af9855972e5d001f71632f02590d8846c48e6d190a27d)",
+          "policyengine-core": "3.30.1",
+          "policyengine": "5.3.0",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The registered prediction file records written = 2026-09-11. computed_at is its written date; actual run time is not recorded."
+      }
+    },
+    {
+      "key": "model_threshold_effect_age_65_plus",
+      "label": "People age 65 and over modeled 2024-to-2025 threshold effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.267331,
+      "value_raw": "0.267331",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_threshold_effect",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.age_65_plus.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_threshold_effect_age_65_plus",
+      "label": "People age 65 and over survey-based 2024-to-2025 threshold effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.71,
+      "value_raw": "0.71",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_age_65_plus_threshold_effect",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.age_65_plus.threshold_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "model_resource_effect_age_65_plus",
+      "label": "People age 65 and over modeled 2024-to-2025 resource effect",
+      "world": "current_law",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.788993,
+      "value_raw": "-0.788993",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_resource_effect",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "model.age_65_plus.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals. The split is order dependent: threshold effect changes the threshold on 2025 resources, and resource effect is the remaining change."
+      }
+    },
+    {
+      "key": "survey_resource_effect_age_65_plus",
+      "label": "People age 65 and over survey-based 2024-to-2025 resource effect",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.47,
+      "value_raw": "-0.47",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_age_65_plus_resource_effect",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "counterfactual": "2025 observed resources with thresholds fixed to corrected 2024 threshold times CPI-U"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/model_decomposition.json",
+        "sha256": "a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "field": "census.age_65_plus.resource_effect",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. PolicyEngine calculated this decomposition, rather than Census publishing the counterfactual effect. decompose.py hard-codes the anchored 2025 rates and references analysis/asec-2026-anchored-thresholds, but that directory is absent from the pinned tree; the underlying recomputation code is not recoverable there."
+      }
+    },
+    {
+      "key": "near_line_median_resource_growth_age_65_plus",
+      "label": "People age 65 and over median nominal resource growth for people at 75-150% of the 2024 SPM line",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 7.74,
+      "value_raw": "7.74",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_near_line_resource_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "People age 65 and over",
+        "statistic": "weighted median of SPM unit nominal resource growth",
+        "population_band": "75% to 150% of 2024 SPM threshold"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/near_line_growth.json",
+        "sha256": "f0a48a4eb8fc022ce0948e8209e7a262a4f66efa5ad2b2a003356e6766357bbf",
+        "field": "age_65_plus.median_resource_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "uniform_growth_matching_census_age_65_plus",
+      "label": "People age 65 and over uniform resource growth required to reproduce 2025 Census poverty rate",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 4.05,
+      "value_raw": "4.05",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_uniform_resource_growth_matching_census",
+        "geography": "United States",
+        "prices": "cash",
+        "population": "People age 65 and over",
+        "statistic": "uniform nominal resource growth factor solved to match observed Census 2025 rate"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "uniform_resource_growth_pct_that_matches_actual_2025.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_prediction_age_65_plus",
+      "label": "People age 65 and over raw-survey diagnostic 2025 SPM rate at uniform model median resource growth",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate",
+      "unit_concept": "share",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.1523,
+      "value_raw": "15.23",
+      "normalization": "percent / 100 -> fraction",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "method": "uniform 4.61% resource growth, 2025 BLS thresholds"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.projected_2025_uniform.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. A diagnostic calculated after release, not a second preregistered forecast. Post displays one-decimal rates."
+      }
+    },
+    {
+      "key": "raw_uniform_model_growth_error_age_65_plus",
+      "label": "People age 65 and over raw-survey diagnostic level minus Census level",
+      "world": "raw_uniform_growth",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.14,
+      "value_raw": "-0.14",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "raw-survey uniform-growth projected level minus Census reported level"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/raw_aging.json",
+        "sha256": "a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "field": "raw_file_with_model_growth.error_uniform_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 CPS ASEC public-use person file, calendar 2024; input not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. Post displays one-decimal errors."
+      }
+    },
+    {
+      "key": "ss_cola_pension_cpi_change_all",
+      "label": "All people 2024-to-2025 SPM change: Social Security grows with the modeled COLA, pensions and retirement distributions with January-over-January CPI-U.",
+      "world": "ss_cola_pension_cpi",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.474,
+      "value_raw": "0.474",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.ss_cola_pension_cpi.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "ss_cola_pension_cpi_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Social Security grows with the modeled COLA, pensions and retirement distributions with January-over-January CPI-U.",
+      "world": "ss_cola_pension_cpi",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.979,
+      "value_raw": "0.979",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.ss_cola_pension_cpi.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "ss_cola_pension_cpi_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Social Security grows with the modeled COLA, pensions and retirement distributions with January-over-January CPI-U.",
+      "world": "ss_cola_pension_cpi",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.214,
+      "value_raw": "0.214",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.ss_cola_pension_cpi.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "se_like_wages_change_all",
+      "label": "All people 2024-to-2025 SPM change: Self-employment income grows with wages.",
+      "world": "se_like_wages",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.007,
+      "value_raw": "0.007",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.se_like_wages.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "se_like_wages_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Self-employment income grows with wages.",
+      "world": "se_like_wages",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.472,
+      "value_raw": "0.472",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.se_like_wages.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "se_like_wages_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Self-employment income grows with wages.",
+      "world": "se_like_wages",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.593,
+      "value_raw": "-0.593",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.se_like_wages.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_change_all",
+      "label": "All people 2024-to-2025 SPM change: Social Security at the COLA, pensions at January-over-January CPI-U, and self-employment grown with wages.",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.252,
+      "value_raw": "0.252",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Social Security at the COLA, pensions at January-over-January CPI-U, and self-employment grown with wages.",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.572,
+      "value_raw": "0.572",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Social Security at the COLA, pensions at January-over-January CPI-U, and self-employment grown with wages.",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.148,
+      "value_raw": "0.148",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_all",
+      "label": "All people 2024-to-2025 SPM change: Social Security at the age-adjusted survey rate for recipients age 66+, pensions at annual-average CPI-U, and self-employment grown with wages.",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.173,
+      "value_raw": "0.173",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Social Security at the age-adjusted survey rate for recipients age 66+, pensions at annual-average CPI-U, and self-employment grown with wages.",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.533,
+      "value_raw": "0.533",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Social Security at the age-adjusted survey rate for recipients age 66+, pensions at annual-average CPI-U, and self-employment grown with wages.",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.024,
+      "value_raw": "-0.024",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_decile_change_all",
+      "label": "All people 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within wage deciles.",
+      "world": "wages_by_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.241,
+      "value_raw": "0.241",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_decile.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_decile_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within wage deciles.",
+      "world": "wages_by_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.855,
+      "value_raw": "0.855",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_decile.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_decile_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within wage deciles.",
+      "world": "wages_by_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.522,
+      "value_raw": "-0.522",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_decile.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_family_decile_change_all",
+      "label": "All people 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within deciles of SPM resources relative to threshold.",
+      "world": "wages_by_family_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.094,
+      "value_raw": "0.094",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_family_decile.change_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_family_decile_change_under_18",
+      "label": "Children under 18 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within deciles of SPM resources relative to threshold.",
+      "world": "wages_by_family_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.714,
+      "value_raw": "0.714",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_family_decile.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "wages_by_family_decile_change_age_65_plus",
+      "label": "People age 65 and over 2024-to-2025 SPM change: Wages grow by the survey mean-wage growth within deciles of SPM resources relative to threshold.",
+      "world": "wages_by_family_decile",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.594,
+      "value_raw": "-0.594",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.wages_by_family_decile.change_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The post rounds this result to two decimals."
+      }
+    },
+    {
+      "key": "all_four_change_under_18",
+      "label": "Children under 18 SPM change with all three source changes and wages by family resources",
+      "world": "all_four",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.424,
+      "value_raw": "0.424",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_four.change_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "ss_66plus_resource_effect_seniors",
+      "label": "Senior resource effect with all three changes and Social Security at survey 66+ growth",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.433,
+      "value_raw": "-0.433",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_resource_effect",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_split.json",
+        "sha256": "3cc19428e6ce3b0d89fea82b8b84178e9c1c03ccf5327d401c9187d7086a1b3d",
+        "field": "variants.all_three_ss_66plus.age_65_plus.resources",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "all_three_change_miss_all",
+      "label": "All people change minus Census change after three source changes (all_three)",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.182,
+      "value_raw": "0.182",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.miss_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "all_three_change_miss_under_18",
+      "label": "Children under 18 change minus Census change after three source changes (all_three)",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.632,
+      "value_raw": "0.632",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.miss_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "all_three_change_miss_age_65_plus",
+      "label": "People age 65 and over change minus Census change after three source changes (all_three)",
+      "world": "all_three",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.092,
+      "value_raw": "-0.092",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three.miss_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_miss_all",
+      "label": "All people change minus Census change after three source changes (all_three_ss_66plus)",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.103,
+      "value_raw": "0.103",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_all_people_forecast_error",
+        "geography": "United States",
+        "population": "All people",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.miss_pp.all",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_miss_under_18",
+      "label": "Children under 18 change minus Census change after three source changes (all_three_ss_66plus)",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.593,
+      "value_raw": "0.593",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_children_under_18_forecast_error",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.miss_pp.under_18",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "all_three_ss_66plus_change_miss_age_65_plus",
+      "label": "People age 65 and over change minus Census change after three source changes (all_three_ss_66plus)",
+      "world": "all_three_ss_66plus",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.264,
+      "value_raw": "-0.264",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "spm_age_65_plus_forecast_error",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "sensitivity modeled change minus Census reported change"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+        "sha256": "f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "field": "variants.all_three_ss_66plus.miss_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. These signed fields underlie the prose summary: remaining child miss about 0.6 pp; senior absolute misses between 0.09 and 0.26 pp. These are two alternative model runs, not a confidence interval."
+      }
+    },
+    {
+      "key": "senior_deduction_poverty_effect",
+      "label": "Increase in SPM poverty rate from removing enhanced senior deduction, age 65+",
+      "world": "senior_deduction_removed",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 0.012468776987569541,
+      "value_raw": "-0.012468776987569541",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "static",
+        "program": "enhanced_senior_deduction",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/senior_deduction.json",
+        "sha256": "9d722e2215b5f6148d46a2c88e3b81ec9342e5ac11c6a79c1f21e5e34d3c9140",
+        "field": "senior_deduction_contribution_pp.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The file prints current law minus no senior deduction as a negative contribution. The post scores removing the deduction relative to current law, the reverse difference, so sign -1 gives positive = increase in poverty."
+      },
+      "sign": -1,
+      "sign_basis": "The file prints current law minus no senior deduction as a negative contribution. The post scores removing the deduction relative to current law, the reverse difference, so sign -1 gives positive = increase in poverty."
+    },
+    {
+      "key": "senior_deduction_poverty_count_effect",
+      "label": "People age 65+ added to SPM poverty by removing enhanced senior deduction",
+      "world": "senior_deduction_removed",
+      "metric": "poverty_count_change",
+      "unit_concept": "persons",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 7697.710648536682,
+      "value_raw": "7.697710648536682",
+      "normalization": "thousands x 1e3",
+      "conditions": {
+        "basis": "static",
+        "program": "enhanced_senior_deduction",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/senior_deduction.json",
+        "sha256": "9d722e2215b5f6148d46a2c88e3b81ec9342e5ac11c6a79c1f21e5e34d3c9140",
+        "field": "people_lifted_by_senior_deduction_thousands.age_65_plus",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. The file prints people lifted by the deduction as positive thousands; reversing the counterfactual adds the same number to poverty. Removal relative to current law is positive = increase in poverty. Post rounds to about 7,700 people."
+      }
+    },
+    {
+      "key": "senior_deduction_share_tax_cut",
+      "label": "Share of seniors with income tax cut by enhanced senior deduction",
+      "world": "current_law",
+      "metric": "share_with_tax_cut",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 44.23877249947762,
+      "value_raw": "44.23877249947762",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "static",
+        "program": "enhanced_senior_deduction",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "population_band": "all seniors"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/senior_deduction.json",
+        "sha256": "9d722e2215b5f6148d46a2c88e3b81ec9342e5ac11c6a79c1f21e5e34d3c9140",
+        "field": "seniors_2025.share_with_income_tax_cut_by_deduction_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "senior_deduction_share_tax_cut_below125",
+      "label": "Share of seniors below 125% of SPM threshold with income tax cut by enhanced senior deduction",
+      "world": "current_law",
+      "metric": "share_with_tax_cut",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 8.086502702330431,
+      "value_raw": "8.086502702330431",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "static",
+        "program": "enhanced_senior_deduction",
+        "geography": "United States",
+        "population": "People age 65 and over",
+        "population_band": "below 125% of SPM threshold"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/results/senior_deduction.json",
+        "sha256": "9d722e2215b5f6148d46a2c88e3b81ec9342e5ac11c6a79c1f21e5e34d3c9140",
+        "field": "seniors_2025.share_with_income_tax_cut_among_below_125pct_threshold_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "model_nominal_growth_social_security",
+      "label": "Social Security per-record nominal income growth from 2024 to 2025",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 8.31,
+      "value_raw": "8.31",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "social_security_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "per-record nominal income growth",
+        "population_band": "nonzero source income"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/near_line_sources-baseline.json",
+        "sha256": "896f8152a650ff40ba1880468dcc90e0ead213ee91b236c2f32e38a57e6bfcf9",
+        "field": "all.sources.social_security.own_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. This is the uprating growth measured from the modeled source values; although the result file tabulates the near-line sample, the same source-specific factor is applied to every record. Post rounds to one decimal."
+      }
+    },
+    {
+      "key": "model_nominal_growth_pensions_retirement",
+      "label": "Pensions and retirement distributions per-record nominal income growth from 2024 to 2025",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 19.47,
+      "value_raw": "19.47",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "pensions_retirement_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "per-record nominal income growth",
+        "population_band": "nonzero source income"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/near_line_sources-baseline.json",
+        "sha256": "896f8152a650ff40ba1880468dcc90e0ead213ee91b236c2f32e38a57e6bfcf9",
+        "field": "all.sources.pensions_retirement.own_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. This is the uprating growth measured from the modeled source values; although the result file tabulates the near-line sample, the same source-specific factor is applied to every record. Post rounds to one decimal."
+      }
+    },
+    {
+      "key": "model_nominal_growth_self_employment",
+      "label": "Self-employment income per-record nominal income growth from 2024 to 2025",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -5.76,
+      "value_raw": "-5.76",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "self_employment_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "per-record nominal income growth",
+        "population_band": "nonzero source income"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/near_line_sources-baseline.json",
+        "sha256": "896f8152a650ff40ba1880468dcc90e0ead213ee91b236c2f32e38a57e6bfcf9",
+        "field": "all.sources.self_employment.own_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. This is the uprating growth measured from the modeled source values; although the result file tabulates the near-line sample, the same source-specific factor is applied to every record. Post rounds to one decimal."
+      }
+    },
+    {
+      "key": "model_nominal_growth_wages",
+      "label": "Wages per-record nominal income growth from 2024 to 2025",
+      "world": "current_law",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 4.94,
+      "value_raw": "4.94",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "forecast",
+        "program": "wages_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "per-record nominal income growth",
+        "population_band": "nonzero source income"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/near_line_sources-baseline.json",
+        "sha256": "896f8152a650ff40ba1880468dcc90e0ead213ee91b236c2f32e38a57e6bfcf9",
+        "field": "all.sources.wages.own_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "policyengine": "6.0.0",
+          "policyengine-us": "2.2.1",
+          "policyengine-core": "3.32.5",
+          "spm-calculator": "1.0.0"
+        },
+        "dataset": "hf://datasets/policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260909; SHA-256 6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time. This is the uprating growth measured from the modeled source values; although the result file tabulates the near-line sample, the same source-specific factor is applied to every record. Post rounds to one decimal."
+      }
+    },
+    {
+      "key": "survey_growth_ss_66plus",
+      "label": "Age-adjusted mean Social Security per-recipient growth, age 66+",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 4.04,
+      "value_raw": "4.04",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "social_security_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "Age-adjusted mean Social Security per-recipient growth, age 66+"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "social_security_all.age_adjusted_mean_growth_66_plus_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "survey_growth_pensions_65plus",
+      "label": "Median pensions and annuities growth per recipient, age 65+",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 3.7,
+      "value_raw": "3.7",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "pensions_annuities_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "Median pensions and annuities growth per recipient, age 65+"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "pensions_annuities_65_plus.median_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "survey_growth_self_employment",
+      "label": "Median positive self-employment income growth per recipient",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 8.7,
+      "value_raw": "8.7",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "self_employment_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "Median positive self-employment income growth per recipient"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "self_employment_SEMP_VAL.median_positive_growth_pct",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "survey_wage_growth_bottom_resource_decile",
+      "label": "Mean nominal wage growth in bottom decile of SPM resources relative to threshold",
+      "world": "survey_diagnostic",
+      "metric": "income_statistic",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 6.57,
+      "value_raw": "6.57",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "wages_nominal_income_growth",
+        "geography": "United States",
+        "prices": "cash",
+        "statistic": "mean wage growth within bottom decile ranked by SPM resources relative to threshold"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/wage_deciles.json",
+        "sha256": "5852195fef79b0a18cad956f5eac53f27cd398755994e0781e3af810259b5fe1",
+        "field": "by_spm_ratio_decile.growth_pct.0",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "share_children_with_noncitizen_2024",
+      "label": "Share of children in SPM units with a noncitizen member, 2024",
+      "world": "survey_diagnostic",
+      "metric": "affected_share",
+      "unit_concept": "percent",
+      "period": 2024,
+      "time_basis": "annual",
+      "value": 17.88,
+      "value_raw": "17.88",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "children_in_spm_units_with_noncitizen",
+        "geography": "United States",
+        "statistic": "share of children in SPM units with a noncitizen member"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "children_in_units_with_noncitizen.share_pct.2024",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "share_children_with_noncitizen_2025",
+      "label": "Share of children in SPM units with a noncitizen member, 2025",
+      "world": "survey_diagnostic",
+      "metric": "affected_share",
+      "unit_concept": "percent",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": 16.35,
+      "value_raw": "16.35",
+      "normalization": "percent as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "children_in_spm_units_with_noncitizen",
+        "geography": "United States",
+        "statistic": "share of children in SPM units with a noncitizen member"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "children_in_units_with_noncitizen.share_pct.2025",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    },
+    {
+      "key": "noncitizen_composition_poverty_effect",
+      "label": "Child SPM poverty-rate effect of changed noncitizen composition holding group poverty rates at 2024 values",
+      "world": "survey_diagnostic",
+      "metric": "poverty_rate_change",
+      "unit_concept": "percentage_points",
+      "period": 2025,
+      "time_basis": "annual",
+      "value": -0.211,
+      "value_raw": "-0.211",
+      "normalization": "as printed",
+      "conditions": {
+        "basis": "outturn",
+        "program": "spm_children_under_18_noncitizen_composition",
+        "geography": "United States",
+        "population": "Children under 18",
+        "poverty_measure": "Supplemental Poverty Measure",
+        "sign_convention": "positive = increase in poverty",
+        "statistic": "shift-share composition effect holding 2024 group poverty rates fixed"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/spm-threshold-paper",
+        "commit": "22d8b7a1b9f97d94f796042bc067813b649a2f20",
+        "path": "analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+        "sha256": "8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "field": "children_in_units_with_noncitizen.shift_share_pp",
+        "computed_at": "2026-09-29T11:54:56Z",
+        "engine": {
+          "python": "version not recorded",
+          "pandas": "version not recorded",
+          "numpy": "version not recorded"
+        },
+        "dataset": "2025 and 2026 CPS ASEC public-use person files (calendar 2024 and 2025); inputs not hashed in the committed results",
+        "note": "The committed result stores no calculation timestamp. computed_at is the publication commit time, an upper bound on calculation, not a recorded run time."
+      }
+    }
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "schema": "comparables/search/1",
+  "searches": [
+    {
+      "date": "2026-10-22",
+      "kind": "backfill",
+      "by": "comparables/backfill-analysis-us-2025-spm-poverty-prediction",
+      "results_pins": [
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:1c9682bccbc42f58cf13cb0d407f3dcfc72ed6b9e7f6de006cc53bfa0f53ac0e",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:3cc19428e6ce3b0d89fea82b8b84178e9c1c03ccf5327d401c9187d7086a1b3d",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:5852195fef79b0a18cad956f5eac53f27cd398755994e0781e3af810259b5fe1",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:8549cb7ef8f581472ce0153f99f4996b55b0e7ad8dd40f0a23830cd3704ab9a3",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:896f8152a650ff40ba1880468dcc90e0ead213ee91b236c2f32e38a57e6bfcf9",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:9d722e2215b5f6148d46a2c88e3b81ec9342e5ac11c6a79c1f21e5e34d3c9140",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:a02ef8af4f58883ac5cf0cf17637b174554c436c23a2c196c3256647c328c78b",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:a1f6bd78dbdc5fa533d409101170401558bf010bf93647a26f097dd068801941",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:a858c852645352183ba945afad658396b82f10be23dc66c47b3c4358056b9a42",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:f043ff0c4e1498381b4c5e7d5e7d78399ca10a33f452e5d7b26ef797ad9c601b",
+        "PolicyEngine/spm-threshold-paper@22d8b7a1b9f97d94f796042bc067813b649a2f20:f0a48a4eb8fc022ce0948e8209e7a262a4f66efa5ad2b2a003356e6766357bbf"
+      ],
+      "producers": [
+        {
+          "producer": "cbo",
+          "result": "none_found",
+          "queries": [
+            "site:cbo.gov 2025 SPM poverty projection supplemental poverty measure forecast 2025"
+          ],
+          "checked": [
+            "https://www.cbo.gov/topics/income-distribution",
+            "https://www.cbo.gov/cost-estimates",
+            "https://www.cbo.gov/budget-options",
+            "https://www.cbo.gov/publication/60870"
+          ],
+          "claims": [],
+          "note": "Cost-estimate, budget-option, income-distribution and baseline report pages checked. No annual 2025 SPM forecast located; household-resource distribution tables and official-poverty methodological work are different quantities."
+        },
+        {
+          "producer": "jct",
+          "result": "none_found",
+          "queries": [
+            "site:jct.gov 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:jct.gov \"2025\" \"poverty\"",
+            "site:jct.gov \"2025\" \"supplemental poverty\""
+          ],
+          "checked": [
+            "https://www.jct.gov/publications/",
+            "https://www.jct.gov/publications/2025/",
+            "https://www.jct.gov/getattachment/dbeb6407-4e04-4b7d-80ae-c382e5d17949/x-21-25.pdf"
+          ],
+          "claims": [],
+          "note": "Publications catalog fetch failed (403; year URL inaccessible). Indexed JCX material refers to poverty guidelines for eligibility, not an annual 2025 SPM rate. Revenue, distributional and tax-expenditure searches found no 2025 SPM model estimate."
+        },
+        {
+          "producer": "tpc",
+          "result": "none_found",
+          "queries": [
+            "site:taxpolicycenter.org 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:taxpolicycenter.org \"2025\" \"poverty\" forecast"
+          ],
+          "checked": [
+            "https://taxpolicycenter.org/model-estimates",
+            "https://taxpolicycenter.org/taxvox",
+            "https://taxpolicycenter.org/taxvox/17-million-children-low-income-families-will-not-receive-full-child-tax-credit-2025"
+          ],
+          "claims": [],
+          "note": "Model-table catalog checked; TaxVox catalog fetch returned 403, individual indexed TaxVox article read. The 17 million children estimate is CTC eligibility, not a poverty nowcast. No annual 2025 SPM rate located."
+        },
+        {
+          "producer": "pwbm",
+          "result": "none_found",
+          "queries": [
+            "site:budgetmodel.wharton.upenn.edu 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:budgetmodel.wharton.upenn.edu \"poverty\" \"2025\""
+          ],
+          "checked": [
+            "https://budgetmodel.wharton.upenn.edu/",
+            "https://budgetmodel.wharton.upenn.edu/issues",
+            "https://budgetmodel.wharton.upenn.edu/p/2026-05-29-the-demographic-economic-and-conventional-budget-outlook-2026-2056/"
+          ],
+          "claims": [],
+          "note": "Homepage issue analyses and baseline outlook checked; old /issues URL returned 404. Budget and economic projections are not SPM poverty rates; no annual 2025 SPM forecast located."
+        },
+        {
+          "producer": "budget_lab",
+          "result": "none_found",
+          "queries": [
+            "site:budgetlab.yale.edu 2025 SPM poverty projection supplemental poverty measure forecast 2025"
+          ],
+          "checked": [
+            "https://budgetlab.yale.edu/sites/default/files/page_to_pdf/1138/publication_1138.pdf",
+            "https://budgetlab.yale.edu/research/effect-tariffs-poverty"
+          ],
+          "claims": [],
+          "note": "Tariff-poverty paper checked: publication year does not identify estimate year. Table 1 is explicitly 2026, not 2025. No annual 2025 SPM estimate located."
+        },
+        {
+          "producer": "tax_foundation",
+          "result": "none_found",
+          "queries": [
+            "site:taxfoundation.org 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:taxfoundation.org \"supplemental poverty\" 2025",
+            "site:taxfoundation.org \"SPM\" \"poverty\""
+          ],
+          "checked": [
+            "https://taxfoundation.org/research/"
+          ],
+          "claims": [],
+          "note": "Research catalog and federal/state research searches checked. No 2025 SPM poverty forecast located."
+        },
+        {
+          "producer": "urban",
+          "result": "none_found",
+          "queries": [
+            "site:urban.org 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:urban.org \"2025\" \"poverty\" \"project\" ATTIS",
+            "site.urban.org \"2025\" \"poverty\" \"SPM\" projection",
+            "site.urban.org \"2025\" \"ATTIS\" \"poverty\"",
+            "site.urban.org \"2025\" \"TRIM3\" \"poverty\"",
+            "\"2025 poverty projections\" urban"
+          ],
+          "checked": [
+            "https://www.urban.org/research/publication/model-estimates-poverty-schools-20",
+            "https://www.urban.org/sites/default/files/2022-09/ATTIS-%20Simulating%20the%20Effects%20of%20a%20%2415%20an%20Hour%20Federal%20Minimum%20Wage.pdf",
+            "https://www.urban.org/research-methods/attis-microsimulation-model",
+            "https://www.urban.org/research/publication/2021-poverty-projections-assessing-impact-benefits-and-stimulus-measures",
+            "https://www.urban.org/sites/default/files/2025-08/How%20a%20Work-Based%20Policy%20Package%20Can%20Reduce%20US%20Poverty.pdf",
+            "https://www.urban.org/sites/default/files/2025-06/House-Reconciliation-Bill-Will-Hit-Lowest-Income-Families-the%20Hardest.pdf"
+          ],
+          "claims": [],
+          "note": "ATTIS/TRIM and research searches found analyses for other years and measures; MEPS school poverty data end in school year 2022-23, and the ATTIS minimum-wage report models 2022. No annual 2025 national SPM nowcast located. Followup: 2021 Poverty Projections targets 2021; the August 2025 TRIM3 work-package paper models 2018, and the June 2025 ATTIS House reconciliation paper models full implementation on pooled 2022-23 ACS reweighted to 2023. TRIM3 site was inaccessible."
+        },
+        {
+          "producer": "cbpp",
+          "result": "none_found",
+          "queries": [
+            "site:cbpp.org 2025 SPM poverty projection supplemental poverty measure forecast 2025"
+          ],
+          "checked": [
+            "https://www.cbpp.org/research/poverty-and-inequality/what-to-watch-for-in-next-weeks-release-of-census-data-on-income",
+            "https://www.cbpp.org/blog/official-poverty-measure-and-anchored-supplemental-poverty-measure-show-poverty-rate-declined"
+          ],
+          "claims": [],
+          "note": "September 10, 2026 pre-release outlook is qualitative for 2025 SPM (likely to rise), without a numeric annual rate. September 16 review restates Census SPM and anchored-SPM outturns; these are administrative facts, not CBPP model forecasts. Web text readable; local direct downloads returned 403."
+        },
+        {
+          "producer": "itep",
+          "result": "none_found",
+          "queries": [
+            "site:itep.org 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:itep.org \"2025\" \"poverty\" projection"
+          ],
+          "checked": [
+            "https://itep.org/child-poverty-remains-unacceptably-child-tax-credit-changes/",
+            "https://itep.org/new-census-data-child-tax-credit-eitc-need-improvements/",
+            "https://itep.org/impacts-of-tax-relief-for-american-families-and-workers-act/"
+          ],
+          "claims": [],
+          "note": "September 2025 and September 2026 poverty articles restate Census rates; 2025 bill-impact estimates concern tax liability, not an annual national SPM forecast. No independent 2025 SPM nowcast located."
+        },
+        {
+          "producer": "cpsp",
+          "result": "found",
+          "queries": [
+            "site:povertycenter.columbia.edu 2025 SPM poverty projection nowcast child poverty 2025",
+            "site:povertycenter.columbia.edu \"monthly poverty\" \"2025\""
+          ],
+          "checked": [
+            "https://povertycenter.columbia.edu/monthly-poverty-data",
+            "https://povertycenter.columbia.edu/monthly-poverty",
+            "https://povertycenter.columbia.edu/databook/2025-poverty-rates-historical-perspective",
+            "https://povertycenter.columbia.edu/sites/povertycenter.columbia.edu/files/content/Data/Monthly%20SPM%20Technical%20Note%20for%202024_updated%2010%2013%2025.pdf",
+            "https://datawrapper.dwcdn.net/55gWy/15/",
+            "https://datawrapper.dwcdn.net/t4vbO/17/",
+            "https://datawrapper.dwcdn.net/55gWy/15/dataset.csv",
+            "https://povertycenter.columbia.edu/sites/default/files/content/Publications/2025-Poverty-Rates-in-Historical-Perspective-Databook_CPSP-2026.pdf"
+          ],
+          "claims": [
+            "cpsp_monthly_overall_2025_01",
+            "cpsp_monthly_children_2025_01",
+            "cpsp_monthly_older_2025_01",
+            "cpsp_monthly_overall_2025_02",
+            "cpsp_monthly_children_2025_02",
+            "cpsp_monthly_older_2025_02",
+            "cpsp_monthly_overall_2025_03",
+            "cpsp_monthly_children_2025_03",
+            "cpsp_monthly_older_2025_03",
+            "cpsp_monthly_overall_2025_04",
+            "cpsp_monthly_children_2025_04",
+            "cpsp_monthly_older_2025_04",
+            "cpsp_monthly_overall_2025_05",
+            "cpsp_monthly_children_2025_05",
+            "cpsp_monthly_older_2025_05",
+            "cpsp_monthly_overall_2025_06",
+            "cpsp_monthly_children_2025_06",
+            "cpsp_monthly_older_2025_06",
+            "cpsp_monthly_overall_2025_07",
+            "cpsp_monthly_children_2025_07",
+            "cpsp_monthly_older_2025_07",
+            "cpsp_monthly_overall_2025_08",
+            "cpsp_monthly_children_2025_08",
+            "cpsp_monthly_older_2025_08",
+            "cpsp_monthly_overall_2025_09",
+            "cpsp_monthly_children_2025_09",
+            "cpsp_monthly_older_2025_09",
+            "cpsp_monthly_overall_2025_11",
+            "cpsp_monthly_children_2025_11",
+            "cpsp_monthly_older_2025_11",
+            "cpsp_monthly_overall_2025_12",
+            "cpsp_monthly_children_2025_12",
+            "cpsp_monthly_older_2025_12"
+          ],
+          "note": "Staged 33 monthly SPM model rates: all people, children under 18 and people 65+, for each available month of 2025 (January-September, November-December). All sit beside the corresponding annual PolicyEngine prediction with a documented monthly-versus-annual concept mismatch. October is absent because the CPS was not collected. Publication date is the current Datawrapper version publishedAt, April 20, 2026, verified in downloaded HTML; original monthly release dates are not claimed. No independent annual 2025 SPM forecast located. The September 15, 2026 historical databook (anchored series updated October 12) says its historical SPM since 2009 is Census data; its 2025 historical/anchored endpoints are Census outturns and are not staged as CPSP forecasts. The fully relative measure is a different definition, not an SPM forecast."
+        },
+        {
+          "producer": "crfb",
+          "result": "none_found",
+          "queries": [
+            "site:crfb.org 2025 SPM poverty projection supplemental poverty measure forecast 2025",
+            "site:crfb.org \"2025\" \"poverty\""
+          ],
+          "checked": [
+            "https://www.crfb.org/papers",
+            "https://www.crfb.org/papers/social-security-cola-cap",
+            "https://www.crfb.org/blogs/understanding-aca-subsidy-discussion"
+          ],
+          "claims": [],
+          "note": "Analyses and bill tallies checked. Social Security COLA paper projects poverty in 2055; ACA pages use poverty thresholds to describe eligibility. No annual 2025 SPM forecast located."
+        },
+        {
+          "producer": "state_fiscal_note",
+          "result": "not_applicable",
+          "queries": [],
+          "checked": [],
+          "claims": [],
+          "note": "The producer applies only to state/local scopes; this is a federal analysis."
+        },
+        {
+          "producer": "academic",
+          "result": "none_found",
+          "queries": [
+            "2025 SPM poverty projection nowcast Google Scholar NBER SSRN",
+            "site:scholar.google.com \"2025\" \"supplemental poverty\" forecast",
+            "site:nber.org \"2025\" \"poverty\" forecast SPM",
+            "site:ssrn.com \"2025\" \"supplemental poverty\" projection",
+            "\"2025\" \"supplemental poverty\" \"nowcast\" -\"PolicyEngine\"",
+            "\"2025\" \"SPM poverty\" projection -site:policyengine.org -site:github.com -site:reddit.com",
+            "site.nber.org \"poverty nowcast\"",
+            "site.ssrn.com \"poverty nowcast\"",
+            "site.nber.org \"2025\" \"poverty projections\"",
+            "2025 SPM poverty projections academic working paper"
+          ],
+          "checked": [
+            "https://www.nber.org/papers/w33656",
+            "https://www.nber.org/papers/w34759",
+            "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5531697",
+            "https://povertymeasurement.org/",
+            "https://sites.nd.edu/james-sullivan/research/",
+            "https://papers.ssrn.com/sol3/Delivery.cfm/d32b5739-fc8b-45e2-9393-24116ae71f61-MECA.pdf?abstractid=5211217&mirid=1"
+          ],
+          "claims": [],
+          "note": "Last-five-years working-paper and journal searches found poverty measurement methods and causal minimum-wage effects, not an annual 2025 SPM forecast. Columbia estimates are logged under cpsp. PovertyMeasurement.org and Sullivan research index cover consumption/income poverty and COVID real-time poverty; the 2025 Poverty, Hardship, and Government Transfers paper covers 2015-22. NBER 33656/34759 and SSRN 5531697 direct opens failed (403); search-index abstracts were readable, not their full texts. No inference of absence from those full texts is made."
+        },
+        {
+          "producer": "open_search",
+          "result": "found_not_staged",
+          "queries": [
+            "2025 SPM poverty projection nowcast child poverty 2025 supplemental poverty measure forecast",
+            "\"2025\" \"poverty\" \"nowcast\" \"United States\"",
+            "\"2025\" \"SPM\" \"forecast\" poverty -site:policyengine.org -site:gov.uk",
+            "\"2025\" \"poverty\" \"Han\" \"Meyer\" \"Sullivan\"",
+            "\"2025\" \"poverty\" \"Columbia\" prediction annual",
+            "\"2025\" \"senior deduction\" \"poverty\"",
+            "\"2025\" \"SPM\" \"threshold\" \"resource\" decomposition poverty -site:policyengine.org",
+            "\"2025\" \"pensions\" \"self-employment\" \"poverty\" growth forecast",
+            "\"2025\" \"children\" \"noncitizen\" \"13.4\" poverty"
+          ],
+          "checked": [
+            "https://www.census.gov/library/publications/2026/demo/p60-290.html",
+            "https://www2.census.gov/library/publications/2026/demo/p60-290.pdf",
+            "https://robinhood.org/news/2026-annual-poverty-tracker-report-release/",
+            "https://www.bls.gov/pir/spm/spm_thresholds_2025.htm",
+            "https://www2.census.gov/programs-surveys/demo/tables/p60/290/table_5_spm_program_effect_rates.xlsx",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/data/predictions/2025-spm-poverty-rates-2026-09-11.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/data/predictions/2025-spm-poverty-rates-2026-09-11.grade-2026-09-17.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/README.md",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/model_decomposition.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/near_line_growth.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/raw_aging.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/senior_deduction.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/variant_comparison.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/variant_split.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/survey_growth.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/wage_deciles.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/near_line_sources-baseline.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2025-baseline.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2024-baseline.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2025-ss_cola_pension_cpi.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2025-all_three.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2025-all_three_ss_66plus.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/results/sources-meta-2025-all_four.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/runs/decomp-meta-2024-baseline.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/runs/decomp-meta-2025-baseline.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/results/runs/decomp-meta-2025-anchored_2024_cpi.json",
+            "https://raw.githubusercontent.com/PolicyEngine/spm-threshold-paper/22d8b7a1b9f97d94f796042bc067813b649a2f20/analysis/prediction-grade-2025/uprating/README.md",
+            "https://github.com/PolicyEngine/policyengine-app-v2/deployments/7260745377",
+            "https://raw.githubusercontent.com/PolicyEngine/policyengine-app-v2/5351fc508e20dc57c50416a9b06eea8d1009fbce/app/src/data/posts/articles/2025-spm-poverty-prediction.md"
+          ],
+          "claims": [],
+          "note": "Census Poverty in the United States: 2025, released September 15, 2026, is read and hashed. Its published annual rates (13.1% all people, 13.4% children, 15.4% aged 65+) are survey outturns, an administrative fact logged here as required but not staged as external model forecasts. Table 5 prints 13.11%, 13.40%, 15.37% respectively. BLS publishes thresholds rather than a poverty forecast. Robin Hood/Columbia March 2026 report concerns 2024 New York City, not a national 2025 forecast. Listed producers (including CPSP) are logged in their own entries; no other annual 2025 SPM model forecast located."
+        }
+      ]
+    }
+  ]
+}
