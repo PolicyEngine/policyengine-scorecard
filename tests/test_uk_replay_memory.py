@@ -316,20 +316,49 @@ def test_every_committed_measurement_is_aggregates_only():
             assert measure.MEASURE_LINE.match(line) or "extracted once in" in line
 
 
-def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_on_the_runner():
-    """The two datasets the replay has run, each with the candidate measured
-    on it, on a 16 GB hosted runner (MemTotal a little under 16 GiB)."""
+def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_for_its_workload(
+    monkeypatch,
+):
+    """On a 16 GB hosted runner (MemTotal a little under 16 GiB), each
+    dataset's evidence, for the workload it measured: Microcosm with 6.10.0's
+    candidate exceeds it, the enhanced FRS with 6.9.0's fits. The workload
+    digest is pinned to the measured one, so a later edit to a workload file
+    (which retires the evidence) does not fail this test."""
     runner = 15 * GIB + 600 * 2**20
     chosen = {}
     for sha, entry in committed_evidence()["datasets"].items():
         (row,) = entry["two_worker_peaks"]
+        monkeypatch.setattr(
+            qualify,
+            "memory_workload_sha256",
+            lambda root=None, digest=row["workload"]["workload_sha256"]: digest,
+        )
         chosen[entry["dataset"]] = qualify.simulation_workers(
             request_for(sha, row["workload"]["candidate"]),
             requirements_sha256=row["workload"]["requirements_sha256"],
             memory_total=runner,
         )
     assert chosen["microcosm_uk_2024_25"][0] == 1, chosen
+    assert "exceeds" in chosen["microcosm_uk_2024_25"][1]
     assert chosen["enhanced_frs_2024_25"][0] == 2, chosen
+
+
+def test_microcosm_runs_one_worker_whatever_the_workload_files_hold():
+    """6.10.0 and 6.10.1 on Microcosm run one worker on the runner, whether
+    the evidence still matches the current workload files or not."""
+    runner = 15 * GIB + 600 * 2**20
+    for sha, entry in committed_evidence()["datasets"].items():
+        if entry["dataset"] != "microcosm_uk_2024_25":
+            continue
+        (row,) = entry["two_worker_peaks"]
+        assert (
+            qualify.simulation_workers(
+                request_for(sha, row["workload"]["candidate"]),
+                requirements_sha256=row["workload"]["requirements_sha256"],
+                memory_total=runner,
+            )[0]
+            == 1
+        )
 
 
 def test_every_scheduling_peak_comes_from_a_run_that_may_schedule():

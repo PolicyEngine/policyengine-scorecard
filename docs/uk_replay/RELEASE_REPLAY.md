@@ -912,12 +912,15 @@ evidence; the one-worker runs, on 22 October, are for reading:
 | 2029: baseline and the threshold-freeze world | enhanced FRS 1.58.1 (6.9.0) | 1 | 3.8 GiB | 0.8 min |
 
 Two earlier runs of the Microcosm two-worker slice, before the tool's last
-revisions, measured 18.6 and 18.5 GiB. So Microcosm with 6.10.0's candidate
-runs one worker on a 16 GB runner (19.2 GiB plus the reserve is far above
-it), and the enhanced FRS 1.58.1 with 6.9.0's two (9.1 GiB plus the reserve
-fits). Any other candidate on
-either dataset, 6.10.1's included, has no matching measurement and runs
-one. A worker's resident memory grows over its successive years: with one
+revisions, measured 18.6 and 18.5 GiB. For the workloads measured,
+Microcosm with 6.10.0's candidate runs one worker on a 16 GB runner (19.2 GiB
+plus the reserve is far above it) and the enhanced FRS 1.58.1 with 6.9.0's
+would run two (9.1 GiB plus the reserve fits). Any other candidate on either
+dataset, 6.10.1's included, has no matching measurement and runs one. #224
+changed `pipeline/uk_replay_variants.py`, a workload file, after these
+measurements, so every request now runs one worker until a dataset is
+measured again with this tool and `summarize`; that is the direction this
+rule errs in. A worker's resident memory grows over its successive years: with one
 worker on Microcosm it went from 8.9 GiB in 2025 to 10.2 GiB in 2030. In
 policyengine.py 6.10.0's first two qualification attempts (requests
 `47fe63f4…` and `dfc9d655…`), two workers finished AB2025's 2025 to 2028,
