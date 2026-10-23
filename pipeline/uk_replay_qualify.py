@@ -550,22 +550,42 @@ def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
 def simulation_workers(
     request: dict, *, root: Path = ROOT, memory_total: int | None = None
 ) -> tuple[int, str]:
-    """Two year workers only when the measured two-worker peak for this exact
-    dataset, plus the reserve, fits in this runner's memory; otherwise one.
+    """Two year workers only when a measured two-worker peak for this exact
+    dataset, engine versions and corpus, plus the reserve, fits in this
+    runner's memory; otherwise one.
 
-    Returns the count and the reason the receipt records. A dataset without
-    a measurement runs one worker: its memory is not known.
+    Returns the count and the reason the receipt records. Anything the
+    evidence does not establish (no such measurement, an unknown evidence
+    format, a peak that is not a positive integer, unknown memory) means one
+    worker.
     """
     sha = request["candidate"]["data"]["sha256"]
+    workload = {
+        "packages": requested_versions(request),
+        "corpus_version": CORPUS_VERSION,
+    }
     try:
-        measured = json.loads((root / MEMORY_EVIDENCE).read_bytes())["datasets"]
-        peak = measured.get(sha, {}).get("two_worker_peak_rss_bytes")
+        evidence = json.loads((root / MEMORY_EVIDENCE).read_bytes())
+        if evidence["schema_version"] != 1:
+            raise ValueError(f"schema_version {evidence['schema_version']!r}")
+        rows = evidence["datasets"].get(sha, {}).get("two_worker_peaks", [])
+        peaks = [
+            row["peak_rss_bytes"]
+            for row in rows
+            if {key: row["workload"][key] for key in workload} == workload
+        ]
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         return 1, f"memory evidence unreadable ({type(exc).__name__})"
-    if type(peak) is not int:
-        return 1, f"no measured two-worker peak for dataset {sha[:12]}"
+    if not peaks:
+        return 1, (
+            f"no measured two-worker peak for dataset {sha[:12]} with these "
+            "engine versions and corpus"
+        )
+    if any(type(peak) is not int or peak <= 0 for peak in peaks):
+        return 1, "the memory evidence holds an invalid two-worker peak"
     if memory_total is None:
         return 1, "this runner's memory is unknown"
+    peak = max(peaks)
     need = (
         f"measured two-worker peak {gib(peak)} plus {gib(MEMORY_RESERVE_BYTES)} reserve"
     )

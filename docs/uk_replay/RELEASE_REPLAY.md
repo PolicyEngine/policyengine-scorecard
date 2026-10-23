@@ -839,17 +839,24 @@ holds heavy local work back from 29 October to 2 November.
 
 ### Memory and year workers
 
-`compute_uk_event` runs each event's years in one or two spawned year
-workers, each holding one live simulation at a time. The run job is a
+`compute_uk_event` runs each event's years one after another in its own
+process (one worker) or across two spawned year workers; each holds one live
+simulation at a time. The run job is a
 GitHub-hosted `ubuntu-latest` runner, which for a public repository has 4
 CPUs and 16 GB of memory
 ([GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)).
 `run_request` runs two workers only when
-`docs/uk_replay/evidence/replay_memory.json` records a measured two-worker
-peak for the request's exact dataset (by SHA-256) and that peak plus a 2 GiB
-reserve fits in the runner's `MemTotal`, read from `/proc/meminfo` when the
-request starts. Otherwise it runs one: a dataset nobody has measured, an
-unreadable evidence file or an unknown `MemTotal` all mean one worker. The
+`docs/uk_replay/evidence/replay_memory.json` records a two-worker peak for
+the request's exact dataset (by SHA-256), its three engine versions and the
+qualifier's corpus version, and that peak plus a 2 GiB reserve fits in the
+runner's `MemTotal`, read from `/proc/meminfo` when the request starts. Such
+a peak comes only from a completed two-worker run of the whole of Autumn
+Budget 2025, the corpus's largest event (nine measures over six years, each
+with a modified world) and the one two Microcosm workers could not finish; a
+slice of it holds fewer simulations at once and does not count. Anything
+else means one worker: a dataset, engine or corpus nobody has measured, an
+evidence file of another format, a peak that is not a positive integer, or
+an unknown `MemTotal`. The
 reserve is a margin for what lies outside the corpus's process tree (the
 runner's services, the drain's control process, the page cache), not a
 measurement.
@@ -870,9 +877,12 @@ the runner still finishes and is measured), and samples the summed resident
 memory of `compute_uk_event` and its year workers every 0.2 s. Pages two
 processes share count in both, so the figure bounds the tree from above. The
 container's network is blocked while it runs, and only memory, timings and
-the runner's own aggregate log lines come back. `summarize` derives each
-dataset's one- and two-worker peaks from the measurements, and a test
-regenerates the committed file's summary from its own measurements.
+the runner's own progress and aggregate lines are printed or come back;
+any other line stays in the container. `summarize` derives each dataset's
+peaks from the measurements, and a test regenerates the committed file's
+summary from its own measurements. The five measurements below were taken
+before each phase's process peak started from the phase's own first sample,
+so their phases record only the tree's peak (`"phase_peaks": "tree_only"`).
 
 The committed measurements, on 22 October 2026 (Modal, 4 CPUs; the
 qualifier's own `prepare` resolved each candidate within the 6.9.0
@@ -1106,12 +1116,14 @@ Each has deterministic boundary cases and Hypothesis properties in
   output bytes.
 * **Sealed namespaces.** Every byte under a sealed namespace matches its
   receipt.
-* **Year workers.** Two workers exactly when the dataset's measured
-  two-worker peak plus the reserve is at most the runner's memory; more
-  memory never means fewer workers and a higher peak never means more; a
-  dataset without a measured two-worker peak runs one. The committed
-  evidence is its own measurements summarized, and a process tree's total is
-  its root's resident memory plus each child's total.
+* **Year workers.** Two workers exactly when the measured two-worker peak
+  for the request's dataset, engine versions and corpus plus the reserve is
+  at most the runner's memory; more memory never means fewer workers and a
+  higher peak never means more; no such peak, or an invalid one, means one.
+  Only a completed whole-event Autumn Budget 2025 two-worker run sets that
+  peak, and it is the largest such run. The committed evidence is its own
+  measurements summarized, and a process tree's total is its root's
+  resident memory plus each child's total.
 * **Engine matrix.** For any index the lister accepts, CI's engine matrix is
   exactly its certified ids in index order; one bad record refuses the whole
   matrix; the lister's plain-id rule is the results pull request's on any

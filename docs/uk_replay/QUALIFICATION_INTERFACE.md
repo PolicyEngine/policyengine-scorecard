@@ -309,9 +309,9 @@ that file through the namespace manifest.
 ```
 
 `execution.runner` names the runner, then how many simulation workers the
-corpus ran and why: two only where the request's dataset has a measured
-two-worker peak that, with a 2 GiB reserve, fits in the runner's memory
-(RELEASE_REPLAY.md, "Memory and year workers"). It stays one string because
+corpus ran and why: two only where a two-worker peak measured on the
+request's dataset, engine versions and corpus fits, with a 2 GiB reserve, in
+the runner's memory (RELEASE_REPLAY.md, "Memory and year workers"). It stays one string because
 the `execution` object admits no other property, in this schema and in
 policyengine.py's vendored copy of it.
 

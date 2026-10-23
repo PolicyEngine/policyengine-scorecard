@@ -51,6 +51,10 @@ MEMORY_MIB = 32768
 TIMEOUT_SECONDS = 3 * 60 * 60
 GUARD_MARGIN_SECONDS = 10 * 60
 SAMPLE_SECONDS = 0.2
+# The workload a two-worker peak must cover to schedule two workers: the
+# corpus's largest event (nine measures over six years, with a modified
+# world for each), and the one two Microcosm workers could not finish.
+SCHEDULING_EVENT = "autumn_budget_2025"
 SLOT_POLL_SECONDS = 3
 # The qualifier runs in a checkout of the whole repository; the web app is
 # the one part the pipeline never reads.
@@ -144,6 +148,10 @@ class TreeSampler:
         self.stop = threading.Event()
         self.peak_total = 0
         self.peak_by_pid: dict[int, int] = {}
+        # The latest sample, so a phase starts from the process's memory at
+        # its boundary rather than from the peak of everything before it.
+        self.current_by_pid: dict[int, int] = {}
+        self.current_total = 0
         self.role_by_pid: dict[int, str] = {pid: "event_runner"}
         self.min_available = psutil.virtual_memory().available
         self.phase_peak: dict[int, int] = {}
@@ -168,6 +176,7 @@ class TreeSampler:
         total = sum(rss.values())
         available = psutil.virtual_memory().available
         with self.lock:
+            self.current_by_pid, self.current_total = rss, total
             self.peak_total = max(self.peak_total, total)
             self.min_available = min(self.min_available, available)
             for pid, value in rss.items():
@@ -194,8 +203,8 @@ class TreeSampler:
         """Start a phase for pid; returns the closing phase's (own, tree) peaks."""
         with self.lock:
             closed = (self.phase_peak.get(pid, 0), self.phase_total.get(pid, 0))
-            self.phase_peak[pid] = self.peak_by_pid.get(pid, 0)
-            self.phase_total[pid] = 0
+            self.phase_peak[pid] = self.current_by_pid.get(pid, 0)
+            self.phase_total[pid] = self.current_total
         return closed
 
     def end(self, pid: int) -> tuple[int, int]:
@@ -205,7 +214,11 @@ class TreeSampler:
 
 
 def measured_run(command: list[str], *, cwd: str, env: dict) -> dict:
-    """Run a command, stream its output, and sample its process tree."""
+    """Run a command and sample its process tree.
+
+    Only the runner's own progress and aggregate lines are printed (Modal
+    streams the container's output to the caller) or kept; any other line,
+    a warning or a traceback included, stays in the container."""
     started = time.perf_counter()
     process = subprocess.Popen(
         command,
@@ -233,11 +246,12 @@ def measured_run(command: list[str], *, cwd: str, env: dict) -> dict:
                 )
 
         for line in process.stdout:
-            print(line, end="", flush=True)
             line = line.rstrip("\n")
             sampler.sample()
             phase = PHASE_LINE.match(line)
             measure = MEASURE_LINE.match(line)
+            if phase or measure:
+                print(line, flush=True)
             if phase:
                 pid, year, message = int(phase[1]), phase[2], phase[3]
                 if message.startswith("starting "):
@@ -423,11 +437,14 @@ def modal_objects(request_path: Path, dataset_path: Path, repository: Path):
 
 
 def summarize(measurements: list[dict]) -> dict:
-    """The evidence document: every measurement, and per dataset the largest
-    process-tree peak a completed run reached with one and with two workers.
+    """The evidence document: every measurement, and per dataset its peaks.
 
-    The qualifier reads only ``datasets``; a dataset with no completed
-    two-worker run has no two-worker peak, so it runs one worker."""
+    The qualifier reads only ``two_worker_peaks``. A two-worker peak counts
+    there only from a completed run of the whole scheduling event, every year
+    and measure, and only for the engine versions and corpus it ran with:
+    a slice holds fewer simulations at once, and another engine or corpus is
+    another workload. ``one_worker_peak_rss_bytes`` is the largest completed
+    one-worker peak of any slice, for reading only."""
     datasets: dict[str, dict] = {}
     for measurement in sorted(measurements, key=lambda m: m["label"]):
         dataset = measurement["dataset"]
@@ -438,7 +455,7 @@ def summarize(measurements: list[dict]) -> dict:
                 "build_id": dataset["build_id"],
                 "size_bytes": dataset["size_bytes"],
                 "one_worker_peak_rss_bytes": None,
-                "two_worker_peak_rss_bytes": None,
+                "two_worker_peaks": [],
                 "measurements": [],
             },
         )
@@ -446,8 +463,32 @@ def summarize(measurements: list[dict]) -> dict:
         compute = measurement.get("compute") or {}
         if compute.get("exit_code") != 0:
             continue
-        key = ("one", "two")[measurement["workers"] - 1] + "_worker_peak_rss_bytes"
-        entry[key] = max(entry[key] or 0, compute["tree_peak_rss_bytes"])
+        peak = compute["tree_peak_rss_bytes"]
+        if measurement["workers"] == 1:
+            entry["one_worker_peak_rss_bytes"] = max(
+                entry["one_worker_peak_rss_bytes"] or 0, peak
+            )
+            continue
+        if (
+            measurement["event"] != SCHEDULING_EVENT
+            or measurement["years"]
+            or measurement["measures"]
+        ):
+            continue
+        workload = {
+            "packages": measurement["packages"],
+            "corpus_version": measurement["corpus_version"],
+            "event": measurement["event"],
+        }
+        row = next(
+            (r for r in entry["two_worker_peaks"] if r["workload"] == workload),
+            None,
+        )
+        if row is None:
+            row = {"workload": workload, "peak_rss_bytes": 0, "measurements": []}
+            entry["two_worker_peaks"].append(row)
+        row["peak_rss_bytes"] = max(row["peak_rss_bytes"], peak)
+        row["measurements"].append(measurement["label"])
     return {
         "schema_version": 1,
         "measured_with": "pipeline/modal_uk_replay_memory.py",
@@ -493,7 +534,14 @@ def main(argv: list[str] | None = None) -> int:
         or sha256_file(args.dataset_file) != data["sha256"]
     ):
         raise ValueError("the dataset file differs from the request")
-    plan = {"label": args.label, "request_id": request_id, **spec}
+    from pipeline.uk_replay_qualify import CORPUS_VERSION
+
+    plan = {
+        "label": args.label,
+        "request_id": request_id,
+        "corpus_version": CORPUS_VERSION,
+        **spec,
+    }
     if not args.execute:
         print(canonical_bytes({**plan, "cloud_call": False}).decode(), end="")
         return 0
@@ -541,6 +589,7 @@ def main(argv: list[str] | None = None) -> int:
     result = {
         "schema_version": 1,
         **plan,
+        "phase_peaks": "process_and_tree",
         "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         **response,
     }

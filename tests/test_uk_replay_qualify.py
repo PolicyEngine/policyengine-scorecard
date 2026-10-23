@@ -966,8 +966,18 @@ def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
     sha = request["candidate"]["data"]["sha256"]
     evidence = root / qualify.MEMORY_EVIDENCE
     evidence.parent.mkdir(parents=True, exist_ok=True)
-    measured = {"two_worker_peak_rss_bytes": peak_gib * 2**30} if peak_gib else {}
-    evidence.write_text(json.dumps({"datasets": {sha: measured}}))
+    rows = [
+        {
+            "workload": {
+                "packages": qualify.requested_versions(request),
+                "corpus_version": qualify.CORPUS_VERSION,
+                "event": "autumn_budget_2025",
+            },
+            "peak_rss_bytes": (peak_gib or 0) * 2**30,
+        }
+    ]
+    measured = {"two_worker_peaks": rows if peak_gib else []}
+    evidence.write_text(json.dumps({"schema_version": 1, "datasets": {sha: measured}}))
     monkeypatch.setattr(qualify, "memory_total_bytes", lambda: 16 * 2**30)
     receipt = qualify.run_request(
         request,
