@@ -260,7 +260,7 @@ def build_diagnostic(dataset: Path, reform: dict | None):
 
 
 def _arr(series) -> np.ndarray:
-    return np.asarray(getattr(series, "values", series), dtype=float)
+    return np.asarray(series, dtype=float)
 
 
 def person_weighted_median(income: np.ndarray, person_weight: np.ndarray) -> float:
@@ -294,6 +294,40 @@ def fye2011_line(sim, year: int, basis: str) -> float:
 
 def has_variable(sim, name: str) -> bool:
     return name in sim.tax_benefit_system.variables
+
+
+def limit_counts_gb(sim, year: int, uc: np.ndarray, bw: np.ndarray) -> dict:
+    """Great Britain benefit units on Universal Credit by the limit, in the
+    shape of DWP's two-child limit statistics (Table 1, which covers GB:
+    Universal Credit in Northern Ireland is administered separately):
+    children for whom no child element is paid (uc_is_child_limit_affected),
+    the benefit units with at least one, the UC children in those units,
+    and the units on UC with three or more UC children."""
+    country = np.asarray(sim.calculate("country", year, decode_enums=True)).astype(str)
+    gb = (
+        sim.map_result(
+            (country != "NORTHERN_IRELAND").astype(float), "household", "benunit"
+        )
+        > 0
+    )
+    affected = _arr(sim.calculate("uc_is_child_limit_affected", year, map_to="benunit"))
+    children = _arr(
+        sim.calculate(
+            "is_child_or_qualifying_young_person_for_universal_credit",
+            year,
+            map_to="benunit",
+        )
+    )
+    on_uc = uc > 0
+    with_affected = gb & on_uc & (affected > 0)
+    return {
+        "children_without_child_element": float((bw * affected)[gb & on_uc].sum()),
+        "benunits_with_child_without_element": float(bw[with_affected].sum()),
+        "uc_children_in_those_benunits": float((bw * children)[with_affected].sum()),
+        "benunits_on_uc_with_three_or_more_children": float(
+            bw[gb & on_uc & (children >= 3)].sum()
+        ),
+    }
 
 
 def household_frame(sim, year: int) -> dict:
@@ -351,14 +385,20 @@ def household_frame(sim, year: int) -> dict:
     frame["benunits_on_uc"] = float(bw[uc > 0].sum())
     frame["uc_benunit"] = uc
     frame["benunit_weight"] = bw
+    frame["limit_gb"] = limit_counts_gb(sim, year, uc, bw)
     params = sim.tax_benefit_system.parameters
     frame["executed_limit"] = float(params.get_child(UC_LIMIT)(f"{year}"))
     return frame
 
 
 def weighted(frame: dict, mask: np.ndarray | None = None) -> dict:
+    """Weighted members of each group; None for a group the engine does not
+    define (2.89.2 has no HBAI groups)."""
     w = frame["weight"] if mask is None else frame["weight"] * mask
-    return {g: float(np.nansum(w * frame[g])) for g in GROUPS}
+    return {
+        g: None if np.isnan(frame[g]).all() else float((w * frame[g]).sum())
+        for g in GROUPS
+    }
 
 
 def world_year(frame: dict, line_anchor: dict) -> dict:
@@ -378,6 +418,7 @@ def world_year(frame: dict, line_anchor: dict) -> dict:
             (frame["weight"] * frame["limit_affected_children"]).sum()
         ),
         "benunits_on_uc": frame["benunits_on_uc"],
+        "limit_gb": frame["limit_gb"],
     }
     for basis in ("bhc", "ahc"):
         income = frame[f"income_{basis}"]
@@ -397,7 +438,7 @@ def world_year(frame: dict, line_anchor: dict) -> dict:
         }
         out["below"][basis] = {
             "relative_moving": weighted(frame, flag),
-            "relative_moving_households_disagreeing_with_recomputed_gbp_weight": disagree,
+            "relative_moving_disagreeing_households": disagree,
             "relative_fixed_at_with_limit": weighted(frame, income < fixed_line),
             "absolute_served": weighted(frame, frame[f"absolute_flag_{basis}"]),
             "absolute_fye2011": weighted(frame, income < fye2011),
@@ -420,6 +461,19 @@ def gainers(base: dict, ref: dict) -> dict:
             "households": float(base["weight"][m].sum()),
             **weighted(base, m),
         }
+    # the converse, for the invariant that removing a limit makes no
+    # household worse off (so a count below any line held fixed across the
+    # two worlds cannot rise); a penny of float noise is not a loss
+    lose = d < -0.01
+    out["hbai_income_falls"] = {
+        "households": float(base["weight"][lose].sum()),
+        "largest_loss_gbp_year": float(-d.min()) if lose.any() else 0.0,
+    }
+    for basis in ("bhc", "ahc"):
+        de = ref[f"income_{basis}"] - base[f"income_{basis}"]
+        out[f"equivalised_{basis}_income_falls_households"] = float(
+            base["weight"][de < -0.01].sum()
+        )
     duc = ref["uc_benunit"] - base["uc_benunit"]
     out["benunits_uc_rises"] = float(base["benunit_weight"][duc > 0].sum())
     out["benunits_uc_falls"] = float(base["benunit_weight"][duc < 0].sum())
@@ -509,6 +563,11 @@ def main(argv: list[str] | None = None) -> int:
     diag = sub.add_parser("diagnostic")
     diag.add_argument("--dataset", type=Path, required=True)
     diag.add_argument("--label", required=True)
+    diag.add_argument(
+        "--all-worlds",
+        action="store_true",
+        help="run every certified world and year (default: with_limit and current_law, 2029)",
+    )
     args = ap.parse_args(argv)
 
     meta = {
@@ -566,7 +625,7 @@ def main(argv: list[str] | None = None) -> int:
     result = run(
         "diagnostic",
         dataset,
-        DIAGNOSTIC_YEARS,
+        CERTIFIED_YEARS if args.all_worlds else DIAGNOSTIC_YEARS,
         lambda reform: build_diagnostic(dataset, reform),
     )
     check_executed(result["worlds"])
