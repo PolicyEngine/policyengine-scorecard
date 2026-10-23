@@ -588,10 +588,16 @@ def memory_workload_sha256(root: Path = ROOT) -> str:
     )
 
 
-def memory_workload(request: dict, *, root: Path = ROOT) -> dict:
-    """What a two-worker measurement must have run to stand for this request."""
+def memory_workload(
+    request: dict, *, requirements_sha256: str, root: Path = ROOT
+) -> dict:
+    """What a two-worker measurement must have run to stand for this request:
+    the candidate, its installed numerical environment (the digest of the
+    normalised freeze ``probe`` records in the variant's identity), the
+    corpus, the scheduling event and the files that run it."""
     return {
         "candidate": candidate_identity(request),
+        "requirements_sha256": requirements_sha256,
         "corpus_version": CORPUS_VERSION,
         "event": MEMORY_SCHEDULING_EVENT,
         "workload_sha256": memory_workload_sha256(root),
@@ -599,12 +605,16 @@ def memory_workload(request: dict, *, root: Path = ROOT) -> dict:
 
 
 def simulation_workers(
-    request: dict, *, root: Path = ROOT, memory_total: int | None = None
+    request: dict,
+    *,
+    requirements_sha256: str,
+    root: Path = ROOT,
+    memory_total: int | None = None,
 ) -> tuple[int, str]:
     """Two year workers only when a two-worker peak measured on this exact
-    dataset and workload (the candidate's engine, the corpus, and the code
-    and registry that run the scheduling event), plus the reserve, fits in
-    this runner's memory; otherwise one.
+    dataset and workload (the candidate's engine and installed environment,
+    the corpus, and the code and registry that run the scheduling event),
+    plus the reserve, fits in this runner's memory; otherwise one.
 
     Returns the count and the reason the receipt records. Anything the
     evidence does not establish (no such measurement, an unknown evidence
@@ -613,7 +623,9 @@ def simulation_workers(
     """
     sha = request["candidate"]["data"]["sha256"]
     try:
-        workload = memory_workload(request, root=root)
+        workload = memory_workload(
+            request, requirements_sha256=requirements_sha256, root=root
+        )
         evidence = json.loads((root / MEMORY_EVIDENCE).read_bytes())
         if evidence["schema_version"] != 1:
             raise ValueError(f"schema_version {evidence['schema_version']!r}")
@@ -1410,14 +1422,6 @@ def run_request(
                 "artifact_hash_mismatch",
                 "the fetched dataset bytes differ from the request",
             )
-        # The receipt's execution block carries the choice in its runner
-        # string: policyengine.py validates receipts against its vendored
-        # copy of the v1 schema, whose execution block admits no new key.
-        workers, reason = simulation_workers(
-            request, root=root, memory_total=memory_total_bytes()
-        )
-        runner = f"{runner}; {workers} simulation worker{'s' * (workers > 1)}: {reason}"
-        print(f"simulation workers: {workers} ({reason})", flush=True)
         log_free("runner at the start of the request")
         checkout = fresh_checkout(work, root=root)
         digests = prepare(request, venv, wheels, root=checkout)
@@ -1461,6 +1465,19 @@ def run_request(
         record = variants.get_variant(
             variant_id, path=variants_file, root=checkout, allow_uncertified=True
         )
+        # Chosen once the environment is installed and frozen, so the
+        # measurement must match it too. The receipt's execution block
+        # carries the choice in its runner string: policyengine.py validates
+        # receipts against its vendored copy of the v1 schema, whose
+        # execution block admits no new key.
+        workers, reason = simulation_workers(
+            request,
+            root=root,
+            memory_total=memory_total_bytes(),
+            requirements_sha256=record["identity"]["requirements_sha256"],
+        )
+        runner = f"{runner}; {workers} simulation worker{'s' * (workers > 1)}: {reason}"
+        print(f"simulation workers: {workers} ({reason})", flush=True)
         document = variants.load_document(root / "data/uk/replay_variants.json")
         base = base_namespace(request, record, document, root=root)
         namespace = variants.namespace_root(record, root=checkout)

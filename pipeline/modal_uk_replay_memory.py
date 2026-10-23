@@ -289,6 +289,8 @@ def measured_run(command: list[str], *, cwd: str, env: dict) -> dict:
             if runner := matched["runner"]:
                 if runner[2].startswith("starting ") or "; starting " in runner[2]:
                     begin(int(runner[1]), None, runner[2].rsplit("starting ", 1)[1])
+                elif runner[2].endswith(" complete"):
+                    close(int(runner[1]), ending=True)
             elif baseline := matched["baseline"]:
                 begin(int(baseline[1]), int(baseline[2]), "certified baseline")
             elif world := matched["world"]:
@@ -329,8 +331,13 @@ def remote_measure(spec: dict, lease_expires: float) -> dict:
     """In the container: probe the candidate, then measure the slice."""
     import psutil
 
+    from pipeline import uk_replay_qualify as qualify
+
     if time.time() + TIMEOUT_SECONDS + GUARD_MARGIN_SECONDS > lease_expires:
         return {"refused": "the simulation slot lease does not cover the timeout"}
+    # The files that run the event are the ones the workload digest names.
+    if qualify.memory_workload_sha256(Path(REMOTE_ROOT)) != spec["workload_sha256"]:
+        return {"refused": "the uploaded workload differs from its digest"}
     work = Path(REMOTE_WORK)
     request = json.loads((work / "REQUEST.json").read_bytes())
     dataset = Path("/inputs/dataset.h5")
@@ -372,7 +379,9 @@ def remote_measure(spec: dict, lease_expires: float) -> dict:
     if probe["exit_code"]:
         return {"failed": "probe", "probe": probe}
     variants = json.loads((work / "variants.json").read_bytes())
-    variant_id = variants["variants"][-1]["variant_id"]
+    # probe moves the record it chose to the end of the work document.
+    record = variants["variants"][-1]
+    variant_id = record["variant_id"]
     output = Path(REMOTE_ROOT) / ".venv-replay-checks" / "memory" / spec["event"]
     command = [
         python,
@@ -416,6 +425,8 @@ def remote_measure(spec: dict, lease_expires: float) -> dict:
     memory = psutil.virtual_memory()
     return {
         "variant_id": variant_id,
+        # The installed environment's normalised freeze, as probe recorded it.
+        "requirements_sha256": record["identity"]["requirements_sha256"],
         # How prepare resolved the candidate's environment, as the qualifier
         # records it in the namespace's INSTALL.json.
         "install": json.loads((work / "INSTALL.json").read_bytes()),
@@ -506,11 +517,13 @@ def scheduling_workload(measurement: dict) -> dict | None:
         or measurement.get("measures") != []
         or coverage.get("full_event_complete") is not True
         or not isinstance(measurement.get("candidate"), dict)
+        or not isinstance(measurement.get("requirements_sha256"), str)
         or not isinstance(measurement.get("workload_sha256"), str)
     ):
         return None
     return {
         "candidate": measurement["candidate"],
+        "requirements_sha256": measurement["requirements_sha256"],
         "corpus_version": measurement["corpus_version"],
         "event": measurement["event"],
         "workload_sha256": measurement["workload_sha256"],
@@ -606,14 +619,14 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("the dataset file differs from the request")
     from pipeline import uk_replay_qualify as qualify
 
-    # The workload this run stands for, from the files the snapshot copies.
-    workload = qualify.memory_workload(request)
+    # The workload this run stands for; the installed environment's digest
+    # comes back from the container's probe.
     plan = {
         "label": args.label,
         "request_id": request_id,
-        "candidate": workload["candidate"],
-        "corpus_version": workload["corpus_version"],
-        "workload_sha256": workload["workload_sha256"],
+        "candidate": qualify.candidate_identity(request),
+        "corpus_version": qualify.CORPUS_VERSION,
+        "workload_sha256": qualify.memory_workload_sha256(),
         **spec,
     }
     if not args.execute:
@@ -627,6 +640,11 @@ def main(argv: list[str] | None = None) -> int:
     slots = None
     with tempfile.TemporaryDirectory() as temporary:
         repository = snapshot(Path(temporary) / "repository")
+        # The digest names what was copied, so an edit while copying cannot
+        # label this run with another workload; the container checks it again.
+        if qualify.memory_workload_sha256(repository) != plan["workload_sha256"]:
+            raise ValueError("the workload files changed while they were copied")
+        spec["workload_sha256"] = plan["workload_sha256"]
         modal, app, measure, clock = modal_objects(
             args.request.resolve(), args.dataset_file.resolve(), repository
         )

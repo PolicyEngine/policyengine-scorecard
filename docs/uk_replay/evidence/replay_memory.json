@@ -14,7 +14,7 @@
      "measurements": [
       "efrs-ab2025-w2"
      ],
-     "peak_rss_bytes": 9957965824,
+     "peak_rss_bytes": 9798840320,
      "workload": {
       "candidate": {
        "policyengine": {
@@ -37,6 +37,7 @@
       },
       "corpus_version": "uk-fiscal-event-replay/2",
       "event": "autumn_budget_2025",
+      "requirements_sha256": "81942516c376f9d4c4dbd7ed537a3b4b9ad20788cc9ad2ce47ef7e02a9b447d8",
       "workload_sha256": "4d9643b931e96919cc4a3a2560bbcf50207b0a3cd66773ae3866ea9c90c734ec"
      }
     }
@@ -57,7 +58,7 @@
      "measurements": [
       "microcosm-ab2025-w2"
      ],
-     "peak_rss_bytes": 19860013056,
+     "peak_rss_bytes": 20593889280,
      "workload": {
       "candidate": {
        "policyengine": {
@@ -80,6 +81,7 @@
       },
       "corpus_version": "uk-fiscal-event-replay/2",
       "event": "autumn_budget_2025",
+      "requirements_sha256": "0e13ba66769a1d710c1a6bfbe83f4f2493fdc10318d6c601970e7fef68a3a457",
       "workload_sha256": "4d9643b931e96919cc4a3a2560bbcf50207b0a3cd66773ae3866ea9c90c734ec"
      }
     }
@@ -208,28 +210,28 @@
    "compute": {
     "exit_code": 0,
     "log": [
-     "[pid 32 year 2026] certified baseline extracted once in 28.8s",
-     "[pid 29 year 2025] certified baseline extracted once in 29.1s",
-     "[2025] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[pid 32 year 2026] certified baseline extracted once in 29.6s",
+     "[pid 29 year 2025] certified baseline extracted once in 29.8s",
      "[2026] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2025] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2026] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2025] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
-     "[2025] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
      "[2026] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
-     "[2025] ab2025__dividend_rates_plus_2pp: +0.000bn gain to Exchequer",
+     "[2025] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
      "[2026] ab2025__dividend_rates_plus_2pp: +0.927bn gain to Exchequer",
+     "[2025] ab2025__dividend_rates_plus_2pp: +0.000bn gain to Exchequer",
      "[2026] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
      "[2025] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
-     "[2025] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
      "[2026] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
-     "[2025] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
+     "[2025] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
      "[2026] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
-     "[2025] ab2025__winter_fuel_payment_income_test_35000: -1.314bn gain to Exchequer",
+     "[2025] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
      "[2026] ab2025__winter_fuel_payment_income_test_35000: -1.297bn gain to Exchequer",
+     "[2025] ab2025__winter_fuel_payment_income_test_35000: -1.314bn gain to Exchequer",
      "[2026] ab2025__uc_child_element_remove_two_child_limit: -2.695bn gain to Exchequer",
      "[2025] ab2025__uc_child_element_remove_two_child_limit: +0.000bn gain to Exchequer",
-     "[pid 32 year 2027] certified baseline extracted once in 17.0s",
-     "[pid 29 year 2028] certified baseline extracted once in 17.0s",
+     "[pid 32 year 2027] certified baseline extracted once in 15.6s",
+     "[pid 29 year 2028] certified baseline extracted once in 15.8s",
      "[2027] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2028] ab2025__personal_tax_thresholds_freeze_to_2031: +3.784bn gain to Exchequer",
      "[2027] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
@@ -238,18 +240,18 @@
      "[2028] ab2025__property_income_separate_rates: +0.932bn gain to Exchequer",
      "[2027] ab2025__dividend_rates_plus_2pp: +0.954bn gain to Exchequer",
      "[2028] ab2025__dividend_rates_plus_2pp: +0.980bn gain to Exchequer",
-     "[2028] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +1.045bn gain to Exchequer",
      "[2027] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.994bn gain to Exchequer",
-     "[2028] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2028] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +1.045bn gain to Exchequer",
      "[2027] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2028] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
      "[2027] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
      "[2028] ab2025__high_value_council_tax_surcharge: +0.484bn gain to Exchequer",
      "[2027] ab2025__winter_fuel_payment_income_test_35000: -1.210bn gain to Exchequer",
      "[2028] ab2025__winter_fuel_payment_income_test_35000: -1.198bn gain to Exchequer",
-     "[2028] ab2025__uc_child_element_remove_two_child_limit: -3.155bn gain to Exchequer",
      "[2027] ab2025__uc_child_element_remove_two_child_limit: -2.958bn gain to Exchequer",
-     "[pid 29 year 2029] certified baseline extracted once in 21.0s",
-     "[pid 32 year 2030] certified baseline extracted once in 21.1s",
+     "[2028] ab2025__uc_child_element_remove_two_child_limit: -3.155bn gain to Exchequer",
+     "[pid 32 year 2029] certified baseline extracted once in 20.5s",
+     "[pid 29 year 2030] certified baseline extracted once in 22.2s",
      "[2029] ab2025__personal_tax_thresholds_freeze_to_2031: +7.929bn gain to Exchequer",
      "[2030] ab2025__personal_tax_thresholds_freeze_to_2031: +12.257bn gain to Exchequer",
      "[2029] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.522bn gain to Exchequer",
@@ -260,588 +262,590 @@
      "[2030] ab2025__dividend_rates_plus_2pp: +1.035bn gain to Exchequer",
      "[2029] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +1.096bn gain to Exchequer",
      "[2030] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +1.156bn gain to Exchequer",
-     "[2030] ab2025__salary_sacrifice_pension_nics_cap_2000: +2.342bn gain to Exchequer",
      "[2029] ab2025__salary_sacrifice_pension_nics_cap_2000: +2.250bn gain to Exchequer",
+     "[2030] ab2025__salary_sacrifice_pension_nics_cap_2000: +2.342bn gain to Exchequer",
      "[2029] ab2025__high_value_council_tax_surcharge: +0.496bn gain to Exchequer",
      "[2030] ab2025__high_value_council_tax_surcharge: +0.508bn gain to Exchequer",
-     "[2030] ab2025__winter_fuel_payment_income_test_35000: -1.171bn gain to Exchequer",
      "[2029] ab2025__winter_fuel_payment_income_test_35000: -1.194bn gain to Exchequer",
+     "[2030] ab2025__winter_fuel_payment_income_test_35000: -1.171bn gain to Exchequer",
      "[2029] ab2025__uc_child_element_remove_two_child_limit: -3.259bn gain to Exchequer",
      "[2030] ab2025__uc_child_element_remove_two_child_limit: -3.488bn gain to Exchequer"
     ],
-    "min_available_bytes": 24644317184,
+    "min_available_bytes": 24795095040,
     "peak_rss_bytes_by_role": {
-     "event_runner": 365973504,
-     "multiprocessing_helper": 21786624,
-     "year_worker": 4788125696
+     "child": 724992,
+     "event_runner": 366837760,
+     "multiprocessing_helper": 23089152,
+     "year_worker": 4781101056
     },
     "phases": [
      {
-      "_t": 30.213487791,
+      "_t": 28.559486432,
       "phase": "offline bundle preflight",
       "process": "event_runner",
-      "process_peak_rss_bytes": 323166208,
-      "seconds": 10.0,
-      "tree_peak_rss_bytes": 323166208,
+      "process_peak_rss_bytes": 322723840,
+      "seconds": 10.8,
+      "tree_peak_rss_bytes": 322723840,
       "year": null
      },
      {
-      "_t": 42.633375331,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 2540519424,
-      "seconds": 28.8,
-      "tree_peak_rss_bytes": 5467332608,
-      "year": 2026
-     },
-     {
-      "_t": 42.627819582,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 2539069440,
-      "seconds": 29.1,
-      "tree_peak_rss_bytes": 5467332608,
-      "year": 2025
-     },
-     {
-      "_t": 71.702500487,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4045627392,
-      "seconds": 30.5,
-      "tree_peak_rss_bytes": 8481665024,
-      "year": 2025
-     },
-     {
-      "_t": 71.457994487,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4048293888,
-      "seconds": 30.7,
-      "tree_peak_rss_bytes": 8481665024,
-      "year": 2026
-     },
-     {
-      "_t": 102.189017718,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 3997310976,
-      "seconds": 28.3,
-      "tree_peak_rss_bytes": 8379351040,
-      "year": 2026
-     },
-     {
-      "_t": 102.185564459,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 3994279936,
-      "seconds": 28.3,
-      "tree_peak_rss_bytes": 8379351040,
-      "year": 2025
-     },
-     {
-      "_t": 130.51981465,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4030808064,
-      "seconds": 29.6,
-      "tree_peak_rss_bytes": 8453410816,
-      "year": 2025
-     },
-     {
-      "_t": 130.487749993,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4034859008,
-      "seconds": 30.2,
-      "tree_peak_rss_bytes": 8453410816,
-      "year": 2026
-     },
-     {
-      "_t": 160.147640367,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4090138624,
-      "seconds": 29.5,
-      "tree_peak_rss_bytes": 8568397824,
-      "year": 2025
-     },
-     {
-      "_t": 160.651054372,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4090515456,
-      "seconds": 29.2,
-      "tree_peak_rss_bytes": 8568397824,
-      "year": 2026
-     },
-     {
-      "_t": 189.876313174,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4113539072,
-      "seconds": 29.4,
-      "tree_peak_rss_bytes": 8611794944,
-      "year": 2026
-     },
-     {
-      "_t": 189.654659385,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4110512128,
-      "seconds": 29.8,
-      "tree_peak_rss_bytes": 8611794944,
-      "year": 2025
-     },
-     {
-      "_t": 219.415199768,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4130578432,
-      "seconds": 29.0,
-      "tree_peak_rss_bytes": 8653418496,
-      "year": 2025
-     },
-     {
-      "_t": 219.245282873,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4135079936,
-      "seconds": 29.3,
-      "tree_peak_rss_bytes": 8653418496,
-      "year": 2026
-     },
-     {
-      "_t": 248.367925563,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4151398400,
-      "seconds": 29.2,
-      "tree_peak_rss_bytes": 8694480896,
-      "year": 2025
-     },
-     {
-      "_t": 248.499972678,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4155322368,
-      "seconds": 29.4,
-      "tree_peak_rss_bytes": 8694480896,
-      "year": 2026
-     },
-     {
-      "_t": 277.520974862,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4272357376,
-      "seconds": 32.6,
-      "tree_peak_rss_bytes": 8932835328,
-      "year": 2025
-     },
-     {
-      "_t": 277.887626595,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4272734208,
-      "seconds": 32.5,
-      "tree_peak_rss_bytes": 8932835328,
-      "year": 2026
-     },
-     {
-      "_t": 310.365622608,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4350021632,
-      "seconds": 31.3,
-      "tree_peak_rss_bytes": 9082712064,
-      "year": 2026
-     },
-     {
-      "_t": 310.108623543,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4344946688,
-      "seconds": 32.3,
-      "tree_peak_rss_bytes": 9082712064,
-      "year": 2025
-     },
-     {
-      "_t": 341.694801197,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4214517760,
-      "seconds": 17.0,
-      "tree_peak_rss_bytes": 8947191808,
-      "year": 2027
-     },
-     {
-      "_t": 342.377734335,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4069728256,
-      "seconds": 17.0,
-      "tree_peak_rss_bytes": 8672006144,
-      "year": 2028
-     },
-     {
-      "_t": 358.702885417,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4346380288,
-      "seconds": 31.8,
-      "tree_peak_rss_bytes": 9076432896,
-      "year": 2027
-     },
-     {
-      "_t": 359.387047135,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4342325248,
-      "seconds": 31.5,
-      "tree_peak_rss_bytes": 9076432896,
-      "year": 2028
-     },
-     {
-      "_t": 390.462541903,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4272566272,
-      "seconds": 31.3,
-      "tree_peak_rss_bytes": 9002618880,
-      "year": 2027
-     },
-     {
-      "_t": 390.925799874,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4249690112,
-      "seconds": 31.1,
-      "tree_peak_rss_bytes": 8892825600,
-      "year": 2028
-     },
-     {
-      "_t": 421.784673815,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4275273728,
-      "seconds": 34.1,
-      "tree_peak_rss_bytes": 8936144896,
-      "year": 2027
-     },
-     {
-      "_t": 422.053281001,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4273127424,
-      "seconds": 33.9,
-      "tree_peak_rss_bytes": 8936144896,
-      "year": 2028
-     },
-     {
-      "_t": 455.855071371,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4296269824,
-      "seconds": 33.5,
-      "tree_peak_rss_bytes": 8977145856,
-      "year": 2027
-     },
-     {
-      "_t": 455.968076902,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4293115904,
-      "seconds": 33.6,
-      "tree_peak_rss_bytes": 8977145856,
-      "year": 2028
-     },
-     {
-      "_t": 489.570040772,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4315377664,
-      "seconds": 34.1,
-      "tree_peak_rss_bytes": 9022296064,
-      "year": 2028
-     },
-     {
-      "_t": 489.360905998,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4319158272,
-      "seconds": 34.5,
-      "tree_peak_rss_bytes": 9022296064,
-      "year": 2027
-     },
-     {
-      "_t": 523.633104952,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4338348032,
-      "seconds": 34.5,
-      "tree_peak_rss_bytes": 9069072384,
-      "year": 2028
-     },
-     {
-      "_t": 523.884452484,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4342980608,
-      "seconds": 34.7,
-      "tree_peak_rss_bytes": 9069072384,
-      "year": 2027
-     },
-     {
-      "_t": 558.542908035,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4364075008,
-      "seconds": 34.2,
-      "tree_peak_rss_bytes": 9110466560,
-      "year": 2027
-     },
-     {
-      "_t": 558.166938891,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4358631424,
-      "seconds": 35.3,
-      "tree_peak_rss_bytes": 9110466560,
-      "year": 2028
-     },
-     {
-      "_t": 592.72449233,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4483670016,
-      "seconds": 35.7,
-      "tree_peak_rss_bytes": 9349025792,
-      "year": 2027
-     },
-     {
-      "_t": 593.481284959,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4477628416,
-      "seconds": 35.8,
-      "tree_peak_rss_bytes": 9349025792,
-      "year": 2028
-     },
-     {
-      "_t": 629.273812526,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4554801152,
-      "seconds": 34.4,
-      "tree_peak_rss_bytes": 9505255424,
-      "year": 2028
-     },
-     {
-      "_t": 628.423055472,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4562710528,
-      "seconds": 36.6,
-      "tree_peak_rss_bytes": 9505255424,
-      "year": 2027
-     },
-     {
-      "_t": 663.707210414,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4291190784,
-      "seconds": 21.0,
-      "tree_peak_rss_bytes": 9241595904,
-      "year": 2029
-     },
-     {
-      "_t": 665.039660044,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4488445952,
-      "seconds": 21.1,
-      "tree_peak_rss_bytes": 9167396864,
-      "year": 2030
-     },
-     {
-      "_t": 684.746593288,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4550864896,
-      "seconds": 38.2,
-      "tree_peak_rss_bytes": 9498071040,
-      "year": 2029
-     },
-     {
-      "_t": 686.104894236,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4559462400,
-      "seconds": 38.1,
-      "tree_peak_rss_bytes": 9498071040,
-      "year": 2030
-     },
-     {
-      "_t": 722.929294645,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4463828992,
-      "seconds": 35.4,
-      "tree_peak_rss_bytes": 9364209664,
-      "year": 2029
-     },
-     {
-      "_t": 724.171296303,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4515815424,
-      "seconds": 35.9,
-      "tree_peak_rss_bytes": 9364209664,
-      "year": 2030
-     },
-     {
-      "_t": 758.29134486,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4486459392,
-      "seconds": 33.5,
-      "tree_peak_rss_bytes": 9394212864,
-      "year": 2029
-     },
-     {
-      "_t": 760.05478244,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4523171840,
-      "seconds": 32.4,
-      "tree_peak_rss_bytes": 9394212864,
-      "year": 2030
-     },
-     {
-      "_t": 791.749467865,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4506472448,
-      "seconds": 30.2,
-      "tree_peak_rss_bytes": 9423663104,
-      "year": 2029
-     },
-     {
-      "_t": 792.500483332,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4529430528,
-      "seconds": 30.3,
-      "tree_peak_rss_bytes": 9423663104,
-      "year": 2030
-     },
-     {
-      "_t": 821.909633484,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4529475584,
-      "seconds": 31.4,
-      "tree_peak_rss_bytes": 9450909696,
-      "year": 2029
-     },
-     {
-      "_t": 822.773773064,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4536786944,
-      "seconds": 30.7,
-      "tree_peak_rss_bytes": 9450909696,
-      "year": 2030
-     },
-     {
-      "_t": 853.43890116,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4562317312,
-      "seconds": 32.1,
-      "tree_peak_rss_bytes": 9504423936,
-      "year": 2030
-     },
-     {
-      "_t": 853.279726961,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4554346496,
-      "seconds": 32.4,
-      "tree_peak_rss_bytes": 9504423936,
-      "year": 2029
-     },
-     {
-      "_t": 885.644068773,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4574220288,
-      "seconds": 31.1,
-      "tree_peak_rss_bytes": 9542397952,
-      "year": 2029
-     },
-     {
-      "_t": 885.512086181,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4580417536,
-      "seconds": 31.8,
-      "tree_peak_rss_bytes": 9542397952,
-      "year": 2030
-     },
-     {
-      "_t": 917.271175676,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4701372416,
-      "seconds": 32.1,
-      "tree_peak_rss_bytes": 9786093568,
-      "year": 2030
-     },
-     {
-      "_t": 916.75119163,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4696961024,
-      "seconds": 32.8,
-      "tree_peak_rss_bytes": 9786093568,
-      "year": 2029
-     },
-     {
-      "_t": 949.518187375,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4782112768,
-      "seconds": 33.1,
-      "tree_peak_rss_bytes": 9957965824,
-      "year": 2029
-     },
-     {
-      "_t": 949.399500085,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 4788125696,
-      "seconds": 33.4,
-      "tree_peak_rss_bytes": 9957965824,
-      "year": 2030
-     },
-     {
-      "_t": 40.166233169,
+      "_t": 39.366755859,
       "phase": "processed-world reversal guard",
       "process": "event_runner",
-      "process_peak_rss_bytes": 365973504,
-      "seconds": 947.1,
-      "tree_peak_rss_bytes": 9957965824,
+      "process_peak_rss_bytes": 355020800,
+      "seconds": 1.5,
+      "tree_peak_rss_bytes": 355020800,
       "year": null
+     },
+     {
+      "_t": 41.768392254,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 2529898496,
+      "seconds": 29.6,
+      "tree_peak_rss_bytes": 5455527936,
+      "year": 2026
+     },
+     {
+      "_t": 41.76134843,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 2535718912,
+      "seconds": 29.8,
+      "tree_peak_rss_bytes": 5455527936,
+      "year": 2025
+     },
+     {
+      "_t": 71.326261105,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4039487488,
+      "seconds": 30.2,
+      "tree_peak_rss_bytes": 8478134272,
+      "year": 2026
+     },
+     {
+      "_t": 71.588488783,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4048752640,
+      "seconds": 30.3,
+      "tree_peak_rss_bytes": 8478134272,
+      "year": 2025
+     },
+     {
+      "_t": 101.565949821,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 3989872640,
+      "seconds": 27.2,
+      "tree_peak_rss_bytes": 8373006336,
+      "year": 2026
+     },
+     {
+      "_t": 101.904049494,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 3993223168,
+      "seconds": 27.5,
+      "tree_peak_rss_bytes": 8373006336,
+      "year": 2025
+     },
+     {
+      "_t": 128.781144062,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4026220544,
+      "seconds": 26.0,
+      "tree_peak_rss_bytes": 8446009344,
+      "year": 2026
+     },
+     {
+      "_t": 129.412706262,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4029894656,
+      "seconds": 26.3,
+      "tree_peak_rss_bytes": 8446009344,
+      "year": 2025
+     },
+     {
+      "_t": 154.766158245,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4085170176,
+      "seconds": 25.7,
+      "tree_peak_rss_bytes": 8541872128,
+      "year": 2026
+     },
+     {
+      "_t": 155.707869494,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4088811520,
+      "seconds": 26.2,
+      "tree_peak_rss_bytes": 8541872128,
+      "year": 2025
+     },
+     {
+      "_t": 180.443280917,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4105658368,
+      "seconds": 26.4,
+      "tree_peak_rss_bytes": 8605077504,
+      "year": 2026
+     },
+     {
+      "_t": 181.917062962,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4109541376,
+      "seconds": 26.2,
+      "tree_peak_rss_bytes": 8605077504,
+      "year": 2025
+     },
+     {
+      "_t": 206.813216344,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4127027200,
+      "seconds": 26.7,
+      "tree_peak_rss_bytes": 8647757824,
+      "year": 2026
+     },
+     {
+      "_t": 208.1392214,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4130836480,
+      "seconds": 26.3,
+      "tree_peak_rss_bytes": 8647757824,
+      "year": 2025
+     },
+     {
+      "_t": 233.550562263,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4148527104,
+      "seconds": 25.7,
+      "tree_peak_rss_bytes": 8688685056,
+      "year": 2026
+     },
+     {
+      "_t": 234.411251431,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4150247424,
+      "seconds": 25.7,
+      "tree_peak_rss_bytes": 8688685056,
+      "year": 2025
+     },
+     {
+      "_t": 259.29516624,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4264022016,
+      "seconds": 27.9,
+      "tree_peak_rss_bytes": 8875356160,
+      "year": 2026
+     },
+     {
+      "_t": 260.141338421,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4272398336,
+      "seconds": 28.1,
+      "tree_peak_rss_bytes": 8875356160,
+      "year": 2025
+     },
+     {
+      "_t": 287.219727761,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4341596160,
+      "seconds": 28.7,
+      "tree_peak_rss_bytes": 9047818240,
+      "year": 2026
+     },
+     {
+      "_t": 288.269059053,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4344492032,
+      "seconds": 28.6,
+      "tree_peak_rss_bytes": 9047818240,
+      "year": 2025
+     },
+     {
+      "_t": 315.887766865,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4140883968,
+      "seconds": 15.6,
+      "tree_peak_rss_bytes": 8875270144,
+      "year": 2027
+     },
+     {
+      "_t": 316.921006007,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 3780386816,
+      "seconds": 15.8,
+      "tree_peak_rss_bytes": 8311197696,
+      "year": 2028
+     },
+     {
+      "_t": 331.527846241,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4338122752,
+      "seconds": 28.4,
+      "tree_peak_rss_bytes": 9022631936,
+      "year": 2027
+     },
+     {
+      "_t": 332.727329677,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4342185984,
+      "seconds": 28.7,
+      "tree_peak_rss_bytes": 9022631936,
+      "year": 2028
+     },
+     {
+      "_t": 359.964714417,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4263473152,
+      "seconds": 27.2,
+      "tree_peak_rss_bytes": 8969555968,
+      "year": 2027
+     },
+     {
+      "_t": 361.433358063,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4249182208,
+      "seconds": 27.5,
+      "tree_peak_rss_bytes": 8885161984,
+      "year": 2028
+     },
+     {
+      "_t": 387.2020235,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4267659264,
+      "seconds": 27.7,
+      "tree_peak_rss_bytes": 8865382400,
+      "year": 2027
+     },
+     {
+      "_t": 388.925957751,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4271157248,
+      "seconds": 28.8,
+      "tree_peak_rss_bytes": 8865382400,
+      "year": 2028
+     },
+     {
+      "_t": 414.905589576,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4287913984,
+      "seconds": 31.5,
+      "tree_peak_rss_bytes": 8824594432,
+      "year": 2027
+     },
+     {
+      "_t": 417.698685212,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4292661248,
+      "seconds": 32.3,
+      "tree_peak_rss_bytes": 8852389888,
+      "year": 2028
+     },
+     {
+      "_t": 446.447880535,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4313305088,
+      "seconds": 32.9,
+      "tree_peak_rss_bytes": 8852389888,
+      "year": 2027
+     },
+     {
+      "_t": 450.047763132,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4318195712,
+      "seconds": 33.7,
+      "tree_peak_rss_bytes": 8886312960,
+      "year": 2028
+     },
+     {
+      "_t": 479.329580953,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4335812608,
+      "seconds": 33.9,
+      "tree_peak_rss_bytes": 8886312960,
+      "year": 2027
+     },
+     {
+      "_t": 483.788885041,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4339535872,
+      "seconds": 35.0,
+      "tree_peak_rss_bytes": 8917090304,
+      "year": 2028
+     },
+     {
+      "_t": 513.242033543,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4355461120,
+      "seconds": 30.1,
+      "tree_peak_rss_bytes": 8917090304,
+      "year": 2027
+     },
+     {
+      "_t": 518.820640672,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4360806400,
+      "seconds": 32.3,
+      "tree_peak_rss_bytes": 8942555136,
+      "year": 2028
+     },
+     {
+      "_t": 543.313761338,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4474052608,
+      "seconds": 34.4,
+      "tree_peak_rss_bytes": 8942555136,
+      "year": 2027
+     },
+     {
+      "_t": 551.169602748,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4480000000,
+      "seconds": 34.8,
+      "tree_peak_rss_bytes": 9068040192,
+      "year": 2028
+     },
+     {
+      "_t": 577.707160013,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4551147520,
+      "seconds": 32.2,
+      "tree_peak_rss_bytes": 9087152128,
+      "year": 2027
+     },
+     {
+      "_t": 586.017133446,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4559810560,
+      "seconds": 33.1,
+      "tree_peak_rss_bytes": 9157287936,
+      "year": 2028
+     },
+     {
+      "_t": 609.941248382,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4419457024,
+      "seconds": 20.5,
+      "tree_peak_rss_bytes": 9157287936,
+      "year": 2029
+     },
+     {
+      "_t": 619.176147788,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4300652544,
+      "seconds": 22.2,
+      "tree_peak_rss_bytes": 8898129920,
+      "year": 2030
+     },
+     {
+      "_t": 630.458147363,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4547371008,
+      "seconds": 34.5,
+      "tree_peak_rss_bytes": 9064124416,
+      "year": 2029
+     },
+     {
+      "_t": 641.378037353,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4554235904,
+      "seconds": 34.6,
+      "tree_peak_rss_bytes": 9422123008,
+      "year": 2030
+     },
+     {
+      "_t": 664.972572291,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4503126016,
+      "seconds": 31.8,
+      "tree_peak_rss_bytes": 9422123008,
+      "year": 2029
+     },
+     {
+      "_t": 675.936689545,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4461314048,
+      "seconds": 30.5,
+      "tree_peak_rss_bytes": 9340735488,
+      "year": 2030
+     },
+     {
+      "_t": 696.759672832,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4509417472,
+      "seconds": 30.4,
+      "tree_peak_rss_bytes": 9340735488,
+      "year": 2029
+     },
+     {
+      "_t": 706.479367896,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4483395584,
+      "seconds": 29.7,
+      "tree_peak_rss_bytes": 9369108480,
+      "year": 2030
+     },
+     {
+      "_t": 727.172397853,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4516773888,
+      "seconds": 31.4,
+      "tree_peak_rss_bytes": 9369108480,
+      "year": 2029
+     },
+     {
+      "_t": 736.185307007,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4504870912,
+      "seconds": 31.9,
+      "tree_peak_rss_bytes": 9397923840,
+      "year": 2030
+     },
+     {
+      "_t": 758.58307804,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4523065344,
+      "seconds": 31.8,
+      "tree_peak_rss_bytes": 9397923840,
+      "year": 2029
+     },
+     {
+      "_t": 768.085629341,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4527341568,
+      "seconds": 32.3,
+      "tree_peak_rss_bytes": 9437880320,
+      "year": 2030
+     },
+     {
+      "_t": 790.345816219,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4550098944,
+      "seconds": 31.1,
+      "tree_peak_rss_bytes": 9437880320,
+      "year": 2029
+     },
+     {
+      "_t": 800.390745023,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4555874304,
+      "seconds": 32.1,
+      "tree_peak_rss_bytes": 9485398016,
+      "year": 2030
+     },
+     {
+      "_t": 821.43506277,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4565434368,
+      "seconds": 30.2,
+      "tree_peak_rss_bytes": 9485398016,
+      "year": 2029
+     },
+     {
+      "_t": 832.526145192,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4571176960,
+      "seconds": 30.2,
+      "tree_peak_rss_bytes": 9525489664,
+      "year": 2030
+     },
+     {
+      "_t": 851.658641093,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4691824640,
+      "seconds": 32.9,
+      "tree_peak_rss_bytes": 9525489664,
+      "year": 2029
+     },
+     {
+      "_t": 862.694622204,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4695891968,
+      "seconds": 34.6,
+      "tree_peak_rss_bytes": 9609424896,
+      "year": 2030
+     },
+     {
+      "_t": 884.519394818,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4777799680,
+      "seconds": 33.9,
+      "tree_peak_rss_bytes": 9613033472,
+      "year": 2029
+     },
+     {
+      "_t": 897.267867416,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 4781101056,
+      "seconds": 32.2,
+      "tree_peak_rss_bytes": 9798840320,
+      "year": 2030
      }
     ],
     "process_count_by_role": {
+     "child": 1,
      "event_runner": 1,
      "multiprocessing_helper": 1,
      "year_worker": 2
     },
-    "tree_peak_rss_bytes": 9957965824,
-    "wall_seconds": 957.8
+    "tree_peak_rss_bytes": 9798840320,
+    "wall_seconds": 906.6
    },
    "container": {
     "cpu": 4,
@@ -878,7 +882,7 @@
     "resolution": "exact_requirements"
    },
    "label": "efrs-ab2025-w2",
-   "measured_at": "2026-10-23T12:19:25Z",
+   "measured_at": "2026-10-23T13:33:28Z",
    "measures": [],
    "packages": {
     "policyengine": "6.9.0",
@@ -888,20 +892,21 @@
    "phase_peaks": "process_and_tree",
    "probe": {
     "exit_code": 0,
-    "min_available_bytes": 31860363264,
+    "min_available_bytes": 31858323456,
     "peak_rss_bytes_by_role": {
-     "child": 9801728,
-     "event_runner": 2475319296
+     "child": 67604480,
+     "event_runner": 2481348608
     },
     "phases": [],
     "process_count_by_role": {
      "child": 1,
      "event_runner": 1
     },
-    "tree_peak_rss_bytes": 2475319296,
-    "wall_seconds": 23.3
+    "tree_peak_rss_bytes": 2481348608,
+    "wall_seconds": 24.8
    },
    "request_id": "705e2b7aeaaf3f9aa2996e7aeb109fc53c221e5b9f440e8905b02ff70438c0e0",
+   "requirements_sha256": "81942516c376f9d4c4dbd7ed537a3b4b9ad20788cc9ad2ce47ef7e02a9b447d8",
    "schema_version": 1,
    "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
    "workers": 2,
@@ -1641,28 +1646,28 @@
    "compute": {
     "exit_code": 0,
     "log": [
-     "[pid 29 year 2026] certified baseline extracted once in 58.8s",
-     "[pid 32 year 2025] certified baseline extracted once in 59.0s",
-     "[2025] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[pid 32 year 2026] certified baseline extracted once in 32.5s",
+     "[pid 29 year 2025] certified baseline extracted once in 32.8s",
      "[2026] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
-     "[2025] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2025] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2026] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
-     "[2025] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
+     "[2025] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2026] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
-     "[2025] ab2025__dividend_rates_plus_2pp: +0.000bn gain to Exchequer",
+     "[2025] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
      "[2026] ab2025__dividend_rates_plus_2pp: +1.085bn gain to Exchequer",
-     "[2025] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
+     "[2025] ab2025__dividend_rates_plus_2pp: +0.000bn gain to Exchequer",
      "[2026] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
-     "[2025] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2025] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
      "[2026] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
-     "[2025] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
+     "[2025] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
      "[2026] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
-     "[2025] ab2025__winter_fuel_payment_income_test_35000: -1.203bn gain to Exchequer",
+     "[2025] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
      "[2026] ab2025__winter_fuel_payment_income_test_35000: -1.184bn gain to Exchequer",
-     "[2025] ab2025__uc_child_element_remove_two_child_limit: +0.000bn gain to Exchequer",
+     "[2025] ab2025__winter_fuel_payment_income_test_35000: -1.203bn gain to Exchequer",
      "[2026] ab2025__uc_child_element_remove_two_child_limit: -2.317bn gain to Exchequer",
-     "[pid 32 year 2027] certified baseline extracted once in 42.7s",
-     "[pid 29 year 2028] certified baseline extracted once in 43.3s",
+     "[2025] ab2025__uc_child_element_remove_two_child_limit: +0.000bn gain to Exchequer",
+     "[pid 32 year 2027] certified baseline extracted once in 26.1s",
+     "[pid 29 year 2028] certified baseline extracted once in 26.3s",
      "[2027] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
      "[2028] ab2025__personal_tax_thresholds_freeze_to_2031: +3.757bn gain to Exchequer",
      "[2027] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
@@ -1681,8 +1686,8 @@
      "[2028] ab2025__winter_fuel_payment_income_test_35000: -1.148bn gain to Exchequer",
      "[2027] ab2025__uc_child_element_remove_two_child_limit: -2.510bn gain to Exchequer",
      "[2028] ab2025__uc_child_element_remove_two_child_limit: -2.870bn gain to Exchequer",
-     "[pid 32 year 2029] certified baseline extracted once in 43.5s",
-     "[pid 29 year 2030] certified baseline extracted once in 42.5s",
+     "[pid 32 year 2029] certified baseline extracted once in 26.7s",
+     "[pid 29 year 2030] certified baseline extracted once in 27.0s",
      "[2029] ab2025__personal_tax_thresholds_freeze_to_2031: +7.682bn gain to Exchequer",
      "[2030] ab2025__personal_tax_thresholds_freeze_to_2031: +11.916bn gain to Exchequer",
      "[2029] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.508bn gain to Exchequer",
@@ -1702,570 +1707,570 @@
      "[2029] ab2025__uc_child_element_remove_two_child_limit: -3.187bn gain to Exchequer",
      "[2030] ab2025__uc_child_element_remove_two_child_limit: -3.385bn gain to Exchequer"
     ],
-    "min_available_bytes": 14739968000,
+    "min_available_bytes": 14015811584,
     "peak_rss_bytes_by_role": {
-     "event_runner": 371208192,
-     "multiprocessing_helper": 23064576,
-     "year_worker": 10269130752
+     "event_runner": 370032640,
+     "multiprocessing_helper": 22704128,
+     "year_worker": 10194821120
     },
     "phases": [
      {
-      "_t": 51.455066575,
+      "_t": 29.785367628,
       "phase": "offline bundle preflight",
       "process": "event_runner",
-      "process_peak_rss_bytes": 326729728,
-      "seconds": 13.4,
-      "tree_peak_rss_bytes": 326729728,
+      "process_peak_rss_bytes": 328810496,
+      "seconds": 8.1,
+      "tree_peak_rss_bytes": 328810496,
       "year": null
      },
      {
-      "_t": 67.654660308,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 5454848000,
-      "seconds": 58.8,
-      "tree_peak_rss_bytes": 11304800256,
-      "year": 2026
-     },
-     {
-      "_t": 67.644106014,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 5455679488,
-      "seconds": 59.0,
-      "tree_peak_rss_bytes": 11304800256,
-      "year": 2025
-     },
-     {
-      "_t": 126.607745257,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8815579136,
-      "seconds": 77.0,
-      "tree_peak_rss_bytes": 18211299328,
-      "year": 2025
-     },
-     {
-      "_t": 126.479126746,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9068539904,
-      "seconds": 79.2,
-      "tree_peak_rss_bytes": 18211299328,
-      "year": 2026
-     },
-     {
-      "_t": 203.591851368,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8881971200,
-      "seconds": 71.9,
-      "tree_peak_rss_bytes": 18141016064,
-      "year": 2025
-     },
-     {
-      "_t": 205.707477453,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8881532928,
-      "seconds": 72.0,
-      "tree_peak_rss_bytes": 18141016064,
-      "year": 2026
-     },
-     {
-      "_t": 275.491297986,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8318078976,
-      "seconds": 69.6,
-      "tree_peak_rss_bytes": 17015910400,
-      "year": 2025
-     },
-     {
-      "_t": 277.684225686,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8318271488,
-      "seconds": 71.9,
-      "tree_peak_rss_bytes": 17015910400,
-      "year": 2026
-     },
-     {
-      "_t": 345.069139887,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8861995008,
-      "seconds": 69.0,
-      "tree_peak_rss_bytes": 17901871104,
-      "year": 2025
-     },
-     {
-      "_t": 349.624594127,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8860848128,
-      "seconds": 69.1,
-      "tree_peak_rss_bytes": 17901871104,
-      "year": 2026
-     },
-     {
-      "_t": 414.099391413,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8928993280,
-      "seconds": 67.9,
-      "tree_peak_rss_bytes": 17559769088,
-      "year": 2025
-     },
-     {
-      "_t": 418.738125773,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8928137216,
-      "seconds": 68.5,
-      "tree_peak_rss_bytes": 17559769088,
-      "year": 2026
-     },
-     {
-      "_t": 482.043031777,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8416124928,
-      "seconds": 69.0,
-      "tree_peak_rss_bytes": 17050648576,
-      "year": 2025
-     },
-     {
-      "_t": 487.248638346,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8414523392,
-      "seconds": 70.6,
-      "tree_peak_rss_bytes": 17050648576,
-      "year": 2026
-     },
-     {
-      "_t": 551.069509646,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8825454592,
-      "seconds": 68.6,
-      "tree_peak_rss_bytes": 17197932544,
-      "year": 2025
-     },
-     {
-      "_t": 557.894986485,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8823078912,
-      "seconds": 69.7,
-      "tree_peak_rss_bytes": 17197932544,
-      "year": 2026
-     },
-     {
-      "_t": 619.706564641,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9154748416,
-      "seconds": 73.6,
-      "tree_peak_rss_bytes": 18014769152,
-      "year": 2025
-     },
-     {
-      "_t": 627.57651907,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9154293760,
-      "seconds": 74.9,
-      "tree_peak_rss_bytes": 18014769152,
-      "year": 2026
-     },
-     {
-      "_t": 693.280801117,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9091817472,
-      "seconds": 74.8,
-      "tree_peak_rss_bytes": 18013822976,
-      "year": 2025
-     },
-     {
-      "_t": 702.451245858,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9088299008,
-      "seconds": 75.5,
-      "tree_peak_rss_bytes": 18013822976,
-      "year": 2026
-     },
-     {
-      "_t": 768.11996602,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 7999303680,
-      "seconds": 42.7,
-      "tree_peak_rss_bytes": 17481842688,
-      "year": 2027
-     },
-     {
-      "_t": 777.985116691,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 7973023744,
-      "seconds": 43.3,
-      "tree_peak_rss_bytes": 16366567424,
-      "year": 2028
-     },
-     {
-      "_t": 810.802630966,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9217339392,
-      "seconds": 74.5,
-      "tree_peak_rss_bytes": 17886343168,
-      "year": 2027
-     },
-     {
-      "_t": 821.270497084,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9214742528,
-      "seconds": 75.1,
-      "tree_peak_rss_bytes": 18014420992,
-      "year": 2028
-     },
-     {
-      "_t": 885.270919303,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9316057088,
-      "seconds": 69.9,
-      "tree_peak_rss_bytes": 18122280960,
-      "year": 2027
-     },
-     {
-      "_t": 896.400294602,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9312067584,
-      "seconds": 71.3,
-      "tree_peak_rss_bytes": 18122280960,
-      "year": 2028
-     },
-     {
-      "_t": 955.163657904,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9259741184,
-      "seconds": 69.0,
-      "tree_peak_rss_bytes": 18041692160,
-      "year": 2027
-     },
-     {
-      "_t": 967.677894728,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9258799104,
-      "seconds": 70.4,
-      "tree_peak_rss_bytes": 18041692160,
-      "year": 2028
-     },
-     {
-      "_t": 1024.182395214,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9220698112,
-      "seconds": 69.2,
-      "tree_peak_rss_bytes": 18187304960,
-      "year": 2027
-     },
-     {
-      "_t": 1038.067898808,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9212841984,
-      "seconds": 70.4,
-      "tree_peak_rss_bytes": 18187304960,
-      "year": 2028
-     },
-     {
-      "_t": 1093.345319687,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9308651520,
-      "seconds": 69.6,
-      "tree_peak_rss_bytes": 18522656768,
-      "year": 2027
-     },
-     {
-      "_t": 1108.503091091,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9304539136,
-      "seconds": 70.4,
-      "tree_peak_rss_bytes": 18522656768,
-      "year": 2028
-     },
-     {
-      "_t": 1162.962674633,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9093812224,
-      "seconds": 70.0,
-      "tree_peak_rss_bytes": 18234159104,
-      "year": 2027
-     },
-     {
-      "_t": 1178.869100689,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9096036352,
-      "seconds": 71.0,
-      "tree_peak_rss_bytes": 18234159104,
-      "year": 2028
-     },
-     {
-      "_t": 1232.986845766,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9433051136,
-      "seconds": 69.4,
-      "tree_peak_rss_bytes": 18612629504,
-      "year": 2027
-     },
-     {
-      "_t": 1249.872461376,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9361080320,
-      "seconds": 70.8,
-      "tree_peak_rss_bytes": 18612629504,
-      "year": 2028
-     },
-     {
-      "_t": 1302.380858546,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9504862208,
-      "seconds": 73.8,
-      "tree_peak_rss_bytes": 18480259072,
-      "year": 2027
-     },
-     {
-      "_t": 1320.636337208,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9508761600,
-      "seconds": 74.3,
-      "tree_peak_rss_bytes": 18933944320,
-      "year": 2028
-     },
-     {
-      "_t": 1376.161663993,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9389477888,
-      "seconds": 75.5,
-      "tree_peak_rss_bytes": 18933944320,
-      "year": 2027
-     },
-     {
-      "_t": 1394.907191124,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9387622400,
-      "seconds": 75.0,
-      "tree_peak_rss_bytes": 18388340736,
-      "year": 2028
-     },
-     {
-      "_t": 1451.721385112,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8366166016,
-      "seconds": 43.5,
-      "tree_peak_rss_bytes": 18148028416,
-      "year": 2029
-     },
-     {
-      "_t": 1469.956744625,
-      "phase": "certified baseline",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 8446828544,
-      "seconds": 42.5,
-      "tree_peak_rss_bytes": 17207250944,
-      "year": 2030
-     },
-     {
-      "_t": 1495.241696401,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9439707136,
-      "seconds": 73.8,
-      "tree_peak_rss_bytes": 18600558592,
-      "year": 2029
-     },
-     {
-      "_t": 1512.439811491,
-      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9438498816,
-      "seconds": 71.9,
-      "tree_peak_rss_bytes": 18600558592,
-      "year": 2030
-     },
-     {
-      "_t": 1569.077140224,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10045874176,
-      "seconds": 71.7,
-      "tree_peak_rss_bytes": 19414142976,
-      "year": 2029
-     },
-     {
-      "_t": 1584.326533452,
-      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10044178432,
-      "seconds": 73.8,
-      "tree_peak_rss_bytes": 19414142976,
-      "year": 2030
-     },
-     {
-      "_t": 1640.752640643,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9284124672,
-      "seconds": 70.9,
-      "tree_peak_rss_bytes": 19089981440,
-      "year": 2029
-     },
-     {
-      "_t": 1658.09342708,
-      "phase": "ab2025__property_income_separate_rates baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9274474496,
-      "seconds": 71.3,
-      "tree_peak_rss_bytes": 18827669504,
-      "year": 2030
-     },
-     {
-      "_t": 1711.637064648,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10002108416,
-      "seconds": 71.2,
-      "tree_peak_rss_bytes": 19563479040,
-      "year": 2029
-     },
-     {
-      "_t": 1729.375254864,
-      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10003820544,
-      "seconds": 72.8,
-      "tree_peak_rss_bytes": 19563479040,
-      "year": 2030
-     },
-     {
-      "_t": 1782.871751672,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10267586560,
-      "seconds": 70.8,
-      "tree_peak_rss_bytes": 19860013056,
-      "year": 2029
-     },
-     {
-      "_t": 1802.19184035,
-      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10269130752,
-      "seconds": 71.8,
-      "tree_peak_rss_bytes": 19860013056,
-      "year": 2030
-     },
-     {
-      "_t": 1853.705996072,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10145062912,
-      "seconds": 71.4,
-      "tree_peak_rss_bytes": 19818139648,
-      "year": 2029
-     },
-     {
-      "_t": 1874.034002478,
-      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9901600768,
-      "seconds": 71.8,
-      "tree_peak_rss_bytes": 19818139648,
-      "year": 2030
-     },
-     {
-      "_t": 1925.063629489,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10078257152,
-      "seconds": 69.0,
-      "tree_peak_rss_bytes": 19751333888,
-      "year": 2029
-     },
-     {
-      "_t": 1945.805771843,
-      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 10081972224,
-      "seconds": 70.1,
-      "tree_peak_rss_bytes": 19751333888,
-      "year": 2030
-     },
-     {
-      "_t": 1994.034431793,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9612283904,
-      "seconds": 75.0,
-      "tree_peak_rss_bytes": 19411578880,
-      "year": 2029
-     },
-     {
-      "_t": 2015.877046899,
-      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9616826368,
-      "seconds": 75.2,
-      "tree_peak_rss_bytes": 19351556096,
-      "year": 2030
-     },
-     {
-      "_t": 2069.044490992,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9641254912,
-      "seconds": 76.3,
-      "tree_peak_rss_bytes": 19398168576,
-      "year": 2029
-     },
-     {
-      "_t": 2091.125229271,
-      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
-      "process": "year_worker",
-      "process_peak_rss_bytes": 9643626496,
-      "seconds": 76.8,
-      "tree_peak_rss_bytes": 19398168576,
-      "year": 2030
-     },
-     {
-      "_t": 64.885807534,
+      "_t": 37.862990127,
       "phase": "processed-world reversal guard",
       "process": "event_runner",
-      "process_peak_rss_bytes": 371208192,
-      "seconds": 2107.5,
-      "tree_peak_rss_bytes": 19860013056,
+      "process_peak_rss_bytes": 361250816,
+      "seconds": 1.2,
+      "tree_peak_rss_bytes": 361250816,
       "year": null
+     },
+     {
+      "_t": 39.743021386,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 5461680128,
+      "seconds": 32.5,
+      "tree_peak_rss_bytes": 11292434432,
+      "year": 2026
+     },
+     {
+      "_t": 39.736837695,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 5458268160,
+      "seconds": 32.8,
+      "tree_peak_rss_bytes": 11292434432,
+      "year": 2025
+     },
+     {
+      "_t": 72.221300808,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8917258240,
+      "seconds": 42.1,
+      "tree_peak_rss_bytes": 18069291008,
+      "year": 2026
+     },
+     {
+      "_t": 72.512880437,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8828485632,
+      "seconds": 43.1,
+      "tree_peak_rss_bytes": 18069291008,
+      "year": 2025
+     },
+     {
+      "_t": 114.28833594,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8886882304,
+      "seconds": 42.4,
+      "tree_peak_rss_bytes": 18211938304,
+      "year": 2026
+     },
+     {
+      "_t": 115.606370923,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8953274368,
+      "seconds": 41.3,
+      "tree_peak_rss_bytes": 18211938304,
+      "year": 2025
+     },
+     {
+      "_t": 156.728117057,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8322617344,
+      "seconds": 40.7,
+      "tree_peak_rss_bytes": 17864527872,
+      "year": 2026
+     },
+     {
+      "_t": 156.931769371,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9160708096,
+      "seconds": 40.6,
+      "tree_peak_rss_bytes": 17864527872,
+      "year": 2025
+     },
+     {
+      "_t": 197.428006614,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8865472512,
+      "seconds": 40.2,
+      "tree_peak_rss_bytes": 18184523776,
+      "year": 2026
+     },
+     {
+      "_t": 197.561576766,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8926330880,
+      "seconds": 40.9,
+      "tree_peak_rss_bytes": 18184523776,
+      "year": 2025
+     },
+     {
+      "_t": 237.627585902,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8927784960,
+      "seconds": 40.6,
+      "tree_peak_rss_bytes": 18157830144,
+      "year": 2026
+     },
+     {
+      "_t": 238.414507948,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8837308416,
+      "seconds": 39.8,
+      "tree_peak_rss_bytes": 18157830144,
+      "year": 2025
+     },
+     {
+      "_t": 278.252736516,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8418496512,
+      "seconds": 42.1,
+      "tree_peak_rss_bytes": 17607426048,
+      "year": 2026
+     },
+     {
+      "_t": 278.256570672,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8796225536,
+      "seconds": 42.7,
+      "tree_peak_rss_bytes": 17607426048,
+      "year": 2025
+     },
+     {
+      "_t": 320.359943287,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8903294976,
+      "seconds": 42.5,
+      "tree_peak_rss_bytes": 18187374592,
+      "year": 2026
+     },
+     {
+      "_t": 320.973738239,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8891359232,
+      "seconds": 43.2,
+      "tree_peak_rss_bytes": 18187374592,
+      "year": 2025
+     },
+     {
+      "_t": 362.90296726,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9241780224,
+      "seconds": 48.1,
+      "tree_peak_rss_bytes": 18784575488,
+      "year": 2026
+     },
+     {
+      "_t": 364.147928902,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9150091264,
+      "seconds": 47.4,
+      "tree_peak_rss_bytes": 18784575488,
+      "year": 2025
+     },
+     {
+      "_t": 411.041119417,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9189801984,
+      "seconds": 48.2,
+      "tree_peak_rss_bytes": 18755289088,
+      "year": 2026
+     },
+     {
+      "_t": 411.586281021,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9172766720,
+      "seconds": 49.4,
+      "tree_peak_rss_bytes": 18755289088,
+      "year": 2025
+     },
+     {
+      "_t": 459.256000481,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8064876544,
+      "seconds": 26.2,
+      "tree_peak_rss_bytes": 17630298112,
+      "year": 2027
+     },
+     {
+      "_t": 461.020054854,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8028069888,
+      "seconds": 26.3,
+      "tree_peak_rss_bytes": 16485666816,
+      "year": 2028
+     },
+     {
+      "_t": 485.410243234,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9222631424,
+      "seconds": 47.0,
+      "tree_peak_rss_bytes": 18826895360,
+      "year": 2027
+     },
+     {
+      "_t": 487.30209936,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9211543552,
+      "seconds": 47.1,
+      "tree_peak_rss_bytes": 18826895360,
+      "year": 2028
+     },
+     {
+      "_t": 532.373968016,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9398931456,
+      "seconds": 44.1,
+      "tree_peak_rss_bytes": 19101839360,
+      "year": 2027
+     },
+     {
+      "_t": 534.389570065,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9310203904,
+      "seconds": 43.8,
+      "tree_peak_rss_bytes": 19101839360,
+      "year": 2028
+     },
+     {
+      "_t": 576.500939694,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9265917952,
+      "seconds": 43.2,
+      "tree_peak_rss_bytes": 18913521664,
+      "year": 2027
+     },
+     {
+      "_t": 578.220570548,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9254899712,
+      "seconds": 43.5,
+      "tree_peak_rss_bytes": 18913521664,
+      "year": 2028
+     },
+     {
+      "_t": 619.668504825,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9295974400,
+      "seconds": 43.1,
+      "tree_peak_rss_bytes": 18883694592,
+      "year": 2027
+     },
+     {
+      "_t": 621.7417311,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9211760640,
+      "seconds": 42.4,
+      "tree_peak_rss_bytes": 18883694592,
+      "year": 2028
+     },
+     {
+      "_t": 662.775953875,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9223016448,
+      "seconds": 43.7,
+      "tree_peak_rss_bytes": 18915614720,
+      "year": 2027
+     },
+     {
+      "_t": 664.121885662,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9299894272,
+      "seconds": 43.4,
+      "tree_peak_rss_bytes": 18915614720,
+      "year": 2028
+     },
+     {
+      "_t": 706.457254046,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9267019776,
+      "seconds": 44.6,
+      "tree_peak_rss_bytes": 19060609024,
+      "year": 2027
+     },
+     {
+      "_t": 707.488881109,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9417629696,
+      "seconds": 45.0,
+      "tree_peak_rss_bytes": 19060609024,
+      "year": 2028
+     },
+     {
+      "_t": 751.025222632,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9438572544,
+      "seconds": 43.8,
+      "tree_peak_rss_bytes": 19054399488,
+      "year": 2027
+     },
+     {
+      "_t": 752.496305824,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9270644736,
+      "seconds": 44.0,
+      "tree_peak_rss_bytes": 19054399488,
+      "year": 2028
+     },
+     {
+      "_t": 794.856114746,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9503744000,
+      "seconds": 46.6,
+      "tree_peak_rss_bytes": 19259129856,
+      "year": 2027
+     },
+     {
+      "_t": 796.509697929,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9485246464,
+      "seconds": 47.3,
+      "tree_peak_rss_bytes": 19259129856,
+      "year": 2028
+     },
+     {
+      "_t": 841.419369889,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9472053248,
+      "seconds": 46.4,
+      "tree_peak_rss_bytes": 19041333248,
+      "year": 2027
+     },
+     {
+      "_t": 843.854815343,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9459367936,
+      "seconds": 47.3,
+      "tree_peak_rss_bytes": 19041333248,
+      "year": 2028
+     },
+     {
+      "_t": 887.866933058,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8448921600,
+      "seconds": 26.7,
+      "tree_peak_rss_bytes": 18300977152,
+      "year": 2029
+     },
+     {
+      "_t": 891.159225034,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 8119279616,
+      "seconds": 27.0,
+      "tree_peak_rss_bytes": 16960937984,
+      "year": 2030
+     },
+     {
+      "_t": 914.559796507,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9445658624,
+      "seconds": 46.5,
+      "tree_peak_rss_bytes": 19022856192,
+      "year": 2029
+     },
+     {
+      "_t": 918.148480867,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9434800128,
+      "seconds": 46.7,
+      "tree_peak_rss_bytes": 19022856192,
+      "year": 2030
+     },
+     {
+      "_t": 961.09991153,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10128048128,
+      "seconds": 45.1,
+      "tree_peak_rss_bytes": 19829149696,
+      "year": 2029
+     },
+     {
+      "_t": 964.868643348,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9348222976,
+      "seconds": 45.5,
+      "tree_peak_rss_bytes": 19829149696,
+      "year": 2030
+     },
+     {
+      "_t": 1006.169394604,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9263681536,
+      "seconds": 47.5,
+      "tree_peak_rss_bytes": 18924650496,
+      "year": 2029
+     },
+     {
+      "_t": 1010.367483009,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9268264960,
+      "seconds": 47.0,
+      "tree_peak_rss_bytes": 18924650496,
+      "year": 2030
+     },
+     {
+      "_t": 1053.635887209,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10096238592,
+      "seconds": 46.7,
+      "tree_peak_rss_bytes": 20572758016,
+      "year": 2029
+     },
+     {
+      "_t": 1057.320363108,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10083848192,
+      "seconds": 46.8,
+      "tree_peak_rss_bytes": 20572758016,
+      "year": 2030
+     },
+     {
+      "_t": 1100.377287705,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10194821120,
+      "seconds": 45.6,
+      "tree_peak_rss_bytes": 20593889280,
+      "year": 2029
+     },
+     {
+      "_t": 1104.118438343,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10006380544,
+      "seconds": 45.4,
+      "tree_peak_rss_bytes": 20593889280,
+      "year": 2030
+     },
+     {
+      "_t": 1145.98549997,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9994645504,
+      "seconds": 45.2,
+      "tree_peak_rss_bytes": 20367282176,
+      "year": 2029
+     },
+     {
+      "_t": 1149.527480026,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9979949056,
+      "seconds": 45.0,
+      "tree_peak_rss_bytes": 20367282176,
+      "year": 2030
+     },
+     {
+      "_t": 1191.229381431,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10086912000,
+      "seconds": 43.7,
+      "tree_peak_rss_bytes": 19858915328,
+      "year": 2029
+     },
+     {
+      "_t": 1194.530373459,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10067062784,
+      "seconds": 44.0,
+      "tree_peak_rss_bytes": 19858915328,
+      "year": 2030
+     },
+     {
+      "_t": 1234.900830352,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9619079168,
+      "seconds": 46.6,
+      "tree_peak_rss_bytes": 19533643776,
+      "year": 2029
+     },
+     {
+      "_t": 1238.503637437,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9521909760,
+      "seconds": 46.6,
+      "tree_peak_rss_bytes": 19533643776,
+      "year": 2030
+     },
+     {
+      "_t": 1281.470743482,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9647190016,
+      "seconds": 46.8,
+      "tree_peak_rss_bytes": 19676696576,
+      "year": 2029
+     },
+     {
+      "_t": 1285.073518564,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9636835328,
+      "seconds": 47.1,
+      "tree_peak_rss_bytes": 19676696576,
+      "year": 2030
      }
     ],
     "process_count_by_role": {
@@ -2273,8 +2278,8 @@
      "multiprocessing_helper": 1,
      "year_worker": 2
     },
-    "tree_peak_rss_bytes": 19860013056,
-    "wall_seconds": 2122.0
+    "tree_peak_rss_bytes": 20593889280,
+    "wall_seconds": 1307.5
    },
    "container": {
     "cpu": 4,
@@ -2311,7 +2316,7 @@
     "resolution": "certified_constraints"
    },
    "label": "microcosm-ab2025-w2",
-   "measured_at": "2026-10-23T12:01:51Z",
+   "measured_at": "2026-10-23T13:16:35Z",
    "measures": [],
    "packages": {
     "policyengine": "6.10.0",
@@ -2321,20 +2326,21 @@
    "phase_peaks": "process_and_tree",
    "probe": {
     "exit_code": 0,
-    "min_available_bytes": 28731908096,
+    "min_available_bytes": 28729630720,
     "peak_rss_bytes_by_role": {
-     "child": 5211471872,
-     "event_runner": 5613502464
+     "child": 8736768,
+     "event_runner": 5610426368
     },
     "phases": [],
     "process_count_by_role": {
      "child": 1,
      "event_runner": 1
     },
-    "tree_peak_rss_bytes": 10422943744,
-    "wall_seconds": 47.7
+    "tree_peak_rss_bytes": 5610426368,
+    "wall_seconds": 27.7
    },
    "request_id": "47fe63f426c0f06e6230ee49de8a8208cd32ac885dc8eab2b2aec7aae5b62ce7",
+   "requirements_sha256": "0e13ba66769a1d710c1a6bfbe83f4f2493fdc10318d6c601970e7fef68a3a457",
    "schema_version": 1,
    "variant_id": "pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
    "workers": 2,

@@ -22,6 +22,8 @@ from pipeline import uk_replay_qualify as qualify
 FIXTURES = Path(__file__).parent / "fixtures" / "uk_replay"
 GIB = 2**30
 EVIDENCE = qualify.ROOT / qualify.MEMORY_EVIDENCE
+# The installed environment's freeze digest a measurement records.
+FREEZE = "f" * 64
 
 
 def golden_request():
@@ -51,7 +53,9 @@ def evidence_root(
     """Evidence holding two-worker peaks for one dataset and workload."""
     root = workload_root(tmp_path)
     workload = {
-        **qualify.memory_workload(request or golden_request(), root=root),
+        **qualify.memory_workload(
+            request or golden_request(), requirements_sha256=FREEZE, root=root
+        ),
         **changes,
     }
     path = root / qualify.MEMORY_EVIDENCE
@@ -142,9 +146,12 @@ def test_process_tree_rss_is_the_sum_over_the_subtree(tmp_path_factory, sizes, d
 # --- choosing the worker count ----------------------------------------------------
 
 
-def choose(root, memory_total=16 * GIB, request=None):
+def choose(root, memory_total=16 * GIB, request=None, freeze=FREEZE):
     return qualify.simulation_workers(
-        request or request_for("a" * 64), root=root, memory_total=memory_total
+        request or request_for("a" * 64),
+        requirements_sha256=freeze,
+        root=root,
+        memory_total=memory_total,
     )
 
 
@@ -201,6 +208,12 @@ def test_a_changed_workload_file_makes_the_measurement_another_workloads(tmp_pat
     with (root / "pipeline/compute_uk_event.py").open("a") as handle:
         handle.write("# changed\n")
     assert choose(root) == (1, UNMEASURED)
+
+
+def test_another_installed_environment_is_unmeasured(tmp_path):
+    root = evidence_root(tmp_path, [GIB])
+    assert choose(root)[0] == 2
+    assert choose(root, freeze="e" * 64) == (1, UNMEASURED)
 
 
 def test_the_measured_wheel_or_source_is_the_one_that_counts(tmp_path):
@@ -311,7 +324,9 @@ def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_on_the_runner():
     for sha, entry in committed_evidence()["datasets"].items():
         (row,) = entry["two_worker_peaks"]
         chosen[entry["dataset"]] = qualify.simulation_workers(
-            request_for(sha, row["workload"]["candidate"]), memory_total=runner
+            request_for(sha, row["workload"]["candidate"]),
+            requirements_sha256=row["workload"]["requirements_sha256"],
+            memory_total=runner,
         )
     assert chosen["microcosm_uk_2024_25"][0] == 1, chosen
     assert chosen["enhanced_frs_2024_25"][0] == 2, chosen
@@ -340,6 +355,7 @@ def measurement(label, sha, workers, peak, *, exit_code=0, year_workers=2, **cha
         "years": [],
         "measures": [],
         "candidate": qualify.candidate_identity(request),
+        "requirements_sha256": FREEZE,
         "corpus_version": qualify.CORPUS_VERSION,
         "workload_sha256": "c" * 64,
         "coverage": {"full_event_complete": True},
@@ -367,6 +383,7 @@ def scheduled(measurement_) -> dict:
         {"coverage": {"full_event_complete": False}},
         {"coverage": None},
         {"candidate": None},
+        {"requirements_sha256": None},
         {"workload_sha256": None},
         {"workers": 0},
         {"workers": 3},
@@ -470,6 +487,12 @@ def year(y):
 
 if __name__ == "__main__":
     print(f"[pid {os.getpid()}] starting offline bundle preflight", flush=True)
+    print(
+        f"[pid {os.getpid()}] offline bundle preflight complete; "
+        "starting processed-world reversal guard",
+        flush=True,
+    )
+    print(f"[pid {os.getpid()}] processed-world reversal guard complete", flush=True)
     with multiprocessing.get_context("spawn").Pool(2) as pool:
         pool.map(year, [2029, 2030])
     print("private row 1,2,3", flush=True)
@@ -512,6 +535,10 @@ def test_measured_run_samples_the_tree_and_keeps_only_aggregate_lines(tmp_path, 
         for p in result["phases"]
         if p["phase"] == "certified baseline"
     )
+    # The runner's own phases close at their markers, before the workers run.
+    runner = {p["phase"]: p for p in result["phases"] if p["year"] is None}
+    assert set(runner) == {"offline bundle preflight", "processed-world reversal guard"}
+    assert runner["processed-world reversal guard"]["seconds"] < 0.5
     # A phase starts from its boundary sample, so it never reports more than
     # the tree held during it.
     assert all(

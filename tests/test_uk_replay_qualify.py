@@ -971,7 +971,11 @@ def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
         shutil.copy2(qualify.ROOT / relative, root / relative)
     rows = [
         {
-            "workload": qualify.memory_workload(request, root=root),
+            "workload": qualify.memory_workload(
+                request,
+                requirements_sha256=record["identity"]["requirements_sha256"],
+                root=root,
+            ),
             "peak_rss_bytes": (peak_gib or 0) * 2**30,
         }
     ]
@@ -989,7 +993,12 @@ def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
     interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
     (corpus,) = [command for command, _, _ in calls if "corpus" in command]
     assert corpus[corpus.index("--workers") + 1] == str(workers)
-    expected = qualify.simulation_workers(request, root=root, memory_total=16 * 2**30)
+    expected = qualify.simulation_workers(
+        request,
+        requirements_sha256=record["identity"]["requirements_sha256"],
+        root=root,
+        memory_total=16 * 2**30,
+    )
     assert expected[0] == workers
     plural = "s" if workers == 2 else ""
     assert receipt["execution"]["runner"] == (
