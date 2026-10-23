@@ -213,6 +213,24 @@ Operating rules for the agent stage:
   the letter's quoted deciles against the workbook, and adds section
   10102's groups to its total. Claims flow through
   `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
+- **Two-child limit child poverty** (`sources/dwp-two-child-limit-poverty/`,
+  `sources/rf-no-half-measures/`, lane `uk-two-child-limit-poverty`): the
+  comparison policyengine-uk's docs page used to hard-code. The source rows
+  are DWP's Budget 2025 note (Tables 1-4: relative and absolute low income,
+  BHC and AHC, FYE 2027-2031) and Resolution Foundation's *No half
+  measures*. The Resolution Foundation figures and HM Treasury's costings
+  were already Autumn Budget 2025 claims, so this lane attaches results to
+  them rather than minting copies. The counterparts run on policyengine.py
+  6.10.1's certified Microcosm pair through the managed route
+  (`pipeline/compute_uk_two_child_limit_poverty.py`, on Modal or locally),
+  for every concept the sources use. The relative line comes in two forms:
+  each world's own median, and the median held at the with-limit world's.
+  The absolute line also comes in two: the FYE 2025 line the engine serves,
+  and a constructed FYE 2011 one. When a source leaves its convention
+  unstated, a result is `comparable` only if the two readings differ by no
+  more than half the source's rounding unit.
+  `pipeline/decompose_uk_two_child_limit_poverty.py` runs an engine x data
+  grid to measure how the September 2026 estimate became October's.
 
 ### Staged for Chronicle, not claims
 

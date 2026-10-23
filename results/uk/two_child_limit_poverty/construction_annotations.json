@@ -1,0 +1,40 @@
+{
+ "_schema": {
+  "applies_to": "matcher on the lane's facets (scorecard_db/ingest_uk_two_child_limit_poverty.FACETS); null = any. This file carries the construction notes every certified-pair result shares and the status rules for the HM Treasury costings this lane attaches to (claims of the uk_ab2025 registry, sources/harvest-uk-ab2025-2026-09-24/uk_hmt_costings)",
+  "severity": "period | definitional | construction | caution | gap",
+  "status": "the comparison status this annotation sets, where it sets one; exactly one status-setting annotation matches each result",
+  "basis": "engine files at the certified pin (policyengine-uk 2.132.6), the HM Treasury costing's own wording (the claim's publication.note), pipeline/compute_uk_two_child_limit_poverty.py, or the measured artifact"
+ },
+ "annotations": [
+  {
+   "id": "pair-worlds",
+   "applies_to": {},
+   "severity": "construction",
+   "text": "Computed on the certified pair through policyengine.py's managed route: the with-limit world sets gov.dwp.universal_credit.elements.child.limit.child_count to 2 from 2025 to 2035 (the registered pre_ab2025 world); current law is the certified world as served, which removes the limit from 6 April 2026. Both are static: no behavioural response runs.",
+   "basis": "pipeline/compute_uk_two_child_limit_poverty.py WORLDS and check_executed (the executed limit is asserted per world and year); data/uk/two_child_limit_poverty/certified_pair.json"
+  },
+  {
+   "id": "hmt-static-leg",
+   "applies_to": {"sources": ["hm_treasury"], "scoring": ["static"]},
+   "severity": "definitional",
+   "status": "comparable",
+   "text": "Both are static Exchequer costs. HM Treasury's static leg compares Universal Credit expenditure before and after removal for families with a third or later child born after April 2017, before the costing's behavioural response; PolicyEngine's value is the change in gov_tax less the change in gov_spending with no behavioural response (the change in universal_credit alone is in the measured note).",
+   "basis": "the claim's publication.note (Budget 2025 policy costings, 'The static Exchequer impact is calculated by comparing the baseline Universal Credit expenditure forecast before the policy change to expenditure after removal ...'); pipeline/compute_uk_two_child_limit_poverty.py SUMS"
+  },
+  {
+   "id": "hmt-post-behavioural-leg",
+   "applies_to": {"sources": ["hm_treasury"], "scoring": ["post_behavioural"]},
+   "severity": "definitional",
+   "status": "concept_mismatch",
+   "text": "HM Treasury's post-behavioural costing (£3.1 billion in 2029-30, the figure Budget 2025 Table 1.2 carries as 'Removing the two-child limit' and Table 4.1 line 6 as -3,095m) adds new claims: 11% take-up among the newly entitled and 22% among previously entitled non-claimants. PolicyEngine's value is static, so it should be read against the static leg.",
+   "basis": "the claim's publication.note (Budget 2025 policy costings: 'An additional take up rate is applied at 11% for those newly entitled and 22% for previously entitled but non-claiming households'); Budget 2025 (HC 1492) Table 1.2, printed page 22 ('Removing the two-child limit 0.0 2.4 2.6 2.8 3.1 3.2'), sha256 fc112784… as the uk_hmt_redbook harvest pins it"
+  },
+  {
+   "id": "hmt-first-year",
+   "applies_to": {"sources": ["hm_treasury"], "periods": [2026]},
+   "severity": "period",
+   "text": "2025-26 is before the measure starts (6 April 2026): both worlds apply the limit, so PolicyEngine's effect is exactly zero, as is HM Treasury's.",
+   "basis": "policyengine_uk 2.132.6 parameters/gov/dwp/universal_credit/elements/child/limit/child_count.yaml; the measured artifact (executed limit 2 in both worlds in engine period 2025)"
+  }
+ ]
+}

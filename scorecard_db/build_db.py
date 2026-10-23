@@ -84,6 +84,7 @@ from . import (
     ingest_lpc_minimum_wage,
     ingest_uk_ab2025,
     ingest_uk_thinktanks,
+    ingest_uk_two_child_limit_poverty,
     ingest_us_admin_outturns,
     ingest_ons_etb,
     ingest_urban,
@@ -288,6 +289,13 @@ def build(db_path: Path) -> dict:
         # After the counterpart runs attach, a lane whose claims now carry a
         # computed PE result reads "computed" rather than "ingested" (#136).
         ("uk_ab2025_lanes", lambda: ingest_uk_ab2025.advance_lanes(db_path)),
+        # The two-child limit poverty benchmarks on the certified Microcosm
+        # pair: DWP's Budget 2025 note minted here, and new results on the
+        # RF and HM Treasury AB2025 claims above, so it runs after them.
+        (
+            "uk_two_child_limit_poverty",
+            lambda: ingest_uk_two_child_limit_poverty.ingest(db_path),
+        ),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),

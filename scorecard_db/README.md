@@ -507,3 +507,36 @@ this lane's PMD scores by fiscal event from compact, lossless shards. All scores
 remain accessible. Coverage distinguishes scores with a numerical PE value,
 recorded findings and scores without a recorded result, so adding unanswered
 scores does not imply that a model comparison has been completed.
+
+## 2026-10-23 population: the two-child limit child-poverty benchmarks (UK)
+
+Lane `uk-two-child-limit-poverty`, registry mark `uk_two_child_limit_poverty`,
+ingest `scorecard_db/ingest_uk_two_child_limit_poverty.py`. This lane moves
+policyengine-uk's two-child limit validation page (corrected by
+PolicyEngine/policyengine-uk#1724) into the scorecard.
+
+- **Claims.** 123 DWP claims from `sources/dwp-two-child-limit-poverty`:
+  Tables 1-4 of the Budget 2025 note, its FYE 2026 figure, and children in
+  gaining households. All are held out. `baseline_policy` is `pre_ab2025`
+  (DWP's baseline keeps the limit), and every claim carries
+  `publish_without_result`.
+- **Results.** The lane attaches 140 results from one certified-pair run.
+  - 123 go to its own DWP claims.
+  - 5 go to the Resolution Foundation *No half measures* claims of the
+    `uk_ab2025` registry (480,000 and £3.5 billion in 2029-30, 330,000
+    "today", the further 150,000, a three-child limit). These are matched
+    one for one; none is minted twice.
+  - 12 go to HM Treasury's static and post-behavioural costings,
+    2025-26 to 2030-31.
+
+  Each result is a later entry in its claim's history, so the September
+  2026 Populace results stay beside it.
+- **Executed worlds.** The with-limit world (registered `pre_ab2025`), plus
+  current law in 2025-26 for the 2025-26 rows.
+- **Statuses.** Each result's status is set by exactly one annotation, from
+  the two sources' `annotations.json` and
+  `results/uk/two_child_limit_poverty/construction_annotations.json`. The
+  facets include a measured `spread`: whether two readings of a convention
+  the source leaves unstated differ by more than half its rounding unit.
+- **Order.** The build step runs after `uk_ab2025_lanes`, because it
+  attaches to that registry's claims.

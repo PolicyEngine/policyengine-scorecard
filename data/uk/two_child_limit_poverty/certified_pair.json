@@ -1,0 +1,39 @@
+{
+ "schema_version": 1,
+ "pair_id": "pe6.10.1_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_rule": "The certified UK pair the two-child-limit poverty lane computes on: the data build and model version policyengine.py's packaged bundle manifest certifies together. pipeline/compute_uk_two_child_limit_poverty.py refuses to run unless the installed policyengine and policyengine-uk are these pins, the managed bundle names this build and digest, and the dataset's SHA-256 matches before and after every simulation.",
+ "policyengine": {
+  "version": "6.10.1",
+  "bundle_id": "uk-6.10.1",
+  "manifest": "policyengine/data/bundle/manifest.json (data_releases.uk)",
+  "wheel_install": "uv pip install 'policyengine[uk]==6.10.1'"
+ },
+ "model_package": {
+  "name": "policyengine-uk",
+  "version": "2.132.6",
+  "wheel_sha256": "cc54025f2a3bc54be4f8d024d1e6f11ed29fed75ca513b214f2d2963c5bf4354",
+  "wheel_url": "https://files.pythonhosted.org/packages/11/f2/c003cd7a95cb499737a5b8af0d619ba4e759c8bc7e55a2bb5c7efa46abd1/policyengine_uk-2.132.6-py3-none-any.whl"
+ },
+ "core_package": {
+  "name": "policyengine-core",
+  "version": "3.33.3"
+ },
+ "certification": {
+  "built_with_model_version": "2.132.6",
+  "certified_for_model_version": "2.132.6",
+  "compatibility_basis": "built_with_model_package",
+  "core_binding": "bundle_pin",
+  "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+ },
+ "dataset": {
+  "repo_id": "policyengine/populace-uk-private",
+  "repo_type": "dataset",
+  "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "path": "microcosm_uk_2024_25.h5",
+  "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+  "uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "data_package": "microcosm-data",
+  "release_manifest_uri": "https://huggingface.co/datasets/policyengine/populace-uk-private/resolve/microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/releases/microcosm-uk-2024-25-national/release_manifest.json"
+ },
+ "provenance": "Read from the installed policyengine 6.10.1 wheel's packaged bundle manifest (data_releases.uk) on 2026-10-23; policyengine 6.10.1 is the latest release on PyPI that day. The same pair (policyengine 6.10.0) is the one the policy-experiments lane (#210) probes."
+}
