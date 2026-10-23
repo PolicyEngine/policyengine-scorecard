@@ -1,0 +1,108 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 7638368445.855093,
+ "engine_version": "2.143.0",
+ "event": "autumn_budget_2021",
+ "event_name": "Autumn Budget 2021",
+ "experiment_id": "ab2021_state_pension_double_lock",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 149152676434.29315,
+   "channel": "spending",
+   "effect_gbp": 7161075614.274841,
+   "literal_alternate_minus_modern_gbp": -7161075614.274841,
+   "modern_gbp": 141991600820.0183,
+   "obr_heads": [
+    "Welfare outside cap"
+   ],
+   "pe_variables": [
+    "state_pension"
+   ]
+  },
+  {
+   "alternate_gbp": 6802600592.577376,
+   "channel": "spending",
+   "effect_gbp": 477292831.5802517,
+   "literal_alternate_minus_modern_gbp": -477292831.5802517,
+   "modern_gbp": 6325307760.997125,
+   "obr_heads": [
+    "Welfare inside cap"
+   ],
+   "pe_variables": [
+    "pension_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "measure_key": "autumn_budget_2021__state_pension_and_pension_credit_uprate_with_double_lock_in_2022_23",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+   "alternate_intended": 364.08,
+   "alternate_processed": 364.08,
+   "changes_modern_law": true,
+   "modern_processed": 346.6,
+   "reached_simulation": true
+  },
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+   "alternate_intended": 238.55,
+   "alternate_processed": 238.55,
+   "changes_modern_law": true,
+   "modern_processed": 227.1,
+   "reached_simulation": true
+  },
+  "gov.dwp.state_pension.basic_state_pension.amount": {
+   "alternate_intended": 185.35,
+   "alternate_processed": 185.35,
+   "changes_modern_law": true,
+   "modern_processed": 176.45,
+   "reached_simulation": true
+  },
+  "gov.dwp.state_pension.new_state_pension.amount": {
+   "alternate_intended": 241.86,
+   "alternate_processed": 241.86,
+   "changes_modern_law": true,
+   "modern_processed": 230.25,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+   "2024-01-01.2024-12-31": 349.74,
+   "2025-01-01.2025-12-31": 364.08,
+   "2026-01-01.2026-12-31": 381.57
+  },
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+   "2024-01-01.2024-12-31": 229.15,
+   "2025-01-01.2025-12-31": 238.55,
+   "2026-01-01.2026-12-31": 250.0
+  },
+  "gov.dwp.state_pension.basic_state_pension.amount": {
+   "2024-01-01.2024-12-31": 178.05,
+   "2025-01-01.2025-12-31": 185.35,
+   "2026-01-01.2026-12-31": 194.23
+  },
+  "gov.dwp.state_pension.new_state_pension.amount": {
+   "2024-01-01.2024-12-31": 232.36,
+   "2025-01-01.2025-12-31": 241.86,
+   "2026-01-01.2026-12-31": 253.47
+  }
+ },
+ "registry_sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

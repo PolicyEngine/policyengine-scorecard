@@ -2,7 +2,7 @@
  "built": "2026-10-23",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 29737,
+  "claims": 29750,
   "multi_release_claims": 270,
   "by_source": {
    "aspe_welfare_indicators": 14,
@@ -74,10 +74,12 @@
    "ny_admin": 2,
    "nz_treasury": 12,
    "obr_efo": 815,
+   "obr_efo_economy": 1,
    "obr_pmd": 24550,
    "oh_admin": 1,
    "ok_admin": 1,
    "ok_fiscal_note": 1,
+   "ons_cpi": 1,
    "onward": 26,
    "or_admin": 2,
    "policy_exchange": 78,
@@ -85,7 +87,7 @@
    "policyengine": 5,
    "public_first": 11,
    "pwbm": 2,
-   "resolution_foundation": 1123,
+   "resolution_foundation": 1134,
    "ri_admin": 1,
    "sc_admin": 1,
    "scottish_fiscal_commission": 34,
@@ -107,16 +109,16 @@
    "wi_admin": 1
   },
   "by_latest_status": {
-   "comparable": 42,
+   "comparable": 57,
    "concept_mismatch": 17,
-   "constructed": 1668,
-   "not_computed": 27121,
+   "constructed": 1670,
+   "not_computed": 27117,
    "pe_gap": 889
   },
   "by_sign_relative_to_pe": {
    "magnitude": 14,
    "opposite": 489,
-   "same": 28965,
+   "same": 28978,
    "unknown": 269
   },
   "by_country": {
@@ -135,10 +137,10 @@
     "multi_release_claims": 0
    },
    "UK": {
-    "claims": 29176,
-    "with_result": 2163,
-    "with_value": 1178,
-    "without_result": 27013,
+    "claims": 29189,
+    "with_result": 2180,
+    "with_value": 1195,
+    "without_result": 27009,
     "multi_release_claims": 0
    },
    "US": {
@@ -47107,21 +47109,45 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
-    "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "value": 4.79913137893595,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "state_pension"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: gov.dwp.state_pension.new_state_pension.amount rises 4.80% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.999819037278323,
+    "delta": -0.0008686210640496128
    },
-   "results": [],
+   "results": [
+    {
+     "value": 4.79913137893595,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "state_pension"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: gov.dwp.state_pension.new_state_pension.amount rises 4.80% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -47164,21 +47190,53 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
-    "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "value": 3.801099689218268,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_child_element",
+     "uc_carer_element",
+     "child_benefit",
+     "carers_allowance",
+     "pip_dl"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: the UC child element rises 3.80% in April 2026; the CPI-linked working-age basket (uc_child_element, uc_carer_element, child_benefit_eldest, child_benefit_additional, carers_allowance, pip_daily_living_standard) rises 3.77% to 3.84% (rates rounded to the penny)."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.0002893918995444,
+    "delta": 0.001099689218268196
    },
-   "results": [],
+   "results": [
+    {
+     "value": 3.801099689218268,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_child_element",
+      "uc_carer_element",
+      "child_benefit",
+      "carers_allowance",
+      "pip_dl"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: the UC child element rises 3.80% in April 2026; the CPI-linked working-age basket (uc_child_element, uc_carer_element, child_benefit_eldest, child_benefit_additional, carers_allowance, pip_daily_living_standard) rises 3.77% to 3.84% (rates rounded to the penny)."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -47220,21 +47278,45 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
-    "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "value": 4.799647732276524,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "pension_credit"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE rises 4.80% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.9999266108909426,
+    "delta": -0.000352267723475741
    },
-   "results": [],
+   "results": [
+    {
+     "value": 4.799647732276524,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "pension_credit"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE rises 4.80% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -47278,21 +47360,49 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
-    "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
+    "value": 6.1878342580096835,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "The claim is a lower bound (over 6%).",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.0313057096682805,
+    "delta": 0.18783425800968345
    },
-   "results": [],
+   "results": [
+    {
+     "value": 6.1878342580096835,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "The claim is a lower bound (over 6%).",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
    "diagnosis": null
   },
   {
@@ -275813,6 +275923,100 @@
    "diagnosis": null
   },
   {
+   "claim_id": "045780e129622c801769",
+   "source": "obr_efo_economy",
+   "country": "UK",
+   "source_column": "obr_efo_march2026_detailed_forecast_tables_economy.xlsx sheet 1.7 row 2026Q3, CPI",
+   "name": "OBR March 2026 forecast of CPI inflation, 2026 Q3",
+   "window": "",
+   "publication_title": "Economic and fiscal outlook March 2026, detailed forecast tables: economy, Table 1.7",
+   "url": "https://obr.uk/download/march-2026-economic-and-fiscal-outlook-detailed-forecast-tables-economy/",
+   "metric": "cpi_inflation_rate",
+   "unit_concept": "percent",
+   "value_kind": "percent",
+   "period": 2026,
+   "time_basis": "point_in_time",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "basis": "forecast",
+    "country": "UK",
+    "fiscal_event": "efo_march_2026",
+    "geography": "UK",
+    "index": "CPI all items, year-on-year growth (OBR Table 1.7)",
+    "quarter": "2026Q3",
+    "uprating_event": "April 2027"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 2.0841055635834493,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 2.0841055635834493,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 2.2997783420982243,
+    "status": "constructed",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_child_element",
+     "uc_carer_element",
+     "child_benefit",
+     "carers_allowance",
+     "pip_dl",
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK uprates CPI-linked working-age rates by gov.benefit_uprating_cpi, which follows OBR's calendar-year CPI forecast lagged one year (2.30% for 2026 in the March 2026 EFO), not the September rate the law uses. Tracked in PolicyEngine/policyengine-uk#2533; PR #2557 moves the index to September CPI and enters 3.5% for September 2026.",
+     "policyengine-uk 2.147.2 has no September 2026 outturn: statutory_uprating_inputs.cpi_september is null for 2026, so the model uses its own forecast. That forecast sets the income tax thresholds and the Universal Credit Act 2025 s. 4 floor for the protected health element.",
+     "Measured: CPI-linked working-age rates rise 2.30% in April 2027 on uk-2.147.2. The UC standard allowance rises 3.10% (CPI plus the Act's uplift); the protected health element rises 1.34% to \u00a3435.56 a month; the new-claimant health element is frozen.",
+     "The model's own September 2026 CPI is 2.12% (a forecast; no outturn entered)."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.1034845750058568,
+    "delta": 0.21567277851477495
+   },
+   "results": [
+    {
+     "value": 2.2997783420982243,
+     "status": "constructed",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_child_element",
+      "uc_carer_element",
+      "child_benefit",
+      "carers_allowance",
+      "pip_dl",
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK uprates CPI-linked working-age rates by gov.benefit_uprating_cpi, which follows OBR's calendar-year CPI forecast lagged one year (2.30% for 2026 in the March 2026 EFO), not the September rate the law uses. Tracked in PolicyEngine/policyengine-uk#2533; PR #2557 moves the index to September CPI and enters 3.5% for September 2026.",
+      "policyengine-uk 2.147.2 has no September 2026 outturn: statutory_uprating_inputs.cpi_september is null for 2026, so the model uses its own forecast. That forecast sets the income tax thresholds and the Universal Credit Act 2025 s. 4 floor for the protected health element.",
+      "Measured: CPI-linked working-age rates rise 2.30% in April 2027 on uk-2.147.2. The UC standard allowance rises 3.10% (CPI plus the Act's uplift); the protected health element rises 1.34% to \u00a3435.56 a month; the new-claimant health element is frozen.",
+      "The model's own September 2026 CPI is 2.12% (a forecast; no outturn entered)."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
    "claim_id": "0b5c0bf6c25957c0495d",
    "source": "obr_pmd",
    "country": "UK",
@@ -321644,6 +321848,101 @@
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "dac46511b7fcc9f785ce",
+   "source": "ons_cpi",
+   "country": "UK",
+   "source_column": "ons_d7g7_cpi_annual_rate.json months['2026 SEP']",
+   "name": "September 2026 CPI, the April 2027 uprating rate",
+   "window": "",
+   "publication_title": "Consumer price inflation, UK: September 2026 (series D7G7)",
+   "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23",
+   "metric": "cpi_inflation_rate",
+   "unit_concept": "percent",
+   "value_kind": "percent",
+   "period": 2026,
+   "time_basis": "point_in_time",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benchmark_class": "administrative_fact",
+    "country": "UK",
+    "geography": "UK",
+    "index": "CPI all items, 12-month rate (ONS D7G7)",
+    "month": "2026-09",
+    "uprating_event": "April 2027"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 3.5,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 3.5,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 2.2997783420982243,
+    "status": "constructed",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_child_element",
+     "uc_carer_element",
+     "child_benefit",
+     "carers_allowance",
+     "pip_dl",
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK uprates CPI-linked working-age rates by gov.benefit_uprating_cpi, which follows OBR's calendar-year CPI forecast lagged one year (2.30% for 2026 in the March 2026 EFO), not the September rate the law uses. Tracked in PolicyEngine/policyengine-uk#2533; PR #2557 moves the index to September CPI and enters 3.5% for September 2026.",
+     "policyengine-uk 2.147.2 has no September 2026 outturn: statutory_uprating_inputs.cpi_september is null for 2026, so the model uses its own forecast. That forecast sets the income tax thresholds and the Universal Credit Act 2025 s. 4 floor for the protected health element.",
+     "Measured: CPI-linked working-age rates rise 2.30% in April 2027 on uk-2.147.2. The UC standard allowance rises 3.10% (CPI plus the Act's uplift); the protected health element rises 1.34% to \u00a3435.56 a month; the new-claimant health element is frozen.",
+     "The model's own September 2026 CPI is 2.12% (a forecast; no outturn entered).",
+     "With the ONS rate, CPI-linked working-age rates would rise 3.5% in April 2027, 1.2 points above PolicyEngine-UK's baseline."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.6570795263137784,
+    "delta": -1.2002216579017757
+   },
+   "results": [
+    {
+     "value": 2.2997783420982243,
+     "status": "constructed",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_child_element",
+      "uc_carer_element",
+      "child_benefit",
+      "carers_allowance",
+      "pip_dl",
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK uprates CPI-linked working-age rates by gov.benefit_uprating_cpi, which follows OBR's calendar-year CPI forecast lagged one year (2.30% for 2026 in the March 2026 EFO), not the September rate the law uses. Tracked in PolicyEngine/policyengine-uk#2533; PR #2557 moves the index to September CPI and enters 3.5% for September 2026.",
+      "policyengine-uk 2.147.2 has no September 2026 outturn: statutory_uprating_inputs.cpi_september is null for 2026, so the model uses its own forecast. That forecast sets the income tax thresholds and the Universal Credit Act 2025 s. 4 floor for the protected health element.",
+      "Measured: CPI-linked working-age rates rise 2.30% in April 2027 on uk-2.147.2. The UC standard allowance rises 3.10% (CPI plus the Act's uplift); the protected health element rises 1.34% to \u00a3435.56 a month; the new-claimant health element is frozen.",
+      "The model's own September 2026 CPI is 2.12% (a forecast; no outturn entered).",
+      "With the ONS rate, CPI-linked working-age rates would rise 3.5% in April 2027, 1.2 points above PolicyEngine-UK's baseline."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
     }
    ],
    "diagnosis": null
@@ -391622,6 +391921,886 @@
     "delta": null
    },
    "results": [],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "9b237f672025ed16d1a8",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "UC uprating total (Figure 8)",
+   "name": "Living Standards Outlook 2026",
+   "window": "",
+   "publication_title": "Living Standards Outlook 2026",
+   "url": "https://www.resolutionfoundation.org/publications/living-standards-outlook-2026/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2025,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "Universal Credit standard allowance",
+    "component": "total April uprating",
+    "country": "UK",
+    "fy": "2025-26",
+    "geography": "UK",
+    "value_verbatim": "1.7%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.017,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.017,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.017003431185665274,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 1.70% in April 2025."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.0002018344508985,
+    "delta": 3.4311856652730066e-06
+   },
+   "results": [
+    {
+     "value": 0.017003431185665274,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 1.70% in April 2025."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "00d44466f046243cd9d0",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: Local Housing Allowance (frozen)",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "local_housing_allowance",
+    "benefit_verbatim": "Local Housing Allowance (frozen)",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "0%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.0,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.0,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "LHA_cap"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: gov.dwp.LHA.freeze is true for 2026-27."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": null,
+    "delta": 0.0
+   },
+   "results": [
+    {
+     "value": 0.0,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "LHA_cap"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: gov.dwp.LHA.freeze is true for 2026-27."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "bfba5973b686e6a4cc1d",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: State Pension (triple lock: earnings growth)",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "state_pension",
+    "benefit_verbatim": "State Pension (triple lock: earnings growth)",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "4.8%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.048,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.048,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.0479913137893595,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "state_pension"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: gov.dwp.state_pension.new_state_pension.amount rises 4.80% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.9998190372783229,
+    "delta": -8.686210640498904e-06
+   },
+   "results": [
+    {
+     "value": 0.0479913137893595,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "state_pension"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: gov.dwp.state_pension.new_state_pension.amount rises 4.80% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6e3095cc719b962ea6d5",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: UC health element, existing recipients",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_health_element",
+    "benefit_verbatim": "UC health element, existing recipients",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "1.5%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.015,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.015,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.015427504902308264,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_LCWRA_element"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: the protected health element is \u00a3429.80 a month in 2026-27."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.028500326820551,
+    "delta": 0.000427504902308265
+   },
+   "results": [
+    {
+     "value": 0.015427504902308264,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_LCWRA_element"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: the protected health element is \u00a3429.80 a month in 2026-27."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "029a917fdcd006739554",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: UC standard allowance",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "UC standard allowance",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "6.2%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.062,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.062,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.061878342580096835,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.998037783549949,
+    "delta": -0.00012165741990316503
+   },
+   "results": [
+    {
+     "value": 0.061878342580096835,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "11fc9161fc8aae002f7e",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: UC standard allowance, under-25s",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance_under_25",
+    "benefit_verbatim": "UC standard allowance, under-25s",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "6.8%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.068,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.068,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.06814310051107308,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG rises 6.81% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.0021044192804864,
+    "delta": 0.00014310051107307986
+   },
+   "results": [
+    {
+     "value": 0.06814310051107308,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG rises 6.81% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "2356da6d23775b6236ab",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "April 2026 uprating: inflation-linked benefits",
+   "name": "Catching up? Benefit uprating policy for April 2026",
+   "window": "",
+   "publication_title": "Catching up? Benefit uprating policy for April 2026",
+   "url": "https://www.resolutionfoundation.org/publications/catching-up/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "inflation_linked_benefits",
+    "benefit_verbatim": "inflation-linked benefits",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "uprating_event": "April 2026",
+    "value_verbatim": "3.8%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.038,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.038,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.03801099689218268,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_child_element",
+     "uc_carer_element",
+     "child_benefit",
+     "carers_allowance",
+     "pip_dl"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "Measured: the UC child element rises 3.80% in April 2026; the CPI-linked working-age basket (uc_child_element, uc_carer_element, child_benefit_eldest, child_benefit_additional, carers_allowance, pip_daily_living_standard) rises 3.77% to 3.84% (rates rounded to the penny)."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 1.0002893918995441,
+    "delta": 1.0996892182681128e-05
+   },
+   "results": [
+    {
+     "value": 0.03801099689218268,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_child_element",
+      "uc_carer_element",
+      "child_benefit",
+      "carers_allowance",
+      "pip_dl"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "Measured: the UC child element rises 3.80% in April 2026; the CPI-linked working-age basket (uc_child_element, uc_carer_element, child_benefit_eldest, child_benefit_additional, carers_allowance, pip_daily_living_standard) rises 3.77% to 3.84% (rates rounded to the penny)."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "8f3e291573a493e3571a",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "UC uprating total (Figure 8)",
+   "name": "Living Standards Outlook 2026",
+   "window": "",
+   "publication_title": "Living Standards Outlook 2026",
+   "url": "https://www.resolutionfoundation.org/publications/living-standards-outlook-2026/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "Universal Credit standard allowance",
+    "component": "total April uprating",
+    "country": "UK",
+    "fy": "2026-27",
+    "geography": "UK",
+    "value_verbatim": "6.2%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.062,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.062,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.061878342580096835,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.998037783549949,
+    "delta": -0.00012165741990316503
+   },
+   "results": [
+    {
+     "value": 0.061878342580096835,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 6.19% in April 2026."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "2b4af19f0d204adacdab",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "UC uprating total (Figure 8)",
+   "name": "Living Standards Outlook 2026",
+   "window": "",
+   "publication_title": "Living Standards Outlook 2026",
+   "url": "https://www.resolutionfoundation.org/publications/living-standards-outlook-2026/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "Universal Credit standard allowance",
+    "component": "total April uprating",
+    "country": "UK",
+    "fy": "2027-28",
+    "geography": "UK",
+    "value_verbatim": "3.1%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.031,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.031,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.030997766087030865,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 3.10% in April 2027."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.9999279382913182,
+    "delta": -2.23391296913511e-06
+   },
+   "results": [
+    {
+     "value": 0.030997766087030865,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 3.10% in April 2027."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "658dfe75c74b9348c964",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "UC uprating total (Figure 8)",
+   "name": "Living Standards Outlook 2026",
+   "window": "",
+   "publication_title": "Living Standards Outlook 2026",
+   "url": "https://www.resolutionfoundation.org/publications/living-standards-outlook-2026/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2028,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "Universal Credit standard allowance",
+    "component": "total April uprating",
+    "country": "UK",
+    "fy": "2028-29",
+    "geography": "UK",
+    "value_verbatim": "2.9%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.028999999999999998,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.028999999999999998,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.028902384922250723,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 2.89% in April 2028."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.996633962836232,
+    "delta": -9.761507774927458e-05
+   },
+   "results": [
+    {
+     "value": 0.028902384922250723,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 2.89% in April 2028."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "c2a86001bca559feb249",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "UC uprating total (Figure 8)",
+   "name": "Living Standards Outlook 2026",
+   "window": "",
+   "publication_title": "Living Standards Outlook 2026",
+   "url": "https://www.resolutionfoundation.org/publications/living-standards-outlook-2026/",
+   "metric": "benefit_uprating_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2029,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "benefit": "universal_credit_standard_allowance",
+    "benefit_verbatim": "Universal Credit standard allowance",
+    "component": "total April uprating",
+    "country": "UK",
+    "fy": "2029-30",
+    "geography": "UK",
+    "value_verbatim": "2.9%"
+   },
+   "measure": null,
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.028999999999999998,
+   "sign_relative_to_pe": "same",
+   "sign_basis": "level",
+   "external_value_pe_sign": 0.028999999999999998,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.027845194470407453,
+    "status": "comparable",
+    "engine_version": "2.147.2",
+    "data_bundle": "parameter-tree",
+    "release": "parameter-tree",
+    "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+    "policyengine_variables": [
+     "uc_standard_allowance"
+    ],
+    "computed_at": "2026-10-22T19:33:16+00:00",
+    "annotations": [
+     "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+     "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+     "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 2.78% in April 2029."
+    ],
+    "baseline": "current_law",
+    "status_effective": "comparable",
+    "ratio": 0.9601791196692225,
+    "delta": -0.0011548055295925452
+   },
+   "results": [
+    {
+     "value": 0.027845194470407453,
+     "status": "comparable",
+     "engine_version": "2.147.2",
+     "data_bundle": "parameter-tree",
+     "release": "parameter-tree",
+     "construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: each rate read at 1 June of each year (inside the tax year from April), the April uprating taken as the year-on-year rise.",
+     "policyengine_variables": [
+      "uc_standard_allowance"
+     ],
+     "computed_at": "2026-10-22T19:33:16+00:00",
+     "annotations": [
+      "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "Measured: gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD rises 2.78% in April 2029."
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    }
+   ],
    "diagnosis": null
   },
   {

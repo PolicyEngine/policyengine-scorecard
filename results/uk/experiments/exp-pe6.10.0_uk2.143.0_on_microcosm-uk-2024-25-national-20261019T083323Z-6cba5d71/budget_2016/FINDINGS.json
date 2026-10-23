@@ -1,0 +1,191 @@
+{
+ "event": "budget_2016",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2016.",
+ "obr_forecast_vintage": "March 2016",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -241008676.55415726,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -374114334.47098976,
+   "experiment_id": "b2016_fuel_duty_freeze_2016",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -241008676.55415726
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2016__fuel_duty_freeze_in_april_2016",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -450000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.5355748367870161,
+   "ratio_scaled": 0.6442112860897234,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8313651877133106,
+     "obr_event_forecast_gbp": 29300000000.0,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze in April 2016",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -236210897.62786674,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -372315482.8957685,
+   "experiment_id": "b2016_fuel_duty_freeze_2016",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "fuel_duty": -236210897.62786674
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2016__fuel_duty_freeze_in_april_2016",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -450000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.5249131058397039,
+   "ratio_scaled": 0.6344374824025116,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8273677397683745,
+     "obr_event_forecast_gbp": 29300000000.0,
+     "obr_newest_forecast_gbp": 24241874775.213375,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze in April 2016",
+   "year": 2025
+  },
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_3x",
+     "diagnosis": {
+      "code": "magnitude_outside_3x",
+      "event": "budget_2016",
+      "evidence": "pe-uk 2.143.0 variables/gov/hmrc/income_tax/allowances/{trading_allowance_deduction,property_allowance_deduction_if_used}.py; microcosm_uk_2024_25.h5 has no self_employment_gross_receipts column",
+      "experiment_id": "b2016_trading_and_property_allowances",
+      "status": "expected",
+      "summary": "Without gross receipts, pe-uk relieves only profits within the \u00a31,000 allowance and treats a larger profit as already reflecting the better of expenses and the allowance (trading_allowance_deduction, property_allowance_deduction_if_used). The Microcosm UK 2024-25 cut carries no self_employment_gross_receipts, so the partial-relief leg the OBR costed has nothing to act on, and most fully relieved profits fall within the personal allowance anyway. The removal is 0.20 of the scaled OBR costing.",
+      "years": null
+     },
+     "severity": "check"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -48693746.02655029,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -237894545.14421487,
+   "experiment_id": "b2016_trading_and_property_allowances",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -48693746.02655029,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2016__sharing_economy_1_000_allowance_for_both_trading_and_property_income",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -175000000.0,
+   "obr_unmapped_gbp": -25000000.0,
+   "ratio_raw": 0.2782499772945731,
+   "ratio_scaled": 0.2046862654922646,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.3658144828558478,
+     "obr_event_forecast_gbp": 218800000000.0,
+     "pe_base_gbp": 298840208848.8595
+    },
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1412166117441456,
+     "obr_event_forecast_gbp": 151100000000.0,
+     "pe_base_gbp": 172437830034.5404
+    }
+   ],
+   "status": "computed",
+   "title": "Sharing Economy: \u00a31,000 allowance for both trading and property income",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_3x",
+     "diagnosis": {
+      "code": "magnitude_outside_3x",
+      "event": "budget_2016",
+      "evidence": "pe-uk 2.143.0 variables/gov/hmrc/income_tax/allowances/{trading_allowance_deduction,property_allowance_deduction_if_used}.py; microcosm_uk_2024_25.h5 has no self_employment_gross_receipts column",
+      "experiment_id": "b2016_trading_and_property_allowances",
+      "status": "expected",
+      "summary": "Without gross receipts, pe-uk relieves only profits within the \u00a31,000 allowance and treats a larger profit as already reflecting the better of expenses and the allowance (trading_allowance_deduction, property_allowance_deduction_if_used). The Microcosm UK 2024-25 cut carries no self_employment_gross_receipts, so the partial-relief leg the OBR costed has nothing to act on, and most fully relieved profits fall within the personal allowance anyway. The removal is 0.20 of the scaled OBR costing.",
+      "years": null
+     },
+     "severity": "check"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": -49342615.537475586,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -259127061.0392774,
+   "experiment_id": "b2016_trading_and_property_allowances",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -49342615.537475586,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2016__sharing_economy_1_000_allowance_for_both_trading_and_property_income",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -175000000.0,
+   "obr_unmapped_gbp": -25000000.0,
+   "ratio_raw": 0.28195780307128904,
+   "ratio_scaled": 0.19041861293674936,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.4826152156485073,
+     "obr_event_forecast_gbp": 218800000000.0,
+     "pe_base_gbp": 324396209183.8934
+    },
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.4164948758062286,
+     "obr_event_forecast_gbp": 151100000000.0,
+     "pe_base_gbp": 214032375734.32114
+    }
+   ],
+   "status": "computed",
+   "title": "Sharing Economy: \u00a31,000 allowance for both trading and property income",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}
