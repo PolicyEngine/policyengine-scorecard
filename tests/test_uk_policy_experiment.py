@@ -83,15 +83,15 @@ def test_a_spec_never_edits_or_replaces_its_registry():
         (lambda e: e.update(mirror_of="no colon"), "mirror_of"),
         (lambda e: e.update(sources=[]), "sources"),
         (
-            lambda e: e["assumes_modern"].pop(sorted(e["assumes_modern"])[0]),
+            lambda e: e["assumes_modern"].pop(min(e["assumes_modern"])),
             "no current law stated",
         ),
         (
-            lambda e: e.update(set_outright={sorted(e["assumes_modern"])[0]: "why"}),
+            lambda e: e.update(set_outright={min(e["assumes_modern"]): "why"}),
             "both assumed and set outright",
         ),
         (
-            lambda e: e.update(set_outright={sorted(e["reform"])[0]: " "}),
+            lambda e: e.update(set_outright={min(e["reform"]): " "}),
             "set_outright must map paths to reasons",
         ),
         (
@@ -476,13 +476,18 @@ paths = st.lists(
 )
 
 
-@given(parts=paths, absolute=st.booleans())
+@given(parts=paths, where=st.sampled_from(["root", "cased", "elsewhere"]))
 @settings(max_examples=300)
 def test_no_output_directory_resolves_into_a_replay_root(
-    parts, absolute, tmp_path_factory
+    parts, where, tmp_path_factory
 ):
     root = tmp_path_factory.mktemp("repo")
-    requested = (root if absolute else Path("/elsewhere")).joinpath(*parts)
+    base = {
+        "root": root,
+        "cased": root.parent / root.name.upper(),
+        "elsewhere": Path("/elsewhere"),
+    }[where]
+    requested = base.joinpath(*parts)
     try:
         chosen = ex.contained_output_dir(
             "exp-a", "autumn_statement_2022", requested, root=root
@@ -496,7 +501,7 @@ def test_no_output_directory_resolves_into_a_replay_root(
         assert all(
             folded[i : i + len(segments)] != segments for i in range(len(folded))
         )
-    if chosen.is_relative_to(root.resolve()):
+    if ex._within_casefolded(chosen, root.resolve()):
         assert chosen.is_relative_to(
             (root / ex.RESULT_ROOT / "exp-a" / "autumn_statement_2022").resolve()
         ) or chosen.is_relative_to((root / ".venv-replay-checks").resolve())
@@ -535,6 +540,50 @@ def test_the_grid_is_the_planned_years_the_data_covers():
     carried = {"carried_from_fy": "2019-20", "years": [2026, 2024]}
     assert ex.planned_years(carried, registry) == [2024, 2026]
     assert ex.experiment_grid_years(carried, registry, population) == [2024]
+
+
+def test_a_cased_spelling_of_the_checkout_is_still_the_repository(tmp_path):
+    root = tmp_path / "repo"
+    root.mkdir()
+    cased = root.parent / "REPO" / "data" / "uk" / "events" / "x"
+    with pytest.raises(ex.ExperimentError, match="inside the repository"):
+        ex.contained_output_dir("exp-a", "autumn_statement_2022", cased, root=root)
+
+
+def test_two_brackets_of_one_scale_may_not_share_a_threshold():
+    # A zero-width band is not empty: policyengine adds the rates of brackets
+    # that share a threshold (a £1m additional dwelling taxed at 13% above
+    # £250,000 instead of 8%).
+    spec, registry = spec_and_registry("autumn_statement_2022")
+    broken = copy.deepcopy(spec)
+    experiment = next(
+        e
+        for e in broken["experiments"]
+        if e["experiment_id"] == "as2022_sdlt_end_growth_plan_relief"
+    )
+    scale = "gov.hmrc.stamp_duty.residential.purchase.additional.rate"
+    window = "2025-01-01.2035-12-31"
+    experiment["reform"][f"{scale}[1].threshold"] = {window: 250_000.0}
+    experiment["reform"][f"{scale}[2].threshold"] = {window: 250_000.0}
+    experiment["assumes_modern"][f"{scale}[1].threshold"] = {window: 125_000.0}
+    experiment["assumes_modern"][f"{scale}[2].threshold"] = {window: 250_000.0}
+    with pytest.raises(ex.ExperimentError, match="share the threshold"):
+        ex.validate_spec(broken, registry, ex.load_bases())
+
+
+def test_a_crash_keeps_modern_law_differs():
+    crashed = {"status": "crashed"}
+    codes = ex.classify(
+        crashed,
+        obr=obr(1e9),
+        scales=ONE,
+        magnitude_check="scaled",
+        assumption_failures=[{"path": "gov.a"}],
+    )["codes"]
+    assert codes == ["crash", "modern_law_differs"]
+    assert ex.classify(crashed, obr=obr(1e9), scales=ONE, magnitude_check="scaled")[
+        "codes"
+    ] == ["crash"]
 
 
 def test_another_checkouts_replay_root_is_refused_too(tmp_path):

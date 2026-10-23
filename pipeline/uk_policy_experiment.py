@@ -144,6 +144,15 @@ def output_root(population_id: str, *, root: Path = ROOT) -> Path:
     return root / RESULT_ROOT / population_id
 
 
+BRACKET_THRESHOLD = re.compile(r"(?P<scale>.+)\[(?P<index>\d+)\]\.threshold")
+
+
+def _within_casefolded(child: Path, parent: Path) -> bool:
+    child_parts = tuple(part.casefold() for part in child.parts)
+    parent_parts = tuple(part.casefold() for part in parent.parts)
+    return child_parts[: len(parent_parts)] == parent_parts
+
+
 def contained_output_dir(
     population_id: str, event: str, requested: Path | None = None, *, root: Path = ROOT
 ) -> Path:
@@ -164,8 +173,11 @@ def contained_output_dir(
         if any(parts[i : i + len(segments)] == segments for i in range(len(parts))):
             raise ExperimentError(f"{chosen} is inside a replay root ({replay})")
     checks = (repository / ".venv-replay-checks").resolve()
+    # Inside the repository is tested case-insensitively too (a checkout path
+    # spelled /REPO/ on macOS is the same directory); the two allowed places
+    # must match exactly, so a cased spelling of them is refused.
     if (
-        chosen.is_relative_to(repository)
+        _within_casefolded(chosen, repository)
         and not chosen.is_relative_to(canonical)
         and not chosen.is_relative_to(checks)
     ):
@@ -492,6 +504,34 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
                 annual = None  # reported above
             if isinstance(reform, dict) and annual is not None:
                 from pipeline import uk_construction_revisions as revisions
+
+                # policyengine adds the rates of brackets that share a
+                # threshold, so a "zero-width" band is not empty: two brackets
+                # of one scale set to the same threshold are refused.
+                brackets: dict[str, list[tuple[str, str]]] = {}
+                for path in reform:
+                    found = BRACKET_THRESHOLD.fullmatch(path)
+                    if found:
+                        brackets.setdefault(found["scale"], []).append(
+                            (found["index"], path)
+                        )
+                for scale_path, members in sorted(brackets.items()):
+                    for year in planned_years(experiment, registry):
+                        taken: dict = {}
+                        for index, path in sorted(members):
+                            sets, value = revisions.window_value(
+                                annual, path, f"{year}-01-01"
+                            )
+                            if not sets:
+                                continue
+                            need(
+                                value not in taken,
+                                where + f"{scale_path} brackets {taken.get(value)} and "
+                                f"{index} share the threshold {value} in {year}; "
+                                "policyengine adds the rates of brackets that "
+                                "share a threshold",
+                            )
+                            taken.setdefault(value, index)
 
                 for path in sorted(set(reform) - set(outright)):
                     for year in planned_years(experiment, registry):
@@ -966,9 +1006,10 @@ def classify(
     and its group scales (one per head group, in the experiment's order).
     ``assumption_failures`` (modern_assumption_failures) adds
     modern_law_differs alongside the other codes."""
+    differs = ["modern_law_differs"] if assumption_failures else []
     if artifact.get("status") == "crashed":
-        return {"codes": ["crash"], "ratio_raw": None, "ratio_scaled": None}
-    codes: list[str] = ["modern_law_differs"] if assumption_failures else []
+        return {"codes": ["crash", *differs], "ratio_raw": None, "ratio_scaled": None}
+    codes: list[str] = list(differs)
     parameters = artifact["parameters"].values()
     if any(row["reached_simulation"] is False for row in parameters):
         codes.append("reform_not_applied")

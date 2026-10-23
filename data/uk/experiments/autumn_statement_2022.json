@@ -236,7 +236,7 @@
     }
    },
    "sources": [
-    "Finance Act 2023 s. 4 (https://www.legislation.gov.uk/ukpga/2023/1/section/4/enacted)",
+    "Finance Act 2023 s. 6(4) (https://www.legislation.gov.uk/ukpga/2023/1/section/6/enacted)",
     "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,dividends}.yaml"
    ]
   },
@@ -270,7 +270,7 @@
     }
    },
    "sources": [
-    "Finance Act 2023 s. 5 (https://www.legislation.gov.uk/ukpga/2023/1/section/5/enacted)",
+    "Finance Act 2023 s. 7(3)-(4) (https://www.legislation.gov.uk/ukpga/2023/1/section/7/enacted)",
     "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/dividend_allowance.yaml"
    ]
   },
@@ -390,8 +390,14 @@
    ],
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
-   "note": "2024-25 without the Growth Plan relief: the 2% band from \u00a3125,000, first-time buyers' relief to \u00a3300,000 on prices to \u00a3500,000. The relief ended on 31 March 2025, so later years have nothing to move.",
+   "note": "2024-25 without the Growth Plan relief: the 2% band from \u00a3125,000, first-time buyers' relief to \u00a3300,000 on prices to \u00a3500,000, the additional-dwellings 5% band from \u00a3125,000 and the lease-rent nil-rate band to \u00a3125,000. The relief ended on 31 March 2025, so later years have nothing to move.",
    "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-01-01.2024-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].threshold": {
+     "2024-01-01.2024-12-31": 125000.0
+    },
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
      "2024-01-01.2024-12-31": 500000.0
     },
@@ -403,21 +409,33 @@
     },
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
      "2024-01-01.2024-12-31": 125000.0
+    },
+    "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
+     "2024-01-01.2024-12-31": 125000.0
     }
    },
    "set_outright": {
-    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": "the whole 2024-25 schedule without the Growth Plan relief, which holds whatever 2024-25 current law has",
-    "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": "the whole 2024-25 schedule without the Growth Plan relief, which holds whatever 2024-25 current law has",
-    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": "the whole 2024-25 schedule without the Growth Plan relief, which holds whatever 2024-25 current law has",
-    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": "the whole 2024-25 schedule without the Growth Plan relief, which holds whatever 2024-25 current law has"
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].threshold": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has",
+    "gov.hmrc.stamp_duty.residential.rent[1].threshold": "the 2024-25 schedules without the Growth Plan relief (main residential, additional dwellings and lease rent), which hold whatever 2024-25 current law has"
    },
    "sources": [
-    "Stamp Duty Land Tax (Reduction) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/58)",
-    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/*"
+    "Stamp Duty Land Tax (Temporary Relief) Act 2023 s. 1 (https://www.legislation.gov.uk/ukpga/2023/2/section/1/enacted)",
+    "pe-uk 2.132.6 and 2.143.0 parameters gov/hmrc/stamp_duty/residential/{purchase/main/*,purchase/additional/rate.yaml,rent.yaml}"
    ]
   },
   {
    "assumes_modern": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2025-01-01.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2025-01-01.2035-12-31": 0.07
+    },
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
      "2025-01-01.2027-12-31": 500000.0
     },
@@ -428,6 +446,9 @@
      "2025-01-01.2027-12-31": 0.02
     },
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
+     "2025-01-01.2027-12-31": 125000.0
+    },
+    "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
      "2025-01-01.2027-12-31": 125000.0
     }
    },
@@ -448,8 +469,14 @@
    ],
    "magnitude_check": "scaled",
    "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
-   "note": "The pre-measure world kept the Growth Plan relief: nil rate to \u00a3250,000 (the 2% band removed), first-time buyers' relief to \u00a3425,000 on prices to \u00a3625,000, from 2025-26.",
+   "note": "The pre-measure world kept the Growth Plan relief from 2025-26: nil rate to \u00a3250,000 (the 2% band removed), first-time buyers' relief to \u00a3425,000 on prices to \u00a3625,000, the additional-dwellings first band to \u00a3250,000, and the lease-rent nil-rate band to \u00a3250,000.",
    "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2025-01-01.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2025-01-01.2035-12-31": 0.05
+    },
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
      "2025-01-01.2035-12-31": 625000.0
     },
@@ -461,11 +488,14 @@
     },
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": {
      "2025-01-01.2035-12-31": 125000.0
+    },
+    "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
+     "2025-01-01.2035-12-31": 250000.0
     }
    },
    "sources": [
-    "Stamp Duty Land Tax (Reduction) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/58)",
-    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/*"
+    "Stamp Duty Land Tax (Temporary Relief) Act 2023 s. 1 (https://www.legislation.gov.uk/ukpga/2023/2/section/1/enacted)",
+    "pe-uk 2.132.6 and 2.143.0 parameters gov/hmrc/stamp_duty/residential/{purchase/main/*,purchase/additional/rate.yaml,rent.yaml}"
    ]
   }
  ],

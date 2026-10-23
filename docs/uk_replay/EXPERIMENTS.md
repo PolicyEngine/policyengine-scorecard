@@ -32,7 +32,7 @@ already fixed there.
 
 | Finding | Status | Experiment that caught it |
 |---|---|---|
-| **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Present on main. | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, handed to the UK hub | `as2013_marriage_allowance` (`sign_mismatch`) |
+| **Setting the statutory Marriage Allowance rate switches on the CPS expanded Marriage Allowance reform.** The reform keeps the 10% rate and extends it to higher- and additional-rate taxpayers, so "remove the allowance" ran as "extend it": income tax fell £0.23bn where it should rise. A synthetic-couple reproduction on 2.143.0, with the rate set to 0: the basic-rate couple's allowance is unchanged, and the higher-rate couple gains £1,260 of allowance and £504 less tax. Fixed upstream in policyengine-uk 2.148.2 (#2553, merged 23 October); on 2.148.2 the same couples behave as the statute says (the basic-rate couple pays £252 more, the higher-rate couple is unchanged). | **filed: [PolicyEngine/policyengine-uk#2551](https://github.com/PolicyEngine/policyengine-uk/issues/2551)**, fixed by [PolicyEngine/policyengine-uk#2553](https://github.com/PolicyEngine/policyengine-uk/pull/2553) | `as2013_marriage_allowance` (`sign_mismatch`) |
 | pe-uk 2.132.6's dividend bands keep £37,500 and £150,000 until April 2026 | fixed upstream in 2.139.4 (83de1ef1d); the model swap adds +£0.11bn to the additional-rate-threshold experiment in 2024-25 and 2025-26, and the dividend leg of the allowance freezes starts from £37,500 instead of £37,700 | `as2022_additional_rate_threshold_125140` (model change), `b2018_personal_allowance_12500_hrt_50000` and `sb2021_personal_allowance_hrt_freeze` (`modern_law_differs` on 2.132.6) |
 | pe-uk 2.132.6 has no Growth Plan SDLT relief (23 September 2022 to 31 March 2025) | fixed upstream in 2.141.8 (4044d6ccf); the 2024-25 experiment goes from 0 (2.132.6) to −£1.234bn (2.143.0) against the OBR's −£1.048bn | `as2022_sdlt_nil_rate_bands_2024` (`construction_noop`, then model change) |
 | pe-uk 2.132.6's additional-dwellings SDLT scale lacks Autumn Budget 2024's further 2pp (from 31 October 2024), so the surcharge reversal removes 1pp, not 3pp | fixed upstream in 2.141.8 (4044d6ccf, the same commit as the Growth Plan relief); caught by the first review, now flagged `modern_law_differs` | `as2015_sdlt_additional_dwellings_surcharge` |
@@ -174,7 +174,8 @@ two claims too broad:
 - **Undeclared current law.** Only four experiments stated the current law
   they were written against; the others assumed it silently, so an engine
   one uprating ahead would have passed unflagged. Every reform value now
-  states it (204 path-years over 50 parameters, all equal on both engines),
+  states it (204 declarations covering 144 distinct path-years over 50
+  parameters, all equal on both engines),
   or is set outright (Budget 2017's zero first-time-buyer limit, Autumn
   Statement 2022's 2024-25 pre-relief schedule). The 17 events whose specs
   changed were rerun on both populations.
@@ -182,6 +183,32 @@ two claims too broad:
   threshold (£11,596 in 2024-25, not £11,607), the threshold's hold from
   April 2026 is stated as a convention, and containment compares replay-root
   names case-insensitively (macOS).
+
+## Corrections from the third review
+
+A GPT-6.1 Sol review of `575f4cc8` confirmed the second round's fixes and
+found one construction wrong:
+
+- **The Growth Plan SDLT relief has three legs, and the constructions set one.**
+  Stamp Duty Land Tax (Temporary Relief) Act 2023 s. 1 changes the main
+  residential scale, the additional-dwellings scale (first band to
+  £250,000, s. 1(3)) and the nil-rate band on residential lease rent
+  (£250,000, s. 1(4)). Both constructions now set all three. On a £200,000
+  additional dwelling (2.143.0), removing the relief in 2024-25 moves the tax
+  from £6,000 to £7,500, and keeping it in 2025-26 moves it from £11,500 to
+  £10,000, and on £1m by £2,500 each way (`sdlt_growth_plan_check.py` in
+  the evidence folder). The first correction set the additional-dwellings
+  band from £125,000 to zero width; policyengine adds the rates of brackets
+  that share a threshold, so that taxed everything above £250,000 at 13%.
+  `validate_spec` now refuses two brackets of one scale at the same
+  threshold. Neither
+  engine has the lease-rent leg itself: both keep £125,000 through 2022-25,
+  recorded on policyengine-uk#2332. Autumn Statement 2022 was rerun on both
+  populations.
+- Smaller: the SDLT, additional-rate-threshold and dividend-allowance
+  citations are corrected (the Temporary Relief Act 2023; Finance Act 2023
+  s. 6(4) and s. 7(3)-(4)); containment treats a cased spelling of the
+  checkout as the repository; a crash keeps `modern_law_differs`.
 
 ## Harness fixes the runs forced
 

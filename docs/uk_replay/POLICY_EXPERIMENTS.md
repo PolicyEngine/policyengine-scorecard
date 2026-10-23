@@ -80,10 +80,14 @@ unverified rather than refused (`provenance/manifest.py`,
 
 - **The registry is not edited.** The spec binds it by SHA-256 and reads its
   source rows for the OBR side; its `execution` block keeps refusing replays.
-- **Every output carries the label.** Each artifact, manifest and findings
-  file has `kind`, `label: modern_population_sensitivity`, `is_replay: false`
-  and the sentence "Policy experiment on the modern population: not a replay
-  or a costing of <event>."
+- **The outputs carry the label.** Every experiment-year artifact,
+  `EXPERIMENT_MANIFEST.json`, `FINDINGS.json` and `SUMMARY.json` has `kind`,
+  `label: modern_population_sensitivity`, `is_replay: false` and the sentence
+  "Policy experiment on the modern population: not a replay or a costing of
+  <event>." Specs carry `kind`, `label` and the sentence; `MODERN_LAW_<year>`
+  files carry `kind`, `label` and `is_replay`; `RUN_LOG_<year>` files are
+  run timings and carry none. All of them live only under the experiment
+  namespaces.
 - **Separate code path.** `pipeline/uk_policy_experiment.py` never writes
   under `results/uk/events`, `results/uk/replays` or the variant index; a test
   checks the containment for any output path. Tests also check that the
@@ -247,3 +251,6 @@ The tests state and check these for every input:
    experiment can run, states the current law it assumes or is set outright
    with a reason; and wherever a model swap and its certified pair differ on
    such a value, the experiment has declared it.
+9. **No shared thresholds.** A reform never sets two brackets of one scale to
+   the same threshold in a year: policyengine adds the rates of brackets that
+   share a threshold, so a "zero-width" band would tax as the sum of both.

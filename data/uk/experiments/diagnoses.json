@@ -95,9 +95,10 @@
    "event": "autumn_2013",
    "evidence": "Synthetic married couples, 2025, policyengine-uk 2.143.0, statutory max = 0: basic-rate couple's allowance stays \u00a31,260 with tax unchanged; higher-rate couple's allowance becomes \u00a31,260 and tax falls \u00a3504.",
    "experiment_id": "as2013_marriage_allowance",
+   "fixed_in": "policyengine-uk 2.148.2 (#2553, 52b3bb63d, 'Stop the statutory Marriage Allowance rate from switching on the CPS expanded Marriage Allowance')",
    "issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2551",
    "status": "model_bug",
-   "summary": "Setting the statutory Marriage Allowance rate to 0 switches on the CPS expanded Marriage Allowance reform (reforms/cps/marriage_tax_reforms.py: 'rate != original_rate'), which keeps the 10% rate and extends eligibility to higher- and additional-rate taxpayers. So the reversal extends the allowance instead of removing it, and income tax falls. Present in 2.132.6, 2.143.0 and main.",
+   "summary": "Setting the statutory Marriage Allowance rate to 0 switches on the CPS expanded Marriage Allowance reform (reforms/cps/marriage_tax_reforms.py: 'rate != original_rate'), which keeps the 10% rate and extends eligibility to higher- and additional-rate taxpayers. So the reversal extends the allowance instead of removing it, and income tax falls. Present in 2.132.6 and 2.143.0; fixed in policyengine-uk 2.148.2 (#2553).",
    "years": null
   },
   {

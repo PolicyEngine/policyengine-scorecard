@@ -373,6 +373,11 @@ CURRENT_LAW = {
         2025: 12570.0,
         2026: 12570.0,
     },
+    "gov.hmrc.stamp_duty.residential.rent[1].threshold": {
+        2025: 125000.0,
+        2026: 125000.0,
+        2027: 125000.0,
+    },
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
         2025: 500000.0,
         2026: 500000.0,
@@ -397,21 +402,47 @@ CURRENT_LAW = {
 }
 
 
+# The Growth Plan relief (Stamp Duty Land Tax (Temporary Relief) Act 2023
+# s. 1, 23 September 2022 to 31 March 2025) changes three schedules: the main
+# residential scale and first-time buyers' relief, the additional-dwellings
+# scale, whose first band runs to £250,000 (s. 1(3)), and the nil-rate band on
+# residential lease rent, £250,000 (s. 1(4)).
+SDLT_ADDITIONAL = "gov.hmrc.stamp_duty.residential.purchase.additional.rate"
+SDLT_RENT = "gov.hmrc.stamp_duty.residential.rent"
 SDLT_PRE_2022 = {
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": 0.02,
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": 125_000.0,
     "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": 300_000.0,
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": 500_000.0,
+    # Additional dwellings without the relief in 2024-25, before Autumn
+    # Budget 2024's +2pp: 3% to £125,000, 5% to £250,000, then 8%, 13%, 15%.
+    f"{SDLT_ADDITIONAL}[1].rate": 0.05,
+    f"{SDLT_ADDITIONAL}[1].threshold": 125_000.0,
+    f"{SDLT_RENT}[1].threshold": 125_000.0,
 }
 SDLT_GROWTH_PLAN = {
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].rate": 0.0,
     "gov.hmrc.stamp_duty.residential.purchase.main.subsequent[1].threshold": 125_000.0,
     "gov.hmrc.stamp_duty.residential.purchase.main.first.rate[1].threshold": 425_000.0,
     "gov.hmrc.stamp_duty.residential.purchase.main.first.max": 625_000.0,
+    # Additional dwellings with the relief kept: the first band runs to
+    # £250,000. The band from £125,000 takes the first band's rate (5% after
+    # Autumn Budget 2024), which merges the two. A zero-width band would not
+    # do: brackets that share a threshold add their rates.
+    f"{SDLT_ADDITIONAL}[0].rate": 0.05,
+    f"{SDLT_ADDITIONAL}[1].rate": 0.05,
+    f"{SDLT_RENT}[1].threshold": 250_000.0,
+}
+# The additional-dwellings rates SDLT_GROWTH_PLAN is written against: Autumn
+# Budget 2024's +2pp from 31 October 2024 (pe-uk's parameter cites Finance Act
+# 2025 ss. 50-51), which pe-uk 2.132.6 lacks.
+SDLT_GROWTH_PLAN_ASSUMES = {
+    f"{SDLT_ADDITIONAL}[0].rate": {window(2025): 0.05},
+    f"{SDLT_ADDITIONAL}[1].rate": {window(2025): 0.07},
 }
 SDLT_SOURCES = [
-    "Stamp Duty Land Tax (Reduction) Act 2022 (https://www.legislation.gov.uk/ukpga/2022/58)",
-    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/*",
+    "Stamp Duty Land Tax (Temporary Relief) Act 2023 s. 1 (https://www.legislation.gov.uk/ukpga/2023/2/section/1/enacted)",
+    "pe-uk 2.132.6 and 2.143.0 parameters gov/hmrc/stamp_duty/residential/{purchase/main/*,purchase/additional/rate.yaml,rent.yaml}",
 ]
 
 
@@ -890,7 +921,7 @@ def experiments() -> dict[str, dict]:
                         "dividend income. Scottish thresholds are devolved and unchanged."
                     ),
                     "sources": [
-                        "Finance Act 2023 s. 4 (https://www.legislation.gov.uk/ukpga/2023/1/section/4/enacted)",
+                        "Finance Act 2023 s. 6(4) (https://www.legislation.gov.uk/ukpga/2023/1/section/6/enacted)",
                         "pe-uk 2.132.6 parameters gov/hmrc/income_tax/rates/{uk,dividends}.yaml",
                     ],
                 },
@@ -907,7 +938,7 @@ def experiments() -> dict[str, dict]:
                     "magnitude_check": "scaled",
                     "note": "Restores the £2,000 dividend allowance (modern law: £500).",
                     "sources": [
-                        "Finance Act 2023 s. 5 (https://www.legislation.gov.uk/ukpga/2023/1/section/5/enacted)",
+                        "Finance Act 2023 s. 7(3)-(4) (https://www.legislation.gov.uk/ukpga/2023/1/section/7/enacted)",
                         "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/dividend_allowance.yaml",
                     ],
                 },
@@ -977,8 +1008,9 @@ def experiments() -> dict[str, dict]:
                     },
                     "set_outright": {
                         path: (
-                            "the whole 2024-25 schedule without the Growth Plan "
-                            "relief, which holds whatever 2024-25 current law has"
+                            "the 2024-25 schedules without the Growth Plan relief "
+                            "(main residential, additional dwellings and lease "
+                            "rent), which hold whatever 2024-25 current law has"
                         )
                         for path in SDLT_PRE_2022
                     },
@@ -986,8 +1018,10 @@ def experiments() -> dict[str, dict]:
                     "magnitude_check": "scaled",
                     "note": (
                         "2024-25 without the Growth Plan relief: the 2% band from £125,000, "
-                        "first-time buyers' relief to £300,000 on prices to £500,000. The "
-                        "relief ended on 31 March 2025, so later years have nothing to move."
+                        "first-time buyers' relief to £300,000 on prices to £500,000, the "
+                        "additional-dwellings 5% band from £125,000 and the lease-rent "
+                        "nil-rate band to £125,000. The relief ended on 31 March 2025, so "
+                        "later years have nothing to move."
                     ),
                     "sources": SDLT_SOURCES,
                 },
@@ -999,12 +1033,14 @@ def experiments() -> dict[str, dict]:
                         path: {window(2025): value}
                         for path, value in SDLT_GROWTH_PLAN.items()
                     },
+                    "assumes_modern": dict(SDLT_GROWTH_PLAN_ASSUMES),
                     "heads": [stamp_duty_group()],
                     "magnitude_check": "scaled",
                     "note": (
-                        "The pre-measure world kept the Growth Plan relief: nil rate to "
-                        "£250,000 (the 2% band removed), first-time buyers' relief to "
-                        "£425,000 on prices to £625,000, from 2025-26."
+                        "The pre-measure world kept the Growth Plan relief from 2025-26: nil "
+                        "rate to £250,000 (the 2% band removed), first-time buyers' relief "
+                        "to £425,000 on prices to £625,000, the additional-dwellings first "
+                        "band to £250,000, and the lease-rent nil-rate band to £250,000."
                     ),
                     "sources": SDLT_SOURCES,
                 },

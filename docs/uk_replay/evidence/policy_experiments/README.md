@@ -73,3 +73,37 @@ Output on 22 October 2026:
 The first is the savings starting-rate taper (35f992c6a, #1799). The second is
 relieved pension contributions in adjusted net income (1dbc88172). Both are in
 `data/uk/experiments/diagnoses.json`.
+
+## The Growth Plan SDLT constructions
+
+`sdlt_growth_plan_check.py` applies Autumn Statement 2022's two SDLT
+constructions, read from the committed spec. The households buy an additional
+dwelling at £200,000 or £1,000,000 (either side of the £250,000 band), and
+their lease rent takes cumulative rent from £150,000 to £200,000:
+
+    uvx --python 3.12 --with policyengine-uk==<version> --with policyengine-core==3.33.3 python -I sdlt_growth_plan_check.py data/uk/experiments/autumn_statement_2022.json
+
+Output on 23 October 2026, modern → counterfactual:
+
+| Experiment, year | 2.143.0 | 2.132.6 |
+|---|---|---|
+| Remove the relief, 2024-25: £200,000 / £1m additional dwelling | £6,000 → £7,500 / £71,250 → £73,750 | no change (2.132.6 has no relief) |
+| Remove the relief, 2024-25: lease | £500 → £500 | £500 → £500 |
+| Keep the relief, 2025-26: £200,000 / £1m additional dwelling | £11,500 → £10,000 / £93,750 → £91,250 | £7,500 → £10,000 / £73,750 → £76,250 |
+| Keep the relief, 2025-26: lease | £500 → £0 | £500 → £0 |
+
+On 2.143.0 each leg moves by what the statute gives: £1,500 or £2,500 on the
+additional dwelling (2% on the band from £125,000), and the lease band. On
+2.132.6, keeping the relief raises the additional-dwelling tax: the
+construction sets the 5% first band of current law (after Autumn Budget
+2024's +2pp), which 2.132.6 lacks (it has 3%), so the experiment is flagged
+`modern_law_differs`. The 2024-25 lease figure is £500 on both engines
+because neither has the relief's £250,000 lease-rent band (recorded on
+policyengine-uk#2332).
+
+## Marriage Allowance after the fix
+
+On policyengine-uk 2.148.2 (#2553), `marriage_allowance_cps_trigger.py`
+gives: the basic-rate couple's allowance £0 and income tax +£252, the
+higher-rate couple's allowance £0 and income tax unchanged, with the
+statutory rate set to 0 (23 October 2026).
