@@ -528,15 +528,23 @@ def gib(value: int) -> str:
     return f"{value / 2**30:.1f} GiB"
 
 
-def memory_total_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
-    """This machine's MemTotal; None where /proc/meminfo is absent."""
+def meminfo_bytes(field: str, meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    """One /proc/meminfo field in bytes; None where there is no such file."""
     try:
         for line in meminfo.read_text().splitlines():
-            if line.startswith("MemTotal:"):
+            if line.startswith(f"{field}:"):
                 return int(line.split()[1]) * 1024
     except (OSError, ValueError, IndexError):
         pass
     return None
+
+
+def memory_total_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    return meminfo_bytes("MemTotal", meminfo)
+
+
+def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    return meminfo_bytes("MemAvailable", meminfo)
 
 
 def simulation_workers(
@@ -592,16 +600,6 @@ def process_tree_rss(root_pid: int, proc: Path = Path("/proc")) -> int | None:
         tree |= frontier
         frontier = {pid for pid, ppid in parents.items() if ppid in frontier} - tree
     return sum(rss.get(pid, 0) for pid in tree)
-
-
-def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
-    try:
-        for line in meminfo.read_text().splitlines():
-            if line.startswith("MemAvailable:"):
-                return int(line.split()[1]) * 1024
-    except (OSError, ValueError, IndexError):
-        pass
-    return None
 
 
 def log_free(label: str) -> None:

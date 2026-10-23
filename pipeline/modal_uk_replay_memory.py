@@ -51,6 +51,7 @@ MEMORY_MIB = 32768
 TIMEOUT_SECONDS = 3 * 60 * 60
 GUARD_MARGIN_SECONDS = 10 * 60
 SAMPLE_SECONDS = 0.2
+SLOT_POLL_SECONDS = 3
 # The qualifier runs in a checkout of the whole repository; the web app is
 # the one part the pipeline never reads.
 SNAPSHOT_EXCLUDED = ("app/",)
@@ -515,9 +516,10 @@ def main(argv: list[str] | None = None) -> int:
                     clock=clock.remote,
                     minimum=TIMEOUT_SECONDS + GUARD_MARGIN_SECONDS + 60,
                 )
-                # One slot per simulation the run holds at once.
+                # One slot per simulation the run holds at once. Other
+                # holders take a freed slot within seconds, so poll often.
                 for _ in range(args.workers):
-                    leases.append(slots.acquire())
+                    leases.append(slots.acquire(poll_seconds=SLOT_POLL_SECONDS))
                 started = True
                 response = measure.remote(spec, min(lease.expires for lease in leases))
         except NoSlotFree as error:

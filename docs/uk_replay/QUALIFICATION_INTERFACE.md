@@ -257,7 +257,7 @@ that file through the namespace manifest.
   "requirements_sha256": "…",
   "python": "3.12.13",
   "platform": "Linux-…",
-  "runner": "github-actions ubuntu-latest" 
+  "runner": "github-actions Linux X64; 2 simulation workers: measured two-worker peak … plus 2.0 GiB reserve fits in this runner's …"
  },
  "corpus": {
   "corpus_version": "uk-fiscal-event-replay/2",
@@ -307,6 +307,13 @@ that file through the namespace manifest.
  "receipt_sha256": "<64-hex of the canonical receipt without this field>"
 }
 ```
+
+`execution.runner` names the runner, then how many simulation workers the
+corpus ran and why: two only where the request's dataset has a measured
+two-worker peak that, with a 2 GiB reserve, fits in the runner's memory
+(RELEASE_REPLAY.md, "Memory and year workers"). It stays one string because
+the `execution` object admits no other property, in this schema and in
+policyengine.py's vendored copy of it.
 
 `corpus_version` names the event set the run replayed.
 `uk-fiscal-event-replay/1` is the five events from Spring Budget 2023 to
@@ -429,4 +436,8 @@ How flags arise, so a gate built on them sees the intended events:
    minutes rather than hours on a 16GB runner; the first full run will
    replace this estimate. The queue serialises runs, so a backlog adds wait.
 2. The receipt schema versioning rule: additive optional fields keep `v1`;
-   renamed or removed fields bump to `v2`.
+   renamed or removed fields bump to `v2`. Every record object in the schema
+   is closed (`additionalProperties: false`; only the keyed maps
+   `release_bundle`, `events` and `base_events` take new keys), and
+   policyengine.py validates each receipt against its vendored copy, so an
+   added field needs that copy updated before the scorecard emits it.
