@@ -251,6 +251,10 @@ The tests state and check these for every input:
    experiment can run, states the current law it assumes or is set outright
    with a reason; and wherever a model swap and its certified pair differ on
    such a value, the experiment has declared it.
-9. **No shared thresholds.** A reform never sets two brackets of one scale to
-   the same threshold in a year: policyengine adds the rates of brackets that
-   share a threshold, so a "zero-width" band would tax as the sum of both.
+9. **No shared thresholds among the brackets a reform sets.** A reform never
+   sets two brackets of one scale to the same threshold in a year:
+   policyengine adds the rates of brackets that share a threshold, so a
+   "zero-width" band would tax as the sum of both. The check covers the
+   thresholds a reform writes; a collision with a bracket it leaves alone
+   needs the engine's schedule and shows in the effect (as the first SDLT
+   correction's did).

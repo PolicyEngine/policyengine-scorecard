@@ -507,7 +507,9 @@ def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
 
                 # policyengine adds the rates of brackets that share a
                 # threshold, so a "zero-width" band is not empty: two brackets
-                # of one scale set to the same threshold are refused.
+                # of one scale that the reform sets to the same threshold are
+                # refused. A collision with a bracket the reform leaves alone
+                # needs the engine's schedule, which a spec does not hold.
                 brackets: dict[str, list[tuple[str, str]]] = {}
                 for path in reform:
                     found = BRACKET_THRESHOLD.fullmatch(path)

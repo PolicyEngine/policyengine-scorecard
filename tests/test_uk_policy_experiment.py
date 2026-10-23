@@ -550,10 +550,12 @@ def test_a_cased_spelling_of_the_checkout_is_still_the_repository(tmp_path):
         ex.contained_output_dir("exp-a", "autumn_statement_2022", cased, root=root)
 
 
-def test_two_brackets_of_one_scale_may_not_share_a_threshold():
+def test_two_brackets_a_reform_sets_may_not_share_a_threshold():
     # A zero-width band is not empty: policyengine adds the rates of brackets
     # that share a threshold (a £1m additional dwelling taxed at 13% above
-    # £250,000 instead of 8%).
+    # £250,000 instead of 8%). The guard sees the thresholds a reform sets;
+    # a collision with a bracket the reform leaves alone needs the engine's
+    # schedule, and shows in the effect instead.
     spec, registry = spec_and_registry("autumn_statement_2022")
     broken = copy.deepcopy(spec)
     experiment = next(
@@ -898,9 +900,10 @@ def test_a_scaled_path_runs_at_its_modern_value_times_its_factor(value, factor, 
         {"gov.a": 0.0, "gov.b": value},
         {"gov.a": 1.0, "gov.b": value * factor},
     )
-    assert record["gov.b"]["reached_simulation"] and record["gov.b"][
-        "changes_modern_law"
-    ] == (factor != 1.0)
+    # The same relative tolerance (1e-9) as processed_values_match.
+    moves = not math.isclose(value * factor, value, rel_tol=1e-9, abs_tol=0.0)
+    assert record["gov.b"]["reached_simulation"]
+    assert record["gov.b"]["changes_modern_law"] == moves
     assert ex.touched_paths(experiment) == ["gov.a", "gov.b"]
     with pytest.raises(ex.ExperimentError):
         ex.executed(experiment, year, {"gov.a": 0.0})

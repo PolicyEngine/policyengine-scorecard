@@ -175,8 +175,9 @@ two claims too broad:
 - **Undeclared current law.** Only four experiments stated the current law
   they were written against; the others assumed it silently, so an engine
   one uprating ahead would have passed unflagged. Every reform value now
-  states it (204 declarations covering 144 distinct path-years over 50
-  parameters, all equal on both engines),
+  states it (at the second review, 204 declarations covering 144 distinct
+  path-years over 50 parameters, all equal on both engines; after the third
+  review's SDLT legs, 207 over 147 path-years and 51 parameters),
   or is set outright (Budget 2017's zero first-time-buyer limit, Autumn
   Statement 2022's 2024-25 pre-relief schedule). The 17 events whose specs
   changed were rerun on both populations.
@@ -201,7 +202,7 @@ found one construction wrong:
   the evidence folder). The first correction set the additional-dwellings
   band from £125,000 to zero width; policyengine adds the rates of brackets
   that share a threshold, so that taxed everything above £250,000 at 13%.
-  `validate_spec` now refuses two brackets of one scale at the same
+  `validate_spec` now refuses two brackets a reform sets to the same
   threshold. Neither
   engine has the lease-rent leg itself: both keep £125,000 through 2022-25,
   recorded on policyengine-uk#2332. Autumn Statement 2022 was rerun on both
