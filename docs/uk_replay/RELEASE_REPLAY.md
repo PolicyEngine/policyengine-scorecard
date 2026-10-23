@@ -847,15 +847,22 @@ CPUs and 16 GB of memory
 ([GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)).
 `run_request` runs two workers only when
 `docs/uk_replay/evidence/replay_memory.json` records a two-worker peak for
-the request's exact dataset (by SHA-256), its three engine versions and the
-qualifier's corpus version, and that peak plus a 2 GiB reserve fits in the
-runner's `MemTotal`, read from `/proc/meminfo` when the request starts. Such
-a peak comes only from a completed two-worker run of the whole of Autumn
+the request's exact dataset (by SHA-256) and workload, and that peak plus a
+2 GiB reserve fits in the runner's `MemTotal`, read from `/proc/meminfo`
+when the request starts. The workload is the candidate's identity as the
+request names it (the three engine versions, the wheels' digests and the
+wrapper's source), the corpus version, the scheduling event, and a digest
+of the scorecard files that run that event besides the engine
+(`MEMORY_WORKLOAD_FILES`: its registry, the construction revisions and the
+compute modules); a change to any of them makes a measurement another
+workload's. A peak counts only from a completed run of the whole of Autumn
 Budget 2025, the corpus's largest event (nine measures over six years, each
-with a modified world) and the one two Microcosm workers could not finish; a
-slice of it holds fewer simulations at once and does not count. Anything
-else means one worker: a dataset, engine or corpus nobody has measured, an
-evidence file of another format, a peak that is not a positive integer, or
+with a modified world) and the one two Microcosm workers could not finish,
+in which both year workers were spawned and the run manifest's full event
+grid is complete. A slice leaves out years, worlds and the memory a worker
+accumulates over them, so it does not count. Anything else means one
+worker: a dataset or workload nobody has measured, an evidence file of
+another format, a peak that is not a positive integer below 2^50 bytes, or
 an unknown `MemTotal`. The
 reserve is a margin for what lies outside the corpus's process tree (the
 runner's services, the drain's control process, the page cache), not a
@@ -877,37 +884,43 @@ the runner still finishes and is measured), and samples the summed resident
 memory of `compute_uk_event` and its year workers every 0.2 s. Pages two
 processes share count in both, so the figure bounds the tree from above. The
 container's network is blocked while it runs, and only memory, timings and
-the runner's own progress and aggregate lines are printed or come back;
-any other line stays in the container. `summarize` derives each dataset's
-peaks from the measurements, and a test regenerates the committed file's
-summary from its own measurements. The five measurements below were taken
+lines matching `compute_uk_event`'s own progress and aggregate formats
+exactly are printed or come back; any other line stays in the container.
+Each measurement records the candidate's identity, the workload digest and
+the run manifest's coverage. `summarize` derives each dataset's peaks from
+the measurements, and a test regenerates the committed file's summary from
+its own measurements. The three one-worker measurements below were taken
 before each phase's process peak started from the phase's own first sample,
-so their phases record only the tree's peak (`"phase_peaks": "tree_only"`).
+so their phases record only the tree's peak (`"phase_peaks": "tree_only"`);
+they inform, and do not schedule.
 
-The committed measurements, on 22 October 2026 (Modal, 4 CPUs; the
-qualifier's own `prepare` resolved each candidate within the 6.9.0
-certified environment):
+The committed measurements (Modal, 4 CPUs; the qualifier's own `prepare`
+resolved each candidate within the 6.9.0 certified environment). The two
+whole-event two-worker runs, on 23 October 2026, are the scheduling
+evidence; the one-worker runs, on 22 October, are for reading:
 
 | Slice of Autumn Budget 2025 | Dataset (release) | Workers | Peak summed RSS | Wall |
 |---|---|---|---|---|
-| all years and measures | Microcosm UK 2024-25 (6.10.0) | 2 | 18.6 GiB | 24 min |
+| all years and measures | Microcosm UK 2024-25 (6.10.0) | 2 | 18.5 GiB | 35 min |
 | all years and measures | Microcosm UK 2024-25 (6.10.0) | 1 | 10.2 GiB | 46 min |
 | 2029: baseline and the threshold-freeze world | Microcosm UK 2024-25 (6.10.0) | 1 | 8.5 GiB | 1.6 min |
-| all years and measures | enhanced FRS 1.58.1 (6.9.0) | 2 | 9.2 GiB | 16 min |
+| all years and measures | enhanced FRS 1.58.1 (6.9.0) | 2 | 9.3 GiB | 16 min |
 | 2029: baseline and the threshold-freeze world | enhanced FRS 1.58.1 (6.9.0) | 1 | 3.8 GiB | 0.8 min |
 
-So Microcosm runs one worker on a 16 GB runner (18.6 GiB plus the reserve
-is far above it) and the enhanced FRS 1.58.1 two (9.2 GiB plus the reserve
-fits). A worker's resident memory grows over its successive years: with one
+So Microcosm with 6.10.0's candidate runs one worker on a 16 GB runner
+(18.5 GiB plus the reserve is far above it), and the enhanced FRS 1.58.1
+with 6.9.0's two (9.3 GiB plus the reserve fits). Any other candidate on
+either dataset, 6.10.1's included, has no matching measurement and runs
+one. A worker's resident memory grows over its successive years: with one
 worker on Microcosm it went from 8.9 GiB in 2025 to 10.2 GiB in 2030. In
 policyengine.py 6.10.0's first two qualification attempts (requests
 `47fe63f4…` and `dfc9d655…`), two workers finished AB2025's 2025 to 2028,
-where the measured two-worker peak is 17.4 to 17.7 GiB, and the runner was
-lost in 2029 and 2030, where it reaches 18.6 GiB; their 2029 and 2030
+where the measured two-worker peak is 17.0 to 17.6 GiB, and the runner was
+lost in 2029 and 2030, where it reaches 18.5 GiB; their 2029 and 2030
 baselines took 60 to 67 s, against 29 to 40 s for the earlier years on the
-runner and 28 to 31 s for the same baselines here. Summed RSS counts shared
-pages twice, so the runner held somewhat less than these figures when it
-failed.
+runner and 28 to 31 s for the same baselines with one worker here. Summed
+RSS counts shared pages twice, so the runner held somewhat less than these
+figures when it failed.
 
 One worker roughly doubles the corpus's wall time. In those two attempts,
 the year jobs of the five events before AB2025 took 6,078 s and 6,347 s of
@@ -1117,11 +1130,12 @@ Each has deterministic boundary cases and Hypothesis properties in
 * **Sealed namespaces.** Every byte under a sealed namespace matches its
   receipt.
 * **Year workers.** Two workers exactly when the measured two-worker peak
-  for the request's dataset, engine versions and corpus plus the reserve is
-  at most the runner's memory; more memory never means fewer workers and a
-  higher peak never means more; no such peak, or an invalid one, means one.
-  Only a completed whole-event Autumn Budget 2025 two-worker run sets that
-  peak, and it is the largest such run. The committed evidence is its own
+  for the request's dataset and workload plus the reserve is at most the
+  runner's memory; more memory never means fewer workers and a higher peak
+  never means more; no such peak, or an invalid one, means one, and so does
+  any change to the candidate's identity or the workload's files. Only a
+  completed whole-event Autumn Budget 2025 run with both year workers
+  spawned sets that peak, and it is the largest such run. The committed evidence is its own
   measurements summarized, and a process tree's total is its root's
   resident memory plus each child's total.
 * **Engine matrix.** For any index the lister accepts, CI's engine matrix is

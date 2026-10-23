@@ -966,13 +966,12 @@ def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
     sha = request["candidate"]["data"]["sha256"]
     evidence = root / qualify.MEMORY_EVIDENCE
     evidence.parent.mkdir(parents=True, exist_ok=True)
+    for relative in qualify.MEMORY_WORKLOAD_FILES:
+        (root / relative).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(qualify.ROOT / relative, root / relative)
     rows = [
         {
-            "workload": {
-                "packages": qualify.requested_versions(request),
-                "corpus_version": qualify.CORPUS_VERSION,
-                "event": "autumn_budget_2025",
-            },
+            "workload": qualify.memory_workload(request, root=root),
             "peak_rss_bytes": (peak_gib or 0) * 2**30,
         }
     ]

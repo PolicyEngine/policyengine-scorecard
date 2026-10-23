@@ -6,7 +6,9 @@ the runner's memory. The evidence file is regenerated from its own
 measurements here, so the committed per-dataset peaks are derived, not typed.
 """
 
+import copy
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -26,32 +28,35 @@ def golden_request():
     return json.loads((FIXTURES / "qualification_request_golden.json").read_text())
 
 
-def request_for(sha256: str, packages: dict | None = None) -> dict:
+def request_for(sha256: str, candidate: dict | None = None) -> dict:
     request = golden_request()
     request["candidate"]["data"]["sha256"] = sha256
-    if packages:
-        candidate = request["candidate"]
-        candidate["policyengine"]["version"] = packages["policyengine"]
-        candidate["policyengine_uk"]["version"] = packages["policyengine-uk"]
-        candidate["policyengine_core"]["version"] = packages["policyengine-core"]
+    if candidate:
+        request["candidate"].update(copy.deepcopy(candidate))
     return request
 
 
-def workload(request=None, **changes) -> dict:
-    """The scheduling workload a request needs measured."""
-    return {
-        "packages": qualify.requested_versions(request or golden_request()),
-        "corpus_version": qualify.CORPUS_VERSION,
-        "event": measure.SCHEDULING_EVENT,
+def workload_root(tmp_path) -> Path:
+    """A root holding the files the workload digest covers, as committed."""
+    for relative in qualify.MEMORY_WORKLOAD_FILES:
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(qualify.ROOT / relative, target)
+    return tmp_path
+
+
+def evidence_root(
+    tmp_path, peaks, *, sha="a" * 64, schema_version=1, request=None, **changes
+):
+    """Evidence holding two-worker peaks for one dataset and workload."""
+    root = workload_root(tmp_path)
+    workload = {
+        **qualify.memory_workload(request or golden_request(), root=root),
         **changes,
     }
-
-
-def evidence_root(tmp_path, peaks, *, sha="a" * 64, schema_version=1, **changes):
-    """Evidence holding two-worker peaks for one dataset and workload."""
-    path = tmp_path / qualify.MEMORY_EVIDENCE
+    path = root / qualify.MEMORY_EVIDENCE
     path.parent.mkdir(parents=True)
-    rows = [{"workload": workload(**changes), "peak_rss_bytes": p} for p in peaks]
+    rows = [{"workload": workload, "peak_rss_bytes": p} for p in peaks]
     path.write_text(
         json.dumps(
             {
@@ -60,7 +65,7 @@ def evidence_root(tmp_path, peaks, *, sha="a" * 64, schema_version=1, **changes)
             }
         )
     )
-    return tmp_path
+    return root
 
 
 # --- reading the machine ----------------------------------------------------------
@@ -164,9 +169,16 @@ def test_the_largest_matching_peak_decides(tmp_path):
 
 
 UNMEASURED = (
-    "no measured two-worker peak for dataset aaaaaaaaaaaa with these engine "
-    "versions and corpus"
+    "no measured two-worker peak for dataset aaaaaaaaaaaa with this candidate "
+    "and workload"
 )
+
+
+def other_wrapper_source():
+    """The golden wrapper, installed from a git commit instead of its wheel."""
+    wrapper = copy.deepcopy(golden_request()["candidate"]["policyengine"])
+    wrapper["source"] = {"git": {"commit": "f" * 40}}
+    return {"policyengine": wrapper}
 
 
 @pytest.mark.parametrize(
@@ -174,20 +186,33 @@ UNMEASURED = (
     [
         {"sha": "b" * 64},
         {"corpus_version": "uk-fiscal-event-replay/1"},
-        {
-            "packages": {
-                "policyengine": "0.0.1",
-                "policyengine-uk": "0.0.1",
-                "policyengine-core": "0.0.1",
-            }
-        },
+        {"event": "autumn_budget_2024"},
+        {"workload_sha256": "0" * 64},
+        {"request": request_for("a" * 64, other_wrapper_source())},
     ],
 )
-def test_another_dataset_engine_or_corpus_is_unmeasured(tmp_path, changes):
+def test_another_dataset_candidate_or_workload_is_unmeasured(tmp_path, changes):
     assert choose(evidence_root(tmp_path, [GIB], **changes)) == (1, UNMEASURED)
 
 
-@pytest.mark.parametrize("peak", [0, -1, 1.5e9, "9", None, True])
+def test_a_changed_workload_file_makes_the_measurement_another_workloads(tmp_path):
+    root = evidence_root(tmp_path, [GIB])
+    assert choose(root)[0] == 2
+    with (root / "pipeline/compute_uk_event.py").open("a") as handle:
+        handle.write("# changed\n")
+    assert choose(root) == (1, UNMEASURED)
+
+
+def test_the_measured_wheel_or_source_is_the_one_that_counts(tmp_path):
+    root = evidence_root(tmp_path, [GIB])
+    request = request_for("a" * 64)
+    request["candidate"]["policyengine_uk"]["wheel_sha256"] = "e" * 64
+    assert choose(root, request=request) == (1, UNMEASURED)
+    request = request_for("a" * 64, other_wrapper_source())
+    assert choose(root, request=request) == (1, UNMEASURED)
+
+
+@pytest.mark.parametrize("peak", [0, -1, 1.5e9, "9", None, True, 2**50, 10**400])
 def test_a_peak_that_is_not_a_positive_integer_means_one_worker(tmp_path, peak):
     assert choose(evidence_root(tmp_path, [9 * GIB, peak])) == (
         1,
@@ -215,11 +240,12 @@ def test_unknown_memory_means_one_worker(tmp_path):
     ],
 )
 def test_unreadable_evidence_means_one_worker(tmp_path, content):
+    root = workload_root(tmp_path)
     if content is not None:
-        path = tmp_path / qualify.MEMORY_EVIDENCE
+        path = root / qualify.MEMORY_EVIDENCE
         path.parent.mkdir(parents=True)
         path.write_text(content)
-    workers, reason = choose(tmp_path, memory_total=64 * GIB)
+    workers, reason = choose(root, memory_total=64 * GIB)
     assert workers == 1 and reason.startswith("memory evidence unreadable")
 
 
@@ -278,52 +304,86 @@ def test_every_committed_measurement_is_aggregates_only():
 
 
 def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_on_the_runner():
-    """The two datasets the replay has run, each with the engine versions
-    measured on it, on a 16 GB hosted runner (MemTotal a little under 16 GiB)."""
+    """The two datasets the replay has run, each with the candidate measured
+    on it, on a 16 GB hosted runner (MemTotal a little under 16 GiB)."""
     runner = 15 * GIB + 600 * 2**20
     chosen = {}
     for sha, entry in committed_evidence()["datasets"].items():
         (row,) = entry["two_worker_peaks"]
         chosen[entry["dataset"]] = qualify.simulation_workers(
-            request_for(sha, row["workload"]["packages"]), memory_total=runner
+            request_for(sha, row["workload"]["candidate"]), memory_total=runner
         )
     assert chosen["microcosm_uk_2024_25"][0] == 1, chosen
     assert chosen["enhanced_frs_2024_25"][0] == 2, chosen
 
 
-def test_slices_and_one_worker_runs_never_schedule_two_workers():
+def test_every_scheduling_peak_comes_from_a_run_that_may_schedule():
+    measurements = {m["label"]: m for m in committed_evidence()["measurements"]}
     for entry in committed_evidence()["datasets"].values():
         for row in entry["two_worker_peaks"]:
             for label in row["measurements"]:
-                (run,) = [
-                    m
-                    for m in committed_evidence()["measurements"]
-                    if m["label"] == label
-                ]
-                assert run["workers"] == 2 and not run["years"] and not run["measures"]
-                assert run["event"] == measure.SCHEDULING_EVENT
+                assert (
+                    measure.scheduling_workload(measurements[label]) == row["workload"]
+                )
 
 
 # --- summarizing measurements ---------------------------------------------------------
 
 
-def measurement(label, sha, workers, peak, *, exit_code=0, **changes):
+def measurement(label, sha, workers, peak, *, exit_code=0, year_workers=2, **changes):
+    request = golden_request()
     return {
         "label": label,
         "dataset": {"dataset": "d", "build_id": "b", "sha256": sha, "size_bytes": 1},
         "workers": workers,
-        "event": measure.SCHEDULING_EVENT,
+        "event": qualify.MEMORY_SCHEDULING_EVENT,
         "years": [],
         "measures": [],
-        "packages": workload()["packages"],
+        "candidate": qualify.candidate_identity(request),
         "corpus_version": qualify.CORPUS_VERSION,
-        "compute": {"exit_code": exit_code, "tree_peak_rss_bytes": peak},
+        "workload_sha256": "c" * 64,
+        "coverage": {"full_event_complete": True},
+        "compute": {
+            "exit_code": exit_code,
+            "tree_peak_rss_bytes": peak,
+            "process_count_by_role": {"year_worker": year_workers},
+        },
         **changes,
     }
 
 
-def test_summarize_keeps_only_completed_whole_event_runs_for_scheduling():
-    other = {"policyengine": "9", "policyengine-uk": "9", "policyengine-core": "9"}
+def scheduled(measurement_) -> dict:
+    return measure.scheduling_workload(measurement_)
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"exit_code": 1},
+        {"year_workers": 1},
+        {"years": [2029]},
+        {"measures": ["m"]},
+        {"event": "autumn_budget_2024"},
+        {"coverage": {"full_event_complete": False}},
+        {"coverage": None},
+        {"candidate": None},
+        {"workload_sha256": None},
+        {"workers": 0},
+        {"workers": 3},
+        {"workers": None},
+        {"workers": True},
+    ],
+)
+def test_only_a_completed_whole_event_two_worker_run_may_schedule(changes):
+    changes = {"workers": 2, **changes}
+    run = measurement("a", "x", changes.pop("workers"), 9, **changes)
+    assert scheduled(run) is None
+    summary = measure.summarize([run])
+    assert summary["datasets"]["x"]["two_worker_peaks"] == []
+
+
+def test_summarize_takes_the_largest_peak_per_workload():
+    other = measurement("i", "x", 2, 4, workload_sha256="d" * 64)
     summary = measure.summarize(
         [
             measurement("b", "x", 1, 5),
@@ -331,23 +391,21 @@ def test_summarize_keeps_only_completed_whole_event_runs_for_scheduling():
             measurement("c", "x", 2, 12),
             measurement("d", "x", 2, 99, exit_code=1),
             measurement("f", "x", 2, 7, years=[2029]),
-            measurement("g", "x", 2, 7, measures=["m"]),
-            measurement("h", "x", 2, 50, event="autumn_budget_2024"),
-            measurement("i", "x", 2, 4, packages=other),
+            other,
             measurement("e", "y", 1, 3),
         ]
     )
     x = summary["datasets"]["x"]
     assert x["one_worker_peak_rss_bytes"] == 5
     assert x["two_worker_peaks"] == [
-        {"workload": workload(), "peak_rss_bytes": 12, "measurements": ["a", "c"]},
         {
-            "workload": workload(packages=other),
-            "peak_rss_bytes": 4,
-            "measurements": ["i"],
+            "workload": scheduled(measurement("a", "x", 2, 9)),
+            "peak_rss_bytes": 12,
+            "measurements": ["a", "c"],
         },
+        {"workload": scheduled(other), "peak_rss_bytes": 4, "measurements": ["i"]},
     ]
-    assert x["measurements"] == ["a", "b", "c", "d", "f", "g", "h", "i"]
+    assert x["measurements"] == ["a", "b", "c", "d", "f", "i"]
     # Only a one-worker run: no two-worker peak, so the qualifier runs one.
     assert summary["datasets"]["y"]["two_worker_peaks"] == []
     labels = [m["label"] for m in summary["measurements"]]
@@ -358,15 +416,16 @@ def test_summarize_keeps_only_completed_whole_event_runs_for_scheduling():
 @given(
     st.lists(
         st.tuples(
-            st.sampled_from([1, 2]),
+            st.sampled_from([0, 1, 2, 3]),
             st.integers(min_value=1, max_value=64 * GIB),
             st.sampled_from([0, 1]),
             st.booleans(),
+            st.sampled_from([1, 2]),
         ),
         max_size=8,
     )
 )
-def test_a_scheduling_peak_is_the_largest_completed_whole_event_two_worker_run(runs):
+def test_a_scheduling_peak_is_the_largest_eligible_run(runs):
     measurements = [
         measurement(
             f"m{i}",
@@ -374,9 +433,10 @@ def test_a_scheduling_peak_is_the_largest_completed_whole_event_two_worker_run(r
             workers,
             peak,
             exit_code=code,
+            year_workers=spawned,
             **({"years": [2029]} if sliced else {}),
         )
-        for i, (workers, peak, code, sliced) in enumerate(runs)
+        for i, (workers, peak, code, sliced, spawned) in enumerate(runs)
     ]
     rows = (
         measure.summarize(measurements)["datasets"]
@@ -385,8 +445,8 @@ def test_a_scheduling_peak_is_the_largest_completed_whole_event_two_worker_run(r
     )
     eligible = [
         peak
-        for workers, peak, code, sliced in runs
-        if workers == 2 and not code and not sliced
+        for workers, peak, code, sliced, spawned in runs
+        if workers == 2 and not code and not sliced and spawned == 2
     ]
     assert [row["peak_rss_bytes"] for row in rows] == (
         [max(eligible)] if eligible else []
@@ -414,6 +474,13 @@ if __name__ == "__main__":
         pool.map(year, [2029, 2030])
     print("private row 1,2,3", flush=True)
     print("private traceback 4,5,6", file=sys.stderr, flush=True)
+    print(f"[pid {os.getpid()}] private household income 12345", flush=True)
+    print(f"[pid {os.getpid()}] starting household income 12345", flush=True)
+    print(
+        f"[pid {os.getpid()} year 2029] certified baseline extracted once in 1.0s 777",
+        file=sys.stderr,
+        flush=True,
+    )
 """
 
 
@@ -425,8 +492,9 @@ def test_measured_run_samples_the_tree_and_keeps_only_aggregate_lines(tmp_path, 
     )
     # Modal streams what the container prints: only the runner's own lines.
     printed = capfd.readouterr()
-    assert "private row" not in printed.out + printed.err
-    assert "private traceback" not in printed.out + printed.err
+    for private in ("private row", "private traceback", "household", "777"):
+        assert private not in printed.out + printed.err
+        assert private not in json.dumps(result)
     assert "[2029] m: +0.000bn gain to Exchequer" in printed.out
     assert result["exit_code"] == 0
     assert result["tree_peak_rss_bytes"] >= 2 * 40 * 2**20

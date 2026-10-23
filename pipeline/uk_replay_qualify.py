@@ -77,6 +77,26 @@ MEMORY_EVIDENCE = Path("docs/uk_replay/evidence/replay_memory.json")
 # A margin left for everything outside the corpus's process tree: the
 # runner's own services, the drain's control process and the page cache.
 MEMORY_RESERVE_BYTES = 2 * 2**30
+# The workload a two-worker peak must cover to schedule two workers: the
+# corpus's largest event (nine measures over six years, each with a modified
+# world), and the one two Microcosm workers could not finish on the runner.
+MEMORY_SCHEDULING_EVENT = "autumn_budget_2025"
+# What runs that event, besides the engine: a change to any of these makes
+# a measurement another workload's.
+MEMORY_WORKLOAD_FILES = (
+    "data/uk/events/autumn_budget_2025_measures.json",
+    "data/uk/events/construction_revisions.json",
+    "pipeline/build_uk_event_registry.py",
+    "pipeline/compute_uk_ab2025.py",
+    "pipeline/compute_uk_event.py",
+    "pipeline/compute_uk_obr_costings.py",
+    "pipeline/stage_uk_ab2025.py",
+    "pipeline/uk_construction_revisions.py",
+    "pipeline/uk_replay_variants.py",
+)
+# Larger than any machine's memory; a bound so a malformed peak cannot
+# overflow the arithmetic and formatting the choice uses.
+MEMORY_PEAK_LIMIT_BYTES = 2**50
 
 
 class Rejected(Exception):
@@ -547,41 +567,69 @@ def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
     return meminfo_bytes("MemAvailable", meminfo)
 
 
+def candidate_identity(request: dict) -> dict:
+    """The candidate's exact engine: versions, wheel digests, wrapper source."""
+    candidate = request["candidate"]
+    return {
+        key: candidate[key]
+        for key in ("policyengine", "policyengine_uk", "policyengine_core")
+    }
+
+
+def memory_workload_sha256(root: Path = ROOT) -> str:
+    """Digest of the files besides the engine that run the scheduling event."""
+    return sha256_bytes(
+        canonical_bytes(
+            {
+                relative: variants.sha256_file(root / relative)
+                for relative in MEMORY_WORKLOAD_FILES
+            }
+        )
+    )
+
+
+def memory_workload(request: dict, *, root: Path = ROOT) -> dict:
+    """What a two-worker measurement must have run to stand for this request."""
+    return {
+        "candidate": candidate_identity(request),
+        "corpus_version": CORPUS_VERSION,
+        "event": MEMORY_SCHEDULING_EVENT,
+        "workload_sha256": memory_workload_sha256(root),
+    }
+
+
 def simulation_workers(
     request: dict, *, root: Path = ROOT, memory_total: int | None = None
 ) -> tuple[int, str]:
-    """Two year workers only when a measured two-worker peak for this exact
-    dataset, engine versions and corpus, plus the reserve, fits in this
-    runner's memory; otherwise one.
+    """Two year workers only when a two-worker peak measured on this exact
+    dataset and workload (the candidate's engine, the corpus, and the code
+    and registry that run the scheduling event), plus the reserve, fits in
+    this runner's memory; otherwise one.
 
     Returns the count and the reason the receipt records. Anything the
     evidence does not establish (no such measurement, an unknown evidence
-    format, a peak that is not a positive integer, unknown memory) means one
-    worker.
+    format, a peak that is not a positive integer below the limit, unknown
+    memory) means one worker.
     """
     sha = request["candidate"]["data"]["sha256"]
-    workload = {
-        "packages": requested_versions(request),
-        "corpus_version": CORPUS_VERSION,
-    }
     try:
+        workload = memory_workload(request, root=root)
         evidence = json.loads((root / MEMORY_EVIDENCE).read_bytes())
         if evidence["schema_version"] != 1:
             raise ValueError(f"schema_version {evidence['schema_version']!r}")
         rows = evidence["datasets"].get(sha, {}).get("two_worker_peaks", [])
-        peaks = [
-            row["peak_rss_bytes"]
-            for row in rows
-            if {key: row["workload"][key] for key in workload} == workload
-        ]
+        peaks = [row["peak_rss_bytes"] for row in rows if row["workload"] == workload]
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         return 1, f"memory evidence unreadable ({type(exc).__name__})"
     if not peaks:
         return 1, (
-            f"no measured two-worker peak for dataset {sha[:12]} with these "
-            "engine versions and corpus"
+            f"no measured two-worker peak for dataset {sha[:12]} with this "
+            "candidate and workload"
         )
-    if any(type(peak) is not int or peak <= 0 for peak in peaks):
+    if any(
+        type(peak) is not int or not 0 < peak < MEMORY_PEAK_LIMIT_BYTES
+        for peak in peaks
+    ):
         return 1, "the memory evidence holds an invalid two-worker peak"
     if memory_total is None:
         return 1, "this runner's memory is unknown"

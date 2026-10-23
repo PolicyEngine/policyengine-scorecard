@@ -51,17 +51,31 @@ MEMORY_MIB = 32768
 TIMEOUT_SECONDS = 3 * 60 * 60
 GUARD_MARGIN_SECONDS = 10 * 60
 SAMPLE_SECONDS = 0.2
-# The workload a two-worker peak must cover to schedule two workers: the
-# corpus's largest event (nine measures over six years, with a modified
-# world for each), and the one two Microcosm workers could not finish.
-SCHEDULING_EVENT = "autumn_budget_2025"
 SLOT_POLL_SECONDS = 3
 # The qualifier runs in a checkout of the whole repository; the web app is
 # the one part the pipeline never reads.
 SNAPSHOT_EXCLUDED = ("app/",)
-PHASE_LINE = re.compile(r"^\[pid (\d+)(?: year (\d{4}))?\] (.+)$")
+# compute_uk_event's own progress and aggregate lines, exactly; nothing
+# else it or the engine prints is kept or printed.
+SLUG = r"[a-z0-9]+(?:_+[a-z0-9]+)*"
+RUNNER_LINE = re.compile(
+    r"^\[pid (\d+)\] (starting offline bundle preflight"
+    r"|offline bundle preflight complete; starting processed-world reversal guard"
+    r"|processed-world reversal guard complete"
+    r"|stopping owned year workers after interruption or job failure)$"
+)
+BASELINE_START = re.compile(
+    r"^\[pid (\d+) year (\d{4})\] starting certified baseline \(\d+ heads\)$"
+)
+BASELINE_DONE = re.compile(
+    r"^\[pid (\d+) year (\d{4})\] certified baseline extracted once in \d+\.\ds$"
+)
+WORLD_START = re.compile(
+    rf"^\[pid (\d+) year (\d{{4}})\] starting ({SLUG}) "
+    rf"(baseline modifier|reform delta) \(({SLUG})\)$"
+)
 MEASURE_LINE = re.compile(
-    r"^\[(\d{4})\] ([a-z0-9_]+): [+-]\d+\.\d{3}bn gain to Exchequer$"
+    rf"^\[(\d{{4}})\] ({SLUG}): [+-]\d+\.\d{{3}}bn gain to Exchequer$"
 )
 
 
@@ -245,29 +259,45 @@ def measured_run(command: list[str], *, cwd: str, env: dict) -> dict:
                     }
                 )
 
+        def begin(pid: int, year: int | None, phase: str) -> None:
+            close(pid, ending=False)
+            open_phases[pid] = {
+                "process": sampler.role_by_pid.get(pid, "year_worker"),
+                "year": year,
+                "phase": phase,
+                "_t": time.perf_counter(),
+            }
+            if year is not None:
+                year_pid[year] = pid
+
         for line in process.stdout:
             line = line.rstrip("\n")
             sampler.sample()
-            phase = PHASE_LINE.match(line)
-            measure = MEASURE_LINE.match(line)
-            if phase or measure:
-                print(line, flush=True)
-            if phase:
-                pid, year, message = int(phase[1]), phase[2], phase[3]
-                if message.startswith("starting "):
-                    close(pid, ending=False)
-                    open_phases[pid] = {
-                        "process": sampler.role_by_pid.get(pid, "year_worker"),
-                        "year": int(year) if year else None,
-                        "phase": message.removeprefix("starting ").split(" (")[0],
-                        "_t": time.perf_counter(),
-                    }
-                    if year:
-                        year_pid[int(year)] = pid
-                elif "extracted once" in message and pid in open_phases:
-                    close(pid, ending=True)
-                    log.append(line)
-            elif measure:
+            matched = {
+                name: pattern.match(line)
+                for name, pattern in (
+                    ("runner", RUNNER_LINE),
+                    ("baseline", BASELINE_START),
+                    ("extracted", BASELINE_DONE),
+                    ("world", WORLD_START),
+                    ("measure", MEASURE_LINE),
+                )
+            }
+            if not any(matched.values()):
+                continue
+            print(line, flush=True)
+            if runner := matched["runner"]:
+                if runner[2].startswith("starting ") or "; starting " in runner[2]:
+                    begin(int(runner[1]), None, runner[2].rsplit("starting ", 1)[1])
+            elif baseline := matched["baseline"]:
+                begin(int(baseline[1]), int(baseline[2]), "certified baseline")
+            elif world := matched["world"]:
+                begin(int(world[1]), int(world[2]), f"{world[3]} {world[4]}")
+            elif extracted := matched["extracted"]:
+                if int(extracted[1]) in open_phases:
+                    close(int(extracted[1]), ending=True)
+                log.append(line)
+            elif measure := matched["measure"]:
                 pid = year_pid.get(int(measure[1]))
                 if pid is not None:
                     close(pid, ending=True)
@@ -367,12 +397,29 @@ def remote_measure(spec: dict, lease_expires: float) -> dict:
     if spec["measures"]:
         command += ["--measures", *spec["measures"]]
     compute = measured_run(command, cwd=REMOTE_ROOT, env=env)
+    # compute_uk_event writes its manifest only for a complete requested grid;
+    # full_event_complete says whether that grid was the whole event's.
+    manifest_path = output / "RUN_MANIFEST.json"
+    manifest = (
+        json.loads(manifest_path.read_bytes()) if manifest_path.is_file() else None
+    )
+    coverage = (
+        {
+            "full_event_complete": manifest["full_event_complete"],
+            "full_event_pairs": len(manifest["full_event_grid"]),
+            "artifact_pairs": len(manifest["artifact_grid"]),
+            "years": manifest["years"],
+        }
+        if manifest
+        else None
+    )
     memory = psutil.virtual_memory()
     return {
         "variant_id": variant_id,
         # How prepare resolved the candidate's environment, as the qualifier
         # records it in the namespace's INSTALL.json.
         "install": json.loads((work / "INSTALL.json").read_bytes()),
+        "coverage": coverage,
         "container": {
             "cpu": CPU,
             "memory_limit_mib": MEMORY_MIB,
@@ -436,15 +483,46 @@ def modal_objects(request_path: Path, dataset_path: Path, repository: Path):
     return modal, app, measure, clock
 
 
+def scheduling_workload(measurement: dict) -> dict | None:
+    """The workload a measurement stands for when scheduling two workers;
+    None when it cannot stand for one.
+
+    That takes a completed run with exactly two year workers, both spawned,
+    of the whole scheduling event (no year or measure selection, and the run
+    manifest's full event grid complete), recorded with the candidate's
+    identity and the workload digest. A slice leaves out years, worlds and
+    the memory a worker accumulates over them."""
+    from pipeline import uk_replay_qualify as qualify
+
+    compute = measurement.get("compute") or {}
+    coverage = measurement.get("coverage") or {}
+    if (
+        type(measurement.get("workers")) is not int
+        or measurement["workers"] != 2
+        or compute.get("exit_code") != 0
+        or compute.get("process_count_by_role", {}).get("year_worker") != 2
+        or measurement.get("event") != qualify.MEMORY_SCHEDULING_EVENT
+        or measurement.get("years") != []
+        or measurement.get("measures") != []
+        or coverage.get("full_event_complete") is not True
+        or not isinstance(measurement.get("candidate"), dict)
+        or not isinstance(measurement.get("workload_sha256"), str)
+    ):
+        return None
+    return {
+        "candidate": measurement["candidate"],
+        "corpus_version": measurement["corpus_version"],
+        "event": measurement["event"],
+        "workload_sha256": measurement["workload_sha256"],
+    }
+
+
 def summarize(measurements: list[dict]) -> dict:
     """The evidence document: every measurement, and per dataset its peaks.
 
-    The qualifier reads only ``two_worker_peaks``. A two-worker peak counts
-    there only from a completed run of the whole scheduling event, every year
-    and measure, and only for the engine versions and corpus it ran with:
-    a slice holds fewer simulations at once, and another engine or corpus is
-    another workload. ``one_worker_peak_rss_bytes`` is the largest completed
-    one-worker peak of any slice, for reading only."""
+    The qualifier reads only ``two_worker_peaks``: the largest peak of each
+    workload that ``scheduling_workload`` accepts. ``one_worker_peak_rss_bytes``
+    is the largest completed one-worker peak of any slice, for reading only."""
     datasets: dict[str, dict] = {}
     for measurement in sorted(measurements, key=lambda m: m["label"]):
         dataset = measurement["dataset"]
@@ -461,25 +539,17 @@ def summarize(measurements: list[dict]) -> dict:
         )
         entry["measurements"].append(measurement["label"])
         compute = measurement.get("compute") or {}
-        if compute.get("exit_code") != 0:
+        peak = compute.get("tree_peak_rss_bytes")
+        if compute.get("exit_code") != 0 or type(peak) is not int or peak <= 0:
             continue
-        peak = compute["tree_peak_rss_bytes"]
-        if measurement["workers"] == 1:
+        if type(measurement.get("workers")) is int and measurement["workers"] == 1:
             entry["one_worker_peak_rss_bytes"] = max(
                 entry["one_worker_peak_rss_bytes"] or 0, peak
             )
             continue
-        if (
-            measurement["event"] != SCHEDULING_EVENT
-            or measurement["years"]
-            or measurement["measures"]
-        ):
+        workload = scheduling_workload(measurement)
+        if workload is None:
             continue
-        workload = {
-            "packages": measurement["packages"],
-            "corpus_version": measurement["corpus_version"],
-            "event": measurement["event"],
-        }
         row = next(
             (r for r in entry["two_worker_peaks"] if r["workload"] == workload),
             None,
@@ -534,12 +604,16 @@ def main(argv: list[str] | None = None) -> int:
         or sha256_file(args.dataset_file) != data["sha256"]
     ):
         raise ValueError("the dataset file differs from the request")
-    from pipeline.uk_replay_qualify import CORPUS_VERSION
+    from pipeline import uk_replay_qualify as qualify
 
+    # The workload this run stands for, from the files the snapshot copies.
+    workload = qualify.memory_workload(request)
     plan = {
         "label": args.label,
         "request_id": request_id,
-        "corpus_version": CORPUS_VERSION,
+        "candidate": workload["candidate"],
+        "corpus_version": workload["corpus_version"],
+        "workload_sha256": workload["workload_sha256"],
         **spec,
     }
     if not args.execute:
