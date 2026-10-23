@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -599,6 +599,17 @@
    "running": false,
    "updated": "2026-10-22",
    "note": "2 claims (ONS September 2026 CPI, OBR's March 2026 forecast of it) and 17 PE results, 15 of them on the HM Treasury and Resolution Foundation uprating claims; parameter-tree read-back on policyengine-uk 2.147.2"
+  },
+  {
+   "id": "dwp-uc-health",
+   "source": "DWP",
+   "area": "UC health element caseload by rate",
+   "mode": 1,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-23",
+   "note": "1 of 16 claims computed \u2014 DWP's UC health element (LCWRA) caseload by entitlement rate, April to June 2026 (Table 2), and the new-claimant rate's June share against PE-UK's new_claimant_share (uk-2.147.2); caseload counterparts wait for a run on the certified bundle; Stat-Xplore element counts open (#87)"
   }
  ]
 }

@@ -1,0 +1,26 @@
+{
+ "family": "uk_uc_health_readback",
+ "run_id": "uk-uc-health-readback-2.147.2-2026-10-23",
+ "computed_at": "2026-10-23T20:01:44+00:00",
+ "provenance": {
+  "engine": "policyengine-uk",
+  "engine_version": "2.147.2",
+  "policyengine_core_version": "3.33.12",
+  "data_bundle": "parameter-tree",
+  "bundle_id": "uk-2.147.2"
+ },
+ "pe_construction": "Parameter-tree read-back on policyengine-uk 2.147.2, no simulation: gov.dwp.universal_credit.rebalancing.new_claimant_share read at 1 June of each tax year.",
+ "new_claimant_share": {
+  "path": "gov.dwp.universal_credit.rebalancing.new_claimant_share",
+  "values": {
+   "2026": 0.11,
+   "2027": 0.13,
+   "2028": 0.16,
+   "2029": 0.22
+  },
+  "description": "Share of benefit units with the Universal Credit LCWRA element that are new claimants, paid the new-claimant amount rather than the protected (pre-2026) amount. The rebalancing scenario uses it to assign the status by a seeded draw when the data do not supply it; a household situation without the status gets the protected amount. The shares for 2026-27 to 2029-30 are WPI Economics' estimates for the Trussell Trust from administrative Personal Independence Payment data (2025). Later years hold the 2029-30 share. That is an assumption, not a source: the share keeps rising as the caseload turns over, so holding it understates new claimants and overstates protected amounts from 2030-31.",
+  "references": [
+   "Universal Credit Act 2025 s. 2 (new-claimant and protected LCWRA amounts)"
+  ]
+ }
+}

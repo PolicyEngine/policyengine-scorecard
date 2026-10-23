@@ -1,0 +1,15 @@
+{
+  "lane": "dwp-uc-health",
+  "annotations": [
+    {
+      "id": "uc-health-entitlement-lag",
+      "text": "DWP counts each claimant's entitlement rate in the month. A new claim from 6 April 2026 reaches the lower rate only after the Work Capability Assessment and a waiting period of three assessment periods, so June 2026 is the start of a build-up, not the 2026-27 average.",
+      "basis": "DWP UC Health statistics data tables, Notes 6 and 7"
+    },
+    {
+      "id": "uc-health-pe-share",
+      "text": "PolicyEngine-UK's value is new_claimant_share for 2026-27: WPI Economics' estimate for the Trussell Trust (2025), applied for the whole tax year as a seeded draw over benefit units with the LCWRA element (DWP counts claimants). The parameter rises to 0.13, 0.16 and 0.22 for 2027-28 to 2029-30.",
+      "basis": "policyengine-uk 2.147.2 parameters/gov/dwp/universal_credit/rebalancing/new_claimant_share.yaml"
+    }
+  ]
+}
