@@ -1,0 +1,14 @@
+{
+ "files": {
+  "autumn_budget_2024.json": "4489bac9b384154e26ae1bdb50335a6e61a3ec9f63ab4e1177343072543493c0",
+  "autumn_budget_2025.json": "cbe7e5065e5b09ce3f73263c820fbd0f2385afdc25b0df2bc46716304d82af76",
+  "autumn_statement_2023.json": "1dff6450a1a6478722433b5ce4cdb90b4d03913d4dec38e91dd48c47fba2f454",
+  "spring_budget_2023.json": "ab320f6139427a0d605aa99df4f1046125c309ab7767cb39ee65e1491a839b65",
+  "spring_budget_2024.json": "a140df80b28ae292b2bb710b79521ca40f608d47146b3b08584c1a14bdac80c9",
+  "spring_statement_2025.json": "7e734e54e22a9b4a8746bc588e54e208678449eb6ce7e0166a8b56d26d31b35d"
+ },
+ "receipt_sha256": "f37d068c69253a9353c7bf891c8a44897fb4166c9550b14376dbe0fd71e6501b",
+ "schema": "policyengine-scorecard/uk-event-dashboard-export/v1",
+ "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "ff5187900441c7605b79d19cca2424cdf4c208b75555ff50c79a0f4e95c0eb41"
+}
