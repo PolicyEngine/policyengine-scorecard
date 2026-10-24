@@ -45,6 +45,7 @@ from pathlib import Path
 
 from pipeline import compute_uk_ab2025 as worlds
 from pipeline import compute_uk_event as replay
+from pipeline import uk_construction_revisions as construction_revisions
 from pipeline import uk_replay_variants as variants
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -561,7 +562,19 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
             artifacts_by_measure.pop(key, []), key=lambda a: a["artifact"]["year"]
         )
         if classification in COMPUTABLE and key in planned and found:
-            world = planned[key]
+            revision = revisions.get(key)
+            try:
+                world = construction_revisions.apply_selected_revision(
+                    key, planned[key], revision
+                )
+            except ValueError as exc:
+                raise ExportError(str(exc)) from exc
+            if any(
+                a["artifact"].get("construction_revision") != revision for a in found
+            ):
+                raise ExportError(
+                    f"{key}: artifacts disagree on the construction revision"
+                )
             if "alias_of" in world:
                 raise ExportError(f"{key}: aliased worlds are not exported")
             submitted = {
@@ -581,7 +594,29 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
                 ("reform_world", "reform_reform"),
             ):
                 registry_side = replay.annual_reform(world[field])
-                if key not in revisions and registry_side != submitted[name]:
+                permitted = [registry_side]
+                if registry_side and revision:
+                    # revision_reform_route submits these exact fiscal windows
+                    # when Scenario exposes statutory reprocessing.
+                    permitted.append(
+                        {
+                            path: {
+                                (
+                                    f"{start[:4]}-04-06.{int(stop[:4]) + 1}-04-05"
+                                    if path in revision["paths"]
+                                    else window
+                                ): value
+                                for window, value in windows.items()
+                                for start, stop in [window.split(".")]
+                            }
+                            for path, windows in registry_side.items()
+                        }
+                    )
+                if submitted[name] not in permitted or any(
+                    a["artifact"]["parameter_reform_routes"][name]["submitted_reform"]
+                    not in permitted
+                    for a in found
+                ):
                     raise ExportError(
                         f"{key}: the {name} the replay submitted is not the registry's construction"
                     )

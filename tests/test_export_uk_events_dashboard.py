@@ -477,6 +477,51 @@ def test_a_tampered_input_is_refused(tmp_path, victim, message):
         )
 
 
+@pytest.mark.parametrize(
+    "change", ["rates", "window", "evidence", "artifact_evidence", "missing_year_world"]
+)
+def test_a_revision_allows_only_its_recorded_window_change(tmp_path, change):
+    event = "autumn_budget_2024"
+    key = "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+    record, target = sealed_copy(tmp_path, event)
+    run_path = target / event / "RUN_MANIFEST.json"
+    run = json.loads(run_path.read_text())
+    if change == "evidence":
+        run["construction_revisions"][key]["registry_sha256"] = "0" * 64
+        run_path.write_bytes(export.canonical_json(run))
+    else:
+        for artifact_path in (target / event).glob(f"{key}_*.json"):
+            artifact = json.loads(artifact_path.read_text())
+            if change == "artifact_evidence":
+                artifact["construction_revision"]["revision_id"] = "unrecorded_revision"
+            else:
+                windows = artifact["parameter_reform_routes"]["baseline_world"][
+                    "submitted_reform"
+                ]["gov.hmrc.cgt.basic_rate"]
+                if change == "rates":
+                    assert set(windows.values()) == {0.1}
+                    for window in windows:
+                        windows[window] = 0.99
+                elif change == "window":
+                    first = min(windows)
+                    windows["2023-04-06.2036-04-05"] = windows.pop(first)
+                else:
+                    del artifact["parameter_reform_routes"]["baseline_world"][
+                        "submitted_reform"
+                    ]["gov.hmrc.cgt.basic_rate"]
+            artifact_path.write_bytes(export.canonical_json(artifact))
+            if change == "missing_year_world":
+                break
+    reseal_namespace(target, event)
+    message = (
+        "revision" if change in ("evidence", "artifact_evidence") else "construction"
+    )
+    with pytest.raises(export.ExportError, match=message):
+        export.write_export(
+            record, [event], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
 def test_legacy_and_uncertified_variants_are_refused():
     document = variants.load_document()
     legacy = next(v for v in document["variants"] if variants.is_legacy(v))
