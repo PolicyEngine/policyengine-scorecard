@@ -290,6 +290,7 @@ def _accounting(registry: dict) -> dict:
         k: {"measures": 0, "rows": 0, "net": Decimal(0), "absolute": Decimal(0)}
         for k in GAP_KINDS
     }
+    by_fy = {}
     for measure in registry["measures"]:
         classification = measure.get("classification", measure.get("computability"))
         by_class[classification]["measures"] += 1
@@ -298,7 +299,10 @@ def _accounting(registry: dict) -> dict:
         for row in measure["source_rows"]:
             row_class = row.get("classification", classification)
             value = Decimal(row["value_gbp_decimal"])
-            for account in [by_class[row_class]] + (
+            fiscal_year = by_fy.setdefault(
+                row["fy"], {"rows": 0, "net": Decimal(0), "absolute": Decimal(0)}
+            )
+            for account in [by_class[row_class], fiscal_year] + (
                 [gaps[row.get("gap_kind", measure.get("gap_kind"))]]
                 if row_class == "not_expressible"
                 else []
@@ -322,13 +326,27 @@ def _accounting(registry: dict) -> dict:
     total_rows = sum(a["rows"] for a in by_class.values())
     total_net = sum((a["net"] for a in by_class.values()), Decimal(0))
     total_absolute = sum((a["absolute"] for a in by_class.values()), Decimal(0))
-    if (
-        total_rows != recorded["rows_in"]
-        or total_net != Decimal(recorded["net_gbp_in_decimal"])
-        or total_absolute != Decimal(recorded["absolute_gbp_in_decimal"])
-    ):
+
+    def totals_match(account: dict, rows: int, net: Decimal, absolute: Decimal) -> bool:
+        return all(
+            account[f"rows_{side}"] == rows
+            and Decimal(account[f"net_gbp_{side}_decimal"]) == net
+            and Decimal(account[f"absolute_gbp_{side}_decimal"]) == absolute
+            for side in ("in", "classified")
+        )
+
+    if not totals_match(recorded, total_rows, total_net, total_absolute):
         raise ExportError(
             f"{registry['event_slug']}: accounting totals differ from the registry"
+        )
+    if set(by_fy) != set(recorded["by_fy"]) or any(
+        not totals_match(
+            recorded["by_fy"][fy], account["rows"], account["net"], account["absolute"]
+        )
+        for fy, account in by_fy.items()
+    ):
+        raise ExportError(
+            f"{registry['event_slug']}: fiscal-year accounting differs from the registry"
         )
 
     def render(account: dict) -> dict:

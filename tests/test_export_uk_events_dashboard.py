@@ -28,7 +28,7 @@ from fractions import Fraction
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings
+from hypothesis import HealthCheck, example, given, settings
 from hypothesis import strategies as st
 
 from pipeline import export_uk_events_dashboard as export
@@ -498,8 +498,10 @@ def test_the_default_variant_is_the_newest_certified_namespace():
 decimals = st.decimals(
     min_value=Decimal("-1e15"), max_value=Decimal("1e15"), places=17, allow_nan=False
 )
+correctness = settings(deadline=None, suppress_health_check=[HealthCheck.too_slow])
 
 
+@correctness
 @given(decimals)
 def test_decimal_text_round_trips_without_an_exponent(value):
     text = export.decimal_text(value)
@@ -507,6 +509,7 @@ def test_decimal_text_round_trips_without_an_exponent(value):
     assert "E" not in text.upper() and text != "-0"
 
 
+@correctness
 @given(st.lists(decimals.map(abs), min_size=1, max_size=40))
 def test_shares_of_a_partition_sum_to_exactly_one(parts):
     with export.exact():
@@ -518,6 +521,7 @@ def test_shares_of_a_partition_sum_to_exactly_one(parts):
         assert sum(Fraction(s) for s in shares) == 1
 
 
+@correctness
 @given(st.lists(decimals, max_size=200))
 def test_exact_sums_never_round(values):
     with export.exact():
@@ -535,6 +539,7 @@ reforms = st.dictionaries(
 )
 
 
+@correctness
 @given(st.lists(reforms, min_size=1, max_size=5), st.randoms())
 def test_union_of_consistent_years_is_order_free(per_year, random):
     merged: dict = {}
@@ -559,6 +564,7 @@ def test_union_of_consistent_years_is_order_free(per_year, random):
     assert export.union_reforms(shuffled + [None], "t") == expected
 
 
+@correctness
 @given(reforms.filter(bool))
 def test_a_year_that_disagrees_is_refused(reform):
     path, ws = next(iter(reform.items()))
@@ -571,36 +577,73 @@ def test_a_year_that_disagrees_is_refused(reform):
 # --- the accounting against an independent implementation ---------------------
 
 
-def reference_accounting(measures: list[dict]) -> dict:
-    """The registry's recorded accounting, computed with Fractions."""
-    by_class = {
-        c: {"rows": 0, "net": Fraction(0), "abs": Fraction(0), "measures": 0}
-        for c in export.CLASSES
-    }
+def reference_accounting(measures: list[dict]) -> tuple[dict, dict]:
+    """The recorded and exported accounts, computed independently with Fractions."""
+
+    def empty() -> dict:
+        return {"rows": 0, "net": Fraction(0), "abs": Fraction(0), "measures": 0}
+
+    by_class = {c: empty() for c in export.CLASSES}
+    gaps = {k: empty() for k in export.GAP_KINDS}
+    by_fy = {}
     for measure in measures:
-        by_class[measure["classification"]]["measures"] += 1
+        classification = measure["classification"]
+        by_class[classification]["measures"] += 1
+        if classification == "not_expressible":
+            gaps[measure["gap_kind"]]["measures"] += 1
         for row in measure["source_rows"]:
-            account = by_class[row["classification"]]
-            value = Fraction(Decimal(row["value_gbp_decimal"]))
-            account["rows"] += 1
-            account["net"] += value
-            account["abs"] += abs(value)
+            row_class = row.get("classification", classification)
+            accounts = [by_class[row_class], by_fy.setdefault(row["fy"], empty())]
+            if row_class == "not_expressible":
+                accounts.append(gaps[row.get("gap_kind", measure.get("gap_kind"))])
+            value = Fraction(row["value_gbp_decimal"])
+            for account in accounts:
+                account["rows"] += 1
+                account["net"] += value
+                account["abs"] += abs(value)
+    rows = sum(a["rows"] for a in by_class.values())
+    net = sum((a["net"] for a in by_class.values()), Fraction(0))
+    absolute = sum((a["abs"] for a in by_class.values()), Fraction(0))
 
     def text(f: Fraction) -> str:
-        return str(Decimal(f.numerator) / Decimal(f.denominator)) if f else "0"
+        value = format(Decimal(f.numerator) / Decimal(f.denominator), "f")
+        return value.rstrip("0").rstrip(".") if "." in value else value
+
+    def balance(count: int, net: Fraction, absolute: Fraction) -> dict:
+        return {
+            "rows_in": count,
+            "rows_classified": count,
+            "net_gbp_in_decimal": text(net),
+            "net_gbp_classified_decimal": text(net),
+            "absolute_gbp_in_decimal": text(absolute),
+            "absolute_gbp_classified_decimal": text(absolute),
+        }
+
+    def share(part: Fraction | int, whole: Fraction | int) -> str | None:
+        if whole == 0:
+            return None
+        value = Fraction(part) / Fraction(whole)
+        return f"{value.numerator}/{value.denominator}"
+
+    def render(account: dict) -> dict:
+        return {
+            "rows": account["rows"],
+            "measures": account["measures"],
+            "net_gbp_decimal": text(account["net"]),
+            "absolute_gbp_decimal": text(account["abs"]),
+            "share_of_absolute": share(account["abs"], absolute),
+            "share_of_measures": share(account["measures"], len(measures)),
+        }
 
     # Fractions of finite decimals divide exactly at this precision.
     with export.exact():
-        return {
+        labels = {
             "amount_basis": "test",
             "sign_convention": "positive means a gain to the Exchequer",
-            "rows_in": sum(a["rows"] for a in by_class.values()),
-            "net_gbp_in_decimal": text(
-                sum((a["net"] for a in by_class.values()), Fraction(0))
-            ),
-            "absolute_gbp_in_decimal": text(
-                sum((a["abs"] for a in by_class.values()), Fraction(0))
-            ),
+        }
+        recorded = {
+            **labels,
+            **balance(rows, net, absolute),
             "by_class": {
                 c: {
                     "rows": a["rows"],
@@ -610,50 +653,87 @@ def reference_accounting(measures: list[dict]) -> dict:
                 }
                 for c, a in by_class.items()
             },
+            "by_fy": {
+                fy: balance(a["rows"], a["net"], a["abs"]) for fy, a in by_fy.items()
+            },
         }
+        expected = {
+            **labels,
+            "by_class": {c: render(a) for c, a in by_class.items()},
+            "not_expressible_by_gap_kind": {k: render(a) for k, a in gaps.items()},
+            "totals": {
+                "measures": len(measures),
+                "rows": rows,
+                "net_gbp_decimal": text(net),
+                "absolute_gbp_decimal": text(absolute),
+            },
+        }
+        return recorded, expected
 
 
-measure_strategy = st.builds(
-    lambda classification, gap_kind, values: {
+row_strategy = st.builds(
+    lambda classification, gap_kind, value, fy: {
         "classification": classification,
         "gap_kind": gap_kind if classification == "not_expressible" else None,
-        "source_rows": [
-            {"classification": classification, "value_gbp_decimal": str(v)}
-            for v in values
-        ],
+        "value_gbp_decimal": str(value),
+        "fy": fy,
     },
     st.sampled_from(export.CLASSES),
     st.sampled_from(export.GAP_KINDS),
-    st.lists(decimals, max_size=8),
+    decimals,
+    st.sampled_from(["2024-25", "2025-26", "2026-27"]),
+)
+measure_strategy = st.builds(
+    lambda classification, gap_kind, rows: {
+        "classification": classification,
+        "gap_kind": gap_kind if classification == "not_expressible" else None,
+        "source_rows": rows,
+    },
+    st.sampled_from(export.CLASSES),
+    st.sampled_from(export.GAP_KINDS),
+    st.lists(row_strategy, max_size=8),
 )
 
 
-@settings(max_examples=200)
+@settings(correctness, max_examples=200)
+@example(
+    [
+        {
+            "classification": "not_expressible",
+            "gap_kind": "construction_pending",
+            "source_rows": [
+                {
+                    "classification": "not_expressible",
+                    "gap_kind": "model_or_data_gap",
+                    "value_gbp_decimal": "-1.25",
+                    "fy": "2024-25",
+                },
+                {
+                    "classification": "expressible",
+                    "value_gbp_decimal": "2",
+                    "fy": "2025-26",
+                },
+            ],
+        }
+    ]
+)
 @given(st.lists(measure_strategy, min_size=1, max_size=12))
 def test_accounting_agrees_with_a_fraction_reference(measures):
+    recorded, expected = reference_accounting(measures)
     registry = {
         "event_slug": "generated",
         "measures": measures,
-        "accounting": reference_accounting(measures),
+        "accounting": recorded,
     }
-    result = export.accounting(registry)
-    for c in export.CLASSES:
-        recorded = registry["accounting"]["by_class"][c]
-        assert Decimal(result["by_class"][c]["net_gbp_decimal"]) == Decimal(
-            recorded["net_gbp_decimal"]
-        )
-        assert result["by_class"][c]["rows"] == recorded["rows"]
-    assert result["totals"]["rows"] == registry["accounting"]["rows_in"]
-    shares = [result["by_class"][c]["share_of_absolute"] for c in export.CLASSES]
-    if any(shares):
-        assert sum(Fraction(s) for s in shares) == 1
+    assert export.accounting(registry) == expected
 
 
+@correctness
 @given(
     st.lists(measure_strategy, min_size=1, max_size=6), st.sampled_from(export.CLASSES)
 )
 def test_accounting_that_differs_from_the_registry_is_refused(measures, victim):
-    recorded = reference_accounting(measures)
+    recorded, _ = reference_accounting(measures)
     # Exact, or a large net would round the perturbation away.
     with export.exact():
         recorded["by_class"][victim]["net_gbp_decimal"] = str(
@@ -661,4 +741,46 @@ def test_accounting_that_differs_from_the_registry_is_refused(measures, victim):
         )
     registry = {"event_slug": "generated", "measures": measures, "accounting": recorded}
     with pytest.raises(export.ExportError, match="accounting differs"):
+        export.accounting(registry)
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "rows_classified",
+        "net_gbp_classified_decimal",
+        "absolute_gbp_classified_decimal",
+        "by_fy.rows_in",
+        "by_fy.rows_classified",
+        "by_fy.net_gbp_in_decimal",
+        "by_fy.net_gbp_classified_decimal",
+        "by_fy.absolute_gbp_in_decimal",
+        "by_fy.absolute_gbp_classified_decimal",
+    ],
+)
+def test_recorded_accounting_totals_and_fiscal_years_are_verified(field):
+    registry = registry_of(documents(FIRST)[EVENT])
+    account = registry["accounting"]
+    if field.startswith("by_fy."):
+        account = next(iter(account["by_fy"].values()))
+        field = field.removeprefix("by_fy.")
+    if field.startswith("rows_"):
+        account[field] += 1
+    else:
+        with export.exact():
+            account[field] = str(Decimal(account[field]) + Decimal("1e-20"))
+    with pytest.raises(export.ExportError, match="accounting .*differ"):
+        export.accounting(registry)
+
+
+@pytest.mark.parametrize("change", ["missing", "extra"])
+def test_recorded_accounting_fiscal_years_must_match_the_rows(change):
+    registry = registry_of(documents(FIRST)[EVENT])
+    by_fy = registry["accounting"]["by_fy"]
+    year = next(iter(by_fy))
+    if change == "missing":
+        del by_fy[year]
+    else:
+        by_fy["2099-00"] = dict(by_fy[year])
+    with pytest.raises(export.ExportError, match="fiscal-year accounting differs"):
         export.accounting(registry)
