@@ -61,6 +61,10 @@ CONSTRUCTED = "constructed"
 # (compute_uk_event.uc_health_scenario). An importer must reproduce the route,
 # not just the dictionary.
 EXECUTOR_ROUTES = {replay.UC_HEALTH_ELEMENT_PARAMETER: "uc_health_element_refresh"}
+# The seal records engine versions, but not Scenario's dated-reform capability.
+# Keep only versions verified by the real Scenario.from_reform feature-detection
+# test; unknown versions must not select either revision submission by inference.
+SCENARIO_DATED_REFORMS = {"2.130.1": True}
 
 SEMANTICS = (
     "Each computed measure is costed on the replay's certified model and data, "
@@ -162,6 +166,20 @@ class Namespace:
         self.receipt_sha256 = sha256_bytes(receipt_bytes)
         self.manifest_sha256 = sha256_bytes(manifest_bytes)
         self.files = json.loads(manifest_bytes)["files"]
+        self.engine_version = record["identity"]["packages"]["policyengine-uk"][
+            "version"
+        ]
+        if (
+            self.json("CONSTRUCTION_PREMISES.json")["engine"]["policyengine_uk"]
+            != self.engine_version
+        ):
+            raise ExportError("construction premises engine differs from the variant")
+        try:
+            self.scenario_dated_reforms = SCENARIO_DATED_REFORMS[self.engine_version]
+        except KeyError as exc:
+            raise ExportError(
+                f"unverified Scenario route for policyengine-uk {self.engine_version}"
+            ) from exc
 
     def read(self, relative: str) -> bytes:
         """A namespace file's bytes, refused unless the seal lists that digest."""
@@ -448,6 +466,8 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
         raise ExportError(
             f"{event}: run identity or data years differ from the variant"
         )
+    if run["engine_version"] != namespace.engine_version:
+        raise ExportError(f"{event}: run engine differs from the variant")
     supported, unsupported = variants.supported_years(
         namespace.record, registry["calendar_years"]
     )
@@ -475,6 +495,8 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
             or artifact.get("variant_id") != namespace.record["variant_id"]
         ):
             raise ExportError(f"{relative}: artifact names another event or variant")
+        if artifact["engine_version"] != namespace.engine_version:
+            raise ExportError(f"{relative}: artifact engine differs from the variant")
         pair = (artifact["measure_key"], artifact["year"])
         if pair in artifact_pairs:
             raise ExportError(f"{event}: duplicate artifact measure/year {pair}")
@@ -594,27 +616,25 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
                 ("reform_world", "reform_reform"),
             ):
                 registry_side = replay.annual_reform(world[field])
-                permitted = [registry_side]
-                if registry_side and revision:
+                expected = registry_side
+                if registry_side and revision and namespace.scenario_dated_reforms:
                     # revision_reform_route submits these exact fiscal windows
                     # when Scenario exposes statutory reprocessing.
-                    permitted.append(
-                        {
-                            path: {
-                                (
-                                    f"{start[:4]}-04-06.{int(stop[:4]) + 1}-04-05"
-                                    if path in revision["paths"]
-                                    else window
-                                ): value
-                                for window, value in windows.items()
-                                for start, stop in [window.split(".")]
-                            }
-                            for path, windows in registry_side.items()
+                    expected = {
+                        path: {
+                            (
+                                f"{start[:4]}-04-06.{int(stop[:4]) + 1}-04-05"
+                                if path in revision["paths"]
+                                else window
+                            ): value
+                            for window, value in windows.items()
+                            for start, stop in [window.split(".")]
                         }
-                    )
-                if submitted[name] not in permitted or any(
+                        for path, windows in registry_side.items()
+                    }
+                if submitted[name] != expected or any(
                     a["artifact"]["parameter_reform_routes"][name]["submitted_reform"]
-                    not in permitted
+                    != expected
                     for a in found
                 ):
                     raise ExportError(
@@ -629,6 +649,20 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
                 raise ExportError(f"{key}: artifacts disagree on the construction")
             entry_points = {}
             for name in ("baseline_world", "reform_world"):
+                for item in found:
+                    route = item["artifact"]["parameter_reform_routes"][name]
+                    reform = route["submitted_reform"]
+                    expected_point = (
+                        "built_simulation_scenario"
+                        if reform and replay.UC_HEALTH_ELEMENT_PARAMETER in reform
+                        else "construction_reform"
+                        if reform
+                        else "certified_current_law"
+                    )
+                    if route["entry_point"] != expected_point:
+                        raise ExportError(
+                            f"{key}: {name} entry point does not match its submitted reform"
+                        )
                 points = {
                     a["artifact"]["parameter_reform_routes"][name]["entry_point"]
                     for a in found

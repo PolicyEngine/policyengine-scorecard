@@ -108,10 +108,17 @@ The export reads only what the seal covers:
    value; a measure without computation cannot own constructed rows.
 4. Each computed measure's submitted worlds must equal the registry's
    construction under `compute_uk_event.annual_reform`, after applying any
-   recorded construction revision and its specified window transformation.
-   Revision evidence must match the revision registry. Each computed measure
-   must also agree with its artifacts on the construction kind, entry points,
-   sentinels and heads.
+   recorded construction revision. Revision evidence must match the revision
+   registry. The receipt-bound engine version must agree with the sealed
+   construction premises, run manifest and every artifact. A verified
+   `Scenario.from_reform` capability table selects exactly one revision
+   submission: fiscal windows for engines with `dated_reforms`, annual
+   windows otherwise; unlisted engine versions are refused. Every artifact's
+   two entry points must match its submitted worlds: `certified_current_law`
+   for an empty or absent reform, `built_simulation_scenario` for a reform
+   containing the UC health element parameter, and `construction_reform` for
+   other nonempty reforms. Each computed measure must also agree with its
+   artifacts on the construction kind, entry points, sentinels and heads.
 
 A legacy namespace (no processed-parameter evidence) and an uncertified
 variant are refused.

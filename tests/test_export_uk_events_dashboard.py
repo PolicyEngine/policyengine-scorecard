@@ -26,6 +26,7 @@ import re
 import shutil
 from decimal import Decimal
 from fractions import Fraction
+from importlib import metadata
 from pathlib import Path
 
 import pytest
@@ -33,6 +34,7 @@ from hypothesis import HealthCheck, example, given, settings
 from hypothesis import strategies as st
 
 from pipeline import export_uk_events_dashboard as export
+from pipeline import uk_replay_interface as interface
 from pipeline import uk_replay_variants as variants
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -64,6 +66,21 @@ def registry_of(document: dict) -> dict:
 
 def test_the_first_import_variant_is_exported():
     assert FIRST in EXPORTED
+
+
+def test_recorded_scenario_capability_matches_the_installed_engine():
+    try:
+        version = metadata.version("policyengine-uk")
+    except metadata.PackageNotFoundError:
+        pytest.skip("policyengine-uk is not installed in this engine-free environment")
+    from policyengine_uk.utils.scenario import Scenario
+
+    reform = {"gov.hmrc.cgt.basic_rate": {"2024-01-01.2035-12-31": 0.1}}
+    detected = bool(getattr(Scenario.from_reform(reform), "dated_reforms", None))
+    assert version in export.SCENARIO_DATED_REFORMS, (
+        f"Verify and record Scenario.dated_reforms for policyengine-uk {version}"
+    )
+    assert export.SCENARIO_DATED_REFORMS[version] == detected
 
 
 @pytest.mark.parametrize("variant_id", EXPORTED)
@@ -441,6 +458,7 @@ def sealed_copy(tmp_path: Path, event: str = EVENT) -> tuple[dict, Path]:
         variants.RECEIPT_NAME,
         "NAMESPACE_MANIFEST.json",
         variants.CORPUS_NAME,
+        "CONSTRUCTION_PREMISES.json",
     ):
         shutil.copy2(source / name, target / name)
     shutil.copytree(source / event, target / event)
@@ -458,10 +476,45 @@ def reseal_namespace(target: Path, event: str) -> None:
     """Reseal edited fixture files so semantic checks see valid digests."""
     run_path = target / event / "RUN_MANIFEST.json"
     run = json.loads(run_path.read_bytes())
+    changed_artifacts = {}
+    artifact_names = {Path(path).name for path in run["artifacts"]}
     for path in run["artifacts"]:
         artifact = target / event / Path(path).name
-        run["artifacts"][path] = export.sha256_bytes(artifact.read_bytes())
+        old_digest = run["artifacts"][path]
+        new_digest = export.sha256_bytes(artifact.read_bytes())
+        run["artifacts"][path] = new_digest
+        if new_digest != old_digest:
+            changed_artifacts[old_digest] = new_digest
     run_path.write_bytes(export.canonical_json(run))
+    # Staging, comparisons, and progress records also carry artifact digests.
+    # Preserve their formatting while refreshing every pointer to an edited file.
+    for path in (target / event).iterdir():
+        if path.name in artifact_names or path == run_path:
+            continue
+        if path.suffix not in (".json", ".jsonl", ".csv", ".md"):
+            continue
+        content = path.read_bytes()
+        for old_digest, new_digest in changed_artifacts.items():
+            content = content.replace(old_digest.encode(), new_digest.encode())
+        path.write_bytes(content)
+    staged_digest = export.sha256_bytes((target / event / "STAGED.jsonl").read_bytes())
+    staging_path = target / event / "STAGING_MANIFEST.json"
+    staging = json.loads(staging_path.read_bytes())
+    staging["staged_sha256"] = staged_digest
+    staging_path.write_bytes(export.canonical_json(staging))
+    staging_digest = export.sha256_bytes(staging_path.read_bytes())
+    run_digest = export.sha256_bytes(run_path.read_bytes())
+    provenance_path = target / event / "COMPARISON_PROVENANCE.json"
+    provenance = json.loads(provenance_path.read_bytes())
+    provenance["run_manifest_sha256"] = run_digest
+    provenance["staged_sha256"] = staged_digest
+    provenance["staging_manifest_sha256"] = staging_digest
+    for name in provenance["outputs_sha256"]:
+        provenance["outputs_sha256"][name] = export.sha256_bytes(
+            (target / event / name).read_bytes()
+        )
+    provenance_path.write_bytes(export.canonical_json(provenance))
+    provenance_digest = export.sha256_bytes(provenance_path.read_bytes())
     manifest_path = target / "NAMESPACE_MANIFEST.json"
     manifest = json.loads(manifest_path.read_bytes())
     for relative in manifest["files"]:
@@ -474,7 +527,66 @@ def reseal_namespace(target: Path, event: str) -> None:
     receipt["results"]["manifest_sha256"] = export.sha256_bytes(
         manifest_path.read_bytes()
     )
-    receipt_path.write_bytes(export.canonical_json(receipt))
+    event_receipt = receipt["corpus"]["events"][event]
+    event_receipt["run_manifest_sha256"] = run_digest
+    event_receipt["staging_manifest_sha256"] = staging_digest
+    event_receipt["comparison_provenance_sha256"] = provenance_digest
+    receipt_path.write_bytes(export.canonical_json(interface.seal_receipt(receipt)))
+
+
+def assert_namespace_fully_resealed(target: Path, event: str) -> None:
+    receipt = json.loads((target / variants.RECEIPT_NAME).read_bytes())
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    manifest_path = target / "NAMESPACE_MANIFEST.json"
+    assert receipt["results"]["manifest_sha256"] == export.sha256_bytes(
+        manifest_path.read_bytes()
+    )
+    manifest = json.loads(manifest_path.read_bytes())
+    for relative, digest in manifest["files"].items():
+        path = target / relative
+        if path.is_file():
+            assert digest == export.sha256_bytes(path.read_bytes()), relative
+    run_path = target / event / "RUN_MANIFEST.json"
+    run = json.loads(run_path.read_bytes())
+    for path, digest in run["artifacts"].items():
+        assert digest == export.sha256_bytes(
+            (target / event / Path(path).name).read_bytes()
+        ), path
+    staged_path = target / event / "STAGED.jsonl"
+    staged = [json.loads(line) for line in staged_path.read_bytes().splitlines()]
+    comparisons = json.loads((target / event / "COMPARISON.json").read_bytes())
+    comparison_csv = list(csv.DictReader((target / event / "COMPARISON.csv").open()))
+    for rows, field in (
+        (staged, "artifact_path"),
+        (comparisons, "artifact"),
+        (comparison_csv, "artifact"),
+    ):
+        for row in rows:
+            if row.get(field):
+                assert row["artifact_sha256"] == run["artifacts"][row[field]]
+    staging_path = target / event / "STAGING_MANIFEST.json"
+    staging = json.loads(staging_path.read_bytes())
+    assert staging["staged_sha256"] == export.sha256_bytes(staged_path.read_bytes())
+    provenance_path = target / event / "COMPARISON_PROVENANCE.json"
+    provenance = json.loads(provenance_path.read_bytes())
+    assert provenance["run_manifest_sha256"] == export.sha256_bytes(
+        run_path.read_bytes()
+    )
+    assert provenance["staged_sha256"] == staging["staged_sha256"]
+    assert provenance["staging_manifest_sha256"] == export.sha256_bytes(
+        staging_path.read_bytes()
+    )
+    for name, digest in provenance["outputs_sha256"].items():
+        assert digest == export.sha256_bytes((target / event / name).read_bytes())
+    event_receipt = receipt["corpus"]["events"][event]
+    assert event_receipt["run_manifest_sha256"] == provenance["run_manifest_sha256"]
+    assert (
+        event_receipt["staging_manifest_sha256"]
+        == provenance["staging_manifest_sha256"]
+    )
+    assert event_receipt["comparison_provenance_sha256"] == export.sha256_bytes(
+        provenance_path.read_bytes()
+    )
 
 
 def test_an_identity_path_changed_without_its_digest_is_refused(tmp_path):
@@ -661,6 +773,111 @@ def test_a_revision_allows_only_its_recorded_window_change(tmp_path, change):
         export.write_export(
             record, [event], root=tmp_path, output_root=tmp_path / "out"
         )
+
+
+@pytest.mark.parametrize("change", ["annual_windows", "current_law_entry_point"])
+def test_a_revision_must_use_its_engines_recorded_execution_route(tmp_path, change):
+    """The reviewer's accepted fixtures retain valid digests and revision evidence."""
+    event = "autumn_budget_2024"
+    key = "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+    record, target = sealed_copy(tmp_path, event)
+    paths = sorted((target / event).glob(f"{key}_*.json"))
+    assert len(paths) == 6
+    for path in paths:
+        artifact = json.loads(path.read_bytes())
+        assert artifact["engine_version"] == "2.130.1"
+        route = artifact["parameter_reform_routes"]["baseline_world"]
+        assert route["entry_point"] == "construction_reform"
+        for windows in route["submitted_reform"].values():
+            assert set(windows) == {"2024-04-06.2036-04-05"}
+        if change == "annual_windows":
+            route["submitted_reform"] = {
+                parameter: {"2024-01-01.2035-12-31": next(iter(windows.values()))}
+                for parameter, windows in route["submitted_reform"].items()
+            }
+        else:
+            route["entry_point"] = "certified_current_law"
+        path.write_bytes(export.canonical_json(artifact))
+    reseal_namespace(target, event)
+    assert_namespace_fully_resealed(target, event)
+    with pytest.raises(
+        export.ExportError,
+        match="construction" if change == "annual_windows" else "entry point",
+    ):
+        export.write_export(
+            record, [event], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
+@pytest.mark.parametrize(
+    "event,key",
+    [
+        (
+            EVENT,
+            "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+        ),
+        (EVENT, "spring_statement_2025__uc_standard_allowance_above_inflation"),
+        ("autumn_budget_2024", "autumn_budget_2024__private_school_vat_20pct"),
+    ],
+)
+@pytest.mark.parametrize("world", ["baseline_world", "reform_world"])
+@pytest.mark.parametrize("alternative", [0, 1])
+def test_unrevised_worlds_must_name_the_entry_point_their_reform_uses(
+    tmp_path, event, key, world, alternative
+):
+    record, target = sealed_copy(tmp_path, event)
+    points = {
+        "built_simulation_scenario",
+        "construction_reform",
+        "certified_current_law",
+    }
+    paths = sorted((target / event).glob(f"{key}_*.json"))
+    assert paths
+    for path in paths:
+        artifact = json.loads(path.read_bytes())
+        assert artifact.get("construction_revision") is None
+        route = artifact["parameter_reform_routes"][world]
+        route["entry_point"] = sorted(points - {route["entry_point"]})[alternative]
+        path.write_bytes(export.canonical_json(artifact))
+    # All years agree on the wrong entry point; agreement alone must not pass.
+    reseal_namespace(target, event)
+    with pytest.raises(export.ExportError, match="entry point"):
+        export.write_export(
+            record, [event], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
+@pytest.mark.parametrize("source", ["premises", "run", "artifact"])
+def test_resealed_engine_versions_must_agree_with_the_certified_identity(
+    tmp_path, source
+):
+    record, target = sealed_copy(tmp_path)
+    run_path = target / EVENT / "RUN_MANIFEST.json"
+    run = json.loads(run_path.read_bytes())
+    path = {
+        "premises": target / "CONSTRUCTION_PREMISES.json",
+        "run": run_path,
+        "artifact": tmp_path / min(run["artifacts"]),
+    }[source]
+    document = json.loads(path.read_bytes())
+    engine = document["engine"] if source == "premises" else document
+    field = "policyengine_uk" if source == "premises" else "engine_version"
+    assert engine[field] == "2.130.1"
+    engine[field] = "999.0.0"
+    path.write_bytes(export.canonical_json(document))
+    reseal_namespace(target, EVENT)
+    with pytest.raises(export.ExportError, match="engine"):
+        export.write_export(
+            record, [EVENT], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
+def test_an_engine_without_verified_scenario_capability_is_refused(monkeypatch):
+    record = variants.get_variant(FIRST)
+    version = record["identity"]["packages"]["policyengine-uk"]["version"]
+    monkeypatch.delitem(export.SCENARIO_DATED_REFORMS, version)
+    with pytest.raises(export.ExportError, match="unverified Scenario route"):
+        export.Namespace(record)
 
 
 def test_legacy_and_uncertified_variants_are_refused():
