@@ -130,6 +130,11 @@ class Namespace:
                 f"{record['variant_id']} is the legacy namespace: export a "
                 "replay_namespace variant, which records processed parameters"
             )
+        try:
+            variants.validate_record(record, root=root)
+        except variants.VariantError as exc:
+            raise ExportError(f"invalid variant record: {exc}") from exc
+        identity_sha256 = variants.identity_sha256(record["identity"])
         self.root = root
         self.record = record
         self.path = variants.namespace_root(record, root=root)
@@ -137,12 +142,13 @@ class Namespace:
         receipt = json.loads(receipt_bytes)
         if (
             receipt.get("status") != "complete"
+            or receipt.get("integrity", {}).get("status") != "complete"
             or receipt.get("variant_id") != record["variant_id"]
         ):
             raise ExportError(
                 f"{self.path}: receipt is not a complete seal of this variant"
             )
-        if receipt.get("variant_identity_sha256") != record["identity_sha256"]:
+        if receipt.get("variant_identity_sha256") != identity_sha256:
             raise ExportError(
                 f"{self.path}: receipt names a different variant identity"
             )
@@ -160,7 +166,10 @@ class Namespace:
         """A namespace file's bytes, refused unless the seal lists that digest."""
         if relative not in self.files:
             raise ExportError(f"{relative} is not listed in the sealed namespace")
-        data = (self.path / relative).read_bytes()
+        try:
+            data = (self.path / relative).read_bytes()
+        except FileNotFoundError as exc:
+            raise ExportError(f"{relative}: sealed file is missing") from exc
         if sha256_bytes(data) != self.files[relative]:
             raise ExportError(f"{relative} does not match its sealed digest")
         return data
@@ -169,7 +178,15 @@ class Namespace:
         return json.loads(self.read(relative))
 
     def events(self) -> list[str]:
-        return json.loads(self.read(variants.CORPUS_NAME))["events"]
+        events = json.loads(self.read(variants.CORPUS_NAME))["events"]
+        manifested = {
+            path.removesuffix("/RUN_MANIFEST.json")
+            for path in self.files
+            if path.endswith("/RUN_MANIFEST.json")
+        }
+        if len(events) != len(set(events)) or set(events) != manifested:
+            raise ExportError("sealed corpus and namespace event inventory disagree")
+        return events
 
 
 def default_variant(document: dict) -> dict:
@@ -405,6 +422,18 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
         != namespace.record["variant_id"]
     ):
         raise ExportError(f"{event}: run belongs to another variant")
+    if (
+        run["variant_identity_sha256"] != namespace.record["identity_sha256"]
+        or run["data_years"] != namespace.record["data_years"]
+    ):
+        raise ExportError(
+            f"{event}: run identity or data years differ from the variant"
+        )
+    supported, unsupported = variants.supported_years(
+        namespace.record, registry["calendar_years"]
+    )
+    if run["supported_years"] != supported or run["unsupported_years"] != unsupported:
+        raise ExportError(f"{event}: run does not cover the registry's supported years")
     index = {m["measure_key"]: m for m in registry["measures"]}
     planned = worlds.computable(index, years=run["supported_years"])
     idle = worlds.not_computable(index, years=run["supported_years"])
@@ -413,6 +442,7 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
     seen_rows: set[str] = set()
 
     artifacts_by_measure: dict[str, list[dict]] = defaultdict(list)
+    artifact_pairs: set[tuple[str, int]] = set()
     prefix = f"{namespace.path.relative_to(namespace.root).as_posix()}/"
     for path, digest in run["artifacts"].items():
         relative = path.removeprefix(prefix)
@@ -426,8 +456,23 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
             or artifact.get("variant_id") != namespace.record["variant_id"]
         ):
             raise ExportError(f"{relative}: artifact names another event or variant")
+        pair = (artifact["measure_key"], artifact["year"])
+        if pair in artifact_pairs:
+            raise ExportError(f"{event}: duplicate artifact measure/year {pair}")
+        artifact_pairs.add(pair)
         artifacts_by_measure[artifact["measure_key"]].append(
             {"path": path, "sha256": digest, "artifact": artifact}
+        )
+    expected_pairs = {
+        (key, year)
+        for key in planned
+        if index[key].get("classification", index[key].get("computability"))
+        in COMPUTABLE
+        for year in supported
+    }
+    if artifact_pairs != expected_pairs:
+        raise ExportError(
+            f"{event}: artifacts do not equal the expected supported-year grid"
         )
 
     measures = []
@@ -597,6 +642,8 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
         elif key in idle:
             # Computable, but nothing to execute by design (worlds.not_computable).
             entry["reason"] = " ".join(filter(None, [entry["reason"], idle[key]]))
+        if not entry["computed"] and any(r["status"] == CONSTRUCTED for r in obr_rows):
+            raise ExportError(f"{key}: a noncomputed measure owns constructed OBR rows")
         measures.append(entry)
     if artifacts_by_measure:
         raise ExportError(
@@ -655,9 +702,7 @@ def write_export(
     """Write every event's export and the manifest of their digests."""
     namespace = Namespace(record, root=root)
     available = namespace.events()
-    events = events or [
-        e for e in available if (namespace.path / e / "RUN_MANIFEST.json").is_file()
-    ]
+    events = available if events is None else events
     unknown = sorted(set(events) - set(available))
     if unknown:
         raise ExportError(f"events not in {record['variant_id']}'s corpus: {unknown}")

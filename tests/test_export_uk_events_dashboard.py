@@ -18,6 +18,8 @@ accounting against an independent Fraction implementation. Tampered copies of
 a sealed namespace are refused.
 """
 
+import csv
+import io
 import json
 import math
 import shutil
@@ -100,7 +102,22 @@ def test_every_registry_measure_once_computed_when_the_registry_computes_it(
     keys = [m["measure_key"] for m in document["measures"]]
     assert keys == sorted(m["measure_key"] for m in registry["measures"])
     supported = document["years"]["supported"]
+    index = {m["measure_key"]: m for m in registry["measures"]}
+    planned = export.worlds.computable(index, years=supported)
+    namespace = export.Namespace(variants.get_variant(variant_id))
+    run = namespace.json(f"{event}/RUN_MANIFEST.json")
+    artifact_years: dict[str, list[int]] = {}
+    for path in run["artifacts"]:
+        artifact = namespace.json(
+            Path(path).relative_to(namespace.path.relative_to(ROOT)).as_posix()
+        )
+        artifact_years.setdefault(artifact["measure_key"], []).append(artifact["year"])
     for measure in document["measures"]:
+        key = measure["measure_key"]
+        expected = measure["classification"] in export.COMPUTABLE and key in planned
+        years = sorted(artifact_years.get(key, []))
+        assert years == (supported if expected else [])
+        assert measure["computed"] == (expected and bool(supported))
         if measure["computed"]:
             assert measure["classification"] in export.COMPUTABLE
             assert [y["year"] for y in measure["years"]] == supported
@@ -290,7 +307,134 @@ def sealed_copy(tmp_path: Path, event: str = EVENT) -> tuple[dict, Path]:
     registry = tmp_path / run["registry_path"]
     registry.parent.mkdir(parents=True)
     shutil.copy2(ROOT / run["registry_path"], registry)
+    requirements = tmp_path / record["requirements"]["path"]
+    requirements.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / record["requirements"]["path"], requirements)
     return record, target
+
+
+def reseal_namespace(target: Path, event: str) -> None:
+    """Reseal edited fixture files so semantic checks see valid digests."""
+    run_path = target / event / "RUN_MANIFEST.json"
+    run = json.loads(run_path.read_bytes())
+    for path in run["artifacts"]:
+        artifact = target / event / Path(path).name
+        run["artifacts"][path] = export.sha256_bytes(artifact.read_bytes())
+    run_path.write_bytes(export.canonical_json(run))
+    manifest_path = target / "NAMESPACE_MANIFEST.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    for relative in manifest["files"]:
+        path = target / relative
+        if path.is_file():
+            manifest["files"][relative] = export.sha256_bytes(path.read_bytes())
+    manifest_path.write_bytes(export.canonical_json(manifest))
+    receipt_path = target / variants.RECEIPT_NAME
+    receipt = json.loads(receipt_path.read_bytes())
+    receipt["results"]["manifest_sha256"] = export.sha256_bytes(
+        manifest_path.read_bytes()
+    )
+    receipt_path.write_bytes(export.canonical_json(receipt))
+
+
+def test_an_identity_path_changed_without_its_digest_is_refused(tmp_path):
+    record, _ = sealed_copy(tmp_path)
+    record["identity"]["dataset"]["path"] = "unsealed.h5"
+    with pytest.raises(export.ExportError, match="identity_sha256 differs"):
+        export.Namespace(record, root=tmp_path)
+
+
+def test_unsealed_data_years_are_refused(tmp_path):
+    record, _ = sealed_copy(tmp_path)
+    record["data_years"] = record["data_years"][:-1]
+    with pytest.raises(export.ExportError, match="data years differ"):
+        export.write_export(
+            record, [EVENT], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
+def test_a_missing_sealed_event_cannot_disappear_from_the_default_export(tmp_path):
+    record = variants.get_variant(FIRST)
+    source = variants.namespace_root(record)
+    target = variants.namespace_root(record, root=tmp_path)
+    shutil.copytree(source, target)
+    requirements = tmp_path / record["requirements"]["path"]
+    requirements.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / record["requirements"]["path"], requirements)
+    for event in json.loads((source / variants.CORPUS_NAME).read_bytes())["events"]:
+        run = json.loads((source / event / "RUN_MANIFEST.json").read_bytes())
+        registry = tmp_path / run["registry_path"]
+        registry.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / run["registry_path"], registry)
+    (target / EVENT / "RUN_MANIFEST.json").unlink()
+    with pytest.raises(
+        export.ExportError, match="RUN_MANIFEST.json: sealed file is missing"
+    ):
+        export.write_export(record, root=tmp_path, output_root=tmp_path / "out")
+
+
+def test_an_incomplete_integrity_receipt_is_refused(tmp_path):
+    record, target = sealed_copy(tmp_path)
+    path = target / variants.RECEIPT_NAME
+    receipt = json.loads(path.read_bytes())
+    assert receipt["status"] == "complete"
+    receipt["integrity"]["status"] = "incomplete"
+    path.write_bytes(export.canonical_json(receipt))
+    with pytest.raises(export.ExportError, match="not a complete seal"):
+        export.Namespace(record, root=tmp_path)
+
+
+@pytest.mark.parametrize(
+    "malformation", ["missing_year", "duplicate_year", "missing_measure"]
+)
+def test_resealed_incomplete_or_duplicate_artifact_years_are_refused(
+    tmp_path, malformation
+):
+    record, target = sealed_copy(tmp_path)
+    run_path = target / EVENT / "RUN_MANIFEST.json"
+    run = json.loads(run_path.read_bytes())
+    first, second = sorted(run["artifacts"])[:2]
+    if malformation == "duplicate_year":
+        path = tmp_path / second
+        artifact = json.loads(path.read_bytes())
+        artifact["year"] = json.loads((tmp_path / first).read_bytes())["year"]
+        path.write_bytes(export.canonical_json(artifact))
+        message = "duplicate artifact measure/year"
+    else:
+        key = json.loads((tmp_path / first).read_bytes())["measure_key"]
+        for path in list(run["artifacts"]):
+            if path == first or (
+                malformation == "missing_measure"
+                and json.loads((tmp_path / path).read_bytes())["measure_key"] == key
+            ):
+                del run["artifacts"][path]
+        message = "expected supported-year grid"
+    run_path.write_bytes(export.canonical_json(run))
+    reseal_namespace(target, EVENT)
+    with pytest.raises(export.ExportError, match=message):
+        export.write_export(
+            record, [EVENT], root=tmp_path, output_root=tmp_path / "out"
+        )
+
+
+def test_a_noncomputed_measure_cannot_own_constructed_obr_rows(tmp_path):
+    record, target = sealed_copy(tmp_path)
+    path = target / EVENT / "COMPARISON.csv"
+    reader = csv.DictReader(io.StringIO(path.read_text()))
+    rows = list(reader)
+    next(row for row in rows if row["status"] != export.CONSTRUCTED)["status"] = (
+        export.CONSTRUCTED
+    )
+    with path.open("w") as stream:
+        writer = csv.DictWriter(stream, fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    reseal_namespace(target, EVENT)
+    with pytest.raises(
+        export.ExportError, match="noncomputed measure owns constructed"
+    ):
+        export.write_export(
+            record, [EVENT], root=tmp_path, output_root=tmp_path / "out"
+        )
 
 
 def test_a_sealed_copy_exports_the_committed_bytes(tmp_path):
