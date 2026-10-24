@@ -22,6 +22,7 @@ import csv
 import io
 import json
 import math
+import re
 import shutil
 from decimal import Decimal
 from fractions import Fraction
@@ -219,7 +220,7 @@ ROW_KEYS = {
     "replay_pe_value_gbp",
     "replay_gap_gbp",
     "replay_pe_to_obr_ratio",
-    "ratio_bin",
+    "replay_ratio_bin",
 }
 YEAR_KEYS = {
     "year",
@@ -243,35 +244,175 @@ CONSTRUCTION_KEYS = {
 SCALARS = (bool, int, float, str, type(None))
 
 
+def assert_closed_shape(value, shape):
+    if isinstance(shape, tuple) and shape[0] is None:
+        if value is None:
+            return
+        shape = shape[1]
+    if isinstance(shape, dict):
+        assert isinstance(value, dict)
+        assert set(value) == set(shape)
+        for key, child in shape.items():
+            assert_closed_shape(value[key], child)
+    elif isinstance(shape, list):
+        assert isinstance(value, list)
+        for item in value:
+            assert_closed_shape(item, shape[0])
+    elif isinstance(shape, tuple) and isinstance(shape[0], frozenset | re.Pattern):
+        assert isinstance(value, dict)
+        keys, child = shape
+        for key, item in value.items():
+            assert key in keys if isinstance(keys, frozenset) else keys.fullmatch(key)
+            assert_closed_shape(item, child)
+    elif shape is SCALARS and isinstance(value, list):
+        for item in value:
+            assert_closed_shape(item, SCALARS)
+    else:
+        assert isinstance(value, shape)
+
+
+def document_shape(document):
+    registry = registry_of(document)
+    worlds = export.worlds.computable(
+        {m["measure_key"]: m for m in registry["measures"]},
+        years=document["years"]["supported"],
+    )
+    paths = frozenset(
+        path
+        for world in worlds.values()
+        for field in ("baseline_reform", "reform_reform")
+        for path in world[field] or {}
+    )
+    heads = frozenset(
+        variable
+        for measure in registry["measures"]
+        for head in export.replay.head_definitions(measure)
+        for variable in head["pe_variables"]
+    )
+    reform = (
+        None,
+        (paths, (re.compile(r"\d{4}-\d{2}-\d{2}\.\d{4}-\d{2}-\d{2}"), SCALARS)),
+    )
+    world = {"entry_point": str, "submitted_reform": reform}
+    account = {
+        "measures": int,
+        "rows": int,
+        "net_gbp_decimal": str,
+        "absolute_gbp_decimal": str,
+        "share_of_absolute": (str, type(None)),
+        "share_of_measures": (str, type(None)),
+    }
+    construction = {key: SCALARS for key in CONSTRUCTION_KEYS}
+    construction.update(
+        components=[str],
+        baseline_world=world,
+        reform_world=world,
+        construction_revision=(
+            None,
+            {
+                "revision_id": str,
+                "registry_sha256": str,
+                "activation_fy": str,
+                "part_year_rule": str,
+                "paths": [str],
+            },
+        ),
+        sentinels=[str],
+        head_definitions=[{"channel": str, "obr_head": str, "pe_variables": [str]}],
+    )
+    year = {key: SCALARS for key in YEAR_KEYS}
+    year.update(
+        head_effects=(heads, (float, int)),
+        processed_parameter_values={
+            name: (paths, {"intended": SCALARS, "processed": SCALARS})
+            for name in ("baseline_world", "reform_world")
+        },
+    )
+    measure = {key: SCALARS for key in MEASURE_KEYS}
+    measure.update(
+        missing_legs=[str],
+        obr_rows=[{key: SCALARS for key in ROW_KEYS}],
+        construction=(None, construction),
+        years=[year],
+    )
+    return {
+        "schema": str,
+        "semantics": str,
+        "sign_convention": str,
+        "event": dict.fromkeys(
+            ("slug", "name", "registry_path", "registry_sha256"), str
+        ),
+        "variant": {
+            **dict.fromkeys(
+                (
+                    "variant_id",
+                    "variant_identity_sha256",
+                    "receipt_sha256",
+                    "namespace_manifest_sha256",
+                    "run_manifest_sha256",
+                    "comparison_sha256",
+                ),
+                str,
+            ),
+            "packages": dict.fromkeys(
+                variants.get_variant(document["variant"]["variant_id"])["identity"][
+                    "packages"
+                ],
+                str,
+            ),
+            "dataset": dict.fromkeys(("repo_id", "path", "revision", "sha256"), str),
+            "data_years": [int],
+        },
+        "years": {
+            "requested": [int],
+            "supported": [int],
+            "unsupported": [{"reason": str, "year": int}],
+        },
+        "accounting": {
+            "amount_basis": str,
+            "sign_convention": str,
+            "by_class": dict.fromkeys(export.CLASSES, account),
+            "not_expressible_by_gap_kind": dict.fromkeys(export.GAP_KINDS, account),
+            "totals": {
+                "measures": int,
+                "rows": int,
+                "net_gbp_decimal": str,
+                "absolute_gbp_decimal": str,
+            },
+            "computed": {
+                "measures": int,
+                "rows": int,
+                "absolute_gbp_decimal": str,
+                "share_of_absolute": (str, type(None)),
+                "share_of_measures": (str, type(None)),
+                "by_status": (
+                    frozenset(
+                        ("constructed", "not_computed", "unsupported_on_variant")
+                    ),
+                    {
+                        "rows": int,
+                        "absolute_gbp_decimal": str,
+                        "share_of_absolute": (str, type(None)),
+                    },
+                ),
+            },
+        },
+        "measures": [measure],
+    }
+
+
 @pytest.mark.parametrize("variant_id,event,document", ALL, ids=lambda v: str(v)[:40])
 def test_the_document_has_a_closed_aggregate_shape(variant_id, event, document):
-    assert set(document) == {
-        "schema",
-        "semantics",
-        "sign_convention",
-        "event",
-        "variant",
-        "years",
-        "accounting",
-        "measures",
-    }
     assert document["schema"] == export.SCHEMA
-    for measure in document["measures"]:
-        assert set(measure) == MEASURE_KEYS
-        for row in measure["obr_rows"]:
-            assert set(row) == ROW_KEYS
-        if measure["construction"]:
-            assert set(measure["construction"]) == CONSTRUCTION_KEYS
-        for year in measure["years"]:
-            assert set(year) == YEAR_KEYS
-            # National aggregates: one number per fiscal head.
-            assert all(
-                isinstance(v, float | int) for v in year["head_effects"].values()
-            )
-            for world in year["processed_parameter_values"].values():
-                for value in world.values():
-                    assert set(value) == {"intended", "processed"}
-                    assert all(isinstance(v, SCALARS + (list,)) for v in value.values())
+    assert_closed_shape(document, document_shape(document))
+
+
+def test_unknown_event_fields_are_refused_by_the_closed_schema():
+    document = documents(FIRST)[EVENT]
+    shape = document_shape(document)
+    document["event"]["extra_unrecognised_field"] = 123
+    with pytest.raises(AssertionError):
+        assert_closed_shape(document, shape)
 
 
 def test_the_uc_health_measure_names_its_executor_route():

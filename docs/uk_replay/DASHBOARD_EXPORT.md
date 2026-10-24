@@ -53,7 +53,8 @@ corpus: 25 computed measures out of 426.
 - **The OBR side of every source row.** Each row carries the OBR value as an
   exact decimal, its class and `COMPARISON.csv` status. It also carries the
   replay's own counterpart, gap and ratio from `COMPARISON.csv`, named
-  `replay_*` so that nothing reads them as the dashboard's figures.
+  `replay_*` (including `replay_ratio_bin`) so that nothing reads them as the
+  dashboard's figures.
 - **Accounting.** The registry's source-inventory accounting, recomputed from
   the rows with arithmetic that refuses to round. It must equal the
   registry's recorded accounting exactly. It gives each class's measures,
@@ -92,19 +93,25 @@ today's law. Two cases in the committed export:
 
 The export reads only what the seal covers:
 
-1. `REPLAY_RECEIPT.json` must be a complete seal of this variant. It names the
-   digest of `NAMESPACE_MANIFEST.json`, which names the digest of every file
-   read: run manifests, provenance, `COMPARISON.csv` and artifacts.
+1. The variant record must validate, and its recomputed identity digest must
+   match `REPLAY_RECEIPT.json`. The receipt and its integrity status must both
+   be complete. It names the digest of `NAMESPACE_MANIFEST.json`, which names
+   the digest of every file read: run manifests, provenance, `COMPARISON.csv`
+   and artifacts. The corpus and namespace manifest must name the same event
+   inventory; missing event files are refused.
 2. Each run manifest's registry digest must equal the committed registry file,
    and so must `COMPARISON_PROVENANCE.json`'s.
 3. Every artifact must belong to this event and variant, and to a measure the
-   registry computes. Every `COMPARISON.csv` row must be a registry source row
-   with the same OBR value.
+   registry computes. Artifact measure/year pairs must be unique and equal
+   the registry's supported-year grid. Data years must match the sealed run.
+   Every `COMPARISON.csv` row must be a registry source row with the same OBR
+   value; a measure without computation cannot own constructed rows.
 4. Each computed measure's submitted worlds must equal the registry's
-   construction under `compute_uk_event.annual_reform`. Measures with a
-   construction revision are exempt from this check, since the revision
-   rewrites the windows. Each computed measure must also agree with its
-   artifacts on the construction kind, entry points, sentinels and heads.
+   construction under `compute_uk_event.annual_reform`, after applying any
+   recorded construction revision and its specified window transformation.
+   Revision evidence must match the revision registry. Each computed measure
+   must also agree with its artifacts on the construction kind, entry points,
+   sentinels and heads.
 
 A legacy namespace (no processed-parameter evidence) and an uncertified
 variant are refused.
@@ -144,6 +151,17 @@ its event:
 - **Reversal.** The baseline world's dictionary becomes the entry's
   `baseline_parameter_changes`, with no reform changes.
 - **Forward delta.** The dictionary becomes its `parameter_changes`.
+
+These dictionaries are the replay's literal submissions. Their timing meaning
+therefore depends on the engine and entry point recorded in the export. An
+importer must adapt that route to its engine and must not pass the exported
+dictionaries through `compute_uk_event.annual_reform` again. That function
+maps a window's start to the first 1 January on or after it: for example,
+annualising CGT's exported `2024-04-06.2036-04-05` window again produces
+`2025-01-01.2036-12-31`, shifting its first year from 2024 to 2025. After
+adapting the route, read back each parameter for each supported year and
+compare it with that world's exported `processed_parameter_values` intended
+value. The per-year intended values are the timing comparison target.
 
 The dashboard's own pipeline then produces the full table set on the
 dashboard's pair. Measures without a construction stay listed as not modelled,

@@ -531,7 +531,7 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
                     "replay_pe_value_gbp": optional_number(row["pe_value_gbp"]),
                     "replay_gap_gbp": optional_number(row["gap_gbp"]),
                     "replay_pe_to_obr_ratio": optional_number(row["pe_to_obr_ratio"]),
-                    "ratio_bin": row["ratio_bin"],
+                    "replay_ratio_bin": row["ratio_bin"],
                 }
             )
         obr_rows.sort(key=lambda r: (r["fy"], r["tax_head"], r["source_row_id"]))
