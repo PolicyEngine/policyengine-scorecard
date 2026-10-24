@@ -1,0 +1,945 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2035-12-31": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2035-12-31": 50000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "a982bffd46f17da5650e11744fdbc9711079f52f8c5d92de46f05d7c5d0cd2a8"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2035-12-31": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2035-12-31": 50000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.10.2_uk2.153.4_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "139b38d17dda2207526110e777076145537e12292050640c86ad991b2345a37c"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.153.4",
+   "policyengine_version": "6.10.2",
+   "variant_id": "pe6.10.2_uk2.153.4_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 60000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 50000
+    },
+    "2024": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2025": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2026": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2027": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2028": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    }
+   },
+   "fiscal_event": "Spring Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "child_benefit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "child_benefit"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "measure_type": "child_benefit",
+   "missing_legs": [
+    "Child Benefit take-up is fixed; OBR's additional claims response is absent."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end",
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.charges\\.CB_HITC\\.phase_out_start|gov\\.hmrc\\.income_tax\\.charges\\.CB_HITC\\.phase_out_end",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore the pre-announcement \u00a350,000-\u00a360,000 tax-charge taper; child_benefit mapping is provisional and does not assert the OBR welfare head's programme identity.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01": 50000
+    }
+   },
+   "pe_gap": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+   "program": "child_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10986:8084652420f5c808",
+     "source_row_number": 10986,
+     "source_row_sha256": "8084652420f5c80819a1ea9b47200efaefe087102f5c30e9ec73eed03577928d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10987:0f254c98c34bc660",
+     "source_row_number": 10987,
+     "source_row_sha256": "0f254c98c34bc660b01a9b43bb7f9de345876d436f50f441adbdabec0af57b30",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -222000000.0,
+     "value_gbp_decimal": "-222000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10988:6a33f7863750611c",
+     "source_row_number": 10988,
+     "source_row_sha256": "6a33f7863750611c2f1172faed1a6ff2fc766149a76d2cb4d7c0e656cdf6b084",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -277000000.0,
+     "value_gbp_decimal": "-277000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10989:43638ad22300c9c3",
+     "source_row_number": 10989,
+     "source_row_sha256": "43638ad22300c9c31a262455b24d7a223086d503449168f1f7d398744ef1f6cb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -250000000.0,
+     "value_gbp_decimal": "-250000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10990:e86af1dbeb4da64e",
+     "source_row_number": 10990,
+     "source_row_sha256": "e86af1dbeb4da64e66cde8cd4de72afa2d86aaa25a6020dc2281aaedd38fc51f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -221000000.0,
+     "value_gbp_decimal": "-221000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10991:11a476b01436c0db",
+     "source_row_number": 10991,
+     "source_row_sha256": "11a476b01436c0db55a21d403ec11ffd0aa37ea53e2793d69bbc7b918c54e4a3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -193000000.0,
+     "value_gbp_decimal": "-193000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22205:3c227ad5b7739a89",
+     "source_row_number": 22205,
+     "source_row_sha256": "3c227ad5b7739a89d3ff7cb65f2a03f614f87e642e62b4179853c9982cf2008e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22206:49a0caec037600d2",
+     "source_row_number": 22206,
+     "source_row_sha256": "49a0caec037600d2248753e33f545070ea7a158171ff48509c70f313ec79cafd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -319000000.0,
+     "value_gbp_decimal": "-319000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22207:01b31afdbe23dae6",
+     "source_row_number": 22207,
+     "source_row_sha256": "01b31afdbe23dae6f5681e377677643f027d00ea03fa1399876a235ca011253b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -359000000.0,
+     "value_gbp_decimal": "-359000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22208:6c19f800730945b5",
+     "source_row_number": 22208,
+     "source_row_sha256": "6c19f800730945b53f46636587f0e5e50d5ed7b09b1eefedba8c621ef894516f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -391000000.0,
+     "value_gbp_decimal": "-391000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22209:71f606ed0f936afe",
+     "source_row_number": 22209,
+     "source_row_sha256": "71f606ed0f936afe37e236a946d00df7c9d7d09bd6d82cbc37f87231a3911a2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -426000000.0,
+     "value_gbp_decimal": "-426000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+     "source_row_number": 22210,
+     "source_row_sha256": "0ea61ade0bedb0f5f204db3756a938e776ef29cc2f2642872ea7e880da299d96",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -465000000.0,
+     "value_gbp_decimal": "-465000000.0"
+    }
+   ],
+   "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+   "unmapped_obr_heads": []
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2023": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 60000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 50000
+    },
+    "2024": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2025": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2026": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2027": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    },
+    "2028": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": 80000,
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": 60000
+    }
+   },
+   "fiscal_event": "Spring Budget 2024",
+   "head_variables": [
+    "income_tax",
+    "child_benefit"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "child_benefit"
+     ]
+    }
+   ],
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "measure_type": "child_benefit",
+   "missing_legs": [
+    "Child Benefit take-up is fixed; OBR's additional claims response is absent."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end",
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.charges\\.CB_HITC\\.phase_out_start|gov\\.hmrc\\.income_tax\\.charges\\.CB_HITC\\.phase_out_end",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore the pre-announcement \u00a350,000-\u00a360,000 tax-charge taper; child_benefit mapping is provisional and does not assert the OBR welfare head's programme identity.",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01": 50000
+    }
+   },
+   "pe_gap": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+   "program": "child_benefit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2023-24",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:10986:8084652420f5c808",
+     "source_row_number": 10986,
+     "source_row_sha256": "8084652420f5c80819a1ea9b47200efaefe087102f5c30e9ec73eed03577928d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:10987:0f254c98c34bc660",
+     "source_row_number": 10987,
+     "source_row_sha256": "0f254c98c34bc660b01a9b43bb7f9de345876d436f50f441adbdabec0af57b30",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -222000000.0,
+     "value_gbp_decimal": "-222000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:10988:6a33f7863750611c",
+     "source_row_number": 10988,
+     "source_row_sha256": "6a33f7863750611c2f1172faed1a6ff2fc766149a76d2cb4d7c0e656cdf6b084",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -277000000.0,
+     "value_gbp_decimal": "-277000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:10989:43638ad22300c9c3",
+     "source_row_number": 10989,
+     "source_row_sha256": "43638ad22300c9c31a262455b24d7a223086d503449168f1f7d398744ef1f6cb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -250000000.0,
+     "value_gbp_decimal": "-250000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:10990:e86af1dbeb4da64e",
+     "source_row_number": 10990,
+     "source_row_sha256": "e86af1dbeb4da64e66cde8cd4de72afa2d86aaa25a6020dc2281aaedd38fc51f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -221000000.0,
+     "value_gbp_decimal": "-221000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:10991:11a476b01436c0db",
+     "source_row_number": 10991,
+     "source_row_sha256": "11a476b01436c0db55a21d403ec11ffd0aa37ea53e2793d69bbc7b918c54e4a3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -193000000.0,
+     "value_gbp_decimal": "-193000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2023-24",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2023-24",
+     "source_row_id": "obr_pmd_nov2025:22205:3c227ad5b7739a89",
+     "source_row_number": 22205,
+     "source_row_sha256": "3c227ad5b7739a89d3ff7cb65f2a03f614f87e642e62b4179853c9982cf2008e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22206:49a0caec037600d2",
+     "source_row_number": 22206,
+     "source_row_sha256": "49a0caec037600d2248753e33f545070ea7a158171ff48509c70f313ec79cafd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -319000000.0,
+     "value_gbp_decimal": "-319000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22207:01b31afdbe23dae6",
+     "source_row_number": 22207,
+     "source_row_sha256": "01b31afdbe23dae6f5681e377677643f027d00ea03fa1399876a235ca011253b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -359000000.0,
+     "value_gbp_decimal": "-359000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22208:6c19f800730945b5",
+     "source_row_number": 22208,
+     "source_row_sha256": "6c19f800730945b53f46636587f0e5e50d5ed7b09b1eefedba8c621ef894516f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -391000000.0,
+     "value_gbp_decimal": "-391000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22209:71f606ed0f936afe",
+     "source_row_number": 22209,
+     "source_row_sha256": "71f606ed0f936afe37e236a946d00df7c9d7d09bd6d82cbc37f87231a3911a2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -426000000.0,
+     "value_gbp_decimal": "-426000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Child Benefit take-up is fixed; OBR's additional claims response is absent.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+     "source_row_number": 22210,
+     "source_row_sha256": "0ea61ade0bedb0f5f204db3756a938e776ef29cc2f2642872ea7e880da299d96",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+     "value_gbp": -465000000.0,
+     "value_gbp_decimal": "-465000000.0"
+    }
+   ],
+   "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+   "unmapped_obr_heads": []
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+      "baseline_world": 60000,
+      "current_law": 80000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 80000,
+      "reform_world": 80000
+     },
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+      "baseline_world": 50000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+      "baseline_world": 60000,
+      "current_law": 80000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 80000,
+      "reform_world": 80000
+     },
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+      "baseline_world": 50000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -1394705720.206482,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -193000000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 178865908.921875,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 13947057.20206482
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1215839811.284607,
+   "key": "obr_pmd_nov2025:10991:11a476b01436c0db",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 13947057.20206482,
+   "year": 2028
+  },
+  {
+   "base_gbp": -363073039.4392204,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -465000000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.5_to_0.8",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -1396372.495754242,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": -364469411.9349747,
+   "key": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 3644694.119349747,
+   "year": 2028
+  },
+  {
+   "base_gbp": -1757778759.6457024,
+   "context": {},
+   "delta_gbp": 177469536.42612076,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 17577787.596457023
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1580309223.2195816,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 17577787.596457023,
+   "year": 2028
+  },
+  {
+   "base_gbp": -363073039.4392204,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -1396372.495754242,
+   "details": [],
+   "event": "spring_budget_2024",
+   "flags": [],
+   "head_gbp": -364469411.9349747,
+   "key": "child_benefit",
+   "level": "head",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 3644694.119349747,
+   "year": 2028
+  },
+  {
+   "base_gbp": -1394705720.206482,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 178865908.921875,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 13947057.20206482
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1215839811.284607,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 13947057.20206482,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+  "head": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/spring_budget_2024_measures.json --measures spring_budget_2024__hicbc_threshold_and_taper --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.10.2_uk2.153.4_policyengine-uk-data-1.58.2 --registry data/uk/events/spring_budget_2024_measures.json --measures spring_budget_2024__hicbc_threshold_and_taper --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.10.2_uk2.153.4_policyengine-uk-data-1.58.2/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -1394705720.206482,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -1215839811.284607,
+   "obr_value_gbp": -193000000.0,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10991:11a476b01436c0db",
+   "source_row_number": 10991,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -363073039.4392204,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": -364469411.9349747,
+   "obr_value_gbp": -465000000.0,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+   "source_row_number": 22210,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": -1394705720.206482,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -1215839811.284607,
+   "obr_value_gbp": -193000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10991:11a476b01436c0db",
+   "source_row_number": 10991,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -363073039.4392204,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": -364469411.9349747,
+   "obr_value_gbp": -465000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+   "source_row_number": 22210,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+ "year": 2028
+}
