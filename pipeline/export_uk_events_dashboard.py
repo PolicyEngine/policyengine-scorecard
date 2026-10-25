@@ -69,11 +69,12 @@ CONSTRUCTED = "constructed"
 # not just the dictionary.
 EXECUTOR_ROUTES = {replay.UC_HEALTH_ELEMENT_PARAMETER: "uc_health_element_refresh"}
 # The seal records engine versions, but not Scenario's dated-reform capability.
-# Keep only versions verified by the real Scenario.from_reform feature-detection
-# test; unknown versions must not select either revision submission by inference.
+# Keep only versions verified on the engine itself (--check-scenario-capability,
+# which each replay-engine leg of CI runs); unknown versions must not select
+# either revision submission by inference.
 SCENARIO_DATED_REFORMS = {"2.130.1": True}
-# The reform the capability check hands Scenario.from_reform: one statutory
-# parameter over a window, as revision_reform_route's dictionaries are.
+# The reform the capability check routes: a path to an annual window to a
+# value, the shape compute_uk_event.annual_reform hands revision_reform_route.
 CAPABILITY_PROBE = {"gov.hmrc.cgt.basic_rate": {"2024-01-01.2035-12-31": 0.1}}
 
 SEMANTICS = (
@@ -822,35 +823,53 @@ def write_export(
 
 
 def installed_scenario_dated_reforms() -> bool:
-    """Whether the installed engine's ``Scenario.from_reform`` keeps a reform
-    dictionary in ``dated_reforms``: the feature detection
-    ``compute_uk_event.revision_reform_route`` makes."""
-    from policyengine_uk.utils.scenario import Scenario
+    """Whether the replay's own route takes the dated-reforms branch on the
+    installed engine: ``compute_uk_event.revision_reform_route``, given a
+    revision of the probe's path, rewrites its window to fiscal years only
+    where ``Scenario.from_reform`` keeps the dictionary in ``dated_reforms``."""
+    revision = {"paths": list(CAPABILITY_PROBE)}
+    return replay.revision_reform_route(CAPABILITY_PROBE, revision) != CAPABILITY_PROBE
 
-    return bool(getattr(Scenario.from_reform(CAPABILITY_PROBE), "dated_reforms", None))
 
-
-def scenario_capability_problems(variant_id: str | None = None) -> list[str]:
+def scenario_capability_problems(record: dict | None = None) -> list[str]:
     """How SCENARIO_DATED_REFORMS disagrees with the installed engine.
 
-    A recorded version must record what the engine's ``Scenario`` does. An
+    With a variant ``record``, the installed engine must be the variant's.
+    A recorded version must record what the replay's route does on it. An
     unrecorded version is refused by the export (``Namespace``), so it is a
     problem only for a variant with a committed export.
     """
-    version = metadata.version("policyengine-uk")
+    try:
+        version = metadata.version("policyengine-uk")
+    except metadata.PackageNotFoundError:
+        return ["policyengine-uk is not installed"]
+    variant_id = record["variant_id"] if record else None
+    if record:
+        expected = record["identity"]["packages"]["policyengine-uk"]["version"]
+        if version != expected:
+            return [
+                (
+                    f"{variant_id} runs policyengine-uk {expected}, but {version} "
+                    "is installed"
+                )
+            ]
     if version not in SCENARIO_DATED_REFORMS:
         if variant_id and (EXPORT_ROOT / variant_id).is_dir():
             return [
-                f"{variant_id} has a committed export, but SCENARIO_DATED_REFORMS "
-                f"does not record policyengine-uk {version}"
+                (
+                    f"{variant_id} has a committed export, but "
+                    f"SCENARIO_DATED_REFORMS does not record policyengine-uk {version}"
+                )
             ]
         return []
     recorded = SCENARIO_DATED_REFORMS[version]
     detected = installed_scenario_dated_reforms()
     if detected != recorded:
         return [
-            f"SCENARIO_DATED_REFORMS records dated_reforms={recorded} for "
-            f"policyengine-uk {version}, but its Scenario.from_reform gives {detected}"
+            (
+                f"SCENARIO_DATED_REFORMS records dated_reforms={recorded} for "
+                f"policyengine-uk {version}, but its route gives {detected}"
+            )
         ]
     return []
 
@@ -867,22 +886,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--check-scenario-capability",
         action="store_true",
-        help="check SCENARIO_DATED_REFORMS against the installed engine and export nothing",
+        help="check SCENARIO_DATED_REFORMS against the installed engine, for the "
+        "variant, and export nothing",
     )
     args = parser.parse_args(argv)
-    if args.check_scenario_capability:
-        problems = scenario_capability_problems(args.variant)
-        for problem in problems:
-            print(problem, file=sys.stderr)
-        if not problems:
-            version = metadata.version("policyengine-uk")
-            print(
-                f"policyengine-uk {version}: dated_reforms="
-                f"{SCENARIO_DATED_REFORMS[version]}, as recorded"
-                if version in SCENARIO_DATED_REFORMS
-                else f"policyengine-uk {version} is not recorded; the export refuses it"
-            )
-        return 1 if problems else 0
     document = variants.load_document()
     record = (
         next((v for v in document["variants"] if v["variant_id"] == args.variant), None)
@@ -891,6 +898,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     if record is None:
         raise SystemExit(f"unknown variant {args.variant}")
+    if args.check_scenario_capability:
+        problems = scenario_capability_problems(record)
+        for problem in problems:
+            print(problem, file=sys.stderr)
+        if problems:
+            return 1
+        version = metadata.version("policyengine-uk")
+        print(
+            f"policyengine-uk {version}: dated_reforms="
+            f"{SCENARIO_DATED_REFORMS[version]}, as recorded"
+            if version in SCENARIO_DATED_REFORMS
+            else f"policyengine-uk {version} is not recorded; the export refuses it"
+        )
+        return 0
     out = write_export(record, args.events, output_root=args.output_root)
     print(out)
     return 0

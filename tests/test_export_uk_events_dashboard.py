@@ -70,8 +70,10 @@ def test_the_first_import_variant_is_exported():
 
 
 def test_recorded_scenario_capability_matches_the_installed_engine():
-    # Engine-free CI skips this; each replay-engine leg runs the same check
-    # on its variant's engine (--check-scenario-capability in ci.yml)
+    # Engine-free CI skips this. Each replay-engine leg instead checks the
+    # table's entry on its variant's engine (--check-scenario-capability in
+    # ci.yml), which, unlike this test, passes an unrecorded engine whose
+    # variant has no committed export
     try:
         version = metadata.version("policyengine-uk")
     except metadata.PackageNotFoundError:
@@ -82,19 +84,42 @@ def test_recorded_scenario_capability_matches_the_installed_engine():
     assert export.scenario_capability_problems() == []
 
 
-def installed(monkeypatch, version: str, dated_reforms: bool) -> None:
-    """Stand in for an installed engine of ``version``."""
+def installed(monkeypatch, version: str | None, dated_reforms: bool = True) -> None:
+    """Stand in for an installed engine of ``version``; None installs none."""
+
+    def read(name: str) -> str:
+        if version is None:
+            raise metadata.PackageNotFoundError(name)
+        return version
+
     monkeypatch.setattr(
-        export, "metadata", SimpleNamespace(version=lambda name: version)
+        export,
+        "metadata",
+        SimpleNamespace(
+            version=read, PackageNotFoundError=metadata.PackageNotFoundError
+        ),
     )
     monkeypatch.setattr(
         export, "installed_scenario_dated_reforms", lambda: dated_reforms
     )
 
 
+def exports_nothing(monkeypatch) -> None:
+    def refuse(*args, **kwargs):
+        raise AssertionError("the capability check exported")
+
+    monkeypatch.setattr(export, "write_export", refuse)
+
+
+def legacy_record() -> dict:
+    document = variants.load_document()
+    return next(v for v in document["variants"] if variants.is_legacy(v))
+
+
 def test_the_capability_check_passes_a_recorded_engine_that_agrees(monkeypatch, capsys):
     installed(monkeypatch, "2.130.1", True)
-    assert export.scenario_capability_problems(FIRST) == []
+    exports_nothing(monkeypatch)
+    assert export.scenario_capability_problems(variants.get_variant(FIRST)) == []
     assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 0
     assert "dated_reforms=True, as recorded" in capsys.readouterr().out
 
@@ -103,21 +128,91 @@ def test_the_capability_check_refuses_a_recorded_engine_that_disagrees(
     monkeypatch, capsys
 ):
     installed(monkeypatch, "2.130.1", False)
+    exports_nothing(monkeypatch)
     (problem,) = export.scenario_capability_problems()
     assert "records dated_reforms=True" in problem and "gives False" in problem
-    assert export.main(["--check-scenario-capability"]) == 1
+    assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 1
     assert "gives False" in capsys.readouterr().err
 
 
 def test_the_capability_check_refuses_an_unrecorded_engine_only_for_an_exported_variant(
     monkeypatch,
 ):
-    installed(monkeypatch, "999.0.0", True)
+    legacy = legacy_record()
+    installed(monkeypatch, legacy["identity"]["packages"]["policyengine-uk"]["version"])
+    assert not (export.EXPORT_ROOT / legacy["variant_id"]).exists()
+    assert export.scenario_capability_problems(legacy) == []
+    monkeypatch.delitem(export.SCENARIO_DATED_REFORMS, "2.130.1")
+    installed(monkeypatch, "2.130.1")
+    exports_nothing(monkeypatch)
     assert export.scenario_capability_problems() == []
-    assert export.scenario_capability_problems("pe5.0.2_uk2.89.2_not_exported") == []
-    (problem,) = export.scenario_capability_problems(FIRST)
+    (problem,) = export.scenario_capability_problems(variants.get_variant(FIRST))
     assert "has a committed export" in problem
     assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 1
+
+
+def test_the_capability_check_refuses_another_variants_engine_and_no_engine(
+    monkeypatch, capsys
+):
+    exports_nothing(monkeypatch)
+    installed(monkeypatch, "2.125.1")
+    (problem,) = export.scenario_capability_problems(variants.get_variant(FIRST))
+    assert "runs policyengine-uk 2.130.1, but 2.125.1 is installed" in problem
+    installed(monkeypatch, None)
+    assert export.scenario_capability_problems() == ["policyengine-uk is not installed"]
+    assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 1
+    assert "not installed" in capsys.readouterr().err
+
+
+def test_the_capability_check_defaults_to_the_newest_certified_variant(monkeypatch):
+    seen = []
+    monkeypatch.setattr(
+        export, "scenario_capability_problems", lambda record: seen.append(record) or []
+    )
+    installed(monkeypatch, "2.130.1")
+    exports_nothing(monkeypatch)
+    export.main(["--check-scenario-capability"])
+    assert seen == [export.default_variant(variants.load_document())]
+
+
+def test_the_capability_check_asks_the_replays_own_route(monkeypatch):
+    calls = []
+
+    def route(reform, revision):
+        calls.append((reform, revision))
+        return routed(reform)
+
+    monkeypatch.setattr(export.replay, "revision_reform_route", route)
+    for routed, expected in [
+        (lambda reform: reform, False),
+        (
+            lambda reform: {path: {"2024-04-06.2036-04-05": 0.1} for path in reform},
+            True,
+        ),
+    ]:
+        assert export.installed_scenario_dated_reforms() is expected
+    assert (
+        calls
+        == [(export.CAPABILITY_PROBE, {"paths": list(export.CAPABILITY_PROBE)})] * 2
+    )
+
+
+def test_every_replay_engine_leg_runs_the_capability_check():
+    import yaml
+
+    steps = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())["jobs"][
+        "replay-engine"
+    ]["steps"]
+    command = (
+        ".venv-variant/bin/python -m pipeline.export_uk_events_dashboard "
+        '--check-scenario-capability --variant "$VARIANT"'
+    )
+    (check,) = [s for s in steps if s.get("run", "").strip() == command]
+    assert "if" not in check
+    names = [s.get("name") for s in steps]
+    assert names.index("The installed environment is exactly the variant's") < (
+        steps.index(check)
+    )
 
 
 @pytest.mark.parametrize("variant_id", EXPORTED)

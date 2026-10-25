@@ -149,7 +149,7 @@ jobs:
       # The dashboard export picks a revision submission from this table, not
       # from the engine it runs on, so each engine checks its own entry. An
       # unrecorded engine passes unless the variant has a committed export.
-      - name: The export's recorded Scenario route matches this engine
+      - name: Check the export's recorded Scenario route on this engine
         run: .venv-variant/bin/python -m pipeline.export_uk_events_dashboard --check-scenario-capability --variant "$VARIANT"
       - name: Construction guards on the variant's engine
         run: |
