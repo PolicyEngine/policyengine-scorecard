@@ -113,7 +113,10 @@ The export reads only what the seal covers:
    construction premises, run manifest and every artifact. A verified
    `Scenario.from_reform` capability table selects exactly one revision
    submission: fiscal windows for engines with `dated_reforms`, annual
-   windows otherwise; unlisted engine versions are refused. Every artifact's
+   windows otherwise; unlisted engine versions are refused. Each
+   replay-engine leg of CI checks the table's entry against its own engine
+   (`--check-scenario-capability`), and refuses an unlisted engine for a
+   variant with a committed export. Every artifact's
    two entry points must match its submitted worlds: `certified_current_law`
    for an empty or absent reform, `built_simulation_scenario` for a reform
    containing the UC health element parameter, and `construction_reform` for

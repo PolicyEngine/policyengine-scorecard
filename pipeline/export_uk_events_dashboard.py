@@ -27,6 +27,12 @@ Without --variant the newest certified replay-namespace variant is used. The
 output is results/uk/dashboard_export/<variant_id>/<event>.json and an
 EXPORT_MANIFEST.json listing each file's digest. Bytes depend only on the
 committed inputs.
+
+    PYTHONPATH=. python pipeline/export_uk_events_dashboard.py \
+        --check-scenario-capability [--variant <variant_id>]
+
+checks SCENARIO_DATED_REFORMS against the installed engine instead, as each
+replay-engine leg of CI does on its variant's own environment.
 """
 
 from __future__ import annotations
@@ -41,6 +47,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 from decimal import Decimal, Inexact, localcontext
 from fractions import Fraction
+from importlib import metadata
 from pathlib import Path
 
 from pipeline import compute_uk_ab2025 as worlds
@@ -65,6 +72,9 @@ EXECUTOR_ROUTES = {replay.UC_HEALTH_ELEMENT_PARAMETER: "uc_health_element_refres
 # Keep only versions verified by the real Scenario.from_reform feature-detection
 # test; unknown versions must not select either revision submission by inference.
 SCENARIO_DATED_REFORMS = {"2.130.1": True}
+# The reform the capability check hands Scenario.from_reform: one statutory
+# parameter over a window, as revision_reform_route's dictionaries are.
+CAPABILITY_PROBE = {"gov.hmrc.cgt.basic_rate": {"2024-01-01.2035-12-31": 0.1}}
 
 SEMANTICS = (
     "Each computed measure is costed on the replay's certified model and data, "
@@ -811,6 +821,40 @@ def write_export(
     return out
 
 
+def installed_scenario_dated_reforms() -> bool:
+    """Whether the installed engine's ``Scenario.from_reform`` keeps a reform
+    dictionary in ``dated_reforms``: the feature detection
+    ``compute_uk_event.revision_reform_route`` makes."""
+    from policyengine_uk.utils.scenario import Scenario
+
+    return bool(getattr(Scenario.from_reform(CAPABILITY_PROBE), "dated_reforms", None))
+
+
+def scenario_capability_problems(variant_id: str | None = None) -> list[str]:
+    """How SCENARIO_DATED_REFORMS disagrees with the installed engine.
+
+    A recorded version must record what the engine's ``Scenario`` does. An
+    unrecorded version is refused by the export (``Namespace``), so it is a
+    problem only for a variant with a committed export.
+    """
+    version = metadata.version("policyengine-uk")
+    if version not in SCENARIO_DATED_REFORMS:
+        if variant_id and (EXPORT_ROOT / variant_id).is_dir():
+            return [
+                f"{variant_id} has a committed export, but SCENARIO_DATED_REFORMS "
+                f"does not record policyengine-uk {version}"
+            ]
+        return []
+    recorded = SCENARIO_DATED_REFORMS[version]
+    detected = installed_scenario_dated_reforms()
+    if detected != recorded:
+        return [
+            f"SCENARIO_DATED_REFORMS records dated_reforms={recorded} for "
+            f"policyengine-uk {version}, but its Scenario.from_reform gives {detected}"
+        ]
+    return []
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--variant", help="variant id (default: newest certified)")
@@ -820,7 +864,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--output-root", type=Path, help="default results/uk/dashboard_export"
     )
+    parser.add_argument(
+        "--check-scenario-capability",
+        action="store_true",
+        help="check SCENARIO_DATED_REFORMS against the installed engine and export nothing",
+    )
     args = parser.parse_args(argv)
+    if args.check_scenario_capability:
+        problems = scenario_capability_problems(args.variant)
+        for problem in problems:
+            print(problem, file=sys.stderr)
+        if not problems:
+            version = metadata.version("policyengine-uk")
+            print(
+                f"policyengine-uk {version}: dated_reforms="
+                f"{SCENARIO_DATED_REFORMS[version]}, as recorded"
+                if version in SCENARIO_DATED_REFORMS
+                else f"policyengine-uk {version} is not recorded; the export refuses it"
+            )
+        return 1 if problems else 0
     document = variants.load_document()
     record = (
         next((v for v in document["variants"] if v["variant_id"] == args.variant), None)

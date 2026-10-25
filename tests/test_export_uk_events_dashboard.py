@@ -28,6 +28,7 @@ from decimal import Decimal
 from fractions import Fraction
 from importlib import metadata
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from hypothesis import HealthCheck, example, given, settings
@@ -69,18 +70,54 @@ def test_the_first_import_variant_is_exported():
 
 
 def test_recorded_scenario_capability_matches_the_installed_engine():
+    # Engine-free CI skips this; each replay-engine leg runs the same check
+    # on its variant's engine (--check-scenario-capability in ci.yml)
     try:
         version = metadata.version("policyengine-uk")
     except metadata.PackageNotFoundError:
         pytest.skip("policyengine-uk is not installed in this engine-free environment")
-    from policyengine_uk.utils.scenario import Scenario
-
-    reform = {"gov.hmrc.cgt.basic_rate": {"2024-01-01.2035-12-31": 0.1}}
-    detected = bool(getattr(Scenario.from_reform(reform), "dated_reforms", None))
     assert version in export.SCENARIO_DATED_REFORMS, (
         f"Verify and record Scenario.dated_reforms for policyengine-uk {version}"
     )
-    assert export.SCENARIO_DATED_REFORMS[version] == detected
+    assert export.scenario_capability_problems() == []
+
+
+def installed(monkeypatch, version: str, dated_reforms: bool) -> None:
+    """Stand in for an installed engine of ``version``."""
+    monkeypatch.setattr(
+        export, "metadata", SimpleNamespace(version=lambda name: version)
+    )
+    monkeypatch.setattr(
+        export, "installed_scenario_dated_reforms", lambda: dated_reforms
+    )
+
+
+def test_the_capability_check_passes_a_recorded_engine_that_agrees(monkeypatch, capsys):
+    installed(monkeypatch, "2.130.1", True)
+    assert export.scenario_capability_problems(FIRST) == []
+    assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 0
+    assert "dated_reforms=True, as recorded" in capsys.readouterr().out
+
+
+def test_the_capability_check_refuses_a_recorded_engine_that_disagrees(
+    monkeypatch, capsys
+):
+    installed(monkeypatch, "2.130.1", False)
+    (problem,) = export.scenario_capability_problems()
+    assert "records dated_reforms=True" in problem and "gives False" in problem
+    assert export.main(["--check-scenario-capability"]) == 1
+    assert "gives False" in capsys.readouterr().err
+
+
+def test_the_capability_check_refuses_an_unrecorded_engine_only_for_an_exported_variant(
+    monkeypatch,
+):
+    installed(monkeypatch, "999.0.0", True)
+    assert export.scenario_capability_problems() == []
+    assert export.scenario_capability_problems("pe5.0.2_uk2.89.2_not_exported") == []
+    (problem,) = export.scenario_capability_problems(FIRST)
+    assert "has a committed export" in problem
+    assert export.main(["--check-scenario-capability", "--variant", FIRST]) == 1
 
 
 @pytest.mark.parametrize("variant_id", EXPORTED)
