@@ -136,15 +136,18 @@ def test_the_capability_check_refuses_a_recorded_engine_that_disagrees(
 
 
 def test_the_capability_check_refuses_an_unrecorded_engine_only_for_an_exported_variant(
-    monkeypatch,
+    monkeypatch, capsys
 ):
     legacy = legacy_record()
     installed(monkeypatch, legacy["identity"]["packages"]["policyengine-uk"]["version"])
+    exports_nothing(monkeypatch)
     assert not (export.EXPORT_ROOT / legacy["variant_id"]).exists()
     assert export.scenario_capability_problems(legacy) == []
+    check = ["--check-scenario-capability", "--variant", legacy["variant_id"]]
+    assert export.main(check) == 0
+    assert "is not recorded; the export refuses it" in capsys.readouterr().out
     monkeypatch.delitem(export.SCENARIO_DATED_REFORMS, "2.130.1")
     installed(monkeypatch, "2.130.1")
-    exports_nothing(monkeypatch)
     assert export.scenario_capability_problems() == []
     (problem,) = export.scenario_capability_problems(variants.get_variant(FIRST))
     assert "has a committed export" in problem
@@ -171,7 +174,7 @@ def test_the_capability_check_defaults_to_the_newest_certified_variant(monkeypat
     )
     installed(monkeypatch, "2.130.1")
     exports_nothing(monkeypatch)
-    export.main(["--check-scenario-capability"])
+    assert export.main(["--check-scenario-capability"]) == 0
     assert seen == [export.default_variant(variants.load_document())]
 
 
@@ -208,7 +211,8 @@ def test_every_replay_engine_leg_runs_the_capability_check():
         '--check-scenario-capability --variant "$VARIANT"'
     )
     (check,) = [s for s in steps if s.get("run", "").strip() == command]
-    assert "if" not in check
+    # No condition, continue-on-error, env or shell override can weaken it
+    assert set(check) == {"name", "run"}
     names = [s.get("name") for s in steps]
     assert names.index("The installed environment is exactly the variant's") < (
         steps.index(check)

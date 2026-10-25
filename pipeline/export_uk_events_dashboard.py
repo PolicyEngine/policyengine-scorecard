@@ -834,10 +834,10 @@ def installed_scenario_dated_reforms() -> bool:
 def scenario_capability_problems(record: dict | None = None) -> list[str]:
     """How SCENARIO_DATED_REFORMS disagrees with the installed engine.
 
-    With a variant ``record``, the installed engine must be the variant's.
-    A recorded version must record what the replay's route does on it. An
-    unrecorded version is refused by the export (``Namespace``), so it is a
-    problem only for a variant with a committed export.
+    An engine must be installed and, with a variant ``record``, be the
+    variant's. A recorded version must record what the replay's route does
+    on it. An unrecorded version is refused by the export (``Namespace``),
+    so it is a problem only for a variant with a committed export.
     """
     try:
         version = metadata.version("policyengine-uk")
