@@ -1,11 +1,13 @@
 """The £100,000 childcare limit costings (lane uk-childcare-100k): CenTax's
 Table 4.2 and the Centre for British Progress appendix are exactly what the
 adapters derive from the vendored PDFs; the QC catches broken tables; the
-certified-pair artifact moves only the childcare heads; every result's
-status is one stated annotation; the published dashboard figure stays in
-the history beside the certified run; and a reform estimate is never a
-calibration target."""
+certified-pair artifact ran on exactly its variant's pairing and moves only
+the childcare heads, in England; every result's status is one stated
+annotation; every certified run and the published dashboard figure stay in
+the history; and a reform estimate is never a calibration target."""
 
+import ast
+import copy
 import hashlib
 import importlib.util
 import json
@@ -21,7 +23,6 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from scorecard_db import ingest_uk_childcare_100k as lane
-from scorecard_db import signs
 from scorecard_db.models import STANDARD_CONDITIONS
 from scorecard_db.models import CalibrationRelationship as CR
 from scorecard_db.relationships import uk_relationship
@@ -31,6 +32,7 @@ CENTAX_SRC = REPO / "sources" / "centax-childcare-100k"
 CBP_SRC = REPO / "sources" / "cbp-rates-and-wrongs"
 DB = REPO / "data" / "scorecard.db"
 CERTIFIED = json.loads((REPO / "data" / "uk" / "certified_bundle.json").read_text())
+VARIANTS = json.loads((REPO / "data" / "uk" / "replay_variants.json").read_text())
 
 # Table 4.2 as printed (printed page 41), read from the PDF on 2026-10-21:
 # (scenario, year) -> (bunching before, after, static, intensive, extensive, net), £m
@@ -118,7 +120,7 @@ def test_centax_extract_is_the_adapters_output_and_the_published_table(centax):
         got = {
             r["column"]: r["value"]
             for r in rows
-            if (r["scenario"], r["period"]) == (scenario, year)
+            if (r["variant"], r["period"]) == (scenario, year)
         }
         want = {
             c: v * (1_000_000 if c in centax.MONEY else 1)
@@ -172,7 +174,7 @@ def test_cbp_extract_is_the_adapters_output_and_the_published_tables(cbp):
         got = [
             r["value"]
             for r in rows
-            if (r["model"], r["policy"]) == (model, "abolish_cliff")
+            if (r["variant"], r["policy"]) == (model, "abolish_cliff")
         ]
         assert got == [round(v * 1e9) for v in printed]
     assert [r["fy"] for r in rows[:6]] == [
@@ -248,11 +250,10 @@ def test_each_world_removes_exactly_its_limits(artifact):
         assert block["limits_executed"] == {hours: 1e100, tfc: 1e100}, year
 
 
-def _d(art, world, year, var, group="worlds", base="baseline"):
+def _d(art, world, year, var, group="worlds", base="baseline", sums="sums_gbp"):
     years = art[group]
     return (
-        years[world]["years"][year]["sums_gbp"][var]
-        - years[base]["years"][year]["sums_gbp"][var]
+        years[world]["years"][year][sums][var] - years[base]["years"][year][sums][var]
     )
 
 
@@ -322,11 +323,294 @@ def test_no_child_under_one_receives_extended_hours(artifact):
                 assert block["counts"]["children_under_one"] > 0
 
 
+def test_counterparts_count_england_only(artifact):
+    """Both offers are England's: each counterpart is minus the change in
+    the heads for people in English households, no free-hours head moves
+    outside England, and England's Tax-Free Childcare is part of the UK's."""
+    for world, source in (
+        ("free_hours", lane.CENTAX),
+        ("free_hours_and_tfc", lane.CBP),
+    ):
+        for year in artifact["worlds"][world]["years"]:
+            eng = {
+                v: _d(artifact, world, year, v, sums=lane.ENGLAND)
+                for v in (*lane.FREE_HOURS, lane.TFC)
+            }
+            assert lane.counterpart(artifact, source, int(year)) == pytest.approx(
+                -sum(eng[v] for v in lane.VARIABLES[source]), abs=1.0
+            )
+            for v in lane.FREE_HOURS:
+                assert abs(_d(artifact, world, year, v) - eng[v]) < 1e6, (year, v)
+            block = artifact["worlds"][world]["years"][year]
+            assert (
+                0 <= block["sums_gbp_england"][lane.TFC] <= block["sums_gbp"][lane.TFC]
+            )
+
+
+def test_free_hours_moving_outside_england_is_refused(artifact):
+    bad = copy.deepcopy(artifact)
+    year = next(iter(bad["worlds"]["free_hours"]["years"]))
+    sums = bad["worlds"]["free_hours"]["years"][year]["sums_gbp"]
+    # a UK-wide move with no English counterpart, kept inside gov_spending
+    sums["extended_childcare_entitlement"] += 5e6
+    sums["gov_spending"] += 5e6
+    with pytest.raises(ValueError, match="outside England"):
+        lane.measured_notes(bad, lane.CENTAX, int(year), "fy")
+
+
+def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
+    compute = _module(
+        "compute_uk_childcare_100k", REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    )
+    assert set(artifact["variable_metadata"]) == set(compute.METADATA)
+    for group in ("worlds", "diagnostics"):
+        for world in artifact[group].values():
+            assert set(world["dataset_inputs"]) == set(compute.DATASET_INPUTS)
+            for block in world["years"].values():
+                assert set(block["take_up"]) == set(compute.TAKE_UP)
+                assert all(0 <= x <= 1 for x in block["take_up"].values())
+
+
+def test_every_variable_the_run_calculates_has_its_metadata_recorded():
+    """The pe_meta contract, read off the source: each sim.calculate name
+    (a literal, or a loop over a module tuple) is in METADATA."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    compute = _module("compute_uk_childcare_100k_src", path)
+    tree = ast.parse(path.read_text())
+    tuples = {
+        node.targets[0].id: getattr(compute, node.targets[0].id)
+        for node in tree.body
+        if isinstance(node, ast.Assign)
+        and isinstance(node.targets[0], ast.Name)
+        and isinstance(getattr(compute, node.targets[0].id, None), tuple)
+    }
+    loops = {
+        node.target.id: node.iter.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.comprehension | ast.For)
+        and isinstance(node.target, ast.Name)
+        and isinstance(node.iter, ast.Name)
+        and node.iter.id in tuples
+    }
+    calculated = set()
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "calculate"
+        ):
+            arg = node.args[0]
+            if isinstance(arg, ast.Constant):
+                calculated.add(arg.value)
+            elif isinstance(arg, ast.Name) and arg.id in loops:
+                calculated |= set(tuples[loops[arg.id]])
+            elif isinstance(arg, ast.Name) and arg.id in tuples:
+                pass
+            else:
+                calculated.add(getattr(compute, arg.id))
+    assert {
+        "is_child",
+        "is_child_receiving_extended_childcare",
+        "country",
+    } <= calculated
+    assert calculated <= set(compute.METADATA)
+
+
+# --- the artifact's identity and history (synthetic: no engine, no run) --------
+
+
+def _record(variant_id=None):
+    vid = variant_id or VARIANTS["default_variant"]
+    return copy.deepcopy(
+        next(v for v in VARIANTS["variants"] if v["variant_id"] == vid)
+    )
+
+
+def _synthetic(variant, *, run_id="run", computed_at="2026-10-25T00:00:00+00:00"):
+    identity = copy.deepcopy(variant["identity"])
+    sha = identity["dataset"]["sha256"]
+    world = {
+        "dataset_sha256_before": sha,
+        "dataset_sha256_after": sha,
+        "runtime_dataset_source": "data/uk/policyengine-local/populace.h5",
+        "dataset_years": list(variant["data_years"]),
+        "years": {},
+    }
+    return {
+        "schema_version": lane.SCHEMA_VERSION,
+        "run_id": run_id,
+        "computed_at": computed_at,
+        "variant_id": variant["variant_id"],
+        "variant_identity_sha256": variant["identity_sha256"],
+        "packages": {
+            name: {"version": pkg["version"], "record_sha256": pkg["record_sha256"]}
+            for name, pkg in identity["packages"].items()
+        },
+        "engine_version": identity["packages"]["policyengine-uk"]["version"],
+        "python": identity["python"],
+        "packaged_bundle_manifest_sha256": identity["packaged_bundle_manifest_sha256"],
+        "release_bundle": identity["release_bundle"],
+        "data_bundle": identity["dataset"]["revision"],
+        "dataset": {"revision": identity["dataset"]["revision"], "sha256": sha},
+        "behavioural_response": "none (static)",
+        "worlds": {"baseline": world},
+        "diagnostics": {"baseline__full_use_hours": copy.deepcopy(world)},
+    }
+
+
+def _path(art):
+    return Path(f"{art['variant_id']}.json")
+
+
+def _other_certified():
+    return next(
+        v["variant_id"]
+        for v in VARIANTS["variants"]
+        if v["status"] == "certified" and v["variant_id"] != VARIANTS["default_variant"]
+    )
+
+
+@pytest.mark.parametrize("variant_id", [None, "other"])
+def test_check_artifact_accepts_exactly_its_variants_pairing(variant_id):
+    variant = _record(_other_certified() if variant_id else None)
+    art = _synthetic(variant)
+    lane.check_artifact(art, _path(art), variant)
+
+
+_ZERO = "0" * 64
+MUTATIONS = {
+    "schema": lambda a: a.update(schema_version=1),
+    "wrapper version": lambda a: a["packages"]["policyengine"].update(version="9.9.9"),
+    "core RECORD": lambda a: a["packages"]["policyengine-core"].update(
+        record_sha256=_ZERO
+    ),
+    "engine": lambda a: a.update(engine_version="0.0.1"),
+    "python": lambda a: a.update(python="3.99"),
+    "packaged manifest": lambda a: a.update(packaged_bundle_manifest_sha256=_ZERO),
+    "release bundle": lambda a: a["release_bundle"].update(bundle_id="uk-other"),
+    "variant identity": lambda a: a.update(variant_identity_sha256=_ZERO),
+    "dataset": lambda a: a["dataset"].update(sha256=_ZERO),
+    "data bundle": lambda a: a.update(data_bundle="another-build"),
+    "runtime source": lambda a: a["worlds"]["baseline"].pop("runtime_dataset_source"),
+    "digest after": lambda a: a["diagnostics"]["baseline__full_use_hours"].update(
+        dataset_sha256_after=_ZERO
+    ),
+    "data years": lambda a: a["worlds"]["baseline"]["dataset_years"].pop(),
+    "behaviour": lambda a: a.update(behavioural_response="dynamic"),
+}
+
+
+@pytest.mark.parametrize("what", sorted(MUTATIONS))
+def test_check_artifact_refuses_any_other_pairing(what):
+    variant = _record()
+    art = _synthetic(variant)
+    MUTATIONS[what](art)
+    with pytest.raises(ValueError):
+        lane.check_artifact(art, _path(art), variant)
+
+
+def test_an_artifact_must_sit_under_its_own_variant_id():
+    variant = _record()
+    art = _synthetic(variant)
+    with pytest.raises(ValueError):
+        lane.check_artifact(art, Path(f"{_other_certified()}.json"), variant)
+
+
+def _write(directory, *arts):
+    for art in arts:
+        (directory / _path(art)).write_text(json.dumps(art))
+    # the construction notes live beside the artifacts and are not one
+    shutil.copy(lane.CONSTRUCTION, directory / lane.CONSTRUCTION.name)
+
+
+def test_every_certified_artifact_stays_and_the_newest_is_latest(tmp_path):
+    older = _synthetic(
+        _record(_other_certified()),
+        run_id="older",
+        computed_at="2026-10-22T00:00:00+00:00",
+    )
+    newer = _synthetic(_record(), run_id="newer")
+    _write(tmp_path, newer, older)
+    got = lane.load_artifacts(tmp_path)
+    assert [a["run_id"] for a, _ in got] == ["older", "newer"]
+
+
+def test_artifacts_must_have_distinct_runs_and_certified_variants(tmp_path):
+    a = _synthetic(_record(_other_certified()), run_id="same")
+    b = _synthetic(_record(), run_id="same")
+    _write(tmp_path, a, b)
+    with pytest.raises(ValueError, match="run_id"):
+        lane.load_artifacts(tmp_path)
+    index = copy.deepcopy(VARIANTS)
+    for v in index["variants"]:
+        if v["variant_id"] == a["variant_id"]:
+            v["status"] = "retired"
+    (tmp_path / "variants.json").write_text(json.dumps(index))
+    b["run_id"] = "other"
+    _write(tmp_path, b)
+    with pytest.raises(ValueError, match="no certified variant"):
+        lane.load_artifacts(tmp_path, tmp_path / "variants.json")
+
+
+def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
+    """History across variants: an earlier certified run attaches to every
+    claim the latest does, and the published figure is older than both."""
+    scores, _, artifacts = lane.stage()
+    latest, path = artifacts[-1]
+    earlier = copy.deepcopy(latest)
+    earlier["run_id"] = "earlier-certified-run"
+    earlier["computed_at"] = "2026-10-20T00:00:00+00:00"
+    out = lane.results(scores, [(earlier, path), (latest, path)])
+    runs = Counter(r.run_id for r in out)
+    assert runs["earlier-certified-run"] == runs[latest["run_id"]] == 22
+    # the published figure must stay older than every certified run
+    earlier["computed_at"] = "2026-10-01T00:00:00+00:00"
+    with pytest.raises(ValueError, match="older than every certified run"):
+        lane.results(scores, [(earlier, path), (latest, path)])
+
+
+@given(value=st.integers(-(10**10), 10**10), printed=st.text(min_size=1, max_size=12))
+def test_claim_ids_ignore_the_value_and_its_printed_form(value, printed):
+    """A corrected extraction (value or formatting) keeps every claim id, so
+    links and history stay attached."""
+    centax = json.loads(
+        (REPO / "data/externals/centax-childcare-100k.json").read_text()
+    )
+    cbp = json.loads((REPO / "data/externals/cbp-rates-and-wrongs.json").read_text())
+    row = next(r for r in centax if r["metric"] == "revenue_change")
+    edit = {"value": value, "value_verbatim": printed}
+    assert (
+        lane._centax_claim({**row, **edit}).claim_id()
+        == lane._centax_claim(row).claim_id()
+    )
+    row = next(r for r in cbp if r["policy"] == "abolish_cliff")
+    years = list(range(2023, 2031))
+    assert (
+        lane._cbp_claim({**row, **edit}, years).claim_id()
+        == lane._cbp_claim(row, years).claim_id()
+    )
+
+
+def test_adapter_rows_carry_the_tidy_core():
+    for adapter_id, source in (
+        ("centax-childcare-100k", lane.CENTAX),
+        ("cbp-rates-and-wrongs", lane.CBP),
+    ):
+        rows = json.loads((REPO / f"data/externals/{adapter_id}.json").read_text())
+        for r in rows:
+            assert lane._CORE_FIELDS <= set(r)
+            assert (r["geography"], r["program"], r["subgroup"]) == (
+                "England",
+                lane.PROGRAMS[source],
+                None,
+            )
+
+
 # --- claims, statuses, annotations -------------------------------------------
 
 
 def test_claims_drops_relationships_and_conditions():
-    scores, drops, _, _ = lane.stage()
+    scores, drops, _ = lane.stage()
     assert Counter(s.source for s in scores) == {lane.CENTAX: 24, lane.CBP: 12}
     assert drops == {"cbp_taper_rows": 60, "centax_bunching_counts": 12}
     for s in scores:
@@ -335,6 +619,9 @@ def test_claims_drops_relationships_and_conditions():
         assert set(s.conditions) <= STANDARD_CONDITIONS
         assert s.publication["publish_without_result"] is True
         assert s.conditions["measure_key"] == lane.MEASURES[s.source]
+        # the printed value is provenance, outside the claim id
+        assert "value_verbatim" not in s.conditions
+        assert s.publication["value_verbatim"]
     assert uk_relationship(lane.CBP, None)[0] == CR.HELD_OUT
     assert len({s.claim_id() for s in scores}) == len(scores)
 
@@ -355,7 +642,7 @@ def _all_facets(source):
 def test_every_attached_result_has_exactly_one_stated_status():
     """Exhaustive over the attached facets: no result's status is a
     default, and the statuses are the ones the lane promises."""
-    scores, _, _, _ = lane.stage()
+    scores, _, _ = lane.stage()
     specs = {
         lane.CENTAX: lane._spec(CENTAX_SRC / "annotations.json"),
         lane.CBP: lane._spec(CBP_SRC / "annotations.json"),

@@ -179,6 +179,55 @@ than wealth effects.
 
 
                                         5
+=== PDF page 7 ===
+Step B: Corner Solutions (Bunching)
+The agent also evaluates the specific strategy of bunching exactly at the thresh-
+old K to retain the benefit B.
+
+                              pbunch = max(0, Z − K)                               (6)
+
+In this scenario, consumption is fixed at cbunch = K − T (K) + B.
+
+1.3.4   Global Maximization
+The agent compares the indirect utility between the two strategies. They only
+choose to bunch at £100k if the utility from doing so is greater than from the
+optimal pension saving scenario and a friction value (in our central scenario,
+that is £1k).
+
+     (
+   ∗  pbunch       if U (c(pnormal ), pnormal ) + f riction < U (c(pbunch ), pbunch )
+ p =
+      pnormal      else
+                                                                                    (7)
+Agents only choose to respond if they can secure themselves £1k of extra net
+income - this compensates for the planning and tax advice which may be required
+to embark on Salary Sacrifice.
+This discrete choice framework naturally generates:
+   • Smooth responses: Agents gradually increasing pensions as γ rises.
+   • Clumping: A mass of agents setting p = Z − 100, 000 because the utility
+     jump from the benefit B outweighs the liquidity cost of the extra saving.
+
+1.3.5   Calibration of γ
+The parameter γ determines the baseline savings rate. A conservative estimate
+of γ = 0.04 has been used here. Where τ = 0, workers will naturally save 4% of
+their income.
+
+1.3.6   Modelling a Taper
+Under a taper policy, the binary cliff edge is replaced by a gradual withdrawal
+rate s (e.g., 3%). Agents decide whether they want to opt-in to the childcare
+benefits, leading to an indefinite taper above £100k, or to avoid the additional
+charge. Mechanically, this acts as a surcharge on the marginal tax rate for
+Adjusted Net Income above K.The effective marginal tax rate τef f becomes:
+                               (
+                                 τbase + s if K < (Z − p)
+                       τef f =                                               (8)
+                                 τbase     otherwise
+
+The optimization problem remains very similar to Step A (Interior Solutions).
+The agent calculates the optimal pension p∗ using the First Order Condition,
+
+
+                                          7
 === PDF page 8 ===
 but substituting τef f for τj . They then compare this scenario against one where
 the original optimal pension provision is used and where no childcare benefit is
@@ -226,6 +275,52 @@ Where:
 
 
                                            8
+=== PDF page 9 ===
+   • h: Labour hours (normalized such that h = 1 represents status quo full-
+     time work).
+   • Zpot : Potential Earnings Capacity (Exogenous scalar).
+   • α: Disutility of labour parameter (calibrated individually).
+
+   • ε: Frisch elasticity of labour supply.
+
+1.4.2   The Budget Constraint
+The household faces a budget constraint defined by the tax function T (·) and
+the conditional Child Benefit B. The benefit is withdrawn if ”Adjusted Net
+Income” (AN I) exceeds the threshold K = £100, 000.
+
+                     c = w · h − T (w · h) + B · I(w · h ≤ K)                  (10)
+This creates a non-convex budget set. To solve the optimization problem, we
+evaluate two distinct regimes for each household and select the global maximum.
+
+1.4.3   Calibration of α
+To ensure the model reproduces the status quo distribution, we calibrate αi for
+each individual i such that their observed choice (hi = 1) is optimal under the
+current tax system.
+   Using the inverse of the labour FOC:
+
+                                 αi = wi (1 − τi )                             (11)
+
+This ensures that any deviation from the status quo in our counterfactual sim-
+ulations is driven purely by changes in the tax incentives τ or the benefit rules
+B.
+
+1.4.4   Optimisation
+We find the maximum h that only just brings total income below £100k.
+
+                        hbunch = max h | h · Z ≤ 100, 000                      (12)
+
+1.4.5   Global Maximization
+This is very similar to the previous model. The agent compares the indirect
+utility between the scenario where h = 1 and h = hbunch . They only choose to
+bunch at £100k if the utility from doing so is greater than from the normal in-
+come (with its associated disutility) and a friction value (in our central scenario,
+that is £1k).
+
+1.4.6   Results
+
+
+
+                                         9
 === PDF page 10 ===
 Table 3: Projected Net Fiscal Impact of Childcare Entitlements (£bn): Endoge-
 nous Labour, No Pension

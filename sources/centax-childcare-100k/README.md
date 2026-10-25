@@ -30,6 +30,10 @@ The PolicyEngine side is `pipeline/compute_uk_childcare_100k.py`, which wrote
 - The reform covers the free hours only. Tax-Free Childcare has its own
   £100,000 limit and is not part of it. The £500 Tax-Free Childcare
   addition in the report's Appendix D belongs to CBP's estimate.
+- Both offers are England's. The counterparts sum each childcare head for
+  people in English households: policyengine-uk 2.89.2 restricts the three
+  free-hours offers to England but applies Tax-Free Childcare across the
+  UK. Ingest checks that no free-hours head moves outside England.
 
 ## The comparison (£bn, negative = cost to the Exchequer)
 
@@ -77,9 +81,13 @@ The published dashboard figure ran on the 2 October Microcosm release that
 #1126 examines, with the same draw. The fix merged in microcosm on 16
 October 2026 (microcosm#1299). The certified pair was built on 19 June 2026,
 before it, so the row shows the miss until a certified Microcosm release
-with the fixed draw lands. That is intended. When it does, rerun the compute script on the new
-variant and the new run becomes the latest; both earlier figures stay in
-the history.
+with the fixed draw lands. That is intended. When it does and becomes a
+certified replay variant, run the compute script with `--variant <id>` in
+that variant's environment. Its artifact goes beside this one in
+`results/uk/childcare_100k/`, and ingest keeps every certified artifact's
+run: the newest becomes the latest, and this pair's run and the published
+figure stay in the history. Ingest refuses an artifact whose package,
+release-bundle or dataset identity differs from its variant record.
 
 ## Never a calibration target
 
@@ -90,7 +98,7 @@ poverty family, so `tests/test_uk_childcare_100k.py` checks the rule on the
 built database for every source: any claim that scores a world other than
 the baseline is held out.
 
-## Follow-up: CenTax moments as calibration targets (not acted on)
+## CenTax moments as calibration targets
 
 Arun Advani suggested calibrating PolicyEngine to CenTax's moments. Under
 the 2026-08-02 rulings that splits in two:
@@ -109,8 +117,10 @@ the 2026-08-02 rulings that splits in two:
   tabulations with a definition, a year and a population, not a rounded
   figure in a policy report.
 
-Whether to ask CenTax for those tabulations, and whether Microcosm would
-consume them, is a separate decision for the UK data owners.
+Decided 25 October 2026: CenTax's administrative tabulations become
+calibration targets in Microcosm, where that work happens; its model
+outputs stay out. Nothing changes in this lane: both sources stay held out,
+and no costing here is ever a target.
 
 ## Reproducing
 
@@ -118,7 +128,9 @@ consume them, is a separate decision for the UK data owners.
 python sources/centax-childcare-100k/adapter.py
 python sources/cbp-rates-and-wrongs/adapter.py
 # the counterpart: the certified environment (docs/uk_replay/requirements.txt)
-# and the certified artifact in the Hugging Face cache, offline
+# and the certified artifact in the Hugging Face cache, offline; the run
+# copies it into a verified writable mirror under data/uk/policyengine-local/
+# (about 1.3 GB, git-ignored) and hashes the file each simulation reads
 PYTHONPATH=. .venv-pe289m/bin/python pipeline/compute_uk_childcare_100k.py
 PYTHONPATH=. python -m scorecard_db.ingest_uk_childcare_100k data/scorecard.db
 ```

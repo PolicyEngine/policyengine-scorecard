@@ -34,8 +34,8 @@ document is the contract that makes instance N cheap.
 
 ## The tidy row schema (adapter contract)
 
-Every adapter emits rows of exactly this shape; nothing downstream knows
-anything source-specific except the counterpart mapping:
+Every adapter emits rows with at least these fields; nothing downstream
+knows anything source-specific except the counterpart mapping:
 
 ```json
 {
@@ -56,7 +56,11 @@ anything source-specific except the counterpart mapping:
 Conventions: counts in raw units (adapter undoes source scaling), rates as
 fractions, `subgroup` slugs shared across sources where concepts genuinely
 match (age bands, race, disability), `variant` for source-side methodological
-forks (e.g. TANF with/without solely-state-funded programs).
+forks (e.g. TANF with/without solely-state-funded programs, a costing's
+behavioural scenario). An adapter may carry its source's own facets beside
+these fields (a table and column, a fiscal-year label, the value as printed);
+the lane's ingester must name every field it accepts and reject any other
+(`harvest.require_fields`).
 
 ## The PE side
 
@@ -234,7 +238,9 @@ Operating rules for the agent stage:
   appendix (net of behaviour, 2026-27 to 2031-32). PDF adapters read a
   vendored page extract that a test re-extracts from the PDF. Counterparts
   come from `pipeline/compute_uk_childcare_100k.py` on the certified
-  populace-uk pair: static, the three free-hours entitlements summed.
+  populace-uk pair: static, the three free-hours entitlements (plus
+  Tax-Free Childcare for CBP) summed for people in English households.
+  Each certified variant's artifact keeps its run in the history.
   Static against static is `comparable`; net costs are `concept_mismatch`.
   PolicyEngine's published dashboard figure stays as an older history row,
   so the published miss stays on the page, and the central static rows

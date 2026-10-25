@@ -167,11 +167,18 @@ def tidy(number: str, table: dict) -> list[dict]:
             start, end = year_label.split("/")
             rows.append(
                 {
+                    # the tidy-row core (docs/ARCHITECTURE.md); variant is
+                    # CBP's behavioural model
                     "source": "cbp-rates-and-wrongs",
+                    "program": "free_childcare_hours_and_tax_free_childcare",
+                    "metric": "revenue_change",
+                    "subgroup": None,
+                    "variant": spec["model"],
+                    "geography": "England",
+                    # the costing facets beside it
                     "country": "UK",
                     "table": number,
                     "pdf_page": spec["page"],
-                    "model": spec["model"],
                     "policy": key,
                     "fy": f"{start}-{end}",
                     "period": int(start[:2] + end),

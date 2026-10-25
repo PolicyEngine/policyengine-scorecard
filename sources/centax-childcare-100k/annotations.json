@@ -20,8 +20,8 @@
    },
    "severity": "construction",
    "status": "comparable",
-   "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements with the limit removed and no behavioural response run.",
-   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)'; policyengine_uk 2.89.2 applies labour-supply responses only through Simulation.apply_dynamics (simulation.py), which nothing in policyengine 5.0.2 and nothing in pipeline/compute_uk_childcare_100k.py calls"
+   "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements in England with the limit removed; at the pin the engine's labour-supply elasticities are zero, so no behavioural response enters.",
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
   },
   {
    "id": "centax-static-published-dashboard",

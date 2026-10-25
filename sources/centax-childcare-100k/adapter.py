@@ -236,11 +236,18 @@ def tidy(table: dict) -> list[dict]:
             money = column in MONEY
             rows.append(
                 {
+                    # the tidy-row core (docs/ARCHITECTURE.md); variant is
+                    # CenTax's friction scenario
                     "source": "centax-childcare-100k",
+                    "program": "free_childcare_hours",
+                    "metric": "revenue_change" if money else "parents_bunching",
+                    "subgroup": None,
+                    "variant": scenario,
+                    "geography": "England",
+                    # the costing facets beside it
                     "country": "UK",
                     "table": "4.2",
                     "printed_page": 41,
-                    "scenario": scenario,
                     "column": column,
                     "tax_year_label": str(year),
                     "fy": fy,

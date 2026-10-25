@@ -12,9 +12,11 @@ the working-parent childcare offers in England:
 
 This script runs the managed policyengine-uk simulation on the certified
 populace-uk bundle (the default replay variant, data/uk/certified_bundle.json)
-through the same preflight as pipeline/compute_uk_ab2025.py, and writes one
-artifact with weighted SUMS and COUNTS per world and year. Every ratio and
-delta is derived downstream (scorecard_db/ingest_uk_childcare_100k.py).
+through the same preflight as the variant's event replays
+(pipeline/compute_uk_event.py), and writes one artifact with weighted SUMS
+and COUNTS per world and year, UK-wide and for people in English households.
+Every ratio and delta is derived downstream
+(scorecard_db/ingest_uk_childcare_100k.py).
 
 Worlds (static: no behavioural response is applied):
 
@@ -35,12 +37,19 @@ own default for the variable, i.e. full use of the 30 hours). They measure
 how much of the static cost turns on the dataset's hours-usage draw
 (microcosm#1126); they are never attached to a claim.
 
-Offline and pinned, as compute_uk_ab2025: Hugging Face offline mode before
-the engine is imported, the cached artifact hashed against the certified
-bundle before any simulation and after every one, the installed engine
-equal to the bundle's declared version.
+Offline and pinned, through compute_uk_event's preflight for the variant
+(the legacy one or a materialised one): the installed wheels checked
+against the variant record before the engine is imported (versions, RECORD
+hashes, the packaged bundle manifest, Python), each engine package imported
+from its own distribution, Hugging Face offline mode, and the runtime
+release bundle equal to the record's. Each simulation must report as its
+runtime_dataset_source the exact file hashed against the certified bundle
+immediately before construction, and that file is hashed again after the
+world's reads. One artifact per variant; ingest keeps every certified
+variant's run in the history.
 
     PYTHONPATH=. .venv-pe289m/bin/python pipeline/compute_uk_childcare_100k.py
+    PYTHONPATH=. <that variant's venv>/bin/python pipeline/compute_uk_childcare_100k.py --variant <id>
 """
 
 from __future__ import annotations
@@ -48,7 +57,6 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import gc
-import importlib.metadata
 import inspect
 import json
 import sys
@@ -58,10 +66,12 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "pipeline"))
+sys.path.insert(0, str(ROOT))
 
-import compute_uk_ab2025 as ab
-import uk_replay_variants as variants
+from pipeline import compute_uk_ab2025 as ab
+from pipeline import compute_uk_event as event
+from pipeline import compute_uk_obr_costings as fiscal
+from pipeline import uk_replay_variants as variants
 
 OUTPUT_DIR = ROOT / "results" / "uk" / "childcare_100k"
 YEARS = (2026, 2027, 2028, 2029, 2030)
@@ -76,6 +86,17 @@ REFORMS = {
 }
 HOURS_USAGE = "maximum_extended_childcare_hours_usage"
 FULL_USE_HOURS = 30.0
+# Benefit-unit take-up inputs (each offer's eligibility is defined_for one;
+# the engine's default is True).
+TAKE_UP = (
+    "would_claim_extended_childcare",
+    "would_claim_universal_childcare",
+    "would_claim_targeted_childcare",
+    "would_claim_tfc",
+)
+# Inputs whose presence in the dataset is recorded: holder periods filled at
+# construction, before any calculation, are the dataset's own values.
+DATASET_INPUTS = (HOURS_USAGE, *TAKE_UP, "childcare_expenses")
 
 # The three free early-years entitlements (policyengine-uk's gov_spending
 # lists all three) and Tax-Free Childcare.
@@ -86,10 +107,21 @@ FREE_HOURS = (
 )
 TFC = "tax_free_childcare"
 SUMMED = (*FREE_HOURS, TFC, "gov_spending", "gov_tax")
-# Variables whose engine metadata is recorded (the pe_meta contract).
+# Both offers are England's, but policyengine-uk 2.89.2 applies Tax-Free
+# Childcare UK-wide (only the extended hours test country == ENGLAND), so
+# the childcare heads are also summed for people in English households.
+HEADS = (*FREE_HOURS, TFC)
+ENGLAND = "ENGLAND"
+# Variables whose engine metadata is recorded (the pe_meta contract): every
+# variable year_block calculates.
 METADATA = (
     *SUMMED,
     HOURS_USAGE,
+    "is_child",
+    "is_child_receiving_extended_childcare",
+    "country",
+    *TAKE_UP,
+    "childcare_expenses",
     "max_free_entitlement_hours_used",
     "extended_childcare_entitlement_eligible",
     "extended_childcare_entitlement_meets_income_requirements",
@@ -141,6 +173,11 @@ def _weighted(series) -> tuple[np.ndarray, np.ndarray]:
     )
 
 
+def _share(series) -> float:
+    values, weights = _weighted(series)
+    return float((values * weights).sum() / weights.sum())
+
+
 def limit_values(sim, year: int) -> dict[str, float]:
     params = sim.tax_benefit_system.parameters
     out = {}
@@ -150,9 +187,47 @@ def limit_values(sim, year: int) -> dict[str, float]:
     return out
 
 
+def england_masks(sim, year: int) -> dict[str, np.ndarray]:
+    """entity key -> True where the household is in England.
+
+    country is a household variable; core's map_result projects it onto
+    each member (household -> person), and a benefit unit lies inside one
+    household, so any member gives its country (person -> benunit)."""
+    country = np.asarray(sim.calculate("country", year).values)
+    unknown = set(np.unique(country)) - {
+        "ENGLAND",
+        "NORTHERN_IRELAND",
+        "SCOTLAND",
+        "WALES",
+    }
+    if unknown or ENGLAND not in set(country):
+        raise SystemExit(f"{year}: unexpected country values {sorted(unknown)}")
+    person = np.asarray(
+        sim.map_result(country == ENGLAND, "household", "person"), dtype=bool
+    )
+    benunit = np.asarray(
+        sim.map_result(person, "person", "benunit", how="any"), dtype=bool
+    )
+    if not np.array_equal(
+        person, np.asarray(sim.map_result(benunit, "benunit", "person"), dtype=bool)
+    ):
+        raise SystemExit(f"{year}: a benefit unit spans two countries")
+    return {"person": person, "benunit": benunit}
+
+
+def england_sums(sim, year: int, masks: dict[str, np.ndarray]) -> dict[str, float]:
+    out = {}
+    for v in HEADS:
+        values, weights = _weighted(sim.calculate(v, year))
+        mask = masks[sim.tax_benefit_system.variables[v].entity.key]
+        out[v] = float((values * weights)[mask].sum())
+    return out
+
+
 def year_block(sim, year: int) -> dict:
     """Weighted sums and counts for one world and year (microdf weights)."""
     sums = {v: float(sim.calculate(v, year).sum()) for v in SUMMED}
+    masks = england_masks(sim, year)
     ext, w_bu = _weighted(sim.calculate("extended_childcare_entitlement", year))
     hours, _ = _weighted(sim.calculate(HOURS_USAGE, year))
     receiving = ext > 0
@@ -169,18 +244,24 @@ def year_block(sim, year: int) -> dict:
     fractional_age = np.abs(age - np.round(age)) > 1e-9
     return {
         "sums_gbp": sums,
+        "sums_gbp_england": england_sums(sim, year, masks),
         "counts": {
             "benunits_receiving_extended": float(w_bu[receiving].sum()),
             "children_receiving_extended": float(w_p[extended_child].sum()),
             "children_receiving_universal": float(w_p[universal > 0].sum()),
             "children_receiving_targeted": float(w_p[targeted > 0].sum()),
             "people_receiving_tfc": float(w_p[tfc > 0].sum()),
+            "people_receiving_tfc_england": float(
+                w_p[(tfc > 0) & masks["person"]].sum()
+            ),
             "children_under_one": float(w_p[under_one].sum()),
             "children_under_one_receiving_extended": float(
                 w_p[under_one & extended_child].sum()
             ),
             "people_with_fractional_age": float(w_p[fractional_age].sum()),
         },
+        # weighted share of benefit units with each take-up input True
+        "take_up": {v: _share(sim.calculate(v, year)) for v in TAKE_UP},
         "hours_usage": {
             "mean_all_benunits": float((hours * w_bu).sum() / w_bu.sum()),
             "mean_benunits_receiving_extended": float(
@@ -222,28 +303,63 @@ def set_full_use(sim, years) -> dict[int, float]:
     return out
 
 
+def dataset_inputs(sim) -> dict[str, list[str]]:
+    """input -> the periods the dataset filled, read before any calculation."""
+    return {
+        v: sorted(str(p) for p in sim.get_holder(v).get_known_periods())
+        for v in DATASET_INPUTS
+    }
+
+
+def check_runtime(sim, name: str, pre: dict) -> list[int]:
+    """The simulation read the hashed file, under the certified bundle, with
+    the record's data years; returns those years."""
+    bundle = dict(getattr(sim, "policyengine_bundle", {}) or {})
+    reported = bundle.get("runtime_dataset_source")
+    source = Path(pre["runtime_dataset_source"])
+    if not isinstance(reported, str) or Path(reported).resolve() != source.resolve():
+        raise SystemExit(
+            f"{name}: the managed simulation read {reported!r}, not the file "
+            f"hashed before construction ({source})"
+        )
+    fiscal.assert_managed_bundle(bundle, pre["release_bundle"])
+    dataset_years = sorted(int(y) for y in sim.dataset.years)
+    if dataset_years != pre["data_years"]:
+        raise SystemExit(
+            f"{name}: dataset years {dataset_years} != the variant's {pre['data_years']}"
+        )
+    return dataset_years
+
+
 def run_world(name: str, reform, years, pre: dict, *, full_use: bool = False):
     t0 = time.perf_counter()
-    before = ab.sha256_file(pre["artifact"])
-    if before != pre["sha256"]:
-        raise SystemExit("the certified artifact changed before a simulation")
+    source = Path(pre["runtime_dataset_source"])
+    before = fiscal.verify_runtime_dataset_sha256(
+        source, pre["sha256"], phase=f"{name}: immediately before construction"
+    )
     sim = ab.build_sim(reform)
+    dataset_years = check_runtime(sim, name, pre)
+    supplied = dataset_inputs(sim)
     check = set_full_use(sim, years) if full_use else None
     blocks = {str(y): year_block(sim, y) for y in years}
     metadata = variable_metadata(sim.tax_benefit_system)
-    dataset_years = sorted(int(y) for y in sim.dataset.years)
+    after = fiscal.verify_runtime_dataset_sha256(
+        source,
+        pre["sha256"],
+        phase=f"{name}: after the world's reads",
+        before_sha256=before,
+    )
     del sim
     gc.collect()
-    after = ab.sha256_file(pre["artifact"])
-    if after != before:
-        raise SystemExit("the certified artifact changed during a simulation")
     print(f"{name}: {len(years)} years in {time.perf_counter() - t0:.0f}s", flush=True)
     out = {
         "reform_dict": reform,
         "years": blocks,
+        "runtime_dataset_source": fiscal.relative_to_root(source),
         "dataset_sha256_before": before,
         "dataset_sha256_after": after,
         "dataset_years": dataset_years,
+        "dataset_inputs": supplied,
     }
     if full_use:
         out["input_override"] = {
@@ -268,13 +384,60 @@ def main(argv: list[str] | None = None) -> int:
         "--run-id", default=f"childcare-100k-{dt.datetime.now(dt.timezone.utc):%Y%m%d}"
     )
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    ap.add_argument(
+        "--variant",
+        help="a certified variant in data/uk/replay_variants.json (default: its default)",
+    )
+    ap.add_argument(
+        "--dataset-file",
+        type=Path,
+        help="a local file holding a materialised variant's certified dataset bytes",
+    )
     args = ap.parse_args(argv)
+    # absolute before a variant preflight moves into its runtime directory
+    args.output_dir = args.output_dir.resolve()
 
-    variant = variants.get_variant()
-    pre = ab.preflight()
-    if pre["revision"] != variant["identity"]["dataset"]["revision"]:
-        raise SystemExit("certified_bundle.json and the default variant disagree")
-    print(f"certified artifact {pre['revision']} sha256 verified", flush=True)
+    variant = variants.get_variant(args.variant)
+    missing = sorted(
+        (set(args.years) | set(args.diagnostic_years)) - set(variant["data_years"])
+    )
+    if missing:
+        # a year outside the dataset calculates defaults without raising
+        raise SystemExit(f"{missing} are outside {variant['variant_id']}'s data years")
+    if variants.is_legacy(variant):
+        if args.dataset_file is not None:
+            raise SystemExit("the legacy variant reads its pinned Hugging Face cache")
+        # Engine-free and before any engine import: the record is certified
+        # and the installed wheels are its own. Then the event runner's
+        # legacy preflight: offline, isolated, the managed release equal to
+        # certified_bundle.json and to the record, import origins checked,
+        # and a verified writable mirror that POLICYENGINE_UK_DATA_REPO
+        # points at.
+        installed = event.check_variant_environment(variant)
+        pre = {
+            **event.preflight(variant),
+            "data_years": list(variant["data_years"]),
+        }
+    else:
+        # The same checks for a variant whose dataset is materialised into
+        # its runtime directory (the event runner's variant preflight).
+        pre = event.variant_preflight(
+            variant,
+            dataset_source=args.dataset_file.resolve() if args.dataset_file else None,
+        )
+        installed = pre["installed"]
+    revision = fiscal.data_bundle_id(pre["release_bundle"])
+    identity = variant["identity"]
+    if (revision, pre["sha256"]) != (
+        identity["dataset"]["revision"],
+        identity["dataset"]["sha256"],
+    ):
+        raise SystemExit("the managed release and the default variant disagree")
+    print(
+        f"certified artifact {revision} sha256 verified at "
+        f"{fiscal.relative_to_root(Path(pre['runtime_dataset_source']))}",
+        flush=True,
+    )
     executed = worlds(args.years)
     out_worlds = {}
     metadata = None
@@ -291,23 +454,31 @@ def main(argv: list[str] | None = None) -> int:
                 pre,
                 full_use=True,
             )
+    variants.verify_import_origins()
     packages = {
-        p: importlib.metadata.version(p)
-        for p in ("policyengine", "policyengine-uk", "policyengine-core")
+        p: {
+            "version": installed["packages"][p]["version"],
+            "record_sha256": installed["packages"][p]["record_sha256"],
+        }
+        for p in variants.PACKAGES
     }
     artifact = {
-        "schema_version": 1,
+        "schema_version": 2,
         "run_id": args.run_id,
         "computed_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "variant_id": variant["variant_id"],
-        "engine_version": pre["engine_version"],
+        "variant_identity_sha256": variant["identity_sha256"],
+        "engine_version": packages["policyengine-uk"]["version"],
         "packages": packages,
-        "data_bundle": pre["revision"],
+        "python": installed["python"],
+        "packaged_bundle_manifest_sha256": installed["packaged_bundle_manifest_sha256"],
+        "release_bundle": pre["release_bundle"],
+        "data_bundle": revision,
         "dataset": {
-            "repo_id": pre["repo_id"],
-            "revision": pre["revision"],
+            "repo_id": identity["dataset"]["repo_id"],
+            "revision": revision,
             "sha256": pre["sha256"],
-            "hf_commit": variants_hf_commit(),
+            "hf_commit": variants_hf_commit() if variants.is_legacy(variant) else None,
         },
         "years": args.years,
         "fy_rule": "PE year Y is fiscal year Y-(Y+1): policyengine_uk/utils/parameters.py convert_to_fiscal_year_parameters sets every gov parameter for year Y to its 30 April Y value",
@@ -325,7 +496,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def variants_hf_commit() -> str:
-    import modal_uk_event
+    from pipeline import modal_uk_event
 
     return modal_uk_event.HF_COMMIT
 
