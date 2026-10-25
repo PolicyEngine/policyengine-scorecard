@@ -560,9 +560,17 @@ def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
     earlier = copy.deepcopy(latest)
     earlier["run_id"] = "earlier-certified-run"
     earlier["computed_at"] = "2026-10-20T00:00:00+00:00"
-    out = lane.results(scores, [(earlier, path), (latest, path)])
+    history = [(earlier, path), (latest, path)]
+    out = lane.results(scores, history)
     runs = Counter(r.run_id for r in out)
     assert runs["earlier-certified-run"] == runs[latest["run_id"]] == 22
+    # ingest's tally scales with the runs, so a second artifact builds
+    drops = lane.stage()[1]
+    diag = lane.diagnoses(scores, latest)
+    assert lane.accounting(scores, out, diag, drops, history) == lane.expected(2)
+    assert lane.expected(2)["results"] == 2 * 22 + 4
+    one = lane.results(scores, artifacts)
+    assert lane.accounting(scores, one, diag, drops, artifacts) == lane.expected(1)
     # the published figure must stay older than every certified run
     earlier["computed_at"] = "2026-10-01T00:00:00+00:00"
     with pytest.raises(ValueError, match="older than every certified run"):
@@ -709,8 +717,10 @@ def test_built_db_lane_counts_and_latest_result_is_the_certified_run():
     assert len(computed) == 22
     assert {r["data_bundle"] for r in computed} == {CERTIFIED["revision"]}
     assert {r["engine_version"] for r in computed} == {"2.89.2"}
-    lanes = _rows("SELECT stage FROM lanes WHERE lane = ?", lane.LANE_ID)
+    lanes = _rows("SELECT * FROM lanes WHERE lane = ?", lane.LANE_ID)
     assert [r["stage"] for r in lanes] == ["computed"]
+    # the note counts claims on the latest run, not results across the history
+    assert lanes[0]["detail"].startswith("22 of 36 claims computed")
 
 
 def test_published_dashboard_miss_stays_in_the_history():

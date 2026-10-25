@@ -121,7 +121,7 @@ HOURS_USAGE_INPUT = "maximum_extended_childcare_hours_usage"
 ENGLAND = "sums_gbp_england"
 
 LANE_ID = "uk-childcare-100k"
-LANE_UPDATED = "2026-10-21"
+LANE_UPDATED = "2026-10-25"
 # The UK family's shared top-level feed literal (sync_lane_feed's contract).
 FEED_UPDATED = "2026-08-19"
 LANE_FEED_META = {
@@ -794,15 +794,27 @@ def diagnoses(scores: list[ExternalScore], art: dict) -> list[tuple]:
     return rows
 
 
-_EXPECTED = {
-    "claims": 36,
-    "claims_by_source": {CENTAX: 24, CBP: 12},
-    "results": 26,
-    "results_by_kind": {"certified": 22, "published_dashboard": 4},
-    "statuses": {"comparable": 6, "concept_mismatch": 18, "constructed": 2},
-    "diagnoses": 2,
-    "drops": {"cbp_taper_rows": 60, "centax_bunching_counts": 12},
-}
+# Each certified run attaches to the same 22 claims, and the published figure
+# to 4, so the expected tally scales with the runs in the history.
+_PER_CERTIFIED_RUN = {"comparable": 6, "concept_mismatch": 16}
+_PUBLISHED = {"constructed": 2, "concept_mismatch": 2}
+
+
+def expected(runs: int) -> dict:
+    statuses = Counter(_PUBLISHED)
+    for status, n in _PER_CERTIFIED_RUN.items():
+        statuses[status] += n * runs
+    certified = sum(_PER_CERTIFIED_RUN.values()) * runs
+    published = sum(_PUBLISHED.values())
+    return {
+        "claims": 36,
+        "claims_by_source": {CENTAX: 24, CBP: 12},
+        "results": certified + published,
+        "results_by_kind": {"certified": certified, "published_dashboard": published},
+        "statuses": dict(statuses),
+        "diagnoses": 2,
+        "drops": {"cbp_taper_rows": 60, "centax_bunching_counts": 12},
+    }
 
 
 def accounting(scores, pe, diag, drops, artifacts) -> dict:
@@ -829,8 +841,9 @@ def ingest(db_path: Path) -> dict:
     pe = results(scores, artifacts)
     diag = diagnoses(scores, art)
     counts = accounting(scores, pe, diag, drops, artifacts)
-    if counts != _EXPECTED:
-        raise ValueError(f"claim accounting drifted: {counts} != {_EXPECTED}")
+    want = expected(len(artifacts))
+    if counts != want:
+        raise ValueError(f"claim accounting drifted: {counts} != {want}")
     db = ScorecardDB(db_path)
 
     from .baselines import register_baselines_txn
@@ -853,8 +866,9 @@ def ingest(db_path: Path) -> dict:
         db.conn.executemany(RESULTS_SQL, [ScorecardDB.result_row(r) for r in pe])
         db.conn.executemany(DIAGNOSES_SQL, diag)
         register_baselines_txn(db)
+        latest = {r.claim_id for r in pe if r.run_id == art["run_id"]}
         detail = (
-            f"{counts['results_by_kind']['certified']} of {len(scores)} claims computed on the "
+            f"{len(latest)} of {len(scores)} claims computed on the "
             f"certified pair ({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
             "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
             "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
