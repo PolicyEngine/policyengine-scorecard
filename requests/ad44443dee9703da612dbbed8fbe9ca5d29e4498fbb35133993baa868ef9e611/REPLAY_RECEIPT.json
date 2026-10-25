@@ -1,0 +1,26 @@
+{
+ "corpus": null,
+ "diff": null,
+ "execution": null,
+ "integrity": {
+  "failures": [
+   {
+    "code": "run_artifact_failed",
+    "detail": "FileNotFoundError: [Errno 2] No such file or directory: 'output/outcome.json'"
+   }
+  ],
+  "status": "failed"
+ },
+ "receipt_sha256": "4364e6327ff7f870e9973afb51161ad83388e0e0bf46492a885e6bbde8b2c845",
+ "rejection": null,
+ "request_id": "ad44443dee9703da612dbbed8fbe9ca5d29e4498fbb35133993baa868ef9e611",
+ "results": {
+  "path": "requests/ad44443dee9703da612dbbed8fbe9ca5d29e4498fbb35133993baa868ef9e611/results",
+  "ref": "replay-state",
+  "repository": "PolicyEngine/policyengine-scorecard"
+ },
+ "schema": "policyengine.uk-replay-receipt/v1",
+ "status": "failed",
+ "variant_id": null,
+ "variant_identity_sha256": null
+}
