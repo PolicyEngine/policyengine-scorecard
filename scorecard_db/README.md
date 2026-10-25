@@ -532,15 +532,23 @@ PYTHONPATH=. python -m scorecard_db.ingest_uk_childcare_100k data/scorecard.db
 All claims are `revenue_change` in pounds, held out, keyed to two
 `policy_ref` worlds (`measure_key` carries the same slug for retrieval
 across producers), and published without a result where PolicyEngine has
-none, with the reason in `pe_missing`. The new `scenario` condition carries
-CenTax's scenario.
+none. The reason is in `publication.pe_missing`, read off the years the
+certified runs computed; it sits outside the claim id, so a new run never
+changes an id, and the feed shows it as `conditions.pe_missing`. The new
+`scenario` condition carries CenTax's scenario.
 
 Results come from `pipeline/compute_uk_childcare_100k.py` on the certified
 pair (the default replay variant): 22 rows, `comparable` for CenTax's static
 cost and `concept_mismatch` for every net figure. Each status is the one
 status-setting entry of the source's `annotations.json` that matches the
-row, so no status is a default. PolicyEngine's published dashboard figure
-(£0.434bn in 2027-28) is four further result rows, older than the certified
-run: the history keeps the published miss beside the current figure. The
-central static rows carry a `pe_gap` diagnosis linked to microcosm#1126 (the
-hours-usage draw). See `sources/centax-childcare-100k/README.md`.
+row, so no status is a default. A note whose basis is the engine or a run
+names the certified pairs it was checked on (`variants`) and attaches only
+to their results; ingest refuses an artifact whose pair has no
+`verified_pairs` entry in `results/uk/childcare_100k/construction_annotations.json`.
+PolicyEngine's published dashboard figure (£0.434bn in 2027-28, on
+policyengine.org from 12 to 21 October 2026) is four further result rows,
+older than the certified run: the history keeps the published miss beside
+the current figure. The central static rows carry a `pe_gap` diagnosis
+linked to microcosm#1126 (the hours-usage draw). policyengine.py's current
+certified pair, which has the fixed draw, is not yet run in this lane
+(#228). See `sources/centax-childcare-100k/README.md`.

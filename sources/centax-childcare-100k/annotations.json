@@ -1,6 +1,7 @@
 {
  "_schema": {
   "applies_to": "matcher on {components, scenarios, periods, results}; null = any. components: Table 4.2 money columns (static_cost, intensive_margin, extensive_margin, net_fiscal_cost); scenarios: central, high_cost, low_cost; periods: claim periods (the tax year's later year); results: certified (the certified-pair run) or published_dashboard (the history row)",
+  "variants": "the certified variants (data/uk/replay_variants.json) on which a note resting on the engine or a run was checked; it attaches only to those pairs' results. A note resting on the report alone names none and applies to every run",
   "severity": "period | definitional | construction | caution | gap",
   "status": "the comparison status this annotation sets, where it sets one; at most one status-setting annotation matches a result",
   "basis": "traceability: raw/pages_layout.txt (PDF page and printed page), engine files at the certified pin, or the measured artifact results/uk/childcare_100k/<variant>.json"
@@ -18,6 +19,9 @@
      "certified"
     ]
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "construction",
    "status": "comparable",
    "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements in England with the limit removed; at the pin the engine's labour-supply elasticities are zero, so no behavioural response enters.",
@@ -83,6 +87,9 @@
      "certified"
     ]
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "definitional",
    "text": "CenTax costs the free childcare hours only ('removing the £100,000 threshold for eligibility for free childcare hours'). Tax-Free Childcare, which has its own £100,000 limit, is not part of the reform. PolicyEngine's counterpart matches: it removes only the 30-hours limit and sums the three free-hours entitlements, and the run measured no change in Tax-Free Childcare. The £500 Tax-Free Childcare addition in CenTax's Appendix D belongs to the Centre for British Progress estimate CenTax reviews, not to CenTax's figures.",
    "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes), PDF page 9 (printed page 8, section 1.1: Tax-Free Childcare 'withdrawn in full ... once either parent has an ANI above £100,000') and PDF page 100 (printed page 99, Appendix D: CBP's 'value of the entitlement ... with £500 added for Tax-Free Childcare'); results/uk/childcare_100k/<variant>.json worlds.free_hours: limits_executed and the tax_free_childcare sum"
@@ -97,6 +104,9 @@
      "certified"
     ]
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "period",
    "text": "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. PolicyEngine's annual period 2027 runs the 2027-28 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
    "basis": "raw/pages_layout.txt PDF page 3 (printed page 2, editorial note: 'tax year 2021-22 is given as 2022'); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"

@@ -278,6 +278,11 @@ def export(
         publication = json.loads(c["publication"])
         reform = json.loads(c["reform_json"])
         conditions = json.loads(c["conditions"])
+        # A reason that depends on which PolicyEngine runs exist rides in
+        # publication, outside the claim id (lane uk-childcare-100k); the
+        # feed states it where every other lane's reason sits.
+        if "pe_missing" in publication and "pe_missing" not in conditions:
+            conditions["pe_missing"] = publication["pe_missing"]
         if publication.get("registry") in PMD_REGISTRIES:
             event = conditions["fiscal_event"]
             archive_events[c["claim_id"]] = (

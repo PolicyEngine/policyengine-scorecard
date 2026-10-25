@@ -8,6 +8,7 @@ the history; and a reform estimate is never a calibration target."""
 
 import ast
 import copy
+import datetime as dt
 import hashlib
 import importlib.util
 import json
@@ -355,7 +356,7 @@ def test_free_hours_moving_outside_england_is_refused(artifact):
     sums["extended_childcare_entitlement"] += 5e6
     sums["gov_spending"] += 5e6
     with pytest.raises(ValueError, match="outside England"):
-        lane.measured_notes(bad, lane.CENTAX, int(year), "fy")
+        lane.measured_notes(bad, lane.CENTAX, int(year), "fy", {})
 
 
 def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
@@ -371,49 +372,109 @@ def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
                 assert all(0 <= x <= 1 for x in block["take_up"].values())
 
 
-def test_every_variable_the_run_calculates_has_its_metadata_recorded():
-    """The pe_meta contract, read off the source: each sim.calculate name
-    (a literal, or a loop over a module tuple) is in METADATA."""
-    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
-    compute = _module("compute_uk_childcare_100k_src", path)
+def _calculated(path: Path, compute) -> set[str]:
+    """Every name the source passes to sim.calculate: a literal, a module
+    string constant, or a loop variable resolved in its own nearest
+    enclosing loop or comprehension (over a module tuple or a tuple display).
+    Anything else fails, so an unread name cannot pass unnoticed."""
     tree = ast.parse(path.read_text())
-    tuples = {
-        node.targets[0].id: getattr(compute, node.targets[0].id)
-        for node in tree.body
-        if isinstance(node, ast.Assign)
-        and isinstance(node.targets[0], ast.Name)
-        and isinstance(getattr(compute, node.targets[0].id, None), tuple)
+    parents = {
+        child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
     }
-    loops = {
-        node.target.id: node.iter.id
-        for node in ast.walk(tree)
-        if isinstance(node, ast.comprehension | ast.For)
-        and isinstance(node.target, ast.Name)
-        and isinstance(node.iter, ast.Name)
-        and node.iter.id in tuples
-    }
+
+    def values(expr) -> list:
+        if isinstance(expr, ast.Constant):
+            return [expr.value]
+        if isinstance(expr, ast.Name):
+            value = getattr(compute, expr.id)
+            return list(value) if isinstance(value, tuple) else [value]
+        if isinstance(expr, ast.Tuple | ast.List):
+            out = []
+            for e in expr.elts:
+                out += values(e.value if isinstance(e, ast.Starred) else e)
+            return out
+        raise AssertionError(f"unresolved loop iterable {ast.dump(expr)}")
+
+    def binding(name: ast.Name) -> list | None:
+        node = name
+        while node in parents:
+            node = parents[node]
+            loops = (
+                [node]
+                if isinstance(node, ast.For)
+                else node.generators
+                if isinstance(
+                    node, ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
+                )
+                else []
+            )
+            for loop in loops:
+                if isinstance(loop.target, ast.Name) and loop.target.id == name.id:
+                    return values(loop.iter)
+        return None
+
     calculated = set()
     for node in ast.walk(tree):
-        if (
+        if not (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Attribute)
             and node.func.attr == "calculate"
         ):
-            arg = node.args[0]
-            if isinstance(arg, ast.Constant):
-                calculated.add(arg.value)
-            elif isinstance(arg, ast.Name) and arg.id in loops:
-                calculated |= set(tuples[loops[arg.id]])
-            elif isinstance(arg, ast.Name) and arg.id in tuples:
-                pass
-            else:
-                calculated.add(getattr(compute, arg.id))
+            continue
+        arg = node.args[0]
+        if isinstance(arg, ast.Constant):
+            calculated.add(arg.value)
+        elif isinstance(arg, ast.Name):
+            bound = binding(arg)
+            if bound is None:
+                value = getattr(compute, arg.id)
+                assert isinstance(value, str), arg.id
+                bound = [value]
+            calculated |= set(bound)
+        else:
+            raise TypeError(f"unresolved calculate argument {ast.dump(arg)}")
+    return calculated
+
+
+def test_every_variable_the_run_calculates_has_its_metadata_recorded():
+    """The pe_meta contract, read off the source: each sim.calculate name
+    is in METADATA, with each loop variable read in its own scope."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    compute = _module("compute_uk_childcare_100k_src", path)
+    calculated = _calculated(path, compute)
+    # both reused loop names resolve to their own tuples
+    assert set(compute.SUMMED) | set(compute.TAKE_UP) <= calculated
     assert {
         "is_child",
         "is_child_receiving_extended_childcare",
         "country",
     } <= calculated
     assert calculated <= set(compute.METADATA)
+
+
+def test_the_metadata_scan_catches_a_summed_variable_left_out():
+    """The mutation the review of #207 ran: drop the two SUMMED-only
+    variables from METADATA and the contract must fail."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    compute = _module("compute_uk_childcare_100k_src_mut", path)
+    pruned = set(compute.METADATA) - {"gov_spending", "gov_tax"}
+    assert not _calculated(path, compute) <= pruned
+
+
+def test_default_run_ids_differ_across_variants_and_runs():
+    compute = _module(
+        "compute_uk_childcare_100k_run_id",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    t = dt.datetime(2026, 10, 25, 20, 13, 47, tzinfo=dt.timezone.utc)
+    ids = {
+        compute.default_run_id(VARIANTS["default_variant"], t),
+        compute.default_run_id(_wide_certified()["variant_id"], t),
+        compute.default_run_id(
+            VARIANTS["default_variant"], t + dt.timedelta(seconds=1)
+        ),
+    }
+    assert len(ids) == 3
 
 
 # --- the artifact's identity and history (synthetic: no engine, no run) --------
@@ -567,36 +628,190 @@ def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
     # ingest's tally scales with the runs, so a second artifact builds
     drops = lane.stage()[1]
     diag = lane.diagnoses(scores, latest)
-    assert lane.accounting(scores, out, diag, drops, history) == lane.expected(2)
-    assert lane.expected(2)["results"] == 2 * 22 + 4
+    want = lane.expected(scores, history)
+    assert lane.accounting(scores, out, diag, drops, history) == want
+    assert want["results"] == 2 * 22 + 4
     one = lane.results(scores, artifacts)
-    assert lane.accounting(scores, one, diag, drops, artifacts) == lane.expected(1)
+    assert lane.accounting(scores, one, diag, drops, artifacts) == lane.expected(
+        scores, artifacts
+    )
     # the published figure must stay older than every certified run
     earlier["computed_at"] = "2026-10-01T00:00:00+00:00"
     with pytest.raises(ValueError, match="older than every certified run"):
         lane.results(scores, [(earlier, path), (latest, path)])
 
 
+def _wide_certified():
+    """A registered certified variant other than the default whose data
+    years reach 2031, the engine year of CBP's last claims (2031-32)."""
+    return next(
+        v
+        for v in VARIANTS["variants"]
+        if v["status"] == "certified"
+        and v["variant_id"] != VARIANTS["default_variant"]
+        and 2031 in v["data_years"]
+    )
+
+
+def _on_pair(art, variant, *, run_id, with_2031=False):
+    """The committed run's numbers relabelled as a run on `variant` (its
+    identity from the record, as _synthetic builds it), to exercise ingest's
+    control flow only: they claim nothing about that engine's costs."""
+    out = copy.deepcopy(art)
+    label = _synthetic(variant, run_id=run_id, computed_at="2026-10-26T00:00:00+00:00")
+    out.update({k: v for k, v in label.items() if k not in ("worlds", "diagnostics")})
+    sha = variant["identity"]["dataset"]["sha256"]
+    for group in ("worlds", "diagnostics"):
+        for world in out[group].values():
+            world.update(
+                dataset_sha256_before=sha,
+                dataset_sha256_after=sha,
+                dataset_years=list(variant["data_years"]),
+            )
+            if with_2031 and group == "worlds":
+                world["years"]["2031"] = copy.deepcopy(world["years"]["2030"])
+    return out
+
+
+def _in_repo(artifacts):
+    # a result's construction names its artifact's path in the repo
+    return [(a, lane.RESULTS_DIR / p.name) for a, p in artifacts]
+
+
+def _verified_for(variant_id, *, except_ids=()):
+    """The lane's notes with `variant_id` added as a checked pair to every
+    pair-scoped note but `except_ids`, and a pair entry stating no diagnosis."""
+    notes = copy.deepcopy(lane.load_notes())
+    for kind in (lane.CENTAX, lane.CBP, "construction"):
+        for a in notes[kind]:
+            if "variants" in a and a["id"] not in except_ids:
+                a["variants"].append(variant_id)
+    notes["pairs"][variant_id] = {
+        "static_because": "STATED FOR THE TEST",
+        "hours_draw": None,
+        "diagnosis": None,
+    }
+    return notes
+
+
+def test_an_artifact_on_an_unverified_pair_is_refused(artifact, tmp_path):
+    """The registered 2.130.1 pairs differ from 2.89.2 in mechanisms these
+    notes state (the review of #207 read the pinned wheel), so ingest
+    refuses a pair no note was checked on rather than give it 2.89.2's."""
+    other = _on_pair(artifact, _wide_certified(), run_id="other")
+    _write(tmp_path, artifact, other)
+    with pytest.raises(ValueError, match="no note in this lane was verified"):
+        lane.stage(results_dir=tmp_path)
+    scores, _, artifacts = lane.stage()
+    with pytest.raises(ValueError, match="no note in this lane was verified"):
+        lane.results(scores, [*artifacts, (other, lane.RESULTS_DIR / _path(other))])
+    with pytest.raises(ValueError, match="no note in this lane was verified"):
+        lane.diagnoses(scores, other)
+
+
+def test_notes_reach_only_the_pairs_they_were_checked_on(artifact, tmp_path):
+    vid = _wide_certified()["variant_id"]
+    other = _on_pair(artifact, _wide_certified(), run_id="other")
+    notes = _verified_for(vid, except_ids={"pe-universal-switch-off"})
+    _write(tmp_path, artifact, other)
+    scores, _, artifacts = lane.stage(notes, results_dir=tmp_path)
+    out = lane.results(scores, _in_repo(artifacts), notes)
+    runs = {
+        run: [r for r in out if r.run_id == run]
+        for run in (artifact["run_id"], "other")
+    }
+    switch_off = next(
+        a["text"] for a in notes["construction"] if a["id"] == "pe-universal-switch-off"
+    )
+    draw = notes["pairs"][VARIANTS["default_variant"]]["hours_draw"]
+    assert len(runs["other"]) == len(runs[artifact["run_id"]]) == 22
+    for r in runs["other"]:
+        assert switch_off not in r.annotations
+        assert not any(draw in t for t in r.annotations)
+    for r in runs[artifact["run_id"]]:
+        assert switch_off in r.annotations
+        assert any(draw in t for t in r.annotations)
+    # the newest pair states no diagnosis, so none is drawn from the old one
+    assert lane.diagnoses(scores, other, notes) == []
+    # and the behavioural legs say why from the newest pair
+    legs = [s for s in scores if s.conditions.get("component") == "intensive_margin"]
+    assert legs and all(
+        "STATED FOR THE TEST" in s.publication["pe_missing"] for s in legs
+    )
+
+
+def test_tally_and_pe_missing_follow_each_runs_computed_years(artifact, tmp_path):
+    """Coverage, not dataset support: a run that holds 2031 among its data
+    years but computes only the default years leaves CBP's 2031-32 claims
+    without a value and says so; one that computes 2031 answers them. The
+    tally follows, and no claim id moves across the three histories."""
+    wide = _wide_certified()
+    notes = _verified_for(wide["variant_id"])
+    histories = {"alone": lane.stage(notes)}
+    for name, with_2031 in (("default_years", False), ("with_2031", True)):
+        (tmp_path / name).mkdir()
+        other = _on_pair(artifact, wide, run_id="other", with_2031=with_2031)
+        _write(tmp_path / name, artifact, other)
+        histories[name] = lane.stage(notes, results_dir=tmp_path / name)
+    ids = {k: [s.claim_id() for s in h[0]] for k, h in histories.items()}
+    assert ids["alone"] == ids["default_years"] == ids["with_2031"]
+
+    def last(name):
+        return [
+            s for s in histories[name][0] if s.source == lane.CBP and s.period == 2032
+        ]
+
+    assert len(last("alone")) == 2
+    assert all(
+        "outside the data years" in s.publication["pe_missing"] for s in last("alone")
+    )
+    for s in last("default_years"):
+        assert (
+            "no certified run in this lane computed it" in s.publication["pe_missing"]
+        )
+        assert wide["variant_id"] in s.publication["pe_missing"]
+    assert all("pe_missing" not in s.publication for s in last("with_2031"))
+    for name, certified in (("alone", 22), ("default_years", 44), ("with_2031", 46)):
+        scores, drops, arts = histories[name]
+        out = lane.results(scores, _in_repo(arts), notes)
+        diag = lane.diagnoses(scores, arts[-1][0], notes)
+        got = lane.accounting(scores, out, diag, drops, arts)
+        assert got == lane.expected(scores, arts, notes)
+        assert got["results_by_kind"] == {
+            "certified": certified,
+            "published_dashboard": 4,
+        }
+
+
+def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):
+    spec = json.loads(lane.CONSTRUCTION.read_text())
+    spec["annotations"][0].pop("variants")
+    path = tmp_path / "construction_annotations.json"
+    path.write_text(json.dumps(spec))
+    with pytest.raises(ValueError, match="variants"):
+        lane._spec(path)
+    for kind in (lane.CENTAX, lane.CBP, "construction"):
+        for a in lane.load_notes()[kind]:
+            if "variants" in a:
+                assert a["variants"] == [VARIANTS["default_variant"]], a["id"]
+
+
 @given(value=st.integers(-(10**10), 10**10), printed=st.text(min_size=1, max_size=12))
-def test_claim_ids_ignore_the_value_and_its_printed_form(value, printed):
-    """A corrected extraction (value or formatting) keeps every claim id, so
+def test_claim_ids_ignore_the_value_its_printed_form_and_pe_coverage(value, printed):
+    """A corrected extraction (value or formatting) keeps every claim id, and
+    so does any reason PolicyEngine has no value (it depends on the runs), so
     links and history stay attached."""
     centax = json.loads(
         (REPO / "data/externals/centax-childcare-100k.json").read_text()
     )
     cbp = json.loads((REPO / "data/externals/cbp-rates-and-wrongs.json").read_text())
-    row = next(r for r in centax if r["metric"] == "revenue_change")
     edit = {"value": value, "value_verbatim": printed}
-    assert (
-        lane._centax_claim({**row, **edit}).claim_id()
-        == lane._centax_claim(row).claim_id()
-    )
-    row = next(r for r in cbp if r["policy"] == "abolish_cliff")
-    years = list(range(2023, 2031))
-    assert (
-        lane._cbp_claim({**row, **edit}, years).claim_id()
-        == lane._cbp_claim(row, years).claim_id()
-    )
+    for build, rows in (
+        (lane._centax_claim, [r for r in centax if r["metric"] == "revenue_change"]),
+        (lane._cbp_claim, [r for r in cbp if r["policy"] == "abolish_cliff"]),
+    ):
+        row = rows[0]
+        assert build({**row, **edit}, printed).claim_id() == build(row).claim_id()
 
 
 def test_adapter_rows_carry_the_tidy_core():
@@ -630,6 +845,8 @@ def test_claims_drops_relationships_and_conditions():
         # the printed value is provenance, outside the claim id
         assert "value_verbatim" not in s.conditions
         assert s.publication["value_verbatim"]
+        # why a claim has no value depends on the runs, so it is outside the id
+        assert "pe_missing" not in s.conditions
     assert uk_relationship(lane.CBP, None)[0] == CR.HELD_OUT
     assert len({s.claim_id() for s in scores}) == len(scores)
 
@@ -666,7 +883,8 @@ def test_every_attached_result_has_exactly_one_stated_status():
         if s.source == lane.CENTAX and s.conditions["scenario"] == "central":
             kinds.append("published_dashboard")
         for kind in kinds:
-            _, status = lane.match_annotations(s, kind, specs[s.source])
+            variant = VARIANTS["default_variant"] if kind == "certified" else None
+            _, status = lane.match_annotations(s, kind, specs[s.source], variant)
             key = (s.source, s.conditions.get("component"), kind)
             seen[(key, status.value)] += 1
     assert seen == {
@@ -748,6 +966,33 @@ def test_published_dashboard_miss_stays_in_the_history():
         lane.load_artifact()[0]["run_id"],
     )[0]["t"]
     assert max(r["computed_at"] for r in rows) < certified
+
+
+def test_the_published_row_says_when_it_was_live_and_what_followed():
+    """policyengine.org served the figure from 12 to 21 October 2026; what
+    the dashboard has served since is stated on the row, never a value."""
+    pub = lane._published()
+    assert (pub["live"]["from"], pub["live"]["until"]) == ("2026-10-12", "2026-10-21")
+    assert pub["after"]["attached"] is False
+    scores, _, artifacts = lane.stage()
+    published = [
+        r for r in lane.results(scores, artifacts) if r.run_id == pub["run_id"]
+    ]
+    assert len(published) == 4
+    for r in published:
+        year = str(next(s for s in scores if s.claim_id() == r.claim_id).period - 1)
+        after = f"£{pub['after']['thirty_hours_gbp_bn'][year]:.3f}bn in this year"
+        assert any(after in t for t in r.annotations)
+        assert any("from 2026-10-12 to 2026-10-21" in t for t in r.annotations)
+    after_m = sorted(
+        {-round(v * 1e3) for v in pub["after"]["thirty_hours_gbp_bn"].values()}
+    )
+    marks = ",".join("?" * len(after_m))
+    assert not _rows(
+        "SELECT 1 FROM pe_results r JOIN external_scores s USING (claim_id)"
+        f" WHERE s.source = 'centax' AND ROUND(r.computed_value / 1e6) IN ({marks})",
+        *after_m,
+    )
 
 
 def test_central_static_rows_carry_the_hours_draw_diagnosis():

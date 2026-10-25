@@ -42,8 +42,8 @@ The PolicyEngine side is `pipeline/compute_uk_childcare_100k.py`, which wrote
 | CenTax static cost, central | −0.80 | −0.98 |
 | CenTax net fiscal cost, central | −0.52 | −0.64 |
 | PolicyEngine, certified pair (static) | −0.690 | −0.838 |
-| PolicyEngine, published dashboard (static, history) | −0.434 | −0.505 |
-| PolicyEngine, dashboard PR #8 on the fixed draw (uncertified, not attached) | −1.009 | −1.215 |
+| PolicyEngine, published dashboard (static, history; on policyengine.org 12–21 October 2026) | −0.434 | −0.505 |
+| PolicyEngine dashboard since PR #8 merged (1b83dd46, 24 October 2026; its own Vercel deployment, not policyengine.org; not attached) | −0.902 | −1.037 |
 
 The certified pair is the default replay variant: populace-uk build
 `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z` with policyengine-uk
@@ -57,9 +57,19 @@ The certified pair is the default replay variant: populace-uk build
 - the published dashboard figure: `constructed` (the dashboard applied six
   local corrections to policyengine-uk 2.102.3), and older than the
   certified run, so it shows in the history rather than as the latest.
+  policyengine.org served it from 12 October 2026 until it took the page
+  down on 21 October while the dashboard's costing is revised
+  (policyengine-app-v2 de2b07cf); the path redirects to /uk/research.
+  Since [uk-childcare-100k-threshold#8](https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8)
+  merged on 24 October, the dashboard's own deployment serves £0.902bn and
+  £1.037bn on Microcosm's 23 October release (a133f37a, policyengine-uk
+  2.147.2), which is in no certified pair. The row records it and does not
+  attach it; when policyengine.org serves the page again, its figure is a
+  new published row.
 
 CenTax's two behavioural margins are on the page without a PolicyEngine
-value; this lane's counterpart is static.
+value. Their `pe_missing` says why: this lane's counterparts are static
+runs.
 
 ## Why PolicyEngine is below CenTax
 
@@ -80,14 +90,32 @@ and no child under 1 receives hours.
 The published dashboard figure ran on the 2 October Microcosm release that
 #1126 examines, with the same draw. The fix merged in microcosm on 16
 October 2026 (microcosm#1299). The certified pair was built on 19 June 2026,
-before it, so the row shows the miss until a certified Microcosm release
-with the fixed draw lands. That is intended. When it does and becomes a
-certified replay variant, run the compute script with `--variant <id>` in
-that variant's environment. Its artifact goes beside this one in
-`results/uk/childcare_100k/`, and ingest keeps every certified artifact's
-run: the newest becomes the latest, and this pair's run and the published
-figure stay in the history. Ingest refuses an artifact whose package,
-release-bundle or dataset identity differs from its variant record.
+before it. [policyengine.py#685](https://github.com/PolicyEngine/policyengine.py/pull/685)
+(merged 21 October 2026) certified a Microcosm pair with the fixed draw:
+national cut `microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71` with
+policyengine-uk 2.132.6, which policyengine.py 6.11.0 (25 October) still
+pins. This repository has it only as an experiment population, not a replay
+variant, so this lane has not run it yet:
+[#228](https://github.com/PolicyEngine/policyengine-scorecard/issues/228).
+Until it does, the latest result is the 19 June pair's and the row shows
+that pair's miss.
+
+To add a pair, run the compute script with `--variant <id>` in that
+variant's environment. The run id defaults to
+`childcare-100k-<variant>-<UTC start>`, so two runs never share one. The
+artifact goes beside this one in `results/uk/childcare_100k/`. Before ingest
+takes it, check each note whose basis is the engine or a run at the new pin.
+These are the entries with a `variants` list in both sources'
+`annotations.json` and in `results/uk/childcare_100k/construction_annotations.json`.
+Add the pair to the notes that still hold, and write replacements for those
+that do not. Then add the pair's `verified_pairs` entry, which says why its
+run is static, what is known about its hours draw, and the `pe_gap`
+diagnosis, if one still applies. Ingest refuses an artifact on a pair with
+no such entry. It attaches each note only to results on the pairs it names,
+and it refuses an artifact whose package, release-bundle or dataset identity
+differs from its variant record. It keeps every certified artifact's run:
+the newest becomes the latest, and earlier pairs' runs and the published
+figure stay in the history.
 
 ## Never a calibration target
 

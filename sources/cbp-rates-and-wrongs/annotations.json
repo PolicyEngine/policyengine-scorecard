@@ -1,6 +1,7 @@
 {
  "_schema": {
   "applies_to": "matcher on {models, periods, results}; null = any. models: endogenous_pension_exogenous_labour (Table 2), endogenous_labour_no_pension (Table 3); periods: claim periods (financial-year end years); results: certified",
+  "variants": "the certified variants (data/uk/replay_variants.json) on which a note resting on the engine or a run was checked; it attaches only to those pairs' results. A note resting on the report alone names none and applies to every run",
   "severity": "period | definitional | construction | caution | gap",
   "status": "the comparison status this annotation sets, where it sets one; at most one status-setting annotation matches a result",
   "basis": "traceability: raw/pages_layout.txt (PDF page), engine files at the certified pin, or the measured artifact results/uk/childcare_100k/<variant>.json"
@@ -13,6 +14,9 @@
     "periods": null,
     "results": null
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "definitional",
    "status": "concept_mismatch",
    "text": "CBP's figures are net fiscal impacts after a behavioural response: parents choose pension contributions with labour income fixed (Table 2), or choose labour supply with no pension (Table 3), and bunch at £100,000 only when that gains them more than a £1,000 friction. PolicyEngine's counterpart is a static cost (the engine's labour-supply elasticities are zero at the pin), so the two measure different things. CBP publishes no static leg.",
@@ -25,6 +29,9 @@
     "periods": null,
     "results": null
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "definitional",
    "text": "CBP's subsidy includes Tax-Free Childcare: its tables assume £500 of Tax-Free Childcare per child (the model description says up to £2,000). The PolicyEngine counterpart therefore removes both £100,000 limits and adds Tax-Free Childcare to the three free-hours entitlements. Both are counted for England only, as CBP's children are England's births: the engine applies Tax-Free Childcare across the UK, and the change outside England is stated on each result and left out.",
    "basis": "raw/pages_layout.txt PDF page 4 (section 1.2.1: 'the forecast number of births for England'), PDF page 5 (section 1.2.3: 'Up to £2000 is then added to the subsidy to simulate the effect of Tax Free Childcare') and PDF pages 8 and 10 (table notes: '£500 utilisation of TFC'); results/uk/childcare_100k/<variant>.json worlds.free_hours_and_tfc sums_gbp and sums_gbp_england; the pe-england-only construction note"
@@ -36,6 +43,9 @@
     "periods": null,
     "results": null
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "construction",
    "text": "CBP assumes every eligible family uses the full working-parent hours, and gives every child two parents and no siblings. PolicyEngine runs the dataset's own families, values the extended hours at each family's weekly usage input (maximum_extended_childcare_hours_usage), and pays each offer only where the family's take-up input is true. Each result states the usage and take-up the run read and whether the dataset or the engine default supplied them.",
    "basis": "raw/pages_layout.txt PDF page 5 (section 1.2.2: 'every child has two parents and no siblings') and PDF pages 8 and 10 (table notes: 'full utilisation of FCWP'); policyengine_uk 2.89.2 variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage), the eligibility variables' defined_for (would_claim_extended_childcare, would_claim_universal_childcare, would_claim_targeted_childcare, would_claim_tfc; each defaults to true); results/uk/childcare_100k/<variant>.json worlds.baseline.dataset_inputs and years.*.take_up and hours_usage"
@@ -84,6 +94,9 @@
     "periods": null,
     "results": null
    },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
    "severity": "period",
    "text": "CBP's columns are financial years (2026/27 is 2026-27). PolicyEngine's annual period 2026 runs the 2026-27 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
    "basis": "raw/pages_layout.txt PDF pages 8 and 10 (column labels); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"

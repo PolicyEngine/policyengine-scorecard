@@ -374,14 +374,21 @@ def run_world(name: str, reform, years, pre: dict, *, full_use: bool = False):
     return out, metadata
 
 
+def default_run_id(variant_id: str, started: dt.datetime) -> str:
+    """Distinct across variants and across one variant's runs: ingest
+    refuses two artifacts that share a run_id."""
+    return f"childcare-100k-{variant_id}-{started:%Y%m%dT%H%M%SZ}"
+
+
 def main(argv: list[str] | None = None) -> int:
+    started = dt.datetime.now(dt.timezone.utc)
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--years", nargs="*", type=int, default=list(YEARS))
     ap.add_argument(
         "--diagnostic-years", nargs="*", type=int, default=list(DIAGNOSTIC_YEARS)
     )
     ap.add_argument(
-        "--run-id", default=f"childcare-100k-{dt.datetime.now(dt.timezone.utc):%Y%m%d}"
+        "--run-id", help="default: childcare-100k-<variant>-<UTC start second>"
     )
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     ap.add_argument(
@@ -398,6 +405,7 @@ def main(argv: list[str] | None = None) -> int:
     args.output_dir = args.output_dir.resolve()
 
     variant = variants.get_variant(args.variant)
+    run_id = args.run_id or default_run_id(variant["variant_id"], started)
     missing = sorted(
         (set(args.years) | set(args.diagnostic_years)) - set(variant["data_years"])
     )
@@ -432,7 +440,7 @@ def main(argv: list[str] | None = None) -> int:
         identity["dataset"]["revision"],
         identity["dataset"]["sha256"],
     ):
-        raise SystemExit("the managed release and the default variant disagree")
+        raise SystemExit("the managed release and the variant's record disagree")
     print(
         f"certified artifact {revision} sha256 verified at "
         f"{fiscal.relative_to_root(Path(pre['runtime_dataset_source']))}",
@@ -464,7 +472,7 @@ def main(argv: list[str] | None = None) -> int:
     }
     artifact = {
         "schema_version": 2,
-        "run_id": args.run_id,
+        "run_id": run_id,
         "computed_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "variant_id": variant["variant_id"],
         "variant_identity_sha256": variant["identity_sha256"],

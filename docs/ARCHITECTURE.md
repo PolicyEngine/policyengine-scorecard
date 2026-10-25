@@ -240,12 +240,14 @@ Operating rules for the agent stage:
   come from `pipeline/compute_uk_childcare_100k.py` on the certified
   populace-uk pair: static, the three free-hours entitlements (plus
   Tax-Free Childcare for CBP) summed for people in English households.
-  Each certified variant's artifact keeps its run in the history.
+  Each certified variant's artifact keeps its run in the history. Ingest
+  takes an artifact only for a pair with a `verified_pairs` entry, and an
+  engine or run note attaches only to the pairs its `variants` names.
   Static against static is `comparable`; net costs are `concept_mismatch`.
-  PolicyEngine's published dashboard figure stays as an older history row,
-  so the published miss stays on the page, and the central static rows
-  carry a `pe_gap` diagnosis linked to microcosm#1126 (the hours-usage
-  draw).
+  PolicyEngine's published dashboard figure (on policyengine.org from 12 to
+  21 October 2026) stays as an older history row, so the published miss
+  stays on the page, and the central static rows carry a `pe_gap` diagnosis
+  linked to microcosm#1126 (the hours-usage draw).
 
 ### Staged for Chronicle, not claims
 

@@ -25925,7 +25925,7 @@
    }
   },
   {
-   "claim_id": "2fa031cf3a70fe56e884",
+   "claim_id": "68a9d11c877d33191133",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Central Scenario, tax year 2028: Behavioural Gain (\u00a3), Extensive Margin",
@@ -25950,10 +25950,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "central",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -25983,7 +25983,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "d21bdd7d5aac5ad7f84d",
+   "claim_id": "ae9f698e34e48978505d",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Central Scenario, tax year 2028: Behavioural Gain (\u00a3), Intensive Margin",
@@ -26008,10 +26008,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "central",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -26131,7 +26131,9 @@
       "CenTax costs the free childcare hours only. The dashboard's reform also removed the Tax-Free Childcare limit; the figure here is its 30-hours leg, which excludes Tax-Free Childcare (the dashboard puts that leg at \u00a30.159bn in 2027-28 and \u00a30.173bn in 2029-30).",
       "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. The dashboard names fiscal years by their start year (2027 is 2027-28) and compared its 2029-30 figure with CenTax's 2030.",
       "Published figure: \u00a30.434bn. Six local corrections applied to every run, baseline and reform alike (src/childcare_100k/corrections.py at f25f0db): exactly \u00a3100,000 qualifies; a partner on a specified benefit need not pass the minimum earnings test; the universal and targeted 15 hours are a floor that eligibility for the extended hours never removes (policyengine-uk#1930); salary sacrifice returned to pay from April 2029 is not income for the limits; Tax-Free Childcare regards a partner on a caring or incapacity benefit as in qualifying paid work; both schemes test the claimant and partner.",
-      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126. The fix is in https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 on microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified): \u00a31.009bn in this year; not attached: The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
+      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126.",
+      "On https://policyengine.org/uk/childcare-100k-threshold from 2026-10-12 to 2026-10-21: policyengine-app-v2 de2b07cf (2026-10-21T14:59:14Z), 'Take down the childcare cliff edge dashboard temporarily': it removes the listing, the featured card and the route, and redirects /uk/childcare-100k-threshold/:path* to /uk/research (permanent: false) 'while its costing is revised (uk-childcare-100k-threshold#8)'.",
+      "Since then https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 merged (2026-10-24): the dashboard's own deployment, https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold (the repository's homepage; policyengine.org still redirects the page on 2026-10-25), serves \u00a30.902bn in this year from PolicyEngine/uk-childcare-100k-threshold@1b83dd4 on microcosm-uk-2024-25-national-20261023T075039Z-a133f37a with policyengine-uk 2.147.2. Not attached: policyengine.org does not serve it, and its Microcosm release is in no certified pair. When policyengine.org serves the page again, the figure it shows is a new published row."
      ],
      "baseline": "current_law",
      "status_effective": "concept_mismatch"
@@ -26260,7 +26262,9 @@
       "CenTax costs the free childcare hours only. The dashboard's reform also removed the Tax-Free Childcare limit; the figure here is its 30-hours leg, which excludes Tax-Free Childcare (the dashboard puts that leg at \u00a30.159bn in 2027-28 and \u00a30.173bn in 2029-30).",
       "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. The dashboard names fiscal years by their start year (2027 is 2027-28) and compared its 2029-30 figure with CenTax's 2030.",
       "Published figure: \u00a30.434bn. Six local corrections applied to every run, baseline and reform alike (src/childcare_100k/corrections.py at f25f0db): exactly \u00a3100,000 qualifies; a partner on a specified benefit need not pass the minimum earnings test; the universal and targeted 15 hours are a floor that eligibility for the extended hours never removes (policyengine-uk#1930); salary sacrifice returned to pay from April 2029 is not income for the limits; Tax-Free Childcare regards a partner on a caring or incapacity benefit as in qualifying paid work; both schemes test the claimant and partner.",
-      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126. The fix is in https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 on microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified): \u00a31.009bn in this year; not attached: The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
+      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126.",
+      "On https://policyengine.org/uk/childcare-100k-threshold from 2026-10-12 to 2026-10-21: policyengine-app-v2 de2b07cf (2026-10-21T14:59:14Z), 'Take down the childcare cliff edge dashboard temporarily': it removes the listing, the featured card and the route, and redirects /uk/childcare-100k-threshold/:path* to /uk/research (permanent: false) 'while its costing is revised (uk-childcare-100k-threshold#8)'.",
+      "Since then https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 merged (2026-10-24): the dashboard's own deployment, https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold (the repository's homepage; policyengine.org still redirects the page on 2026-10-25), serves \u00a30.902bn in this year from PolicyEngine/uk-childcare-100k-threshold@1b83dd4 on microcosm-uk-2024-25-national-20261023T075039Z-a133f37a with policyengine-uk 2.147.2. Not attached: policyengine.org does not serve it, and its Microcosm release is in no certified pair. When policyengine.org serves the page again, the figure it shows is a new published row."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -26298,12 +26302,12 @@
    ],
    "diagnosis": {
     "class": "pe_gap",
-    "rationale": "PolicyEngine's static cost on the certified pair is \u00a30.690bn in 2027-28, 14% below CenTax's \u00a30.80bn. Our side first: the pair's hours-usage draw gives families receiving the extended hours a weighted mean of 15.3 of 30 weekly hours (measured); microcosm#1126 identifies this draw as the main reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. With every family at the full 30 hours the same reform costs \u00a31.404bn on this pair (diagnostic run). The fix merged in microcosm on 16 October 2026 (microcosm#1299); this certified pair was built on 19 June 2026, before it. PolicyEngine's published dashboard figure ran on the 2 October Microcosm release that microcosm#1126 examines, with the same draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no hours for children under 1.",
+    "rationale": "PolicyEngine's static cost on the certified pair is \u00a30.690bn in 2027-28, 14% below CenTax's \u00a30.80bn. Our side first: on this pair the families receiving the extended hours use a weighted mean of 15.3 of 30 weekly hours (measured), and with every family at the full 30 hours the same reform costs \u00a31.404bn (diagnostic run). microcosm#1126 identifies this draw as the main reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. The fix merged in microcosm on 16 October 2026 (microcosm#1299); this certified pair was built on 19 June 2026, before it. policyengine.py#685 (merged 21 October 2026) certified a Microcosm pair with the fixed draw, national cut 6cba5d71 with policyengine-uk 2.132.6, which this lane has not run yet (policyengine-scorecard#228). PolicyEngine's published dashboard figure, on policyengine.org from 12 to 21 October 2026, ran on the 2 October Microcosm release that microcosm#1126 examines, with the same draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no hours for children under 1.",
     "action_link": "https://github.com/PolicyEngine/microcosm/issues/1126"
    }
   },
   {
-   "claim_id": "04a4100187064cc4f6c9",
+   "claim_id": "ee1a11d985fbb0514bed",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, High-Cost Scenario, tax year 2028: Behavioural Gain (\u00a3), Extensive Margin",
@@ -26328,10 +26332,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "high_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -26361,7 +26365,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "6288d3d9de2353df409f",
+   "claim_id": "ec77f8f7a193a4ec2fc1",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, High-Cost Scenario, tax year 2028: Behavioural Gain (\u00a3), Intensive Margin",
@@ -26386,10 +26390,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "high_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -26635,7 +26639,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "ee9dd8a3781fa98d89c9",
+   "claim_id": "45836aa1bcf5a8bfe397",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Low-Cost Scenario, tax year 2028: Behavioural Gain (\u00a3), Extensive Margin",
@@ -26660,10 +26664,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "low_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -26693,7 +26697,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "9c71a9e7dcbf82dd99d0",
+   "claim_id": "ed9d406aaafbf04d32cb",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Low-Cost Scenario, tax year 2028: Behavioural Gain (\u00a3), Intensive Margin",
@@ -26718,10 +26722,10 @@
     "fy": "2027-28",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "low_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -26967,7 +26971,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "99fdcf8259284c2c57c6",
+   "claim_id": "5dd545130bb41b108b55",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Central Scenario, tax year 2030: Behavioural Gain (\u00a3), Extensive Margin",
@@ -26992,10 +26996,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "central",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -27025,7 +27029,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "638f59c1a4579de2faeb",
+   "claim_id": "2f83ae44603194b65ccb",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Central Scenario, tax year 2030: Behavioural Gain (\u00a3), Intensive Margin",
@@ -27050,10 +27054,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "central",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -27173,7 +27177,9 @@
       "CenTax costs the free childcare hours only. The dashboard's reform also removed the Tax-Free Childcare limit; the figure here is its 30-hours leg, which excludes Tax-Free Childcare (the dashboard puts that leg at \u00a30.159bn in 2027-28 and \u00a30.173bn in 2029-30).",
       "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. The dashboard names fiscal years by their start year (2027 is 2027-28) and compared its 2029-30 figure with CenTax's 2030.",
       "Published figure: \u00a30.505bn. Six local corrections applied to every run, baseline and reform alike (src/childcare_100k/corrections.py at f25f0db): exactly \u00a3100,000 qualifies; a partner on a specified benefit need not pass the minimum earnings test; the universal and targeted 15 hours are a floor that eligibility for the extended hours never removes (policyengine-uk#1930); salary sacrifice returned to pay from April 2029 is not income for the limits; Tax-Free Childcare regards a partner on a caring or incapacity benefit as in qualifying paid work; both schemes test the claimant and partner.",
-      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126. The fix is in https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 on microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified): \u00a31.215bn in this year; not attached: The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
+      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126.",
+      "On https://policyengine.org/uk/childcare-100k-threshold from 2026-10-12 to 2026-10-21: policyengine-app-v2 de2b07cf (2026-10-21T14:59:14Z), 'Take down the childcare cliff edge dashboard temporarily': it removes the listing, the featured card and the route, and redirects /uk/childcare-100k-threshold/:path* to /uk/research (permanent: false) 'while its costing is revised (uk-childcare-100k-threshold#8)'.",
+      "Since then https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 merged (2026-10-24): the dashboard's own deployment, https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold (the repository's homepage; policyengine.org still redirects the page on 2026-10-25), serves \u00a31.037bn in this year from PolicyEngine/uk-childcare-100k-threshold@1b83dd4 on microcosm-uk-2024-25-national-20261023T075039Z-a133f37a with policyengine-uk 2.147.2. Not attached: policyengine.org does not serve it, and its Microcosm release is in no certified pair. When policyengine.org serves the page again, the figure it shows is a new published row."
      ],
      "baseline": "current_law",
      "status_effective": "concept_mismatch"
@@ -27302,7 +27308,9 @@
       "CenTax costs the free childcare hours only. The dashboard's reform also removed the Tax-Free Childcare limit; the figure here is its 30-hours leg, which excludes Tax-Free Childcare (the dashboard puts that leg at \u00a30.159bn in 2027-28 and \u00a30.173bn in 2029-30).",
       "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. The dashboard names fiscal years by their start year (2027 is 2027-28) and compared its 2029-30 figure with CenTax's 2030.",
       "Published figure: \u00a30.505bn. Six local corrections applied to every run, baseline and reform alike (src/childcare_100k/corrections.py at f25f0db): exactly \u00a3100,000 qualifies; a partner on a specified benefit need not pass the minimum earnings test; the universal and targeted 15 hours are a floor that eligibility for the extended hours never removes (policyengine-uk#1930); salary sacrifice returned to pay from April 2029 is not income for the limits; Tax-Free Childcare regards a partner on a caring or incapacity benefit as in qualifying paid work; both schemes test the claimant and partner.",
-      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126. The fix is in https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 on microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 (per the PR: the first release with microcosm#1126's draw, and not certified): \u00a31.215bn in this year; not attached: The release is not certified; the scorecard attaches the certified pair's run and keeps this published figure as history until a certified Microcosm release with the fixed draw lands."
+      "microcosm#1126 (closed 2026-10-16) reports that this release draws maximum_extended_childcare_hours_usage ~ clip(N(15.019, 4.972), 0, 30), a mean of about 15 of the 30 weekly hours, and derives DfE's mean as about 28.5 hours: https://github.com/PolicyEngine/microcosm/issues/1126.",
+      "On https://policyengine.org/uk/childcare-100k-threshold from 2026-10-12 to 2026-10-21: policyengine-app-v2 de2b07cf (2026-10-21T14:59:14Z), 'Take down the childcare cliff edge dashboard temporarily': it removes the listing, the featured card and the route, and redirects /uk/childcare-100k-threshold/:path* to /uk/research (permanent: false) 'while its costing is revised (uk-childcare-100k-threshold#8)'.",
+      "Since then https://github.com/PolicyEngine/uk-childcare-100k-threshold/pull/8 merged (2026-10-24): the dashboard's own deployment, https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold (the repository's homepage; policyengine.org still redirects the page on 2026-10-25), serves \u00a31.037bn in this year from PolicyEngine/uk-childcare-100k-threshold@1b83dd4 on microcosm-uk-2024-25-national-20261023T075039Z-a133f37a with policyengine-uk 2.147.2. Not attached: policyengine.org does not serve it, and its Microcosm release is in no certified pair. When policyengine.org serves the page again, the figure it shows is a new published row."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -27340,12 +27348,12 @@
    ],
    "diagnosis": {
     "class": "pe_gap",
-    "rationale": "PolicyEngine's static cost on the certified pair is \u00a30.838bn in 2029-30, 14% below CenTax's \u00a30.98bn. Our side first: the pair's hours-usage draw gives families receiving the extended hours a weighted mean of 15.3 of 30 weekly hours (measured); microcosm#1126 identifies this draw as the main reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. With every family at the full 30 hours the same reform costs \u00a31.715bn on this pair (diagnostic run). The fix merged in microcosm on 16 October 2026 (microcosm#1299); this certified pair was built on 19 June 2026, before it. PolicyEngine's published dashboard figure ran on the 2 October Microcosm release that microcosm#1126 examines, with the same draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no hours for children under 1.",
+    "rationale": "PolicyEngine's static cost on the certified pair is \u00a30.838bn in 2029-30, 14% below CenTax's \u00a30.98bn. Our side first: on this pair the families receiving the extended hours use a weighted mean of 15.3 of 30 weekly hours (measured), and with every family at the full 30 hours the same reform costs \u00a31.715bn (diagnostic run). microcosm#1126 identifies this draw as the main reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. The fix merged in microcosm on 16 October 2026 (microcosm#1299); this certified pair was built on 19 June 2026, before it. policyengine.py#685 (merged 21 October 2026) certified a Microcosm pair with the fixed draw, national cut 6cba5d71 with policyengine-uk 2.132.6, which this lane has not run yet (policyengine-scorecard#228). PolicyEngine's published dashboard figure, on policyengine.org from 12 to 21 October 2026, ran on the 2 October Microcosm release that microcosm#1126 examines, with the same draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no hours for children under 1.",
     "action_link": "https://github.com/PolicyEngine/microcosm/issues/1126"
    }
   },
   {
-   "claim_id": "544aea652687c7b09af0",
+   "claim_id": "9d5a7abbae3f7723c566",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, High-Cost Scenario, tax year 2030: Behavioural Gain (\u00a3), Extensive Margin",
@@ -27370,10 +27378,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "high_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -27403,7 +27411,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "1db98b31fd6dba3cd0ad",
+   "claim_id": "0fbec555b7bbc88c956d",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, High-Cost Scenario, tax year 2030: Behavioural Gain (\u00a3), Intensive Margin",
@@ -27428,10 +27436,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "high_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -27677,7 +27685,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "15bbca8035e28fcc03c3",
+   "claim_id": "4c9b74cff2348b60b79e",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Low-Cost Scenario, tax year 2030: Behavioural Gain (\u00a3), Extensive Margin",
@@ -27702,10 +27710,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "low_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -27735,7 +27743,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "7fe90f7629b6389884a6",
+   "claim_id": "3fcf35303682330ee20c",
    "source": "centax",
    "country": "UK",
    "source_column": "Table 4.2, Low-Cost Scenario, tax year 2030: Behavioural Gain (\u00a3), Intensive Margin",
@@ -27760,10 +27768,10 @@
     "fy": "2029-30",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_100k_limit_removed",
-    "pe_missing": "behavioural leg: this lane's PolicyEngine counterpart is static (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)",
     "program": "free_childcare_hours",
     "scenario": "low_cost",
-    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')"
+    "sign_convention": "positive = gain to the Exchequer (published: 'negative = cost to the Exchequer')",
+    "pe_missing": "behavioural leg: this lane's PolicyEngine counterparts are static runs (policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -30069,7 +30077,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "ce874c3986f6ca54bed6",
+   "claim_id": "2a34d8beac7637566ee1",
    "source": "centre_for_british_progress",
    "country": "UK",
    "source_column": "Technical appendix Table 2 (Endogenous Pension, Exogenous Labour), Abolish Cliff, 2031/32",
@@ -30094,9 +30102,9 @@
     "fy": "2031-32",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_and_tfc_100k_limit_removed",
-    "pe_missing": "fiscal year 2031-32 is outside the certified pair's data years (2023-2030; data/uk/replay_variants.json)",
     "program": "free_childcare_hours_and_tax_free_childcare",
-    "scoring_method": "post_behavioural"
+    "scoring_method": "post_behavioural",
+    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -30126,7 +30134,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "a1efdbb0d09d9cbdf68d",
+   "claim_id": "f66050f5b64017fd56a4",
    "source": "centre_for_british_progress",
    "country": "UK",
    "source_column": "Technical appendix Table 3 (Endogenous Labour, No Pension), Abolish Cliff, 2031/32",
@@ -30151,9 +30159,9 @@
     "fy": "2031-32",
     "geography": "England",
     "measure_key": "uk_free_childcare_hours_and_tfc_100k_limit_removed",
-    "pe_missing": "fiscal year 2031-32 is outside the certified pair's data years (2023-2030; data/uk/replay_variants.json)",
     "program": "free_childcare_hours_and_tax_free_childcare",
-    "scoring_method": "post_behavioural"
+    "scoring_method": "post_behavioural",
+    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json)"
    },
    "measure": null,
    "reform_framework": "policy_ref",

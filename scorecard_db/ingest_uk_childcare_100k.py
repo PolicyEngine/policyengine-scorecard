@@ -38,20 +38,29 @@ Results:
     Childcare UK-wide).
   - earlier certified pairs: an artifact for another certified variant stays
     in results/uk/childcare_100k/ beside a newer one, and its run stays in
-    the history; the newest artifact's run is every claim's latest
+    the history; the newest artifact's run is every claim's latest. A note
+    whose basis is the engine or a run names the pairs it was checked on
+    (`variants`) and attaches only to their results; an artifact whose pair
+    has no verified_pairs entry in construction_annotations.json is refused.
   - published dashboard history (4): PolicyEngine's published 30-hours cost
-    (£0.434bn in 2027-28, £0.505bn in 2029-30) on the CenTax central
+    (£0.434bn in 2027-28, £0.505bn in 2029-30; on policyengine.org from
+    12 to 21 October 2026, then taken down while the dashboard's costing
+    is revised; what the dashboard has served since is recorded on the
+    row, not attached) on the CenTax central
     static and net rows, the comparison the dashboard itself drew:
     `constructed` (static; the dashboard's local corrections) and
     `concept_mismatch` (net). It is older than the certified run, so the
     comparisons view and the app's latest point at the certified run and
     the published miss stays in the history beside it.
 CenTax's behavioural margins (12) and CBP's 2031-32 cells (2) carry no
-result; they are published without one and say why in ``pe_missing``.
+result; they are published without one and say why in ``pe_missing``, read
+off the runs that exist (the years each computed). It rides in publication,
+outside the claim id, so a new run never changes a claim's id; the feed
+shows it as conditions.pe_missing.
 
 Diagnosis: the CenTax central static rows carry a pe_gap diagnosis linked
 to microcosm#1126 (the hours-usage draw), with the evidence measured on the
-certified pair.
+latest run and the history its pair's verified_pairs entry states.
 
 calibration_relationship comes from relationships.uk_relationship: held out
 for both sources. Each is a reform estimate, and no calibration target is a
@@ -164,11 +173,9 @@ SCORING = {
     "static_cost": "static",
     "net_fiscal_cost": "post_behavioural",
 }
-PE_MISSING_MARGIN = (
-    "behavioural leg: this lane's PolicyEngine counterpart is static "
-    "(policyengine-uk 2.89.2's labour-supply elasticities are zero, so "
-    "employment_income_behavioral_response is zero)"
-)
+# A basis citing either of these rests on the engine or a run, so its note
+# names the certified pairs it was checked on (`variants`).
+_RUN_BASIS = ("policyengine_uk ", "results/uk/childcare_100k/")
 
 # the tidy-row core (docs/ARCHITECTURE.md), then each adapter's facets
 _CORE_FIELDS = frozenset(
@@ -250,7 +257,7 @@ def _revenue_row(row: dict, source: str) -> dict:
     return row
 
 
-def _centax_claim(row: dict) -> ExternalScore:
+def _centax_claim(row: dict, pe_missing: str | None = None) -> ExternalScore:
     _revenue_row(row, CENTAX)
     component = row["column"]
     cond = {
@@ -267,8 +274,6 @@ def _centax_claim(row: dict) -> ExternalScore:
     }
     if component in SCORING:
         cond["scoring_method"] = SCORING[component]
-    else:
-        cond["pe_missing"] = PE_MISSING_MARGIN
     relationship, _ = uk_relationship(CENTAX, Metric.REVENUE_CHANGE)
     return ExternalScore(
         source=CENTAX,
@@ -282,18 +287,31 @@ def _centax_claim(row: dict) -> ExternalScore:
         reform=policy_ref(MEASURES[CENTAX]),
         calibration_relationship=relationship,
         source_column=row["source_column"],
-        publication={
-            **CENTAX_PUBLICATION,
-            "value_verbatim": row["value_verbatim"],
-            "registry": REGISTRY_MARK,
-            "publish_without_result": True,
-        },
+        publication=_without_result(
+            {
+                **CENTAX_PUBLICATION,
+                "value_verbatim": row["value_verbatim"],
+                "registry": REGISTRY_MARK,
+                "publish_without_result": True,
+            },
+            pe_missing,
+        ),
         value_kind="gbp",
         status=row["status"],
     )
 
 
-def _cbp_claim(row: dict, data_years: list[int]) -> ExternalScore:
+def _without_result(publication: dict, pe_missing: str | None) -> dict:
+    # Why a claim has no PolicyEngine value depends on which certified runs
+    # exist (the years they computed, the pair's engine), so the reason rides
+    # in publication, outside the claim id; export_populations shows it as
+    # conditions.pe_missing, where every other lane's reason sits.
+    if pe_missing is not None:
+        publication["pe_missing"] = pe_missing
+    return publication
+
+
+def _cbp_claim(row: dict, pe_missing: str | None = None) -> ExternalScore:
     _revenue_row(row, CBP)
     cond = {
         "country": "UK",
@@ -309,11 +327,6 @@ def _cbp_claim(row: dict, data_years: list[int]) -> ExternalScore:
         # signs.classify reads "no_stated_convention" (unknown); CenTax's
         # reading of the sign is in the cbp-sign-unstated annotation
     }
-    if int(row["period"]) - 1 not in data_years:
-        cond["pe_missing"] = (
-            f"fiscal year {row['fy']} is outside the certified pair's data "
-            f"years ({data_years[0]}-{data_years[-1]}; data/uk/replay_variants.json)"
-        )
     relationship, _ = uk_relationship(CBP, Metric.REVENUE_CHANGE)
     return ExternalScore(
         source=CBP,
@@ -327,15 +340,18 @@ def _cbp_claim(row: dict, data_years: list[int]) -> ExternalScore:
         reform=policy_ref(MEASURES[CBP]),
         calibration_relationship=relationship,
         source_column=row["source_column"],
-        publication={
-            **CBP_PUBLICATION,
-            "table": row["table"],
-            "pdf_page": str(row["pdf_page"]),
-            "assumptions": row["assumptions"],
-            "value_verbatim": row["value_verbatim"],
-            "registry": REGISTRY_MARK,
-            "publish_without_result": True,
-        },
+        publication=_without_result(
+            {
+                **CBP_PUBLICATION,
+                "table": row["table"],
+                "pdf_page": str(row["pdf_page"]),
+                "assumptions": row["assumptions"],
+                "value_verbatim": row["value_verbatim"],
+                "registry": REGISTRY_MARK,
+                "publish_without_result": True,
+            },
+            pe_missing,
+        ),
         value_kind="gbp",
         status=row["status"],
     )
@@ -441,23 +457,76 @@ def load_artifact() -> tuple[dict, Path]:
     return load_artifacts()[-1]
 
 
-def stage() -> tuple[list[ExternalScore], dict, list[tuple[dict, Path]]]:
-    """(claims, drop tally, every certified artifact oldest first)."""
-    artifacts = load_artifacts()
-    # a claim is pe_missing only when no certified artifact has its year
-    data_years = sorted(
-        {y for art, _ in artifacts for y in art["worlds"]["baseline"]["dataset_years"]}
+def _pe_missing(
+    source: str,
+    component: str | None,
+    period: int,
+    fy: str,
+    artifacts: list[tuple[dict, Path]],
+    notes: dict,
+) -> str | None:
+    """Why a claim has no certified PolicyEngine value, read off the runs
+    that exist (the years each computed, not the years its dataset holds),
+    or None when one of them computed it."""
+    if source == CENTAX and component not in CENTAX_ATTACHED:
+        latest = verified_pair(notes, artifacts[-1][0])
+        return (
+            "behavioural leg: this lane's PolicyEngine counterparts are static "
+            f"runs ({latest['static_because']})"
+        )
+    year = period - 1
+    if any(str(year) in a["worlds"][WORLDS[source]]["years"] for a, _ in artifacts):
+        return None
+    holding = sorted(
+        a["variant_id"]
+        for a, _ in artifacts
+        if year in a["worlds"]["baseline"]["dataset_years"]
     )
+    if holding:
+        return (
+            f"fiscal year {fy}: no certified run in this lane computed it, though it is "
+            f"among the data years of {', '.join(holding)} (rerun "
+            f"pipeline/compute_uk_childcare_100k.py --variant <id> with {year} in --years)"
+        )
+    spans = "; ".join(
+        f"{a['variant_id']} {ys[0]}-{ys[-1]}"
+        for a, _ in artifacts
+        for ys in [a["worlds"]["baseline"]["dataset_years"]]
+    )
+    return (
+        f"fiscal year {fy} is outside the data years of every certified pair this "
+        f"lane has run ({spans}; data/uk/replay_variants.json)"
+    )
+
+
+def stage(
+    notes: dict | None = None,
+    results_dir: Path = RESULTS_DIR,
+    variants_path: Path = VARIANTS,
+) -> tuple[list[ExternalScore], dict, list[tuple[dict, Path]]]:
+    """(claims, drop tally, every certified artifact oldest first). Each
+    artifact's pair must be a verified one; no claim id depends on which
+    runs exist."""
+    notes = notes or load_notes()
+    artifacts = load_artifacts(results_dir, variants_path)
+    for art, _ in artifacts:
+        verified_pair(notes, art)
     scores: list[ExternalScore] = []
     drops: Counter = Counter()
     for row in _load("centax-childcare-100k", _CENTAX_FIELDS, CENTAX):
         if row["column"] in CENTAX_MONEY:
-            scores.append(_centax_claim(row))
+            missing = _pe_missing(
+                CENTAX, row["column"], int(row["period"]), row["fy"], artifacts, notes
+            )
+            scores.append(_centax_claim(row, missing))
         else:
             drops["centax_bunching_counts"] += 1
     for row in _load("cbp-rates-and-wrongs", _CBP_FIELDS, CBP):
         if row["policy"] == "abolish_cliff":
-            scores.append(_cbp_claim(row, data_years))
+            missing = _pe_missing(
+                CBP, None, int(row["period"]), row["fy"], artifacts, notes
+            )
+            scores.append(_cbp_claim(row, missing))
         else:
             drops["cbp_taper_rows"] += 1
     return finish(scores, LANE_ID), dict(sorted(drops.items())), artifacts
@@ -471,7 +540,60 @@ def _spec(path: Path) -> list[dict]:
     for a in spec["annotations"]:
         if not a.get("basis"):
             raise ValueError(f"annotation {a['id']} has no basis")
+        # a note resting on the engine or a run holds only where it was checked
+        if any(m in a["basis"] for m in _RUN_BASIS) != bool(a.get("variants")):
+            raise ValueError(
+                f"annotation {a['id']}: a note whose basis is the engine or a run "
+                "names the certified pairs it was checked on in `variants`, and "
+                "only such a note does"
+            )
     return spec["annotations"]
+
+
+def load_notes() -> dict:
+    """Every annotation in the lane, and what was verified about each pair:
+    each source's annotations.json, the construction notes, and their
+    verified_pairs (results/uk/childcare_100k/construction_annotations.json)."""
+    notes = {
+        CENTAX: _spec(CENTAX_DIR / "annotations.json"),
+        CBP: _spec(CBP_DIR / "annotations.json"),
+        "construction": _spec(CONSTRUCTION),
+        "pairs": json.loads(CONSTRUCTION.read_text())["verified_pairs"],
+    }
+    named = {
+        v
+        for kind in (CENTAX, CBP, "construction")
+        for a in notes[kind]
+        for v in a.get("variants", [])
+    }
+    if named - set(notes["pairs"]):
+        raise ValueError(
+            f"annotations name pairs with no verified_pairs entry: "
+            f"{sorted(named - set(notes['pairs']))}"
+        )
+    return notes
+
+
+def verified_pair(notes: dict, art: dict) -> dict:
+    """The pair's verified statements. An artifact for any other pair is
+    refused rather than given notes that were checked on another engine."""
+    pair = notes["pairs"].get(art["variant_id"])
+    if pair is None:
+        raise ValueError(
+            f"{art['variant_id']}: no note in this lane was verified on this pair. "
+            "Read each note whose basis is the engine or a run at this pair's pin, "
+            "add the variant to the variants of those that hold, write new notes "
+            "where they don't, and add its verified_pairs entry to "
+            f"{CONSTRUCTION.relative_to(REPO)}"
+        )
+    return pair
+
+
+def _scoped(spec: list[dict], variant: str | None) -> list[dict]:
+    """The notes that hold for a result: report-only notes always, and a
+    note resting on the engine or a run only on a pair it was checked on
+    (never on the published figure, which is no certified pair)."""
+    return [a for a in spec if "variants" not in a or variant in a["variants"]]
 
 
 _MATCHERS = {
@@ -492,13 +614,17 @@ def _facets(score: ExternalScore) -> dict:
 
 
 def match_annotations(
-    score: ExternalScore, result_kind: str, spec: list[dict]
+    score: ExternalScore,
+    result_kind: str,
+    spec: list[dict],
+    variant: str | None = None,
 ) -> tuple[list[str], ComparisonStatus]:
-    """(texts, status) for one result; exactly one status-setting
-    annotation must match, so a status is always a stated decision."""
+    """(texts, status) for one result on `variant`'s pair (None for the
+    published figure); exactly one status-setting annotation must match, so
+    a status is always a stated decision."""
     facets = {**_facets(score), "results": result_kind}
     texts, statuses = [], []
-    for a in spec:
+    for a in _scoped(spec, variant):
         match = a["applies_to"]
         if set(match) != _MATCHERS[score.source]:
             raise ValueError(f"annotation {a['id']}: matcher keys {sorted(match)}")
@@ -539,7 +665,7 @@ def counterpart(art: dict, source: str, year: int) -> float:
     )
 
 
-def measured_notes(art: dict, source: str, year: int, fy: str) -> list[str]:
+def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> list[str]:
     world = WORLDS[source]
     w = art["worlds"][world]["years"][str(year)]
     b = art["worlds"]["baseline"]["years"][str(year)]
@@ -585,12 +711,20 @@ def measured_notes(art: dict, source: str, year: int, fy: str) -> list[str]:
             f"law, {w['counts']['benunits_receiving_extended'] / 1e6:.2f}m with the "
             "limit removed."
         ),
-        (
-            "Hours-usage draw: the families receiving the extended hours use a "
-            f"weighted mean of {b['hours_usage']['mean_benunits_receiving_extended']:.1f}"
-            " of 30 weekly hours under current law "
-            "(maximum_extended_childcare_hours_usage). microcosm#1126 traces this "
-            "draw and puts DfE's mean at about 28.5 hours."
+        " ".join(
+            filter(
+                None,
+                (
+                    (
+                        "Hours-usage draw: the families receiving the extended hours "
+                        "use a weighted mean of "
+                        f"{b['hours_usage']['mean_benunits_receiving_extended']:.1f}"
+                        " of 30 weekly hours under current law "
+                        "(maximum_extended_childcare_hours_usage)."
+                    ),
+                    pair.get("hours_draw"),
+                ),
+            )
         ),
         (
             "Take-up and usage the run read: the weighted share of benefit units "
@@ -659,6 +793,7 @@ def published_result(
     if value is None:
         return None
     texts, status = match_annotations(score, "published_dashboard", spec)
+    after = pub["after"]
     return PEResult(
         claim_id=score.claim_id(),
         computed_value=-value * 1e9,
@@ -677,11 +812,18 @@ def published_result(
         annotations=[
             *texts,
             f"Published figure: £{value:.3f}bn. {pub['corrections']}",
+            f"{pub['hours_draw']}.",
             (
-                f"{pub['hours_draw']}. The fix is in {pub['pending_fix']['pr']} on "
-                f"{pub['pending_fix']['release']}: "
-                f"£{pub['pending_fix']['thirty_hours_gbp_bn'][str(year)]:.3f}bn in "
-                f"this year; not attached: {pub['pending_fix']['why_not_attached']}"
+                f"On {pub['live']['on']} from {pub['live']['from']} to "
+                f"{pub['live']['until']}: {pub['live']['until_basis']}."
+            ),
+            (
+                f"Since then {after['pr']} merged ({after['merged']}): the dashboard's "
+                f"own deployment, {after['served_at']}, serves "
+                f"£{after['thirty_hours_gbp_bn'][str(year)]:.3f}bn in this year from "
+                f"{pub['repo']}@{after['commit'][:7]} on {after['release']} with "
+                f"policyengine-uk {after['engine']['policyengine_uk']}. Not attached: "
+                f"{after['why_not_attached']}"
             ),
         ],
         baseline_key=BASELINE.baseline_key(),
@@ -690,12 +832,15 @@ def published_result(
 
 
 def certified_result(
-    s: ExternalScore, spec: list[dict], construction: list[str], art: dict, path: Path
+    s: ExternalScore, notes: dict, art: dict, path: Path
 ) -> PEResult | None:
     year = s.period - 1
     if str(year) not in art["worlds"][WORLDS[s.source]]["years"]:
         return None
-    texts, status = match_annotations(s, "certified", spec)
+    vid = art["variant_id"]
+    pair = verified_pair(notes, art)
+    texts, status = match_annotations(s, "certified", notes[s.source], vid)
+    construction = [a["text"] for a in _scoped(notes["construction"], vid)]
     return PEResult(
         claim_id=s.claim_id(),
         computed_value=counterpart(art, s.source, year),
@@ -708,35 +853,38 @@ def certified_result(
         annotations=[
             *texts,
             *construction,
-            *measured_notes(art, s.source, year, s.conditions["fy"]),
+            *measured_notes(art, s.source, year, s.conditions["fy"], pair),
         ],
         baseline_key=BASELINE.baseline_key(),
         policyengine_variables=VARIABLES[s.source],
     )
 
 
+def _published() -> dict:
+    return json.loads((CENTAX_DIR / "pe" / "published_dashboard.json").read_text())
+
+
 def results(
-    scores: list[ExternalScore], artifacts: list[tuple[dict, Path]]
+    scores: list[ExternalScore],
+    artifacts: list[tuple[dict, Path]],
+    notes: dict | None = None,
 ) -> list[PEResult]:
-    """Every certified artifact's run on each attached claim, and the
-    published dashboard figure on CenTax's central rows, older than all."""
-    specs = {
-        CENTAX: _spec(CENTAX_DIR / "annotations.json"),
-        CBP: _spec(CBP_DIR / "annotations.json"),
-    }
-    construction = [a["text"] for a in _spec(CONSTRUCTION)]
-    pub = json.loads((CENTAX_DIR / "pe" / "published_dashboard.json").read_text())
+    """Every certified artifact's run on each attached claim, each with the
+    notes verified on its own pair, and the published dashboard figure on
+    CenTax's central rows, older than all."""
+    notes = notes or load_notes()
+    pub = _published()
     oldest = min(art["computed_at"] for art, _ in artifacts)
     out = []
     for s in scores:
         if s.source == CENTAX and s.conditions["component"] not in CENTAX_ATTACHED:
             continue
         for art, path in artifacts:
-            r = certified_result(s, specs[s.source], construction, art, path)
+            r = certified_result(s, notes, art, path)
             if r is not None:
                 out.append(r)
         if s.source == CENTAX:
-            hist = published_result(s, specs[CENTAX], pub)
+            hist = published_result(s, notes[CENTAX], pub)
             if hist is not None:
                 if hist.computed_at >= oldest:
                     raise ValueError(
@@ -746,23 +894,41 @@ def results(
     return out
 
 
-def diagnoses(scores: list[ExternalScore], art: dict) -> list[tuple]:
-    """pe_gap on the CenTax central static rows, linked to microcosm#1126."""
+def _diagnosed(s: ExternalScore, art: dict, pair: dict) -> bool:
+    """A CenTax central static row the latest run computed, on a pair whose
+    verified_pairs entry states a diagnosis."""
+    c = s.conditions
+    return (
+        pair.get("diagnosis") is not None
+        and (s.source, c.get("component"), c.get("scenario"))
+        == (CENTAX, "static_cost", "central")
+        and str(s.period - 1) in art["worlds"][WORLDS[CENTAX]]["years"]
+    )
+
+
+def diagnoses(
+    scores: list[ExternalScore], art: dict, notes: dict | None = None
+) -> list[tuple]:
+    """pe_gap on the CenTax central static rows, linked to microcosm#1126,
+    as the latest run's own pair states it: the measured lead from the run,
+    then the pair's verified diagnosis (none for a pair that states none)."""
+    pair = verified_pair(notes or load_notes(), art)
     rows = []
     for s in scores:
-        c = s.conditions
-        if (s.source, c.get("component"), c.get("scenario")) != (
-            CENTAX,
-            "static_cost",
-            "central",
-        ):
+        if not _diagnosed(s, art, pair):
             continue
+        c = s.conditions
         year = s.period - 1
         pe = counterpart(art, CENTAX, year)
         hours = art["worlds"]["baseline"]["years"][str(year)]["hours_usage"][
             "mean_benunits_receiving_extended"
         ]
         diag = art["diagnostics"]
+        if str(year) not in diag.get("free_hours__full_use_hours", {}).get("years", {}):
+            raise ValueError(
+                f"{art['variant_id']}: the diagnosis needs the full-use diagnostic for "
+                f"{year}; rerun with it in --diagnostic-years"
+            )
         full = sum(
             diag["free_hours__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
             - diag["baseline__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
@@ -771,17 +937,10 @@ def diagnoses(scores: list[ExternalScore], art: dict) -> list[tuple]:
         rationale = (
             f"PolicyEngine's static cost on the certified pair is £{-pe / 1e9:.3f}bn in {c['fy']}, "
             f"{abs(pe / s.value - 1) * 100:.0f}% {'below' if pe > s.value else 'above'} CenTax's "
-            f"£{-s.value / 1e9:.2f}bn. Our side first: "
-            f"the pair's hours-usage draw gives families receiving the extended hours a weighted mean of "
-            f"{hours:.1f} of 30 weekly hours (measured); microcosm#1126 identifies this draw as the main "
-            "reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. "
-            f"With every family at the full 30 hours the same reform costs £{full / 1e9:.3f}bn on this pair "
-            "(diagnostic run). The fix merged in microcosm on 16 October 2026 (microcosm#1299); this "
-            "certified pair was built on 19 June 2026, before it. PolicyEngine's published dashboard "
-            "figure ran on the 2 October Microcosm release that microcosm#1126 examines, with the same "
-            "draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours "
-            "switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no "
-            "hours for children under 1."
+            f"£{-s.value / 1e9:.2f}bn. Our side first: on this pair the families receiving the "
+            f"extended hours use a weighted mean of {hours:.1f} of 30 weekly hours (measured), and "
+            f"with every family at the full 30 hours the same reform costs £{full / 1e9:.3f}bn "
+            f"(diagnostic run). {pair['diagnosis']}"
         )
         rows.append(
             ScorecardDB.diagnosis_row(
@@ -794,25 +953,45 @@ def diagnoses(scores: list[ExternalScore], art: dict) -> list[tuple]:
     return rows
 
 
-# Each certified run attaches to the same 22 claims, and the published figure
-# to 4, so the expected tally scales with the runs in the history.
-_PER_CERTIFIED_RUN = {"comparable": 6, "concept_mismatch": 16}
-_PUBLISHED = {"constructed": 2, "concept_mismatch": 2}
-
-
-def expected(runs: int) -> dict:
-    statuses = Counter(_PUBLISHED)
-    for status, n in _PER_CERTIFIED_RUN.items():
-        statuses[status] += n * runs
-    certified = sum(_PER_CERTIFIED_RUN.values()) * runs
-    published = sum(_PUBLISHED.values())
+def expected(
+    scores: list[ExternalScore],
+    artifacts: list[tuple[dict, Path]],
+    notes: dict | None = None,
+) -> dict:
+    """The tally the claims, each run's computed years and the published
+    file imply, derived without the annotations: a certified run attaches
+    to each CenTax static or net row and each CBP row whose year it
+    computed; CenTax's static rows are comparable and every net figure a
+    concept_mismatch; the published figure attaches to the central static
+    (constructed) and net (concept_mismatch) rows in its years."""
+    pair = verified_pair(notes or load_notes(), artifacts[-1][0])
+    published_years = _published()["values_gbp_bn"]["thirty_hours"]
+    kinds: Counter = Counter()
+    statuses: Counter = Counter()
+    for s in scores:
+        component = s.conditions.get("component")
+        if s.source == CENTAX and component not in CENTAX_ATTACHED:
+            continue
+        year = str(s.period - 1)
+        static = component == "static_cost"
+        for art, _ in artifacts:
+            if year in art["worlds"][WORLDS[s.source]]["years"]:
+                kinds["certified"] += 1
+                statuses["comparable" if static else "concept_mismatch"] += 1
+        if (
+            s.source == CENTAX
+            and s.conditions["scenario"] == "central"
+            and year in published_years
+        ):
+            kinds["published_dashboard"] += 1
+            statuses["constructed" if static else "concept_mismatch"] += 1
     return {
         "claims": 36,
         "claims_by_source": {CENTAX: 24, CBP: 12},
-        "results": certified + published,
-        "results_by_kind": {"certified": certified, "published_dashboard": published},
+        "results": sum(kinds.values()),
+        "results_by_kind": dict(kinds),
         "statuses": dict(statuses),
-        "diagnoses": 2,
+        "diagnoses": sum(_diagnosed(s, artifacts[-1][0], pair) for s in scores),
         "drops": {"cbp_taper_rows": 60, "centax_bunching_counts": 12},
     }
 
@@ -836,12 +1015,13 @@ def accounting(scores, pe, diag, drops, artifacts) -> dict:
 
 
 def ingest(db_path: Path) -> dict:
-    scores, drops, artifacts = stage()
+    notes = load_notes()
+    scores, drops, artifacts = stage(notes)
     art = artifacts[-1][0]
-    pe = results(scores, artifacts)
-    diag = diagnoses(scores, art)
+    pe = results(scores, artifacts, notes)
+    diag = diagnoses(scores, art, notes)
     counts = accounting(scores, pe, diag, drops, artifacts)
-    want = expected(len(artifacts))
+    want = expected(scores, artifacts, notes)
     if counts != want:
         raise ValueError(f"claim accounting drifted: {counts} != {want}")
     db = ScorecardDB(db_path)
@@ -872,7 +1052,8 @@ def ingest(db_path: Path) -> dict:
             f"certified pair ({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
             "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
             "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
-            "dashboard figure kept as history; pe_gap on the central static rows (microcosm#1126)"
+            "dashboard figure kept as history"
+            + ("; pe_gap on the central static rows (microcosm#1126)" if diag else "")
         )
         db.conn.execute(LANE_SQL, (LANE_ID, "computed", detail, LANE_UPDATED))
     sync_lane_feed(
