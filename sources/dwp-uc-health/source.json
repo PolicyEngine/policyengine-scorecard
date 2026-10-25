@@ -1,0 +1,25 @@
+{
+  "id": "dwp-uc-health",
+  "name": "DWP Universal Credit Health statistics — the LCWRA (health element) caseload by entitlement rate, April to June 2026",
+  "organization": "Department for Work and Pensions",
+  "country": "UK",
+  "url": "https://www.gov.uk/government/statistics/universal-credit-health-statistics-april-2019-to-june-2026",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/6aa2c1fb62ec7fe7bedf538b/uc-health-tables.ods"
+  ],
+  "raw_sha256": {
+    "uc_health_tables_2026-09-15.ods": "1816fc7fb0ce656dd628642b2a578be44f85f52760f4a1f591cdbde5804efe25"
+  },
+  "published": "2026-09-15",
+  "fetched": "2026-10-22",
+  "model": {
+    "name": "DWP administrative data (Stat-Xplore, UC - Work Capability Assessments)",
+    "open_source": false,
+    "method": "Claimants on UC health at the second Thursday of each month, by the LCWRA entitlement rate (Note 6). The count is the rate a claimant is entitled to, not the amount paid that month (Note 7). Great Britain.",
+    "method_basis": "Data tables Notes 1, 6 and 7"
+  },
+  "scope_note": "First tranche of #87: Table 2 (LCWRA caseload by entitlement rate, April to June 2026) and the lower rate's share of the June total. The child, housing, carer and childcare element counts are on Stat-Xplore, which needs an account; they stay open on #87.",
+  "boundary_note": "The counts are administrative outturns, which the 2026-08-02 boundary rule sends to the Chronicle ledger. They are staged as claims (2026-10-23), following the Census STC (#176) and ONS CPI (lane uk-benefit-uprating) decisions: the health element's rates are what an Autumn Budget 2026 freeze or cut acts on, and the new-claimant share has a direct PolicyEngine-UK counterpart.",
+  "calibration_evidence": "Held out. The certified bundle populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z calibrates to 149 targets: 142 ONS, 6 SLC and 1 OBR, and no DWP target (calibration_diagnostics.json in PolicyEngine/microcosm@7f235941 packages/microcosm-data/tests/fixtures/uk_june_2023/, read 2026-10-22). policyengine-uk-data main targets/sources/dwp.py (read 2026-10-22) targets UC by number of children and family type, and no LCWRA count. The dd68c73 commit is not on GitHub, so its own dwp.py could not be read.",
+  "diagnosis_upstream": "A gap in the new-claimant share is a policyengine-uk parameter question (gov.dwp.universal_credit.rebalancing.new_claimant_share)."
+}

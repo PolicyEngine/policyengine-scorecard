@@ -412,7 +412,14 @@ def test_integration_committed_db(tmp_path):
     # + 13 UK rows from lane uk-benefit-uprating: the 11 Resolution
     # Foundation uprating claims, now with parameter-tree results, and the
     # ONS and OBR September 2026 CPI claims.
-    assert dist == {"US": 540, "UK": 5163 + 23_752 + 246 + 13, "BE": 9, "NZ": 12}
+    # + 15 UK rows from lane dwp-uc-health (#87): 14 LCWRA caseloads that
+    # publish without a result, and the new-claimant share with one.
+    assert dist == {
+        "US": 540,
+        "UK": 5163 + 23_752 + 246 + 13 + 15,
+        "BE": 9,
+        "NZ": 12,
+    }
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -447,7 +454,7 @@ def test_integration_committed_db(tmp_path):
     assert committed["summary"] == payload["summary"]
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
-    assert len(payload["rows"]) == 5737
+    assert len(payload["rows"]) == 5752
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()

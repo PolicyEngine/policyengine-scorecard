@@ -711,6 +711,16 @@ def uk_relationship(source, metric, program=None, kind=None):
             "(gov.economic_assumptions.yoy_growth.obr.*) of the EFO it last "
             "loaded; a match checks the vintage, not model skill.",
         )
+    if source == "dwp_uc_health":
+        return (
+            CR.HELD_OUT,
+            "No DWP target in the certified calibration: populace-uk-2023-"
+            "dd68c73's 149 targets are 142 ONS, 6 SLC and 1 OBR "
+            "(calibration_diagnostics.json, microcosm@7f235941, read "
+            "2026-10-22); policyengine-uk-data main targets/sources/dwp.py "
+            "has UC counts by children and family type, no LCWRA count "
+            "(read 2026-10-22). The dd68c73 commit is not on GitHub.",
+        )
     if source in _AB2025_HELD:
         return _AB2025_HELD[source]
     if source == "dwp":
