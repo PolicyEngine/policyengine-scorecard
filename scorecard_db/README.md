@@ -552,3 +552,56 @@ the current figure. The central static rows carry a `pe_gap` diagnosis
 linked to microcosm#1126 (the hours-usage draw). policyengine.py's current
 certified pair, which has the fixed draw, is not yet run in this lane
 (#228). See `sources/centax-childcare-100k/README.md`.
+
+## 2026-10-23 population: the two-child limit child-poverty benchmarks (UK)
+
+Lane `uk-two-child-limit-poverty`, registry mark `uk_two_child_limit_poverty`,
+ingest `scorecard_db/ingest_uk_two_child_limit_poverty.py`. This lane moves
+policyengine-uk's two-child limit validation page (corrected by
+PolicyEngine/policyengine-uk#1724) into the scorecard.
+
+- **Claims.** 123 DWP claims from `sources/dwp-two-child-limit-poverty`:
+  Tables 1-4 of the Budget 2025 note, its FYE 2026 figure, and children in
+  gaining households. All are held out. `baseline_policy` is `pre_ab2025`
+  (DWP's baseline keeps the limit), and every claim carries
+  `publish_without_result`.
+- **Results.** The lane attaches 153 results. 140 come from one run on
+  policyengine.py 6.11.0's certified Microcosm pair
+  (`data/uk/certified_pairs.json`), computed on Modal by
+  `pipeline/modal_uk_two_child_limit_poverty.py`:
+  - 123 go to its own DWP claims.
+  - 5 go to the Resolution Foundation *No half measures* claims of the
+    `uk_ab2025` registry (480,000 and £3.5 billion in 2029-30, 330,000
+    "today", the further 150,000, a three-child limit). These are matched
+    one for one; none is minted twice.
+  - 12 go to HM Treasury's static and post-behavioural costings,
+    2025-26 to 2030-31.
+
+  The other 13 are the September 2026 Populace answers that the
+  `uk_ab2025` campaign staged for the Resolution Foundation and HM Treasury
+  claims this lane took over
+  (`results/uk/two_child_limit_poverty/history_ab2025_campaign_20260925.jsonl`).
+  Each stays as its claim's earlier history row, and the AB2025 stager
+  skips the claims this lane owns.
+- **Executed worlds.** The with-limit world (registered `pre_ab2025`), plus
+  current law in 2025-26 for the 2025-26 rows.
+- **Statuses.** Each result's status is set by exactly one annotation, from
+  the two sources' `annotations.json` and
+  `results/uk/two_child_limit_poverty/construction_annotations.json`. The
+  facets include a measured `spread`: whether two readings of a convention
+  the source leaves unstated differ by more than half its rounding unit.
+- **Order.** The build step runs after `uk_ab2025_lanes`, because it
+  attaches to that registry's claims.
+- **Diagnostics** (`results/uk/two_child_limit_poverty/diagnostics/`; none
+  feeds a result):
+  - `wrapper_pe6.10.1.json` is the lane's first run, on policyengine.py
+    6.10.1's pair (`docs/uk_two_child_limit_poverty/requirements-pe6101.txt`).
+    A test checks the 6.11.0 run reproduces every count, line and sum.
+  - `losers.json` counts, in aggregate only, who is worse off when the limit
+    goes and which variables moved. The microdata is not public, so it
+    holds no household's own values. In every world and year, each loss is a
+    Universal Credit award that begins and ends the household's Tax-Free
+    Childcare. Benefit units whose Universal Credit "falls" fall by under a
+    penny a year (float rounding).
+  - `<data>_uk<engine>.json` and `bisect_microcosm_uk<v>_core3.33.3.json`
+    are the decomposition's cells (`DECOMPOSITION.md`).
