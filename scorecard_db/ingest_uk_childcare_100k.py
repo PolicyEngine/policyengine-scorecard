@@ -76,6 +76,7 @@ reform-world quantity (tests/test_uk_childcare_100k.py checks the built DB).
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import math
 import re
@@ -104,6 +105,9 @@ CBP_DIR = REPO / "sources" / "cbp-rates-and-wrongs"
 RESULTS_DIR = REPO / "results" / "uk" / "childcare_100k"
 VARIANTS = REPO / "data" / "uk" / "replay_variants.json"
 PAIRS = REPO / "data" / "uk" / "certified_pairs.json"
+# pipeline/uk_certified_pairs.py KIND and PREFIX (a test checks they agree)
+PAIRS_KIND = "uk_certified_pairs"
+PAIR_PREFIX = "pair-"
 CERTIFIED = REPO / "data" / "uk" / "certified_bundle.json"
 CONSTRUCTION = RESULTS_DIR / "construction_annotations.json"
 # The artifact schema this ingest reads (pipeline/compute_uk_childcare_100k.py).
@@ -460,18 +464,63 @@ def check_artifact(art: dict, path: Path, variant: dict) -> None:
         raise ValueError(f"{path.name}: artifact is not a static run")
 
 
+def identity_sha256(identity: dict) -> str:
+    """pipeline/uk_replay_variants.identity_sha256, which this package does
+    not import: SHA-256 of sorted-key compact JSON (a test checks the two
+    agree)."""
+    return hashlib.sha256(
+        json.dumps(
+            identity,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode()
+    ).hexdigest()
+
+
 def run_records(variants_path: Path = VARIANTS, pairs_path: Path = PAIRS) -> dict:
     """id -> record, for every record a run of this lane may name: each
-    certified replay variant, and each certified pair under its pair- id
-    (pipeline/uk_certified_pairs.py validates both files; a test checks the
-    committed ones)."""
+    certified replay variant, and each certified pair under its pair- id.
+    pipeline/uk_certified_pairs.py validates both files in full; reading
+    them here, ingest refuses what would let it and the pipeline resolve one
+    id to different records: a repeated id in or across the files, a pair id
+    without pair- or a variant id with it, and an identity its digest does
+    not seal."""
     index = json.loads(variants_path.read_text())
+    document = json.loads(pairs_path.read_text())
+    if (document.get("schema_version"), document.get("kind")) != (
+        1,
+        PAIRS_KIND,
+    ):
+        raise ValueError(f"{pairs_path.name}: not a version 1 {PAIRS_KIND} file")
+    variant_ids = [v.get("variant_id") for v in index["variants"]]
+    pair_ids = [p.get("pair_id") for p in document["pairs"]]
+    repeated = sorted(
+        str(k) for k, n in Counter([*variant_ids, *pair_ids]).items() if n > 1
+    )
+    misnamed = sorted(
+        [str(v) for v in variant_ids if str(v).startswith(PAIR_PREFIX)]
+        + [str(p) for p in pair_ids if not str(p).startswith(PAIR_PREFIX)]
+    )
+    if repeated or misnamed:
+        raise ValueError(
+            f"{variants_path.name} and {pairs_path.name}: repeated ids {repeated}, "
+            f"ids in the other file's namespace {misnamed}"
+        )
     records = {
         v["variant_id"]: v for v in index["variants"] if v["status"] == "certified"
     }
-    for pair in json.loads(pairs_path.read_text())["pairs"]:
+    for pair in document["pairs"]:
         if pair.get("status") == "certified_pair":
             records[pair["pair_id"]] = {**pair, "variant_id": pair["pair_id"]}
+    unsealed = sorted(
+        k
+        for k, r in records.items()
+        if identity_sha256(r["identity"]) != r["identity_sha256"]
+    )
+    if unsealed:
+        raise ValueError(f"identity_sha256 does not seal the identity of {unsealed}")
     return records
 
 

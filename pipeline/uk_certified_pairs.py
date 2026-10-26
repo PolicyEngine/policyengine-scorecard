@@ -131,9 +131,12 @@ def preflight(record: dict, *, dataset_source: Path | None = None) -> dict:
 
     if not is_pair(record):
         return event.variant_preflight(record, dataset_source=dataset_source)
-    if record["status"] != STATUS:
-        raise variants.VariantError(f"{record['variant_id']}: not a certified pair")
-    variants.validate_identity(record, record["variant_id"].removeprefix(PREFIX))
+    record_id = record.get("variant_id")
+    if record.get("status") != STATUS:
+        raise variants.VariantError(f"{record_id}: not a certified pair")
+    if not isinstance(record_id, str) or not record_id.startswith(PREFIX):
+        raise variants.VariantError(f"{record_id}: a pair's id starts {PREFIX}")
+    variants.validate_identity(record, record_id.removeprefix(PREFIX))
     installed = variants.verify_installed(record)
     return event.materialized_preflight(
         record, installed, dataset_source=dataset_source
