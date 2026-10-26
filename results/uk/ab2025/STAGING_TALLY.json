@@ -1,5 +1,5 @@
 {
- "attached": 1008,
+ "attached": 995,
  "by_measure": {
   "ab2025__advanced_corporation_tax_shadow_act_abolished": {
    "attached": 0,
@@ -927,19 +927,20 @@
    "unmapped": 0
   },
   "ab2025__uc_child_element_remove_two_child_limit": {
-   "attached": 47,
+   "attached": 37,
    "claims": 170,
-   "no_artifact": 7,
-   "owned_elsewhere": 12,
+   "no_artifact": 5,
+   "owned_elsewhere": 24,
    "reasons": {
     "affected_count: affected population unit 'families' is not persons, households or children": 2,
     "geography other than UK (no sub-national compute)": 85,
-    "no artifact for the claim's fiscal year (2025-26)": 7,
+    "no artifact for the claim's fiscal year (2025-26)": 5,
     "no counterpart shape for metric 'affected_share'": 1,
     "no counterpart shape for metric 'average_annual_gain'": 4,
     "no counterpart shape for metric 'gainer_count'": 3,
     "no fiscal year on the claim": 2,
     "owned by the OBR costings lane (claim carries obr_measure_key)": 12,
+    "owned by the two-child limit poverty lane (data/uk/two_child_limit_poverty/owned_claims.json)": 12,
     "poverty_count_change: poverty sign convention not recognised: 'positive = children lifted out of severe hardship'": 1,
     "poverty_count_change: poverty sign convention not recognised: 'positive = children lifted out of severe hunger and hardship'": 2,
     "poverty_count_change: poverty sign convention not recognised: 'positive = people lifted out of severe hardship'": 1,
@@ -1407,18 +1408,19 @@
    "unmapped": 0
   },
   "ab2025_option__scrap_two_child_limit": {
-   "attached": 11,
+   "attached": 9,
    "claims": 116,
-   "no_artifact": 23,
-   "owned_elsewhere": 0,
+   "no_artifact": 22,
+   "owned_elsewhere": 4,
    "reasons": {
     "geography other than UK (no sub-national compute)": 10,
-    "no artifact for the claim's fiscal year (2025-26)": 23,
-    "no counterpart shape for metric 'benefit_cost_change'": 3,
+    "no artifact for the claim's fiscal year (2025-26)": 22,
+    "no counterpart shape for metric 'benefit_cost_change'": 2,
     "no fiscal year on the claim": 67,
+    "owned by the two-child limit poverty lane (data/uk/two_child_limit_poverty/owned_claims.json)": 4,
     "poverty_count_change: poverty sign convention not recognised: 'negative = reduction in the number of people at risk of hunger and hardship (as printed)'": 2
    },
-   "unmapped": 82
+   "unmapped": 81
   },
   "ab2025_option__second_homes_200pct_premium_for_non_uk_residents": {
    "attached": 0,
@@ -1449,14 +1451,15 @@
    "unmapped": 0
   },
   "ab2025_option__three_child_limit": {
-   "attached": 1,
+   "attached": 0,
    "claims": 62,
    "no_artifact": 6,
-   "owned_elsewhere": 0,
+   "owned_elsewhere": 1,
    "reasons": {
     "no artifact for the claim's fiscal year (2025-26)": 6,
     "no counterpart shape for metric 'poverty_rate'": 1,
-    "no fiscal year on the claim": 54
+    "no fiscal year on the claim": 54,
+    "owned by the two-child limit poverty lane (data/uk/two_child_limit_poverty/owned_claims.json)": 1
    },
    "unmapped": 55
   },
@@ -1550,7 +1553,7 @@
   "ab2025_option__lha_freeze_maintained",
   "ab2025_option__triple_lock_replaced_with_double_lock"
  ],
- "owned_elsewhere": 222,
+ "owned_elsewhere": 239,
  "unmapped": {
   "affected_count: affected population unit 'families' is not persons, households or children": 2,
   "average_household_income_change: income_group 'quintile_1' is not a decile, vigintile or all": 1,
@@ -1558,7 +1561,7 @@
   "geography other than UK (no sub-national compute)": 3318,
   "lever inert on the certified world in every year of the run (reform world identical to the baseline world)": 99,
   "no artifact for the claim's fiscal year (2023-24)": 5,
-  "no artifact for the claim's fiscal year (2025-26)": 202,
+  "no artifact for the claim's fiscal year (2025-26)": 199,
   "no artifact for the claim's fiscal year (2026-27)": 264,
   "no artifact for the claim's fiscal year (2027-28)": 115,
   "no artifact for the claim's fiscal year (2028-29)": 117,
@@ -1568,7 +1571,7 @@
   "no counterpart shape for metric 'affected_share'": 61,
   "no counterpart shape for metric 'average_annual_gain'": 6,
   "no counterpart shape for metric 'average_tax_change'": 241,
-  "no counterpart shape for metric 'benefit_cost_change'": 10,
+  "no counterpart shape for metric 'benefit_cost_change'": 9,
   "no counterpart shape for metric 'cpi_inflation_effect'": 1,
   "no counterpart shape for metric 'gainer_count'": 3,
   "no counterpart shape for metric 'gini'": 10,

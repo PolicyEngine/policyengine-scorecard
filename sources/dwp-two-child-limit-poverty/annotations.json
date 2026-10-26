@@ -1,0 +1,107 @@
+{
+ "_schema": {
+  "applies_to": "matcher on the lane's facets (scorecard_db/ingest_uk_two_child_limit_poverty.FACETS); null = any. sources: dwp | resolution_foundation | hm_treasury; measures: registry measure_key; metrics; lines: relative | absolute | none; bases: ahc | bhc | none; groups: children | working_age_adults | individuals | children_in_deep_material_poverty | none; periods: claim periods (FYE); tables: the DWP table label; spread: within_rounding | beyond_rounding | na (whether the two PolicyEngine conventions an unstated source convention could mean differ by more than half the source's rounding unit, measured per result); results: certified",
+  "severity": "period | definitional | construction | caution | gap",
+  "status": "the comparison status this annotation sets, where it sets one; exactly one status-setting annotation matches each result",
+  "basis": "traceability: a raw file of this source and its location, engine files at the certified pin (policyengine-uk 2.132.6), or the measured artifact results/uk/two_child_limit_poverty/<pair_id>.json"
+ },
+ "annotations": [
+  {
+   "id": "dwp-relative-same-concept",
+   "applies_to": {"sources": ["dwp"], "metrics": ["poverty_count_change", "poverty_rate_change"], "lines": ["relative"], "spread": ["within_rounding"]},
+   "severity": "definitional",
+   "status": "comparable",
+   "text": "Same concept: relative low income (below 60% of the median, HBAI equivalised household income) on the same housing basis, for the same HBAI group, static, removal against a world that keeps the limit. DWP does not say whether its policy scenario's line is that scenario's own median or the baseline's; PolicyEngine's value uses each world's own median (in_relative_poverty_*), and the measured note gives the value with the line held at the with-limit world's median. The two differ by no more than half DWP's rounding unit, so the unstated convention cannot change the comparison at DWP's precision.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology': four measures, HBAI definitions; 'compares new policies to a baseline scenario'); raw/hbai_qmi_fye2024.content.json ('Relative low income is the comparison to the median of the current year'); policyengine_uk 2.132.6 variables/household/income/in_relative_poverty_{ahc,bhc}.py (60% of the person-weighted median of the world being calculated); the measured spread in results/uk/two_child_limit_poverty/<pair_id>.json"
+  },
+  {
+   "id": "dwp-relative-convention-material",
+   "applies_to": {"sources": ["dwp"], "metrics": ["poverty_count_change", "poverty_rate_change"], "lines": ["relative"], "spread": ["beyond_rounding"]},
+   "severity": "construction",
+   "status": "constructed",
+   "text": "Relative low income on the same housing basis and group, but here the two readings of DWP's unstated median convention (each world's own median, attached; the line held at the with-limit world's median, in the measured note) differ by more than half DWP's rounding unit, so the attached value is one construction of the concept rather than the concept itself.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology'); policyengine_uk 2.132.6 variables/household/income/in_relative_poverty_{ahc,bhc}.py; the measured spread in results/uk/two_child_limit_poverty/<pair_id>.json"
+  },
+  {
+   "id": "dwp-absolute-fye2011-line",
+   "applies_to": {"sources": ["dwp"], "metrics": ["poverty_count_change", "poverty_rate_change"], "lines": ["absolute"]},
+   "severity": "construction",
+   "status": "constructed",
+   "text": "DWP's absolute low income line is 60% of the FYE 2011 median, uprated by HBAI's CPI variants: the note cites the HBAI FYE 2024 methodology and predates HBAI's March 2026 move to an FYE 2025 reference year. policyengine-uk 2.132.6 serves the FYE 2025 line (in_poverty_*), so the attached value uses a constructed FYE 2011 line: the engine's own FYE 2011 entry (305.7 a week BHC, 261.92 AHC, in FYE 2021 prices) uprated by the engine's OBR CPI index, as policyengine-uk did before it rebased. Headline CPI stands in for HBAI's CPI variants. The measured note gives the count on the served FYE 2025 line, which is a different line.",
+   "basis": "raw/hbai_qmi_fye2024.content.json ('Absolute low income measures ... below the average in FYE 2011, adjusted for inflation'; 'adjusts it each year with inflation as measured by variants of the CPI'); raw/removing_the_two_child_limit.content.json details.body (cites the HBAI FYE 2024 report); policyengine_uk 2.132.6 parameters/household/poverty/absolute_poverty_threshold_{bhc,ahc}.yaml (2020-01-01 FYE 2011 entry; FYE 2025 reference from 2021-01-01; uprating gov.economic_assumptions.indices.obr.consumer_price_index); pipeline/compute_uk_two_child_limit_poverty.fye2011_line"
+  },
+  {
+   "id": "dwp-gainers",
+   "applies_to": {"sources": ["dwp"], "metrics": ["gainer_count"], "groups": ["children"], "spread": ["within_rounding"]},
+   "severity": "definitional",
+   "status": "comparable",
+   "text": "Children in households whose income rises when the limit is removed, FYE 2030. PolicyEngine counts HBAI dependent children in households whose HBAI household net income (before housing costs) is higher in current law than in the with-limit world. DWP does not state a threshold for 'an increase in income'; PolicyEngine's count above £0 is attached and the count above £1 a week is in the measured note; they differ by no more than half the 0.1 million rounding of Table A5.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Poverty impacts', paragraph 2); raw/child_poverty_strategy_impact_dec_2025.content.json Table A5; results/uk/two_child_limit_poverty/<pair_id>.json worlds.current_law.years.2029.gainers_vs_with_limit"
+  },
+  {
+   "id": "dwp-gainers-threshold-material",
+   "applies_to": {"sources": ["dwp"], "metrics": ["gainer_count"], "groups": ["children"], "spread": ["beyond_rounding"]},
+   "severity": "construction",
+   "status": "constructed",
+   "text": "Children in gaining households, but the gain threshold DWP leaves unstated moves PolicyEngine's count by more than half Table A5's 0.1 million rounding (above £0 attached, above £1 a week in the measured note).",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Poverty impacts', paragraph 2); results/uk/two_child_limit_poverty/<pair_id>.json worlds.current_law.years.2029.gainers_vs_with_limit"
+  },
+  {
+   "id": "dwp-deep-material-poverty",
+   "applies_to": {"sources": ["dwp"], "groups": ["children_in_deep_material_poverty"]},
+   "severity": "gap",
+   "status": "pe_gap",
+   "text": "Deep material poverty is a survey measure of lacking essential items (DWP: 'based on whether the household was reported to be in deep material poverty in the original FRS data'). policyengine-uk 2.132.6 has no material-deprivation variable, so PolicyEngine cannot count these children.",
+   "basis": "raw/child_poverty_strategy_impact_dec_2025.content.json details.body ('Methodology', deep material poverty paragraph; Table A5); policyengine-uk 2.132.6: no variable matching /material_depriv|deep_material|material_poverty/ (git grep of the 2.132.6 tag)"
+  },
+  {
+   "id": "dwp-static",
+   "applies_to": {"sources": ["dwp"], "groups": ["children", "working_age_adults", "individuals"]},
+   "severity": "definitional",
+   "text": "Both are static. DWP's Policy Simulation Model 'does not capture the behavioural impacts of policies, such as ... an increase in the take-up of benefits among those already eligible but not claiming'. PolicyEngine runs no behavioural response, and would_claim_uc is a dataset input with no formula, so no family's decision to claim responds to the reform.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology'); policyengine_uk 2.132.6 variables/gov/dwp/universal_credit/would_claim_uc.py (no formula) and claims_universal_credit.py; pipeline/compute_uk_two_child_limit_poverty.py (behavioural_response 'none (static)')"
+  },
+  {
+   "id": "dwp-groups",
+   "applies_to": {"sources": ["dwp"], "groups": ["children", "working_age_adults", "individuals"]},
+   "severity": "definitional",
+   "text": "Groups follow HBAI: children are dependent children (under 16, or 16 to 19 and not married, in a civil partnership or living with a partner, living with parents or a responsible adult, and in full-time non-advanced education or unwaged government training); pensioners are adults at or above State Pension age, so working-age adults are the adults below it; individuals are everyone. PolicyEngine counts is_hbai_dependent_child, is_hbai_working_age_adult and all people.",
+   "basis": "raw/hbai_qmi_fye2024.content.json (glossary: 'A dependent child is defined as an individual aged under 16 ...'; 'Pensioners are defined as all those adults at or above State Pension age'); policyengine_uk 2.132.6 variables/household/demographic/hbai/is_hbai_dependent_child.py and is_hbai_working_age_adult.py"
+  },
+  {
+   "id": "dwp-fye-mapping",
+   "applies_to": {"sources": ["dwp"]},
+   "severity": "period",
+   "text": "FYE N is the financial year April N-1 to March N (FYE 2030 = 2029-30). PolicyEngine runs it as engine period N-1: policyengine-uk 2.132.6 reads every parameter at 30 April of that year.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body (column headers 'FYE 2027' ... 'FYE 2031'); policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters (value at f'{year}-04-30')"
+  },
+  {
+   "id": "dwp-rounding",
+   "applies_to": {"sources": ["dwp"], "metrics": ["poverty_count_change", "poverty_rate_change"]},
+   "severity": "caution",
+   "text": "DWP rounds numbers to the nearest 50,000 and rates to the nearest 0.1 percentage point 'due to uncertainties inherent in the modelling approach'; PolicyEngine's value is unrounded.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology')"
+  },
+  {
+   "id": "dwp-vintage",
+   "applies_to": {"sources": ["dwp"], "groups": ["children", "working_age_adults", "individuals"]},
+   "severity": "caution",
+   "text": "Different data and forecasts: DWP's model pools FRS FYE 2022-2024 and is consistent with the OBR's November 2025 forecasts; the certified pair is the Microcosm UK national release (an FRS calibration build whose data year is 2024-25) projected with policyengine-uk 2.132.6's parameters and uprating.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology'); data/uk/certified_pairs.json (pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71); the release manifest at that revision (build.attempt_id uk-frs-calibration-attempt-20261019T083323Z-6cba5d71) and the dataset's time_period table (2024)"
+  },
+  {
+   "id": "dwp-table-2-header",
+   "applies_to": {"sources": ["dwp"], "tables": ["Table 2"]},
+   "severity": "caution",
+   "text": "Table 2's header cell reads 'Change in relative low income AHC compared to baseline' under a title that says before housing costs. The title governs: Table 2's values differ from Table 1's, and the Child Poverty Strategy note republishes it as Table A2 with a BHC header.",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body (Table 2 title and header); raw/child_poverty_strategy_impact_dec_2025.content.json (Table A2 header); adapter.py QC 3 and 7"
+  },
+  {
+   "id": "dwp-table-2-individuals-2031-republished",
+   "applies_to": {"sources": ["dwp"], "tables": ["Table 2"], "groups": ["individuals"], "metrics": ["poverty_rate_change"], "periods": [2031]},
+   "severity": "caution",
+   "text": "DWP publishes this cell twice: -0.6 percentage points in the Budget note (staged) and -0.5 in Table A2 of the Child Poverty Strategy note (5 December 2025).",
+   "basis": "raw/removing_the_two_child_limit.content.json Table 2; raw/child_poverty_strategy_impact_dec_2025.content.json Table A2; adapter.py REPUBLICATION_DIFFERS"
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "dwp-two-child-limit-poverty",
+  "name": "DWP — Removing the two-child limit on Universal Credit: impact on low income poverty levels in the United Kingdom (Budget 2025), Tables 1-4",
+  "organization": "Department for Work and Pensions",
+  "country": "UK",
+  "claim_class": "reform_score",
+  "url": "https://www.gov.uk/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025/removing-the-two-child-limit-on-universal-credit-impact-on-low-income-poverty-levels-in-the-united-kingdom",
+  "data_urls": [
+    "https://www.gov.uk/api/content/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025/removing-the-two-child-limit-on-universal-credit-impact-on-low-income-poverty-levels-in-the-united-kingdom",
+    "https://www.gov.uk/api/content/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025",
+    "https://www.gov.uk/api/content/government/publications/child-poverty-strategy-impact-on-low-income-poverty-levels-and-children-gaining-in-the-uk-december-2025/child-poverty-strategy-impact-on-low-income-poverty-levels-and-children-gaining-in-the-uk-december-2025",
+    "https://www.gov.uk/api/content/government/statistics/households-below-average-income-for-financial-years-ending-1995-to-2024/households-below-average-income-series-quality-and-methodology-information-report-fye-2024"
+  ],
+  "raw_sha256": {
+    "child_poverty_strategy_impact_dec_2025.content.json": "9d0f9600486d397f65a439748be11c79f564020f18121e2f0c923c7b78630001",
+    "hbai_qmi_fye2024.content.json": "245c11213471a51672a38c223750d2a4776858f2131f5e29bce9dbbe0f6cbff1",
+    "poverty_impacts_budget_2025.publication.json": "69cb9f0177e2062266ddf42c483ee53d1faf5c59f195d3e93c585ad0e9dc1847",
+    "removing_the_two_child_limit.content.json": "80dd3017ab3bb5becd85e50e6e3c849d250c9d4399f2032a586154cd654185a6"
+  },
+  "raw_files": {
+    "removing_the_two_child_limit.content.json": "the note, GOV.UK content API (first published 2025-11-26T13:41:58+00:00, updated 2025-12-04T15:36:07+00:00)",
+    "poverty_impacts_budget_2025.publication.json": "the parent publication 'Poverty impacts of social security changes at Budget 2025'; details.change_history records the 27 November 2025 corrections to Tables 1 and 2 and the 4 December 2025 data-table addition",
+    "child_poverty_strategy_impact_dec_2025.content.json": "DWP, 'Child Poverty Strategy: Impact on low income poverty levels and children gaining in the UK: December 2025' (published 2025-12-05T08:00:02+00:00): Tables A1-A4 republish Tables 1-4 (QC 7) and Table A5 counts children in gaining households",
+    "hbai_qmi_fye2024.content.json": "DWP, 'Households below average income series: quality and methodology information report FYE 2024' (updated 2025-05-28T11:56:10+01:00), the methodology the note cites for its four low-income measures (annotation basis)"
+  },
+  "citation": "Department for Work and Pensions (2025), Removing the two-child limit on Universal Credit: Impact on low income poverty levels in the United Kingdom, 26 November 2025 (figures corrected 27 November 2025), in Poverty impacts of social security changes at Budget 2025.",
+  "published": "2025-11-26",
+  "corrected": "2025-11-27 (Table 1 FYE 2031 individuals -550,000; Table 2 FYE 2031 individuals -400,000)",
+  "fetched": "2026-10-23",
+  "model": {
+    "name": "DWP Policy Simulation Model (PSM)",
+    "open_source": false,
+    "method": "A static microsimulation model on a snapshot of the UK population from the Family Resources Survey, FYE 2022, 2023 and 2024 pooled, with DWP and HMRC caseload forecasts and benefit rules simulating each year to FYE 2031; consistent with the OBR's November 2025 forecasts. It does not capture behavioural responses, 'such as ... an increase in the take-up of benefits among those already eligible but not claiming'. Each year's figure compares the policy with a baseline scenario under existing benefit rules (the limit in place); impacts are independent of underlying poverty trends.",
+    "method_basis": "raw/removing_the_two_child_limit.content.json details.body, 'Methodology' section"
+  },
+  "concepts": {
+    "poverty_lines": "Relative low income: household income below 60% of the median 'in that year' (HBAI: 'Relative low income is the comparison to the median of the current year'). Absolute low income: below 60% of the FYE 2011 median, adjusted for inflation by variants of CPI (HBAI FYE 2024 methodology, which the note cites; HBAI moved the reference year to FYE 2025 in March 2026, after this note). The note does not say whether the policy scenario's relative line is re-derived from that scenario's own median or held at the baseline scenario's median.",
+    "housing_costs": "Both: before housing costs (BHC) and after housing costs (AHC), equivalised at the household level.",
+    "population": "HBAI groups: children (HBAI dependent children: under 16, or 16 to 19, unmarried and in full-time non-advanced education, living with parents), working-age adults (adults below State Pension age) and individuals (everyone). Pensioners are not reported separately.",
+    "geography": "UK",
+    "period": "FYE 2027 to FYE 2031 (financial years April to March). FYE 2030 = FY 2029-30 = April 2029 to March 2030. period = the FYE; PolicyEngine engine period = FYE - 1 (policyengine-uk reads each year's parameters at 30 April of that year: utils/parameters.convert_to_fiscal_year_parameters).",
+    "sign": "As published: 'Change in ... compared to baseline'; negative = fewer people in low income than with the limit.",
+    "rounding": "Numbers to the nearest 50,000 individuals; rates to the nearest 0.1 percentage point."
+  },
+  "reform": "Remove the two-child limit on the Universal Credit child element from April 2026 (Budget 2025), so the child element is paid for every child. The note scores this against a baseline that keeps the limit.",
+  "baseline_key": "DWP baseline projections under existing benefit rules (the limit in place), consistent with the OBR November 2025 forecasts",
+  "metrics": [
+    "poverty_count_change (Number rows, the FYE 2026 text figure)",
+    "poverty_rate_change (%pt rows)",
+    "gainer_count (children in gaining households; Table A5's deep-material-poverty subset)"
+  ],
+  "units": {
+    "count": "children | persons (individuals, working-age adults: conditions.subgroup)",
+    "rate": "percentage_points"
+  },
+  "coverage_note": "Tables 1-4 in full (120 cells) plus three text and Table A5 figures: 123 rows. Not staged: 'around 100 children a day' (footnote 2, an average of the FYE 2026 figure over the months since April 2017) and 'an additional 150,000 children (450,000 overall)' (footnote 3, the FYE 2030 Table 1 figure less the FYE 2026 one); both are arithmetic on staged figures. The constituency spreadsheet attached to the publication counts Universal Credit households affected by the limit (administrative data) and is not a reform score.",
+  "diagnosis_upstream": "The PSM is closed; a divergence classified as an external-model issue becomes a comparison memo. Divergences that are ours route to microcosm (data) or policyengine-uk (rules)."
+}

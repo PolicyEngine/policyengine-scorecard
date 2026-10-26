@@ -1,0 +1,84 @@
+{
+ "_schema": {
+  "applies_to": "matcher on the lane's facets (scorecard_db/ingest_uk_two_child_limit_poverty.FACETS); null = any. items: scrap_2029_30 | scrap_cost_2029_30 | scrap_today | scrap_further_by_2029_30 | three_child_limit; spread: within_rounding | beyond_rounding | na (whether the two PolicyEngine readings of RF's unstated median convention differ by more than half RF's rounding unit, measured per result)",
+  "severity": "period | definitional | construction | caution | gap",
+  "status": "the comparison status this annotation sets, where it sets one; exactly one status-setting annotation matches each result",
+  "basis": "raw/pages_layout.txt (file and PDF page), engine files at the certified pin (policyengine-uk 2.132.6), or the measured artifact results/uk/two_child_limit_poverty/<pair_id>.json"
+ },
+ "annotations": [
+  {
+   "id": "rf-relative-same-concept",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_2029_30", "scrap_today", "three_child_limit"], "spread": ["within_rounding"]},
+   "severity": "definitional",
+   "status": "comparable",
+   "text": "Same concept: children in relative poverty after housing costs, UK, static against a world that keeps the two-child limit. RF does not say whether a policy scenario's line is re-derived from that scenario's own median; PolicyEngine's value uses each world's own median, the measured note gives it with the line held at the with-limit world's median, and the two differ by no more than half RF's 10,000 rounding.",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf pages 1 and 3 (the figures; 'Relative child poverty after housing costs: UK'), page 8 (footnote 4) and Living-Standards-Outlook-2024.pdf pages 34-37 (the cited annex, which states no median convention for scenarios); policyengine_uk 2.132.6 variables/household/income/in_relative_poverty_ahc.py; the measured spread"
+  },
+  {
+   "id": "rf-relative-convention-material",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_2029_30", "scrap_today", "three_child_limit"], "spread": ["beyond_rounding"]},
+   "severity": "construction",
+   "status": "constructed",
+   "text": "Children in relative poverty after housing costs, but the two readings of RF's unstated median convention (each world's own median, attached; the with-limit world's, in the measured note) differ by more than half RF's 10,000 rounding, so the attached value is one construction of the concept.",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf pages 1 and 3; policyengine_uk 2.132.6 variables/household/income/in_relative_poverty_ahc.py; the measured spread"
+  },
+  {
+   "id": "rf-further-by-2029-30",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_further_by_2029_30"]},
+   "severity": "construction",
+   "status": "constructed",
+   "text": "RF's 'further 150,000' is its 2029-30 figure (480,000) less its 2025-26 one (330,000). PolicyEngine's value is the same difference of its own two runs: the 2029-30 removal against the with-limit world, less the 2025-26 removal against current law in 2025-26 (which still applies the limit).",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf page 1 ('reduce the number of children growing up in poverty by 330,000 today and save a further 150,000 children from that fate by 2029-30'), page 3 (480,000); adapter.py QC 3"
+  },
+  {
+   "id": "rf-cost",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_cost_2029_30"]},
+   "severity": "definitional",
+   "status": "comparable",
+   "text": "Both are the Exchequer cost in 2029-30 with take-up unchanged by the reform: RF's cited method holds Universal Credit take-up at 80% 'between years (or scenarios)', and PolicyEngine's claims are dataset inputs that do not respond (would_claim_uc has no formula). PolicyEngine's value is the change in spending less the change in tax.",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf page 3 ('at a cost of £3.5 billion'); Living-Standards-Outlook-2024.pdf page 36 (take-up); policyengine_uk 2.132.6 variables/gov/dwp/universal_credit/would_claim_uc.py"
+  },
+  {
+   "id": "rf-today",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_today"]},
+   "severity": "period",
+   "text": "RF's 'today' is 2025-26. PolicyEngine removes the limit for 2025-26 (the removed_2025 world, the count set to the repo's no-limit sentinel for 2025) and compares it with current law, which applies the limit until 6 April 2026.",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf page 1 and page 9 (footnote 5: 2025-26 is the year the Strategy is published); policyengine_uk 2.132.6 parameters/gov/dwp/universal_credit/elements/child/limit/child_count.yaml (2 from 2017-04-06, .inf from 2026-04-06)"
+  },
+  {
+   "id": "rf-three-child-limit",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["three_child_limit"]},
+   "severity": "construction",
+   "text": "A three-child limit scored as RF scores it, 'compared to our projection for that year based on current policy', which keeps the two-child limit: the Universal Credit child count set to 3 against the with-limit world (2). The September 2026 result on this claim compared a three-child limit with current law, where the limit is already removed, so it measured the opposite change (a three-child limit replacing no limit).",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf page 9 (endnote 8); results/uk/ab2025/ab2025_option__three_child_limit_2029.json (construction forward_delta_on_certified_world, executed baseline current law)"
+  },
+  {
+   "id": "rf-counterfactual",
+   "applies_to": {"sources": ["resolution_foundation"]},
+   "severity": "caution",
+   "text": "Different counterfactual vintages: RF's is its 30 October 2025 current-policy projection (OBR March 2025 earnings, Bank of England August 2025 CPI, modelled changes applied to the outturn year); PolicyEngine's is the certified pair's world (Microcosm UK 2024-25, policyengine-uk 2.132.6 uprating) with the limit reinstated.",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf page 8 (footnote 4), Living-Standards-Outlook-2024.pdf page 37 ('Projecting changes rather than levels'); data/uk/certified_pairs.json (pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71)"
+  },
+  {
+   "id": "rf-scotland",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_2029_30", "scrap_cost_2029_30", "scrap_today", "scrap_further_by_2029_30", "three_child_limit"]},
+   "severity": "definitional",
+   "text": "Neither side includes the Scottish Government's proposed mitigation of the limit: RF excludes it, and policyengine-uk 2.132.6's Two Child Limit Payment is off in every year (the regulations were not laid).",
+   "basis": "raw/pages_layout.txt No-half-measures_v2.pdf pages 2-8 (figure notes: 'Does not include the Scottish Government's intention to mitigate the two-child limit from April 2026'); policyengine_uk 2.132.6 parameters/gov/social_security_scotland/two_child_limit_payment/in_effect.yaml (false from 0001-01-01)"
+  },
+  {
+   "id": "rf-children",
+   "applies_to": {"sources": ["resolution_foundation"], "items": ["scrap_2029_30", "scrap_today", "scrap_further_by_2029_30", "three_child_limit"]},
+   "severity": "definitional",
+   "text": "Children are HBAI dependent children on both sides: RF's cited method reweights 'the numbers of dependent children of each age', and PolicyEngine counts is_hbai_dependent_child.",
+   "basis": "raw/pages_layout.txt Living-Standards-Outlook-2024.pdf page 34; policyengine_uk 2.132.6 variables/household/demographic/hbai/is_hbai_dependent_child.py"
+  },
+  {
+   "id": "rf-fy-mapping",
+   "applies_to": {"sources": ["resolution_foundation"]},
+   "severity": "period",
+   "text": "RF's financial year 2029-30 is claim period 2030 and PolicyEngine engine period 2029 (policyengine-uk 2.132.6 reads every parameter at 30 April of that year).",
+   "basis": "policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters"
+  }
+ ]
+}
