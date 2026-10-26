@@ -115,9 +115,12 @@ run is static, what is known about its hours draw, and the `pe_gap`
 diagnosis, if one still applies. Ingest refuses an artifact on a pair with
 no such entry. It attaches each note only to results on the pairs it names,
 and it refuses an artifact whose package, release-bundle or dataset identity
-differs from its variant record. It keeps every certified artifact's run:
-the newest becomes the latest, and earlier pairs' runs and the published
-figure stay in the history.
+differs from its variant record. It keeps every certified artifact's run.
+Each claim's latest result is the newest run that computed the claim's
+year; older runs and the published figure stay in the history. Run ids may
+not start with `platform-grid-`, which the comparisons view prefers within
+a data bundle. Each `computed_at` must be a distinct UTC time, written as
+`datetime.isoformat()` writes it, so that text order is time order.
 
 ## Never a calibration target
 

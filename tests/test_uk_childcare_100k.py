@@ -15,10 +15,12 @@ import json
 import shutil
 import sqlite3
 import subprocess
-from collections import Counter
+from collections import Counter, defaultdict
 from itertools import product
 from pathlib import Path
+from types import SimpleNamespace
 
+import numpy as np
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -374,8 +376,34 @@ def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
                 assert all(0 <= x <= 1 for x in block["take_up"].values())
 
 
+class Unvouched(AssertionError):
+    """The metadata contract cannot vouch for a name the source calculates."""
+
+
 _COMPS = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
 _SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef, *_COMPS)
+# Forms that bind a name out of a scope scan's sight (an assignment
+# expression in a comprehension or a default binds the enclosing function;
+# global and nonlocal reach other scopes; match patterns bind bare strings),
+# or reach calculate other than by a direct call. The compute script uses
+# none, so the scan refuses each wherever it appears.
+_HIDDEN = (ast.NamedExpr, ast.Global, ast.Nonlocal, ast.Match)
+_DYNAMIC = frozenset(
+    {
+        "eval",
+        "exec",
+        "compile",
+        "globals",
+        "locals",
+        "vars",
+        "__import__",
+        "setattr",
+        "delattr",
+        "attrgetter",
+        "methodcaller",
+        "__builtins__",
+    }
+)
 
 
 def _binds(node, name: str) -> bool:
@@ -386,9 +414,7 @@ def _binds(node, name: str) -> bool:
         return node.arg == name
     if isinstance(node, ast.alias):
         return (node.asname or node.name).split(".")[0] == name
-    if isinstance(node, ast.Global | ast.Nonlocal):
-        return name in node.names
-    if isinstance(node, ast.ExceptHandler | ast.MatchAs | ast.MatchStar):
+    if isinstance(node, ast.ExceptHandler):
         return node.name == name
     if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
         return node.name == name
@@ -412,18 +438,56 @@ def _stores(scope, name: str) -> list:
     return out
 
 
+def _refuse_hidden(tree, parents) -> None:
+    """Raise on any form in _HIDDEN or _DYNAMIC, on 'calculate' named as a
+    string or reached other than by a direct call, on getattr without a
+    literal attribute name, and on an attribute write that rebinds a module
+    constant of another object (sys.modules[__name__].X = ...)."""
+    constants = {
+        t.id
+        for node in tree.body
+        if isinstance(node, ast.Assign | ast.AnnAssign)
+        for t in (node.targets if isinstance(node, ast.Assign) else [node.target])
+        if isinstance(t, ast.Name)
+    }
+    for node in ast.walk(tree):
+        line = getattr(node, "lineno", "?")
+        parent = parents.get(node)
+        called = isinstance(parent, ast.Call) and parent.func is node
+        if isinstance(node, _HIDDEN):
+            raise Unvouched(f"line {line}: {type(node).__name__} binds out of sight")
+        if isinstance(node, ast.Name) and node.id in _DYNAMIC:
+            raise Unvouched(f"line {line}: {node.id} can bind or call by name")
+        if isinstance(node, ast.Constant) and node.value == "calculate":
+            raise Unvouched(f"line {line}: 'calculate' named by a string")
+        if isinstance(node, ast.Name) and node.id == "getattr":
+            attr = parent.args[1] if called and len(parent.args) > 1 else None
+            if not (isinstance(attr, ast.Constant) and isinstance(attr.value, str)):
+                raise Unvouched(f"line {line}: getattr without a literal name")
+        if isinstance(node, ast.Attribute):
+            if node.attr == "calculate" and not called:
+                raise Unvouched(f"line {line}: calculate used but not called")
+            if node.attr == "__dict__":
+                raise Unvouched(f"line {line}: a namespace read as a dict")
+            if isinstance(node.ctx, ast.Store | ast.Del) and node.attr in constants:
+                raise Unvouched(f"line {line}: an attribute write rebinds {node.attr}")
+
+
 def _calculated(path: Path, compute) -> set[str]:
     """Every name the source passes to sim.calculate, read as Python scopes
     read it. A name must be a literal, or bound exactly once on the way out
     from the call: by the plain target of a loop or comprehension around the
     call, over a tuple display or a module tuple; or nowhere, a module
     string constant. Any other binding (an assignment, a second loop, a
-    rebinding generator, an argument, a tuple target) fails, so an unread
-    name cannot pass unnoticed."""
+    rebinding generator, an argument, a tuple target) raises, and so does
+    any form _refuse_hidden lists, so a name cannot change unnoticed by a
+    route this scan reads past. A recording simulation backs it up
+    (_observed)."""
     tree = ast.parse(path.read_text())
     parents = {
         child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
     }
+    _refuse_hidden(tree, parents)
 
     def scopes(node):
         while node in parents:
@@ -434,14 +498,12 @@ def _calculated(path: Path, compute) -> set[str]:
     def module_value(name: ast.Name):
         for scope in scopes(name):
             if _stores(scope, name.id):
-                raise AssertionError(
-                    f"{name.id!r} is rebound before line {name.lineno}"
-                )
+                raise Unvouched(f"{name.id!r} is rebound before line {name.lineno}")
         found = _stores(tree, name.id)
         if len(found) != 1 or not isinstance(
             parents[found[0]], ast.Assign | ast.AnnAssign
         ):
-            raise AssertionError(
+            raise Unvouched(
                 f"{name.id!r} is not one plain module assignment ({len(found)} bindings)"
             )
         return getattr(compute, name.id)
@@ -451,7 +513,8 @@ def _calculated(path: Path, compute) -> set[str]:
             return [expr.value]
         if isinstance(expr, ast.Name):
             value = module_value(expr)
-            assert isinstance(value, tuple), expr.id
+            if not isinstance(value, tuple):
+                raise Unvouched(f"{expr.id!r} is not a module tuple")
             return list(value)
         if isinstance(expr, ast.Tuple | ast.List):
             out = []
@@ -460,12 +523,13 @@ def _calculated(path: Path, compute) -> set[str]:
                     out += values(e.value)
                 elif isinstance(e, ast.Name):
                     value = module_value(e)
-                    assert isinstance(value, str), e.id
+                    if not isinstance(value, str):
+                        raise Unvouched(f"{e.id!r} is not a module string")
                     out.append(value)
                 else:
                     out += values(e)
             return out
-        raise AssertionError(f"unresolved loop iterable {ast.dump(expr)}")
+        raise Unvouched(f"unresolved loop iterable {ast.dump(expr)}")
 
     def inside(node, block) -> bool:
         while node in parents:
@@ -480,7 +544,7 @@ def _calculated(path: Path, compute) -> set[str]:
             if not found:
                 continue
             if len(found) > 1:
-                raise AssertionError(
+                raise Unvouched(
                     f"{name.id!r} is bound {len(found)} times around line {name.lineno}"
                 )
             target = parents[found[0]]
@@ -496,12 +560,13 @@ def _calculated(path: Path, compute) -> set[str]:
             )
             if comprehension or loop:
                 return values(target.iter)
-            raise AssertionError(
+            raise Unvouched(
                 f"{name.id!r} at line {name.lineno} is bound by "
                 f"{type(target).__name__}, not a loop over known names"
             )
         value = module_value(name)
-        assert isinstance(value, str), name.id
+        if not isinstance(value, str):
+            raise Unvouched(f"{name.id!r} is not a module string")
         return [value]
 
     calculated = set()
@@ -512,22 +577,100 @@ def _calculated(path: Path, compute) -> set[str]:
             and node.func.attr == "calculate"
         ):
             continue
+        if node.keywords or not node.args or isinstance(node.args[0], ast.Starred):
+            raise Unvouched(f"line {node.lineno}: calculate not called (name, period)")
         arg = node.args[0]
         if isinstance(arg, ast.Constant):
             calculated.add(arg.value)
         elif isinstance(arg, ast.Name):
             calculated |= set(resolve(arg))
         else:
-            raise TypeError(f"unresolved calculate argument {ast.dump(arg)}")
+            raise Unvouched(f"unresolved calculate argument {ast.dump(arg)}")
     return calculated
 
 
-def test_every_variable_the_run_calculates_has_its_metadata_recorded():
-    """The pe_meta contract, read off the source: each sim.calculate name
-    is in METADATA, with each loop variable read in its own scope."""
+def _calling_functions(path: Path) -> set[str]:
+    """The module functions with a sim.calculate call in them."""
+    return {
+        f.name
+        for f in ast.parse(path.read_text()).body
+        if isinstance(f, ast.FunctionDef)
+        for node in ast.walk(f)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "calculate"
+    }
+
+
+class _RecordingSim:
+    """Stands in for a simulation in the compute functions that calculate,
+    with no engine and no data: it answers each call they make and records
+    every name passed to calculate. Values are 30 (the full-use read-back
+    set_full_use checks) and every household is in England."""
+
+    def __init__(self):
+        self.calculated = []
+        entity = SimpleNamespace(entity=SimpleNamespace(key="person"))
+        self.tax_benefit_system = SimpleNamespace(variables=defaultdict(lambda: entity))
+        self.dataset = SimpleNamespace(years=[2027])
+        self.populations = {"benunit": SimpleNamespace(count=2)}
+
+    def calculate(self, variable, period):
+        self.calculated.append(variable)
+        values = ["ENGLAND"] * 2 if variable == "country" else [30.0] * 2
+        return SimpleNamespace(
+            values=np.array(values), weights=np.ones(2), sum=lambda: 60.0
+        )
+
+    def map_result(self, values, *_, **__):
+        return values
+
+    def get_holder(self, _):
+        return SimpleNamespace(get_known_periods=list)
+
+    def set_input(self, *_):
+        pass
+
+
+# every function in the compute script that calculates, all of which
+# _observed reaches (set_full_use; year_block calls the masks and sums)
+_RECORDED = {"set_full_use", "year_block", "england_masks", "england_sums"}
+
+
+def _observed(compute, monkeypatch) -> list:
+    """Every name the compute functions pass to calculate when run on a
+    recording simulation (limit_values reads parameters, not variables)."""
+    monkeypatch.setattr(compute, "limit_values", lambda sim, year: {})
+    sim = _RecordingSim()
+    compute.set_full_use(sim, [2027])
+    compute.year_block(sim, 2027)
+    return sim.calculated
+
+
+def _contract(path: Path, name: str, monkeypatch) -> set[str]:
+    """The pe_meta contract on one source file: the scan resolves every
+    calculate argument, a recording simulation of the functions that
+    calculate sees exactly those names, and METADATA lists them all."""
+    compute = _module(name, path)
+    scanned = _calculated(path, compute)
+    if _calling_functions(path) != _RECORDED:
+        raise Unvouched(f"calculate in {sorted(_calling_functions(path) - _RECORDED)}")
+    seen = set(_observed(compute, monkeypatch))
+    if seen != scanned:
+        raise Unvouched(f"the run and the scan differ on {sorted(seen ^ scanned)}")
+    if not scanned <= set(compute.METADATA):
+        raise Unvouched(f"no metadata for {sorted(scanned - set(compute.METADATA))}")
+    return scanned
+
+
+def test_every_variable_the_run_calculates_has_its_metadata_recorded(monkeypatch):
+    """The pe_meta contract, read off the source and observed on a
+    recording simulation: each sim.calculate name is in METADATA, with each
+    loop variable read in its own scope."""
     path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
     compute = _module("compute_uk_childcare_100k_src", path)
-    calculated = _calculated(path, compute)
+    calculated = _contract(path, "compute_uk_childcare_100k_contract", monkeypatch)
+    assert calculated == _calculated(path, compute)
     # both reused loop names resolve to their own tuples
     assert set(compute.SUMMED) | set(compute.TAKE_UP) <= calculated
     assert {
@@ -547,53 +690,110 @@ def test_the_metadata_scan_catches_a_summed_variable_left_out():
     assert not _calculated(path, compute) <= pruned
 
 
-_UNREAD = '"employment_income"'
-
-
-@pytest.mark.parametrize(
-    "anchor, mutant",
-    [
-        # the round-3 review's two mutants: a rebinding generator, and an
-        # assignment inside the loop
-        (
-            "for v in SUMMED}",
-            f"for v in SUMMED for v in ({_UNREAD},)}}",
-        ),
-        (
-            "    for v in HEADS:\n",
-            f"    for v in HEADS:\n        v = {_UNREAD}\n",
-        ),
-        # a module tuple shadowed in the function that reads it
-        (
-            '    """Weighted sums and counts for one world and year (microdf weights)."""\n',
-            (
-                '    """Weighted sums and counts for one world and year (microdf weights)."""\n'
-                f"    SUMMED = ({_UNREAD},)\n"
-            ),
-        ),
-        # a module constant bound twice
-        (
-            'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n',
-            (
-                'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n'
-                f"HOURS_USAGE = {_UNREAD}\n"
-            ),
-        ),
-        # a loop the scan cannot read
-        ("for v in SUMMED}", "for v, _ in zip(SUMMED, SUMMED)}"),
-    ],
-)
-def test_the_metadata_scan_refuses_a_rebound_name(tmp_path, anchor, mutant):
-    """Each mutant calculates a name the scan cannot vouch for; the scan
-    must fail rather than read the name's old binding."""
+def test_the_recording_simulation_sees_what_the_scan_cannot(monkeypatch):
+    """A rebinding no source form shows (here a module constant changed at
+    run time) reaches the recording simulation, which the contract then
+    refuses."""
     path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
-    compute = _module("compute_uk_childcare_100k_src_rebind", path)
+    compute = _module("compute_uk_childcare_100k_runtime", path)
+    scanned = _calculated(path, compute)
+    monkeypatch.setattr(compute, "HOURS_USAGE", "employment_income")
+    seen = set(_observed(compute, monkeypatch))
+    assert "employment_income" in seen
+    assert seen != scanned
+
+
+_UNREAD = '"employment_income"'
+_YEAR_DOC = (
+    '    """Weighted sums and counts for one world and year (microdf weights)."""\n'
+)
+_HEADS_LOOP = "    for v in HEADS:\n"
+# anchor -> mutant: each calculates a name the metadata does not list, by a
+# route the contract must refuse
+_MUTANTS = {
+    # the round-3 review's two: a rebinding generator, and an assignment
+    # inside the loop
+    "rebinding_generator": (
+        "for v in SUMMED}",
+        f"for v in SUMMED for v in ({_UNREAD},)}}",
+    ),
+    "assignment_in_loop": (_HEADS_LOOP, f"{_HEADS_LOOP}        v = {_UNREAD}\n"),
+    "shadowed_module_tuple": (_YEAR_DOC, f"{_YEAR_DOC}    SUMMED = ({_UNREAD},)\n"),
+    "module_constant_bound_twice": (
+        'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n',
+        (
+            'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n'
+            f"HOURS_USAGE = {_UNREAD}\n"
+        ),
+    ),
+    "tuple_target": ("for v in SUMMED}", "for v, _ in zip(SUMMED, SUMMED)}"),
+    # the round-4 review's eight survivors and its mapping capture
+    "getattr_call": (
+        _YEAR_DOC,
+        f'{_YEAR_DOC}    getattr(sim, "calculate")({_UNREAD}, year)\n',
+    ),
+    "alias_call": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    calculate = sim.calculate\n    calculate({_UNREAD}, year)\n",
+    ),
+    "walrus_in_comprehension": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    [(HOURS_USAGE := {_UNREAD}) for _ in (0,)]\n",
+    ),
+    "walrus_in_generator": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    tuple((HOURS_USAGE := {_UNREAD}) for _ in (0,))\n",
+    ),
+    "nested_nonlocal": (
+        _HEADS_LOOP,
+        (
+            f"{_HEADS_LOOP}        def rebind():\n            nonlocal v\n"
+            f"            v = {_UNREAD}\n        rebind()\n"
+        ),
+    ),
+    "nested_global": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    def rebind():\n        global HOURS_USAGE\n"
+            f"        HOURS_USAGE = {_UNREAD}\n    rebind()\n"
+        ),
+    ),
+    "default_walrus": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    def _unused(arg=(HOURS_USAGE := {_UNREAD})):\n        pass\n",
+    ),
+    "default_getattr": (
+        _YEAR_DOC,
+        (
+            f'{_YEAR_DOC}    def _unused(arg=getattr(sim, "calculate")({_UNREAD}, year)):\n'
+            "        pass\n"
+        ),
+    ),
+    "match_mapping_rest": (
+        _HEADS_LOOP,
+        f"{_HEADS_LOOP}        match {{}}:\n            case {{**v}}:\n                pass\n",
+    ),
+    # and a module constant rebound through the module object
+    "module_attribute_write": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    sys.modules[__name__].HOURS_USAGE = {_UNREAD}\n",
+    ),
+}
+
+
+@pytest.mark.parametrize("anchor, mutant", _MUTANTS.values(), ids=list(_MUTANTS))
+def test_the_metadata_contract_refuses_a_hidden_name(
+    tmp_path, monkeypatch, anchor, mutant
+):
+    """Each mutant calculates a name the metadata does not list; the
+    contract must refuse it rather than read the name's old binding."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
     source = path.read_text()
     assert source.count(anchor) == 1, anchor
     mutated = tmp_path / "compute_uk_childcare_100k.py"
     mutated.write_text(source.replace(anchor, mutant))
-    with pytest.raises((AssertionError, TypeError)):
-        _calculated(mutated, compute)
+    with pytest.raises(Unvouched):
+        _contract(mutated, f"compute_mutant_{tmp_path.name}", monkeypatch)
 
 
 def test_default_run_ids_differ_across_variants_and_runs():
@@ -749,21 +949,80 @@ def test_artifacts_must_have_distinct_runs_and_certified_variants(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "when, match",
+    "run_id, when, match",
     [
-        ("2026-10-25T00:00:00+00:00", "share a computed_at"),
-        ("2026-10-25T01:00:00+01:00", "not a UTC time"),
+        ("a", "2026-10-25T00:00:00+00:00", "share a computed_at"),
+        ("a", "2026-10-25T01:00:00+01:00", "not a UTC time"),
+        # the same instant as b, and a time before it that sorts after it,
+        # each in a UTC spelling isoformat() does not write
+        ("a", "2026-10-25T00:00:00.000000+00:00", "not a UTC time"),
+        ("a", "2026-10-24T23:59:59Z", "not a UTC time"),
+        ("platform-grid-a", "2026-10-24T00:00:00+00:00", "reserved prefix"),
     ],
 )
-def test_each_claims_newest_run_is_unambiguous(tmp_path, when, match):
-    """Each claim's latest is its newest covering run, ordered by the UTC
-    computed_at strings, so two runs at one time or a non-UTC time are
-    refused."""
-    a = _synthetic(_record(_other_certified()), run_id="a", computed_at=when)
+def test_each_claims_newest_run_is_unambiguous(tmp_path, run_id, when, match):
+    """Each claim's latest is its newest covering run, here and in the
+    database, which orders computed_at as text and prefers platform-grid
+    runs within a bundle; so two runs at one time, a time not in isoformat's
+    UTC form and a platform-grid run id are refused."""
+    a = _synthetic(_record(_other_certified()), run_id=run_id, computed_at=when)
     b = _synthetic(_record(), run_id="b")
     _write(tmp_path, a, b)
     with pytest.raises(ValueError, match=match):
         lane.load_artifacts(tmp_path)
+
+
+@settings(deadline=None)
+@given(
+    st.datetimes(timezones=st.just(dt.timezone.utc)),
+    st.datetimes(timezones=st.just(dt.timezone.utc)),
+)
+def test_canonical_utc_strings_sort_as_the_times_do(a, b):
+    """The premise of ordering runs by their computed_at strings: in the
+    form _utc accepts, string order is time order and equal strings are
+    equal times."""
+    sa, sb = a.isoformat(), b.isoformat()
+    lane._utc(sa, "a")
+    lane._utc(sb, "b")
+    assert (sa < sb) == (a < b)
+    assert (sa == sb) == (a == b)
+
+
+def test_every_stage_checks_the_run_history(artifact):
+    """Called directly, results, diagnoses and expected refuse the histories
+    load_artifacts refuses, so no path reads a tie or a duplicate run id."""
+    scores, _, artifacts = lane.stage()
+    path = artifacts[-1][1]
+    twin = copy.deepcopy(artifact)
+    twin["run_id"] = "twin"
+    same_run = copy.deepcopy(artifact)
+    same_run["computed_at"] = "2026-10-25T23:00:00+00:00"
+    spelled = copy.deepcopy(artifact)
+    spelled["computed_at"] = artifact["computed_at"].replace("+00:00", "Z")
+    reserved = copy.deepcopy(artifact)
+    reserved["run_id"] = "platform-grid-childcare"
+    for history, match in (
+        ([(artifact, path), (twin, path)], "share a computed_at"),
+        ([(artifact, path), (same_run, path)], "share a run_id"),
+        ([(spelled, path)], "not a UTC time"),
+        ([(reserved, path)], "reserved prefix"),
+    ):
+        for stage in (lane.results, lane.diagnoses, lane.expected):
+            with pytest.raises(ValueError, match=match):
+                stage(scores, history)
+        if len(history) == 1:
+            with pytest.raises(ValueError, match=match):
+                lane.certified_result(scores[0], lane.load_notes(), *history[0])
+
+
+def test_the_compute_script_refuses_a_reserved_run_id():
+    compute = _module(
+        "compute_uk_childcare_100k_reserved",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    assert compute.RESERVED_RUN_PREFIX == lane.RESERVED_RUN_PREFIX
+    with pytest.raises(SystemExit, match="may not start with"):
+        compute.main(["--run-id", "platform-grid-childcare"])
 
 
 def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
@@ -964,6 +1223,171 @@ def test_a_newer_run_that_skips_a_year_leaves_that_years_diagnosis(artifact, tmp
     assert got == lane.expected(scores, arts, notes)
     assert got["results_by_kind"] == {"certified": 24, "published_dashboard": 4}
     assert got["diagnoses"] == 2
+
+
+_BASE_FULL = "baseline__full_use_hours"
+_REFORM_FULL = "free_hours__full_use_hours"
+# what the record must show before any text claims full use, each broken
+_NOT_FULL_USE = {
+    "value": lambda d: d[_REFORM_FULL]["input_override"].update(value=17.0),
+    "variable": lambda d: d[_BASE_FULL]["input_override"].update(
+        variable="childcare_expenses"
+    ),
+    "year not set": lambda d: d[_REFORM_FULL]["input_override"].update(
+        set_for_years=[2029]
+    ),
+    "set after a dependent": lambda d: d[_BASE_FULL]["input_override"][
+        "dependents_calculated_before_override"
+    ].update(extended_childcare_entitlement=["2027"]),
+    "read back": lambda d: d[_REFORM_FULL]["input_override"][
+        "post_set_weighted_mean"
+    ].update({"2027": 17.0}),
+    "mean": lambda d: d[_BASE_FULL]["years"]["2027"]["hours_usage"].update(
+        mean_benunits_receiving_extended=17.0
+    ),
+    "no override": lambda d: d[_REFORM_FULL].pop("input_override"),
+    "one world": lambda d: d[_BASE_FULL]["years"].pop("2027"),
+    "other reform": lambda d: d[_REFORM_FULL].update(reform_dict={}),
+    "reform not in force": lambda d: d[_REFORM_FULL].update(
+        reform_dict={
+            k: {"2028-01-01.2035-12-31": v}
+            for k, periods in d[_REFORM_FULL]["reform_dict"].items()
+            for v in periods.values()
+        }
+    ),
+}
+
+
+def test_the_full_use_cost_rests_on_the_recorded_override(artifact):
+    """The committed run's record shows full use in both diagnostic years;
+    the cost is the reform world's free hours minus the baseline's."""
+    for year in (2027, 2029):
+        d = artifact["diagnostics"]
+        want = sum(
+            d[_REFORM_FULL]["years"][str(year)]["sums_gbp"][v]
+            - d[_BASE_FULL]["years"][str(year)]["sums_gbp"][v]
+            for v in lane.FREE_HOURS
+        )
+        assert lane.full_use_cost(artifact, year) == want > 0
+    assert lane.full_use_cost(artifact, 2026) is None
+
+
+@pytest.mark.parametrize("what", sorted(_NOT_FULL_USE))
+def test_no_text_claims_full_use_the_record_does_not_show(artifact, what):
+    """A note or diagnosis says every family is at the full 30 hours only
+    when both full-use worlds record the override, set before any dependent
+    and read back at 30, on the main world's reform in force that year."""
+    bad = copy.deepcopy(artifact)
+    _NOT_FULL_USE[what](bad["diagnostics"])
+    with pytest.raises(ValueError, match="full use|beside the other"):
+        lane.full_use_cost(bad, 2027)
+    with pytest.raises(ValueError, match="full use|beside the other"):
+        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", {})
+    scores, _, artifacts = lane.stage()
+    with pytest.raises(ValueError, match="full use|beside the other"):
+        lane.diagnoses(scores, [(bad, artifacts[-1][1])])
+
+
+def _ingest_isolated(tmp_path, monkeypatch, notes, staged) -> sqlite3.Connection:
+    """The lane's real ingest into an empty database, with this history and
+    these notes, and its lane feed written beside it, not into data/."""
+    from scorecard_db import ingest_harvest
+
+    scores, drops, artifacts = staged
+    monkeypatch.setattr(lane, "stage", lambda n=None: (scores, drops, artifacts))
+    monkeypatch.setattr(lane, "load_notes", lambda: notes)
+    feed = tmp_path / "lanes.json"
+    shutil.copy(REPO / "data" / "lanes.json", feed)
+    sync = ingest_harvest.sync_lane_feed
+    monkeypatch.setattr(
+        ingest_harvest,
+        "sync_lane_feed",
+        lambda db, path, updated, **kw: sync(db, feed, updated, **kw),
+    )
+    db = tmp_path / "lane.db"
+    lane.ingest(db)
+    conn = sqlite3.connect(db)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def test_the_database_shows_each_claims_newest_covering_run(
+    artifact, tmp_path, monkeypatch
+):
+    """Differential: on a history of three runs, two of them on pairs that
+    share a data bundle and the newest computing only 2027, the comparisons
+    view's latest result for each claim is the run _covering picks, and
+    the diagnosis on it is that run's pair's."""
+    default = VARIANTS["default_variant"]
+    shared = Counter(
+        v["identity"]["dataset"]["revision"]
+        for v in VARIANTS["variants"]
+        if v["status"] == "certified" and v["variant_id"] != default
+    )
+    bundle = next(b for b, n in shared.items() if n >= 2)
+    v1, v2 = [
+        v
+        for v in VARIANTS["variants"]
+        if v["status"] == "certified"
+        and v["variant_id"] != default
+        and v["identity"]["dataset"]["revision"] == bundle
+    ][:2]
+    notes = _verified_for(v1["variant_id"])
+    for kind in (lane.CENTAX, lane.CBP, "construction"):
+        for a in notes[kind]:
+            if "variants" in a:
+                a["variants"].append(v2["variant_id"])
+    notes["pairs"][v1["variant_id"]]["diagnosis"] = "FIRST SHARED-BUNDLE PAIR"
+    notes["pairs"][v2["variant_id"]] = {
+        **notes["pairs"][v1["variant_id"]],
+        "diagnosis": "SECOND SHARED-BUNDLE PAIR",
+    }
+    older = _on_pair(artifact, v1, run_id="shared-older")
+    newer = _on_pair(artifact, v2, run_id="shared-newer")
+    newer["computed_at"] = "2026-10-27T00:00:00+00:00"
+    for world in newer["worlds"].values():
+        world["years"] = {"2027": world["years"]["2027"]}
+    (tmp_path / "in").mkdir()
+    _write(tmp_path / "in", artifact, older, newer)
+    scores, drops, arts = lane.stage(notes, results_dir=tmp_path / "in")
+    arts = _in_repo(arts)
+    conn = _ingest_isolated(tmp_path, monkeypatch, notes, (scores, drops, arts))
+    shown = {
+        row["claim_id"]: row
+        for row in conn.execute(
+            "SELECT c.claim_id, r.run_id, c.diagnosis_rationale FROM comparisons c "
+            "JOIN pe_results r ON r.claim_id = c.claim_id "
+            "AND r.computed_at = c.computed_at"
+        )
+    }
+    picked = Counter()
+    for s in scores:
+        run = lane._covering(s, arts)
+        attached = not (
+            s.source == lane.CENTAX
+            and s.conditions["component"] not in lane.CENTAX_ATTACHED
+        )
+        if run is None or not attached:
+            assert s.claim_id() not in shown or shown[s.claim_id()]["run_id"] not in {
+                a["run_id"] for a, _ in arts
+            }
+            continue
+        row = shown[s.claim_id()]
+        assert row["run_id"] == run["run_id"], s.claim_id()
+        picked[run["run_id"]] += 1
+        pair = notes["pairs"][run["variant_id"]]
+        if lane._diagnosed(s, run, pair):
+            assert pair["diagnosis"] in row["diagnosis_rationale"]
+        else:
+            assert row["diagnosis_rationale"] is None
+    # the newest run is latest only in the year it computed
+    assert set(picked) == {"shared-older", "shared-newer"}
+    diagnosed = [
+        r["diagnosis_rationale"] for r in shown.values() if r["diagnosis_rationale"]
+    ]
+    assert len(diagnosed) == 2
+    for marker in ("FIRST SHARED-BUNDLE PAIR", "SECOND SHARED-BUNDLE PAIR"):
+        assert sum(marker in t for t in diagnosed) == 1
 
 
 def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):

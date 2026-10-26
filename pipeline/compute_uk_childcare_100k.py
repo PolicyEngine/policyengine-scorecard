@@ -86,6 +86,9 @@ REFORMS = {
 }
 HOURS_USAGE = "maximum_extended_childcare_hours_usage"
 FULL_USE_HOURS = 30.0
+# Within a data bundle the scorecard's comparisons view prefers these runs
+# (scorecard_db/db.py), and ingest refuses an artifact that takes it.
+RESERVED_RUN_PREFIX = "platform-grid-"
 # Benefit-unit take-up inputs (each offer's eligibility is defined_for one;
 # the engine's default is True).
 TAKE_UP = (
@@ -406,6 +409,8 @@ def main(argv: list[str] | None = None) -> int:
 
     variant = variants.get_variant(args.variant)
     run_id = args.run_id or default_run_id(variant["variant_id"], started)
+    if run_id.startswith(RESERVED_RUN_PREFIX):
+        raise SystemExit(f"--run-id may not start with {RESERVED_RUN_PREFIX!r}")
     missing = sorted(
         (set(args.years) | set(args.diagnostic_years)) - set(variant["data_years"])
     )

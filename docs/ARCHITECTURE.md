@@ -240,7 +240,8 @@ Operating rules for the agent stage:
   come from `pipeline/compute_uk_childcare_100k.py` on the certified
   populace-uk pair: static, the three free-hours entitlements (plus
   Tax-Free Childcare for CBP) summed for people in English households.
-  Each certified variant's artifact keeps its run in the history. Ingest
+  Each certified variant's artifact keeps its run in the history, and a
+  claim's latest result is the newest run that computed its year. Ingest
   takes an artifact only for a pair with a `verified_pairs` entry, and an
   engine or run note attaches only to the pairs its `variants` names.
   Static against static is `comparable`; net costs are `concept_mismatch`.

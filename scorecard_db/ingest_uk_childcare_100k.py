@@ -129,6 +129,17 @@ FREE_HOURS = (
 TFC = "tax_free_childcare"
 VARIABLES = {CENTAX: list(FREE_HOURS), CBP: [*FREE_HOURS, TFC]}
 HOURS_USAGE_INPUT = "maximum_extended_childcare_hours_usage"
+# the extended offer's weekly hours: the full-use diagnostic sets every
+# family's usage to them
+FULL_USE_HOURS = 30.0
+FULL_USE = {
+    "baseline": "baseline__full_use_hours",
+    "free_hours": "free_hours__full_use_hours",
+}
+# Within a data bundle the comparisons view prefers these runs (db.py: the
+# canonical Urban grid), so a run of this lane may not take the prefix: its
+# latest result must be its newest run.
+RESERVED_RUN_PREFIX = "platform-grid-"
 # the artifact's sums for people in English households
 ENGLAND = "sums_gbp_england"
 
@@ -451,15 +462,39 @@ def load_artifacts(
         raise FileNotFoundError(
             f"no artifact in {results_dir}; run pipeline/compute_uk_childcare_100k.py"
         )
-    if len({a["run_id"] for a, _ in out}) != len(out):
-        raise ValueError("two artifacts share a run_id")
-    for a, path in out:
-        when = dt.datetime.fromisoformat(a["computed_at"])
-        if when.utcoffset() != dt.timedelta(0):
-            raise ValueError(f"{path.name}: computed_at is not a UTC time")
-    if len({a["computed_at"] for a, _ in out}) != len(out):
-        raise ValueError("two artifacts share a computed_at")
+    check_history(out)
     return out
+
+
+def _utc(stamp: str, where: str) -> None:
+    """A UTC time in the one form datetime.isoformat() writes for it, so
+    string order is time order (the database orders computed_at as text,
+    and '+' sorts before the '.' of a fraction) and two strings differ only
+    when the times do."""
+    when = dt.datetime.fromisoformat(stamp)
+    if when.utcoffset() != dt.timedelta(0) or when.isoformat() != stamp:
+        raise ValueError(
+            f"{where}: {stamp!r} is not a UTC time as datetime.isoformat() writes it"
+        )
+
+
+def check_history(artifacts: list[tuple[dict, Path]]) -> None:
+    """The run history each stage reads: distinct run ids outside the
+    reserved prefix, and distinct canonical UTC computed_at times, so each
+    claim's newest run, here and in the database, is one run."""
+    if not artifacts:
+        raise ValueError("no certified artifact")
+    for art, path in artifacts:
+        if art["run_id"].startswith(RESERVED_RUN_PREFIX):
+            raise ValueError(
+                f"{path.name}: run_id {art['run_id']!r} takes the reserved prefix "
+                f"{RESERVED_RUN_PREFIX!r}"
+            )
+        _utc(art["computed_at"], f"{path.name} computed_at")
+    if len({a["run_id"] for a, _ in artifacts}) != len(artifacts):
+        raise ValueError("two artifacts share a run_id")
+    if len({a["computed_at"] for a, _ in artifacts}) != len(artifacts):
+        raise ValueError("two artifacts share a computed_at")
 
 
 def load_artifact() -> tuple[dict, Path]:
@@ -738,7 +773,7 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
                         "Hours-usage draw: the families receiving the extended hours "
                         "use a weighted mean of "
                         f"{b['hours_usage']['mean_benunits_receiving_extended']:.1f}"
-                        " of 30 weekly hours under current law "
+                        f" of {FULL_USE_HOURS:g} weekly hours under current law "
                         "(maximum_extended_childcare_hours_usage)."
                     ),
                     pair.get("hours_draw"),
@@ -769,22 +804,79 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
             t=w["limits_executed"]["gov.hmrc.tax_free_childcare.income.income_limit"],
         ),
     ]
-    diag = art["diagnostics"]
-    if (
-        str(year) in diag.get("baseline__full_use_hours", {}).get("years", {})
-        and source == CENTAX
-    ):
-        full = sum(
-            diag["free_hours__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
-            - diag["baseline__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
-            for v in FREE_HOURS
-        )
+    full = full_use_cost(art, year) if source == CENTAX else None
+    if full is not None:
         notes.append(
-            f"Diagnostic, not attached: with every family at the full 30 hours (the input set to 30 in "
-            f"both worlds before any calculation) the same reform costs £{full / 1e9:.3f}bn in {fy} "
-            "on this pair."
+            f"Diagnostic, not attached: with every family at the full {FULL_USE_HOURS:g} hours (the "
+            f"input set to {FULL_USE_HOURS:g} in both worlds before any calculation) the same reform "
+            f"costs £{full / 1e9:.3f}bn in {fy} on this pair."
         )
     return notes
+
+
+def _full(x) -> bool:
+    return x is not None and abs(x - FULL_USE_HOURS) < 1e-6
+
+
+def _covers(period: str, year: int) -> bool:
+    start, end = period.split(".")
+    return int(start[:4]) <= year <= int(end[:4])
+
+
+def full_use_cost(art: dict, year: int) -> float | None:
+    """The reform's free-hours cost with every family at the full 30 hours,
+    from the run's two full-use worlds, or None when it ran none for this
+    year. Each world must record the override the text states: the hours
+    input set to 30 in this year before any of its dependents was
+    calculated, read back at 30, on the main world's reform (the same
+    limits at the no-limit sentinel, in force this year). Anything else
+    raises, so no note or diagnosis claims full use without the evidence."""
+    diag, y = art["diagnostics"], str(year)
+    held = {w: y in diag.get(name, {}).get("years", {}) for w, name in FULL_USE.items()}
+    if not any(held.values()):
+        return None
+    for world, name in FULL_USE.items():
+        if not held[world]:
+            raise ValueError(
+                f"{art['run_id']} {year}: no {name} world beside the other"
+            )
+        d, main = diag[name], art["worlds"][world]["reform_dict"]
+        o = d.get("input_override") or {}
+        deps = o.get("dependents_calculated_before_override")
+        hours = d["years"][y]["hours_usage"]
+        reform = d["reform_dict"]
+        same_reform = (reform is None and main is None) or (
+            reform is not None
+            and main is not None
+            and sorted(reform) == sorted(main)
+            and all(
+                v == art["limit_sentinel"] and _covers(period, year)
+                for periods in reform.values()
+                for period, v in periods.items()
+            )
+        )
+        evidence = {
+            "variable": o.get("variable") == HOURS_USAGE_INPUT,
+            "value": o.get("value") == FULL_USE_HOURS,
+            "year set": year in o.get("set_for_years", []),
+            "set first": isinstance(deps, dict)
+            and bool(deps)
+            and not any(deps.values()),
+            "read back": _full(o.get("post_set_weighted_mean", {}).get(y)),
+            "mean, all": _full(hours.get("mean_all_benunits")),
+            "mean, receiving": _full(hours.get("mean_benunits_receiving_extended")),
+            "reform": same_reform,
+        }
+        if not all(evidence.values()):
+            wrong = sorted(k for k, ok in evidence.items() if not ok)
+            raise ValueError(
+                f"{art['run_id']} {name} {year}: the record does not show full use: {wrong}"
+            )
+    return sum(
+        diag[FULL_USE["free_hours"]]["years"][y]["sums_gbp"][v]
+        - diag[FULL_USE["baseline"]]["years"][y]["sums_gbp"][v]
+        for v in FREE_HOURS
+    )
 
 
 def _construction(art: dict, path: Path, source: str, year: int) -> str:
@@ -853,6 +945,7 @@ def published_result(
 def certified_result(
     s: ExternalScore, notes: dict, art: dict, path: Path
 ) -> PEResult | None:
+    check_history([(art, path)])
     pair = verified_pair(notes, art)
     year = s.period - 1
     if str(year) not in art["worlds"][WORLDS[s.source]]["years"]:
@@ -880,7 +973,12 @@ def certified_result(
 
 
 def _published() -> dict:
-    return json.loads((CENTAX_DIR / "pe" / "published_dashboard.json").read_text())
+    path = CENTAX_DIR / "pe" / "published_dashboard.json"
+    pub = json.loads(path.read_text())
+    _utc(pub["generated_at"], f"{path.name} generated_at")
+    if pub["run_id"].startswith(RESERVED_RUN_PREFIX):
+        raise ValueError(f"{path.name}: run_id takes the reserved prefix")
+    return pub
 
 
 def results(
@@ -892,6 +990,7 @@ def results(
     notes verified on its own pair, and the published dashboard figure on
     CenTax's central rows, older than all."""
     notes = notes or load_notes()
+    check_history(artifacts)
     for art, _ in artifacts:
         verified_pair(notes, art)
     pub = _published()
@@ -948,6 +1047,7 @@ def diagnoses(
     a pair that states none). A newer run that skips a claim's year leaves
     that claim's diagnosis with the run that computed it."""
     notes = notes or load_notes()
+    check_history(artifacts)
     pairs = {art["run_id"]: verified_pair(notes, art) for art, _ in artifacts}
     rows = []
     for s in scores:
@@ -961,23 +1061,19 @@ def diagnoses(
         hours = art["worlds"]["baseline"]["years"][str(year)]["hours_usage"][
             "mean_benunits_receiving_extended"
         ]
-        diag = art["diagnostics"]
-        if str(year) not in diag.get("free_hours__full_use_hours", {}).get("years", {}):
+        full = full_use_cost(art, year)
+        if full is None:
             raise ValueError(
                 f"{art['variant_id']}: the diagnosis needs the full-use diagnostic for "
                 f"{year}; rerun with it in --diagnostic-years"
             )
-        full = sum(
-            diag["free_hours__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
-            - diag["baseline__full_use_hours"]["years"][str(year)]["sums_gbp"][v]
-            for v in FREE_HOURS
-        )
         rationale = (
             f"PolicyEngine's static cost on the certified pair is £{-pe / 1e9:.3f}bn in {c['fy']}, "
             f"{abs(pe / s.value - 1) * 100:.0f}% {'below' if pe > s.value else 'above'} CenTax's "
             f"£{-s.value / 1e9:.2f}bn. Our side first: on this pair the families receiving the "
-            f"extended hours use a weighted mean of {hours:.1f} of 30 weekly hours (measured), and "
-            f"with every family at the full 30 hours the same reform costs £{full / 1e9:.3f}bn "
+            f"extended hours use a weighted mean of {hours:.1f} of {FULL_USE_HOURS:g} weekly hours "
+            f"(measured), and with every family at the full {FULL_USE_HOURS:g} hours the same "
+            f"reform costs £{full / 1e9:.3f}bn "
             f"(diagnostic run). {pair['diagnosis']}"
         )
         rows.append(
@@ -1003,6 +1099,7 @@ def expected(
     concept_mismatch; the published figure attaches to the central static
     (constructed) and net (concept_mismatch) rows in its years."""
     notes = notes or load_notes()
+    check_history(artifacts)
     pairs = {art["run_id"]: verified_pair(notes, art) for art, _ in artifacts}
     published_years = _published()["values_gbp_bn"]["thirty_hours"]
     kinds: Counter = Counter()
