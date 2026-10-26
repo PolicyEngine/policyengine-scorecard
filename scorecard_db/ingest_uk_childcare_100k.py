@@ -488,6 +488,8 @@ def run_records(variants_path: Path = VARIANTS, pairs_path: Path = PAIRS) -> dic
     without pair- or a variant id with it, and an identity its digest does
     not seal."""
     index = json.loads(variants_path.read_text())
+    if index.get("schema_version") != 1:
+        raise ValueError(f"{variants_path.name}: schema_version must be 1")
     document = json.loads(pairs_path.read_text())
     if (document.get("schema_version"), document.get("kind")) != (
         1,

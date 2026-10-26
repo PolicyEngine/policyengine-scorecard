@@ -184,10 +184,19 @@ def test_ingest_names_the_pipelines_files_kind_and_prefix():
     assert (lane.PAIRS_KIND, lane.PAIR_PREFIX) == (pairs.KIND, pairs.PREFIX)
 
 
-_JSON_LEAF = st.none() | st.integers() | st.text(max_size=8)
+# floats too, NaN and infinity included: the pipeline refuses those
+# (allow_nan=False), and a copy that allowed them must not pass
+_JSON_LEAF = st.none() | st.integers() | st.floats() | st.text(max_size=8)
 
 
-@settings(max_examples=80, deadline=None)
+def _digest_or_refusal(rule, identity):
+    try:
+        return rule(identity)
+    except ValueError:
+        return ValueError
+
+
+@settings(max_examples=120, deadline=None)
 @given(
     identity=st.recursive(
         st.dictionaries(st.text(max_size=6), _JSON_LEAF, max_size=4),
@@ -200,8 +209,11 @@ _JSON_LEAF = st.none() | st.integers() | st.text(max_size=8)
 def test_ingest_seals_an_identity_as_the_pipeline_does(identity):
     """Differential: scorecard_db's copy of the digest rule agrees with
     pipeline/uk_replay_variants.identity_sha256 on any identity of strings,
-    integers and nulls, and on every committed record."""
-    assert lane.identity_sha256(identity) == rv.identity_sha256(identity)
+    integers, floats and nulls (both refuse NaN and infinity), and on every
+    committed record."""
+    assert _digest_or_refusal(lane.identity_sha256, identity) == _digest_or_refusal(
+        rv.identity_sha256, identity
+    )
     for record in lane.run_records().values():
         assert lane.identity_sha256(record["identity"]) == rv.identity_sha256(
             record["identity"]
@@ -247,6 +259,10 @@ def _another_kind(v, p):
     p["kind"] = "uk_replay_variants"
 
 
+def _another_variants_version(v, p):
+    v["schema_version"] = 2
+
+
 @pytest.mark.parametrize(
     "change, message",
     [
@@ -257,6 +273,7 @@ def _another_kind(v, p):
         (_unsealed_pair, "does not seal"),
         (_unsealed_variant, "does not seal"),
         (_another_kind, "not a version 1"),
+        (_another_variants_version, "schema_version must be 1"),
     ],
 )
 def test_ingest_refuses_a_registry_the_pipeline_would_read_otherwise(
@@ -273,6 +290,8 @@ def test_ingest_refuses_a_registry_the_pipeline_would_read_otherwise(
     with pytest.raises(rv.VariantError):
         if change in (_repeat_pair, _another_kind):
             pairs.load_pairs(p_path)
+        elif change is _another_variants_version:
+            rv.load_document(v_path)
         elif change in (_variant_with_prefix, _unsealed_variant):
             rv.get_variant(
                 json.loads(v_path.read_text())["variants"][-1]["variant_id"],

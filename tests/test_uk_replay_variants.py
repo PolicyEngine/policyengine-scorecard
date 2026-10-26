@@ -316,6 +316,9 @@ def test_certification_is_isolated_from_a_local_data_manifest():
     assert environ["PATH"] == "/bin" and environ["HF_HUB_OFFLINE"] == "1"
 
 
+# deadline=None like its neighbours: under host load a first example once
+# took 319 ms against Hypothesis's 200 ms default (#229 round-2 review)
+@settings(deadline=None)
 @given(
     country=st.text(
         alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", min_size=1, max_size=6
