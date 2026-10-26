@@ -517,6 +517,40 @@ def test_the_releases_account_for_the_engine_step():
         assert bool(row["note"]) == moves, row["release"]
 
 
+# The staged AB2025 file before this lane took its 13 claims over (sha256 at
+# PolicyEngine/policyengine-scorecard 3a20920e).
+STAGED_BEFORE_SHA256 = (
+    "332d2c67b2abddfbfcad8dfe9a8276ec23049cf8e98c1688b4cff9369038a05d"
+)
+
+
+def test_the_history_rows_are_exactly_the_rows_the_stager_gave_up():
+    """Ownership moved 13 claims from the AB2025 stager to this lane. The
+    staged rows and this lane's history rows share none, every history row
+    is an owned claim's, and together, in the stager's own order
+    (pipeline/stage_uk_ab2025.py sorts by measure, then claim), they are the
+    staged file before the move byte for byte: nothing lost, added or
+    altered."""
+    staged = (
+        (REPO / "results" / "uk" / "staged_ab2025" / "ab2025_counterparts.jsonl")
+        .read_text()
+        .splitlines(keepends=True)
+    )
+    history = lane.HISTORY.read_text().splitlines(keepends=True)
+    assert len(history) == 13
+    assert not set(staged) & set(history)
+    owned = set(json.loads(lane.OWNED.read_text())["claims"])
+    for line in history:
+        assert json.loads(line)["external_claim_match"]["claim_id"] in owned
+
+    def order(line):
+        row = json.loads(line)
+        return (row["measure_key"], row["external_claim_match"]["claim_id"])
+
+    before = "".join(sorted(staged + history, key=order))
+    assert hashlib.sha256(before.encode()).hexdigest() == STAGED_BEFORE_SHA256
+
+
 # --- the built database -------------------------------------------------------
 
 

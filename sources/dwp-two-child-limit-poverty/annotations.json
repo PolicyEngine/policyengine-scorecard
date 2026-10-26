@@ -11,7 +11,7 @@
    "applies_to": {"sources": ["dwp"], "metrics": ["poverty_count_change", "poverty_rate_change"], "lines": ["relative"], "spread": ["within_rounding"]},
    "severity": "definitional",
    "status": "comparable",
-   "text": "Same concept: relative low income (below 60% of the median, HBAI equivalised household income) on the same housing basis, for the same HBAI group, static, removal against a world that keeps the limit. DWP does not say whether its policy scenario's line is that scenario's own median or the baseline's; PolicyEngine's value uses each world's own median (in_relative_poverty_*), and the measured note gives the value with the line held at the with-limit world's median. The two differ by no more than half DWP's rounding unit, so the unstated convention cannot change the comparison at DWP's precision.",
+   "text": "Same concept: relative low income (below 60% of the median, HBAI equivalised household income) on the same housing basis, for the same HBAI group, static, removal against a world that keeps the limit. DWP does not say whether its policy scenario's line is that scenario's own median or the baseline's; PolicyEngine's value uses each world's own median (in_relative_poverty_*), and the measured note gives the value with the line held at the with-limit world's median. The two differ by no more than half DWP's rounding unit, the lane's tolerance for a convention a source leaves unstated (two readings that close can still round to different published figures where they straddle a rounding boundary).",
    "basis": "raw/removing_the_two_child_limit.content.json details.body ('Methodology': four measures, HBAI definitions; 'compares new policies to a baseline scenario'); raw/hbai_qmi_fye2024.content.json ('Relative low income is the comparison to the median of the current year'); policyengine_uk 2.132.6 variables/household/income/in_relative_poverty_{ahc,bhc}.py (60% of the person-weighted median of the world being calculated); the measured spread in results/uk/two_child_limit_poverty/<pair_id>.json"
   },
   {
@@ -72,8 +72,8 @@
    "id": "dwp-fye-mapping",
    "applies_to": {"sources": ["dwp"]},
    "severity": "period",
-   "text": "FYE N is the financial year April N-1 to March N (FYE 2030 = 2029-30). PolicyEngine runs it as engine period N-1: policyengine-uk 2.132.6 reads every parameter at 30 April of that year.",
-   "basis": "raw/removing_the_two_child_limit.content.json details.body (column headers 'FYE 2027' ... 'FYE 2031'); policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters (value at f'{year}-04-30')"
+   "text": "FYE N is the financial year April N-1 to March N (FYE 2030 = 2029-30). PolicyEngine runs it as engine period N-1: by default policyengine-uk 2.132.6 reads each parameter at 30 April of that year (parameters flagged fiscal_year_blend are averaged over the year instead, and those flagged preserve_calendar_dates keep their statutory dates).",
+   "basis": "raw/removing_the_two_child_limit.content.json details.body (column headers 'FYE 2027' ... 'FYE 2031'); policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters (value at f'{year}-04-30' unless fiscal_year_blend or preserve_calendar_dates)"
   },
   {
    "id": "dwp-rounding",

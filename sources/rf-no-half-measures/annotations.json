@@ -77,7 +77,7 @@
    "id": "rf-fy-mapping",
    "applies_to": {"sources": ["resolution_foundation"]},
    "severity": "period",
-   "text": "RF's financial year 2029-30 is claim period 2030 and PolicyEngine engine period 2029 (policyengine-uk 2.132.6 reads every parameter at 30 April of that year).",
+   "text": "RF's financial year 2029-30 is claim period 2030 and PolicyEngine engine period 2029 (by default policyengine-uk 2.132.6 reads each parameter at 30 April of that year; parameters flagged fiscal_year_blend are averaged over the year, and those flagged preserve_calendar_dates keep their statutory dates).",
    "basis": "policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters"
   }
  ]
