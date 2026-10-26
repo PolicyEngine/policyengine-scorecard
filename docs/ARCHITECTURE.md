@@ -34,8 +34,8 @@ document is the contract that makes instance N cheap.
 
 ## The tidy row schema (adapter contract)
 
-Every adapter emits rows of exactly this shape; nothing downstream knows
-anything source-specific except the counterpart mapping:
+Every adapter emits rows with at least these fields; nothing downstream
+knows anything source-specific except the counterpart mapping:
 
 ```json
 {
@@ -56,7 +56,11 @@ anything source-specific except the counterpart mapping:
 Conventions: counts in raw units (adapter undoes source scaling), rates as
 fractions, `subgroup` slugs shared across sources where concepts genuinely
 match (age bands, race, disability), `variant` for source-side methodological
-forks (e.g. TANF with/without solely-state-funded programs).
+forks (e.g. TANF with/without solely-state-funded programs, a costing's
+behavioural scenario). An adapter may carry its source's own facets beside
+these fields (a table and column, a fiscal-year label, the value as printed);
+the lane's ingester must name every field it accepts and reject any other
+(`harvest.require_fields`).
 
 ## The PE side
 
@@ -226,6 +230,25 @@ Operating rules for the agent stage:
   other lanes, by claim_id, without editing them. Both CPI claims are
   `consumed_as_target`: PolicyEngine-UK takes ONS September rates and OBR
   determinants as inputs, so a match checks the input, not model skill.
+
+- **The £100,000 childcare limit (UK)** (`sources/centax-childcare-100k/`,
+  `sources/cbp-rates-and-wrongs/`, lane `uk-childcare-100k`): CenTax's
+  Table 4.2 (static cost, two behavioural margins and net cost; three
+  scenarios; 2027-28 and 2029-30) and the Centre for British Progress
+  appendix (net of behaviour, 2026-27 to 2031-32). PDF adapters read a
+  vendored page extract that a test re-extracts from the PDF. Counterparts
+  come from `pipeline/compute_uk_childcare_100k.py` on the certified
+  populace-uk pair: static, the three free-hours entitlements (plus
+  Tax-Free Childcare for CBP) summed for people in English households.
+  Each certified variant's artifact keeps its run in the history, and a
+  claim's latest result is the newest run that computed its year. Ingest
+  takes an artifact only for a pair with a `verified_pairs` entry, and an
+  engine or run note attaches only to the pairs its `variants` names.
+  Static against static is `comparable`; net costs are `concept_mismatch`.
+  PolicyEngine's published dashboard figure (on policyengine.org from 12 to
+  21 October 2026) stays as an older history row, so the published miss
+  stays on the page, and the central static rows carry a `pe_gap` diagnosis
+  linked to microcosm#1126 (the hours-usage draw).
 
 ### Staged for Chronicle, not claims
 
