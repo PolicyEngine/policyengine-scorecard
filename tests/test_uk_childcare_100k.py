@@ -83,6 +83,24 @@ def artifact():
     return lane.load_artifact()[0]
 
 
+def _pair(art: dict) -> dict:
+    """The verified_pairs entry of the artifact's pair."""
+    return lane.verified_pair(lane.load_notes(), art)
+
+
+# every committed certified-pair artifact, oldest first
+_ARTIFACTS = lane.load_artifacts()
+_ARTIFACT_IDS = [a["variant_id"] for a, _ in _ARTIFACTS]
+# the 19 June pair's run, which predates the artifact's record of each
+# child's own cap on funded hours
+JUNE = "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+
+
+@pytest.fixture
+def june():
+    return next(a for a, _ in _ARTIFACTS if a["variant_id"] == JUNE)
+
+
 # --- the vendored sources ---------------------------------------------------
 
 
@@ -366,17 +384,26 @@ def test_free_hours_moving_outside_england_is_refused(artifact):
     sums["extended_childcare_entitlement"] += 5e6
     sums["gov_spending"] += 5e6
     with pytest.raises(ValueError, match="outside England"):
-        lane.measured_notes(bad, lane.CENTAX, int(year), "fy", {})
+        lane.measured_notes(bad, lane.CENTAX, int(year), "fy", _pair(bad))
 
 
-def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
+@pytest.mark.parametrize("pair", _ARTIFACTS, ids=_ARTIFACT_IDS)
+def test_artifact_records_the_inputs_and_metadata_it_read(pair):
+    """Every committed run records the compute script's inputs, but a run
+    from before the child hours input was recorded lacks only that one, and
+    its pair's verified_pairs entry then states it from the dataset."""
+    artifact, _ = pair
     compute = _module(
         "compute_uk_childcare_100k", REPO / "pipeline" / "compute_uk_childcare_100k.py"
     )
     assert set(artifact["variable_metadata"]) == set(compute.METADATA)
     for group in ("worlds", "diagnostics"):
         for world in artifact[group].values():
-            assert set(world["dataset_inputs"]) == set(compute.DATASET_INPUTS)
+            recorded = set(world["dataset_inputs"])
+            if compute.CHILD_HOURS not in recorded:
+                assert _pair(artifact)["child_hours_input"]
+                recorded.add(compute.CHILD_HOURS)
+            assert recorded == set(compute.DATASET_INPUTS)
             for block in world["years"].values():
                 assert set(block["take_up"]) == set(compute.TAKE_UP)
                 assert all(0 <= x <= 1 for x in block["take_up"].values())
@@ -443,6 +470,7 @@ _VETTED_IMPORTS = frozenset(
         ("pipeline", "compute_uk_event", "event"),
         ("pipeline", "compute_uk_obr_costings", "fiscal"),
         ("pipeline", "modal_uk_event", None),
+        ("pipeline", "uk_certified_pairs", "pairs"),
         ("pipeline", "uk_replay_variants", "variants"),
     }
 )
@@ -505,7 +533,7 @@ _VETTED_ATTRIBUTES = frozenset(
         "get",
         "get_holder",
         "get_known_periods",
-        "get_variant",
+        "get_record",
         "getsourcefile",
         "insert",
         "is_legacy",
@@ -546,7 +574,6 @@ _VETTED_ATTRIBUTES = frozenset(
         "values",
         "variables",
         "variant",
-        "variant_preflight",
         "verify_import_origins",
         "verify_runtime_dataset_sha256",
         "weights",
@@ -1010,10 +1037,10 @@ def _observed(compute, monkeypatch) -> SimpleNamespace:
         return _StandIn(run, reform, years, source)
 
     monkeypatch.setattr(compute, "ROOT", out)
-    monkeypatch.setattr(compute.variants, "get_variant", _stub(variant))
+    monkeypatch.setattr(compute.pairs, "get_record", _stub(variant))
     monkeypatch.setattr(compute.variants, "is_legacy", _stub(False))
     monkeypatch.setattr(compute.variants, "verify_import_origins", _stub(None))
-    monkeypatch.setattr(compute.event, "variant_preflight", _stub(pre))
+    monkeypatch.setattr(compute.pairs, "preflight", _stub(pre))
     monkeypatch.setattr(compute.fiscal, "data_bundle_id", _stub("stand-in"))
     monkeypatch.setattr(compute.fiscal, "verify_runtime_dataset_sha256", _stub(sha))
     monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", _stub(None))
@@ -1805,6 +1832,8 @@ def _on_pair(art, variant, *, run_id, with_2031=False):
                 dataset_sha256_after=sha,
                 dataset_years=list(variant["data_years"]),
             )
+            # as a run since the record began: no dataset values for it
+            world["dataset_inputs"].setdefault(lane.CHILD_HOURS_INPUT, [])
             if with_2031 and group == "worlds":
                 world["years"]["2031"] = copy.deepcopy(world["years"]["2030"])
     return out
@@ -2045,6 +2074,10 @@ _NOT_FULL_USE = {
     ].update({_LIMIT_30H: 100_000}),
     "no executed limits": _both(lambda d: d["years"]["2027"].pop("limits_executed")),
     "no receiving mean with recipients": _receiving_none,
+    # each child's own cap must be at its default of 30 too
+    "child hours from the dataset": _both(
+        lambda d: d["dataset_inputs"].update({lane.CHILD_HOURS_INPUT: ["2027"]})
+    ),
 }
 
 
@@ -2058,8 +2091,8 @@ def test_the_full_use_cost_rests_on_the_recorded_override(artifact):
             - d[_BASE_FULL]["years"][str(year)]["sums_gbp"][v]
             for v in lane.FREE_HOURS
         )
-        assert lane.full_use_cost(artifact, year) == want > 0
-    assert lane.full_use_cost(artifact, 2026) is None
+        assert lane.full_use_cost(artifact, year, _pair(artifact)) == want > 0
+    assert lane.full_use_cost(artifact, 2026, _pair(artifact)) is None
 
 
 @pytest.mark.parametrize("what", sorted(_NOT_FULL_USE))
@@ -2071,9 +2104,9 @@ def test_no_text_claims_full_use_the_record_does_not_show(artifact, what):
     bad = copy.deepcopy(artifact)
     _NOT_FULL_USE[what](bad)
     with pytest.raises(ValueError, match="full use|beside the other"):
-        lane.full_use_cost(bad, 2027)
+        lane.full_use_cost(bad, 2027, _pair(bad))
     with pytest.raises(ValueError, match="full use|beside the other"):
-        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", {})
+        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", _pair(bad))
     scores, _, artifacts = lane.stage()
     with pytest.raises(ValueError, match="full use|beside the other"):
         lane.diagnoses(scores, [(bad, artifacts[-1][1])])
@@ -2107,7 +2140,69 @@ _TRUE_FULL_USE = {
         }
     ),
     "no benefit unit receiving": _zero_recipients,
+    "child hours recorded as the default": _both(
+        lambda d: d["dataset_inputs"].update({lane.CHILD_HOURS_INPUT: []})
+    ),
 }
+
+
+CHILD_KEY = lane.CHILD_HOURS_INPUT
+
+
+def test_full_use_needs_the_child_hours_shown_by_the_run_or_the_pair(june):
+    """A run that predates the record of the child hours input shows full
+    use only through its pair's verified statement; a run that records the
+    input needs no such statement."""
+    pair = _pair(june)
+    assert CHILD_KEY not in june["diagnostics"][_BASE_FULL]["dataset_inputs"]
+    silent = {k: v for k, v in pair.items() if k != "child_hours_input"}
+    with pytest.raises(ValueError, match="child hours"):
+        lane.full_use_cost(june, 2027, silent)
+    recorded = copy.deepcopy(june)
+    _both(lambda d: d["dataset_inputs"].update({CHILD_KEY: []}))(recorded)
+    assert lane.full_use_cost(recorded, 2027, silent) == lane.full_use_cost(
+        june, 2027, pair
+    )
+
+
+@pytest.mark.parametrize("periods, says", [([], "default of 30"), (["2027"], "own")])
+def test_the_notes_state_the_child_hours_input_a_run_recorded(june, periods, says):
+    """The take-up and usage note names the child hours input only when
+    the run recorded it, and says where its value came from."""
+    old = lane.measured_notes(june, lane.CBP, 2027, "fy", _pair(june))
+    assert not any(CHILD_KEY in n for n in old)
+    recorded = copy.deepcopy(june)
+    recorded["worlds"]["baseline"]["dataset_inputs"][CHILD_KEY] = periods
+    notes = lane.measured_notes(recorded, lane.CBP, 2027, "fy", _pair(recorded))
+    (line,) = [n for n in notes if CHILD_KEY in n]
+    assert f"{CHILD_KEY}, each child's own cap, is the" in line
+    assert says in line and line.endswith(".")
+    assert [n for n in notes if CHILD_KEY not in n] == [
+        n for n in old if "Take-up and usage" not in n
+    ]
+
+
+class _Weightless(_StandIn):
+    """A stand-in whose benefit units weigh nothing in total."""
+
+    def calculate(self, variable, period):
+        series = super().calculate(variable, period)
+        if variable == "extended_childcare_entitlement":
+            series.weights = np.zeros_like(series.values, dtype=float)
+        return series
+
+
+def test_a_population_with_no_benefit_unit_weight_is_refused():
+    """The round-8 review's boundary: every share and mean year_block
+    writes divides by the benefit units' total weight, so a world where it
+    is zero stops the run instead of writing nan."""
+    compute = _module(
+        "compute_uk_childcare_100k_weightless",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    sim = _Weightless(SimpleNamespace(calls=[], hours=[]), None, [2027], Path("w.h5"))
+    with pytest.raises(SystemExit, match="benefit-unit weights sum to 0"):
+        compute.year_block(sim, 2027)
 
 
 @pytest.mark.parametrize("what", sorted(_TRUE_FULL_USE))
@@ -2118,7 +2213,9 @@ def test_the_full_use_cost_keeps_every_true_record_shape(artifact, what):
     the offer (year_block then writes no receiving mean) all show full use."""
     good = copy.deepcopy(artifact)
     _TRUE_FULL_USE[what](good)
-    assert lane.full_use_cost(good, 2027) == lane.full_use_cost(artifact, 2027)
+    assert lane.full_use_cost(good, 2027, _pair(good)) == lane.full_use_cost(
+        artifact, 2027, _pair(artifact)
+    )
 
 
 def _current_law(a, year=2027):
@@ -2150,7 +2247,7 @@ def test_no_family_receiving_under_current_law_is_stated_not_formatted(artifact)
         _current_law(none)[key] = made[key]
     assert lane.receiving_hours(none, 2027) is None
     stated = "no family receives the extended hours under current law in 2027-28"
-    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", {})
+    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", _pair(none))
     assert sum(stated in n for n in notes) == 1
     assert not any("weekly hours under current law" in n for n in notes)
     scores, _, artifacts = lane.stage()
@@ -2190,7 +2287,7 @@ def test_receiving_records_with_no_receiving_weight_are_stated_not_nan(artifact)
     for key in ("hours_usage", "counts", "records"):
         _current_law(none)[key] = made[key]
     assert lane.receiving_hours(none, 2027) is None
-    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", {})
+    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", _pair(none))
     stated = "no family receives the extended hours under current law in 2027-28"
     assert sum(stated in n for n in notes) == 1
     assert not any("nan" in n for n in notes)
@@ -2228,7 +2325,7 @@ def test_a_receiving_mean_must_agree_with_the_receiving_weight(artifact, mean, w
     with pytest.raises(ValueError, match="receiving-hours mean"):
         lane.receiving_hours(bad, 2027)
     with pytest.raises(ValueError, match="receiving-hours mean"):
-        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", {})
+        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", _pair(bad))
 
 
 def test_the_full_use_check_reads_the_compute_scripts_own_constants(

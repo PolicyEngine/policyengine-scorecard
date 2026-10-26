@@ -16,7 +16,9 @@ the working-parent childcare offers in England:
 Inputs: the adapters' tidy rows (data/externals/<id>.json, QC'd there),
 each source's annotations.json, every certified-pair artifact
 results/uk/childcare_100k/<variant>.json (pipeline/compute_uk_childcare_100k.py),
-each checked against its own record in data/uk/replay_variants.json, with
+each checked against its own record in data/uk/replay_variants.json or, for
+a certified pair the release-replay pipeline has not qualified,
+data/uk/certified_pairs.json (pipeline/uk_certified_pairs.py), with
 their construction_annotations.json, and the published dashboard figure in
 sources/centax-childcare-100k/pe/published_dashboard.json.
 
@@ -74,6 +76,7 @@ reform-world quantity (tests/test_uk_childcare_100k.py checks the built DB).
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import math
 import re
@@ -101,6 +104,10 @@ CENTAX_DIR = REPO / "sources" / "centax-childcare-100k"
 CBP_DIR = REPO / "sources" / "cbp-rates-and-wrongs"
 RESULTS_DIR = REPO / "results" / "uk" / "childcare_100k"
 VARIANTS = REPO / "data" / "uk" / "replay_variants.json"
+PAIRS = REPO / "data" / "uk" / "certified_pairs.json"
+# pipeline/uk_certified_pairs.py KIND and PREFIX (a test checks they agree)
+PAIRS_KIND = "uk_certified_pairs"
+PAIR_PREFIX = "pair-"
 CERTIFIED = REPO / "data" / "uk" / "certified_bundle.json"
 CONSTRUCTION = RESULTS_DIR / "construction_annotations.json"
 # The artifact schema this ingest reads (pipeline/compute_uk_childcare_100k.py).
@@ -132,6 +139,9 @@ FREE_HOURS = (
 TFC = "tax_free_childcare"
 VARIABLES = {CENTAX: list(FREE_HOURS), CBP: [*FREE_HOURS, TFC]}
 HOURS_USAGE_INPUT = "maximum_extended_childcare_hours_usage"
+# Each child's own weekly hours cap beside the family's (the engine takes the
+# smaller); full use needs it at its default, FULL_USE_HOURS.
+CHILD_HOURS_INPUT = "max_free_entitlement_hours_used"
 # the extended offer's weekly hours: the full-use diagnostic sets every
 # family's usage to them
 FULL_USE_HOURS = 30.0
@@ -430,7 +440,7 @@ def check_artifact(art: dict, path: Path, variant: dict) -> None:
     wrong = sorted(k for k in want if got[k] != want[k])
     if wrong:
         raise ValueError(f"{path.name}: not {vid}'s certified pairing: {wrong}")
-    if variant["layout"] == "legacy_events":
+    if variant.get("layout") == "legacy_events":
         cert = json.loads(CERTIFIED.read_text())
         if (dataset["revision"], dataset["sha256"]) != (
             cert["revision"],
@@ -454,23 +464,88 @@ def check_artifact(art: dict, path: Path, variant: dict) -> None:
         raise ValueError(f"{path.name}: artifact is not a static run")
 
 
-def load_artifacts(
-    results_dir: Path = RESULTS_DIR, variants_path: Path = VARIANTS
-) -> list[tuple[dict, Path]]:
-    """Every certified-pair artifact, each checked against its own certified
-    variant record, oldest first. Each claim's latest result is the newest
-    run that computed its year, so run ids and UTC computed_at times must be
-    distinct."""
+def identity_sha256(identity: dict) -> str:
+    """pipeline/uk_replay_variants.identity_sha256, which this package does
+    not import: SHA-256 of sorted-key compact JSON (a test checks the two
+    agree)."""
+    return hashlib.sha256(
+        json.dumps(
+            identity,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode()
+    ).hexdigest()
+
+
+def run_records(variants_path: Path = VARIANTS, pairs_path: Path = PAIRS) -> dict:
+    """id -> record, for every record a run of this lane may name: each
+    certified replay variant, and each certified pair under its pair- id.
+    pipeline/uk_certified_pairs.py validates both files in full; reading
+    them here, ingest refuses what would let it and the pipeline resolve one
+    id to different records: a repeated id in or across the files, a pair id
+    without pair- or a variant id with it, and an identity its digest does
+    not seal."""
     index = json.loads(variants_path.read_text())
-    records = {v["variant_id"]: v for v in index["variants"]}
+    if index.get("schema_version") != 1:
+        raise ValueError(f"{variants_path.name}: schema_version must be 1")
+    document = json.loads(pairs_path.read_text())
+    if (document.get("schema_version"), document.get("kind")) != (
+        1,
+        PAIRS_KIND,
+    ):
+        raise ValueError(f"{pairs_path.name}: not a version 1 {PAIRS_KIND} file")
+    variant_ids = [v.get("variant_id") for v in index["variants"]]
+    pair_ids = [p.get("pair_id") for p in document["pairs"]]
+    repeated = sorted(
+        str(k) for k, n in Counter([*variant_ids, *pair_ids]).items() if n > 1
+    )
+    misnamed = sorted(
+        [str(v) for v in variant_ids if str(v).startswith(PAIR_PREFIX)]
+        + [str(p) for p in pair_ids if not str(p).startswith(PAIR_PREFIX)]
+    )
+    if repeated or misnamed:
+        raise ValueError(
+            f"{variants_path.name} and {pairs_path.name}: repeated ids {repeated}, "
+            f"ids in the other file's namespace {misnamed}"
+        )
+    records = {
+        v["variant_id"]: v for v in index["variants"] if v["status"] == "certified"
+    }
+    for pair in document["pairs"]:
+        if pair.get("status") == "certified_pair":
+            records[pair["pair_id"]] = {**pair, "variant_id": pair["pair_id"]}
+    unsealed = sorted(
+        k
+        for k, r in records.items()
+        if identity_sha256(r["identity"]) != r["identity_sha256"]
+    )
+    if unsealed:
+        raise ValueError(f"identity_sha256 does not seal the identity of {unsealed}")
+    return records
+
+
+def load_artifacts(
+    results_dir: Path = RESULTS_DIR,
+    variants_path: Path = VARIANTS,
+    pairs_path: Path = PAIRS,
+) -> list[tuple[dict, Path]]:
+    """Every certified-pair artifact, each checked against its own record (a
+    certified variant or a certified pair), oldest first. Each claim's latest
+    result is the newest run that computed its year, so run ids and UTC
+    computed_at times must be distinct."""
+    records = run_records(variants_path, pairs_path)
     out = []
     for path in sorted(results_dir.glob("*.json")):
         if path.name == CONSTRUCTION.name:
             continue
         art = json.loads(path.read_text())
         variant = records.get(art.get("variant_id"))
-        if variant is None or variant["status"] != "certified":
-            raise ValueError(f"{path.name}: names no certified variant")
+        if variant is None:
+            raise ValueError(
+                f"{path.name}: names no certified variant or certified pair"
+            )
         check_artifact(art, path, variant)
         out.append((art, path))
     out.sort(key=lambda a: a[0]["computed_at"])
@@ -569,7 +644,8 @@ def _pe_missing(
     )
     return (
         f"fiscal year {fy} is outside the data years of every certified pair this "
-        f"lane has run ({spans}; data/uk/replay_variants.json)"
+        f"lane has run ({spans}; data/uk/replay_variants.json, "
+        "data/uk/certified_pairs.json)"
     )
 
 
@@ -577,12 +653,13 @@ def stage(
     notes: dict | None = None,
     results_dir: Path = RESULTS_DIR,
     variants_path: Path = VARIANTS,
+    pairs_path: Path = PAIRS,
 ) -> tuple[list[ExternalScore], dict, list[tuple[dict, Path]]]:
     """(claims, drop tally, every certified artifact oldest first). Each
     artifact's pair must be a verified one; no claim id depends on which
     runs exist."""
     notes = notes or load_notes()
-    artifacts = load_artifacts(results_dir, variants_path)
+    artifacts = load_artifacts(results_dir, variants_path, pairs_path)
     for art, _ in artifacts:
         verified_pair(notes, art)
     scores: list[ExternalScore] = []
@@ -856,10 +933,22 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
             )
             + f"; {HOURS_USAGE_INPUT} is "
             + (
-                "the dataset's own input."
+                "the dataset's own input"
                 if supplied.get(HOURS_USAGE_INPUT)
-                else "the engine's default (not in the dataset for this year)."
+                else "the engine's default (not in the dataset for this year)"
             )
+            + (
+                ""
+                if CHILD_HOURS_INPUT not in supplied
+                else f"; {CHILD_HOURS_INPUT}, each child's own cap, is "
+                + (
+                    "the dataset's own input"
+                    if supplied[CHILD_HOURS_INPUT]
+                    else f"the engine's default of {FULL_USE_HOURS:g} (not in the "
+                    "dataset for this year)"
+                )
+            )
+            + "."
         ),
         "Executed limits on 30 April {y}: 30 hours {a:g}, Tax-Free Childcare {t:g} (1e+100 is the "
         "repo's no-limit sentinel, compute_uk_ab2025.NO_LIMIT).".format(
@@ -870,7 +959,7 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
             t=w["limits_executed"]["gov.hmrc.tax_free_childcare.income.income_limit"],
         ),
     ]
-    full = full_use_cost(art, year) if source == CENTAX else None
+    full = full_use_cost(art, year, pair) if source == CENTAX else None
     if full is not None:
         notes.append(
             f"Diagnostic, not attached: with every family at the full {FULL_USE_HOURS:g} hours (the "
@@ -927,12 +1016,16 @@ def _same_reform(reform, main, year: int) -> bool:
     )
 
 
-def full_use_cost(art: dict, year: int) -> float | None:
+def full_use_cost(art: dict, year: int, pair: dict) -> float | None:
     """The reform's free-hours cost with every family at the full 30 hours,
     from the run's two full-use worlds, or None when it ran none for this
     year. Each world must record what the text states:
     - the hours input set to 30 in this year, with every holder that reads
       it (FULL_USE_DEPENDENTS) still empty, and read back at 30;
+    - each child's own hours cap (CHILD_HOURS_INPUT) at its engine default
+      of 30: the world records the dataset supplying it in no year, or, for
+      a run that predates that record, the pair's verified_pairs entry
+      states it from the dataset (child_hours_input);
     - the main world's reform: the same limits removed on 30 April of the
       year, under the repo's NO_LIMIT sentinel;
     - the main world's executed limits, read back from the engine on that
@@ -957,8 +1050,12 @@ def full_use_cost(art: dict, year: int) -> float | None:
         executed = block.get("limits_executed")
         removed = set(reform or {})
         receiving = hours.get("mean_benunits_receiving_extended")
+        inputs = d.get("dataset_inputs") or {}
         evidence = {
             "variable": o.get("variable") == HOURS_USAGE_INPUT,
+            "child hours": inputs[CHILD_HOURS_INPUT] == []
+            if CHILD_HOURS_INPUT in inputs
+            else bool(pair.get("child_hours_input")),
             "value": o.get("value") == FULL_USE_HOURS,
             "year set": year in o.get("set_for_years", []),
             "set first": isinstance(deps, dict)
@@ -1174,7 +1271,7 @@ def diagnoses(
             if hours is not None
             else _no_recipients(c["fy"])
         )
-        full = full_use_cost(art, year)
+        full = full_use_cost(art, year, pair)
         if full is None:
             raise ValueError(
                 f"{art['variant_id']}: the diagnosis needs the full-use diagnostic for "

@@ -1,7 +1,7 @@
 {
  "_schema": {
   "applies_to": "matcher on {models, periods, results}; null = any. models: endogenous_pension_exogenous_labour (Table 2), endogenous_labour_no_pension (Table 3); periods: claim periods (financial-year end years); results: certified",
-  "variants": "the certified variants (data/uk/replay_variants.json) on which a note resting on the engine or a run was checked; it attaches only to those pairs' results. A note resting on the report alone names none and applies to every run",
+  "variants": "the certified variants (data/uk/replay_variants.json) or certified pairs (data/uk/certified_pairs.json) on which a note resting on the engine or a run was checked; it attaches only to those pairs' results. A note resting on the report alone names none and applies to every run",
   "severity": "period | definitional | construction | caution | gap",
   "status": "the comparison status this annotation sets, where it sets one; at most one status-setting annotation matches a result",
   "basis": "traceability: raw/pages_layout.txt (PDF page), engine files at the certified pin, or the measured artifact results/uk/childcare_100k/<variant>.json"

@@ -1,5 +1,5 @@
 {
- "built": "2026-10-25",
+ "built": "2026-10-26",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
   "claims": 29771,
@@ -30104,7 +30104,7 @@
     "measure_key": "uk_free_childcare_hours_and_tfc_100k_limit_removed",
     "program": "free_childcare_hours_and_tax_free_childcare",
     "scoring_method": "post_behavioural",
-    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json)"
+    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json, data/uk/certified_pairs.json)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -30161,7 +30161,7 @@
     "measure_key": "uk_free_childcare_hours_and_tfc_100k_limit_removed",
     "program": "free_childcare_hours_and_tax_free_childcare",
     "scoring_method": "post_behavioural",
-    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json)"
+    "pe_missing": "fiscal year 2031-32 is outside the data years of every certified pair this lane has run (pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z 2023-2030; data/uk/replay_variants.json, data/uk/certified_pairs.json)"
    },
    "measure": null,
    "reform_framework": "policy_ref",
