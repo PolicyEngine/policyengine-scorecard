@@ -10,10 +10,13 @@ the working-parent childcare offers in England:
                                     2026), technical appendix Tables 2-3:
                                     the free hours and Tax-Free Childcare
 
-This script runs the managed policyengine-uk simulation on the certified
-populace-uk bundle (the default replay variant, data/uk/certified_bundle.json)
-through the same preflight as the variant's event replays
-(pipeline/compute_uk_event.py), and writes one artifact with weighted SUMS
+This script runs the managed policyengine-uk simulation on a certified
+pair: by default the certified populace-uk bundle (the default replay
+variant, data/uk/certified_bundle.json), or with --variant another replay
+variant or a certified pair in data/uk/certified_pairs.json
+(pipeline/uk_certified_pairs.py), through the same preflight as a variant's
+event replays (pipeline/compute_uk_event.py), and writes one artifact per
+pair with weighted SUMS
 and COUNTS per world and year, UK-wide and for people in English households.
 Every ratio and delta is derived downstream
 (scorecard_db/ingest_uk_childcare_100k.py).
@@ -37,9 +40,10 @@ own default for the variable, i.e. full use of the 30 hours). They measure
 how much of the static cost turns on the dataset's hours-usage draw
 (microcosm#1126); they are never attached to a claim.
 
-Offline and pinned, through compute_uk_event's preflight for the variant
-(the legacy one or a materialised one): the installed wheels checked
-against the variant record before the engine is imported (versions, RECORD
+Offline and pinned, through compute_uk_event's preflight for the record
+(the legacy variant, or a materialised variant or certified pair): the
+installed wheels checked against the record before the engine is imported
+(versions, RECORD
 hashes, the packaged bundle manifest, Python), each engine package imported
 from its own distribution, Hugging Face offline mode, and the runtime
 release bundle equal to the record's. Each simulation must report as its
@@ -49,7 +53,7 @@ world's reads. One artifact per variant; ingest keeps every certified
 variant's run in the history.
 
     PYTHONPATH=. .venv-pe289m/bin/python pipeline/compute_uk_childcare_100k.py
-    PYTHONPATH=. <that variant's venv>/bin/python pipeline/compute_uk_childcare_100k.py --variant <id>
+    PYTHONPATH=. <that pair's venv>/bin/python pipeline/compute_uk_childcare_100k.py --variant <id>
 """
 
 from __future__ import annotations
@@ -72,6 +76,7 @@ sys.path.insert(0, str(ROOT))
 from pipeline import compute_uk_ab2025 as ab
 from pipeline import compute_uk_event as event
 from pipeline import compute_uk_obr_costings as fiscal
+from pipeline import uk_certified_pairs as pairs
 from pipeline import uk_replay_variants as variants
 
 OUTPUT_DIR = ROOT / "results" / "uk" / "childcare_100k"
@@ -86,6 +91,9 @@ REFORMS = {
     "free_hours_and_tfc": (THIRTY_HOURS_LIMIT, TFC_LIMIT),
 }
 HOURS_USAGE = "maximum_extended_childcare_hours_usage"
+# Each child's own weekly hours cap, beside the family's HOURS_USAGE (both
+# pins take the smaller); its engine default is FULL_USE_HOURS.
+CHILD_HOURS = "max_free_entitlement_hours_used"
 FULL_USE_HOURS = 30.0
 # Within a data bundle the scorecard's comparisons view prefers these runs
 # (scorecard_db/db.py, run_id LIKE 'platform-grid-%', which ignores ASCII
@@ -102,7 +110,7 @@ TAKE_UP = (
 )
 # Inputs whose presence in the dataset is recorded: holder periods filled at
 # construction, before any calculation, are the dataset's own values.
-DATASET_INPUTS = (HOURS_USAGE, *TAKE_UP, "childcare_expenses")
+DATASET_INPUTS = (HOURS_USAGE, CHILD_HOURS, *TAKE_UP, "childcare_expenses")
 
 # The three free early-years entitlements (policyengine-uk's gov_spending
 # lists all three) and Tax-Free Childcare.
@@ -113,9 +121,10 @@ FREE_HOURS = (
 )
 TFC = "tax_free_childcare"
 SUMMED = (*FREE_HOURS, TFC, "gov_spending", "gov_tax")
-# Both offers are England's, but policyengine-uk 2.89.2 applies Tax-Free
-# Childcare UK-wide (only the extended hours test country == ENGLAND), so
-# the childcare heads are also summed for people in English households.
+# Both offers are England's, but policyengine-uk applies Tax-Free Childcare
+# UK-wide (it has no country test; the three free-hours offers test
+# country == ENGLAND), so the childcare heads are also summed for people in
+# English households.
 HEADS = (*FREE_HOURS, TFC)
 ENGLAND = "ENGLAND"
 # Variables whose engine metadata is recorded (the pe_meta contract): every
@@ -128,7 +137,7 @@ METADATA = (
     "country",
     *TAKE_UP,
     "childcare_expenses",
-    "max_free_entitlement_hours_used",
+    CHILD_HOURS,
     "extended_childcare_entitlement_eligible",
     "extended_childcare_entitlement_meets_income_requirements",
     "universal_childcare_entitlement_eligible",
@@ -235,6 +244,9 @@ def year_block(sim, year: int) -> dict:
     sums = {v: float(sim.calculate(v, year).sum()) for v in SUMMED}
     masks = england_masks(sim, year)
     ext, w_bu = _weighted(sim.calculate("extended_childcare_entitlement", year))
+    if not w_bu.sum() > 0:
+        # every share and mean below divides by the benefit units' weight
+        raise SystemExit(f"{year}: benefit-unit weights sum to {w_bu.sum()}")
     hours, _ = _weighted(sim.calculate(HOURS_USAGE, year))
     receiving = ext > 0
     age, w_p = _weighted(sim.calculate("age", year))
@@ -406,7 +418,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     ap.add_argument(
         "--variant",
-        help="a certified variant in data/uk/replay_variants.json (default: its default)",
+        help="a certified variant in data/uk/replay_variants.json (default: its "
+        "default) or a certified pair (pair-...) in data/uk/certified_pairs.json",
     )
     ap.add_argument(
         "--dataset-file",
@@ -417,7 +430,7 @@ def main(argv: list[str] | None = None) -> int:
     # absolute before a variant preflight moves into its runtime directory
     args.output_dir = args.output_dir.resolve()
 
-    variant = variants.get_variant(args.variant)
+    variant = pairs.get_record(args.variant)
     run_id = args.run_id or default_run_id(variant["variant_id"], started)
     if reserved_run_id(run_id):
         raise SystemExit(
@@ -445,8 +458,9 @@ def main(argv: list[str] | None = None) -> int:
         }
     else:
         # The same checks for a variant whose dataset is materialised into
-        # its runtime directory (the event runner's variant preflight).
-        pre = event.variant_preflight(
+        # its runtime directory (the event runner's variant preflight), or
+        # for a certified pair, the pair checks and then the same path.
+        pre = pairs.preflight(
             variant,
             dataset_source=args.dataset_file.resolve() if args.dataset_file else None,
         )
