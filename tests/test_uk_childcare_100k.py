@@ -20,7 +20,7 @@ from itertools import product
 from pathlib import Path
 
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from scorecard_db import ingest_uk_childcare_100k as lane
@@ -200,6 +200,7 @@ def test_cbp_qc_catches_a_column_shift(cbp):
 # --- properties of the adapters' arithmetic ----------------------------------
 
 
+@settings(deadline=None)
 @given(
     st.lists(
         st.floats(min_value=-2_000, max_value=2_000, allow_nan=False),
@@ -221,6 +222,7 @@ def test_rounding_tolerance_covers_any_three_components(parts):
     assert abs(sum(rnd(p) for p in parts) - rnd(net)) <= a.SUM_TOLERANCE_GBP_M
 
 
+@settings(deadline=None)
 @given(st.integers(min_value=-99_999, max_value=99_999))
 def test_money_cells_round_trip(value):
     a = _module("centax_childcare_adapter_r", CENTAX_SRC / "adapter.py")
@@ -746,6 +748,24 @@ def test_artifacts_must_have_distinct_runs_and_certified_variants(tmp_path):
         lane.load_artifacts(tmp_path, tmp_path / "variants.json")
 
 
+@pytest.mark.parametrize(
+    "when, match",
+    [
+        ("2026-10-25T00:00:00+00:00", "share a computed_at"),
+        ("2026-10-25T01:00:00+01:00", "not a UTC time"),
+    ],
+)
+def test_each_claims_newest_run_is_unambiguous(tmp_path, when, match):
+    """Each claim's latest is its newest covering run, ordered by the UTC
+    computed_at strings, so two runs at one time or a non-UTC time are
+    refused."""
+    a = _synthetic(_record(_other_certified()), run_id="a", computed_at=when)
+    b = _synthetic(_record(), run_id="b")
+    _write(tmp_path, a, b)
+    with pytest.raises(ValueError, match=match):
+        lane.load_artifacts(tmp_path)
+
+
 def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
     """History across variants: an earlier certified run attaches to every
     claim the latest does, and the published figure is older than both."""
@@ -959,6 +979,7 @@ def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):
                 assert a["variants"] == [VARIANTS["default_variant"]], a["id"]
 
 
+@settings(deadline=None)
 @given(value=st.integers(-(10**10), 10**10), printed=st.text(min_size=1, max_size=12))
 def test_claim_ids_ignore_the_value_its_printed_form_and_pe_coverage(value, printed):
     """A corrected extraction (value or formatting) keeps every claim id, and

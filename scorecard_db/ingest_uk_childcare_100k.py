@@ -38,7 +38,8 @@ Results:
     Childcare UK-wide).
   - earlier certified pairs: an artifact for another certified variant stays
     in results/uk/childcare_100k/ beside a newer one, and its run stays in
-    the history; the newest artifact's run is every claim's latest. A note
+    the history; each claim's latest is the newest run that computed its
+    year. A note
     whose basis is the engine or a run names the pairs it was checked on
     (`variants`) and attaches only to their results; an artifact whose pair
     has no verified_pairs entry in construction_annotations.json is refused.
@@ -60,7 +61,8 @@ shows it as conditions.pe_missing.
 
 Diagnosis: the CenTax central static rows carry a pe_gap diagnosis linked
 to microcosm#1126 (the hours-usage draw), with the evidence measured on the
-latest run and the history its pair's verified_pairs entry states.
+claim's latest run and the history that run's pair's verified_pairs entry
+states.
 
 calibration_relationship comes from relationships.uk_relationship: held out
 for both sources. Each is a reform estimate, and no calibration target is a
@@ -71,6 +73,7 @@ reform-world quantity (tests/test_uk_childcare_100k.py checks the built DB).
 
 from __future__ import annotations
 
+import datetime as dt
 import json
 from collections import Counter
 from pathlib import Path
@@ -428,8 +431,9 @@ def load_artifacts(
     results_dir: Path = RESULTS_DIR, variants_path: Path = VARIANTS
 ) -> list[tuple[dict, Path]]:
     """Every certified-pair artifact, each checked against its own certified
-    variant record, oldest first; the newest is every claim's latest
-    result."""
+    variant record, oldest first. Each claim's latest result is the newest
+    run that computed its year, so run ids and UTC computed_at times must be
+    distinct."""
     index = json.loads(variants_path.read_text())
     records = {v["variant_id"]: v for v in index["variants"]}
     out = []
@@ -449,11 +453,17 @@ def load_artifacts(
         )
     if len({a["run_id"] for a, _ in out}) != len(out):
         raise ValueError("two artifacts share a run_id")
+    for a, path in out:
+        when = dt.datetime.fromisoformat(a["computed_at"])
+        if when.utcoffset() != dt.timedelta(0):
+            raise ValueError(f"{path.name}: computed_at is not a UTC time")
+    if len({a["computed_at"] for a, _ in out}) != len(out):
+        raise ValueError("two artifacts share a computed_at")
     return out
 
 
 def load_artifact() -> tuple[dict, Path]:
-    """The newest certified artifact: every claim's latest result."""
+    """The newest certified artifact."""
     return load_artifacts()[-1]
 
 

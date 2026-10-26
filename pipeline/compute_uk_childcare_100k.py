@@ -375,8 +375,8 @@ def run_world(name: str, reform, years, pre: dict, *, full_use: bool = False):
 
 
 def default_run_id(variant_id: str, started: dt.datetime) -> str:
-    """Distinct across variants and across one variant's runs: ingest
-    refuses two artifacts that share a run_id."""
+    """Distinct across variants, and across one variant's runs started in
+    different seconds. Ingest refuses two artifacts that share a run_id."""
     return f"childcare-100k-{variant_id}-{started:%Y%m%dT%H%M%SZ}"
 
 

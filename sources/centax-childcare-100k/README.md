@@ -102,9 +102,11 @@ that pair's miss.
 
 To add a pair, run the compute script with `--variant <id>` in that
 variant's environment. The run id defaults to
-`childcare-100k-<variant>-<UTC start>`, so two runs never share one. The
-artifact goes beside this one in `results/uk/childcare_100k/`. Before ingest
-takes it, check each note whose basis is the engine or a run at the new pin.
+`childcare-100k-<variant>-<UTC start second>`. Two runs of one variant
+started in the same second would share it, and ingest refuses two
+artifacts with one run id. The artifact goes beside this one in
+`results/uk/childcare_100k/`. Before ingest takes it, check each note whose
+basis is the engine or a run at the new pin.
 These are the entries with a `variants` list in both sources'
 `annotations.json` and in `results/uk/childcare_100k/construction_annotations.json`.
 Add the pair to the notes that still hold, and write replacements for those
