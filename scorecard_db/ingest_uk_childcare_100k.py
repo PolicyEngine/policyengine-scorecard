@@ -738,6 +738,29 @@ def counterpart(art: dict, source: str, year: int) -> float:
     )
 
 
+def receiving_hours(art: dict, year: int) -> float | None:
+    """The current-law weighted mean hours usage of the families receiving
+    the extended hours, or None when the run recorded no such family.
+    year_block writes None exactly when none receives them, so a mean and
+    a record count that disagree are refused."""
+    block = art["worlds"]["baseline"]["years"][str(year)]
+    mean = block["hours_usage"]["mean_benunits_receiving_extended"]
+    records = block.get("records", {}).get("benunits_receiving_extended")
+    if (mean is None) != (records == 0):
+        raise ValueError(
+            f"{art['run_id']} {year}: receiving-hours mean {mean!r} with "
+            f"{records!r} receiving records"
+        )
+    return mean
+
+
+def _no_recipients(fy: str) -> str:
+    return (
+        f"no family receives the extended hours under current law in {fy}, so "
+        "the run has no usage mean for them"
+    )
+
+
 def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> list[str]:
     world = WORLDS[source]
     w = art["worlds"][world]["years"][str(year)]
@@ -770,6 +793,7 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
         for v, periods in art["worlds"]["baseline"]["dataset_inputs"].items()
     }
     take_up = b["take_up"]
+    receiving = receiving_hours(art, year)
     notes = [
         (
             f"Measured on the certified pair, {fy} (engine period {year}, the start "
@@ -794,11 +818,12 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
                 (
                     (
                         "Hours-usage draw: the families receiving the extended hours "
-                        "use a weighted mean of "
-                        f"{b['hours_usage']['mean_benunits_receiving_extended']:.1f}"
-                        f" of {FULL_USE_HOURS:g} weekly hours under current law "
+                        f"use a weighted mean of {receiving:.1f} of "
+                        f"{FULL_USE_HOURS:g} weekly hours under current law "
                         "(maximum_extended_childcare_hours_usage)."
-                    ),
+                    )
+                    if receiving is not None
+                    else f"Hours-usage draw: on this pair, {_no_recipients(fy)}.",
                     pair.get("hours_draw"),
                 ),
             )
@@ -1127,9 +1152,13 @@ def diagnoses(
         c = s.conditions
         year = s.period - 1
         pe = counterpart(art, CENTAX, year)
-        hours = art["worlds"]["baseline"]["years"][str(year)]["hours_usage"][
-            "mean_benunits_receiving_extended"
-        ]
+        hours = receiving_hours(art, year)
+        usage = (
+            "the families receiving the extended hours use a weighted mean of "
+            f"{hours:.1f} of {FULL_USE_HOURS:g} weekly hours (measured)"
+            if hours is not None
+            else _no_recipients(c["fy"])
+        )
         full = full_use_cost(art, year)
         if full is None:
             raise ValueError(
@@ -1139,11 +1168,9 @@ def diagnoses(
         rationale = (
             f"PolicyEngine's static cost on the certified pair is £{-pe / 1e9:.3f}bn in {c['fy']}, "
             f"{abs(pe / s.value - 1) * 100:.0f}% {'below' if pe > s.value else 'above'} CenTax's "
-            f"£{-s.value / 1e9:.2f}bn. Our side first: on this pair the families receiving the "
-            f"extended hours use a weighted mean of {hours:.1f} of {FULL_USE_HOURS:g} weekly hours "
-            f"(measured), and with every family at the full {FULL_USE_HOURS:g} hours the same "
-            f"reform costs £{full / 1e9:.3f}bn "
-            f"(diagnostic run). {pair['diagnosis']}"
+            f"£{-s.value / 1e9:.2f}bn. Our side first: on this pair {usage}, and with every "
+            f"family at the full {FULL_USE_HOURS:g} hours the same reform costs "
+            f"£{full / 1e9:.3f}bn (diagnostic run). {pair['diagnosis']}"
         )
         rows.append(
             ScorecardDB.diagnosis_row(

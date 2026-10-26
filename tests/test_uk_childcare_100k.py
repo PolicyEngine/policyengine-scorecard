@@ -17,6 +17,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
 from collections import Counter
 from itertools import product
@@ -58,9 +59,11 @@ CBP_ABOLISH = {
 
 
 def _module(name: str, path: Path):
-    # a unique module name: several lanes ship an adapter.py
+    # a unique module name: several lanes ship an adapter.py; registered as
+    # an import registers it, so sys.modules[__name__] reads as in a real run
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -409,12 +412,20 @@ _DYNAMIC = frozenset(
 )
 
 
+# Vetted functions that walk to whatever attribute a dotted path names:
+# compute_uk_ab2025._resolve_parameter is getattr in a loop, so the scan
+# holds each call to a direct call whose path it resolves, as it resolves a
+# calculate name, to parameter paths that never name calculate.
+_GETTERS = frozenset({"_resolve_parameter"})
+_PARAMETER_PATH = re.compile(r"gov(\.[a-z][a-z0-9_]*(\[\d+\])?)+")
+
 # What the compute script reaches numpy, the engine and the standard library
 # through: each import, builtin name and attribute name it uses (getattr's
 # literal names included). Each was read for a route to calculate other than
-# a direct .calculate(...) call; none is one, so with the forms refused here
-# every calculate the script's own code makes is a direct call the scan
-# resolves. A name not listed is refused until it is read and added.
+# a direct .calculate(...) call. The one such route is a getter in _GETTERS,
+# held to parameter paths; so with the forms refused here every calculate
+# the script's own code makes is a direct call the scan resolves. A name not
+# listed is refused until it is read and added.
 _VETTED_IMPORTS = frozenset(
     {
         ("", "argparse", None),
@@ -632,8 +643,8 @@ def _refuse_hidden(tree, parents) -> None:
             if not (isinstance(attr, ast.Constant) and isinstance(attr.value, str)):
                 raise Unvouched(f"line {line}: getattr without a literal name")
         if isinstance(node, ast.Attribute):
-            if node.attr == "calculate" and not called:
-                raise Unvouched(f"line {line}: calculate used but not called")
+            if node.attr in {"calculate", *_GETTERS} and not called:
+                raise Unvouched(f"line {line}: {node.attr} used but not called")
             if node.attr == "__dict__":
                 raise Unvouched(f"line {line}: a namespace read as a dict")
             if isinstance(node.ctx, ast.Store | ast.Del) and node.attr in constants:
@@ -656,9 +667,10 @@ def _calculated(path: Path, compute) -> set[str]:
     string constant. Any other binding (an assignment, a second loop, a
     rebinding generator, an argument, a tuple target) raises, and so does
     any form _refuse_hidden lists, so a name cannot change unnoticed by a
-    route this scan reads past; then any name not vetted raises, so no
-    route other than a direct call reaches calculate. The stand-in run
-    backs it up (_observed)."""
+    route this scan reads past. Each call of a getter in _GETTERS must have
+    a path resolved the same way, to parameter paths only; then any name not
+    vetted raises, so no route other than a direct call reaches calculate.
+    The stand-in run backs it up (_observed)."""
     tree = ast.parse(path.read_text())
     parents = {
         child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
@@ -762,8 +774,70 @@ def _calculated(path: Path, compute) -> set[str]:
             calculated |= set(resolve(arg))
         else:
             raise Unvouched(f"unresolved calculate argument {ast.dump(arg)}")
+    for node in ast.walk(tree):
+        if not (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr in _GETTERS
+        ):
+            continue
+        if (
+            node.keywords
+            or len(node.args) != 2
+            or isinstance(node.args[1], ast.Starred)
+        ):
+            raise Unvouched(
+                f"line {node.lineno}: {node.func.attr} not called (node, path)"
+            )
+        arg = node.args[1]
+        if isinstance(arg, ast.Constant):
+            paths = [arg.value]
+        elif isinstance(arg, ast.Name):
+            paths = resolve(arg)
+        else:
+            raise Unvouched(
+                f"line {node.lineno}: unresolved getter path {ast.dump(arg)}"
+            )
+        for p in paths:
+            if not (isinstance(p, str) and _PARAMETER_PATH.fullmatch(p)) or (
+                "calculate" in p.split(".")
+            ):
+                raise Unvouched(f"line {node.lineno}: {p!r} is not a parameter path")
     _refuse_unvetted(tree)
     return calculated
+
+
+_PLAIN = (str, int, float, bool, type(None), type(Path()))
+
+
+def _plain(*values) -> None:
+    """Refuse any value whose type is not exactly one of _PLAIN, or a dict,
+    list or tuple of them. A stub drops what it is passed, so an object the
+    script defines could carry a callback that the real function would make
+    (resolve, __fspath__, __eq__, ...) and the stand-in run would not see."""
+    for v in values:
+        if type(v) is dict:
+            _plain(*v.keys(), *v.values())
+        elif type(v) in (list, tuple):
+            _plain(*v)
+        elif type(v) not in _PLAIN:
+            raise Unvouched(f"a stub was passed a {type(v).__name__}")
+
+
+def _array(values) -> None:
+    if type(values) is not np.ndarray:
+        raise Unvouched(f"a stub was passed a {type(values).__name__}, not an array")
+
+
+def _stub(result):
+    """A function outside the script that returns `result` and refuses any
+    argument that is not plain (_plain)."""
+
+    def call(*args, **kwargs):
+        _plain(*args, *kwargs.values())
+        return result
+
+    return call
 
 
 class _Series:
@@ -786,6 +860,7 @@ class _Parameter:
         return _Parameter(self._reform, f"{self._path}.{part}".lstrip("."))
 
     def __call__(self, date):
+        _plain(date)
         for period, value in self._reform.get(self._path, {}).items():
             start, stop = period.split(".")
             if start <= date <= stop:
@@ -811,9 +886,10 @@ class _StandIn:
     """Stands in for each simulation the compute script builds, with no
     engine and no data, and records each (name, period) passed to
     calculate. It offers only what the script reads; reading anything else
-    raises, so no other engine route goes unseen. The hours input is drawn
-    below 30 until set_input sets it, so the ordinary and full-use worlds
-    each take their own branch, and every household but one is in
+    raises, so no other engine route goes unseen, and each method refuses an
+    argument that is not plain (_plain) or an array. The hours input is
+    drawn below 30 until set_input sets it, so the ordinary and full-use
+    worlds each take their own branch, and every household but one is in
     England."""
 
     DRAWN = (12.0, 20.0, 25.0)
@@ -831,6 +907,7 @@ class _StandIn:
         raise Unvouched(f"the run read sim.{name}, which the stand-in does not offer")
 
     def calculate(self, variable, period):
+        _plain(variable, period)
         self._run.calls.append((variable, int(period)))
         if variable == "country":
             return _Series(["ENGLAND", "WALES", "ENGLAND"])
@@ -844,24 +921,32 @@ class _StandIn:
             return _Series(self._inputs[variable, int(period)])
         return _Series([1000.0, 0.0, 500.0])
 
-    def map_result(self, values, *_, **__):
-        return np.asarray(values)
+    def map_result(self, values, *entities, **how):
+        _array(values)
+        _plain(*entities, *how.values())
+        return values
 
-    def get_holder(self, _):
+    def get_holder(self, variable):
+        _plain(variable)
         return SimpleNamespace(get_known_periods=list)
 
     def set_input(self, variable, period, values):
-        self._inputs[variable, int(period)] = np.asarray(values)
+        _plain(variable, period)
+        _array(values)
+        self._inputs[variable, int(period)] = values
 
 
 def _observed(compute, monkeypatch) -> SimpleNamespace:
     """The compute script's main() run end to end on stand-in simulations:
     every world in every default year, and both full-use worlds. Only what
-    lies outside the script is stubbed: the variant record and preflight,
-    the dataset hash, the import-origin check and the simulation it builds
-    (ab.build_sim). Returns each (name, period) passed to calculate, each
-    read of the hours input (drawn or set) and each world's reform; the
-    artifact written must record metadata for exactly METADATA."""
+    lies outside the script and needs the engine, the data or the variant
+    registry is stubbed: the variant record and preflight, the dataset hash,
+    the bundle checks, the import-origin check and the simulation it builds
+    (ab.build_sim). Each stub refuses an argument that is not plain, and the
+    path helper (fiscal.relative_to_root) runs as it is. Returns each
+    (name, period) passed to calculate, each read of the hours input (drawn
+    or set) and each world's reform; the artifact written must record
+    metadata for exactly METADATA."""
     run = SimpleNamespace(calls=[], hours=[], reforms=[])
     years = list(range(2023, 2031))
     out = Path(tempfile.mkdtemp(prefix="childcare-stand-in-")).resolve()
@@ -891,22 +976,18 @@ def _observed(compute, monkeypatch) -> SimpleNamespace:
     }
 
     def build(reform):
+        _plain(reform)
         run.reforms.append(reform)
         return _StandIn(run, reform, years, source)
 
     monkeypatch.setattr(compute, "ROOT", out)
-    monkeypatch.setattr(compute.variants, "get_variant", lambda _id=None: variant)
-    monkeypatch.setattr(compute.variants, "is_legacy", lambda _v: False)
-    monkeypatch.setattr(compute.variants, "verify_import_origins", lambda: None)
-    monkeypatch.setattr(
-        compute.event, "variant_preflight", lambda _v, dataset_source=None: pre
-    )
-    monkeypatch.setattr(compute.fiscal, "data_bundle_id", lambda _b: "stand-in")
-    monkeypatch.setattr(
-        compute.fiscal, "verify_runtime_dataset_sha256", lambda *_, **__: sha
-    )
-    monkeypatch.setattr(compute.fiscal, "relative_to_root", str)
-    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", lambda *_: None)
+    monkeypatch.setattr(compute.variants, "get_variant", _stub(variant))
+    monkeypatch.setattr(compute.variants, "is_legacy", _stub(False))
+    monkeypatch.setattr(compute.variants, "verify_import_origins", _stub(None))
+    monkeypatch.setattr(compute.event, "variant_preflight", _stub(pre))
+    monkeypatch.setattr(compute.fiscal, "data_bundle_id", _stub("stand-in"))
+    monkeypatch.setattr(compute.fiscal, "verify_runtime_dataset_sha256", _stub(sha))
+    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", _stub(None))
     monkeypatch.setattr(compute.ab, "build_sim", build)
     try:
         assert compute.main(["--output-dir", str(out)]) == 0
@@ -1092,6 +1173,57 @@ _SURVIVORS = {
         ),
     ),
 }
+_CALLBACK = f"            ab._resolve_parameter(sim, {_BUILT})({_UNREAD}, year)\n"
+# the round-6 review's survivor, a callback the old run's path-helper stub
+# dropped, and the getter routes to calculate it used: a vetted walker on a
+# built, a literal or an aliased path
+_ROUND_6 = {
+    "callback_through_path_helper": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    class ChildcarePath:\n        def resolve(self):\n"
+            f"{_CALLBACK}            return ROOT\n"
+            "    fiscal.relative_to_root(ChildcarePath())\n"
+        ),
+    ),
+    "getter_built_path": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}    ab._resolve_parameter(sim, {_BUILT})({_UNREAD}, year)\n",
+    ),
+    "getter_literal_path": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    ab._resolve_parameter(sim, "
+            f'"calculate.__call__")({_UNREAD}, year)\n'
+        ),
+    ),
+    "getter_alias": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    walk = ab._resolve_parameter\n"
+            f'    walk(sim, "calculate.__call__")({_UNREAD}, year)\n'
+        ),
+    ),
+    # the same callback handed to an engine method (a holder lookup hashes
+    # its name) and to a function the run stubs
+    "callback_through_engine_method": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    class Name(str):\n        def __hash__(self):\n"
+            f"{_CALLBACK}            return 0\n"
+            '    sim.get_holder(Name("age"))\n'
+        ),
+    ),
+    "callback_through_stub": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    class Dataset:\n        def __fspath__(self):\n"
+            f"{_CALLBACK}            return str(ROOT)\n"
+            "    fiscal.verify_runtime_dataset_sha256("
+            'Dataset(), "0" * 64, phase="year")\n'
+        ),
+    ),
+}
 # anchor -> mutant: each calculates a name the metadata does not list, by a
 # route the contract must refuse
 _MUTANTS = {
@@ -1163,6 +1295,20 @@ _MUTANTS = {
         f"{_YEAR_DOC}    sys.modules[__name__].HOURS_USAGE = {_UNREAD}\n",
     ),
     **_SURVIVORS,
+    **_ROUND_6,
+}
+# What the stand-in run alone makes of each mutant (the scan refuses them
+# all): it sees an unlisted name, or it does not, or a stub refuses the
+# object a mutant passes it, or the mutant crashes before an artifact.
+_RUN_ALONE = {
+    # calculates only listed names
+    "tuple_target": "listed",
+    # METADATA is built from the rebound name, so the run lists it
+    "module_constant_bound_twice": "listed",
+    # TypeError (an unhashable dict) before the run writes an artifact
+    "match_mapping_rest": "crash",
+    "callback_through_engine_method": "refused",
+    "callback_through_stub": "refused",
 }
 
 
@@ -1195,17 +1341,41 @@ def test_the_scan_alone_refuses_each_hidden_name(tmp_path, anchor, mutant):
         _calculated(mutated, compute)
 
 
-@pytest.mark.parametrize("anchor, mutant", _SURVIVORS.values(), ids=list(_SURVIVORS))
-def test_the_stand_in_run_alone_sees_each_round_5_survivor(
-    tmp_path, monkeypatch, anchor, mutant
-):
-    """With the scan set aside, the stand-in run of main() still reaches
-    each survivor's calculation: the helper it hides in runs, and so do
-    2029 and the drawn-hours branch."""
-    mutated = _mutant(tmp_path, anchor, mutant)
-    compute = _module(f"compute_survivor_{tmp_path.name}", mutated)
-    seen = {v for v, _ in _observed(compute, monkeypatch).calls}
-    assert "employment_income" in seen
+def _alone(compute, monkeypatch) -> str:
+    try:
+        seen = {v for v, _ in _observed(compute, monkeypatch).calls}
+    except Unvouched:
+        return "refused"
+    except TypeError:
+        return "crash"
+    return "unlisted" if seen - set(compute.METADATA) else "listed"
+
+
+@pytest.mark.parametrize("name", list(_MUTANTS))
+def test_what_the_stand_in_run_alone_makes_of_each_mutant(tmp_path, monkeypatch, name):
+    """With the scan set aside, the stand-in run of main() reaches the
+    calculation of every mutant but the five in _RUN_ALONE: the helper each
+    round-5 survivor hides in runs, and so do 2029, the drawn-hours branch
+    and the path helper the round-6 callback goes through."""
+    mutated = _mutant(tmp_path, *_MUTANTS[name])
+    compute = _module(f"compute_alone_{tmp_path.name}", mutated)
+    assert _alone(compute, monkeypatch) == _RUN_ALONE.get(name, "unlisted")
+
+
+def test_a_stub_refuses_any_argument_the_script_could_define():
+    """Each stub, and each stand-in method, refuses any argument whose type
+    the script could have defined; plain values, paths and arrays pass."""
+    _stub(None)(Path("x"), {"a": [1, 2.0, None]}, phase="p")
+    _array(np.zeros(2))
+
+    class Text(str):
+        pass
+
+    for value in (Text("x"), SimpleNamespace(), np.int64(1), [object()], {1: Text()}):
+        with pytest.raises(Unvouched):
+            _stub(None)(value)
+    with pytest.raises(Unvouched):
+        _array([1.0])
 
 
 def test_default_run_ids_differ_across_variants_and_runs():
@@ -1869,6 +2039,65 @@ def test_the_full_use_cost_keeps_every_true_record_shape(artifact, what):
     good = copy.deepcopy(artifact)
     _TRUE_FULL_USE[what](good)
     assert lane.full_use_cost(good, 2027) == lane.full_use_cost(artifact, 2027)
+
+
+def _current_law(a, year=2027):
+    return a["worlds"]["baseline"]["years"][str(year)]
+
+
+def test_no_family_receiving_under_current_law_is_stated_not_formatted(artifact):
+    """The round-6 review's robustness case. year_block itself, on a
+    stand-in where no benefit unit gets the extended hours, writes no
+    receiving mean and no receiving records; ingest then says so in the
+    note and the diagnosis instead of formatting a mean it does not have."""
+    compute = _module(
+        "compute_uk_childcare_100k_no_recipients",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    run = SimpleNamespace(calls=[], hours=[], reforms=[])
+    sim = _StandIn(run, None, [2027], Path("stand-in.h5"))
+    for v in (
+        "extended_childcare_entitlement",
+        "is_child_receiving_extended_childcare",
+    ):
+        sim.set_input(v, 2027, np.zeros(len(_StandIn.DRAWN)))
+    made = compute.year_block(sim, 2027)
+    assert made["hours_usage"]["mean_benunits_receiving_extended"] is None
+    assert made["records"]["benunits_receiving_extended"] == 0
+    none = copy.deepcopy(artifact)
+    for key in ("hours_usage", "records"):
+        _current_law(none)[key] = made[key]
+    assert lane.receiving_hours(none, 2027) is None
+    stated = "no family receives the extended hours under current law in 2027-28"
+    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", {})
+    assert sum(stated in n for n in notes) == 1
+    assert not any("weekly hours under current law" in n for n in notes)
+    scores, _, artifacts = lane.stage()
+    rows = lane.diagnoses(scores, [(none, artifacts[-1][1])])
+    assert sum("no family receives the extended hours" in str(r) for r in rows) == 1
+    assert sum("weighted mean of" in str(r) for r in rows) == len(rows) - 1
+
+
+@pytest.mark.parametrize(
+    "mean, records", [(None, 3), (15.3, 0), (None, "missing")], ids=str
+)
+def test_a_receiving_mean_must_agree_with_the_receiving_records(
+    artifact, mean, records
+):
+    """year_block writes no mean exactly when no benefit unit receives the
+    offer, so ingest refuses a mean without recipients and recipients
+    without a mean."""
+    bad = copy.deepcopy(artifact)
+    block = _current_law(bad)
+    block["hours_usage"]["mean_benunits_receiving_extended"] = mean
+    if records == "missing":
+        del block["records"]
+    else:
+        block["records"]["benunits_receiving_extended"] = records
+    with pytest.raises(ValueError, match="receiving-hours mean"):
+        lane.receiving_hours(bad, 2027)
+    with pytest.raises(ValueError, match="receiving-hours mean"):
+        lane.measured_notes(bad, lane.CENTAX, 2027, "fy", {})
 
 
 def test_the_full_use_check_reads_the_compute_scripts_own_constants(
