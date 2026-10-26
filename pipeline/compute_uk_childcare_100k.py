@@ -270,10 +270,11 @@ def year_block(sim, year: int) -> dict:
         "take_up": {v: _share(sim.calculate(v, year)) for v in TAKE_UP},
         "hours_usage": {
             "mean_all_benunits": float((hours * w_bu).sum() / w_bu.sum()),
+            # no mean (None, not 0/0) when no weight receives the offer
             "mean_benunits_receiving_extended": float(
                 (hours[receiving] * w_bu[receiving]).sum() / w_bu[receiving].sum()
             )
-            if receiving.any()
+            if w_bu[receiving].sum() > 0
             else None,
         },
         "limits_executed": limit_values(sim, year),

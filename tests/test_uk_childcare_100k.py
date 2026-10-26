@@ -479,7 +479,6 @@ _VETTED_ATTRIBUTES = frozenset(
         "abs",
         "add_argument",
         "allclose",
-        "any",
         "array_equal",
         "asarray",
         "ascii_lowercase",
@@ -617,10 +616,10 @@ def _stores(scope, name: str) -> list:
 
 
 def _refuse_hidden(tree, parents) -> None:
-    """Raise on any form in _HIDDEN or _DYNAMIC, on 'calculate' named as a
-    string or reached other than by a direct call, on getattr without a
-    literal attribute name, and on an attribute write that rebinds a module
-    constant of another object (sys.modules[__name__].X = ...)."""
+    """Raise on any form in _HIDDEN or _DYNAMIC, on 'calculate' or a getter
+    in _GETTERS named as a string or reached other than by a direct call, on
+    getattr without a literal attribute name, and on an attribute write that
+    rebinds a module constant of another object (sys.modules[__name__].X)."""
     constants = {
         t.id
         for node in tree.body
@@ -636,8 +635,8 @@ def _refuse_hidden(tree, parents) -> None:
             raise Unvouched(f"line {line}: {type(node).__name__} binds out of sight")
         if isinstance(node, ast.Name) and node.id in _DYNAMIC:
             raise Unvouched(f"line {line}: {node.id} can bind or call by name")
-        if isinstance(node, ast.Constant) and node.value == "calculate":
-            raise Unvouched(f"line {line}: 'calculate' named by a string")
+        if isinstance(node, ast.Constant) and node.value in {"calculate", *_GETTERS}:
+            raise Unvouched(f"line {line}: {node.value!r} named by a string")
         if isinstance(node, ast.Name) and node.id == "getattr":
             attr = parent.args[1] if called and len(parent.args) > 1 else None
             if not (isinstance(attr, ast.Constant) and isinstance(attr.value, str)):
@@ -659,6 +658,29 @@ def _refuse_unvetted(tree) -> None:
             raise Unvouched(f"unvetted {kind}s {sorted(used - known, key=str)}")
 
 
+def _refuse_classes(tree, parents) -> None:
+    """Raise on a class the script defines, by a class statement or by
+    type() with more than one argument. The script defines none. A method
+    of such a class (resolve, __fspath__, __hash__, __float__, ...) is the
+    script's code that library or engine code can call implicitly, inside
+    a stub, an array conversion or a lookup, where the stand-in run does
+    not follow."""
+    for node in ast.walk(tree):
+        line = getattr(node, "lineno", "?")
+        if isinstance(node, ast.ClassDef):
+            raise Unvouched(f"line {line}: class {node.name} could carry a callback")
+        if isinstance(node, ast.Name) and node.id == "type":
+            call = parents.get(node)
+            if not (
+                isinstance(call, ast.Call)
+                and call.func is node
+                and len(call.args) == 1
+                and not call.keywords
+                and not isinstance(call.args[0], ast.Starred)
+            ):
+                raise Unvouched(f"line {line}: type() other than on one object")
+
+
 def _calculated(path: Path, compute) -> set[str]:
     """Every name the source passes to sim.calculate, read as Python scopes
     read it. A name must be a literal, or bound exactly once on the way out
@@ -669,8 +691,9 @@ def _calculated(path: Path, compute) -> set[str]:
     any form _refuse_hidden lists, so a name cannot change unnoticed by a
     route this scan reads past. Each call of a getter in _GETTERS must have
     a path resolved the same way, to parameter paths only; then any name not
-    vetted raises, so no route other than a direct call reaches calculate.
-    The stand-in run backs it up (_observed)."""
+    vetted raises, so no route other than a direct call reaches calculate,
+    and so does any class (_refuse_classes), so no method the script defines
+    is called back unread. The stand-in run backs it up (_observed)."""
     tree = ast.parse(path.read_text())
     parents = {
         child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
@@ -804,6 +827,7 @@ def _calculated(path: Path, compute) -> set[str]:
             ):
                 raise Unvouched(f"line {node.lineno}: {p!r} is not a parameter path")
     _refuse_unvetted(tree)
+    _refuse_classes(tree, parents)
     return calculated
 
 
@@ -825,8 +849,13 @@ def _plain(*values) -> None:
 
 
 def _array(values) -> None:
+    """Refuse anything but a plain ndarray of numbers, bools or strings: the
+    engine converts an input array (astype(float)), which calls each member
+    of an object array."""
     if type(values) is not np.ndarray:
         raise Unvouched(f"a stub was passed a {type(values).__name__}, not an array")
+    if values.dtype.hasobject:
+        raise Unvouched(f"a stub was passed an array of {values.dtype}")
 
 
 def _stub(result):
@@ -1224,6 +1253,47 @@ _ROUND_6 = {
         ),
     ),
 }
+_INPUT = '"employment_income_behavioral_response"'
+# the round-7 review's survivor: the getter read by a literal getattr, from
+# the __float__ of objects in an array the engine converts; the getter read
+# by a string alone; and classes the class rule alone refuses, by a class
+# statement and by type(), whose callbacks are direct calls
+_ROUND_7 = {
+    "object_array_callback": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    class ChildcareValue:\n        def __float__(self):\n"
+            f'            getattr(ab, "_resolve_parameter")(sim, {_BUILT})'
+            f"({_UNREAD}, year)\n            return 1.0\n"
+            f"    sim.set_input(\n        {_INPUT},\n        year,\n"
+            "        np.asarray("
+            '[ChildcareValue()] * len(sim.calculate("age", year).values)),\n    )\n'
+        ),
+    ),
+    "getter_named_by_string": (
+        _YEAR_DOC,
+        (
+            f'{_YEAR_DOC}    getattr(ab, "_resolve_parameter")(sim, {_BUILT})'
+            f"({_UNREAD}, year)\n"
+        ),
+    ),
+    "class_calls_back": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    class Reader:\n        def __float__(self):\n"
+            f"            return float(sim.calculate({_UNREAD}, year).sum())\n"
+            f"    sim.set_input({_INPUT}, year, np.asarray([Reader()] * 3))\n"
+        ),
+    ),
+    "class_by_type": (
+        _YEAR_DOC,
+        (
+            f'{_YEAR_DOC}    Reader = type("Reader", (), {{"__float__": lambda _: '
+            f"float(sim.calculate({_UNREAD}, year).sum())}})\n"
+            f"    sim.set_input({_INPUT}, year, np.asarray([Reader()] * 3))\n"
+        ),
+    ),
+}
 # anchor -> mutant: each calculates a name the metadata does not list, by a
 # route the contract must refuse
 _MUTANTS = {
@@ -1296,6 +1366,7 @@ _MUTANTS = {
     ),
     **_SURVIVORS,
     **_ROUND_6,
+    **_ROUND_7,
 }
 # What the stand-in run alone makes of each mutant (the scan refuses them
 # all): it sees an unlisted name, or it does not, or a stub refuses the
@@ -1309,6 +1380,10 @@ _RUN_ALONE = {
     "match_mapping_rest": "crash",
     "callback_through_engine_method": "refused",
     "callback_through_stub": "refused",
+    # set_input refuses an object array
+    "object_array_callback": "refused",
+    "class_calls_back": "refused",
+    "class_by_type": "refused",
 }
 
 
@@ -1354,7 +1429,7 @@ def _alone(compute, monkeypatch) -> str:
 @pytest.mark.parametrize("name", list(_MUTANTS))
 def test_what_the_stand_in_run_alone_makes_of_each_mutant(tmp_path, monkeypatch, name):
     """With the scan set aside, the stand-in run of main() reaches the
-    calculation of every mutant but the five in _RUN_ALONE: the helper each
+    calculation of every mutant but those in _RUN_ALONE: the helper each
     round-5 survivor hides in runs, and so do 2029, the drawn-hours branch
     and the path helper the round-6 callback goes through."""
     mutated = _mutant(tmp_path, *_MUTANTS[name])
@@ -1374,8 +1449,13 @@ def test_a_stub_refuses_any_argument_the_script_could_define():
     for value in (Text("x"), SimpleNamespace(), np.int64(1), [object()], {1: Text()}):
         with pytest.raises(Unvouched):
             _stub(None)(value)
-    with pytest.raises(Unvouched):
-        _array([1.0])
+    for values in (
+        [1.0],
+        np.asarray([object()]),
+        np.zeros(2, dtype=[("a", object)]),
+    ):
+        with pytest.raises(Unvouched):
+            _array(values)
 
 
 def test_default_run_ids_differ_across_variants_and_runs():
@@ -2064,8 +2144,9 @@ def test_no_family_receiving_under_current_law_is_stated_not_formatted(artifact)
     made = compute.year_block(sim, 2027)
     assert made["hours_usage"]["mean_benunits_receiving_extended"] is None
     assert made["records"]["benunits_receiving_extended"] == 0
+    assert made["counts"]["benunits_receiving_extended"] == 0
     none = copy.deepcopy(artifact)
-    for key in ("hours_usage", "records"):
+    for key in ("hours_usage", "counts", "records"):
         _current_law(none)[key] = made[key]
     assert lane.receiving_hours(none, 2027) is None
     stated = "no family receives the extended hours under current law in 2027-28"
@@ -2078,22 +2159,72 @@ def test_no_family_receiving_under_current_law_is_stated_not_formatted(artifact)
     assert sum("weighted mean of" in str(r) for r in rows) == len(rows) - 1
 
 
+class _UnweightedReceivers(_StandIn):
+    """A stand-in whose benefit units given the extended hours all carry
+    zero weight, while one that is not given them carries weight."""
+
+    def calculate(self, variable, period):
+        series = super().calculate(variable, period)
+        if variable == "extended_childcare_entitlement":
+            series.weights = np.where(series.values > 0, 0.0, 1.0)
+        return series
+
+
+def test_receiving_records_with_no_receiving_weight_are_stated_not_nan(artifact):
+    """The round-7 review's producer boundary. Records that receive the
+    offer but weigh nothing in total give year_block no mean (None, not
+    0/0 = nan), and ingest, keyed on the weighted count, says no family
+    receives the offer."""
+    compute = _module(
+        "compute_uk_childcare_100k_unweighted_receivers",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    sim = _UnweightedReceivers(
+        SimpleNamespace(calls=[], hours=[]), None, [2027], Path("stand-in.h5")
+    )
+    made = compute.year_block(sim, 2027)
+    assert made["records"]["benunits_receiving_extended"] == 2
+    assert made["counts"]["benunits_receiving_extended"] == 0
+    assert made["hours_usage"]["mean_benunits_receiving_extended"] is None
+    none = copy.deepcopy(artifact)
+    for key in ("hours_usage", "counts", "records"):
+        _current_law(none)[key] = made[key]
+    assert lane.receiving_hours(none, 2027) is None
+    notes = lane.measured_notes(none, lane.CENTAX, 2027, "2027-28", {})
+    stated = "no family receives the extended hours under current law in 2027-28"
+    assert sum(stated in n for n in notes) == 1
+    assert not any("nan" in n for n in notes)
+
+
 @pytest.mark.parametrize(
-    "mean, records", [(None, 3), (15.3, 0), (None, "missing")], ids=str
+    "mean, weight",
+    [
+        (None, "kept"),
+        (15.3, 0),
+        (float("nan"), "kept"),
+        (float("inf"), "kept"),
+        (15.3, float("nan")),
+        (None, float("nan")),
+        (15.3, "missing"),
+        (None, "missing"),
+        (15.3, -1.0),
+        ("15.3", "kept"),
+        (True, "kept"),
+        (15.3, True),
+    ],
+    ids=str,
 )
-def test_a_receiving_mean_must_agree_with_the_receiving_records(
-    artifact, mean, records
-):
-    """year_block writes no mean exactly when no benefit unit receives the
-    offer, so ingest refuses a mean without recipients and recipients
-    without a mean."""
+def test_a_receiving_mean_must_agree_with_the_receiving_weight(artifact, mean, weight):
+    """year_block writes no mean exactly when no weight receives the offer,
+    so ingest refuses a mean without receiving weight, receiving weight
+    without a mean, and any mean or weight that is not a finite number."""
     bad = copy.deepcopy(artifact)
     block = _current_law(bad)
     block["hours_usage"]["mean_benunits_receiving_extended"] = mean
-    if records == "missing":
-        del block["records"]
-    else:
-        block["records"]["benunits_receiving_extended"] = records
+    if weight == "missing":
+        del block["counts"]["benunits_receiving_extended"]
+    elif weight != "kept":
+        block["counts"]["benunits_receiving_extended"] = weight
     with pytest.raises(ValueError, match="receiving-hours mean"):
         lane.receiving_hours(bad, 2027)
     with pytest.raises(ValueError, match="receiving-hours mean"):

@@ -75,6 +75,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import math
 import re
 import string
 from collections import Counter
@@ -738,18 +739,35 @@ def counterpart(art: dict, source: str, year: int) -> float:
     )
 
 
+def _receiving_mean(block: dict) -> tuple[bool, float | None]:
+    """(sound, mean): a block's weighted mean hours usage of the families
+    receiving the extended hours. year_block writes no mean exactly when no
+    weight receives them, so the record is sound only with a finite mean and
+    a positive weighted count, or no mean and a zero count."""
+    mean = (block.get("hours_usage") or {}).get("mean_benunits_receiving_extended")
+    weight = (block.get("counts") or {}).get("benunits_receiving_extended")
+    sound = _finite(weight) and (
+        (mean is None and weight == 0) or (_finite(mean) and weight > 0)
+    )
+    return sound, mean
+
+
+def _finite(x) -> bool:
+    """A finite JSON number (a bool is not one)."""
+    return type(x) in (int, float) and math.isfinite(x)
+
+
 def receiving_hours(art: dict, year: int) -> float | None:
     """The current-law weighted mean hours usage of the families receiving
-    the extended hours, or None when the run recorded no such family.
-    year_block writes None exactly when none receives them, so a mean and
-    a record count that disagree are refused."""
+    the extended hours, or None when no weight receives them; an unsound
+    record (_receiving_mean) is refused."""
     block = art["worlds"]["baseline"]["years"][str(year)]
-    mean = block["hours_usage"]["mean_benunits_receiving_extended"]
-    records = block.get("records", {}).get("benunits_receiving_extended")
-    if (mean is None) != (records == 0):
+    sound, mean = _receiving_mean(block)
+    if not sound:
+        weight = (block.get("counts") or {}).get("benunits_receiving_extended")
         raise ValueError(
             f"{art['run_id']} {year}: receiving-hours mean {mean!r} with "
-            f"{records!r} receiving records"
+            f"receiving weight {weight!r}"
         )
     return mean
 
@@ -948,12 +966,9 @@ def full_use_cost(art: dict, year: int) -> float | None:
             and all(deps[v] == [] for v in deps),
             "read back": _full(o.get("post_set_weighted_mean", {}).get(y)),
             "mean, all": _full(hours.get("mean_all_benunits")),
-            # year_block writes None when no benefit unit receives the offer
+            # year_block writes no mean when no weight receives the offer
             "mean, receiving": _full(receiving)
-            or (
-                receiving is None
-                and block.get("records", {}).get("benunits_receiving_extended") == 0
-            ),
+            or (receiving is None and _receiving_mean(block)[0]),
             "sentinel": art.get("limit_sentinel") == NO_LIMIT,
             "reform": _same_reform(reform, main.get("reform_dict"), year),
             "executed limits": isinstance(executed, dict)
