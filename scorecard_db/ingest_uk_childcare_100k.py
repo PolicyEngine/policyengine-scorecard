@@ -469,10 +469,15 @@ def _pe_missing(
     that exist (the years each computed, not the years its dataset holds),
     or None when one of them computed it."""
     if source == CENTAX and component not in CENTAX_ATTACHED:
-        latest = verified_pair(notes, artifacts[-1][0])
+        # the pair of the newest run that computed this year, as for a result
+        runs = [a for a, _ in artifacts]
+        covering = [
+            a for a in runs if str(period - 1) in a["worlds"][WORLDS[CENTAX]]["years"]
+        ]
+        newest = max(covering or runs, key=lambda a: a["computed_at"])
         return (
             "behavioural leg: this lane's PolicyEngine counterparts are static "
-            f"runs ({latest['static_because']})"
+            f"runs ({verified_pair(notes, newest)['static_because']})"
         )
     year = period - 1
     if any(str(year) in a["worlds"][WORLDS[source]]["years"] for a, _ in artifacts):
@@ -691,7 +696,11 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
     outside = {v: d[v] - eng[v] for v in FREE_HOURS}
     if any(abs(x) > 1e6 for x in outside.values()):
         raise ValueError(f"{source} {year}: free hours moved outside England {outside}")
-    supplied = art["worlds"]["baseline"]["dataset_inputs"]
+    # an input counts as the dataset's own only in a year the dataset holds it
+    supplied = {
+        v: str(year) in periods
+        for v, periods in art["worlds"]["baseline"]["dataset_inputs"].items()
+    }
     take_up = b["take_up"]
     notes = [
         (
@@ -731,14 +740,14 @@ def measured_notes(art: dict, source: str, year: int, fy: str, pair: dict) -> li
             "whose take-up input is true under current law is "
             + ", ".join(
                 f"{v} {take_up[v]:.3f}"
-                + ("" if supplied[v] else " (engine default; not in the dataset)")
+                + ("" if supplied.get(v) else " (engine default; not in the dataset)")
                 for v in sorted(take_up)
             )
             + f"; {HOURS_USAGE_INPUT} is "
             + (
                 "the dataset's own input."
-                if supplied[HOURS_USAGE_INPUT]
-                else "the engine default of 30 (not in the dataset)."
+                if supplied.get(HOURS_USAGE_INPUT)
+                else "the engine's default (not in the dataset for this year)."
             )
         ),
         "Executed limits on 30 April {y}: 30 hours {a:g}, Tax-Free Childcare {t:g} (1e+100 is the "
@@ -834,11 +843,11 @@ def published_result(
 def certified_result(
     s: ExternalScore, notes: dict, art: dict, path: Path
 ) -> PEResult | None:
+    pair = verified_pair(notes, art)
     year = s.period - 1
     if str(year) not in art["worlds"][WORLDS[s.source]]["years"]:
         return None
     vid = art["variant_id"]
-    pair = verified_pair(notes, art)
     texts, status = match_annotations(s, "certified", notes[s.source], vid)
     construction = [a["text"] for a in _scoped(notes["construction"], vid)]
     return PEResult(
@@ -873,6 +882,8 @@ def results(
     notes verified on its own pair, and the published dashboard figure on
     CenTax's central rows, older than all."""
     notes = notes or load_notes()
+    for art, _ in artifacts:
+        verified_pair(notes, art)
     pub = _published()
     oldest = min(art["computed_at"] for art, _ in artifacts)
     out = []
@@ -894,27 +905,44 @@ def results(
     return out
 
 
-def _diagnosed(s: ExternalScore, art: dict, pair: dict) -> bool:
-    """A CenTax central static row the latest run computed, on a pair whose
-    verified_pairs entry states a diagnosis."""
+def _covering(s: ExternalScore, artifacts: list[tuple[dict, Path]]) -> dict | None:
+    """The newest certified run that computed this claim's year: its latest
+    certified result, so the run its diagnosis must come from."""
+    year = str(s.period - 1)
+    runs = [
+        art for art, _ in artifacts if year in art["worlds"][WORLDS[s.source]]["years"]
+    ]
+    return max(runs, key=lambda a: a["computed_at"]) if runs else None
+
+
+def _diagnosed(s: ExternalScore, art: dict | None, pair: dict | None) -> bool:
+    """A CenTax central static row whose latest certified result comes from
+    a run on a pair whose verified_pairs entry states a diagnosis."""
     c = s.conditions
     return (
-        pair.get("diagnosis") is not None
+        art is not None
+        and pair.get("diagnosis") is not None
         and (s.source, c.get("component"), c.get("scenario"))
         == (CENTAX, "static_cost", "central")
-        and str(s.period - 1) in art["worlds"][WORLDS[CENTAX]]["years"]
     )
 
 
 def diagnoses(
-    scores: list[ExternalScore], art: dict, notes: dict | None = None
+    scores: list[ExternalScore],
+    artifacts: list[tuple[dict, Path]],
+    notes: dict | None = None,
 ) -> list[tuple]:
     """pe_gap on the CenTax central static rows, linked to microcosm#1126,
-    as the latest run's own pair states it: the measured lead from the run,
-    then the pair's verified diagnosis (none for a pair that states none)."""
-    pair = verified_pair(notes or load_notes(), art)
+    each as the pair of its own latest certified result states it: the
+    measured lead from that run, then the pair's verified diagnosis (none for
+    a pair that states none). A newer run that skips a claim's year leaves
+    that claim's diagnosis with the run that computed it."""
+    notes = notes or load_notes()
+    pairs = {art["run_id"]: verified_pair(notes, art) for art, _ in artifacts}
     rows = []
     for s in scores:
+        art = _covering(s, artifacts)
+        pair = pairs[art["run_id"]] if art is not None else None
         if not _diagnosed(s, art, pair):
             continue
         c = s.conditions
@@ -964,7 +992,8 @@ def expected(
     computed; CenTax's static rows are comparable and every net figure a
     concept_mismatch; the published figure attaches to the central static
     (constructed) and net (concept_mismatch) rows in its years."""
-    pair = verified_pair(notes or load_notes(), artifacts[-1][0])
+    notes = notes or load_notes()
+    pairs = {art["run_id"]: verified_pair(notes, art) for art, _ in artifacts}
     published_years = _published()["values_gbp_bn"]["thirty_hours"]
     kinds: Counter = Counter()
     statuses: Counter = Counter()
@@ -991,7 +1020,11 @@ def expected(
         "results": sum(kinds.values()),
         "results_by_kind": dict(kinds),
         "statuses": dict(statuses),
-        "diagnoses": sum(_diagnosed(s, artifacts[-1][0], pair) for s in scores),
+        "diagnoses": sum(
+            _diagnosed(s, art, pairs[art["run_id"]] if art else None)
+            for s in scores
+            for art in [_covering(s, artifacts)]
+        ),
         "drops": {"cbp_taper_rows": 60, "centax_bunching_counts": 12},
     }
 
@@ -1019,7 +1052,7 @@ def ingest(db_path: Path) -> dict:
     scores, drops, artifacts = stage(notes)
     art = artifacts[-1][0]
     pe = results(scores, artifacts, notes)
-    diag = diagnoses(scores, art, notes)
+    diag = diagnoses(scores, artifacts, notes)
     counts = accounting(scores, pe, diag, drops, artifacts)
     want = expected(scores, artifacts, notes)
     if counts != want:
@@ -1046,10 +1079,16 @@ def ingest(db_path: Path) -> dict:
         db.conn.executemany(RESULTS_SQL, [ScorecardDB.result_row(r) for r in pe])
         db.conn.executemany(DIAGNOSES_SQL, diag)
         register_baselines_txn(db)
-        latest = {r.claim_id for r in pe if r.run_id == art["run_id"]}
+        runs = {a["run_id"] for a, _ in artifacts}
+        computed = {r.claim_id for r in pe if r.run_id in runs}
+        pairs = (
+            "the certified pair"
+            if len(artifacts) == 1
+            else f"{len(artifacts)} certified pairs, the newest"
+        )
         detail = (
-            f"{len(latest)} of {len(scores)} claims computed on the "
-            f"certified pair ({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
+            f"{len(computed)} of {len(scores)} claims computed on {pairs} "
+            f"({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
             "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
             "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
             "dashboard figure kept as history"

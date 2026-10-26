@@ -372,46 +372,135 @@ def test_artifact_records_the_inputs_and_metadata_it_read(artifact):
                 assert all(0 <= x <= 1 for x in block["take_up"].values())
 
 
+_COMPS = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+_SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef, *_COMPS)
+
+
+def _binds(node, name: str) -> bool:
+    """Does this node bind `name` in the scope it sits in?"""
+    if isinstance(node, ast.Name):
+        return node.id == name and isinstance(node.ctx, ast.Store | ast.Del)
+    if isinstance(node, ast.arg):
+        return node.arg == name
+    if isinstance(node, ast.alias):
+        return (node.asname or node.name).split(".")[0] == name
+    if isinstance(node, ast.Global | ast.Nonlocal):
+        return name in node.names
+    if isinstance(node, ast.ExceptHandler | ast.MatchAs | ast.MatchStar):
+        return node.name == name
+    if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+        return node.name == name
+    return False
+
+
+def _stores(scope, name: str) -> list:
+    """Every binding of `name` in this scope, not in scopes nested in it."""
+    out = []
+
+    def visit(node):
+        for child in ast.iter_child_nodes(node):
+            if _binds(child, name):
+                out.append(child)
+            if not isinstance(child, _SCOPES):
+                visit(child)
+
+    if isinstance(scope, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+        out += [a for a in ast.walk(scope.args) if _binds(a, name)]
+    visit(scope)
+    return out
+
+
 def _calculated(path: Path, compute) -> set[str]:
-    """Every name the source passes to sim.calculate: a literal, a module
-    string constant, or a loop variable resolved in its own nearest
-    enclosing loop or comprehension (over a module tuple or a tuple display).
-    Anything else fails, so an unread name cannot pass unnoticed."""
+    """Every name the source passes to sim.calculate, read as Python scopes
+    read it. A name must be a literal, or bound exactly once on the way out
+    from the call: by the plain target of a loop or comprehension around the
+    call, over a tuple display or a module tuple; or nowhere, a module
+    string constant. Any other binding (an assignment, a second loop, a
+    rebinding generator, an argument, a tuple target) fails, so an unread
+    name cannot pass unnoticed."""
     tree = ast.parse(path.read_text())
     parents = {
         child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
     }
 
+    def scopes(node):
+        while node in parents:
+            node = parents[node]
+            if isinstance(node, _SCOPES):
+                yield node
+
+    def module_value(name: ast.Name):
+        for scope in scopes(name):
+            if _stores(scope, name.id):
+                raise AssertionError(
+                    f"{name.id!r} is rebound before line {name.lineno}"
+                )
+        found = _stores(tree, name.id)
+        if len(found) != 1 or not isinstance(
+            parents[found[0]], ast.Assign | ast.AnnAssign
+        ):
+            raise AssertionError(
+                f"{name.id!r} is not one plain module assignment ({len(found)} bindings)"
+            )
+        return getattr(compute, name.id)
+
     def values(expr) -> list:
         if isinstance(expr, ast.Constant):
             return [expr.value]
         if isinstance(expr, ast.Name):
-            value = getattr(compute, expr.id)
-            return list(value) if isinstance(value, tuple) else [value]
+            value = module_value(expr)
+            assert isinstance(value, tuple), expr.id
+            return list(value)
         if isinstance(expr, ast.Tuple | ast.List):
             out = []
             for e in expr.elts:
-                out += values(e.value if isinstance(e, ast.Starred) else e)
+                if isinstance(e, ast.Starred):
+                    out += values(e.value)
+                elif isinstance(e, ast.Name):
+                    value = module_value(e)
+                    assert isinstance(value, str), e.id
+                    out.append(value)
+                else:
+                    out += values(e)
             return out
         raise AssertionError(f"unresolved loop iterable {ast.dump(expr)}")
 
-    def binding(name: ast.Name) -> list | None:
-        node = name
+    def inside(node, block) -> bool:
         while node in parents:
+            if any(node is b for b in block):
+                return True
             node = parents[node]
-            loops = (
-                [node]
-                if isinstance(node, ast.For)
-                else node.generators
-                if isinstance(
-                    node, ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
+        return False
+
+    def resolve(name: ast.Name) -> list:
+        for scope in scopes(name):
+            found = _stores(scope, name.id)
+            if not found:
+                continue
+            if len(found) > 1:
+                raise AssertionError(
+                    f"{name.id!r} is bound {len(found)} times around line {name.lineno}"
                 )
-                else []
+            target = parents[found[0]]
+            comprehension = (
+                isinstance(scope, _COMPS)
+                and isinstance(target, ast.comprehension)
+                and target.target is found[0]
             )
-            for loop in loops:
-                if isinstance(loop.target, ast.Name) and loop.target.id == name.id:
-                    return values(loop.iter)
-        return None
+            loop = (
+                isinstance(target, ast.For)
+                and target.target is found[0]
+                and inside(name, target.body)
+            )
+            if comprehension or loop:
+                return values(target.iter)
+            raise AssertionError(
+                f"{name.id!r} at line {name.lineno} is bound by "
+                f"{type(target).__name__}, not a loop over known names"
+            )
+        value = module_value(name)
+        assert isinstance(value, str), name.id
+        return [value]
 
     calculated = set()
     for node in ast.walk(tree):
@@ -425,12 +514,7 @@ def _calculated(path: Path, compute) -> set[str]:
         if isinstance(arg, ast.Constant):
             calculated.add(arg.value)
         elif isinstance(arg, ast.Name):
-            bound = binding(arg)
-            if bound is None:
-                value = getattr(compute, arg.id)
-                assert isinstance(value, str), arg.id
-                bound = [value]
-            calculated |= set(bound)
+            calculated |= set(resolve(arg))
         else:
             raise TypeError(f"unresolved calculate argument {ast.dump(arg)}")
     return calculated
@@ -459,6 +543,55 @@ def test_the_metadata_scan_catches_a_summed_variable_left_out():
     compute = _module("compute_uk_childcare_100k_src_mut", path)
     pruned = set(compute.METADATA) - {"gov_spending", "gov_tax"}
     assert not _calculated(path, compute) <= pruned
+
+
+_UNREAD = '"employment_income"'
+
+
+@pytest.mark.parametrize(
+    "anchor, mutant",
+    [
+        # the round-3 review's two mutants: a rebinding generator, and an
+        # assignment inside the loop
+        (
+            "for v in SUMMED}",
+            f"for v in SUMMED for v in ({_UNREAD},)}}",
+        ),
+        (
+            "    for v in HEADS:\n",
+            f"    for v in HEADS:\n        v = {_UNREAD}\n",
+        ),
+        # a module tuple shadowed in the function that reads it
+        (
+            '    """Weighted sums and counts for one world and year (microdf weights)."""\n',
+            (
+                '    """Weighted sums and counts for one world and year (microdf weights)."""\n'
+                f"    SUMMED = ({_UNREAD},)\n"
+            ),
+        ),
+        # a module constant bound twice
+        (
+            'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n',
+            (
+                'HOURS_USAGE = "maximum_extended_childcare_hours_usage"\n'
+                f"HOURS_USAGE = {_UNREAD}\n"
+            ),
+        ),
+        # a loop the scan cannot read
+        ("for v in SUMMED}", "for v, _ in zip(SUMMED, SUMMED)}"),
+    ],
+)
+def test_the_metadata_scan_refuses_a_rebound_name(tmp_path, anchor, mutant):
+    """Each mutant calculates a name the scan cannot vouch for; the scan
+    must fail rather than read the name's old binding."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    compute = _module("compute_uk_childcare_100k_src_rebind", path)
+    source = path.read_text()
+    assert source.count(anchor) == 1, anchor
+    mutated = tmp_path / "compute_uk_childcare_100k.py"
+    mutated.write_text(source.replace(anchor, mutant))
+    with pytest.raises((AssertionError, TypeError)):
+        _calculated(mutated, compute)
 
 
 def test_default_run_ids_differ_across_variants_and_runs():
@@ -627,14 +760,14 @@ def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
     assert runs["earlier-certified-run"] == runs[latest["run_id"]] == 22
     # ingest's tally scales with the runs, so a second artifact builds
     drops = lane.stage()[1]
-    diag = lane.diagnoses(scores, latest)
+    diag = lane.diagnoses(scores, history)
     want = lane.expected(scores, history)
     assert lane.accounting(scores, out, diag, drops, history) == want
     assert want["results"] == 2 * 22 + 4
     one = lane.results(scores, artifacts)
-    assert lane.accounting(scores, one, diag, drops, artifacts) == lane.expected(
-        scores, artifacts
-    )
+    assert lane.accounting(
+        scores, one, lane.diagnoses(scores, artifacts), drops, artifacts
+    ) == lane.expected(scores, artifacts)
     # the published figure must stay older than every certified run
     earlier["computed_at"] = "2026-10-01T00:00:00+00:00"
     with pytest.raises(ValueError, match="older than every certified run"):
@@ -706,7 +839,15 @@ def test_an_artifact_on_an_unverified_pair_is_refused(artifact, tmp_path):
     with pytest.raises(ValueError, match="no note in this lane was verified"):
         lane.results(scores, [*artifacts, (other, lane.RESULTS_DIR / _path(other))])
     with pytest.raises(ValueError, match="no note in this lane was verified"):
-        lane.diagnoses(scores, other)
+        lane.diagnoses(scores, [*artifacts, (other, lane.RESULTS_DIR / _path(other))])
+    with pytest.raises(ValueError, match="no note in this lane was verified"):
+        lane.expected(scores, [*artifacts, (other, lane.RESULTS_DIR / _path(other))])
+    # refused even when the unverified run computes no claim's year
+    idle = copy.deepcopy(other)
+    for world in idle["worlds"].values():
+        world["years"] = {}
+    with pytest.raises(ValueError, match="no note in this lane was verified"):
+        lane.results(scores, [*artifacts, (idle, lane.RESULTS_DIR / _path(idle))])
 
 
 def test_notes_reach_only_the_pairs_they_were_checked_on(artifact, tmp_path):
@@ -732,7 +873,7 @@ def test_notes_reach_only_the_pairs_they_were_checked_on(artifact, tmp_path):
         assert switch_off in r.annotations
         assert any(draw in t for t in r.annotations)
     # the newest pair states no diagnosis, so none is drawn from the old one
-    assert lane.diagnoses(scores, other, notes) == []
+    assert lane.diagnoses(scores, _in_repo(artifacts), notes) == []
     # and the behavioural legs say why from the newest pair
     legs = [s for s in scores if s.conditions.get("component") == "intensive_margin"]
     assert legs and all(
@@ -774,13 +915,35 @@ def test_tally_and_pe_missing_follow_each_runs_computed_years(artifact, tmp_path
     for name, certified in (("alone", 22), ("default_years", 44), ("with_2031", 46)):
         scores, drops, arts = histories[name]
         out = lane.results(scores, _in_repo(arts), notes)
-        diag = lane.diagnoses(scores, arts[-1][0], notes)
+        diag = lane.diagnoses(scores, _in_repo(arts), notes)
         got = lane.accounting(scores, out, diag, drops, arts)
         assert got == lane.expected(scores, arts, notes)
         assert got["results_by_kind"] == {
             "certified": certified,
             "published_dashboard": 4,
         }
+
+
+def test_a_newer_run_that_skips_a_year_leaves_that_years_diagnosis(artifact, tmp_path):
+    """The round-3 review's case: a newer run on a verified pair that
+    computes only 2031 takes no claim's latest result in the years it skips,
+    so the diagnoses of those years stay with the run that computed them."""
+    wide = _wide_certified()
+    notes = _verified_for(wide["variant_id"])
+    other = _on_pair(artifact, wide, run_id="other", with_2031=True)
+    for world in other["worlds"].values():
+        world["years"] = {y: b for y, b in world["years"].items() if y == "2031"}
+    _write(tmp_path, artifact, other)
+    scores, drops, arts = lane.stage(notes, results_dir=tmp_path)
+    arts = _in_repo(arts)
+    out = lane.results(scores, arts, notes)
+    diag = lane.diagnoses(scores, arts, notes)
+    default = notes["pairs"][VARIANTS["default_variant"]]["diagnosis"]
+    assert len(diag) == 2 and all(default in str(row) for row in diag)
+    got = lane.accounting(scores, out, diag, drops, arts)
+    assert got == lane.expected(scores, arts, notes)
+    assert got["results_by_kind"] == {"certified": 24, "published_dashboard": 4}
+    assert got["diagnoses"] == 2
 
 
 def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):
