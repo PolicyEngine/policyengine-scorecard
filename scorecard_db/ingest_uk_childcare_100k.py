@@ -75,6 +75,8 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import re
+import string
 from collections import Counter
 from pathlib import Path
 
@@ -136,10 +138,23 @@ FULL_USE = {
     "baseline": "baseline__full_use_hours",
     "free_hours": "free_hours__full_use_hours",
 }
+# What set_full_use reads before it sets the input: the holders of every
+# variable that reads it, each still empty.
+FULL_USE_DEPENDENTS = (*FREE_HOURS, "extended_childcare_entitlement_eligible")
+# The limits each world records as executed on 30 April, and the value a
+# removed limit executes as (compute_uk_ab2025.NO_LIMIT: policyengine-core
+# has no infinity in a reform dict).
+LIMITS = (
+    "gov.dfe.extended_childcare_entitlement.income.limit",
+    "gov.hmrc.tax_free_childcare.income.income_limit",
+)
+NO_LIMIT = 1e100
+_PERIOD = re.compile(r"\d{4}-\d{2}-\d{2}\.\d{4}-\d{2}-\d{2}")
 # Within a data bundle the comparisons view prefers these runs (db.py: the
 # canonical Urban grid), so a run of this lane may not take the prefix: its
 # latest result must be its newest run.
 RESERVED_RUN_PREFIX = "platform-grid-"
+_ASCII_LOWER = str.maketrans(string.ascii_uppercase, string.ascii_lowercase)
 # the artifact's sums for people in English households
 ENGLAND = "sums_gbp_england"
 
@@ -478,6 +493,14 @@ def _utc(stamp: str, where: str) -> None:
         )
 
 
+def reserved_run_id(run_id: str) -> bool:
+    """Does the comparisons view's run_id LIKE 'platform-grid-%' match this
+    run id? SQLite's LIKE ignores case for ASCII letters only, so only those
+    are folded here."""
+    head = run_id[: len(RESERVED_RUN_PREFIX)]
+    return head.translate(_ASCII_LOWER) == RESERVED_RUN_PREFIX
+
+
 def check_history(artifacts: list[tuple[dict, Path]]) -> None:
     """The run history each stage reads: distinct run ids outside the
     reserved prefix, and distinct canonical UTC computed_at times, so each
@@ -485,7 +508,7 @@ def check_history(artifacts: list[tuple[dict, Path]]) -> None:
     if not artifacts:
         raise ValueError("no certified artifact")
     for art, path in artifacts:
-        if art["run_id"].startswith(RESERVED_RUN_PREFIX):
+        if reserved_run_id(art["run_id"]):
             raise ValueError(
                 f"{path.name}: run_id {art['run_id']!r} takes the reserved prefix "
                 f"{RESERVED_RUN_PREFIX!r}"
@@ -818,19 +841,61 @@ def _full(x) -> bool:
     return x is not None and abs(x - FULL_USE_HOURS) < 1e-6
 
 
-def _covers(period: str, year: int) -> bool:
-    start, end = period.split(".")
-    return int(start[:4]) <= year <= int(end[:4])
+def _in_force(periods, year: int):
+    """The value a reform dict's period map sets for engine year `year`: on
+    30 April of that year (fy_rule), each period read as policyengine-core's
+    Reform.from_dict reads start.stop, both days included. None unless the
+    map is well formed and the periods covering the date set one value (the
+    artifact sorts its keys, so it does not show the order overlapping
+    periods were applied in)."""
+    if not isinstance(periods, dict):
+        return None
+    on = dt.date(year, 4, 30)
+    hits = []
+    for period, value in periods.items():
+        if not (isinstance(period, str) and _PERIOD.fullmatch(period)):
+            return None
+        try:
+            start, stop = (dt.date.fromisoformat(d) for d in period.split("."))
+        except ValueError:
+            return None
+        if start > stop:
+            return None
+        if start <= on <= stop:
+            hits.append(value)
+    return hits[0] if hits and all(h == hits[0] for h in hits) else None
+
+
+def _same_reform(reform, main, year: int) -> bool:
+    """The diagnostic world ran the main world's reform: both none, or the
+    same limits, each removed (NO_LIMIT) in both on the year's parameter
+    date."""
+    if reform is None or main is None:
+        return reform is None and main is None
+    return (
+        isinstance(reform, dict)
+        and isinstance(main, dict)
+        and bool(main)
+        and sorted(reform) == sorted(main)
+        and all(
+            _in_force(reform[p], year) == NO_LIMIT == _in_force(main[p], year)
+            for p in main
+        )
+    )
 
 
 def full_use_cost(art: dict, year: int) -> float | None:
     """The reform's free-hours cost with every family at the full 30 hours,
     from the run's two full-use worlds, or None when it ran none for this
-    year. Each world must record the override the text states: the hours
-    input set to 30 in this year before any of its dependents was
-    calculated, read back at 30, on the main world's reform (the same
-    limits at the no-limit sentinel, in force this year). Anything else
-    raises, so no note or diagnosis claims full use without the evidence."""
+    year. Each world must record what the text states:
+    - the hours input set to 30 in this year, with every holder that reads
+      it (FULL_USE_DEPENDENTS) still empty, and read back at 30;
+    - the main world's reform: the same limits removed on 30 April of the
+      year, under the repo's NO_LIMIT sentinel;
+    - the main world's executed limits, read back from the engine on that
+      date, each at NO_LIMIT exactly when the reform removes it.
+    Anything else raises, so no note or diagnosis claims full use without
+    the evidence."""
     diag, y = art["diagnostics"], str(year)
     held = {w: y in diag.get(name, {}).get("years", {}) for w, name in FULL_USE.items()}
     if not any(held.values()):
@@ -840,32 +905,36 @@ def full_use_cost(art: dict, year: int) -> float | None:
             raise ValueError(
                 f"{art['run_id']} {year}: no {name} world beside the other"
             )
-        d, main = diag[name], art["worlds"][world]["reform_dict"]
+        d, main = diag[name], art["worlds"][world]
         o = d.get("input_override") or {}
         deps = o.get("dependents_calculated_before_override")
-        hours = d["years"][y]["hours_usage"]
-        reform = d["reform_dict"]
-        same_reform = (reform is None and main is None) or (
-            reform is not None
-            and main is not None
-            and sorted(reform) == sorted(main)
-            and all(
-                v == art["limit_sentinel"] and _covers(period, year)
-                for periods in reform.values()
-                for period, v in periods.items()
-            )
-        )
+        block = d["years"][y]
+        hours = block.get("hours_usage") or {}
+        reform = d.get("reform_dict")
+        executed = block.get("limits_executed")
+        removed = set(reform or {})
+        receiving = hours.get("mean_benunits_receiving_extended")
         evidence = {
             "variable": o.get("variable") == HOURS_USAGE_INPUT,
             "value": o.get("value") == FULL_USE_HOURS,
             "year set": year in o.get("set_for_years", []),
             "set first": isinstance(deps, dict)
-            and bool(deps)
-            and not any(deps.values()),
+            and sorted(deps) == sorted(FULL_USE_DEPENDENTS)
+            and all(deps[v] == [] for v in deps),
             "read back": _full(o.get("post_set_weighted_mean", {}).get(y)),
             "mean, all": _full(hours.get("mean_all_benunits")),
-            "mean, receiving": _full(hours.get("mean_benunits_receiving_extended")),
-            "reform": same_reform,
+            # year_block writes None when no benefit unit receives the offer
+            "mean, receiving": _full(receiving)
+            or (
+                receiving is None
+                and block.get("records", {}).get("benunits_receiving_extended") == 0
+            ),
+            "sentinel": art.get("limit_sentinel") == NO_LIMIT,
+            "reform": _same_reform(reform, main.get("reform_dict"), year),
+            "executed limits": isinstance(executed, dict)
+            and sorted(executed) == sorted(LIMITS)
+            and executed == main["years"].get(y, {}).get("limits_executed")
+            and all((executed[p] == NO_LIMIT) == (p in removed) for p in LIMITS),
         }
         if not all(evidence.values()):
             wrong = sorted(k for k, ok in evidence.items() if not ok)
@@ -976,7 +1045,7 @@ def _published() -> dict:
     path = CENTAX_DIR / "pe" / "published_dashboard.json"
     pub = json.loads(path.read_text())
     _utc(pub["generated_at"], f"{path.name} generated_at")
-    if pub["run_id"].startswith(RESERVED_RUN_PREFIX):
+    if reserved_run_id(pub["run_id"]):
         raise ValueError(f"{path.name}: run_id takes the reserved prefix")
     return pub
 

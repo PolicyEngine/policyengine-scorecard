@@ -80,7 +80,10 @@ weighted mean of 15.3 of the 30 weekly hours (`maximum_extended_childcare_hours_
 #1126 puts DfE's mean at about 28.5 and identifies the draw as the main
 reason PolicyEngine's free-hours spending is low. With every family at the
 full 30 hours, the same reform costs £1.40bn in 2027-28 and £1.72bn in
-2029-30 on this pair (a diagnostic run, never attached). Smaller factors on
+2029-30 on this pair (a diagnostic run, never attached). Ingest writes that
+figure only when both full-use worlds record it: the input set to 30 before
+any holder that reads it was filled, read back at 30, and the main world's
+reform and executed limits on 30 April of the year. Smaller factors on
 our side, recorded on each result: the engine switches universal and
 targeted hours off once a family qualifies for the extended hours
 ([policyengine-uk#1930](https://github.com/PolicyEngine/policyengine-uk/issues/1930),
@@ -118,8 +121,9 @@ and it refuses an artifact whose package, release-bundle or dataset identity
 differs from its variant record. It keeps every certified artifact's run.
 Each claim's latest result is the newest run that computed the claim's
 year; older runs and the published figure stay in the history. Run ids may
-not start with `platform-grid-`, which the comparisons view prefers within
-a data bundle. Each `computed_at` must be a distinct UTC time, written as
+not start with `platform-grid-` in any letter case: the comparisons view
+prefers those runs within a data bundle, and its `LIKE` ignores ASCII case.
+Each `computed_at` must be a distinct UTC time, written as
 `datetime.isoformat()` writes it, so that text order is time order.
 
 ## Never a calibration target

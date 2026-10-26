@@ -59,6 +59,7 @@ import datetime as dt
 import gc
 import inspect
 import json
+import string
 import sys
 import time
 from pathlib import Path
@@ -87,8 +88,10 @@ REFORMS = {
 HOURS_USAGE = "maximum_extended_childcare_hours_usage"
 FULL_USE_HOURS = 30.0
 # Within a data bundle the scorecard's comparisons view prefers these runs
-# (scorecard_db/db.py), and ingest refuses an artifact that takes it.
+# (scorecard_db/db.py, run_id LIKE 'platform-grid-%', which ignores ASCII
+# case), and ingest refuses an artifact that takes it.
 RESERVED_RUN_PREFIX = "platform-grid-"
+_ASCII_LOWER = str.maketrans(string.ascii_uppercase, string.ascii_lowercase)
 # Benefit-unit take-up inputs (each offer's eligibility is defined_for one;
 # the engine's default is True).
 TAKE_UP = (
@@ -377,6 +380,12 @@ def run_world(name: str, reform, years, pre: dict, *, full_use: bool = False):
     return out, metadata
 
 
+def reserved_run_id(run_id: str) -> bool:
+    """The view's LIKE match: the prefix, ASCII letters in any case."""
+    head = run_id[: len(RESERVED_RUN_PREFIX)]
+    return head.translate(_ASCII_LOWER) == RESERVED_RUN_PREFIX
+
+
 def default_run_id(variant_id: str, started: dt.datetime) -> str:
     """Distinct across variants, and across one variant's runs started in
     different seconds. Ingest refuses two artifacts that share a run_id."""
@@ -409,8 +418,10 @@ def main(argv: list[str] | None = None) -> int:
 
     variant = variants.get_variant(args.variant)
     run_id = args.run_id or default_run_id(variant["variant_id"], started)
-    if run_id.startswith(RESERVED_RUN_PREFIX):
-        raise SystemExit(f"--run-id may not start with {RESERVED_RUN_PREFIX!r}")
+    if reserved_run_id(run_id):
+        raise SystemExit(
+            f"--run-id may not start with {RESERVED_RUN_PREFIX!r} in any case"
+        )
     missing = sorted(
         (set(args.years) | set(args.diagnostic_years)) - set(variant["data_years"])
     )

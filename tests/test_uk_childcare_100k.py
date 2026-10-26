@@ -7,22 +7,25 @@ annotation; every certified run and the published dashboard figure stay in
 the history; and a reform estimate is never a calibration target."""
 
 import ast
+import builtins
 import copy
 import datetime as dt
 import hashlib
 import importlib.util
 import json
+import re
 import shutil
 import sqlite3
 import subprocess
-from collections import Counter, defaultdict
+import tempfile
+from collections import Counter
 from itertools import product
 from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
 import pytest
-from hypothesis import given, settings
+from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from scorecard_db import ingest_uk_childcare_100k as lane
@@ -406,6 +409,170 @@ _DYNAMIC = frozenset(
 )
 
 
+# What the compute script reaches numpy, the engine and the standard library
+# through: each import, builtin name and attribute name it uses (getattr's
+# literal names included). Each was read for a route to calculate other than
+# a direct .calculate(...) call; none is one, so with the forms refused here
+# every calculate the script's own code makes is a direct call the scan
+# resolves. A name not listed is refused until it is read and added.
+_VETTED_IMPORTS = frozenset(
+    {
+        ("", "argparse", None),
+        ("", "datetime", "dt"),
+        ("", "gc", None),
+        ("", "inspect", None),
+        ("", "json", None),
+        ("", "numpy", "np"),
+        ("", "string", None),
+        ("", "sys", None),
+        ("", "time", None),
+        ("__future__", "annotations", None),
+        ("pathlib", "Path", None),
+        ("pipeline", "compute_uk_ab2025", "ab"),
+        ("pipeline", "compute_uk_event", "event"),
+        ("pipeline", "compute_uk_obr_costings", "fiscal"),
+        ("pipeline", "modal_uk_event", None),
+        ("pipeline", "uk_replay_variants", "variants"),
+    }
+)
+_VETTED_NAMES = frozenset(
+    {
+        "SystemExit",
+        "__doc__",
+        "__file__",
+        "__name__",
+        "any",
+        "bool",
+        "dict",
+        "float",
+        "getattr",
+        "int",
+        "isinstance",
+        "len",
+        "list",
+        "print",
+        "set",
+        "sorted",
+        "str",
+        "tuple",
+        "type",
+    }
+)
+_VETTED_ATTRIBUTES = frozenset(
+    {
+        "ArgumentParser",
+        "HF_COMMIT",
+        "NO_LIMIT",
+        "PACKAGES",
+        "_resolve_parameter",
+        "abs",
+        "add_argument",
+        "allclose",
+        "any",
+        "array_equal",
+        "asarray",
+        "ascii_lowercase",
+        "ascii_uppercase",
+        "assert_managed_bundle",
+        "build_sim",
+        "calculate",
+        "check_variant_environment",
+        "collect",
+        "count",
+        "data_bundle_id",
+        "dataset",
+        "dataset_file",
+        "datetime",
+        "default_value",
+        "defined_for",
+        "definition_period",
+        "diagnostic_years",
+        "documentation",
+        "dumps",
+        "entity",
+        "exit",
+        "full",
+        "get",
+        "get_holder",
+        "get_known_periods",
+        "get_variant",
+        "getsourcefile",
+        "insert",
+        "is_legacy",
+        "isoformat",
+        "items",
+        "key",
+        "label",
+        "maketrans",
+        "map_result",
+        "mkdir",
+        "ndarray",
+        "now",
+        "output_dir",
+        "parameters",
+        "parent",
+        "parse_args",
+        "path",
+        "perf_counter",
+        "policyengine_bundle",
+        "pop",
+        "populations",
+        "preflight",
+        "reform_dict",
+        "relative_to",
+        "relative_to_root",
+        "resolve",
+        "round",
+        "run_id",
+        "set_input",
+        "split",
+        "sum",
+        "tax_benefit_system",
+        "timezone",
+        "translate",
+        "unique",
+        "unit",
+        "utc",
+        "values",
+        "variables",
+        "variant",
+        "variant_preflight",
+        "verify_import_origins",
+        "verify_runtime_dataset_sha256",
+        "weights",
+        "write_text",
+        "years",
+    }
+)
+
+
+def _used(tree) -> tuple[frozenset, frozenset, frozenset]:
+    """(imports, builtin and dunder names, attribute names) a module uses;
+    an import is (module with any leading dots, name, alias)."""
+    imports, names, attributes = set(), set(), set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports |= {("", a.name, a.asname) for a in node.names}
+        elif isinstance(node, ast.ImportFrom):
+            module = "." * node.level + (node.module or "")
+            imports |= {(module, a.name, a.asname) for a in node.names}
+        elif isinstance(node, ast.Name) and (
+            hasattr(builtins, node.id) or node.id.startswith("__")
+        ):
+            names.add(node.id)
+        elif isinstance(node, ast.Attribute):
+            attributes.add(node.attr)
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "getattr"
+            and len(node.args) > 1
+            and isinstance(node.args[1], ast.Constant)
+        ):
+            attributes.add(node.args[1].value)
+    return frozenset(imports), frozenset(names), frozenset(attributes)
+
+
 def _binds(node, name: str) -> bool:
     """Does this node bind `name` in the scope it sits in?"""
     if isinstance(node, ast.Name):
@@ -473,6 +640,14 @@ def _refuse_hidden(tree, parents) -> None:
                 raise Unvouched(f"line {line}: an attribute write rebinds {node.attr}")
 
 
+def _refuse_unvetted(tree) -> None:
+    """Raise on any import, builtin name or attribute name not vetted."""
+    vetted = (_VETTED_IMPORTS, _VETTED_NAMES, _VETTED_ATTRIBUTES)
+    for kind, used, known in zip(("import", "name", "attribute"), _used(tree), vetted):
+        if used - known:
+            raise Unvouched(f"unvetted {kind}s {sorted(used - known, key=str)}")
+
+
 def _calculated(path: Path, compute) -> set[str]:
     """Every name the source passes to sim.calculate, read as Python scopes
     read it. A name must be a literal, or bound exactly once on the way out
@@ -481,8 +656,9 @@ def _calculated(path: Path, compute) -> set[str]:
     string constant. Any other binding (an assignment, a second loop, a
     rebinding generator, an argument, a tuple target) raises, and so does
     any form _refuse_hidden lists, so a name cannot change unnoticed by a
-    route this scan reads past. A recording simulation backs it up
-    (_observed)."""
+    route this scan reads past; then any name not vetted raises, so no
+    route other than a direct call reaches calculate. The stand-in run
+    backs it up (_observed)."""
     tree = ast.parse(path.read_text())
     parents = {
         child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)
@@ -586,76 +762,168 @@ def _calculated(path: Path, compute) -> set[str]:
             calculated |= set(resolve(arg))
         else:
             raise Unvouched(f"unresolved calculate argument {ast.dump(arg)}")
+    _refuse_unvetted(tree)
     return calculated
 
 
-def _calling_functions(path: Path) -> set[str]:
-    """The module functions with a sim.calculate call in them."""
-    return {
-        f.name
-        for f in ast.parse(path.read_text()).body
-        if isinstance(f, ast.FunctionDef)
-        for node in ast.walk(f)
-        if isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Attribute)
-        and node.func.attr == "calculate"
-    }
+class _Series:
+    def __init__(self, values):
+        self.values = np.asarray(values)
+        self.weights = np.ones(len(self.values))
+
+    def sum(self):
+        return float((self.values * self.weights).sum())
 
 
-class _RecordingSim:
-    """Stands in for a simulation in the compute functions that calculate,
-    with no engine and no data: it answers each call they make and records
-    every name passed to calculate. Values are 30 (the full-use read-back
-    set_full_use checks) and every household is in England."""
+class _Parameter:
+    """A parameter node: reading a child names it, and calling it on a date
+    gives the reform's value there (start.stop, both days in) or £100,000."""
 
-    def __init__(self):
-        self.calculated = []
-        entity = SimpleNamespace(entity=SimpleNamespace(key="person"))
-        self.tax_benefit_system = SimpleNamespace(variables=defaultdict(lambda: entity))
-        self.dataset = SimpleNamespace(years=[2027])
-        self.populations = {"benunit": SimpleNamespace(count=2)}
+    def __init__(self, reform, path=""):
+        self._reform, self._path = reform, path
 
-    def calculate(self, variable, period):
-        self.calculated.append(variable)
-        values = ["ENGLAND"] * 2 if variable == "country" else [30.0] * 2
-        return SimpleNamespace(
-            values=np.array(values), weights=np.ones(2), sum=lambda: 60.0
+    def __getattr__(self, part):
+        return _Parameter(self._reform, f"{self._path}.{part}".lstrip("."))
+
+    def __call__(self, date):
+        for period, value in self._reform.get(self._path, {}).items():
+            start, stop = period.split(".")
+            if start <= date <= stop:
+                return float(value)
+        return 100_000.0
+
+
+class _Variable:
+    def __init__(self, name):
+        self.label = name
+        self.entity = SimpleNamespace(key="person")
+        self.definition_period = "year"
+        self.unit = self.documentation = self.defined_for = None
+        self.default_value = 0.0
+
+
+class _Variables(dict):
+    def __missing__(self, name):
+        return _Variable(name)
+
+
+class _StandIn:
+    """Stands in for each simulation the compute script builds, with no
+    engine and no data, and records each (name, period) passed to
+    calculate. It offers only what the script reads; reading anything else
+    raises, so no other engine route goes unseen. The hours input is drawn
+    below 30 until set_input sets it, so the ordinary and full-use worlds
+    each take their own branch, and every household but one is in
+    England."""
+
+    DRAWN = (12.0, 20.0, 25.0)
+
+    def __init__(self, run, reform, years, source):
+        self._run, self._inputs = run, {}
+        self.dataset = SimpleNamespace(years=list(years))
+        self.populations = {"benunit": SimpleNamespace(count=len(self.DRAWN))}
+        self.policyengine_bundle = {"runtime_dataset_source": str(source)}
+        self.tax_benefit_system = SimpleNamespace(
+            parameters=_Parameter(reform or {}), variables=_Variables()
         )
 
+    def __getattr__(self, name):
+        raise Unvouched(f"the run read sim.{name}, which the stand-in does not offer")
+
+    def calculate(self, variable, period):
+        self._run.calls.append((variable, int(period)))
+        if variable == "country":
+            return _Series(["ENGLAND", "WALES", "ENGLAND"])
+        if variable == lane.HOURS_USAGE_INPUT:
+            key = (variable, int(period))
+            self._run.hours.append(
+                (int(period), "set" if key in self._inputs else "drawn")
+            )
+            return _Series(self._inputs.get(key, self.DRAWN))
+        if (variable, int(period)) in self._inputs:
+            return _Series(self._inputs[variable, int(period)])
+        return _Series([1000.0, 0.0, 500.0])
+
     def map_result(self, values, *_, **__):
-        return values
+        return np.asarray(values)
 
     def get_holder(self, _):
         return SimpleNamespace(get_known_periods=list)
 
-    def set_input(self, *_):
-        pass
+    def set_input(self, variable, period, values):
+        self._inputs[variable, int(period)] = np.asarray(values)
 
 
-# every function in the compute script that calculates, all of which
-# _observed reaches (set_full_use; year_block calls the masks and sums)
-_RECORDED = {"set_full_use", "year_block", "england_masks", "england_sums"}
+def _observed(compute, monkeypatch) -> SimpleNamespace:
+    """The compute script's main() run end to end on stand-in simulations:
+    every world in every default year, and both full-use worlds. Only what
+    lies outside the script is stubbed: the variant record and preflight,
+    the dataset hash, the import-origin check and the simulation it builds
+    (ab.build_sim). Returns each (name, period) passed to calculate, each
+    read of the hours input (drawn or set) and each world's reform; the
+    artifact written must record metadata for exactly METADATA."""
+    run = SimpleNamespace(calls=[], hours=[], reforms=[])
+    years = list(range(2023, 2031))
+    out = Path(tempfile.mkdtemp(prefix="childcare-stand-in-")).resolve()
+    source = out / "dataset.h5"
+    sha = "0" * 64
+    variant = {
+        "variant_id": "stand-in",
+        "data_years": years,
+        "identity": {
+            "dataset": {"revision": "stand-in", "sha256": sha, "repo_id": "stand-in"}
+        },
+        "identity_sha256": sha,
+    }
+    pre = {
+        "installed": {
+            "packages": {
+                p: {"version": "0", "record_sha256": sha}
+                for p in compute.variants.PACKAGES
+            },
+            "python": "stand-in",
+            "packaged_bundle_manifest_sha256": sha,
+        },
+        "runtime_dataset_source": str(source),
+        "sha256": sha,
+        "release_bundle": {},
+        "data_years": years,
+    }
 
+    def build(reform):
+        run.reforms.append(reform)
+        return _StandIn(run, reform, years, source)
 
-def _observed(compute, monkeypatch) -> list:
-    """Every name the compute functions pass to calculate when run on a
-    recording simulation (limit_values reads parameters, not variables)."""
-    monkeypatch.setattr(compute, "limit_values", lambda sim, year: {})
-    sim = _RecordingSim()
-    compute.set_full_use(sim, [2027])
-    compute.year_block(sim, 2027)
-    return sim.calculated
+    monkeypatch.setattr(compute, "ROOT", out)
+    monkeypatch.setattr(compute.variants, "get_variant", lambda _id=None: variant)
+    monkeypatch.setattr(compute.variants, "is_legacy", lambda _v: False)
+    monkeypatch.setattr(compute.variants, "verify_import_origins", lambda: None)
+    monkeypatch.setattr(
+        compute.event, "variant_preflight", lambda _v, dataset_source=None: pre
+    )
+    monkeypatch.setattr(compute.fiscal, "data_bundle_id", lambda _b: "stand-in")
+    monkeypatch.setattr(
+        compute.fiscal, "verify_runtime_dataset_sha256", lambda *_, **__: sha
+    )
+    monkeypatch.setattr(compute.fiscal, "relative_to_root", str)
+    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", lambda *_: None)
+    monkeypatch.setattr(compute.ab, "build_sim", build)
+    try:
+        assert compute.main(["--output-dir", str(out)]) == 0
+        written = json.loads((out / "stand-in.json").read_text())
+    finally:
+        shutil.rmtree(out)
+    assert set(written["variable_metadata"]) == set(compute.METADATA)
+    return run
 
 
 def _contract(path: Path, name: str, monkeypatch) -> set[str]:
     """The pe_meta contract on one source file: the scan resolves every
-    calculate argument, a recording simulation of the functions that
-    calculate sees exactly those names, and METADATA lists them all."""
+    calculate argument, the stand-in run of main() sees exactly those
+    names, and METADATA lists them all."""
     compute = _module(name, path)
     scanned = _calculated(path, compute)
-    if _calling_functions(path) != _RECORDED:
-        raise Unvouched(f"calculate in {sorted(_calling_functions(path) - _RECORDED)}")
-    seen = set(_observed(compute, monkeypatch))
+    seen = {v for v, _ in _observed(compute, monkeypatch).calls}
     if seen != scanned:
         raise Unvouched(f"the run and the scan differ on {sorted(seen ^ scanned)}")
     if not scanned <= set(compute.METADATA):
@@ -679,6 +947,27 @@ def test_every_variable_the_run_calculates_has_its_metadata_recorded(monkeypatch
         "country",
     } <= calculated
     assert calculated <= set(compute.METADATA)
+    # each vetted name is one the script uses, so the lists are its own
+    assert _used(ast.parse(path.read_text())) == (
+        _VETTED_IMPORTS,
+        _VETTED_NAMES,
+        _VETTED_ATTRIBUTES,
+    )
+
+
+def test_the_stand_in_run_reaches_every_world_year_and_hours_branch(monkeypatch):
+    """main() builds the three worlds and the two full-use worlds, the
+    calculations run in every default year, and the hours input is read
+    drawn in the ordinary worlds and set to 30 in the full-use ones."""
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    compute = _module("compute_uk_childcare_100k_reach", path)
+    run = _observed(compute, monkeypatch)
+    main = compute.worlds(compute.YEARS)
+    diag = compute.worlds(compute.DIAGNOSTIC_YEARS)
+    assert run.reforms == [*main.values(), diag["baseline"], diag["free_hours"]]
+    assert {p for _, p in run.calls} == set(compute.YEARS)
+    assert {p for p, how in run.hours if how == "drawn"} == set(compute.YEARS)
+    assert {p for p, how in run.hours if how == "set"} == set(compute.DIAGNOSTIC_YEARS)
 
 
 def test_the_metadata_scan_catches_a_summed_variable_left_out():
@@ -690,15 +979,14 @@ def test_the_metadata_scan_catches_a_summed_variable_left_out():
     assert not _calculated(path, compute) <= pruned
 
 
-def test_the_recording_simulation_sees_what_the_scan_cannot(monkeypatch):
+def test_the_stand_in_run_sees_what_the_scan_cannot(monkeypatch):
     """A rebinding no source form shows (here a module constant changed at
-    run time) reaches the recording simulation, which the contract then
-    refuses."""
+    run time) reaches the stand-in run, which the contract then refuses."""
     path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
     compute = _module("compute_uk_childcare_100k_runtime", path)
     scanned = _calculated(path, compute)
     monkeypatch.setattr(compute, "HOURS_USAGE", "employment_income")
-    seen = set(_observed(compute, monkeypatch))
+    seen = {v for v, _ in _observed(compute, monkeypatch).calls}
     assert "employment_income" in seen
     assert seen != scanned
 
@@ -708,6 +996,102 @@ _YEAR_DOC = (
     '    """Weighted sums and counts for one world and year (microdf weights)."""\n'
 )
 _HEADS_LOOP = "    for v in HEADS:\n"
+_LIMITS_BODY = "    params = sim.tax_benefit_system.parameters\n"
+_BUILT = '"cal" + "culate"'
+_IN_2029 = "    if year == 2029:\n"
+# the round-5 review's thirteen survivors: calculate reached through a name
+# the scan did not vet, in a helper the old recording run replaced, in a
+# year it did not run (2029) or on the drawn-hours branch it never took
+_SURVIVORS = {
+    "import_alias_in_helper": (
+        _LIMITS_BODY,
+        (
+            "    from builtins import getattr as lookup\n"
+            f"    lookup(sim, {_BUILT})({_UNREAD}, year)\n{_LIMITS_BODY}"
+        ),
+    ),
+    "getattribute_in_helper": (
+        _LIMITS_BODY,
+        f"    sim.__getattribute__({_BUILT})({_UNREAD}, year)\n{_LIMITS_BODY}",
+    ),
+    "class_body_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}{_IN_2029}        class ReadExtra:\n"
+            f"            extra = sim.__getattribute__({_BUILT})({_UNREAD}, year)\n"
+        ),
+    ),
+    "decorator_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    def decorate(f):\n    {_IN_2029}"
+            f"            sim.__getattribute__({_BUILT})({_UNREAD}, year)\n"
+            "        return f\n    @decorate\n    def unused():\n        pass\n"
+        ),
+    ),
+    "dict_of_functions_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}{_IN_2029}"
+            f'        calls = {{"read": sim.__getattribute__({_BUILT})}}\n'
+            f'        calls["read"]({_UNREAD}, year)\n'
+        ),
+    ),
+    "exec_alias_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    from builtins import exec as run_code\n{_IN_2029}"
+            '        run_code("sim.cal" + "culate(\'employment_income\', year)")\n'
+        ),
+    ),
+    "getattr_alias_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    from builtins import getattr as lookup\n{_IN_2029}"
+            f"        lookup(sim, {_BUILT})({_UNREAD}, year)\n"
+        ),
+    ),
+    "getattribute_in_2029": (
+        _YEAR_DOC,
+        f"{_YEAR_DOC}{_IN_2029}        sim.__getattribute__({_BUILT})({_UNREAD}, year)\n",
+    ),
+    "drawn_hours_branch": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    if (sim.calculate(HOURS_USAGE, year).values < 30).any():\n"
+            f"        sim.__getattribute__({_BUILT})({_UNREAD}, year)\n"
+        ),
+    ),
+    "importlib_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    import importlib as loader\n{_IN_2029}"
+            '        loader.import_module("builtins").getattr(sim, '
+            f"{_BUILT})({_UNREAD}, year)\n"
+        ),
+    ),
+    "operator_alias_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    import operator as op\n{_IN_2029}"
+            f"        op.methodcaller({_BUILT}, {_UNREAD}, year)(sim)\n"
+        ),
+    ),
+    "operator_from_alias_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    from operator import methodcaller as invoke\n{_IN_2029}"
+            f"        invoke({_BUILT}, {_UNREAD}, year)(sim)\n"
+        ),
+    ),
+    "partial_in_2029": (
+        _YEAR_DOC,
+        (
+            f"{_YEAR_DOC}    from functools import partial\n{_IN_2029}"
+            f"        partial(sim.__getattribute__({_BUILT}), {_UNREAD})(year)\n"
+        ),
+    ),
+}
 # anchor -> mutant: each calculates a name the metadata does not list, by a
 # route the contract must refuse
 _MUTANTS = {
@@ -778,7 +1162,17 @@ _MUTANTS = {
         _YEAR_DOC,
         f"{_YEAR_DOC}    sys.modules[__name__].HOURS_USAGE = {_UNREAD}\n",
     ),
+    **_SURVIVORS,
 }
+
+
+def _mutant(tmp_path, anchor, mutant) -> Path:
+    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
+    source = path.read_text()
+    assert source.count(anchor) == 1, anchor
+    mutated = tmp_path / "compute_uk_childcare_100k.py"
+    mutated.write_text(source.replace(anchor, mutant))
+    return mutated
 
 
 @pytest.mark.parametrize("anchor, mutant", _MUTANTS.values(), ids=list(_MUTANTS))
@@ -787,13 +1181,31 @@ def test_the_metadata_contract_refuses_a_hidden_name(
 ):
     """Each mutant calculates a name the metadata does not list; the
     contract must refuse it rather than read the name's old binding."""
-    path = REPO / "pipeline" / "compute_uk_childcare_100k.py"
-    source = path.read_text()
-    assert source.count(anchor) == 1, anchor
-    mutated = tmp_path / "compute_uk_childcare_100k.py"
-    mutated.write_text(source.replace(anchor, mutant))
+    mutated = _mutant(tmp_path, anchor, mutant)
     with pytest.raises(Unvouched):
         _contract(mutated, f"compute_mutant_{tmp_path.name}", monkeypatch)
+
+
+@pytest.mark.parametrize("anchor, mutant", _MUTANTS.values(), ids=list(_MUTANTS))
+def test_the_scan_alone_refuses_each_hidden_name(tmp_path, anchor, mutant):
+    """The two layers each hold: with no run, the scan refuses every mutant."""
+    mutated = _mutant(tmp_path, anchor, mutant)
+    compute = _module(f"compute_scan_{tmp_path.name}", mutated)
+    with pytest.raises(Unvouched):
+        _calculated(mutated, compute)
+
+
+@pytest.mark.parametrize("anchor, mutant", _SURVIVORS.values(), ids=list(_SURVIVORS))
+def test_the_stand_in_run_alone_sees_each_round_5_survivor(
+    tmp_path, monkeypatch, anchor, mutant
+):
+    """With the scan set aside, the stand-in run of main() still reaches
+    each survivor's calculation: the helper it hides in runs, and so do
+    2029 and the drawn-hours branch."""
+    mutated = _mutant(tmp_path, anchor, mutant)
+    compute = _module(f"compute_survivor_{tmp_path.name}", mutated)
+    seen = {v for v, _ in _observed(compute, monkeypatch).calls}
+    assert "employment_income" in seen
 
 
 def test_default_run_ids_differ_across_variants_and_runs():
@@ -958,6 +1370,9 @@ def test_artifacts_must_have_distinct_runs_and_certified_variants(tmp_path):
         ("a", "2026-10-25T00:00:00.000000+00:00", "not a UTC time"),
         ("a", "2026-10-24T23:59:59Z", "not a UTC time"),
         ("platform-grid-a", "2026-10-24T00:00:00+00:00", "reserved prefix"),
+        # the view's LIKE ignores ASCII case
+        ("Platform-grid-a", "2026-10-24T00:00:00+00:00", "reserved prefix"),
+        ("PLATFORM-GRID-a", "2026-10-24T00:00:00+00:00", "reserved prefix"),
     ],
 )
 def test_each_claims_newest_run_is_unambiguous(tmp_path, run_id, when, match):
@@ -1001,11 +1416,14 @@ def test_every_stage_checks_the_run_history(artifact):
     spelled["computed_at"] = artifact["computed_at"].replace("+00:00", "Z")
     reserved = copy.deepcopy(artifact)
     reserved["run_id"] = "platform-grid-childcare"
+    mixed = copy.deepcopy(artifact)
+    mixed["run_id"] = "Platform-Grid-childcare"
     for history, match in (
         ([(artifact, path), (twin, path)], "share a computed_at"),
         ([(artifact, path), (same_run, path)], "share a run_id"),
         ([(spelled, path)], "not a UTC time"),
         ([(reserved, path)], "reserved prefix"),
+        ([(mixed, path)], "reserved prefix"),
     ):
         for stage in (lane.results, lane.diagnoses, lane.expected):
             with pytest.raises(ValueError, match=match):
@@ -1015,14 +1433,71 @@ def test_every_stage_checks_the_run_history(artifact):
                 lane.certified_result(scores[0], lane.load_notes(), *history[0])
 
 
-def test_the_compute_script_refuses_a_reserved_run_id():
+@pytest.mark.parametrize(
+    "run_id", ["platform-grid-childcare", "Platform-grid-childcare", "PLATFORM-GRID-x"]
+)
+def test_the_compute_script_refuses_a_reserved_run_id(run_id):
     compute = _module(
         "compute_uk_childcare_100k_reserved",
         REPO / "pipeline" / "compute_uk_childcare_100k.py",
     )
     assert compute.RESERVED_RUN_PREFIX == lane.RESERVED_RUN_PREFIX
     with pytest.raises(SystemExit, match="may not start with"):
-        compute.main(["--run-id", "platform-grid-childcare"])
+        compute.main(["--run-id", run_id])
+
+
+def _view_prefers(conn, run_id: str) -> bool:
+    """The comparisons view's own platform-grid test, evaluated by SQLite."""
+    sql = (REPO / "scorecard_db" / "db.py").read_text()
+    (test,) = set(re.findall(r"p\.run_id LIKE '[^']*'", sql))
+    like = test.removeprefix("p.run_id ")
+    return bool(conn.execute(f"SELECT ? {like}", (run_id,)).fetchone()[0])
+
+
+_CASED = st.lists(st.booleans(), min_size=14, max_size=14).map(
+    lambda up: "".join(
+        c.upper() if u else c for c, u in zip(lane.RESERVED_RUN_PREFIX, up)
+    )
+)
+
+
+@settings(deadline=None)
+@given(
+    st.one_of(
+        st.text(),
+        st.tuples(_CASED, st.text()).map("".join),
+        st.tuples(st.text(max_size=2), _CASED, st.text()).map("".join),
+    )
+)
+@example("Platform-grid-childcare")
+@example("platform-grİd-x")  # dotted capital I: SQLite folds ASCII only
+@example("platform-grid")
+def test_reserved_run_ids_are_those_the_database_view_prefers(run_id):
+    """Differential: ingest's and the compute script's reserved test agree
+    with SQLite evaluating the comparisons view's LIKE on every run id."""
+    compute = _module(
+        "compute_uk_childcare_100k_prefix",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    conn = sqlite3.connect(":memory:")
+    try:
+        want = _view_prefers(conn, run_id)
+    finally:
+        conn.close()
+    assert lane.reserved_run_id(run_id) == want
+    assert compute.reserved_run_id(run_id) == want
+
+
+def test_the_published_run_may_not_take_the_reserved_prefix(tmp_path, monkeypatch):
+    pe = tmp_path / "pe"
+    pe.mkdir()
+    pub = json.loads((lane.CENTAX_DIR / "pe" / "published_dashboard.json").read_text())
+    lane._published()
+    pub["run_id"] = "Platform-grid-dashboard"
+    (pe / "published_dashboard.json").write_text(json.dumps(pub))
+    monkeypatch.setattr(lane, "CENTAX_DIR", tmp_path)
+    with pytest.raises(ValueError, match="reserved prefix"):
+        lane._published()
 
 
 def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
@@ -1227,34 +1702,99 @@ def test_a_newer_run_that_skips_a_year_leaves_that_years_diagnosis(artifact, tmp
 
 _BASE_FULL = "baseline__full_use_hours"
 _REFORM_FULL = "free_hours__full_use_hours"
+_LIMIT_30H = "gov.dfe.extended_childcare_entitlement.income.limit"
+
+
+def _override(a, world):
+    return a["diagnostics"][world]["input_override"]
+
+
+def _block(a, world, year="2027"):
+    return a["diagnostics"][world]["years"][year]
+
+
+def _periods(period, value=None):
+    """Set the reform world's reform to one period (at the artifact's own
+    sentinel unless a value is given)."""
+
+    def change(a):
+        d = a["diagnostics"][_REFORM_FULL]
+        d["reform_dict"] = {
+            k: {period: a["limit_sentinel"] if value is None else value}
+            for k in d["reform_dict"]
+        }
+
+    return change
+
+
+def _both(change):
+    def apply(a):
+        for world in (_BASE_FULL, _REFORM_FULL):
+            change(a["diagnostics"][world])
+
+    return apply
+
+
+def _false_sentinel(a):
+    a["limit_sentinel"] = 100_000
+    _periods("2026-01-01.2035-12-31", 100_000)(a)
+
+
+def _receiving_none(a):
+    _block(a, _BASE_FULL)["hours_usage"]["mean_benunits_receiving_extended"] = None
+
+
 # what the record must show before any text claims full use, each broken
 _NOT_FULL_USE = {
-    "value": lambda d: d[_REFORM_FULL]["input_override"].update(value=17.0),
-    "variable": lambda d: d[_BASE_FULL]["input_override"].update(
+    "value": lambda a: _override(a, _REFORM_FULL).update(value=17.0),
+    "variable": lambda a: _override(a, _BASE_FULL).update(
         variable="childcare_expenses"
     ),
-    "year not set": lambda d: d[_REFORM_FULL]["input_override"].update(
-        set_for_years=[2029]
-    ),
-    "set after a dependent": lambda d: d[_BASE_FULL]["input_override"][
+    "year not set": lambda a: _override(a, _REFORM_FULL).update(set_for_years=[2029]),
+    "set after a dependent": lambda a: _override(a, _BASE_FULL)[
         "dependents_calculated_before_override"
     ].update(extended_childcare_entitlement=["2027"]),
-    "read back": lambda d: d[_REFORM_FULL]["input_override"][
-        "post_set_weighted_mean"
-    ].update({"2027": 17.0}),
-    "mean": lambda d: d[_BASE_FULL]["years"]["2027"]["hours_usage"].update(
+    "read back": lambda a: _override(a, _REFORM_FULL)["post_set_weighted_mean"].update(
+        {"2027": 17.0}
+    ),
+    "mean": lambda a: _block(a, _BASE_FULL)["hours_usage"].update(
         mean_benunits_receiving_extended=17.0
     ),
-    "no override": lambda d: d[_REFORM_FULL].pop("input_override"),
-    "one world": lambda d: d[_BASE_FULL]["years"].pop("2027"),
-    "other reform": lambda d: d[_REFORM_FULL].update(reform_dict={}),
-    "reform not in force": lambda d: d[_REFORM_FULL].update(
+    "no override": lambda a: a["diagnostics"][_REFORM_FULL].pop("input_override"),
+    "one world": lambda a: a["diagnostics"][_BASE_FULL]["years"].pop("2027"),
+    "other reform": lambda a: a["diagnostics"][_REFORM_FULL].update(reform_dict={}),
+    "reform not in force": _periods("2028-01-01.2035-12-31"),
+    # the round-5 review's: holders, periods, sentinel and executed limits
+    "an unrelated holder checked": _both(
+        lambda d: d["input_override"].update(
+            dependents_calculated_before_override={"unrelated": []}
+        )
+    ),
+    "a reading holder unchecked": _both(
+        lambda d: d["input_override"]["dependents_calculated_before_override"].pop(
+            "extended_childcare_entitlement"
+        )
+    ),
+    "no reform periods": lambda a: a["diagnostics"][_REFORM_FULL].update(
+        reform_dict={k: {} for k in a["diagnostics"][_REFORM_FULL]["reform_dict"]}
+    ),
+    "reform starts after 30 April": _periods("2027-05-01.2035-12-31"),
+    "reform stops before 30 April": _periods("2026-01-01.2027-04-29"),
+    "invalid reform dates": _periods("2027-99-99.2035-99-99"),
+    "reversed reform dates": _periods("2027-12-31.2027-01-01"),
+    "overlapping periods disagree": lambda a: a["diagnostics"][_REFORM_FULL].update(
         reform_dict={
-            k: {"2028-01-01.2035-12-31": v}
-            for k, periods in d[_REFORM_FULL]["reform_dict"].items()
-            for v in periods.values()
+            k: {"2026-01-01.2035-12-31": 1e100, "2027-01-01.2027-12-31": 200_000}
+            for k in a["diagnostics"][_REFORM_FULL]["reform_dict"]
         }
     ),
+    "a false sentinel": _false_sentinel,
+    "another sentinel named": lambda a: a.update(limit_sentinel=1e99),
+    "an executed limit the main world did not run": lambda a: _block(a, _REFORM_FULL)[
+        "limits_executed"
+    ].update({_LIMIT_30H: 100_000}),
+    "no executed limits": _both(lambda d: d["years"]["2027"].pop("limits_executed")),
+    "no receiving mean with recipients": _receiving_none,
 }
 
 
@@ -1275,10 +1815,11 @@ def test_the_full_use_cost_rests_on_the_recorded_override(artifact):
 @pytest.mark.parametrize("what", sorted(_NOT_FULL_USE))
 def test_no_text_claims_full_use_the_record_does_not_show(artifact, what):
     """A note or diagnosis says every family is at the full 30 hours only
-    when both full-use worlds record the override, set before any dependent
-    and read back at 30, on the main world's reform in force that year."""
+    when both full-use worlds record the override, set before any holder
+    that reads it and read back at 30, on the main world's reform in force
+    on 30 April of the year, with the main world's executed limits."""
     bad = copy.deepcopy(artifact)
-    _NOT_FULL_USE[what](bad["diagnostics"])
+    _NOT_FULL_USE[what](bad)
     with pytest.raises(ValueError, match="full use|beside the other"):
         lane.full_use_cost(bad, 2027)
     with pytest.raises(ValueError, match="full use|beside the other"):
@@ -1286,6 +1827,71 @@ def test_no_text_claims_full_use_the_record_does_not_show(artifact, what):
     scores, _, artifacts = lane.stage()
     with pytest.raises(ValueError, match="full use|beside the other"):
         lane.diagnoses(scores, [(bad, artifacts[-1][1])])
+
+
+def _zero_recipients(a):
+    for world in (_BASE_FULL, _REFORM_FULL):
+        block = _block(a, world)
+        block["hours_usage"]["mean_benunits_receiving_extended"] = None
+        block["counts"]["benunits_receiving_extended"] = 0
+        block["records"]["benunits_receiving_extended"] = 0
+
+
+def _per_year_windows(a):
+    from pipeline import compute_uk_ab2025 as ab
+
+    d = a["diagnostics"][_REFORM_FULL]
+    d["reform_dict"], _ = ab.reform_dict(
+        {k: {"2027": None, "2029": None} for k in d["reform_dict"]}, years=[2027, 2029]
+    )
+
+
+# records the compute script can write that show full use, each kept
+_TRUE_FULL_USE = {
+    "per-year windows from reform_dict": _per_year_windows,
+    "a one-day window on 30 April": _periods("2027-04-30.2027-04-30"),
+    "overlapping periods that agree": lambda a: a["diagnostics"][_REFORM_FULL].update(
+        reform_dict={
+            k: {"2026-01-01.2035-12-31": 1e100, "2027-01-01.2027-12-31": 1e100}
+            for k in a["diagnostics"][_REFORM_FULL]["reform_dict"]
+        }
+    ),
+    "no benefit unit receiving": _zero_recipients,
+}
+
+
+@pytest.mark.parametrize("what", sorted(_TRUE_FULL_USE))
+def test_the_full_use_cost_keeps_every_true_record_shape(artifact, what):
+    """The check refuses only what the record does not show: a reform
+    window each year, a window that covers just the parameter date,
+    overlapping periods that set one value, and no benefit unit receiving
+    the offer (year_block then writes no receiving mean) all show full use."""
+    good = copy.deepcopy(artifact)
+    _TRUE_FULL_USE[what](good)
+    assert lane.full_use_cost(good, 2027) == lane.full_use_cost(artifact, 2027)
+
+
+def test_the_full_use_check_reads_the_compute_scripts_own_constants(
+    artifact, monkeypatch
+):
+    """Differential: the sentinel, limits, hours and the holders checked
+    before the override are the compute script's, and the holders are read
+    off a stand-in run of set_full_use itself."""
+    from pipeline import compute_uk_ab2025 as ab
+
+    compute = _module(
+        "compute_uk_childcare_100k_constants",
+        REPO / "pipeline" / "compute_uk_childcare_100k.py",
+    )
+    assert lane.NO_LIMIT == ab.NO_LIMIT == artifact["limit_sentinel"]
+    assert lane.LIMITS == compute.LIMITS
+    assert (lane.HOURS_USAGE_INPUT, lane.FULL_USE_HOURS) == (
+        compute.HOURS_USAGE,
+        compute.FULL_USE_HOURS,
+    )
+    sim = _StandIn(SimpleNamespace(calls=[], hours=[]), None, [2027], "x")
+    checked = compute.set_full_use(sim, [2027])["dependents_calculated_before_override"]
+    assert sorted(checked) == sorted(lane.FULL_USE_DEPENDENTS)
 
 
 def _ingest_isolated(tmp_path, monkeypatch, notes, staged) -> sqlite3.Connection:
