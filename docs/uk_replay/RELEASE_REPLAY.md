@@ -181,6 +181,34 @@ A model/data combination is **incompatible** when no certified variant
 records it. There is no flag that relaxes a check: running a newer engine
 means adding a variant whose certification names it.
 
+### Certified pairs (lane runs only)
+
+A lane can need a policyengine.py release's certified bundle before this
+pipeline qualifies it as a variant: `uk-childcare-100k` (issue #228) runs on
+policyengine.py 6.11.0's Microcosm pair. `data/uk/certified_pairs.json`
+(kind `uk_certified_pairs`, `pipeline/uk_certified_pairs.py`) records each
+such bundle in the variant record's shape less the fields that file a
+replay: `pair_id` (`pair-<variant slug>`) in place of `variant_id`, status
+`certified_pair`, and no `layout` or `result_root`
+(`uk_certified_pairs.FIELDS` is the whole field set).
+
+- **The checks are the variant's.** `uk_replay_variants.validate_identity`
+  is check 1 for both kinds; `validate_record` adds only the variant's
+  status, layout, result root and legacy checks. A pair's preflight then
+  runs checks 2 to 6 through the same code: `verify_installed`, then
+  `compute_uk_event.materialized_preflight`, the second half of
+  `variant_preflight`.
+- **No event replay runs on a pair.** The event runner resolves only
+  `replay_variants.json`; a lane resolves either kind with
+  `uk_certified_pairs.get_record`, and its ingest reads both files.
+- **A pair stays when a variant arrives.** A variant this pipeline later
+  qualifies for the same bundle has its own requirements file, so its own
+  identity and id. The pair remains the identity the lane's runs on it were
+  checked against.
+- Experiment populations (`docs/uk_replay/POLICY_EXPERIMENTS.md`) are a
+  third kind: their results are never ingested, while a lane's runs on a
+  pair are.
+
 ## Unsupported years
 
 Each event registry's `calendar_years` is the construction's window; a
