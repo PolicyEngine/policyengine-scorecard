@@ -9,6 +9,7 @@ Staged from 2026-10-29, the day after the Budget, from the primary documents. Th
   - `claims_staged.jsonl.gz`: one line per claim.
 - `COUNTS.json` pins each family's rows, primaries, producer slugs and the sha256 of its claims file. `pipeline/harvest_counts.py` writes and checks it.
 - `REGISTRY_KEYS.md` lists every measure key. `pipeline/build_ab2026_registry.py` generates it.
+- `PROPOSED_KEYS.md` lists every proposed key a row names (rule 2), for tranche 2 to register. `pipeline/ab2026_proposed_keys.py` generates it.
 - `SEED_INVENTORY/` lists the publications the harvest starts from, compiled while monitoring reactions on 28 and 29 October.
 
 Nothing reads this harvest yet. Tranche 2 of #230 adds the ingest. That ingest's exact accounting will read `read = ingested + dropped` against the rows pinned in `COUNTS.json`. `tests/test_uk_ab2026_harvest.py` checks every row against the contract below.

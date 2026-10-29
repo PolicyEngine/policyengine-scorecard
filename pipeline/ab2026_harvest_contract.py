@@ -101,6 +101,16 @@ def read_manifest(family_dir):
     return [json.loads(line) for line in text.splitlines() if line.strip()]
 
 
+def proposed_keys(rows):
+    """The proposed measure keys a family's rows name (README rule 2)."""
+    return {
+        r["conditions"]["proposed_measure_key"]
+        for r in rows
+        if isinstance(r.get("conditions"), dict)
+        and r["conditions"].get("proposed_measure_key")
+    }
+
+
 def row_problems(r, keys, earlier, metrics, units):
     """Every way one staged row breaks the contract, as strings."""
     out = []
@@ -169,6 +179,10 @@ def row_problems(r, keys, earlier, metrics, units):
             out.append(f"proposed_measure_key {pk!r} is not ab2026[_option]__slug")
         if pk in keys:
             out.append(f"{pk} is registered; put it in measure_key")
+    if c.get("row_type") == "measure_component" and not (
+        c.get("component") and (k or c.get("proposed_measure_key"))
+    ):
+        out.append("a measure_component row names its component and measure (rule 9)")
 
     pub = r["publication"]
     for field in ("title", "url", "date", "publisher", "primary_sha256"):
@@ -179,6 +193,8 @@ def row_problems(r, keys, earlier, metrics, units):
     if pub.get("date") and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", pub["date"]):
         out.append("publication.date is not YYYY-MM-DD")
 
+    if r["value_raw"] not in r["quote"]:
+        out.append("quote does not contain value_raw")
     if r["source"] not in OGL and len(r["quote"].split()) >= 15:
         out.append("quote has 15 or more words (README rule 6)")
     if r["attribution"] == "same_assumptions" and (
@@ -217,12 +233,17 @@ def family_problems(family_dir):
         out.append("manifest lists a primary twice")
     keys, earlier = registry_keys()
     metrics, units = enums()
-    for i, r in enumerate(read_rows(family_dir)):
+    rows = read_rows(family_dir)
+    for i, r in enumerate(rows):
         for p in row_problems(r, keys, earlier, metrics, units):
             out.append(f"row {i}: {p}")
         sha = (r.get("publication") or {}).get("primary_sha256")
         if sha not in set(shas):
             out.append(f"row {i}: primary_sha256 is not in manifest.jsonl")
+    notes = (family_dir / "NOTES.md").read_text()
+    for pk in sorted(proposed_keys(rows)):
+        if pk not in notes:
+            out.append(f"NOTES.md does not give the scope of {pk}")
     return out
 
 

@@ -22,6 +22,7 @@ from pipeline.ab2026_harvest_contract import (
     read_rows,
     registry_keys,
 )
+from pipeline.ab2026_proposed_keys import render
 from pipeline.harvest_counts import counts
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -67,9 +68,18 @@ def test_rows_follow_the_contract(family):
     """pipeline/ab2026_harvest_contract.py: field names, closed enums, the
     FY-end-year period, the fiscal_event slug, keys where the row says they
     live (README rule 2), a manifest primary for every row, short quotes
-    outside the OGL (rule 6), PolicyEngine-computed same_assumptions rows and
-    no Impact on households bar readings (rule 4)."""
+    outside the OGL (rule 6) that contain the value as printed, components
+    that name their part and measure (rule 9), a NOTES.md scope for every
+    proposed key, PolicyEngine-computed same_assumptions rows and no Impact
+    on households bar readings (rule 4)."""
     assert family_problems(HARVEST / family) == []
+
+
+def test_the_proposed_key_listing_is_derived_from_the_families():
+    """PROPOSED_KEYS.md lists every proposed_measure_key a staged row names,
+    once, with its rows, families and producers: tranche 2 registers or folds
+    each one, so a key added without the listing moving fails."""
+    assert (HARVEST / "PROPOSED_KEYS.md").read_text() == render(HARVEST)
 
 
 def test_the_key_listing_is_derived_from_the_registry():
