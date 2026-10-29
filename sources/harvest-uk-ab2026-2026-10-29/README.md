@@ -15,7 +15,7 @@ Nothing reads this harvest yet. Tranche 2 of #230 adds the ingest. That ingest's
 
 ## Rules
 
-The AB2025 harvest README's rules 1–10 and its row contract apply unchanged, except for the following:
+The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB2026 exceptions and additions below:
 
 1. **`fiscal_event` is the slug `autumn_budget_2026`** on every row, whatever the publication calls it.
 2. **Measure keys come from `data/uk/ab2026_measures.json`.**
@@ -28,6 +28,17 @@ The AB2025 harvest README's rules 1–10 and its row contract apply unchanged, e
 5. **PolicyEngine's own published figures are not harvested here.** They are tranche 3's counterparts, computed from the dashboard's receipts. A producer that restates a PolicyEngine figure is staged with `attribution: same_assumptions`, as the Fabian Society's row was for AB2025.
 6. **Quotes from producers outside the Open Government Licence stay short.** `quote` is the sentence or cell carrying the number, cut to the words that carry it: under 15 words for think tanks, firms and the press. HM Treasury and OBR material is OGL, and its cells and sentences are quoted whole.
 7. **A primary that changes is a second primary.** If a producer replaces a document, both versions are hashed in `manifest.jsonl` and rows cite the version they were read from. IFS replaced its cost-of-living deck on 29 October, and HM Treasury replaced the Budget 2026 document PDF after 28 October. NOTES says what changed.
+8. **Stage estimates, not design.** A row is a number someone estimated, forecast or counted about the effect of a measure or of the Budget. That covers:
+   - a cost or yield;
+   - people or households affected;
+   - a gain, loss or bill change;
+   - a distributional or poverty effect;
+   - a behavioural adjustment or tax base;
+   - a fiscal aggregate;
+   - a consequential for a devolved government.
+
+   A measure's own parameters are its design: rates, thresholds, payment amounts, dates and durations. So are spending allocations to programmes, financing remits and contingent liabilities. They go in `reform_hint` or `conditions`, never as rows (the AB2025 red book family kept "£9.90" in `reform_hint` the same way). A worked example's inputs follow this rule too, and its computed outcome is a row.
+9. **A component of one measure keeps that measure's key.** A printed part of one Table 6.1 measure carries that measure's key, with `conditions.component` naming the part and `conditions.row_type: measure_component`. A part can be a fiscal head, a sub-measure within a line (the tax-gap package's items, for example) or a nation. Components are never summed with the measure's total. Proposed package keys are for scopes that cross Table 6.1 lines, or have none.
 
 ## Producer slugs and families
 
