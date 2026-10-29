@@ -74,9 +74,42 @@ def key_prefix(reg):
 
 def _paths_of(m):
     """Every parameter path a measure asks the engine for."""
-    return list((m.get("pe_reform_delta") or {}).keys()) + list(
-        (m.get("pe_baseline_modifier") or {}).keys()
+    return (
+        list((m.get("pe_reform_delta") or {}).keys())
+        + list((m.get("pe_baseline_modifier") or {}).keys())
+        + list((m.get("pe_modifier") or {}).get("parameter_legs") or [])
     )
+
+
+def _variables_of(m):
+    """Every engine variable a dashboard modifier replaces or reads (AB2026)."""
+    mod = m.get("pe_modifier") or {}
+    return list(mod.get("replaced_variables") or []) + list(
+        mod.get("reads_variables") or []
+    )
+
+
+SHA256 = re.compile(r"[0-9a-f]{64}")
+RECEIPT_FIELDS = ("repo", "commit", "path", "receipt_file_sha256", "reform_sha256")
+
+
+def _modifier_errors(k, mod):
+    """An executed_by_dashboard measure names the code and the published
+    receipt it ran under, so a counterpart can be traced to the exact run."""
+    errors = []
+    if not mod:
+        return [f"{k}: executed_by_dashboard without a pe_modifier"]
+    for field in ("module", "function"):
+        if not (mod.get(field) or "").strip():
+            errors.append(f"{k}: pe_modifier missing {field}")
+    rec = mod.get("receipt") or {}
+    for field in RECEIPT_FIELDS:
+        if not rec.get(field):
+            errors.append(f"{k}: pe_modifier.receipt missing {field}")
+    for field in ("receipt_file_sha256", "reform_sha256"):
+        if rec.get(field) and not SHA256.fullmatch(rec[field]):
+            errors.append(f"{k}: pe_modifier.receipt.{field} is not a sha256")
+    return errors
 
 
 def load(path=REGISTRY):
@@ -114,10 +147,23 @@ def validate(reg):
             errors.append(f"{k}: missing title")
 
         deltas = m.get("pe_reform_delta")
+        construction = m.get("construction")
+        if construction == "executed_by_dashboard":
+            errors.extend(_modifier_errors(k, m.get("pe_modifier")))
+        if construction == "package_of_registry_measures" and not m.get("package_of"):
+            errors.append(f"{k}: a package names what it is a package of")
         if m["computability"] == "expressible":
-            if not deltas:
+            # A measure the dashboard executed as a modifier, or a package of
+            # expressible legs, has no single delta to carry; the receipt or
+            # the legs stand in for it.
+            if not deltas and construction not in (
+                "executed_by_dashboard",
+                "package_of_registry_measures",
+            ):
                 errors.append(f"{k}: expressible but carries no reform delta")
-            if not m.get("engine_baseline_2026"):
+            if construction != "package_of_registry_measures" and not m.get(
+                "engine_baseline_2026"
+            ):
                 errors.append(
                     f"{k}: expressible but records no engine baseline to "
                     "check the registry against"
@@ -182,6 +228,24 @@ def validate(reg):
                 "the pre-measure world it executes as pe_baseline_modifier"
             )
 
+    by_key = {m.get("measure_key"): m for m in reg["measures"]}
+    for m in reg["measures"]:
+        if m.get("construction") != "package_of_registry_measures":
+            continue
+        # AB2025's totals describe their scope in words; a list names keys.
+        legs = m.get("package_of")
+        for leg in legs if isinstance(legs, list) else []:
+            if leg not in by_key:
+                errors.append(f"{m['measure_key']}: leg {leg} is not in the registry")
+            elif (
+                m["computability"] == "expressible"
+                and by_key[leg]["computability"] != "expressible"
+            ):
+                errors.append(
+                    f"{m['measure_key']}: expressible package with a "
+                    f"{by_key[leg]['computability']} leg {leg}"
+                )
+
     # The whole reported package must be represented, including the parts
     # this model cannot touch — a registry that silently listed only the
     # modellable half would overstate coverage.
@@ -225,9 +289,14 @@ def resolve_against_engine(reg, year=2026):
             f"policyengine-uk {installed} installed, registry pinned to {pin}"
         )
 
-    params = policyengine_uk.CountryTaxBenefitSystem().parameters
+    system = policyengine_uk.CountryTaxBenefitSystem()
+    params = system.parameters
     problems, checked = [], 0
     for m in reg["measures"]:
+        for name in dict.fromkeys(_variables_of(m)):
+            if name not in system.variables:
+                problems.append(f"{m['measure_key']}: no engine variable {name}")
+            checked += 1
         for path in dict.fromkeys(_paths_of(m)):
             try:
                 node = _resolve(params, path)
@@ -288,7 +357,9 @@ def main(argv=None):
     print("  computability:", by)
     if args.resolve:
         checked = resolve_against_engine(reg)
-        print(f"  resolved {checked} parameter paths against the certified engine")
+        print(
+            f"  resolved {checked} parameter paths and variables against the pinned engine"
+        )
     return reg
 
 
