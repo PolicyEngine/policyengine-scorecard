@@ -217,6 +217,7 @@ def test_the_registry_is_regenerated_byte_for_byte():
         env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
+        check=False,
     )
     assert out.returncode == 0, out.stdout + out.stderr
 

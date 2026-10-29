@@ -9,7 +9,6 @@ a Table 6.4 recosting, in the earlier event's registry, sha256-shaped
 manifests, and per-family pins that the ingest's exact accounting will read.
 """
 
-import gzip
 import json
 import re
 from pathlib import Path
@@ -17,81 +16,20 @@ from pathlib import Path
 import pytest
 
 from pipeline import ab2026_measure_keys as K
+from pipeline.ab2026_harvest_contract import (
+    family_problems,
+    read_manifest,
+    read_rows,
+    registry_keys,
+)
 from pipeline.harvest_counts import counts
 
 ROOT = Path(__file__).resolve().parent.parent
 HARVEST = ROOT / "sources" / "harvest-uk-ab2026-2026-10-29"
-UK = ROOT / "data" / "uk"
-
-
-def _keys(path):
-    return {m["measure_key"] for m in json.loads(path.read_text())["measures"]}
-
-
-KEYS = _keys(UK / "ab2026_measures.json")
-# A Table 6.4 recosting carries the earlier event's key (README rule 2).
-# AB2025 has two key spaces: the #136 port registry and the events inventory.
-EARLIER = {
-    p.name.removesuffix("_measures.json"): _keys(p)
-    for p in (UK / "events").glob("*_measures.json")
-}
-EARLIER["autumn_budget_2025"] |= _keys(UK / "ab2025_measures.json")
+KEYS, _ = registry_keys()
 
 COUNTS = json.loads((HARVEST / "COUNTS.json").read_text())
 FAMILIES = sorted(k for k in COUNTS if not k.startswith("_"))
-
-REQUIRED = {
-    "source",
-    "source_model",
-    "value",
-    "value_raw",
-    "normalization",
-    "value_kind",
-    "period",
-    "time_basis",
-    "conditions",
-    "reform_hint",
-    "measure_key",
-    "attribution",
-    "benchmark_class",
-    "baseline_policy",
-    "publication",
-    "source_table",
-    "source_column",
-    "quote",
-    "parse_confidence",
-    "status",
-}
-OPTIONAL = {
-    "metric",
-    "proposed_metric",
-    "unit_concept",
-    "proposed_unit",
-    "proposed_baseline",
-    "note",
-    "local_artifact",
-}
-ATTRIBUTION = {"own", "restated", "same_assumptions"}
-BENCHMARK_CLASS = {"different_model", "administrative_fact", "same_assumptions"}
-VALUE_KIND = {
-    "point",
-    "central",
-    "range_low",
-    "range_high",
-    "approx_chart_reading",
-    "cumulative",
-    "categorical",
-}
-TIME_BASIS = {"fiscal_year", "annual", "point_in_time"}
-CONFIDENCE = {"high", "medium", "low"}
-# README rule 6: quotes from producers outside the Open Government Licence
-# stay under 15 words.
-OGL = {"hm_treasury", "obr_efo", "hmrc", "dwp", "ons", "scottish_fiscal_commission"}
-
-from scorecard_db.models import Metric, UnitConcept  # noqa: E402
-
-METRICS = {m.value for m in Metric}
-UNITS = {u.value for u in UnitConcept}
 
 
 def families():
@@ -103,16 +41,11 @@ def families():
 
 
 def rows(family):
-    with gzip.open(HARVEST / family / "claims_staged.jsonl.gz", "rt") as fh:
-        return [json.loads(line) for line in fh if line.strip()]
+    return read_rows(HARVEST / family)
 
 
 def manifest(family):
-    return [
-        json.loads(line)
-        for line in (HARVEST / family / "manifest.jsonl").read_text().splitlines()
-        if line.strip()
-    ]
+    return read_manifest(HARVEST / family)
 
 
 def test_every_pinned_family_is_present_and_complete():
@@ -131,103 +64,17 @@ def test_counts_json_is_what_harvest_counts_computes():
 
 @pytest.mark.parametrize("family", FAMILIES)
 def test_rows_follow_the_contract(family):
-    for i, r in enumerate(rows(family)):
-        where = (family, i)
-        keys = set(r)
-        assert REQUIRED <= keys, (where, REQUIRED - keys)
-        assert keys <= REQUIRED | OPTIONAL, (where, keys - REQUIRED - OPTIONAL)
-        assert r["status"] == "ok", where
-        assert r["attribution"] in ATTRIBUTION, where
-        assert r["benchmark_class"] in BENCHMARK_CLASS, where
-        assert r["value_kind"] in VALUE_KIND, where
-        assert r["time_basis"] in TIME_BASIS, where
-        assert r["parse_confidence"] in CONFIDENCE, where
-        assert isinstance(r["value"], (int, float)) and not isinstance(
-            r["value"], bool
-        ), where
-        assert isinstance(r["value_raw"], str) and r["value_raw"].strip(), where
-        assert isinstance(r["quote"], str) and r["quote"].strip(), where
-        assert bool(r.get("metric")) != bool(r.get("proposed_metric")), where
-        assert bool(r.get("unit_concept")) != bool(r.get("proposed_unit")), where
-        if r.get("metric"):
-            assert r["metric"] in METRICS, (where, r["metric"])
-        if r.get("unit_concept"):
-            assert r["unit_concept"] in UNITS, (where, r["unit_concept"])
-        c = r["conditions"]
-        assert isinstance(c, dict) and c, where
-        for k, v in c.items():
-            assert isinstance(k, str) and isinstance(v, str), (where, k, v)
-        assert c["fiscal_event"] == "autumn_budget_2026", where
-        if "fy" in c:
-            m = re.fullmatch(r"(\d{4})-(\d{2})", c["fy"])
-            assert m, (where, c["fy"])
-            assert r["period"] == int(m.group(1)) + 1, (where, c["fy"], r["period"])
-            assert r["time_basis"] == "fiscal_year", where
-        assert isinstance(r["period"], int) and 1945 <= r["period"] <= 2075, where
-        pub = r["publication"]
-        for k in ("title", "url", "date", "publisher", "primary_sha256"):
-            assert pub.get(k), (where, k)
-        assert re.fullmatch(r"[0-9a-f]{64}", pub["primary_sha256"]), where
-        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", pub["date"]), where
-
-
-@pytest.mark.parametrize("family", FAMILIES)
-def test_measure_keys_exist_where_the_row_says_they_live(family):
-    """README rule 2: an AB2026 key, an earlier event's key on a recosting,
-    or null with a proposed key and nothing else."""
-    for i, r in enumerate(rows(family)):
-        where, c, k = (family, i), r["conditions"], r["measure_key"]
-        if "recosting_of" in c:
-            assert k in EARLIER[c["recosting_of"]], (where, c["recosting_of"], k)
-        elif k is not None:
-            assert k in KEYS, (where, k)
-            assert "proposed_measure_key" not in c, where
-        else:
-            pk = c.get("proposed_measure_key")
-            if pk:
-                assert re.fullmatch(r"ab2026(_option)?__[a-z0-9_]+", pk), (where, pk)
-                assert pk not in KEYS, (where, "use measure_key", pk)
-
-
-@pytest.mark.parametrize("family", FAMILIES)
-def test_every_row_cites_a_manifest_primary(family):
-    shas = {m["sha256"] for m in manifest(family)}
-    for m in manifest(family):
-        assert re.fullmatch(r"[0-9a-f]{64}", m["sha256"]), (family, m.get("url"))
-        assert m.get("url") and m.get("title") and m.get("retrieved"), (family, m)
-    assert len(shas) == len(manifest(family)), family
-    for i, r in enumerate(rows(family)):
-        assert r["publication"]["primary_sha256"] in shas, (family, i)
-
-
-@pytest.mark.parametrize("family", FAMILIES)
-def test_quotes_outside_the_ogl_stay_short(family):
-    for i, r in enumerate(rows(family)):
-        if r["source"] not in OGL:
-            assert len(r["quote"].split()) < 15, (family, i, r["quote"])
-
-
-def test_same_assumptions_rows_are_policyengine_computed():
-    for fam in families():
-        for r in rows(fam):
-            if r["attribution"] == "same_assumptions":
-                assert r["benchmark_class"] == "same_assumptions", fam
-                assert r["source_model"] == "policyengine_uk", fam
-
-
-def test_no_hmt_decile_bar_readings_were_staged():
-    """README rule 4 (AB2025 rule 9, #61)."""
-    for fam in families():
-        for r in rows(fam):
-            if r["source"] == "hm_treasury":
-                assert "Impact on households" not in r["publication"]["title"] or (
-                    r["value_kind"] != "approx_chart_reading"
-                ), (fam, r["quote"][:80])
+    """pipeline/ab2026_harvest_contract.py: field names, closed enums, the
+    FY-end-year period, the fiscal_event slug, keys where the row says they
+    live (README rule 2), a manifest primary for every row, short quotes
+    outside the OGL (rule 6), PolicyEngine-computed same_assumptions rows and
+    no Impact on households bar readings (rule 4)."""
+    assert family_problems(HARVEST / family) == []
 
 
 def test_the_key_listing_is_derived_from_the_registry():
     text = (HARVEST / "REGISTRY_KEYS.md").read_text()
-    listed = set(re.findall(r"^\| `([a-z0-9_]+)` \|", text, flags=re.M))
+    listed = set(re.findall(r"^\| `([a-z0-9_]+)` \|", text, flags=re.MULTILINE))
     assert listed == KEYS, listed ^ KEYS
 
 
