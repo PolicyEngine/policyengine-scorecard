@@ -61,10 +61,9 @@ off the runs that exist (the years each computed). It rides in publication,
 outside the claim id, so a new run never changes a claim's id; the feed
 shows it as conditions.pe_missing.
 
-Diagnosis: the CenTax central static rows carry a pe_gap diagnosis linked
-to microcosm#1126 (the hours-usage draw), with the evidence measured on the
-claim's latest run and the history that run's pair's verified_pairs entry
-states.
+Diagnosis: the CenTax central static rows carry a pe_gap diagnosis, with
+the evidence measured on the claim's latest run. That run's pair's
+verified_pairs entry states the diagnosis and the link it rests on.
 
 calibration_relationship comes from relationships.uk_relationship: held out
 for both sources. Each is a reform estimate, and no calibration target is a
@@ -1247,11 +1246,11 @@ def diagnoses(
     artifacts: list[tuple[dict, Path]],
     notes: dict | None = None,
 ) -> list[tuple]:
-    """pe_gap on the CenTax central static rows, linked to microcosm#1126,
-    each as the pair of its own latest certified result states it: the
-    measured lead from that run, then the pair's verified diagnosis (none for
-    a pair that states none). A newer run that skips a claim's year leaves
-    that claim's diagnosis with the run that computed it."""
+    """pe_gap on the CenTax central static rows, each as the pair of its own
+    latest certified result states it: the measured lead from that run, then
+    the pair's verified diagnosis and its link (none for a pair that states
+    none). A newer run that skips a claim's year leaves that claim's diagnosis
+    with the run that computed it."""
     notes = notes or load_notes()
     check_history(artifacts)
     pairs = {art["run_id"]: verified_pair(notes, art) for art, _ in artifacts}
@@ -1289,7 +1288,7 @@ def diagnoses(
                 s.claim_id(),
                 DiagnosisClass.PE_GAP.value,
                 rationale,
-                "https://github.com/PolicyEngine/microcosm/issues/1126",
+                pair["diagnosis_url"],
             )
         )
     return rows
@@ -1407,7 +1406,7 @@ def ingest(db_path: Path) -> dict:
             "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
             "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
             "dashboard figure kept as history"
-            + ("; pe_gap on the central static rows (microcosm#1126)" if diag else "")
+            + ("; pe_gap on the central static rows" if diag else "")
         )
         db.conn.execute(LANE_SQL, (LANE_ID, "computed", detail, LANE_UPDATED))
     sync_lane_feed(

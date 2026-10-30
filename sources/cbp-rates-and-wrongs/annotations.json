@@ -15,12 +15,13 @@
     "results": null
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "definitional",
    "status": "concept_mismatch",
    "text": "CBP's figures are net fiscal impacts after a behavioural response: parents choose pension contributions with labour income fixed (Table 2), or choose labour supply with no pension (Table 3), and bunch at £100,000 only when that gains them more than a £1,000 friction. PolicyEngine's counterpart is a static cost (the engine's labour-supply elasticities are zero at the pin), so the two measure different things. CBP publishes no static leg.",
-   "basis": "raw/pages_layout.txt PDF page 7 (section 1.3.4, the bunching rule with a £1k friction), PDF page 8 (section 1.3.7, Table 2 and note), PDF page 9 (section 1.4.5, the same rule) and PDF page 10 (section 1.4.6, Table 3 and note); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
+   "basis": "raw/pages_layout.txt PDF page 7 (section 1.3.4, the bunching rule with a £1k friction), PDF page 8 (section 1.3.7, Table 2 and note), PDF page 9 (section 1.4.5, the same rule) and PDF page 10 (section 1.4.6, Table 3 and note); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; policyengine_uk 2.132.6, the same files and values, with Simulation.apply_dynamics called only in policyengine_uk/tests; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
   },
   {
    "id": "cbp-includes-tfc",
@@ -30,7 +31,8 @@
     "results": null
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "definitional",
    "text": "CBP's subsidy includes Tax-Free Childcare: its tables assume £500 of Tax-Free Childcare per child (the model description says up to £2,000). The PolicyEngine counterpart therefore removes both £100,000 limits and adds Tax-Free Childcare to the three free-hours entitlements. Both are counted for England only, as CBP's children are England's births: the engine applies Tax-Free Childcare across the UK, and the change outside England is stated on each result and left out.",
@@ -49,6 +51,20 @@
    "severity": "construction",
    "text": "CBP assumes every eligible family uses the full working-parent hours, and gives every child two parents and no siblings. PolicyEngine runs the dataset's own families, values the extended hours at each family's weekly usage input (maximum_extended_childcare_hours_usage), and pays each offer only where the family's take-up input is true. Each result states the usage and take-up the run read and whether the dataset or the engine default supplied them.",
    "basis": "raw/pages_layout.txt PDF page 5 (section 1.2.2: 'every child has two parents and no siblings') and PDF pages 8 and 10 (table notes: 'full utilisation of FCWP'); policyengine_uk 2.89.2 variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage), the eligibility variables' defined_for (would_claim_extended_childcare, would_claim_universal_childcare, would_claim_targeted_childcare, would_claim_tfc; each defaults to true); results/uk/childcare_100k/<variant>.json worlds.baseline.dataset_inputs and years.*.take_up and hours_usage"
+  },
+  {
+   "id": "cbp-full-utilisation-child-caps",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "variants": [
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "severity": "construction",
+   "text": "CBP assumes every eligible family uses the full working-parent hours, and gives every child two parents and no siblings. PolicyEngine runs the dataset's own families. It values a child's working-parent hours at the smaller of the child's own weekly usage input (max_free_entitlement_hours_used) and the family's (maximum_extended_childcare_hours_usage), and the universal and targeted hours at the child's own. It pays the working-parent hours only where the family's extended take-up input is true. Each result states the usage and take-up inputs the run read, and whether the dataset or the engine default supplied them.",
+   "basis": "raw/pages_layout.txt PDF page 5 (section 1.2.2: 'every child has two parents and no siblings') and PDF pages 8 and 10 (table notes: 'full utilisation of FCWP'); policyengine_uk 2.132.6 variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement_total_per_child.py (min_ of the child's and the family's hours), extended_childcare_entitlement_eligible.py (defined_for would_claim_extended_childcare), universal_childcare_entitlement/universal_childcare_entitlement.py and targeted_childcare_entitlement/targeted_childcare_entitlement.py (the child's hours only), max_free_entitlement_hours_used.py and maximum_extended_childcare_hours_usage.py (default 30), and the take-up inputs would_claim_extended_childcare, would_claim_universal_childcare, would_claim_targeted_childcare, would_claim_tfc; results/uk/childcare_100k/<variant>.json worlds.baseline.dataset_inputs and years.*.take_up and hours_usage"
   },
   {
    "id": "cbp-synthetic-population",
@@ -95,11 +111,12 @@
     "results": null
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "period",
-   "text": "CBP's columns are financial years (2026/27 is 2026-27). PolicyEngine's annual period 2026 runs the 2026-27 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
-   "basis": "raw/pages_layout.txt PDF pages 8 and 10 (column labels); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"
+   "text": "CBP's columns are financial years (2026/27 is 2026-27). PolicyEngine's annual period 2026 runs the 2026-27 rules: policyengine-uk sets each childcare parameter for year Y to its value on 30 April of Y.",
+   "basis": "raw/pages_layout.txt PDF pages 8 and 10 (column labels); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters; policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters, which samples 30 April except for parameters flagged preserve_calendar_dates or fiscal_year_blend, and no file under parameters/gov/dfe or parameters/gov/hmrc/tax_free_childcare sets either flag"
   }
  ]
 }

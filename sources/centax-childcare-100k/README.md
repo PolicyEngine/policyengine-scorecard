@@ -4,7 +4,7 @@ CenTax's costing of removing the £100,000 adjusted-net-income limit on the
 working-parent free childcare hours in England (Advani, Flew, Pepin-Hall and
 Summers, [Removing the childcare cliff-edge](https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf),
 September 2026, Table 4.2), set against PolicyEngine's static cost of the
-same reform on the scorecard's certified UK pair. The lane also carries the
+same reform on certified UK pairs. The lane also carries the
 Centre for British Progress estimate the report reviews
 ([`../cbp-rates-and-wrongs/`](../cbp-rates-and-wrongs/)).
 
@@ -31,7 +31,7 @@ The PolicyEngine side is `pipeline/compute_uk_childcare_100k.py`, which wrote
   £100,000 limit and is not part of it. The £500 Tax-Free Childcare
   addition in the report's Appendix D belongs to CBP's estimate.
 - Both offers are England's. The counterparts sum each childcare head for
-  people in English households: policyengine-uk 2.89.2 restricts the three
+  people in English households: policyengine-uk restricts the three
   free-hours offers to England but applies Tax-Free Childcare across the
   UK. Ingest checks that no free-hours head moves outside England.
 
@@ -41,11 +41,15 @@ The PolicyEngine side is `pipeline/compute_uk_childcare_100k.py`, which wrote
 |---|---:|---:|
 | CenTax static cost, central | −0.80 | −0.98 |
 | CenTax net fiscal cost, central | −0.52 | −0.64 |
-| PolicyEngine, certified pair (static) | −0.690 | −0.838 |
+| PolicyEngine, policyengine.py 6.11.0's certified pair (static) | −1.007 | −1.225 |
+| PolicyEngine, 19 June certified pair (static, history) | −0.690 | −0.838 |
 | PolicyEngine, published dashboard (static, history; on policyengine.org 12–21 October 2026) | −0.434 | −0.505 |
 | PolicyEngine dashboard since PR #8 merged (1b83dd46, 24 October 2026; its own Vercel deployment, not policyengine.org; not attached) | −0.902 | −1.037 |
 
-The certified pair is the default replay variant: populace-uk build
+The latest result comes from the pair policyengine.py 6.11.0 certifies:
+national cut `microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71` with
+policyengine-uk 2.132.6 (`data/uk/certified_pairs.json`). The history keeps
+the 19 June run on the default replay variant: populace-uk build
 `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z` with policyengine-uk
 2.89.2 (`data/uk/certified_bundle.json`). Statuses:
 
@@ -71,37 +75,59 @@ CenTax's two behavioural margins are on the page without a PolicyEngine
 value. Their `pe_missing` says why: this lane's counterparts are static
 runs.
 
-## Why PolicyEngine is below CenTax
+## Why PolicyEngine is above CenTax
 
-The central static rows carry a `pe_gap` diagnosis linked to
+On the latest pair, PolicyEngine's static cost exceeds CenTax's by 26% in
+2027-28 and 25% in 2029-30. The central static rows carry a `pe_gap`
+diagnosis linked to [microcosm#1338](https://github.com/PolicyEngine/microcosm/pull/1338).
+
+| £bn of cost | 2027-28 | 2029-30 |
+|---|---:|---:|
+| Extended hours | 0.864 | 1.065 |
+| Universal hours | 0.143 | 0.159 |
+| Targeted hours | 0.000 | 0.000 |
+| PolicyEngine total | 1.007 | 1.225 |
+| CenTax static cost, central | 0.80 | 0.98 |
+
+About two-thirds of the excess comes from this cut's take-up draws. A family
+above £100,000 can hold extended take-up true and universal take-up false.
+It receives no universal hours under current law, though those hours have no
+income limit, and receives them only once the reform makes it eligible for
+the extended hours. Every pound of the universal change falls on such
+children. microcosm#1338 (merged 23 October 2026, after this cut) nests the
+universal draw under the extended one, so a family that claims the extended
+hours also claims the universal hours. The extended hours alone run 8% and
+9% above CenTax, and this run does not explain that remainder.
+
+Usage no longer drives the gap. Families receiving the extended hours use a
+weighted mean of 28.3 of the 30 weekly hours
+(`maximum_extended_childcare_hours_usage`), against about 28.5 for DfE in
 [microcosm#1126](https://github.com/PolicyEngine/microcosm/issues/1126).
-Measured on the certified pair: families receiving the extended hours use a
-weighted mean of 15.3 of the 30 weekly hours (`maximum_extended_childcare_hours_usage`);
-#1126 puts DfE's mean at about 28.5 and identifies the draw as the main
-reason PolicyEngine's free-hours spending is low. With every family at the
-full 30 hours, the same reform costs £1.40bn in 2027-28 and £1.72bn in
-2029-30 on this pair (a diagnostic run, never attached). Ingest writes that
-figure only when both full-use worlds record it: the input set to 30 before
-any holder that reads it was filled, read back at 30, and the main world's
-reform and executed limits on 30 April of the year. Smaller factors on
-our side, recorded on each result: the engine switches universal and
-targeted hours off once a family qualifies for the extended hours
-([policyengine-uk#1930](https://github.com/PolicyEngine/policyengine-uk/issues/1930),
-changed after the pin by [policyengine-uk#2177](https://github.com/PolicyEngine/policyengine-uk/pull/2177)),
-and no child under 1 receives hours.
+With every family at the full 30 hours, the same reform costs £1.055bn in
+2027-28 and £1.278bn in 2029-30 on this pair (a diagnostic run, never
+attached). Ingest writes that figure only when both full-use worlds record
+it: the run set the input to 30 before anything read it, read it back at 30,
+and kept the main world's reform and executed limits on 30 April of the
+year. No child under 1 receives hours on this pair, because every age is a
+whole number of years.
 
+The 19 June pair ran about 14% below CenTax. Families on that pair drew a
+weighted mean of 15.3 weekly hours, and #1126 identifies that draw as the
+main reason PolicyEngine's free-hours spending ran low. At the full 30 hours
+the same reform cost £1.40bn and £1.72bn on that pair. Its engine also
+switched universal and targeted hours off once a family qualified for the
+extended hours
+([policyengine-uk#1930](https://github.com/PolicyEngine/policyengine-uk/issues/1930),
+changed by [policyengine-uk#2177](https://github.com/PolicyEngine/policyengine-uk/pull/2177)).
 The published dashboard figure ran on the 2 October Microcosm release that
-#1126 examines, with the same draw. The fix merged in microcosm on 16
-October 2026 (microcosm#1299). The certified pair was built on 19 June 2026,
-before it. [policyengine.py#685](https://github.com/PolicyEngine/policyengine.py/pull/685)
-(merged 21 October 2026) certified a Microcosm pair with the fixed draw:
-national cut `microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71` with
-policyengine-uk 2.132.6, which policyengine.py 6.11.0 (25 October) still
-pins. This repository has it only as an experiment population, not a replay
-variant, so this lane has not run it yet:
-[#228](https://github.com/PolicyEngine/policyengine-scorecard/issues/228).
-Until it does, the latest result is the 19 June pair's and the row shows
-that pair's miss.
+#1126 examines, with the same draw. microcosm#1299 fixed the draw on 16
+October 2026, and [policyengine.py#685](https://github.com/PolicyEngine/policyengine.py/pull/685)
+(merged 21 October 2026) certified the latest pair with it.
+
+policyengine.py 6.11.1 (27 October) certifies a later pair, national cut
+`microcosm-uk-2024-25-national-20261025T091414Z-a6299504` with
+policyengine-uk 2.151.0, built after microcosm#1338 merged. This lane has not
+run it yet: [#232](https://github.com/PolicyEngine/policyengine-scorecard/issues/232).
 
 To add a pair, run the compute script with `--variant <id>` in that
 variant's environment. The run id defaults to
