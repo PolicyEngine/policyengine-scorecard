@@ -332,6 +332,17 @@ inert measure-years. Its release diff is against
 variant with committed results at the time. That diff flags no rows. The
 results pull request wrote this paragraph from the receipt's counts.
 
+`results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/`
+holds the qualification of policyengine.py 6.11.0: request `55070155…`,
+receipt SHA-256 `48ac3847…`, `replay-state` commit `5c4e38a`. Integrity is
+complete with no failures, and all six events have complete supported grids
+and no inert measure-years. Its release diff is against
+`pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1`, the newest certified
+variant with committed results at the time. That diff flags 394 rows; its
+flag counts are numerical 393 and structural 4, and every other flag count
+is zero. The results pull request wrote this paragraph from the receipt's
+counts.
+
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was

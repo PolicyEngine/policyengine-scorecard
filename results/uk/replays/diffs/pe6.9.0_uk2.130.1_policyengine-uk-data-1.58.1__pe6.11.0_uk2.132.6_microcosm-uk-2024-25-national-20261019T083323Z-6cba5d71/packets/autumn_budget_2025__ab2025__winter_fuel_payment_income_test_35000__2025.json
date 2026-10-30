@@ -1,0 +1,1205 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+     "2025-01-01.2030-12-31": 0
+    },
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+     "2025-01-01.2030-12-31": false
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "71ae737cb0b8c0ae8dc0b9ac5612a676fe8d335b0a1ac193c5647427c095db98"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+     "2025-01-01.2030-12-31": 0
+    },
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+     "2025-01-01.2030-12-31": false
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "afb04ae854f171790437062b8ecc8014328ee237e9cdcb0d54907d59fa79ebe0"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.132.6",
+   "policyengine_version": "6.11.0",
+   "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+  }
+ },
+ "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2025-26",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2026": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2027": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2028": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2029": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2030": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "winter_fuel_allowance"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "winter_fuel_allowance"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income"
+    ],
+    "pattern": "gov\\.dwp\\.winter_fuel_payment\\.eligibility\\.taxable_income_test\\.maximum_taxable_income|gov\\.dwp\\.winter_fuel_payment\\.eligibility\\.taxable_income_test\\.use_maximum_taxable_income",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+     "2025-01-01.2030-12-31": 0
+    },
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+     "2025-01-01.2030-12-31": false
+    }
+   },
+   "pe_gap": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12714:7759d518d7c6f285",
+     "source_row_number": 12714,
+     "source_row_sha256": "7759d518d7c6f2853f3a7a9ec512b85b0d3452ddcca8335f077637d39e49cc17",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12715:2f68d12cab62adaa",
+     "source_row_number": 12715,
+     "source_row_sha256": "2f68d12cab62adaad24ec1f863ed38f027d7f5962b3992cf8b687f85eefbb124",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 408454519.8000001,
+     "value_gbp_decimal": "408454519.8000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12716:668d8da17b50bcad",
+     "source_row_number": 12716,
+     "source_row_sha256": "668d8da17b50bcadaaf59adb4e2fed370443a9c756de7f9510a49b04a46c69af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 891898111.2856009,
+     "value_gbp_decimal": "891898111.2856009"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12717:e1c2c1fcb5ce9548",
+     "source_row_number": 12717,
+     "source_row_sha256": "e1c2c1fcb5ce9548f6e5a8b10f661cd06a8833e037c7dfa7acd096c5ac661f4b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 490713760.68209356,
+     "value_gbp_decimal": "490713760.68209356"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12718:47d0bfcd7a27ba58",
+     "source_row_number": 12718,
+     "source_row_sha256": "47d0bfcd7a27ba5829059f7ce6c188724c62c85af66a283d13db9e408d332360",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 526033114.55423284,
+     "value_gbp_decimal": "526033114.55423284"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12719:670f8310e3289a5b",
+     "source_row_number": 12719,
+     "source_row_sha256": "670f8310e3289a5b7e43c6ba57a6725158bf674c75789c8d0d8b0aede82f2187",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 561696945.1324424,
+     "value_gbp_decimal": "561696945.1324424"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24149:cb9c6124ee5756b0",
+     "source_row_number": 24149,
+     "source_row_sha256": "cb9c6124ee5756b029823765f374c1d8966d6fec8ead46fe2ba0ffa10c72387c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1661868000.0,
+     "value_gbp_decimal": "-1661868000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24150:3a557c09d1d519f6",
+     "source_row_number": 24150,
+     "source_row_sha256": "3a557c09d1d519f6447194b2b8c47fd60896a8a09006dffcaa916867abc29b8b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1672203000.0,
+     "value_gbp_decimal": "-1672203000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24151:5d9b3e6bbec76d40",
+     "source_row_number": 24151,
+     "source_row_sha256": "5d9b3e6bbec76d404d0db7a6171123ede9cee74a370111d4ec6e1579f6c6e2d4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1676337000.0,
+     "value_gbp_decimal": "-1676337000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24152:3f0b4da150453149",
+     "source_row_number": 24152,
+     "source_row_sha256": "3f0b4da150453149c3c741d7d169852fc96a96bca9acbd0b39326d8d83d1def2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1693906500.0,
+     "value_gbp_decimal": "-1693906500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24153:4598fca7589b9736",
+     "source_row_number": 24153,
+     "source_row_sha256": "4598fca7589b97364e621f7c78d34092045422d5d112941175e771880adddc02",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1734246500.0,
+     "value_gbp_decimal": "-1734246500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24154:67e883d6279cdc10",
+     "source_row_number": 24154,
+     "source_row_sha256": "67e883d6279cdc10cf099d1dc1a1cd4ef20eb08e4e2a13230648fde0532f762b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1753849500.0,
+     "value_gbp_decimal": "-1753849500.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24155:58c670cb9cae45ee",
+     "source_row_number": 24155,
+     "source_row_sha256": "58c670cb9cae45ee508811cc6118d79ddfdda667cdbcd924d5017b9419c14c63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -123669551.661409,
+     "value_gbp_decimal": "-123669551.661409"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24156:4971f6103c685e64",
+     "source_row_number": 24156,
+     "source_row_sha256": "4971f6103c685e6441af31ba8057e07d730caedbdfaf52566e3be7d88756e19f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -125072301.588724,
+     "value_gbp_decimal": "-125072301.588724"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24157:1488946a6937ebc5",
+     "source_row_number": 24157,
+     "source_row_sha256": "1488946a6937ebc55f941c0e3575715c67e571169a774b7a02a0f8c27058604a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -125870469.095167,
+     "value_gbp_decimal": "-125870469.095167"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24158:73455589333cbd4a",
+     "source_row_number": 24158,
+     "source_row_sha256": "73455589333cbd4a380acedaff8c5b4396c8cb4bfdfaeae683a2784a5696ed45",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -127268326.037955,
+     "value_gbp_decimal": "-127268326.037955"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24159:d05b64064fe8c177",
+     "source_row_number": 24159,
+     "source_row_sha256": "d05b64064fe8c177fb56bb8ee7f3fb8abef6153008dcac38d7995e8e6b6950b4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -130277693.72710301,
+     "value_gbp_decimal": "-130277693.72710301"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24160:0419e9d97e55970a",
+     "source_row_number": 24160,
+     "source_row_sha256": "0419e9d97e55970a7a0310c94e27e4b852819376fee7ef4304e93a2ca3b4cdb1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -131951324.80216,
+     "value_gbp_decimal": "-131951324.80216"
+    }
+   ],
+   "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2025-26",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2026": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2027": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2028": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2029": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    },
+    "2030": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": 35000,
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": true
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "winter_fuel_allowance"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "winter_fuel_allowance"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income"
+    ],
+    "pattern": "gov\\.dwp\\.winter_fuel_payment\\.eligibility\\.taxable_income_test\\.maximum_taxable_income|gov\\.dwp\\.winter_fuel_payment\\.eligibility\\.taxable_income_test\\.use_maximum_taxable_income",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+     "2025-01-01.2030-12-31": 0
+    },
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+     "2025-01-01.2030-12-31": false
+    }
+   },
+   "pe_gap": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12714:7759d518d7c6f285",
+     "source_row_number": 12714,
+     "source_row_sha256": "7759d518d7c6f2853f3a7a9ec512b85b0d3452ddcca8335f077637d39e49cc17",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12715:2f68d12cab62adaa",
+     "source_row_number": 12715,
+     "source_row_sha256": "2f68d12cab62adaad24ec1f863ed38f027d7f5962b3992cf8b687f85eefbb124",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 408454519.8000001,
+     "value_gbp_decimal": "408454519.8000001"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12716:668d8da17b50bcad",
+     "source_row_number": 12716,
+     "source_row_sha256": "668d8da17b50bcadaaf59adb4e2fed370443a9c756de7f9510a49b04a46c69af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 891898111.2856009,
+     "value_gbp_decimal": "891898111.2856009"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12717:e1c2c1fcb5ce9548",
+     "source_row_number": 12717,
+     "source_row_sha256": "e1c2c1fcb5ce9548f6e5a8b10f661cd06a8833e037c7dfa7acd096c5ac661f4b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 490713760.68209356,
+     "value_gbp_decimal": "490713760.68209356"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12718:47d0bfcd7a27ba58",
+     "source_row_number": 12718,
+     "source_row_sha256": "47d0bfcd7a27ba5829059f7ce6c188724c62c85af66a283d13db9e408d332360",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 526033114.55423284,
+     "value_gbp_decimal": "526033114.55423284"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12719:670f8310e3289a5b",
+     "source_row_number": 12719,
+     "source_row_sha256": "670f8310e3289a5b7e43c6ba57a6725158bf674c75789c8d0d8b0aede82f2187",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": 561696945.1324424,
+     "value_gbp_decimal": "561696945.1324424"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24149:cb9c6124ee5756b0",
+     "source_row_number": 24149,
+     "source_row_sha256": "cb9c6124ee5756b029823765f374c1d8966d6fec8ead46fe2ba0ffa10c72387c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1661868000.0,
+     "value_gbp_decimal": "-1661868000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24150:3a557c09d1d519f6",
+     "source_row_number": 24150,
+     "source_row_sha256": "3a557c09d1d519f6447194b2b8c47fd60896a8a09006dffcaa916867abc29b8b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1672203000.0,
+     "value_gbp_decimal": "-1672203000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24151:5d9b3e6bbec76d40",
+     "source_row_number": 24151,
+     "source_row_sha256": "5d9b3e6bbec76d404d0db7a6171123ede9cee74a370111d4ec6e1579f6c6e2d4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1676337000.0,
+     "value_gbp_decimal": "-1676337000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24152:3f0b4da150453149",
+     "source_row_number": 24152,
+     "source_row_sha256": "3f0b4da150453149c3c741d7d169852fc96a96bca9acbd0b39326d8d83d1def2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1693906500.0,
+     "value_gbp_decimal": "-1693906500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24153:4598fca7589b9736",
+     "source_row_number": 24153,
+     "source_row_sha256": "4598fca7589b97364e621f7c78d34092045422d5d112941175e771880adddc02",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1734246500.0,
+     "value_gbp_decimal": "-1734246500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Turns off the certified \u00a335,000 England-and-Wales income passport while retaining the 2024 means-tested-benefit requirement. PE computes gross winter_fuel_allowance spending and Income Tax (expected to have no direct WFP recovery change); its formula uses income below \u00a335,000 rather than the OBR description's below-or-equal wording and returns zero in Scotland.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24154:67e883d6279cdc10",
+     "source_row_number": 24154,
+     "source_row_sha256": "67e883d6279cdc10cf099d1dc1a1cd4ef20eb08e4e2a13230648fde0532f762b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -1753849500.0,
+     "value_gbp_decimal": "-1753849500.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24155:58c670cb9cae45ee",
+     "source_row_number": 24155,
+     "source_row_sha256": "58c670cb9cae45ee508811cc6118d79ddfdda667cdbcd924d5017b9419c14c63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -123669551.661409,
+     "value_gbp_decimal": "-123669551.661409"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24156:4971f6103c685e64",
+     "source_row_number": 24156,
+     "source_row_sha256": "4971f6103c685e6441af31ba8057e07d730caedbdfaf52566e3be7d88756e19f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -125072301.588724,
+     "value_gbp_decimal": "-125072301.588724"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24157:1488946a6937ebc5",
+     "source_row_number": 24157,
+     "source_row_sha256": "1488946a6937ebc55f941c0e3575715c67e571169a774b7a02a0f8c27058604a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -125870469.095167,
+     "value_gbp_decimal": "-125870469.095167"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24158:73455589333cbd4a",
+     "source_row_number": 24158,
+     "source_row_sha256": "73455589333cbd4a380acedaff8c5b4396c8cb4bfdfaeae683a2784a5696ed45",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -127268326.037955,
+     "value_gbp_decimal": "-127268326.037955"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24159:d05b64064fe8c177",
+     "source_row_number": 24159,
+     "source_row_sha256": "d05b64064fe8c177fb56bb8ee7f3fb8abef6153008dcac38d7995e8e6b6950b4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -130277693.72710301,
+     "value_gbp_decimal": "-130277693.72710301"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24160:0419e9d97e55970a",
+     "source_row_number": 24160,
+     "source_row_sha256": "0419e9d97e55970a7a0310c94e27e4b852819376fee7ef4304e93a2ca3b4cdb1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+     "value_gbp": -131951324.80216,
+     "value_gbp_decimal": "-131951324.80216"
+    }
+   ],
+   "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+      "baseline_world": 0,
+      "current_law": 35000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 35000,
+      "reform_world": 35000
+     },
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+      "baseline_world": false,
+      "current_law": true,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": true,
+      "reform_world": true
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+      "baseline_world": 0,
+      "current_law": 35000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 35000,
+      "reform_world": 35000
+     },
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+      "baseline_world": false,
+      "current_law": true,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": true,
+      "reform_world": true
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "both_zero",
+     "head": "both_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:12714:7759d518d7c6f285",
+   "level": "source_row",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": -1313971588.0547585,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -1661868000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.5_to_0.8",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": 110988529.08187771,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 13139715.880547585
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1202983058.9728808,
+   "key": "obr_pmd_nov2025:24149:cb9c6124ee5756b0",
+   "level": "source_row",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": 13139715.880547585,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -123669551.661409,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24155:58c670cb9cae45ee",
+   "level": "source_row",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": -1313971588.0547585,
+   "context": {},
+   "delta_gbp": 110988529.08187771,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 13139715.880547585
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1202983058.9728808,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": 13139715.880547585,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": -1313971588.0547585,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": 110988529.08187771,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 13139715.880547585
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1202983058.9728808,
+   "key": "winter_fuel_allowance",
+   "level": "head",
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "threshold_gbp": 13139715.880547585,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__winter_fuel_payment_income_test_35000 --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__winter_fuel_payment_income_test_35000 --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 0.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:12714:7759d518d7c6f285",
+   "source_row_number": 12714,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -1313971588.0547585,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": -1202983058.9728808,
+   "obr_value_gbp": -1661868000.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:24149:cb9c6124ee5756b0",
+   "source_row_number": 24149,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -123669551.661409,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:24155:58c670cb9cae45ee",
+   "source_row_number": 24155,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:12714:7759d518d7c6f285",
+   "source_row_number": 12714,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -1313971588.0547585,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": -1202983058.9728808,
+   "obr_value_gbp": -1661868000.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:24149:cb9c6124ee5756b0",
+   "source_row_number": 24149,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -123669551.661409,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:24155:58c670cb9cae45ee",
+   "source_row_number": 24155,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+ "year": 2025
+}
