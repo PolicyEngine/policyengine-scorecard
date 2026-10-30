@@ -181,6 +181,34 @@ A model/data combination is **incompatible** when no certified variant
 records it. There is no flag that relaxes a check: running a newer engine
 means adding a variant whose certification names it.
 
+### Certified pairs (lane runs only)
+
+A lane can need a policyengine.py release's certified bundle before this
+pipeline qualifies it as a variant: `uk-childcare-100k` (issue #228) runs on
+policyengine.py 6.11.0's Microcosm pair. `data/uk/certified_pairs.json`
+(kind `uk_certified_pairs`, `pipeline/uk_certified_pairs.py`) records each
+such bundle in the variant record's shape less the fields that file a
+replay: `pair_id` (`pair-<variant slug>`) in place of `variant_id`, status
+`certified_pair`, and no `layout` or `result_root`
+(`uk_certified_pairs.FIELDS` is the whole field set).
+
+- **The checks are the variant's.** `uk_replay_variants.validate_identity`
+  is check 1 for both kinds; `validate_record` adds only the variant's
+  status, layout, result root and legacy checks. A pair's preflight then
+  runs checks 2 to 6 through the same code: `verify_installed`, then
+  `compute_uk_event.materialized_preflight`, the second half of
+  `variant_preflight`.
+- **No event replay runs on a pair.** The event runner resolves only
+  `replay_variants.json`; a lane resolves either kind with
+  `uk_certified_pairs.get_record`, and its ingest reads both files.
+- **A pair stays when a variant arrives.** A variant this pipeline later
+  qualifies for the same bundle has its own requirements file, so its own
+  identity and id. The pair remains the identity the lane's runs on it were
+  checked against.
+- Experiment populations (`docs/uk_replay/POLICY_EXPERIMENTS.md`) are a
+  third kind: their results are never ingested, while a lane's runs on a
+  pair are.
+
 ## Unsupported years
 
 Each event registry's `calendar_years` is the construction's window; a
@@ -273,11 +301,11 @@ Periods 2025 to 2029 (FY2025–26 to FY2029–30) fall wholly inside the window,
 so their reversal rates are the intended 0.10 and 0.20. A rerun with #186
 executes the revision and refuses any processed mismatch in an in-force year.
 
-CI's real replay of this variant (pushes only) recomputes one artifact with
-the current code, which also writes the processed-value evidence fields. A
-committed artifact from before that check is compared with exactly those
-fields removed, and the step says so in a notice; every other byte must match
-(`pipeline/uk_replay_determinism.py`).
+The real replay of this variant (`uk-replay-determinism.yml`, on pushes to
+main) recomputes one artifact with the current code, which also writes the
+processed-value evidence fields. A committed artifact from before that check
+is compared with exactly those fields removed, and the step says so in a
+notice; every other byte must match (`pipeline/uk_replay_determinism.py`).
 
 `results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
 the qualification of policyengine.py 6.5.0: request `d83eaf59…`, receipt
@@ -292,8 +320,17 @@ the blended FY2024–25 increase, with processed rates equal to intended in
 both worlds. Periods 2025 to 2029 carry only the construction flag, and their
 values are unchanged. No other row in any event moved. AB2025's high-value
 council tax surcharge artifacts for 2025 to 2027 record
-`processed_value_notes` (policyengine-uk#2435); their totals are zero. CI's
+`processed_value_notes` (policyengine-uk#2435); their totals are zero. The
 real replay of this variant compares whole bytes.
+
+`results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the qualification of policyengine.py 6.9.0: request `705e2b7a…`, receipt
+SHA-256 `e9883083…`, `replay-state` commit `755ceb7`. Integrity is complete
+with no failures, and all six events have complete supported grids and no
+inert measure-years. Its release diff is against
+`pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`, the newest certified
+variant with committed results at the time. That diff flags no rows. The
+results pull request wrote this paragraph from the receipt's counts.
 
 ## Version-scoped diagnoses
 
@@ -708,10 +745,19 @@ through the wrapper's `PolicyEngine/policyengine.py` git source (which can
 name a fork's commit), or a malicious third-party dependency pulled in when
 installation falls back to free resolution.
 
-CI's `replay engine` job is weaker: the variant's engine runs as the runner
-user, so code in a certified freeze could reach the token held by the fetch
-step's runner process. That job runs only on pushes to main, with committed,
-certified freezes. `pipeline/uk_replay_qualify.py run-request` then:
+The real replay in `uk-replay-determinism.yml` is weaker: the variant's
+engine runs as the runner user, so code in a certified freeze could read the
+token from the runner's memory, where it stays until the job ends. Its fetch
+runs before any variant code, which keeps such code from redirecting the
+fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file, but not from
+that memory. The workflow runs only on pushes to main, with committed,
+certified freezes. CI's `replay engine` legs, which install and run each
+variant on pull requests too, are in a workflow that names no dataset token:
+the runner receives a secret its job names even in a step that never runs.
+
+In the qualification run's sandbox, the drain
+(`.github/scripts/uk_replay_drain.sh`) runs
+`pipeline/uk_replay_qualify.py run-request`, which goes through these steps:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request
@@ -982,7 +1028,9 @@ gates: CI and an independent review.
 
 ### Replay in CI
 
-`ci.yml` runs two kinds of replay check on every pull request and push:
+CI runs three kinds of replay check. `ci.yml` runs the first two on every
+pull request and push, and `uk-replay-determinism.yml` runs the third on
+pushes to main only:
 
 * Engine-free, in the main job: every committed namespace with event run
   manifests (legacy and each variant) is re-staged and re-compared from its
@@ -1009,16 +1057,22 @@ gates: CI and an independent review.
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
   premises byte for byte. Non-legacy variants also regenerate the re-verified
-  diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
-  secret and a committed sealed namespace, replay one real measure-year on
-  the certified dataset and compare its artifact with the committed bytes.
-  The token is in one step that fetches the dataset into the Hugging Face
-  cache; the variant's engine runs in the next step, without it, in a job
-  with `contents: read`, no persisted checkout credential and no cache.
-  Pull requests never receive the token: their run emits a notice that
-  nothing was replayed. The legacy leg skips diagnostics and this
-  determinism step. Without the secret, or without a committed sealed
-  namespace, the step emits a notice stating that nothing was replayed.
+  diagnostics. The legacy leg skips them. `ci.yml` names no dataset token,
+  and a pull request's run emits a notice that nothing was replayed.
+* `real replay`, in `uk-replay-determinism.yml`, on pushes to main only, one
+  leg for each certified variant from the same listing. A non-legacy variant
+  with a committed sealed namespace replays one real measure-year on the
+  certified dataset and compares its artifact with the committed bytes. The
+  `PE_UK_PRIVATE_HF_READ_TOKEN` secret is in one step, the first after the
+  checkout, uv's setup and a read of the index, and before anything of the
+  variant's is installed. It fetches the dataset into the Hugging Face hub
+  cache by uv's absolute path in an emptied environment, with packages no
+  newer than a fixed date and the token on stdin. The variant's engine runs
+  in later steps, without the token in their environment, in a job with
+  `contents: read`, no persisted checkout credential and no cache. The
+  legacy leg replays nothing. Without the secret, or without a committed
+  sealed namespace, the fetch emits a notice stating that nothing was
+  replayed.
 
 ## Invariants
 

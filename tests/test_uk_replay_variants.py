@@ -33,6 +33,7 @@ COMMITTED = (
     CURRENT,
     "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
     "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
 )
 DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 
@@ -294,6 +295,53 @@ def test_certification_is_isolated_from_tokens():
     assert sorted(removed) == ["HF_TOKEN", "HUGGING_FACE_TOKEN"]
     assert not set(rv.TOKEN_VARIABLES) & set(environ)
     assert environ["HF_HUB_OFFLINE"] == "1" and environ["PATH"] == "/bin"
+
+
+def test_certification_is_isolated_from_a_local_data_manifest():
+    # policyengine.py#704: POLICYENGINE_<COUNTRY>_DATA_MANIFEST_FILE selects a
+    # local release manifest. A replay certifies against the packaged one.
+    environ = {
+        "POLICYENGINE_UK_DATA_MANIFEST_FILE": "/tmp/manifest.json",
+        "POLICYENGINE_US_DATA_MANIFEST_FILE": "/tmp/us.json",
+        "POLICYENGINE_UK_DATA_REPO": "kept",
+        "PATH": "/bin",
+    }
+    removed = rv.isolate_certification_environment(environ)
+    assert sorted(removed) == [
+        "POLICYENGINE_UK_DATA_MANIFEST_FILE",
+        "POLICYENGINE_US_DATA_MANIFEST_FILE",
+    ]
+    assert not any(rv.LOCAL_MANIFEST_VARIABLE.fullmatch(name) for name in environ)
+    assert environ["POLICYENGINE_UK_DATA_REPO"] == "kept"
+    assert environ["PATH"] == "/bin" and environ["HF_HUB_OFFLINE"] == "1"
+
+
+# deadline=None like its neighbours: under host load a first example once
+# took 319 ms against Hypothesis's 200 ms default (#229 round-2 review)
+@settings(deadline=None)
+@given(
+    country=st.text(
+        alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", min_size=1, max_size=6
+    ),
+    others=st.dictionaries(
+        st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ_", min_size=1, max_size=12),
+        st.text(max_size=5),
+        max_size=5,
+    ),
+)
+def test_no_local_data_manifest_survives_isolation(country, others):
+    environ = {**others, f"POLICYENGINE_{country}_DATA_MANIFEST_FILE": "/x"}
+    kept = {
+        name: value
+        for name, value in others.items()
+        if not rv.LOCAL_MANIFEST_VARIABLE.fullmatch(name)
+        and name not in (*rv.TOKEN_VARIABLES, *rv.PROXY_EXCEPTIONS)
+        and name not in rv.OFFLINE_VARIABLES
+        and name not in rv.NO_NETWORK
+    }
+    rv.isolate_certification_environment(environ)
+    assert not any(rv.LOCAL_MANIFEST_VARIABLE.fullmatch(name) for name in environ)
+    assert all(environ[name] == value for name, value in kept.items())
 
 
 def test_release_bundle_must_match_exactly():

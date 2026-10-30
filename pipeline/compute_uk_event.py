@@ -581,6 +581,15 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
     6.x materialises its default dataset. Spawned year workers inherit both.
     """
     installed = check_variant_environment(variant)
+    return materialized_preflight(variant, installed, dataset_source=dataset_source)
+
+
+def materialized_preflight(
+    variant: dict, installed: dict, *, dataset_source: Path | None = None
+) -> dict:
+    """variant_preflight after its environment check, for a record whose
+    installed wheels were already verified against it: a replay variant, or
+    a lane's certified pair (pipeline/uk_certified_pairs.py)."""
     variants.isolate_certification_environment()
     fiscal.configure_offline()
     worlds.configure_offline()

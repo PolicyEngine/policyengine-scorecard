@@ -1,0 +1,33 @@
+{
+ "_schema": {
+  "applies_to": "every result in the lane",
+  "severity": "period | definitional | construction | caution | gap",
+  "basis": "traceability: the committee analysis in raw/, engine metadata recorded in pe/<bundle>.json, or the campaign module"
+ },
+ "annotations": [
+  {
+   "id": "ca-fy-from-tax-year",
+   "severity": "period",
+   "text": "FTB states a revenue change for a State fiscal year (July to June). PolicyEngine computes the tax year whose returns are filed in that fiscal year (fiscal 2025-26 from tax year 2025): the YCTC is refundable and is paid when returns are filed. Timing effects inside the year are not modelled.",
+   "basis": "FISCAL EFFECT paragraphs in raw/ ('revenue losses of ... in fiscal year (FY) 2025-26'); pipeline/campaign_us/ca_fiscal_notes.py (module docstring)"
+  },
+  {
+   "id": "ca-static",
+   "severity": "construction",
+   "text": "PolicyEngine's value is static, with no behavioural response. The committee analysis does not state FTB's method.",
+   "basis": "sources/ca-fiscal-notes/pe/us-6.2.1.json (pe_construction); source.json model.method"
+  },
+  {
+   "id": "ca-as-introduced",
+   "severity": "caution",
+   "text": "The estimate is for the bill as introduced. FTB re-estimates each amended version, so a later version's fiscal note can differ.",
+   "basis": "version line of each analysis in raw/ ('As Introduced February 3, 2025'; 'As Introduced February 3, 2026')"
+  },
+  {
+   "id": "ca-baseline-yctc",
+   "severity": "caution",
+   "text": "PolicyEngine's baseline YCTC is $643 million in tax year 2025, against FTB's reported $413 million for tax year 2023. A baseline about 1.5 times FTB's scales the cost of any expansion of the credit.",
+   "basis": "sources/ca-fiscal-notes/pe/us-6.2.1.json (baseline ca_yctc, 2025); reform-validation registry claim 9eda40b94ca5ce924e04 (ca_admin, state_ca_yctc: CA FTB, California EITC / YCTC / FYTC Report, Oct 2025, Table 1 p. 8)"
+  }
+ ]
+}

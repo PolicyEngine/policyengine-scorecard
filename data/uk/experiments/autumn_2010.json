@@ -1,0 +1,71 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_2010",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2025-12-31": 80000.0
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2025-12-31": 60000.0
+    }
+   },
+   "carried_from_fy": "2015-16",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2010_high_income_child_benefit_charge",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Social security benefits"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "child_benefit"
+     ]
+    },
+    {
+     "channel": "tax",
+     "note": "The charge is income tax in PolicyEngine; the OBR books the measure as reduced benefit spending.",
+     "obr_heads": [],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2010__child_benefit_remove_from_families_with_a_higher_rate_taxpayer_from_janu",
+   "note": "Removes the charge (a phase-out from \u00a31bn stands for none), whatever later events made of its design. Families who opted out of child benefit resume it once their charge share falls below pe-uk's opt-out threshold.",
+   "reform": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2025-12-31": 1000010000.0
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2025-12-31": 1000000000.0
+    }
+   },
+   "sources": [
+    "Finance Act 2012 Sch. 1 (Income Tax (Earnings and Pensions) Act 2003 s. 681B-681H)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/charges/CB_HITC/*.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2010.",
+ "obr_forecast_vintage": "November 2010",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}
