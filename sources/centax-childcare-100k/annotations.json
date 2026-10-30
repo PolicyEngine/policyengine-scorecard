@@ -20,12 +20,32 @@
     ]
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "construction",
    "status": "comparable",
    "text": "Both numbers are static costs. CenTax's static cost is the cost of funding the hours for children of parents above £100,000 before any behavioural response (Table 4.2 notes; Appendix A, 'Static cost'). PolicyEngine's is the change in spending on the three free-hours entitlements in England with the limit removed; at the pin the engine's labour-supply elasticities are zero, so no behavioural response enters.",
-   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
+   "basis": "raw/pages_layout.txt PDF page 42 (printed page 41, Table 4.2 notes) and PDF pages 75-76 (printed pages 74-75, Appendix A 'Static cost'); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; policyengine_uk 2.132.6, the same files and values, with Simulation.apply_dynamics called only in policyengine_uk/tests; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
+  },
+  {
+   "id": "centax-live-accounts-above-limit",
+   "applies_to": {
+    "components": [
+     "static_cost"
+    ],
+    "scenarios": null,
+    "periods": null,
+    "results": [
+     "certified"
+    ]
+   },
+   "variants": [
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+   ],
+   "severity": "construction",
+   "text": "CenTax adjusts for parents above £100,000 who hold a live childcare account for part of the year: they already receive some funded hours, so the reform adds only the extra quarters they would use. policyengine-uk tests the limit on the year's adjusted net income, so a family the limit disqualifies gets no working-parent hours under current law and the reform adds the whole year. This comparison therefore counts more of these families' hours as new cost than CenTax does, and no run here sizes the difference.",
+   "basis": "raw/pages_layout.txt PDF page 75 (printed page 74, Appendix A 'Static cost': 'parents with live accounts with ANI of over £100,000'); policyengine_uk 2.132.6 variables/gov/dfe/extended_childcare_entitlement/conditions/extended_childcare_entitlement_meets_income_requirements.py (ani <= p.income.limit, a yearly variable) and extended_childcare_entitlement_work_condition.py (the route through a partner for a parent with limited capability or a specified benefit needs no income test, so the limit does not disqualify that family)"
   },
   {
    "id": "centax-static-published-dashboard",
@@ -88,7 +108,8 @@
     ]
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "definitional",
    "text": "CenTax costs the free childcare hours only ('removing the £100,000 threshold for eligibility for free childcare hours'). Tax-Free Childcare, which has its own £100,000 limit, is not part of the reform. PolicyEngine's counterpart matches: it removes only the 30-hours limit and sums the three free-hours entitlements, and the run measured no change in Tax-Free Childcare. The £500 Tax-Free Childcare addition in CenTax's Appendix D belongs to the Centre for British Progress estimate CenTax reviews, not to CenTax's figures.",
@@ -105,11 +126,12 @@
     ]
    },
    "variants": [
-    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
    ],
    "severity": "period",
-   "text": "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. PolicyEngine's annual period 2027 runs the 2027-28 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
-   "basis": "raw/pages_layout.txt PDF page 3 (printed page 2, editorial note: 'tax year 2021-22 is given as 2022'); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"
+   "text": "CenTax names tax years by their later year, so 2028 is 2027-28 and 2030 is 2029-30. PolicyEngine's annual period 2027 runs the 2027-28 rules: policyengine-uk sets each childcare parameter for year Y to its value on 30 April of Y.",
+   "basis": "raw/pages_layout.txt PDF page 3 (printed page 2, editorial note: 'tax year 2021-22 is given as 2022'); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters; policyengine_uk 2.132.6 utils/parameters.py convert_to_fiscal_year_parameters, which samples 30 April except for parameters flagged preserve_calendar_dates or fiscal_year_blend, and no file under parameters/gov/dfe or parameters/gov/hmrc/tax_free_childcare sets either flag"
   },
   {
    "id": "centax-free-hours-only-published",
