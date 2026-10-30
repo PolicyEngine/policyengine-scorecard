@@ -117,7 +117,8 @@ assemble() {
 }
 
 build() {
-  # Every third-party module the builder and the checks import (tests check).
+  # Every third-party module the builder and the checks import, which tests
+  # check.
   local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema python)
   builder() { PYTHONPATH="$HERE" "${CONTROL[@]}" -m pipeline.uk_replay_results_pr "$@"; }
   git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
@@ -176,7 +177,7 @@ build() {
 # CI's format check and suite on the commit, as ci.yml's python job runs them
 # (tests check the lines are its lines), then its no-drift check. A failure
 # is reported, not fatal: the pull request opens as a draft that names it
-# (review of 24434729, 3). This runs in the build job, which holds no write
+# (review of 24434729, 3): this runs in the build job, which holds no write
 # credential. The variables that name the step's command files are unset for
 # it, so a test or tool that writes $GITHUB_OUTPUT or $GITHUB_ENV by name
 # writes nowhere. That is hygiene, not a sandbox: a process that finds the

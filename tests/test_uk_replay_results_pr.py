@@ -838,17 +838,19 @@ def test_the_builder_runs_no_release_code_and_never_merges():
 GROUP = '{\necho "::error::; builder check"\n}'
 # A function definition, wherever in a line it starts, and eval, source or
 # . as a word. Both read text after unquoted: a quote, a backslash or a line
-# continuation inside a word does not change what bash runs. A redirection may
-# touch the word (eval>x y), and anything else that ends it leaves it no
-# arguments. $'...' and $"..." can spell a word in escapes ($'\x65val'), so the
-# script holds neither. A word assembled at run time (n=ev; "${n}al") is beyond
-# any rule on text.
+# continuation inside a word does not change what bash runs. Both read every
+# line, comments included, because a line that starts with # inside a quote is
+# not a comment: so a comment in the script avoids these words, and a sentence
+# ending ")." with it. A redirection may touch the word (eval>x y), and anything
+# else that ends it leaves it no arguments. $'...' and $"..." can spell a word
+# in escapes ($'\x65val'), so the script holds neither. A word assembled at run
+# time (n=ev; "${n}al") is beyond any rule on text.
 DEFINITION = re.compile(
     r"(?:^|[\s;&|(){}])"
     r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>$`]+)\s*\(\s*\))",
     re.M,
 )
-RUNS_TEXT = re.compile(r"(?:^|[\s;&|({])(?:eval|source|\.)(?:[\s<>]|&>)", re.M)
+RUNS_TEXT = re.compile(r"(?:^|[\s;&|(){])(?:eval|source|\.)(?:[\s<>]|&>)", re.M)
 SPELLS_WORD = re.compile(r"\$['\"]")
 
 
@@ -857,12 +859,9 @@ def definitions(text):
 
 
 def runs_text(script):
-    """Each eval, source or . in ``script``, comment lines aside, and each
-    $'...' or $"..."."""
-    code = "\n".join(
-        line for line in script.splitlines() if not line.lstrip().startswith("#")
-    )
-    return RUNS_TEXT.findall(unquoted(code)) + SPELLS_WORD.findall(code)
+    """Each eval, source or . on any line of ``script``, and each $'...' or
+    $"..."."""
+    return RUNS_TEXT.findall(unquoted(script)) + SPELLS_WORD.findall(script)
 
 
 # pushgit, defined with another program in git's place.
@@ -1021,9 +1020,11 @@ def test_propose_runs_only_the_commands_it_lists():
         '$"eval" x',
         "$'eval' x",
         "$'\\x65val' x",
+        ": 'x\n# ';eval y",
+        "case x in x)eval y;; esac",
     ):
         assert runs_text(evaluates), evaluates
-    assert not runs_text('# eval "$x"\n: x')
+    assert not runs_text("x=$(grep -c .)\n: x")
     for elsewhere in (
         ": ; cat() { :; }",
         "true && cat() { :; }",
