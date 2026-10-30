@@ -1,0 +1,1769 @@
+{
+ "behavioural_response": "none (static)",
+ "computed_at": "2026-10-30T17:20:03.094969+00:00",
+ "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "dataset": {
+  "hf_commit": null,
+  "repo_id": "policyengine/populace-uk-private",
+  "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece"
+ },
+ "diagnostics": {
+  "baseline__full_use_hours": {
+   "dataset_inputs": {
+    "childcare_expenses": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "max_free_entitlement_hours_used": [],
+    "maximum_extended_childcare_hours_usage": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_extended_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_targeted_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_tfc": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_universal_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ]
+   },
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "input_override": {
+    "dependents_calculated_before_override": {
+     "extended_childcare_entitlement": [],
+     "extended_childcare_entitlement_eligible": [],
+     "targeted_childcare_entitlement": [],
+     "universal_childcare_entitlement": []
+    },
+    "post_set_weighted_mean": {
+     "2027": 30.0,
+     "2029": 30.0
+    },
+    "set_for_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030,
+     2031,
+     2032
+    ],
+    "value": 30.0,
+    "variable": "maximum_extended_childcare_hours_usage"
+   },
+   "reform_dict": null,
+   "runtime_dataset_source": ".venv-replay-checks/runtime/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/data/microcosm_uk_2024_25.h5",
+   "years": {
+    "2027": {
+     "counts": {
+      "benunits_receiving_extended": 698566.9256564826,
+      "children_receiving_extended": 802363.8231783956,
+      "children_receiving_targeted": 95739.46216677129,
+      "children_receiving_universal": 814295.1981475241,
+      "children_under_one": 713176.7428992353,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1104391.6169119515,
+      "people_receiving_tfc_england": 985164.5530556887,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 30.0,
+      "mean_benunits_receiving_extended": 30.0
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1181
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6038505385.119184,
+      "gov_spending": 685666833089.0852,
+      "gov_tax": 1010062148439.5724,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 599338769.0948241,
+      "universal_childcare_entitlement": 2959054915.2698793
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6038505385.119183,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 529495321.59194416,
+      "universal_childcare_entitlement": 2959054915.269879
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018593625,
+      "would_claim_targeted_childcare": 0.7754614540612252,
+      "would_claim_tfc": 0.9790513583736049,
+      "would_claim_universal_childcare": 0.4349091371947481
+     }
+    },
+    "2029": {
+     "counts": {
+      "benunits_receiving_extended": 691885.5418827534,
+      "children_receiving_extended": 796025.2075699866,
+      "children_receiving_targeted": 93128.09418548644,
+      "children_receiving_universal": 820408.1958195502,
+      "children_under_one": 719179.9790985417,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1056574.4312785119,
+      "people_receiving_tfc_england": 936687.1340319365,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 30.0,
+      "mean_benunits_receiving_extended": 30.0
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1182
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6291564588.109676,
+      "gov_spending": 703449797774.7095,
+      "gov_tax": 1081929683447.5305,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 565653771.9481764,
+      "universal_childcare_entitlement": 3101704406.9979196
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6291564588.109675,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 494808610.24597806,
+      "universal_childcare_entitlement": 3101704406.9979196
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018080535,
+      "would_claim_targeted_childcare": 0.7754614539051105,
+      "would_claim_tfc": 0.979051358445463,
+      "would_claim_universal_childcare": 0.43490913693013583
+     }
+    }
+   }
+  },
+  "free_hours__full_use_hours": {
+   "dataset_inputs": {
+    "childcare_expenses": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "max_free_entitlement_hours_used": [],
+    "maximum_extended_childcare_hours_usage": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_extended_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_targeted_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_tfc": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_universal_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ]
+   },
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "input_override": {
+    "dependents_calculated_before_override": {
+     "extended_childcare_entitlement": [],
+     "extended_childcare_entitlement_eligible": [],
+     "targeted_childcare_entitlement": [],
+     "universal_childcare_entitlement": []
+    },
+    "post_set_weighted_mean": {
+     "2027": 30.0,
+     "2029": 30.0
+    },
+    "set_for_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030,
+     2031,
+     2032
+    ],
+    "value": 30.0,
+    "variable": "maximum_extended_childcare_hours_usage"
+   },
+   "reform_dict": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": {
+     "2027-01-01.2035-12-31": 1e+100
+    }
+   },
+   "runtime_dataset_source": ".venv-replay-checks/runtime/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/data/microcosm_uk_2024_25.h5",
+   "years": {
+    "2027": {
+     "counts": {
+      "benunits_receiving_extended": 818146.0513587338,
+      "children_receiving_extended": 936654.050017959,
+      "children_receiving_targeted": 95739.46216677129,
+      "children_receiving_universal": 853779.7987286285,
+      "children_under_one": 713176.7428992353,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1104391.6169119515,
+      "people_receiving_tfc_england": 985164.5530556887,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 30.0,
+      "mean_benunits_receiving_extended": 30.0
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2006
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6950024440.135563,
+      "gov_spending": 686721834617.2723,
+      "gov_tax": 1010062148439.5724,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 599338769.0948241,
+      "universal_childcare_entitlement": 3102537403.7983418
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6950024440.135563,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 529495321.59194416,
+      "universal_childcare_entitlement": 3102537403.798342
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018593625,
+      "would_claim_targeted_childcare": 0.7754614540612252,
+      "would_claim_tfc": 0.9790513583736049,
+      "would_claim_universal_childcare": 0.4349091371947481
+     }
+    },
+    "2029": {
+     "counts": {
+      "benunits_receiving_extended": 838373.2696571439,
+      "children_receiving_extended": 959328.3965134933,
+      "children_receiving_targeted": 93128.09418548644,
+      "children_receiving_universal": 862520.4752300181,
+      "children_under_one": 719179.9790985417,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1056574.4312785119,
+      "people_receiving_tfc_england": 936687.1340319365,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 30.0,
+      "mean_benunits_receiving_extended": 30.0
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2038
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 7410603873.563186,
+      "gov_spending": 704728050296.1364,
+      "gov_tax": 1081929683447.5305,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 565653771.9481764,
+      "universal_childcare_entitlement": 3260917641.704447
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 7410603873.563186,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 494808610.24597806,
+      "universal_childcare_entitlement": 3260917641.7044463
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018080535,
+      "would_claim_targeted_childcare": 0.7754614539051105,
+      "would_claim_tfc": 0.979051358445463,
+      "would_claim_universal_childcare": 0.43490913693013583
+     }
+    }
+   }
+  }
+ },
+ "engine_version": "2.132.6",
+ "fy_rule": "PE year Y is fiscal year Y-(Y+1): policyengine_uk/utils/parameters.py convert_to_fiscal_year_parameters sets every gov parameter for year Y to its 30 April Y value",
+ "limit_sentinel": 1e+100,
+ "packaged_bundle_manifest_sha256": "bccf23acde631aed4665757094c04f86e60993fb9d388e7dc958b90c876e5a80",
+ "packages": {
+  "policyengine": {
+   "record_sha256": "113897bc23a82dab3fd29a0715c7a111fbb948f9b791eaf866e1324d75c06bbf",
+   "version": "6.11.0"
+  },
+  "policyengine-core": {
+   "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+   "version": "3.33.3"
+  },
+  "policyengine-uk": {
+   "record_sha256": "ca7c36b7617f950f48a04e2816a29e1eb962c44097f3ef08ed4036d7414d2709",
+   "version": "2.132.6"
+  }
+ },
+ "python": "3.12",
+ "release_bundle": {
+  "bundle_id": "uk-6.11.0",
+  "certified_by": "policyengine.py bundle certification",
+  "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+  "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "compatibility_basis": "built_with_model_package",
+  "country_id": "uk",
+  "data_build_fingerprint": null,
+  "data_build_model_git_sha": null,
+  "data_build_model_version": "2.132.6",
+  "data_package": "microcosm-data",
+  "data_version": "0.1.0",
+  "default_dataset": "microcosm_uk_2024_25",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "model_package": "policyengine-uk",
+  "model_version": "2.132.6",
+  "policyengine_version": "6.11.0"
+ },
+ "run_id": "childcare-100k-pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71-20261030T171342Z",
+ "schema_version": 2,
+ "variable_metadata": {
+  "adjusted_net_income": {
+   "default_value": 0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/adjusted_net_income.py",
+   "entity": "person",
+   "label": "Adjusted net income",
+   "unit": "currency-GBP"
+  },
+  "age": {
+   "default_value": 40.0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Age in years",
+   "engine_source": "policyengine_uk/variables/input/demographic.py",
+   "entity": "person",
+   "label": "age",
+   "unit": "year"
+  },
+  "childcare_expenses": {
+   "default_value": 0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Total amount spent on childcare",
+   "engine_source": "policyengine_uk/variables/input/consumption/childcare_expenses.py",
+   "entity": "person",
+   "label": "childcare consumption",
+   "unit": "currency-GBP"
+  },
+  "country": {
+   "default_value": null,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/household/demographic/country.py",
+   "entity": "household",
+   "label": "Country of the UK",
+   "unit": "None"
+  },
+  "extended_childcare_entitlement": {
+   "default_value": 0,
+   "defined_for": "extended_childcare_entitlement_eligible",
+   "definition_period": "year",
+   "documentation": "The annual value of the working parent hours for the family's children, over and above their universal and targeted hours. See extended_childcare_entitlement_per_child.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement.py",
+   "entity": "benunit",
+   "label": "annual extended childcare entitlement expenses",
+   "unit": "currency-GBP"
+  },
+  "extended_childcare_entitlement_eligible": {
+   "default_value": false,
+   "defined_for": "would_claim_extended_childcare",
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement_eligible.py",
+   "entity": "benunit",
+   "label": "eligibility for extended childcare entitlement",
+   "unit": "None"
+  },
+  "extended_childcare_entitlement_meets_income_requirements": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this person expects at least the minimum income from work (SI 2022/1134 reg 18) and adjusted net income of no more than the limit (regs 14(3)(c)(i) and 15(3)(b)(i)).",
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/conditions/extended_childcare_entitlement_meets_income_requirements.py",
+   "entity": "person",
+   "label": "Income eligible for the extended childcare entitlement",
+   "unit": "None"
+  },
+  "gov_spending": {
+   "default_value": 0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Government spending impact in respect of this household.",
+   "engine_source": "policyengine_uk/variables/gov/gov_spending.py",
+   "entity": "household",
+   "label": "government spending",
+   "unit": "currency-GBP"
+  },
+  "gov_tax": {
+   "default_value": 0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Government tax revenue impact in respect of this household.",
+   "engine_source": "policyengine_uk/variables/gov/gov_tax.py",
+   "entity": "household",
+   "label": "government tax revenue",
+   "unit": "currency-GBP"
+  },
+  "is_child": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Deprecated: an age cut-off with no legal basis, kept only for downstream compatibility with its original formula. Nothing in policyengine-uk uses it. Use age_under_18 for the age band, is_hbai_dependent_child for HBAI statistics, or the programme's own child definition (for example is_child_or_qualifying_young_person_for_universal_credit) instead.",
+   "engine_source": "policyengine_uk/variables/household/demographic/is_child.py",
+   "entity": "person",
+   "label": "Aged under 18 (deprecated)",
+   "unit": "None"
+  },
+  "is_child_receiving_extended_childcare": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this child gets working parent hours beyond any universal or targeted hours it gets. A 3- or 4-year-old who gets the universal hours, in a family using no more than 15 hours a week, is on the universal entitlement only. Nobody receives it when the family's extended_childcare_entitlement is zero; a positive family amount supplied as an input, with no working parent hours calculated for any child, counts for every qualifying child of an eligible age.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/is_child_receiving_extended_childcare.py",
+   "entity": "person",
+   "label": "child is receiving extended childcare entitlement",
+   "unit": "None"
+  },
+  "max_free_entitlement_hours_used": {
+   "default_value": 30.0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "The maximum weekly hours of free childcare entitlement used by the person",
+   "engine_source": "policyengine_uk/variables/gov/dfe/max_free_entitlement_hours_used.py",
+   "entity": "person",
+   "label": "maximum hours of free childcare entitlement used",
+   "unit": "None"
+  },
+  "maximum_extended_childcare_hours_usage": {
+   "default_value": 30.0,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "The maximum number of weekly funded childcare hours this family uses for each child once eligible for the extended (working parent) entitlement. It caps the child's total funded hours, universal or targeted hours included. Those hours are never reduced below their own value, so for a child who gets them a limit under 15 adds no working parent hours rather than removing universal or targeted ones; a child without them, such as a 1-year-old, gets working parent hours up to the limit.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/maximum_extended_childcare_hours_usage.py",
+   "entity": "benunit",
+   "label": "maximum extended childcare hours used",
+   "unit": "None"
+  },
+  "targeted_childcare_entitlement": {
+   "default_value": 0,
+   "defined_for": "targeted_childcare_entitlement_eligible",
+   "definition_period": "year",
+   "documentation": "Targeted hours claimed on their own, or allocated first from a participating child's working parent hours when standalone take-up is false, as required by DfE guidance A1.11.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/targeted_childcare_entitlement/targeted_childcare_entitlement.py",
+   "entity": "person",
+   "label": "targeted childcare entitlement amount",
+   "unit": "currency-GBP"
+  },
+  "targeted_childcare_entitlement_eligible": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Legal family eligibility, independent of standalone take-up.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/targeted_childcare_entitlement/targeted_childcare_entitlement_eligible.py",
+   "entity": "benunit",
+   "label": "eligibility for targeted childcare entitlement",
+   "unit": "None"
+  },
+  "tax_free_childcare": {
+   "default_value": 0,
+   "defined_for": "tax_free_childcare_eligible",
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/tax_free_childcare/tax_free_childcare.py",
+   "entity": "person",
+   "label": "government contribution through tax-free childcare",
+   "unit": "currency-GBP"
+  },
+  "tax_free_childcare_meets_income_requirements": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/tax_free_childcare/conditions/tax_free_childcare_meets_income_requirements.py",
+   "entity": "person",
+   "label": "income eligible for the tax-free childcare",
+   "unit": "None"
+  },
+  "universal_childcare_entitlement": {
+   "default_value": 0,
+   "defined_for": "universal_childcare_entitlement_eligible",
+   "definition_period": "year",
+   "documentation": "Universal hours claimed on their own, or allocated first from a participating child's working parent hours when standalone take-up is false. Legal eligibility determines this allocation.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/universal_childcare_entitlement/universal_childcare_entitlement.py",
+   "entity": "person",
+   "label": "universal childcare entitlement amount per year",
+   "unit": "currency-GBP"
+  },
+  "universal_childcare_entitlement_eligible": {
+   "default_value": false,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Legal eligibility, independent of standalone take-up.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/universal_childcare_entitlement/universal_childcare_entitlement_eligible.py",
+   "entity": "person",
+   "label": "eligible for universal childcare entitlement",
+   "unit": "None"
+  },
+  "would_claim_extended_childcare": {
+   "default_value": true,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this family would claim extended childcare entitlement if eligible",
+   "engine_source": "policyengine_uk/variables/gov/dfe/extended_childcare_entitlement/would_claim_extended_childcare.py",
+   "entity": "benunit",
+   "label": "would claim extended childcare entitlement",
+   "unit": "None"
+  },
+  "would_claim_targeted_childcare": {
+   "default_value": true,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this family would claim targeted childcare entitlement on its own if eligible. Working parent participation still allocates the child's first funded hours to targeted provision.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/targeted_childcare_entitlement/would_claim_targeted_childcare.py",
+   "entity": "benunit",
+   "label": "would claim targeted childcare entitlement",
+   "unit": "None"
+  },
+  "would_claim_tfc": {
+   "default_value": true,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this family would claim Tax-Free Childcare if eligible",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/tax_free_childcare/would_claim_tfc.py",
+   "entity": "benunit",
+   "label": "would claim Tax-Free Childcare",
+   "unit": "None"
+  },
+  "would_claim_universal_childcare": {
+   "default_value": true,
+   "defined_for": null,
+   "definition_period": "year",
+   "documentation": "Whether this BenUnit would claim universal childcare entitlement on its own if eligible. Working parent participation still allocates the child's first funded hours to universal provision.",
+   "engine_source": "policyengine_uk/variables/gov/dfe/universal_childcare_entitlement/would_claim_universal_childcare.py",
+   "entity": "benunit",
+   "label": "would claim universal childcare entitlement",
+   "unit": "None"
+  }
+ },
+ "variant_id": "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "variant_identity_sha256": "9bb966d62e65c29e44a83620b21d720934fb33e57b8fc13695254657acd9b35a",
+ "worlds": {
+  "baseline": {
+   "dataset_inputs": {
+    "childcare_expenses": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "max_free_entitlement_hours_used": [],
+    "maximum_extended_childcare_hours_usage": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_extended_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_targeted_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_tfc": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_universal_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ]
+   },
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "reform_dict": null,
+   "runtime_dataset_source": ".venv-replay-checks/runtime/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/data/microcosm_uk_2024_25.h5",
+   "years": {
+    "2026": {
+     "counts": {
+      "benunits_receiving_extended": 696740.8023813963,
+      "children_receiving_extended": 800799.506016165,
+      "children_receiving_targeted": 95386.5319518596,
+      "children_receiving_universal": 813327.9567837045,
+      "children_under_one": 710547.7163734604,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1120904.5288092606,
+      "people_receiving_tfc_england": 1001664.4897766113,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012129954,
+      "mean_benunits_receiving_extended": 28.292268735189516
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1183
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5447700432.164162,
+      "gov_spending": 677660572016.704,
+      "gov_tax": 974058758253.9229,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 592790781.1207994,
+      "universal_childcare_entitlement": 2889097174.2491336
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5447700432.164162,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 524300267.41746694,
+      "universal_childcare_entitlement": 2889097174.249133
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450020937875,
+      "would_claim_targeted_childcare": 0.7754614540707923,
+      "would_claim_tfc": 0.9790513583429646,
+      "would_claim_universal_childcare": 0.4349091372202938
+     }
+    },
+    "2027": {
+     "counts": {
+      "benunits_receiving_extended": 698566.9256564826,
+      "children_receiving_extended": 802363.8231783956,
+      "children_receiving_targeted": 95739.46216677129,
+      "children_receiving_universal": 814295.1981475241,
+      "children_under_one": 713176.7428992353,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1104391.6169119515,
+      "people_receiving_tfc_england": 985164.5530556887,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568011830584,
+      "mean_benunits_receiving_extended": 28.286030568307535
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1181
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5590300575.783974,
+      "gov_spending": 685218628321.9153,
+      "gov_tax": 1010062148439.5724,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 599338769.0948241,
+      "universal_childcare_entitlement": 2959054915.2698793
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5590300575.783974,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 529495321.59194416,
+      "universal_childcare_entitlement": 2959054915.269879
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018593625,
+      "would_claim_targeted_childcare": 0.7754614540612252,
+      "would_claim_tfc": 0.9790513583736049,
+      "would_claim_universal_childcare": 0.4349091371947481
+     }
+    },
+    "2028": {
+     "counts": {
+      "benunits_receiving_extended": 705465.9845480919,
+      "children_receiving_extended": 810410.7240460515,
+      "children_receiving_targeted": 94674.16078938544,
+      "children_receiving_universal": 818761.4347331151,
+      "children_under_one": 716029.4480067398,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1095810.725819569,
+      "people_receiving_tfc_england": 973863.9005553871,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012008675,
+      "mean_benunits_receiving_extended": 28.287432160616966
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1187
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5764904839.301689,
+      "gov_spending": 692814233530.2795,
+      "gov_tax": 1044155118614.7429,
+      "targeted_childcare_entitlement": 494145818.8775304,
+      "tax_free_childcare": 599959631.1787217,
+      "universal_childcare_entitlement": 3034785832.890609
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5764904839.30169,
+      "targeted_childcare_entitlement": 494145818.87753034,
+      "tax_free_childcare": 528447714.6400347,
+      "universal_childcare_entitlement": 3034785832.890609
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450021466698,
+      "would_claim_targeted_childcare": 0.775461454242531,
+      "would_claim_tfc": 0.9790513584542027,
+      "would_claim_universal_childcare": 0.4349091372166398
+     }
+    },
+    "2029": {
+     "counts": {
+      "benunits_receiving_extended": 691885.5418827534,
+      "children_receiving_extended": 796025.2075699866,
+      "children_receiving_targeted": 93128.09418548644,
+      "children_receiving_universal": 820408.1958195502,
+      "children_under_one": 719179.9790985417,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1056574.4312785119,
+      "people_receiving_tfc_england": 936687.1340319365,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012829714,
+      "mean_benunits_receiving_extended": 28.25464578300145
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1182
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5821641466.2055435,
+      "gov_spending": 702979874599.6748,
+      "gov_tax": 1081929683447.5305,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 565653771.9481764,
+      "universal_childcare_entitlement": 3101704406.9979196
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5821641466.2055435,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 494808610.24597806,
+      "universal_childcare_entitlement": 3101704406.9979196
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018080535,
+      "would_claim_targeted_childcare": 0.7754614539051105,
+      "would_claim_tfc": 0.979051358445463,
+      "would_claim_universal_childcare": 0.43490913693013583
+     }
+    },
+    "2030": {
+     "counts": {
+      "benunits_receiving_extended": 695442.2743073702,
+      "children_receiving_extended": 800113.3096250594,
+      "children_receiving_targeted": 93547.17022639513,
+      "children_receiving_universal": 828831.125287571,
+      "children_under_one": 722416.287799906,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1060540.3811925352,
+      "people_receiving_tfc_england": 943679.991275698,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.57356801207937,
+      "mean_benunits_receiving_extended": 28.26506597958044
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1193
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5925462348.98331,
+      "gov_spending": 709668271229.8717,
+      "gov_tax": 1120649361820.266,
+      "targeted_childcare_entitlement": 507987855.5669146,
+      "tax_free_childcare": 573173000.6853255,
+      "universal_childcare_entitlement": 3196213010.1600738
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5925462348.98331,
+      "targeted_childcare_entitlement": 507987855.5669147,
+      "tax_free_childcare": 504074525.8230848,
+      "universal_childcare_entitlement": 3196213010.160074
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450019172461,
+      "would_claim_targeted_childcare": 0.7754614538718472,
+      "would_claim_tfc": 0.9790513583765864,
+      "would_claim_universal_childcare": 0.43490913717424795
+     }
+    },
+    "2031": {
+     "counts": {
+      "benunits_receiving_extended": 682303.6822895594,
+      "children_receiving_extended": 787693.3816250637,
+      "children_receiving_targeted": 92834.85995176435,
+      "children_receiving_universal": 828875.2196505815,
+      "children_under_one": 725522.6766604073,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1062038.1595354415,
+      "people_receiving_tfc_england": 946411.9426756203,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012105163,
+      "mean_benunits_receiving_extended": 28.24716488971761
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 100000.0,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 1180
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 5906741037.937214,
+      "gov_spending": 720122616329.2151,
+      "gov_tax": 1163588668205.1448,
+      "targeted_childcare_entitlement": 514202362.10762286,
+      "tax_free_childcare": 582364513.0559353,
+      "universal_childcare_entitlement": 3260311671.01463
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 5906741037.937214,
+      "targeted_childcare_entitlement": 514202362.10762274,
+      "tax_free_childcare": 513286690.93293077,
+      "universal_childcare_entitlement": 3260311671.0146294
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450017169875,
+      "would_claim_targeted_childcare": 0.7754614538916099,
+      "would_claim_tfc": 0.9790513584382229,
+      "would_claim_universal_childcare": 0.4349091373661095
+     }
+    }
+   }
+  },
+  "free_hours": {
+   "dataset_inputs": {
+    "childcare_expenses": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "max_free_entitlement_hours_used": [],
+    "maximum_extended_childcare_hours_usage": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_extended_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_targeted_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_tfc": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_universal_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ]
+   },
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "reform_dict": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": {
+     "2026-01-01.2035-12-31": 1e+100
+    }
+   },
+   "runtime_dataset_source": ".venv-replay-checks/runtime/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/data/microcosm_uk_2024_25.h5",
+   "years": {
+    "2026": {
+     "counts": {
+      "benunits_receiving_extended": 812462.235082869,
+      "children_receiving_extended": 930533.3705298924,
+      "children_receiving_targeted": 95386.5319518596,
+      "children_receiving_universal": 849894.5607052059,
+      "children_under_one": 710547.7163734604,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1120904.5288092606,
+      "people_receiving_tfc_england": 1001664.4897766113,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012129954,
+      "mean_benunits_receiving_extended": 28.3697063048348
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2000
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6269064484.804488,
+      "gov_spending": 678611827659.79,
+      "gov_tax": 974058758253.9229,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 592790781.1207994,
+      "universal_childcare_entitlement": 3018988777.2370186
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6269064484.804487,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 524300267.41746694,
+      "universal_childcare_entitlement": 3018988777.2370186
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450020937875,
+      "would_claim_targeted_childcare": 0.7754614540707923,
+      "would_claim_tfc": 0.9790513583429646,
+      "would_claim_universal_childcare": 0.4349091372202938
+     }
+    },
+    "2027": {
+     "counts": {
+      "benunits_receiving_extended": 818146.0513587338,
+      "children_receiving_extended": 936654.050017959,
+      "children_receiving_targeted": 95739.46216677129,
+      "children_receiving_universal": 853779.7987286285,
+      "children_under_one": 713176.7428992353,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1104391.6169119515,
+      "people_receiving_tfc_england": 985164.5530556887,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568011830584,
+      "mean_benunits_receiving_extended": 28.366954060311386
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2006
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6454237570.964431,
+      "gov_spending": 686226047791.9272,
+      "gov_tax": 1010062148439.5724,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 599338769.0948241,
+      "universal_childcare_entitlement": 3102537403.7983418
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6454237570.964432,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 529495321.59194416,
+      "universal_childcare_entitlement": 3102537403.798342
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018593625,
+      "would_claim_targeted_childcare": 0.7754614540612252,
+      "would_claim_tfc": 0.9790513583736049,
+      "would_claim_universal_childcare": 0.4349091371947481
+     }
+    },
+    "2028": {
+     "counts": {
+      "benunits_receiving_extended": 828639.9305892177,
+      "children_receiving_extended": 948354.6158191096,
+      "children_receiving_targeted": 94674.16078938544,
+      "children_receiving_universal": 858742.0127053913,
+      "children_under_one": 716029.4480067398,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1095810.725819569,
+      "people_receiving_tfc_england": 973863.9005553871,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012008675,
+      "mean_benunits_receiving_extended": 28.373495183411546
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2024
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6673218178.723624,
+      "gov_spending": 693870737124.806,
+      "gov_tax": 1044155118614.7429,
+      "targeted_childcare_entitlement": 494145818.8775304,
+      "tax_free_childcare": 599959631.1787217,
+      "universal_childcare_entitlement": 3182976119.4306574
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6673218178.723625,
+      "targeted_childcare_entitlement": 494145818.87753034,
+      "tax_free_childcare": 528447714.6400347,
+      "universal_childcare_entitlement": 3182976119.4306574
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450021466698,
+      "would_claim_targeted_childcare": 0.775461454242531,
+      "would_claim_tfc": 0.9790513584542027,
+      "would_claim_universal_childcare": 0.4349091372166398
+     }
+    },
+    "2029": {
+     "counts": {
+      "benunits_receiving_extended": 838373.2696571439,
+      "children_receiving_extended": 959328.3965134933,
+      "children_receiving_targeted": 93128.09418548644,
+      "children_receiving_universal": 862520.4752300181,
+      "children_under_one": 719179.9790985417,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1056574.4312785119,
+      "people_receiving_tfc_england": 936687.1340319365,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012829714,
+      "mean_benunits_receiving_extended": 28.384257004701976
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2038
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6887025796.025454,
+      "gov_spending": 704204472160.6824,
+      "gov_tax": 1081929683447.5305,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 565653771.9481764,
+      "universal_childcare_entitlement": 3260917641.704447
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6887025796.025454,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 494808610.24597806,
+      "universal_childcare_entitlement": 3260917641.7044463
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018080535,
+      "would_claim_targeted_childcare": 0.7754614539051105,
+      "would_claim_tfc": 0.979051358445463,
+      "would_claim_universal_childcare": 0.43490913693013583
+     }
+    },
+    "2030": {
+     "counts": {
+      "benunits_receiving_extended": 849041.0929953214,
+      "children_receiving_extended": 974539.8376095034,
+      "children_receiving_targeted": 93547.17022639513,
+      "children_receiving_universal": 872058.5589390593,
+      "children_under_one": 722416.287799906,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1060540.3811925352,
+      "people_receiving_tfc_england": 943679.991275698,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.57356801207937,
+      "mean_benunits_receiving_extended": 28.382454215018182
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2062
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 7105195365.825407,
+      "gov_spending": 711014701771.508,
+      "gov_tax": 1120649361820.266,
+      "targeted_childcare_entitlement": 507987855.5669146,
+      "tax_free_childcare": 573173000.6853255,
+      "universal_childcare_entitlement": 3362910521.4109707
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 7105195365.825407,
+      "targeted_childcare_entitlement": 507987855.5669147,
+      "tax_free_childcare": 504074525.8230848,
+      "universal_childcare_entitlement": 3362910521.41097
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450019172461,
+      "would_claim_targeted_childcare": 0.7754614538718472,
+      "would_claim_tfc": 0.9790513583765864,
+      "would_claim_universal_childcare": 0.43490913717424795
+     }
+    },
+    "2031": {
+     "counts": {
+      "benunits_receiving_extended": 858384.9296599999,
+      "children_receiving_extended": 984691.8972778879,
+      "children_receiving_targeted": 92834.85995176435,
+      "children_receiving_universal": 876499.8048712164,
+      "children_under_one": 725522.6766604073,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1062038.1595354415,
+      "people_receiving_tfc_england": 946411.9426756203,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012105163,
+      "mean_benunits_receiving_extended": 28.3877859546826
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 100000.0
+     },
+     "records": {
+      "benunits_receiving_extended": 2077
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 7326053092.139319,
+      "gov_spending": 721729255718.9084,
+      "gov_tax": 1163588668205.1448,
+      "targeted_childcare_entitlement": 514202362.10762286,
+      "tax_free_childcare": 582364513.0559353,
+      "universal_childcare_entitlement": 3447639012.1402607
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 7326053092.139319,
+      "targeted_childcare_entitlement": 514202362.10762274,
+      "tax_free_childcare": 513286690.93293077,
+      "universal_childcare_entitlement": 3447639012.14026
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450017169875,
+      "would_claim_targeted_childcare": 0.7754614538916099,
+      "would_claim_tfc": 0.9790513584382229,
+      "would_claim_universal_childcare": 0.4349091373661095
+     }
+    }
+   }
+  },
+  "free_hours_and_tfc": {
+   "dataset_inputs": {
+    "childcare_expenses": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "max_free_entitlement_hours_used": [],
+    "maximum_extended_childcare_hours_usage": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_extended_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_targeted_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_tfc": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ],
+    "would_claim_universal_childcare": [
+     "2024",
+     "2025",
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032"
+    ]
+   },
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "reform_dict": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": {
+     "2026-01-01.2035-12-31": 1e+100
+    },
+    "gov.hmrc.tax_free_childcare.income.income_limit": {
+     "2026-01-01.2035-12-31": 1e+100
+    }
+   },
+   "runtime_dataset_source": ".venv-replay-checks/runtime/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/data/microcosm_uk_2024_25.h5",
+   "years": {
+    "2026": {
+     "counts": {
+      "benunits_receiving_extended": 812462.235082869,
+      "children_receiving_extended": 930533.3705298924,
+      "children_receiving_targeted": 95386.5319518596,
+      "children_receiving_universal": 849894.5607052059,
+      "children_under_one": 710547.7163734604,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1454112.680411595,
+      "people_receiving_tfc_england": 1309687.2355656093,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012129954,
+      "mean_benunits_receiving_extended": 28.3697063048348
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2000
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6269064484.804488,
+      "gov_spending": 678822699164.5698,
+      "gov_tax": 974058758253.9229,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 803662311.9339553,
+      "universal_childcare_entitlement": 3018988777.2370186
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6269064484.804487,
+      "targeted_childcare_entitlement": 477129767.08508915,
+      "tax_free_childcare": 717160788.99481,
+      "universal_childcare_entitlement": 3018988777.2370186
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450020937875,
+      "would_claim_targeted_childcare": 0.7754614540707923,
+      "would_claim_tfc": 0.9790513583429646,
+      "would_claim_universal_childcare": 0.4349091372202938
+     }
+    },
+    "2027": {
+     "counts": {
+      "benunits_receiving_extended": 818146.0513587338,
+      "children_receiving_extended": 936654.050017959,
+      "children_receiving_targeted": 95739.46216677129,
+      "children_receiving_universal": 853779.7987286285,
+      "children_under_one": 713176.7428992353,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1459518.4306804743,
+      "people_receiving_tfc_england": 1314558.6118147094,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568011830584,
+      "mean_benunits_receiving_extended": 28.366954060311386
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2006
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6454237570.964431,
+      "gov_spending": 686446444334.6724,
+      "gov_tax": 1010062148439.5724,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 819735293.2990304,
+      "universal_childcare_entitlement": 3102537403.7983418
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6454237570.964432,
+      "targeted_childcare_entitlement": 489908691.6898478,
+      "tax_free_childcare": 731337032.7463386,
+      "universal_childcare_entitlement": 3102537403.798342
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018593625,
+      "would_claim_targeted_childcare": 0.7754614540612252,
+      "would_claim_tfc": 0.9790513583736049,
+      "would_claim_universal_childcare": 0.4349091371947481
+     }
+    },
+    "2028": {
+     "counts": {
+      "benunits_receiving_extended": 828639.9305892177,
+      "children_receiving_extended": 948354.6158191096,
+      "children_receiving_targeted": 94674.16078938544,
+      "children_receiving_universal": 858742.0127053913,
+      "children_under_one": 716029.4480067398,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1470680.628268009,
+      "people_receiving_tfc_england": 1322898.117133269,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012008675,
+      "mean_benunits_receiving_extended": 28.373495183411546
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2024
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6673218178.723624,
+      "gov_spending": 694104205661.341,
+      "gov_tax": 1044155118614.7429,
+      "targeted_childcare_entitlement": 494145818.8775304,
+      "tax_free_childcare": 833428130.0509326,
+      "universal_childcare_entitlement": 3182976119.4306574
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6673218178.723625,
+      "targeted_childcare_entitlement": 494145818.87753034,
+      "tax_free_childcare": 742969737.0138433,
+      "universal_childcare_entitlement": 3182976119.4306574
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450021466698,
+      "would_claim_targeted_childcare": 0.775461454242531,
+      "would_claim_tfc": 0.9790513584542027,
+      "would_claim_universal_childcare": 0.4349091372166398
+     }
+    },
+    "2029": {
+     "counts": {
+      "benunits_receiving_extended": 838373.2696571439,
+      "children_receiving_extended": 959328.3965134933,
+      "children_receiving_targeted": 93128.09418548644,
+      "children_receiving_universal": 862520.4752300181,
+      "children_under_one": 719179.9790985417,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1476375.7062925296,
+      "people_receiving_tfc_england": 1328287.2626271816,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012829714,
+      "mean_benunits_receiving_extended": 28.384257004701976
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2038
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 6887025796.025454,
+      "gov_spending": 704489163842.1757,
+      "gov_tax": 1081929683447.5305,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 850345418.9306383,
+      "universal_childcare_entitlement": 3260917641.704447
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 6887025796.025454,
+      "targeted_childcare_entitlement": 495797284.961808,
+      "tax_free_childcare": 758063430.4748336,
+      "universal_childcare_entitlement": 3260917641.7044463
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450018080535,
+      "would_claim_targeted_childcare": 0.7754614539051105,
+      "would_claim_tfc": 0.979051358445463,
+      "would_claim_universal_childcare": 0.43490913693013583
+     }
+    },
+    "2030": {
+     "counts": {
+      "benunits_receiving_extended": 849041.0929953214,
+      "children_receiving_extended": 974539.8376095034,
+      "children_receiving_targeted": 93547.17022639513,
+      "children_receiving_universal": 872058.5589390593,
+      "children_under_one": 722416.287799906,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1498692.701637648,
+      "people_receiving_tfc_england": 1349721.1586131342,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.57356801207937,
+      "mean_benunits_receiving_extended": 28.382454215018182
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2062
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 7105195365.825407,
+      "gov_spending": 711314143911.1814,
+      "gov_tax": 1120649361820.266,
+      "targeted_childcare_entitlement": 507987855.5669146,
+      "tax_free_childcare": 872615155.7619299,
+      "universal_childcare_entitlement": 3362910521.4109707
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 7105195365.825407,
+      "targeted_childcare_entitlement": 507987855.5669147,
+      "tax_free_childcare": 778127923.6545981,
+      "universal_childcare_entitlement": 3362910521.41097
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450019172461,
+      "would_claim_targeted_childcare": 0.7754614538718472,
+      "would_claim_tfc": 0.9790513583765864,
+      "would_claim_universal_childcare": 0.43490913717424795
+     }
+    },
+    "2031": {
+     "counts": {
+      "benunits_receiving_extended": 858384.9296599999,
+      "children_receiving_extended": 984691.8972778879,
+      "children_receiving_targeted": 92834.85995176435,
+      "children_receiving_universal": 876499.8048712164,
+      "children_under_one": 725522.6766604073,
+      "children_under_one_receiving_extended": 0.0,
+      "people_receiving_tfc": 1517688.2000437789,
+      "people_receiving_tfc_england": 1367057.4613447562,
+      "people_with_fractional_age": 0.0
+     },
+     "hours_usage": {
+      "mean_all_benunits": 28.573568012105163,
+      "mean_benunits_receiving_extended": 28.3877859546826
+     },
+     "limits_executed": {
+      "gov.dfe.extended_childcare_entitlement.income.limit": 1e+100,
+      "gov.hmrc.tax_free_childcare.income.income_limit": 1e+100
+     },
+     "records": {
+      "benunits_receiving_extended": 2077
+     },
+     "sums_gbp": {
+      "extended_childcare_entitlement": 7326053092.139319,
+      "gov_spending": 722041404789.2462,
+      "gov_tax": 1163588668205.1448,
+      "targeted_childcare_entitlement": 514202362.10762286,
+      "tax_free_childcare": 894513531.0892134,
+      "universal_childcare_entitlement": 3447639012.1402607
+     },
+     "sums_gbp_england": {
+      "extended_childcare_entitlement": 7326053092.139319,
+      "targeted_childcare_entitlement": 514202362.10762274,
+      "tax_free_childcare": 797462749.3317606,
+      "universal_childcare_entitlement": 3447639012.14026
+     },
+     "take_up": {
+      "would_claim_extended_childcare": 0.6632450017169875,
+      "would_claim_targeted_childcare": 0.7754614538916099,
+      "would_claim_tfc": 0.9790513584382229,
+      "would_claim_universal_childcare": 0.4349091373661095
+     }
+    }
+   }
+  }
+ },
+ "years": [
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031
+ ]
+}

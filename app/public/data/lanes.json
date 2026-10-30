@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-26",
+ "updated": "2026-10-30",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -609,7 +609,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-10-25",
-   "note": "22 of 36 claims computed on the certified pair (populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z, policyengine-uk 2.89.2) \u2014 CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published dashboard figure kept as history; pe_gap on the central static rows (microcosm#1126)"
+   "note": "24 of 36 claims computed on 2 certified pairs, the newest (microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71, policyengine-uk 2.132.6) \u2014 CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published dashboard figure kept as history; pe_gap on the central static rows"
   },
   {
    "id": "uk-two-child-limit-poverty",

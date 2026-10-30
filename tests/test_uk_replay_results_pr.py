@@ -24,6 +24,7 @@ import importlib.util
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -137,6 +138,7 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "tree",
         "sealed",
         "content_hash",
+        "preflight",
     }
 
     # Job 2, on a fresh runner: no uv, actions pinned to commits, and the
@@ -155,6 +157,7 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "BUILT_STATE": "${{ needs.build.outputs.state }}",
         "BUILT_SEALED": "${{ needs.build.outputs.sealed }}",
         "BUILT_CONTENT_HASH": "${{ needs.build.outputs.content_hash }}",
+        "BUILT_PREFLIGHT": "${{ needs.build.outputs.preflight }}",
     }
     rebuilt = "steps.rebuild.outputs.action == 'build'"
     assert token["if"] == rebuilt and propose["if"] == rebuilt
@@ -176,6 +179,7 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
         "BUILT_COMMIT": "${{ steps.rebuild.outputs.commit }}",
         "BUILT_BRANCH": "${{ steps.rebuild.outputs.branch }}",
+        "BUILT_DRAFT": "${{ steps.rebuild.outputs.draft }}",
         "GH_TOKEN": "${{ steps.token.outputs.token }}",
     }
     for step in steps:
@@ -185,9 +189,13 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
 
 
 def phase(script, name):
-    """The body of one function in the builder script."""
-    start = script.index(f"\n{name}() {{\n")
-    return script[start : script.index("\n}\n", start)]
+    """The body of one function in the builder script, ``{ }`` or, run in
+    a subshell, ``( )``."""
+    for opening, closing in (("{", "}"), ("(", ")")):
+        start = script.find(f"\n{name}() {opening}\n")
+        if start >= 0:
+            return script[start : script.index(f"\n{closing}\n", start)]
+    raise ValueError(f"no function {name}")
 
 
 class Unlexed(ValueError):
@@ -292,32 +300,414 @@ def shell_residue(text):
     return "".join(out)
 
 
-# A command that can run text as shell code, such as a block of echoed
-# messages piped or written to it: a shell by name or as $BASH, $SHELL or
-# $0, eval, exec, source, trap, or the . command, escaped or not.
-SHELL = re.compile(
-    r"\b(?:(?:ba|da|z|k)?sh|eval|exec|source|trap)\b"
-    r"|\$\{?(?:BASH|SHELL|0)\b"
-    r"|(?:^|[\s;&|(){}!])\\?\.(?=\s|$)"
+def function_body(script, name):
+    """phase() less its ``name() {`` line: the commands the function runs."""
+    return phase(script, name).split("\n", 2)[2]
+
+
+# Review of 24434729 (2): a pattern of shell names (bash, sh, eval, ...)
+# matches text before bash removes quotes, so `b''ash` and `b\ash` passed it
+# and ran bash. propose's commands are checked against what it may run
+# instead: each command word, as written, must be one of these. Quoting,
+# escaping or an expansion makes it another word, so it is flagged. The
+# list is git and gh, the text tools propose pipes through, the builtins it
+# uses, plan (the script's helper, pinned below) and pushgit (its own git
+# wrapper, pinned below).
+PROPOSE_RUNS = {
+    *("git", "gh", "grep", "cut", "cat", "printf", "echo"),
+    *(":", "[", "local", "exit"),
+    *("plan", "pushgit"),
+}
+GIT_RUNS = {"diff", "fetch", "log", "ls-remote", "rev-list", "rev-parse"}
+PUSHGIT_RUNS = {"push"}
+GH_RUNS = {("pr", "create"), ("pr", "edit"), ("pr", "list"), ("pr", "ready")}
+# git -c may set only the credential helper pushgit hands the token through.
+# No word propose writes, as an argument, a variable's value or an array's
+# element, may be an option that has git run a program or write a file, or
+# gh open an editor or a browser, however it is quoted, escaped, abbreviated
+# (git takes any unambiguous prefix of a long option) or bundled (gh -dw).
+# An option assembled at run time (u=--w; u+=eb) is beyond any rule on
+# words, so these rules cover options written as words. A default counts as
+# one, and a word that splits (below) is refused, so a value cannot hide a
+# second word.
+GIT_CONFIG = {"credential.helper=", "'credential.helper=!gh auth git-credential'"}
+GIT_OPTIONS_TO_AVOID = ("upload-pack", "receive-pack", "exec", "output")
+GH_OPTIONS_TO_AVOID = {"--editor", "-e", "--web", "-w"}
+PUSHGIT = (
+    'pushgit() { git -C "$TREE" -c credential.helper= '
+    "-c 'credential.helper=!gh auth git-credential' \"$@\"; }"
 )
+# Where propose may write: the log and the step summary. A file it wrote
+# elsewhere (a hook, $GITHUB_ENV) could run later.
+PROPOSE_WRITES = {(">&", "2"), (">>", '"$GITHUB_STEP_SUMMARY"')}
+
+WORD_END = frozenset(" \t\n;&|()<>")
+# &> and &>> are redirections, not & and a redirection.
+OPERATOR = re.compile(r"&&|\|\||;;|\|&|[;|\n]|&(?!>)")
+REDIRECT = re.compile(r"[0-9]*(?:&>>|&>|>>|>&|<&|<>|>\||<<<|>|<)")
+# Bash evaluates an array subscript, a substring offset and ${!name} as
+# arithmetic, and arithmetic runs a command substitution held in a value
+# (x='a[$(cmd)]'; ${a[x]}). So a subscript is @, * or digits, and a
+# parameter expansion is a name with at most a default, alternative or error
+# word holding no quote, expansion, brace or bracket.
+ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]+\])?\+?=")
+LOCAL_NAME = re.compile(r"[a-z_][a-z0-9_]*")
+PARAMETER = re.compile(
+    r"\$\{#?(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*#?$-])(?:\[(?:[@*]|[0-9]+)\])?"
+    r"(?::?[-+?](?P<default>[^{}\[\]'\"$`\\<>()]*))?\}"
+)
+# [ runs one of two shapes: -n or -z and a word, or a word, = or != and a
+# word. -v evaluates a subscript, and the operator can come from a value or
+# an array ([ "$op" "$x" ]), so it is a literal here and each operand is one
+# word: no $@, $* or [@]. An unquoted expansion is refused for every command
+# (Commands.splits).
+SEVERAL = re.compile(r"\$[@*]|\$\{[@*]|\[[@*]\]")
+
+
+def unquoted(word):
+    """``word`` less its quotes and backslashes: what a literal word is to
+    the program that receives it."""
+    return re.sub(r"\\\n|[\\'\"]", "", word)
+
+
+def avoided_option(word):
+    """``word``, unquoted, as an option that has git run a program or write
+    a file (any prefix of one of GIT_OPTIONS_TO_AVOID), or one of gh's that
+    opens a program, alone or in a bundle of short options."""
+    plain = unquoted(word)
+    option = plain.split("=", 1)[0]
+    name = option[2:] if option.startswith("--") else ""
+    return (
+        bool(name) and any(avoided.startswith(name) for avoided in GIT_OPTIONS_TO_AVOID)
+    ) or (
+        option in GH_OPTIONS_TO_AVOID
+        or bool(re.fullmatch(r"-[A-Za-z]*[ew][A-Za-z]*", option))
+    )
+
+
+class Commands:
+    """Every simple command bash would run from ``text`` (a shell_residue),
+    each with its words as written, its assignments and redirections, and
+    the function whose body holds it: the top level, the bodies of if,
+    ``{ }`` and ``( )``, and every ``$(...)``, ``<(...)``, ``>(...)``, bash
+    5.3 ``${ ...; }`` and ``${|...;}``. A command word is whatever starts a
+    command, after an operator, a newline, ``!`` or a reserved word, and
+    after any assignments and redirections before it. What it does not model
+    is flagged rather than read past: arithmetic, case, an array element's
+    index or a split in one, a parameter expansion beyond PARAMETER and a word
+    after a compound command raise Unlexed, and a loop's keywords are commands
+    PROPOSE_RUNS does not list. With no loop, each declaration runs at most
+    once.
+    ``splits`` holds the words with an expansion or a glob outside double
+    quotes, which bash can turn into words the text does not show."""
+
+    def __init__(self, text):
+        self.text, self.commands, self.functions, self.words = text, [], [], []
+        self.splits = set()
+        self.sequence(0, None, function=None)
+
+    def blank(self, i):
+        while i < len(self.text):
+            if self.text[i] in " \t":
+                i += 1
+            elif self.text.startswith("\\\n", i):
+                i += 2
+            else:
+                break
+        return i
+
+    def sequence(self, i, closer, function):
+        """The commands from i to ``closer`` (``)`` or ``}``; None for the
+        end of the text), returning the index past it."""
+        t, open_, command = self.text, [], None
+        while True:
+            i = self.blank(i)
+            if i == len(t):
+                if closer or open_:
+                    raise Unlexed(f"an unclosed {closer or open_[-1][0]}")
+                return i
+            if t[i] == "#":
+                # An inline comment, which the text rules flag.
+                i = t.find("\n", i) if "\n" in t[i:] else len(t)
+                continue
+            operator = OPERATOR.match(t, i)
+            if operator:
+                if operator.group() == ";;":
+                    raise Unlexed("case")
+                command, i = None, operator.end()
+                continue
+            if t[i] == ")":
+                if closer != ")" or open_:
+                    raise Unlexed("an unmatched )")
+                return i + 1
+            if command is None and t[i] == "}":
+                if open_ and open_[-1][0] == "}":
+                    _, name, start = open_.pop()
+                    if name is not None:
+                        self.functions.append(
+                            {
+                                "name": name,
+                                "text": t[start : i + 1],
+                                "top": not open_ and closer is None,
+                                "at": start,
+                            }
+                        )
+                        function = None
+                    command, i = self.record(i, function, closed=True), i + 1
+                    continue
+                if closer == "}":
+                    return i + 1
+                raise Unlexed("an unmatched }")
+            if t[i] == "(":
+                if command is not None:
+                    raise Unlexed("( after a word")
+                i = self.sequence(i + 1, ")", function)
+                command = self.record(i, function, closed=True)
+                continue
+            if t.startswith(("<(", ">("), i):
+                start, i = i, self.sequence(i + 2, ")", function)
+                word = t[start:i]
+            elif REDIRECT.match(t, i):
+                redirect = REDIRECT.match(t, i)
+                target, i = self.word(self.blank(redirect.end()), function)
+                if command is None:
+                    command = self.record(redirect.start(), function)
+                command["writes"].append((redirect.group(), target))
+                continue
+            else:
+                start = i
+                word, i = self.word(i, function)
+            if command is not None and command["closed"]:
+                raise Unlexed(f"{word} after a compound command")
+            if command is None or command["name"] is None:
+                if command is None and word in ("if", "{"):
+                    open_.append(("fi" if word == "if" else "}", None, start))
+                    continue
+                if command is None and word in ("then", "elif", "else"):
+                    if not open_ or open_[-1][0] != "fi":
+                        raise Unlexed(f"{word} outside its if")
+                    continue
+                if command is None and word == "fi":
+                    if not open_ or open_[-1][0] != "fi":
+                        raise Unlexed("an unmatched fi")
+                    open_.pop()
+                    command = self.record(i, function, closed=True)
+                    continue
+                if command is None and word == "!":
+                    continue
+                if ASSIGNMENT.match(word):
+                    command = command or self.record(start, function)
+                    command["assigns"].append(word)
+                    continue
+                if command is None and t.startswith("()", self.blank(i)):
+                    # name() { ...; }: its body runs where it is called.
+                    i = self.blank(i) + 2
+                    while i < len(t) and t[i] in " \t\n":
+                        i += 1
+                    if not t.startswith("{", i):
+                        raise Unlexed(f"a function {word} without {{ }}")
+                    open_.append(("}", word, start))
+                    function, i = word, i + 1
+                    continue
+                command = command or self.record(start, function)
+                command["name"] = word
+                continue
+            command["args"].append(word)
+
+    def record(self, at, function, closed=False):
+        command = {
+            "name": None,
+            "args": [],
+            "assigns": [],
+            "writes": [],
+            "function": function,
+            "closed": closed,
+            "at": at,
+        }
+        self.commands.append(command)
+        return command
+
+    def word(self, i, function):
+        """The word at i as written, and the index past it. Its
+        substitutions are read as commands."""
+        t, start, bare = self.text, i, False
+        while i < len(t) and t[i] not in WORD_END:
+            if t[i] == "\\":
+                i += 2
+            elif t[i] == "'":
+                i = t.index("'", i + 1) + 1
+            elif t[i] == '"':
+                i = self.quoted(i + 1, function)
+            elif t[i] == "$":
+                bare, i = True, self.dollar(i, function)
+            elif t[i] == "{" and t[i + 1 : i + 2] not in ("", *WORD_END):
+                raise Unlexed(f"a brace expansion at {t[i : i + 20]!r}")
+            else:
+                bare, i = bare or t[i] in "*?[", i + 1
+            if t[i : i + 1] == "(" and ASSIGNMENT.fullmatch(t[start:i]):
+                i = self.array(i + 1, function)
+        if i == start:
+            raise Unlexed(f"no word at {t[i : i + 10]!r}")
+        self.words.append(t[start:i])
+        if bare:
+            self.splits.add(t[start:i])
+        return t[start:i], i
+
+    def quoted(self, i, function):
+        t = self.text
+        while t[i] != '"':
+            if t[i] == "\\":
+                i += 2
+            elif t[i] == "$":
+                i = self.dollar(i, function)
+            else:
+                i += 1
+        return i + 1
+
+    def dollar(self, i, function):
+        t = self.text
+        if t.startswith(("$((", "$["), i):
+            raise Unlexed("arithmetic")
+        if t.startswith("$(", i):
+            return self.sequence(i + 2, ")", function)
+        if t.startswith("${", i) and t[i + 2 : i + 3] in (" ", "\t", "\n", "|"):
+            return self.sequence(i + 3, "}", function)
+        if t.startswith("${", i):
+            parameter = PARAMETER.match(t, i)
+            if not parameter:
+                raise Unlexed(f"the expansion {t[i : i + 20]!r}")
+            if parameter["default"]:
+                self.words.append(parameter["default"])
+            return parameter.end()
+        if t.startswith('$"', i):
+            return self.quoted(i + 2, function)
+        return i + 1
+
+    def array(self, i, function):
+        """NAME=( WORD... ): the words, over lines, up to ``)``. Bash splits
+        an element, as it does an argument and unlike NAME=$x."""
+        t = self.text
+        while True:
+            i = self.blank(i)
+            if i < len(t) and t[i] == "\n":
+                i += 1
+            elif i < len(t) and t[i] == ")":
+                return i + 1
+            elif i < len(t) and t[i] == "[":
+                # ([expr]=value): the index is arithmetic.
+                raise Unlexed("an array element's index")
+            else:
+                word, i = self.word(i, function)
+                if word in self.splits:
+                    raise Unlexed(f"the array element {word}, which splits")
+
+
+def plain_test(args):
+    """``args`` of ``[`` in one of the shapes it may run: see SEVERAL."""
+    match args:
+        case ["-n" | "-z", word, "]"]:
+            operands = [word]
+        case [left, "=" | "!=", right, "]"]:
+            operands = [left, right]
+        case _:
+            return False
+    return not any(SEVERAL.search(word) for word in operands)
+
+
+def disallowed(commands):
+    """What in ``commands`` runs or writes beyond PROPOSE_RUNS and
+    PROPOSE_WRITES, as a list of findings. pushgit's body is PUSHGIT, at the
+    top level, before any call; nothing else may be defined."""
+    found, wrapper = [], None
+    # An option reaches git or gh from any word: an argument, a variable's
+    # value or an array's element.
+    for word in commands.words:
+        bound = ASSIGNMENT.match(word)
+        if avoided_option(word) or bound and avoided_option(word[bound.end() :]):
+            found.append(f"{word} is an option that runs or writes something")
+    declared = []
+    for function in commands.functions:
+        if function["text"] == PUSHGIT and function["top"] and wrapper is None:
+            wrapper = function["at"]
+        else:
+            found.append(f"defines {function['name']}")
+    for command in commands.commands:
+        name, args = command["name"], command["args"]
+        shown = " ".join([*command["assigns"], *filter(None, [name]), *args])
+        if command["function"] == "pushgit" and wrapper is not None:
+            continue
+        for write in command["writes"]:
+            if write not in PROPOSE_WRITES:
+                found.append(f"{shown or 'a compound command'} writes {''.join(write)}")
+        if name is None:
+            for assign in command["assigns"]:
+                if not LOCAL_NAME.fullmatch(
+                    ASSIGNMENT.match(assign).group().rstrip("+=")
+                ):
+                    found.append(f"{assign} sets a variable that is not a local's")
+            continue
+        if command["assigns"]:
+            found.append(f"{shown} sets its command's environment")
+        for arg in args:
+            # local NAME=$x is an assignment, which bash does not split.
+            if arg in commands.splits and not (
+                name == "local" and ASSIGNMENT.match(arg)
+            ):
+                found.append(f"{shown} splits {arg} into more words")
+        if name not in PROPOSE_RUNS:
+            found.append(f"{shown} runs {name}")
+        elif name == "[" and not plain_test(args):
+            found.append(f"{shown} is not a test it may run")
+        elif name == "local":
+            for arg in args:
+                bound = ASSIGNMENT.match(arg)
+                local = (bound.group().rstrip("+=") if bound else arg).split("[")[0]
+                if local in declared:
+                    # A second local of an array reads a quoted value as a
+                    # compound assignment: local a='($(cmd))'. This counts
+                    # declarations as written, which is enough with no loop.
+                    found.append(f"{shown} declares {local} again")
+                declared.append(local)
+                if not LOCAL_NAME.fullmatch(
+                    bound.group().rstrip("+=") if bound else arg
+                ):
+                    found.append(f"{shown} declares {arg}")
+        elif name == "printf" and (
+            not args or "$" in args[0] or unquoted(args[0]).startswith("-")
+        ):
+            # printf -v sets a variable, and a format that expands may be -v.
+            found.append(f"{shown} has no literal format")
+        elif name == "gh" and tuple(args[:2]) not in GH_RUNS:
+            found.append(f"{shown} runs gh {' '.join(args[:2])}")
+        elif name in ("git", "pushgit"):
+            if name == "pushgit" and (wrapper is None or wrapper > command["at"]):
+                found.append(f"{shown} runs pushgit where it is not defined")
+            at = 0
+            while name == "git" and args[at : at + 1] in (["-C"], ["-c"]):
+                value = args[at + 1 : at + 2]
+                if args[at] == "-c" and not (value and value[0] in GIT_CONFIG):
+                    found.append(f"{shown} sets git config {' '.join(value)}")
+                at += 2
+            runs = GIT_RUNS if name == "git" else PUSHGIT_RUNS
+            if args[at : at + 1] == [] or args[at] not in runs:
+                found.append(f"{shown} runs {name} {' '.join(args[at : at + 1])}")
+    return found
 
 
 def runs_pipeline_code(text):
-    """The lines of ``text`` that may run the builder or a pipeline module,
-    hide a command in a comment or run text as code, once its messages are
-    set aside."""
+    """What in ``text`` may run the builder or a pipeline module, hide a
+    command in a comment, or run or write anything beyond PROPOSE_RUNS and
+    PROPOSE_WRITES, once its messages are set aside."""
     try:
         residue = shell_residue(text)
+        commands = Commands(residue)
     except Unlexed as problem:
         return [str(problem)]
     return [
         line
         for line in residue.splitlines()
-        if "#" in line
-        or "pipeline" in line
-        or re.search(r"\bbuilder\b", line)
-        or SHELL.search(line)
-    ]
+        if "#" in line or "pipeline" in line or re.search(r"\bbuilder\b", line)
+    ] + disallowed(commands)
 
 
 def test_the_builder_runs_no_release_code_and_never_merges():
@@ -364,11 +754,11 @@ def test_the_builder_runs_no_release_code_and_never_merges():
             if "python" in line and not line.lstrip().startswith("#"):
                 assert "python3 -I" in line, line
     assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
-    # propose runs neither the builder nor any pipeline module. Its messages
-    # may name them (review of 78e080c6, 3), so shell_residue sets aside
-    # each message that bash reads as a literal echoed to the log. Bash runs
-    # `builder check` in each of these (bash 5.3 in the ${ ...; } forms,
-    # bash 3.2 in the rest), and each is flagged.
+    # propose runs neither the builder nor any pipeline module, and nothing
+    # but PROPOSE_RUNS. Its messages may name them (review of 78e080c6, 3),
+    # so shell_residue sets aside each message that bash reads as a literal
+    # echoed to the log. Bash runs `builder check` in each of these (bash 5.3
+    # in the ${ ...; } forms, bash 3.2 in the rest), and each is flagged.
     for runs in (
         'echo "::error::fine" >&2; builder check',
         'echo "::notice::$(builder check)"',
@@ -423,7 +813,8 @@ def test_the_builder_runs_no_release_code_and_never_merges():
         'x=(--a \'b\'\n  "c")\necho "::warning::not this builder"',
     ):
         assert not runs_pipeline_code(inert), inert
-    assert not runs_pipeline_code(propose), runs_pipeline_code(propose)
+    body = function_body(script, "propose")
+    assert not runs_pipeline_code(body), runs_pipeline_code(body)
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -442,6 +833,301 @@ def test_the_builder_runs_no_release_code_and_never_merges():
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id not in {"eval", "exec", "__import__"}
+
+
+GROUP = '{\necho "::error::; builder check"\n}'
+# A function definition, wherever in a line it starts, and eval, source or
+# . as a word. Both read text after unquoted: a quote, a backslash or a line
+# continuation inside a word does not change what bash runs. Both read every
+# line, comments included, because a line that starts with # inside a quote is
+# not a comment: so a comment in the script avoids these words, and a sentence
+# ending ")." with it. A redirection may touch the word (eval>x y), and anything
+# else that ends it leaves it no arguments. $'...' and $"..." can spell a word
+# in escapes ($'\x65val'), so the script holds neither. A word assembled at run
+# time (n=ev; "${n}al") is beyond any rule on text.
+DEFINITION = re.compile(
+    r"(?:^|[\s;&|(){}])"
+    r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>$`]+)\s*\(\s*\))",
+    re.M,
+)
+RUNS_TEXT = re.compile(r"(?:^|[\s;&|(){])(?:eval|source|\.)(?:[\s<>]|&>)", re.M)
+SPELLS_WORD = re.compile(r"\$['\"]")
+
+
+def definitions(text):
+    return [keyword or plain for keyword, plain in DEFINITION.findall(unquoted(text))]
+
+
+def runs_text(script):
+    """Each eval, source or . on any line of ``script``, and each $'...' or
+    $"..."."""
+    return RUNS_TEXT.findall(unquoted(script)) + SPELLS_WORD.findall(script)
+
+
+# pushgit, defined with another program in git's place.
+NOT_PUSHGIT = PUSHGIT.replace("git -C", "b''ash -C")
+
+
+def test_propose_runs_only_the_commands_it_lists():
+    script = SCRIPT.read_text()
+    body = function_body(script, "propose")
+    commands = Commands(shell_residue(body))
+    # The list is what propose runs, no more: a command it gains is a
+    # reviewed edit to PROPOSE_RUNS, and one it drops leaves the list.
+    assert {c["name"] for c in commands.commands if c["name"]} == PROPOSE_RUNS
+    # Review of 24434729 (2): bash removes the quotes and runs bash. Every
+    # spelling or other route to a program, a variable or a file beyond
+    # PROPOSE_RUNS and PROPOSE_WRITES is flagged. The property test below
+    # covers other names and spellings in every command position.
+    for runs in (
+        f"{GROUP} | b''ash",
+        f"{GROUP} | b\\ash",
+        f"{GROUP} | $SHELL",
+        f"{GROUP} | /bin/bash",
+        # A command's environment, or a variable bash or a program reads.
+        "PATH=/tmp git rev-parse HEAD",
+        'PATH="$WORK"',
+        "BASH_ENV=/tmp/x",
+        "local PATH=/tmp",
+        "local -n x=PATH",
+        "printf -v PATH %s /tmp",
+        # git and gh beyond what propose uses, or naming a program to run.
+        "git -c alias.x='!bash' x",
+        "git -c core.pager=bash log",
+        "git --exec-path=/tmp fetch origin",
+        "git ls-remote --upload-pack='bash -c x' .",
+        "git push --receive-pack=x origin HEAD",
+        "git -C x worktree add y",
+        "gh api /repos",
+        "gh extension exec x",
+        # A file it writes elsewhere may run later.
+        'cat x > "$GITHUB_ENV"',
+        'echo x >> "$GITHUB_PATH"',
+        f'{GROUP} > "$TMPDIR/x"',
+        # Its own functions: only pushgit, pinned, defined before it runs.
+        "git() { b''ash; }",
+        'pushgit push -q origin "HEAD:refs/heads/$branch"',
+        f"{NOT_PUSHGIT}\npushgit push",
+        f"pushgit push\n{PUSHGIT}",
+        f"if :; then\n  {PUSHGIT}\nfi\npushgit push",
+        f"{PUSHGIT}\npushgit fetch origin",
+        # Arithmetic runs a substitution held in a value (x='a[$(cmd)]'),
+        # wherever bash evaluates one: each of these ran `touch` under
+        # bash 3.2 with that x.
+        'x=y\n: "${create[x]}"',
+        ': "${y:x}"',
+        ': "${!x}"',
+        "create[x]=1",
+        ": $[x]",
+        "create+=([x]=v)",
+        # Quoting or abbreviating an option, or a format that may expand to
+        # one, is the option.
+        'printf "-v" PATH x',
+        'printf "$f" x',
+        "git ls-remote --upl\\oad-pack=x .",
+        "git ls-remote --upl=x .",
+        "git log -1 --ou=/tmp/x",
+        "gh pr create --editor",
+        # What the parser does not model is flagged, not read past.
+        "for x in a; do :; done",
+        "case x in x) : ;; esac",
+        "[[ -n x ]]",
+        "echo $((1 + 2))",
+        "echo \"${x:-$(b''ash)}\"",
+        "{ :; } x",
+        # Review of cf8066bc: each ran touch under bash 5.2 (test -v, 4.2+)
+        # or 3.2 to 5.3 (the rest).
+        "[ -v 'a[$(touch m)]' ]",
+        "local create=(p)\nlocal create='($(touch m))'",
+        ": ${x:-<(touch m)}",
+        ": ${x:->(touch m)}",
+        "printf {-v,PATH} %s x",
+        "local u='--upload-pack=x'\ngit ls-remote \"$u\" .",
+        'local o=(--upload-pack=x)\ngit ls-remote "${o[@]}" .',
+        "git ls-remote --{upload-pack=x,quiet} .",
+        "git ls-remote --upl\\\noad-pack=x .",
+        "gh pr list -dw",
+        'local c=(--web)\ngh pr list "${c[@]}"',
+        "gh pr list --{web,draft}",
+        "gh pr list --we\\\nb",
+        # Review of f936b49c: bash 5.2 and 5.3 ran touch from a test whose
+        # operator sits in a value or an array, every bash from a declaration
+        # a loop repeats, and gh ran its browser from a word that splits or a
+        # default.
+        'local o=-v\nlocal x=\'a[$(touch m)]\'\n[ "$o" "$x" ]',
+        'local o=(-v)\nlocal x=\'a[$(touch m)]\'\n[ "${o[@]}" "$x" ]',
+        "local x=y\nwhile :; do\n  local a='($(touch m))'\n  a=(p)\ndone",
+        "until :; do :; done",
+        "local o='--web '\ngh pr list $o",
+        "gh pr list ${o:---web}",
+        'gh pr list "${o:---web}"',
+        "gh pr list *",
+        "git ls-remote ?-upload-pack=x .",
+        "gh pr list [-]-web",
+        "gh pr list $'--web'",
+        # Review of d3770d66: gh ran its browser from an array element that
+        # splits or globs, under every bash.
+        "local o='--web '\nlocal a=($o)\ngh pr list \"${a[@]}\"",
+        'local a=(*)\ngh pr list "${a[@]}"',
+        # Every other test: a shape it does not run, or an operand that may
+        # be several words.
+        "[ -v x ]",
+        '[ ! -n "$x" ]',
+        '[ -n "$x"',
+        '[ "$x" ]',
+        '[ "$x" -eq 1 ]',
+        '[ "$a" = "$b" -o -v x ]',
+        "[ -n $x ]",
+        '[ $x = "$y" ]',
+        '[ -n "$@" ]',
+        '[ -n "${a[@]}" ]',
+        '[ "$x" = "${a[*]}" ]',
+        '[ "a"$x"b" = c ]',
+    ):
+        assert runs_pipeline_code(runs), runs
+    for inert in (
+        f'{PUSHGIT}\npushgit push -q origin "HEAD:refs/heads/$branch"',
+        'x=$(git -C "$TREE" rev-parse HEAD | cut -f1)',
+        'if ! git log -1 --format=%B "$r" | grep -qxF "$t"; then\n  exit 1\nfi',
+        'local create=(--repo "$R"\n  --title "$t")\ncreate+=(--draft)\ngh pr create "${create[@]}"',
+        'if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then\n  cat x >> "$GITHUB_STEP_SUMMARY"\nfi',
+        'echo "$branch already holds this tree" >&2',
+        "n=$(gh pr list --head \"$b\" \\\n  --json number --jq '.[0].number // empty')",
+        '[ -z "$x" ] || [ "$(plan branch)" != "${y:-}" ]',
+        '[ "$x" = true ]',
+        "local branch=$BUILT_BRANCH head",
+    ):
+        assert not runs_pipeline_code(inert), (inert, runs_pipeline_code(inert))
+    # A function shadows a program or builtin of the same name, so none in
+    # the script has one of those names but plan and pushgit, each defined
+    # once: pushgit as PUSHGIT, and plan as field on the plan. A definition
+    # counts wherever it starts (after ;, &&, a quote...), and the script
+    # holds no eval, source or . that could define one from text it builds
+    # (reviews of cf8066bc, 2, f936b49c, 2, and d3770d66, 2). field, which plan
+    # runs, is the isolated runner's Python on a fixed program that imports
+    # json and sys alone.
+    assert not runs_text(script)
+    for evaluates in (
+        "e''val x",
+        "'source' x",
+        "\\. x",
+        "e\\\nval x",
+        ': ; . "$x"',
+        "eval>x y",
+        "'source'<x y",
+        "\\.<x y",
+        "eval&>x y",
+        '$"eval" x',
+        "$'eval' x",
+        "$'\\x65val' x",
+        ": 'x\n# ';eval y",
+        "case x in x)eval y;; esac",
+    ):
+        assert runs_text(evaluates), evaluates
+    assert not runs_text("x=$(grep -c .)\n: x")
+    for elsewhere in (
+        ": ; cat() { :; }",
+        "true && cat() { :; }",
+        "eval 'cat() { :; }'",
+        "c\\\nat() { :; }",
+    ):
+        assert definitions(elsewhere) == ["cat"], elsewhere
+    defined = definitions(script)
+    assert set(defined) & PROPOSE_RUNS == {"plan", "pushgit"}
+    assert defined.count("plan") == defined.count("pushgit") == 1
+    assert defined.count("field") == 1
+    assert f"  {PUSHGIT}\n" in body
+    assert '\nplan() { field "$WORK/plan.json" "$@"; }\n' in script
+    (field,) = Commands(shell_residue(function_body(script, "field"))).commands
+    assert field["name"] == "python3" and not field["assigns"] and not field["writes"]
+    flag, option, program, rest = field["args"]
+    assert (flag, option, rest) == ("-I", "-c", '"$@"')
+    assert program[0] == program[-1] == "'"
+    imported = {
+        alias.name
+        for node in ast.walk(ast.parse(program[1:-1]))
+        if isinstance(node, (ast.Import, ast.ImportFrom))
+        for alias in node.names
+    }
+    assert imported == {"json", "sys"}
+    assert not [
+        node
+        for node in ast.walk(ast.parse(program[1:-1]))
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id in {"eval", "exec", "__import__", "compile"}
+    ]
+
+
+# The names propose may run with any one argument (git, gh, pushgit and [
+# take only some), and names it may not run at all.
+PLAIN_RUNS = sorted(PROPOSE_RUNS - {"git", "gh", "pushgit", "["})
+NOT_RUNS = ["bash", "sh", "dash", "zsh", "ksh", "eval", "exec", "source", "."]
+NOT_RUNS += ["trap", "env", "command", "builtin", "xargs", "python3", "tee", "time"]
+CONTEXTS = [
+    "{w} x",
+    ": | {w} x",
+    ": && {w} x",
+    ": || {w} x",
+    ": ; {w} x",
+    "! {w} x",
+    ">&2 {w} x",
+    "if :; then {w} x; fi",
+    "if :; then :; elif {w} x; then :; else {w} x; fi",
+    "x=$({w} x)",
+    'x="$({w} x)"',
+    "( {w} x )",
+    "{{ {w} x; }}",
+    'x="${{ {w} x; }}"',
+    "x=${{|{w} x;}}",
+    "cat <({w} x)",
+    "local x=$({w} x)",
+    "x=(a $({w} x))",
+]
+
+
+@st.composite
+def spellings(draw):
+    """A command name, written as is or with bash's quotes and escapes
+    around or inside it (quote removal gives the name back)."""
+    name = draw(
+        st.sampled_from(PLAIN_RUNS + NOT_RUNS)
+        | st.from_regex(r"[a-z][a-z0-9_-]{0,8}", fullmatch=True)
+    )
+    pieces = []
+    for character in name:
+        pieces.append(
+            draw(
+                st.sampled_from(
+                    [
+                        character,
+                        f"'{character}'",
+                        f'"{character}"',
+                        f"\\{character}",
+                        f"''{character}",
+                        f'{character}""',
+                    ]
+                )
+            )
+        )
+    return name, "".join(pieces)
+
+
+@settings(max_examples=300, deadline=None)
+@given(spelled=spellings(), context=st.sampled_from(CONTEXTS))
+def test_a_command_runs_only_as_a_listed_literal_word(spelled, context):
+    # Invariant: for any spelling of any name, in any command position the
+    # parser models, the command is flagged unless the word as written is a
+    # name PROPOSE_RUNS lists. Quote removal never turns a flagged word into
+    # an allowed one, and an allowed one is allowed wherever it runs.
+    name, written = spelled
+    text = context.format(w=written)
+    assert bool(runs_pipeline_code(text)) == (written not in PLAIN_RUNS), (
+        text,
+        runs_pipeline_code(text),
+    )
+    if name not in PLAIN_RUNS:
+        assert runs_pipeline_code(context.format(w=name)), name
 
 
 def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
@@ -478,8 +1164,32 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         'verify-sealed "$(plan paths namespace)"',
         "uk_replay_regenerate.sh",
         "scorecard_db.build_db",
-        "output tree",
+        "the checks changed tracked files",
+        "nondeterministic",
+        # Review of cf8066bc (6): what it verified is read before the suite
+        # runs in the tree, so the suite cannot change it.
+        "verified=$(git",
+        'sealed=$(cat "$WORK/verify-sealed.txt")',
+        'hash=$(content_hash "$WORK/build1.json")',
+        "branch=$(plan branch)",
+        "preflight",
+        'output tree "$verified"',
+        "output preflight",
         "output action build",
+    )
+    # Review of 24434729 (3): CI's checks run after every check that stops
+    # the run, with no token, and report before anything is output.
+    order(
+        phase(script, "preflight"),
+        "no GitHub token in the environment",
+        "unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY",
+        "os.urandom(16).hex()",
+        "printf '\\n::stop-commands::%s\\n' \"$resume\"",
+        '"${RUFF[@]}"',
+        '"${SUITE[@]}"',
+        "printf '\\n::%s::\\n' \"$resume\"",
+        'git -C "$TREE" status --porcelain',
+        "builder preflight ",
     )
     rebuild = phase(script, "rebuild")
     order(
@@ -492,6 +1202,7 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         'builder check --request-dir "$STAGE/$REQUEST" --checkout "$WORK/tip"',
         "on main as it is now",
         " body ",
+        "output draft",
         "output action build",
     )
     # Review of 78e080c6 (1): job 2 reads the request only as assemble
@@ -506,11 +1217,16 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
     order(
         phase(script, "propose"),
         "the results commit changed after it was assembled",
+        "gh pr list",
         "pushgit push -q origin",
         "holds work this builder did not write",
+        "gh pr ready",
         "pushgit push -q --force-with-lease",
         "gh pr create",
     )
+    # It only ever turns a pull request into a draft, never marks one ready.
+    ready = [line for line in script.splitlines() if "gh pr ready" in line]
+    assert ready and all(line.rstrip().endswith("--undo") for line in ready)
 
 
 class ImportScan:
@@ -786,6 +1502,31 @@ def control_line():
     )
     words = line.removeprefix("CONTROL=(").removesuffix(")").split()
     return words, [word for word, before in zip(words[1:], words) if before == "--with"]
+
+
+def script_array(name):
+    """The words of the builder script's ``local NAME=(...)`` line."""
+    (line,) = [
+        line.strip()
+        for line in SCRIPT.read_text().splitlines()
+        if line.strip().startswith(f"local {name}=(")
+    ]
+    return shlex.split(line.removeprefix(f"local {name}=(").removesuffix(")"))
+
+
+def test_the_build_job_runs_cis_format_check_and_suite_word_for_word():
+    # Review of 24434729 (3): the results commit faces ci.yml's own python
+    # job before it is proposed, so the lines are its lines, as are their
+    # environments (PYTHONPATH=. for the suite, nothing for ruff).
+    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    steps = ci["jobs"]["python"]["steps"]
+    (ruff,) = [s for s in steps if s.get("run", "").startswith("uvx ruff format")]
+    (suite,) = [s for s in steps if " pytest tests/" in s.get("run", "")]
+    assert script_array("RUFF") == shlex.split(ruff["run"])
+    assert "env" not in ruff
+    assert script_array("SUITE") == shlex.split(suite["run"])
+    assert suite["env"] == {"PYTHONPATH": "."}
+    assert 'PYTHONPATH=. "${SUITE[@]}"' in phase(SCRIPT.read_text(), "preflight")
 
 
 RELEASE = {"policyengine", "policyengine_uk", "policyengine_core", "huggingface_hub"}
@@ -1484,6 +2225,282 @@ def test_a_commit_never_touches_github_even_inside_its_own_trees(path):
 # --- the whole builder on a local bare remote ----------------------------------
 
 
+# --- CI's checks on the commit ----------------------------------------------------
+
+# pytest -q's tail as CI prints it (CI is set, so whole messages, over lines),
+# with a failing test's captured output holding an earlier summary of its own.
+SUMMARY_HEADER = "=" * 27 + " short test summary info " + "=" * 28 + "\n"
+SUITE_LOG = (
+    "....F.E\n"
+    + "=" * 35
+    + " FAILURES "
+    + "=" * 35
+    + "\n----- Captured stdout call -----\n"
+    + SUMMARY_HEADER
+    + "FAILED tests/inner.py::test_of_an_inner_run - AssertionError\n"
+    + SUMMARY_HEADER
+    + "FAILED tests/test_toy.py::test_bad - AssertionError: multi\n"
+    + "  line - message\n"
+    + "assert 1 == 2\n"
+    + "FAILED tests/test_toy.py::test_p[a - b] - AssertionError: assert 'a - b' == 'z'\n"
+    + "FAILED tests/test_toy.py::test_q[a[b] - AssertionError: [1] - [2]\n"
+    + "ERROR tests/test_toy.py::test_err - RuntimeError: setup\n"
+    + "ERROR tests/test_broken.py\n"
+    + "3 failed, 1 passed, 2 errors in 0.01s\n"
+)
+# ruff format --check from ruff 0.16.7, and before 0.16.
+RUFF_LOG = """unformatted: File would be reformatted
+ --> tests/fmt_me.py:1:2
+  |
+  - x=1
+1 + x = 1
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> tests/syntax.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+unformatted: File would be reformatted
+  --> tests/test_toy.py:3:1
+   |
+2  |
+3  +
+
+2 files would be reformatted
+"""
+OLD_RUFF_LOG = "Would reformat: tests/a.py\nWould reformat: pipeline/b.py\n2 files would be reformatted, 9 files already formatted\n"
+
+
+def test_a_message_line_that_looks_like_a_summary_is_a_stated_limit():
+    # The limits suite_failures states, as they behave: only the list
+    # changes, and a failing suite's exit status still makes the draft.
+    log = f"{SUMMARY_HEADER}FAILED tests/test_t.py::test_x - a\n{SUMMARY_HEADER}"
+    assert builder.suite_failures(log) == []
+    assert builder.report(1, builder.suite_failures(log))["exit"] == 1
+    log = f"{SUMMARY_HEADER}FAILED tests/test_t.py::test_x - a\nERROR b\n"
+    assert builder.suite_failures(log) == ["tests/test_t.py::test_x", "b"]
+
+
+def test_the_failures_are_what_the_last_summary_and_ruff_and_git_name():
+    assert builder.suite_failures(SUITE_LOG) == [
+        "tests/test_toy.py::test_bad",
+        "tests/test_toy.py::test_p[a - b]",
+        "tests/test_toy.py::test_q[a[b]",
+        "tests/test_toy.py::test_err",
+        "tests/test_broken.py",
+    ]
+    assert builder.suite_failures("...\n3 passed in 0.01s\n") == []
+    assert builder.suite_failures("INTERNALERROR> collection died\n") == []
+    assert builder.format_failures(RUFF_LOG) == [
+        "tests/fmt_me.py",
+        "tests/syntax.py",
+        "tests/test_toy.py",
+    ]
+    assert builder.format_failures(OLD_RUFF_LOG) == ["tests/a.py", "pipeline/b.py"]
+    assert builder.drift_paths(" M data/x.json\n?? stray.txt\n") == [
+        "data/x.json",
+        "stray.txt",
+    ]
+    # A passing check reports nothing, whatever its log holds.
+    assert builder.report(0, ["tests/a.py"]) == {"exit": 0, "count": 0, "names": []}
+    # A test that fails and then errors in teardown is one failure.
+    assert builder.report(1, ["t::a", "t::a", "t::b"]) == {
+        "exit": 1,
+        "count": 2,
+        "names": ["t::a", "t::b"],
+    }
+
+
+# A parameter may hold " - " and an unmatched "[", but no "]".
+PARAMETER_TEXT = st.text(
+    st.characters(min_codepoint=32, max_codepoint=126, exclude_characters="]`"),
+    max_size=20,
+)
+NODE_IDS = st.builds(
+    lambda module, test, parameter: (
+        f"tests/test_{module}.py"
+        + (f"::test_{test}" if test else "")
+        + (f"[{parameter}]" if test and parameter is not None else "")
+    ),
+    st.from_regex(r"[a-z][a-z0-9_]{0,10}", fullmatch=True),
+    st.none() | st.from_regex(r"[a-z][a-z0-9_]{0,10}", fullmatch=True),
+    st.none() | PARAMETER_TEXT,
+)
+MESSAGE_LINE = st.text(
+    st.characters(min_codepoint=32, max_codepoint=126), max_size=40
+).filter(
+    lambda line: (
+        not line.startswith(("FAILED ", "ERROR "))
+        and not builder.SUMMARY.fullmatch(line)
+    )
+)
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    names=st.lists(NODE_IDS, unique=True, max_size=20),
+    messages=st.lists(st.lists(MESSAGE_LINE, max_size=3), min_size=20, max_size=20),
+)
+def test_the_suites_failures_round_trip_through_its_summary(names, messages):
+    # Invariant: the node ids of pytest's short summary come back exactly,
+    # in order, whatever the messages hold (" - ", "]", more lines) and
+    # whatever a parametrised id holds (" - " or an unmatched "[" inside its
+    # brackets). A message line that starts FAILED or ERROR, or that is
+    # itself a summary header, is a stated limit, so the messages here hold
+    # none.
+    lines = []
+    for name, message in zip(names, messages):
+        word = "ERROR" if "::" not in name else "FAILED"
+        lines.append(f"{word} {name}" + (f" - {message[0]}" if message else ""))
+        lines += message[1:]
+    log = "..F\n" + SUMMARY_HEADER + "".join(f"{line}\n" for line in lines)
+    assert builder.suite_failures(log) == names
+
+
+ANY_LINE = st.text(st.characters(exclude_characters="\n\r"), max_size=400)
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    ruff_exit=st.integers(0, 255),
+    unformatted=st.lists(ANY_LINE, max_size=150),
+    suite_exit=st.integers(0, 255),
+    failed=st.lists(ANY_LINE, max_size=150),
+    drift=st.lists(ANY_LINE, max_size=150),
+)
+def test_the_build_job_never_reports_what_the_propose_job_refuses(
+    ruff_exit, unformatted, suite_exit, failed, drift
+):
+    # Invariant (differential: job 1's writer against job 2's reader): for
+    # any exit statuses and any names the logs hold, the report job 1
+    # outputs is one line job 2 accepts unchanged, small enough for a job
+    # output, listing at most LISTED names per check, each listable.
+    report = builder.preflight(
+        ruff_exit,
+        "".join(f"Would reformat: {name}\n" for name in unformatted),
+        suite_exit,
+        SUMMARY_HEADER + "".join(f"FAILED {name}\n" for name in failed),
+        "".join(f"?? {name}\n" for name in drift),
+    )
+    text = json.dumps(report, separators=(",", ":"), sort_keys=True)
+    assert builder.read_preflight(text) == report
+    assert "\n" not in text and len(text) < 100_000
+    for check in report.values():
+        assert len(check["names"]) <= min(check["count"], builder.LISTED)
+        assert all(builder.LISTABLE.fullmatch(name) for name in check["names"])
+    assert (report["suite"]["count"] > 0) <= (suite_exit != 0)
+
+
+def passing():
+    return json.loads(PASSING)
+
+
+MALFORMED = {
+    "not JSON": "all fine",
+    "a list": "[]",
+    "null": "null",
+    "a check missing": lambda r: r.pop("drift"),
+    "a check added": lambda r: r.update(lint={"exit": 0, "count": 0, "names": []}),
+    "a field missing": lambda r: r["suite"].pop("names"),
+    "a field added": lambda r: r["suite"].update(note="x"),
+    "a check not an object": lambda r: r.update(suite=[]),
+    "a negative exit": lambda r: r["suite"].update(exit=-1),
+    "an exit over 255": lambda r: r["suite"].update(exit=256),
+    "a boolean exit": lambda r: r["suite"].update(exit=True),
+    "a string exit": lambda r: r["suite"].update(exit="1"),
+    "a float exit": lambda r: r["suite"].update(exit=1.0),
+    "a negative count": lambda r: r["suite"].update(exit=1, count=-1),
+    "a boolean count": lambda r: r["suite"].update(exit=1, count=True),
+    "a count of a billion": lambda r: r["suite"].update(exit=1, count=10**9),
+    "a pass with failures": lambda r: r["ruff"].update(count=1, names=["a.py"]),
+    "more names than failures": lambda r: r["suite"].update(
+        exit=1, count=1, names=["a", "b"]
+    ),
+    "more names than LISTED": lambda r: r["suite"].update(
+        exit=1, count=500, names=[f"t{i}" for i in range(builder.LISTED + 1)]
+    ),
+    "a name twice": lambda r: r["suite"].update(exit=1, count=2, names=["a", "a"]),
+    "a backtick": lambda r: r["suite"].update(exit=1, count=1, names=["a```b"]),
+    "a newline": lambda r: r["suite"].update(exit=1, count=1, names=["a\nb"]),
+    "a leading space": lambda r: r["suite"].update(exit=1, count=1, names=[" a"]),
+    "non-ASCII": lambda r: r["suite"].update(exit=1, count=1, names=["tést"]),
+    "a long name": lambda r: r["suite"].update(exit=1, count=1, names=["a" * 201]),
+    "a number for a name": lambda r: r["suite"].update(exit=1, count=1, names=[1]),
+}
+
+
+@pytest.mark.parametrize("edit", MALFORMED.values(), ids=MALFORMED.keys())
+def test_the_propose_job_refuses_a_report_of_any_other_shape(edit):
+    if isinstance(edit, str):
+        text = edit
+    else:
+        report = passing()
+        edit(report)
+        text = json.dumps(report)
+    with pytest.raises(builder.Refused, match="outputs are malformed: preflight"):
+        builder.read_preflight(text)
+
+
+def test_a_count_under_a_billion_reads_back():
+    report = passing()
+    report["suite"].update(exit=1, count=10**9 - 1)
+    assert builder.read_preflight(json.dumps(report)) == report
+
+
+@settings(max_examples=100, deadline=None)
+@given(
+    incomplete=st.booleans(),
+    exits=st.fixed_dictionaries(
+        {key: st.integers(0, 255) for key in builder.PREFLIGHT}
+    ),
+)
+def test_a_pull_request_is_a_draft_exactly_when_integrity_or_a_check_fails(
+    incomplete, exits
+):
+    checks = {
+        key: {"exit": status, "count": 0, "names": []} for key, status in exits.items()
+    }
+    checks = builder.read_preflight(json.dumps(checks))
+    assert builder.is_draft({"draft": incomplete}, checks) == (
+        incomplete or any(exits.values())
+    )
+    assert builder.failed_checks(checks) == [
+        key for key in builder.PREFLIGHT if exits[key]
+    ]
+
+
+@settings(max_examples=100, deadline=None)
+@given(
+    key=st.sampled_from(sorted(builder.PREFLIGHT)),
+    names=st.lists(
+        st.from_regex(r"[!-_a-~][ -_a-~]{0,40}[!-_a-~]", fullmatch=True),
+        unique=True,
+        max_size=builder.LISTED,
+    ),
+    unlisted=st.integers(0, 5000),
+)
+def test_a_failing_checks_line_lists_its_names_in_one_fence(key, names, unlisted):
+    # Invariant: every listed name is a line of its own inside one fenced
+    # block, nothing else is, and a count beyond the list is stated.
+    count = len(names) + unlisted
+    if not count:
+        return
+    check = {"exit": 1, "count": count, "names": names}
+    line = builder.check_line(
+        key, builder.read_preflight(json.dumps({**passing(), key: check}))[key]
+    )
+    assert line.count("```") == (2 if names else 0)
+    if names:
+        fenced = line.split("```text\n", 1)[1].split("\n  ```", 1)[0]
+        assert fenced.splitlines() == [f"  {name}" for name in names]
+    assert (f"{unlisted:,} more are in the build job's log" in line) == bool(
+        names and unlisted
+    )
+    assert f"{count:,} " in line
+
+
 def next_minor(version):
     major, minor = (int(part) for part in version.split(".")[:2])
     return f"{major}.{minor + 1}.0"
@@ -1807,9 +2824,72 @@ if args[:2] == ["pr", "list"]:
     print(os.environ.get("GH_OPEN_PR", ""))
 elif args[:2] == ["pr", "create"]:
     print("https://github.com/PolicyEngine/policyengine-scorecard/pull/999")
-elif args[:2] != ["pr", "edit"]:
+elif args[:2] not in (["pr", "edit"], ["pr", "ready"]):
     sys.exit(97)
 """
+# CI's suite and format check in the build job, as stubs. Each logs the
+# commit it ran on, its arguments and which GitHub token or command file its
+# environment held, and fails as the test asks: SUITE_FAILS (node ids,
+# comma-separated), SUITE_EXIT (no summary), SUITE_DRIFT (a changed tracked
+# file and an untracked one), RUFF_UNFORMATTED (paths), RUFF_STYLE=old (the
+# "Would reformat:" lines ruff printed before 0.16).
+EXPOSED = (
+    "GH_TOKEN",
+    "GITHUB_TOKEN",
+    "GITHUB_ENV",
+    "GITHUB_OUTPUT",
+    "GITHUB_PATH",
+    "GITHUB_STATE",
+    "GITHUB_STEP_SUMMARY",
+)
+CHECK_STUB = f"""import os, subprocess, sys
+from pathlib import Path
+check, args = sys.argv[1], sys.argv[2:]
+head = subprocess.run(
+    ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+).stdout.strip()
+exposed = ",".join(k for k in {EXPOSED!r} if k in os.environ) or "-"
+with open(os.environ["CHECK_LOG"], "a") as log:
+    log.write(
+        f"{{check}} {{head}} {{os.environ.get('PYTHONPATH', '-')}} {{exposed}} "
+        + " ".join(args) + "\\n"
+    )
+with open(os.environ["CHECK_LOG"] + ".env", "a") as seen:
+    seen.write(repr(dict(os.environ)) + "\\n")
+if check == "ruff":
+    paths = [p for p in os.environ.get("RUFF_UNFORMATTED", "").split(",") if p]
+    for path in paths:
+        if os.environ.get("RUFF_STYLE") == "old":
+            print(f"Would reformat: {{path}}")
+        else:
+            print(f"unformatted: File would be reformatted\\n --> {{path}}:1:1")
+    print(f"{{len(paths)}} files would be reformatted, 9 files already formatted")
+    sys.exit(1 if paths else 0)
+if os.environ.get("SUITE_DRIFT"):
+    Path("data/uk/replay_variants.json").write_text("{{}}")
+    Path("stray.txt").write_text("left behind")
+names = [n for n in os.environ.get("SUITE_FAILS", "").split(",") if n]
+print("..F" if names else "...")
+if os.environ.get("SUITE_EXIT"):
+    print("INTERNALERROR> collection died", end="", flush=True)
+    sys.exit(int(os.environ["SUITE_EXIT"]))
+if names:
+    print("=" * 27 + " short test summary info " + "=" * 28)
+    for name in names:
+        if name.endswith(".py"):
+            print(f"ERROR {{name}}")
+        else:
+            print(f"FAILED {{name}} - AssertionError: a - b\\nsecond line")
+    print(f"{{len(names)}} failed, 3 passed in 0.01s")
+    sys.exit(1)
+print("3 passed in 0.01s")
+"""
+# What the build job outputs when all three of CI's checks pass.
+PASSING = json.dumps(
+    {key: {"exit": 0, "count": 0, "names": []} for key in builder.PREFLIGHT},
+    separators=(",", ":"),
+    sort_keys=True,
+)
 
 
 class Remote:
@@ -1868,8 +2948,30 @@ class Remote:
         )
         self.tools = tmp_path / "bin"
         self.tools.mkdir()
-        # The build job's checks run with CONTROL's packages alone (UV_RUN).
-        install_uv(self.tools)
+        # The build job's checks run with CONTROL's packages alone (UV_RUN);
+        # `uv run` of anything but python is CI's suite, and uvx is ruff.
+        (self.tools / "control").mkdir()
+        control = install_uv(self.tools / "control")
+        stub = self.tools / "check_stub.py"
+        stub.write_text(CHECK_STUB)
+        for name, dispatch in (
+            (
+                "uv",
+                f"if 'python' in sys.argv:\n    os.execv({str(control)!r}, sys.argv)\n"
+                f"os.execv(sys.executable, [sys.executable, {str(stub)!r}, 'suite',"
+                " *sys.argv[1:]])\n",
+            ),
+            (
+                "uvx",
+                "assert sys.argv[1] == 'ruff', sys.argv\n"
+                f"os.execv(sys.executable, [sys.executable, {str(stub)!r}, 'ruff',"
+                " *sys.argv[2:]])\n",
+            ),
+        ):
+            (self.tools / name).write_text(
+                f"#!{sys.executable}\nimport os, sys\n{dispatch}"
+            )
+            (self.tools / name).chmod(0o755)
         gh = self.tools / "gh"
         gh.write_text(f"#!{sys.executable}\n{GH_STUB}")
         gh.chmod(0o755)
@@ -1951,7 +3053,9 @@ class Remote:
         temp.mkdir()
         self.gh_log, self.check_log = temp / "gh.jsonl", temp / "checks.log"
         self.checkout(self.runner, sha)
-        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        # Every command file a step has, as the runner sets them.
+        files = {name: str(temp / name.lower()) for name in EXPOSED[2:]}
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **files, **overrides})
         return self.step(self.runner, "build", env, temp / "build-output.txt")
 
     def rebuild_job(self, rid, received, sha, name, **overrides):
@@ -1972,6 +3076,7 @@ class Remote:
             BUILT_STATE=received["state"],
             BUILT_SEALED=received["sealed"],
             BUILT_CONTENT_HASH=received["content_hash"],
+            BUILT_PREFLIGHT=received["preflight"],
         )
         return result, outputs, (fresh, env, temp)
 
@@ -2003,6 +3108,7 @@ class Remote:
                 env2,
                 BUILT_COMMIT=self.rebuilt["commit"],
                 BUILT_BRANCH=self.rebuilt["branch"],
+                BUILT_DRAFT=self.rebuilt["draft"],
                 GH_TOKEN="app-installation-token",
             )
             outs.append(proposed)
@@ -2125,7 +3231,27 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert git(remote.runner, "rev-parse", f"{verified}^{{tree}}") == git(
         remote.remote, "rev-parse", f"{head}^{{tree}}"
     )
-    assert [line.split()[0] for line in checks[1:]] == ["build_db", "build_db"]
+    assert [line.split()[0] for line in checks[1:3]] == ["build_db", "build_db"]
+    # Review of 24434729 (3): then CI's format check and suite, its own
+    # lines, on that commit, with no token and no command file's variable
+    # in their environment.
+    assert checks[3:] == [
+        f"ruff {verified} - - {' '.join(script_array('RUFF')[2:])}",
+        f"suite {verified} . - {' '.join(script_array('SUITE')[1:])}",
+    ]
+    assert json.loads(remote.outputs["preflight"]) == {
+        key: {"exit": 0, "count": 0, "names": []} for key in builder.PREFLIGHT
+    }
+    # Their output sits between a pause of workflow commands and its resume,
+    # by a token the checks never see (review of cf8066bc, 8).
+    paused = re.search(r"^::stop-commands::([0-9a-f]{32})$", result.stdout, re.M)
+    assert paused
+    resumed = result.stdout.index(f"\n::{paused.group(1)}::\n")
+    assert paused.end() < result.stdout.index("3 passed in 0.01s") < resumed
+    seen = Path(f"{remote.check_log}.env").read_text()
+    assert seen.count("\n") == 2 and "CHECK_LOG" in seen
+    assert paused.group(1) not in remote.check_log.read_text() + seen
+    assert remote.rebuilt["draft"] == "false"
     calls = remote.gh_calls()
     assert [call[:2] for call in calls] == [["pr", "list"], ["pr", "create"]]
     create = calls[1]
@@ -2140,6 +3266,9 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert "all 8 committed result files" in body
     assert "axiom: n/a" in body
     assert "Diff vs `" + PE650 + "`" in body
+    for key in builder.PREFLIGHT:
+        assert builder.check_line(key, {"exit": 0, "count": 0, "names": []}) in body
+    assert "this pull request is a draft" not in body
     # The builder never merged and never touched main.
     assert git(remote.remote, "rev-parse", "main") == main
 
@@ -2327,7 +3456,8 @@ def test_without_workflows_a_rebuild_over_mains_workflow_change_says_what_to_do(
         result.stderr
     )
     assert remote.branch(record) == rebuilt
-    assert remote.gh_calls() == []
+    # It only read which pull request is open.
+    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"]]
     # The way out: with the branch deleted, the run pushes a new one, which
     # holds only the bot's commit on the new main.
     branch = f"refs/heads/{builder.BRANCH_PREFIX}{record['variant_id']}"
@@ -2658,6 +3788,12 @@ def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
         ({"sealed": "all fine; rm -rf /"}, "outputs are malformed"),
         ({"content_hash": "not hex"}, "outputs are malformed"),
         ({"tree": "abc"}, "outputs are malformed"),
+        ({"preflight": "all fine"}, "outputs are malformed: preflight checks"),
+        ({"preflight": "{}"}, "outputs are malformed: preflight checks"),
+        (
+            {"preflight": PASSING.replace('"names":[]', '"names":["```x"]', 1)},
+            "outputs are malformed: preflight",
+        ),
     ],
 )
 def test_job_2_pushes_only_what_it_rebuilt_and_job_1_verified(remote, forge, message):
@@ -2827,16 +3963,18 @@ def test_propose_pushes_only_the_commit_rebuild_assembled(remote):
         env,
         BUILT_COMMIT=remote.rebuilt["commit"],
         BUILT_BRANCH=remote.rebuilt["branch"],
+        BUILT_DRAFT=remote.rebuilt["draft"],
         GH_TOKEN="app-installation-token",
     )
     assert again.returncode == 1
     assert "changed after it was assembled" in again.stderr
     assert remote.branch(record) == pushed
     # And propose needs rebuild's outputs and the token.
-    for missing in ("BUILT_COMMIT", "BUILT_BRANCH", "GH_TOKEN"):
+    for missing in ("BUILT_COMMIT", "BUILT_BRANCH", "BUILT_DRAFT", "GH_TOKEN"):
         extra = {
             "BUILT_COMMIT": remote.rebuilt["commit"],
             "BUILT_BRANCH": remote.rebuilt["branch"],
+            "BUILT_DRAFT": remote.rebuilt["draft"],
             "GH_TOKEN": "app-installation-token",
         }
         del extra[missing]
@@ -2990,6 +4128,147 @@ def test_an_incomplete_integrity_opens_a_draft(remote):
     create = next(call for call in remote.gh_calls() if call[:2] == ["pr", "create"])
     assert "--draft" in create
     assert "this pull request is a draft" in remote.body()
+
+
+CHECK_FAILURES = [
+    (
+        {"SUITE_FAILS": "tests/test_a.py::test_x[a - b],tests/test_b.py"},
+        "suite",
+        1,
+        ["tests/test_a.py::test_x[a - b]", "tests/test_b.py"],
+    ),
+    (
+        {"RUFF_UNFORMATTED": "tests/test_a.py,pipeline/b.py"},
+        "ruff",
+        1,
+        ["tests/test_a.py", "pipeline/b.py"],
+    ),
+    (
+        {"RUFF_UNFORMATTED": "tests/test_a.py", "RUFF_STYLE": "old"},
+        "ruff",
+        1,
+        ["tests/test_a.py"],
+    ),
+    ({"SUITE_EXIT": "2"}, "suite", 2, []),
+    (
+        {"SUITE_DRIFT": "1"},
+        "drift",
+        1,
+        ["data/uk/replay_variants.json", "stray.txt"],
+    ),
+]
+
+
+@pytest.mark.parametrize(("override", "key", "status", "names"), CHECK_FAILURES)
+def test_a_failing_ci_check_opens_a_draft_that_names_it(
+    remote, override, key, status, names
+):
+    # Review of 24434729 (3): CI's own checks on the commit, failing, still
+    # propose it, as a draft whose body says what failed.
+    rid, record, _ = remote.certify()
+    result = remote.run(rid, **override)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert remote.branch(record)
+    # However the check's output ends, commands resume on a line of their
+    # own: the runner would read none after it otherwise (review of f936b49c).
+    paused = re.search(r"^::stop-commands::([0-9a-f]{32})$", result.stdout, re.M)
+    assert f"\n::{paused.group(1)}::\n" in result.stdout
+    reported = json.loads(remote.outputs["preflight"])
+    assert reported[key] == {"exit": status, "count": len(names), "names": names}
+    assert all(reported[other]["exit"] == 0 for other in set(reported) - {key})
+    assert remote.rebuilt["draft"] == "true"
+    create = next(call for call in remote.gh_calls() if call[:2] == ["pr", "create"])
+    assert "--draft" in create
+    body = remote.body()
+    assert "CI's own checks fail on this commit" in body
+    assert "Integrity is not `complete`" not in body
+    assert builder.check_line(key, reported[key]) in body
+    for name in names:
+        assert f"\n  {name}\n" in body
+    if not names:
+        assert "the build job's log has its output" in body
+
+
+def test_the_body_fits_githubs_limit_when_every_list_is_full(remote):
+    # GitHub refuses a pull request body over 65,536 characters, and the
+    # branch would already be pushed. Every check failing with more names
+    # than LISTED, each of the longest listable length, still fits.
+    rid, _, _ = remote.certify()
+    longest = [f"tests/test_{i:03d}.py::test_" + "x" * 176 for i in range(80)]
+    assert all(len(name) == 200 for name in longest)
+    result = remote.run(
+        rid,
+        SUITE_FAILS=",".join(longest),
+        RUFF_UNFORMATTED=",".join(name.split("::")[0] + "x" * 172 for name in longest),
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    reported = json.loads(remote.outputs["preflight"])
+    assert reported["suite"]["count"] == reported["ruff"]["count"] == 80
+    body = remote.body()
+    assert f"\n  {longest[builder.LISTED - 1]}\n" in body
+    assert longest[builder.LISTED] not in body
+    assert "30 more are in the build job's log" in body
+    full = {
+        "exit": 1,
+        "count": 10**6,
+        "names": [n[:200] for n in longest[: builder.LISTED]],
+    }
+    worst = sum(len(builder.check_line(key, full)) for key in builder.PREFLIGHT)
+    assert (
+        len(body) - len(builder.check_line("drift", reported["drift"])) + worst < 65_536
+    )
+
+
+def test_incomplete_integrity_and_a_failing_check_say_both(remote):
+    rid, _, _ = remote.certify(integrity="incomplete")
+    result = remote.run(rid, SUITE_FAILS="tests/test_a.py::test_x")
+    assert result.returncode == 0, result.stdout + result.stderr
+    body = remote.body()
+    assert "Integrity is not `complete`" in body
+    assert "CI's own checks fail on this commit" in body
+
+
+def test_a_failing_rebuild_turns_its_open_pull_request_back_into_a_draft(remote):
+    # A rerun after main moves edits the open pull request. One whose checks
+    # fail makes it a draft again; one whose checks pass leaves it as it is,
+    # since only a person marks a pull request ready.
+    rid, _, _ = remote.certify()
+    assert remote.run(rid).returncode == 0
+    move_main(remote)
+    result = remote.run(rid, GH_OPEN_PR="999", SUITE_FAILS="tests/test_a.py::test_x")
+    assert result.returncode == 0, result.stdout + result.stderr
+    # Back to a draft before the push that makes it fail (review of
+    # cf8066bc, 7), then the body that says why.
+    calls = remote.gh_calls()
+    assert [call[:2] for call in calls] == [
+        ["pr", "list"],
+        ["pr", "ready"],
+        ["pr", "edit"],
+    ]
+    assert calls[1] == ["pr", "ready", "999", "--repo", REPOSITORY, "--undo"]
+    move_main(remote, "main moved again\n")
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"], ["pr", "edit"]]
+
+
+def test_the_checks_refuse_to_run_beside_a_github_token(remote):
+    # The build job holds no token; were one ever in its environment, CI's
+    # checks and their packages would not run beside it.
+    rid, _, _ = remote.certify()
+    sha = git(remote.remote, "rev-parse", "main")
+    remote.checkout(remote.runner, sha)
+    for name in ("GH_TOKEN", "GITHUB_TOKEN"):
+        temp = remote.tmp / f"token-{name}"
+        temp.mkdir()
+        env = remote.environment(temp, rid, GITHUB_SHA=sha)
+        result, outputs = remote.step(
+            remote.runner, "build", env, temp / "out.txt", **{name: "a-write-token"}
+        )
+        assert result.returncode == 1, result.stdout + result.stderr
+        assert "no GitHub token in the environment" in result.stderr
+        assert "action" not in outputs
+        assert "suite " not in remote.check_log.read_text()
 
 
 def test_a_malformed_or_unknown_request_id_fails(remote):
