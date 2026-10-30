@@ -2497,6 +2497,7 @@ def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):
         "cbp-full-utilisation": [JUNE],
         "pe-universal-hours-kept": [PAIR_6110],
         "cbp-full-utilisation-child-caps": [PAIR_6110],
+        "centax-live-accounts-above-limit": [PAIR_6110],
     }
     for kind in (lane.CENTAX, lane.CBP, "construction"):
         for a in lane.load_notes()[kind]:
@@ -2726,12 +2727,12 @@ def test_central_static_rows_carry_the_latest_pairs_diagnosis():
 
 def test_the_diagnosis_and_readme_state_the_runs_own_split(pair_6110):
     """Differential: the figures the pair's diagnosis and the README give in
-    prose equal the run's, and the universal change stands at about two-thirds
-    of the excess over CenTax in both years."""
+    prose equal the run's, including the universal change's share of the excess
+    over CenTax."""
     text = _pair(pair_6110)["diagnosis"]
     readme = (CENTAX_SRC / "README.md").read_text()
     centax = {2027: 0.80, 2029: 0.98}
-    extended, universal = {}, {}
+    extended, universal, share = {}, {}, {}
     for year, cost in centax.items():
         y = str(year)
         extended[year] = (
@@ -2742,13 +2743,20 @@ def test_the_diagnosis_and_readme_state_the_runs_own_split(pair_6110):
         )
         total = -lane.counterpart(pair_6110, lane.CENTAX, year) / 1e9
         assert total == pytest.approx(extended[year] + universal[year], abs=1e-6)
-        assert 0.6 < universal[year] / (total - cost) < 0.72
+        share[year] = universal[year] / (total - cost) * 100
         assert f"{total:.3f}" in readme
     assert (
         f"£{universal[2027]:.3f}bn in 2027-28 and £{universal[2029]:.3f}bn in 2029-30"
         in text
     )
     assert f"£{extended[2027]:.3f}bn and £{extended[2029]:.3f}bn" in text
+    assert (
+        f"{share[2027]:.0f}% of the excess over CenTax in 2027-28 and "
+        f"{share[2029]:.0f}% in 2029-30" in text
+    )
+    assert (
+        f"{share[2027]:.0f}% of the excess in 2027-28 and {share[2029]:.0f}%" in readme
+    )
     assert (
         f"{(extended[2027] / centax[2027] - 1) * 100:.0f}% and "
         f"{(extended[2029] / centax[2029] - 1) * 100:.0f}% above" in text

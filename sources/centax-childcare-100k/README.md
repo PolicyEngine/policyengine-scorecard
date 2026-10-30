@@ -75,7 +75,7 @@ CenTax's two behavioural margins are on the page without a PolicyEngine
 value. Their `pe_missing` says why: this lane's counterparts are static
 runs.
 
-## Why PolicyEngine is above CenTax
+## Why PolicyEngine estimates a higher cost
 
 On the latest pair, PolicyEngine's static cost exceeds CenTax's by 26% in
 2027-28 and 25% in 2029-30. The central static rows carry a `pe_gap`
@@ -89,15 +89,25 @@ diagnosis linked to [microcosm#1338](https://github.com/PolicyEngine/microcosm/p
 | PolicyEngine total | 1.007 | 1.225 |
 | CenTax static cost, central | 0.80 | 0.98 |
 
-About two-thirds of the excess comes from this cut's take-up draws. A family
-above £100,000 can hold extended take-up true and universal take-up false.
+The universal change makes up 69% of the excess in 2027-28 and 65% in
+2029-30, and this cut's take-up draws produce it. A family above £100,000 can
+hold extended take-up true and universal take-up false.
 It receives no universal hours under current law, though those hours have no
 income limit, and receives them only once the reform makes it eligible for
 the extended hours. Every pound of the universal change falls on such
 children. microcosm#1338 (merged 23 October 2026, after this cut) nests the
 universal draw under the extended one, so a family that claims the extended
-hours also claims the universal hours. The extended hours alone run 8% and
-9% above CenTax, and this run does not explain that remainder.
+hours also claims the universal hours.
+
+The extended hours alone run 8% and 9% above CenTax. Two differences could
+account for that remainder, and this run sizes neither:
+
+- On this cut, copied high-income families inherit their hosts' take-up
+  draws and children under 2 share the older children's take-up.
+  microcosm#1338 changes both.
+- The engine starts a working parent above £100,000 from no working-parent
+  hours. CenTax nets off the hours that parents with live accounts already
+  receive.
 
 Usage no longer drives the gap. Families receiving the extended hours use a
 weighted mean of 28.3 of the 30 weekly hours
@@ -105,11 +115,8 @@ weighted mean of 28.3 of the 30 weekly hours
 [microcosm#1126](https://github.com/PolicyEngine/microcosm/issues/1126).
 With every family at the full 30 hours, the same reform costs £1.055bn in
 2027-28 and £1.278bn in 2029-30 on this pair (a diagnostic run, never
-attached). Ingest writes that figure only when both full-use worlds record
-it: the run set the input to 30 before anything read it, read it back at 30,
-and kept the main world's reform and executed limits on 30 April of the
-year. No child under 1 receives hours on this pair, because every age is a
-whole number of years.
+attached). No child under 1 receives hours on this pair, because every age
+is a whole number of years.
 
 The 19 June pair ran about 14% below CenTax. Families on that pair drew a
 weighted mean of 15.3 weekly hours, and #1126 identifies that draw as the
@@ -131,7 +138,10 @@ run it yet: [#232](https://github.com/PolicyEngine/policyengine-scorecard/issues
 
 To add a pair, run the compute script with `--variant <id>` in that
 variant's environment. The run id defaults to
-`childcare-100k-<variant>-<UTC start second>`. Two runs of one variant
+`childcare-100k-<variant>-<UTC start second>`. Ingest writes a full-use
+figure only when both full-use worlds record it: the run set the input to 30
+before anything read it, read it back at 30, and kept the main world's reform
+and executed limits on 30 April of the year. Two runs of one variant
 started in the same second would share it, and ingest refuses two
 artifacts with one run id. The artifact goes beside this one in
 `results/uk/childcare_100k/`. Before ingest takes it, check each note whose
