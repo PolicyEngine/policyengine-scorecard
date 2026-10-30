@@ -86,6 +86,22 @@
      }
     }
    ]
+  },
+  "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e": {
+   "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "dataset": "microcosm_uk_2024_25",
+   "measurements": [
+    "pe6111-ab2024-w2",
+    "pe6111-ab2025-w1",
+    "pe6111-autumn_budget_2024-w1",
+    "pe6111-autumn_statement_2023-w1",
+    "pe6111-spring_budget_2023-w1",
+    "pe6111-spring_budget_2024-w1",
+    "pe6111-spring_statement_2025-w1"
+   ],
+   "one_worker_peak_rss_bytes": 16674988032,
+   "size_bytes": 342348841,
+   "two_worker_peaks": []
   }
  },
  "measure": "peak summed RSS of compute_uk_event and its year workers",
@@ -2345,6 +2361,2912 @@
    "variant_id": "pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
    "workers": 2,
    "workload_sha256": "4d9643b931e96919cc4a3a2560bbcf50207b0a3cd66773ae3866ea9c90c734ec",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 29 year 2025] certified baseline extracted once in 73.5s",
+     "[pid 32 year 2024] certified baseline extracted once in 96.6s",
+     "[2025] autumn_budget_2024__private_school_vat_20pct: +1.415bn gain to Exchequer",
+     "[2024] autumn_budget_2024__private_school_vat_20pct: +0.000bn gain to Exchequer",
+     "[2025] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2024] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2025] autumn_budget_2024__employer_nics_package: +16.510bn gain to Exchequer",
+     "[2024] autumn_budget_2024__employer_nics_package: +0.000bn gain to Exchequer",
+     "[2025] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.723bn gain to Exchequer",
+     "[2024] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +1.135bn gain to Exchequer",
+     "[2025] autumn_budget_2024__winter_fuel_means_test: +0.399bn gain to Exchequer",
+     "[2024] autumn_budget_2024__winter_fuel_means_test: +1.576bn gain to Exchequer",
+     "[pid 29 year 2026] certified baseline extracted once in 57.2s",
+     "[pid 32 year 2027] certified baseline extracted once in 55.6s",
+     "[2026] autumn_budget_2024__private_school_vat_20pct: +1.453bn gain to Exchequer",
+     "[2027] autumn_budget_2024__private_school_vat_20pct: +1.487bn gain to Exchequer",
+     "[2026] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2027] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2026] autumn_budget_2024__employer_nics_package: +16.745bn gain to Exchequer",
+     "[2027] autumn_budget_2024__employer_nics_package: +16.937bn gain to Exchequer",
+     "[2026] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.813bn gain to Exchequer",
+     "[2027] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.917bn gain to Exchequer",
+     "[2026] autumn_budget_2024__winter_fuel_means_test: +0.399bn gain to Exchequer",
+     "[2027] autumn_budget_2024__winter_fuel_means_test: +0.391bn gain to Exchequer",
+     "[pid 29 year 2028] certified baseline extracted once in 49.1s",
+     "[pid 32 year 2029] certified baseline extracted once in 49.7s",
+     "[2028] autumn_budget_2024__private_school_vat_20pct: +1.523bn gain to Exchequer",
+     "[2029] autumn_budget_2024__private_school_vat_20pct: +1.561bn gain to Exchequer",
+     "[2028] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2029] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2028] autumn_budget_2024__employer_nics_package: +17.099bn gain to Exchequer",
+     "[2029] autumn_budget_2024__employer_nics_package: +17.546bn gain to Exchequer",
+     "[2028] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +3.025bn gain to Exchequer",
+     "[2029] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +3.123bn gain to Exchequer",
+     "[2028] autumn_budget_2024__winter_fuel_means_test: +0.398bn gain to Exchequer",
+     "[2029] autumn_budget_2024__winter_fuel_means_test: +0.411bn gain to Exchequer"
+    ],
+    "min_available_bytes": 5294174208,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 417837056,
+     "multiprocessing_helper": 23343104,
+     "year_worker": 16627773440
+    },
+    "phases": [
+     {
+      "_t": 56.3747318,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 336695296,
+      "seconds": 11.4,
+      "tree_peak_rss_bytes": 336695296,
+      "year": null
+     },
+     {
+      "_t": 67.783039435,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 410374144,
+      "seconds": 3.2,
+      "tree_peak_rss_bytes": 410374144,
+      "year": null
+     },
+     {
+      "_t": 71.866707843,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 7571808256,
+      "seconds": 73.5,
+      "tree_peak_rss_bytes": 15879774208,
+      "year": 2025
+     },
+     {
+      "_t": 71.846224878,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 12216602624,
+      "seconds": 96.6,
+      "tree_peak_rss_bytes": 18390380544,
+      "year": 2024
+     },
+     {
+      "_t": 145.345165517,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10292580352,
+      "seconds": 75.9,
+      "tree_peak_rss_bytes": 21222481920,
+      "year": 2025
+     },
+     {
+      "_t": 168.47628929,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10529648640,
+      "seconds": 74.3,
+      "tree_peak_rss_bytes": 21222481920,
+      "year": 2024
+     },
+     {
+      "_t": 221.213406929,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10786242560,
+      "seconds": 83.6,
+      "tree_peak_rss_bytes": 21710655488,
+      "year": 2025
+     },
+     {
+      "_t": 242.745105227,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10782277632,
+      "seconds": 78.2,
+      "tree_peak_rss_bytes": 21710655488,
+      "year": 2024
+     },
+     {
+      "_t": 304.782909986,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10762481664,
+      "seconds": 88.9,
+      "tree_peak_rss_bytes": 21721497600,
+      "year": 2025
+     },
+     {
+      "_t": 320.95840784,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10760953856,
+      "seconds": 82.9,
+      "tree_peak_rss_bytes": 21721497600,
+      "year": 2024
+     },
+     {
+      "_t": 393.720784925,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 14817669120,
+      "seconds": 142.0,
+      "tree_peak_rss_bytes": 29306556416,
+      "year": 2025
+     },
+     {
+      "_t": 403.85761613,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 14812479488,
+      "seconds": 139.8,
+      "tree_peak_rss_bytes": 29306556416,
+      "year": 2024
+     },
+     {
+      "_t": 535.712810923,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 11645521920,
+      "seconds": 101.6,
+      "tree_peak_rss_bytes": 26365878272,
+      "year": 2025
+     },
+     {
+      "_t": 543.633666368,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 16627773440,
+      "seconds": 124.4,
+      "tree_peak_rss_bytes": 26049179648,
+      "year": 2024
+     },
+     {
+      "_t": 637.326325978,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 9120378880,
+      "seconds": 57.2,
+      "tree_peak_rss_bytes": 26049179648,
+      "year": 2026
+     },
+     {
+      "_t": 668.074282106,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 15284547584,
+      "seconds": 55.6,
+      "tree_peak_rss_bytes": 24705953792,
+      "year": 2027
+     },
+     {
+      "_t": 694.497017947,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10958012416,
+      "seconds": 80.1,
+      "tree_peak_rss_bytes": 22126903296,
+      "year": 2026
+     },
+     {
+      "_t": 723.69170863,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10954407936,
+      "seconds": 78.7,
+      "tree_peak_rss_bytes": 22126903296,
+      "year": 2027
+     },
+     {
+      "_t": 774.602789738,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 11026493440,
+      "seconds": 84.1,
+      "tree_peak_rss_bytes": 22279270400,
+      "year": 2026
+     },
+     {
+      "_t": 802.360610007,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 11023282176,
+      "seconds": 87.2,
+      "tree_peak_rss_bytes": 22279270400,
+      "year": 2027
+     },
+     {
+      "_t": 858.665196964,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10841268224,
+      "seconds": 92.5,
+      "tree_peak_rss_bytes": 22089883648,
+      "year": 2026
+     },
+     {
+      "_t": 889.515364056,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10807451648,
+      "seconds": 87.3,
+      "tree_peak_rss_bytes": 22089883648,
+      "year": 2027
+     },
+     {
+      "_t": 951.147521708,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 14985445376,
+      "seconds": 143.6,
+      "tree_peak_rss_bytes": 27775213568,
+      "year": 2026
+     },
+     {
+      "_t": 976.85484202,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 14980595712,
+      "seconds": 139.9,
+      "tree_peak_rss_bytes": 27775213568,
+      "year": 2027
+     },
+     {
+      "_t": 1094.77802448,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 12488372224,
+      "seconds": 97.1,
+      "tree_peak_rss_bytes": 25543057408,
+      "year": 2026
+     },
+     {
+      "_t": 1116.724979473,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 14087446528,
+      "seconds": 96.0,
+      "tree_peak_rss_bytes": 25467576320,
+      "year": 2027
+     },
+     {
+      "_t": 1191.902314064,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10772561920,
+      "seconds": 49.2,
+      "tree_peak_rss_bytes": 24062943232,
+      "year": 2028
+     },
+     {
+      "_t": 1212.726982927,
+      "phase": "certified baseline",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10678534144,
+      "seconds": 49.7,
+      "tree_peak_rss_bytes": 21892276224,
+      "year": 2029
+     },
+     {
+      "_t": 1241.058927742,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10772512768,
+      "seconds": 79.6,
+      "tree_peak_rss_bytes": 21892227072,
+      "year": 2028
+     },
+     {
+      "_t": 1262.461592168,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10678534144,
+      "seconds": 79.5,
+      "tree_peak_rss_bytes": 21504446464,
+      "year": 2029
+     },
+     {
+      "_t": 1320.686562645,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10793672704,
+      "seconds": 79.7,
+      "tree_peak_rss_bytes": 21913337856,
+      "year": 2028
+     },
+     {
+      "_t": 1341.961051801,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10795282432,
+      "seconds": 78.2,
+      "tree_peak_rss_bytes": 21913337856,
+      "year": 2029
+     },
+     {
+      "_t": 1400.417873348,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10730336256,
+      "seconds": 77.9,
+      "tree_peak_rss_bytes": 21850034176,
+      "year": 2028
+     },
+     {
+      "_t": 1420.12845795,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10680610816,
+      "seconds": 78.0,
+      "tree_peak_rss_bytes": 21482033152,
+      "year": 2029
+     },
+     {
+      "_t": 1478.336995629,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 11246997504,
+      "seconds": 100.0,
+      "tree_peak_rss_bytes": 22382403584,
+      "year": 2028
+     },
+     {
+      "_t": 1498.109953661,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 11245744128,
+      "seconds": 99.6,
+      "tree_peak_rss_bytes": 22382403584,
+      "year": 2029
+     },
+     {
+      "_t": 1578.290245983,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10931134464,
+      "seconds": 80.6,
+      "tree_peak_rss_bytes": 22072832000,
+      "year": 2028
+     },
+     {
+      "_t": 1597.714382789,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "year_worker",
+      "process_peak_rss_bytes": 10934624256,
+      "seconds": 81.7,
+      "tree_peak_rss_bytes": 22077214720,
+      "year": 2029
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1,
+     "multiprocessing_helper": 1,
+     "year_worker": 2
+    },
+    "tree_peak_rss_bytes": 29306556416,
+    "wall_seconds": 1628.7
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 30,
+    "full_event_complete": true,
+    "full_event_pairs": 30,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "autumn_budget_2024",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-ab2024-w2",
+   "measured_at": "2026-10-30T15:13:06Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28226203648,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 6116298752
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6116298752,
+    "wall_seconds": 52.2
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 2,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2025] certified baseline extracted once in 51.6s",
+     "[2025] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2025] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2025] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
+     "[2025] ab2025__dividend_rates_plus_2pp: +0.000bn gain to Exchequer",
+     "[2025] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
+     "[2025] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2025] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
+     "[2025] ab2025__winter_fuel_payment_income_test_35000: -1.196bn gain to Exchequer",
+     "[2025] ab2025__uc_child_element_remove_two_child_limit: +0.000bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 45.6s",
+     "[2026] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2026] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2026] ab2025__property_income_separate_rates: +0.000bn gain to Exchequer",
+     "[2026] ab2025__dividend_rates_plus_2pp: +1.037bn gain to Exchequer",
+     "[2026] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.000bn gain to Exchequer",
+     "[2026] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2026] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
+     "[2026] ab2025__winter_fuel_payment_income_test_35000: -1.178bn gain to Exchequer",
+     "[2026] ab2025__uc_child_element_remove_two_child_limit: -2.242bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 56.0s",
+     "[2027] ab2025__personal_tax_thresholds_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2027] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.000bn gain to Exchequer",
+     "[2027] ab2025__property_income_separate_rates: +0.395bn gain to Exchequer",
+     "[2027] ab2025__dividend_rates_plus_2pp: +1.070bn gain to Exchequer",
+     "[2027] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.269bn gain to Exchequer",
+     "[2027] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2027] ab2025__high_value_council_tax_surcharge: +0.000bn gain to Exchequer",
+     "[2027] ab2025__winter_fuel_payment_income_test_35000: -1.158bn gain to Exchequer",
+     "[2027] ab2025__uc_child_element_remove_two_child_limit: -2.532bn gain to Exchequer",
+     "[pid 18 year 2028] certified baseline extracted once in 45.0s",
+     "[2028] ab2025__personal_tax_thresholds_freeze_to_2031: +3.677bn gain to Exchequer",
+     "[2028] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.238bn gain to Exchequer",
+     "[2028] ab2025__property_income_separate_rates: +0.409bn gain to Exchequer",
+     "[2028] ab2025__dividend_rates_plus_2pp: +1.104bn gain to Exchequer",
+     "[2028] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.285bn gain to Exchequer",
+     "[2028] ab2025__salary_sacrifice_pension_nics_cap_2000: +0.000bn gain to Exchequer",
+     "[2028] ab2025__high_value_council_tax_surcharge: +0.208bn gain to Exchequer",
+     "[2028] ab2025__winter_fuel_payment_income_test_35000: -1.143bn gain to Exchequer",
+     "[2028] ab2025__uc_child_element_remove_two_child_limit: -2.919bn gain to Exchequer",
+     "[pid 18 year 2029] certified baseline extracted once in 45.2s",
+     "[2029] ab2025__personal_tax_thresholds_freeze_to_2031: +7.598bn gain to Exchequer",
+     "[2029] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.501bn gain to Exchequer",
+     "[2029] ab2025__property_income_separate_rates: +0.425bn gain to Exchequer",
+     "[2029] ab2025__dividend_rates_plus_2pp: +1.137bn gain to Exchequer",
+     "[2029] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.302bn gain to Exchequer",
+     "[2029] ab2025__salary_sacrifice_pension_nics_cap_2000: +2.836bn gain to Exchequer",
+     "[2029] ab2025__high_value_council_tax_surcharge: +0.213bn gain to Exchequer",
+     "[2029] ab2025__winter_fuel_payment_income_test_35000: -1.139bn gain to Exchequer",
+     "[2029] ab2025__uc_child_element_remove_two_child_limit: -3.324bn gain to Exchequer",
+     "[pid 18 year 2030] certified baseline extracted once in 49.2s",
+     "[2030] ab2025__personal_tax_thresholds_freeze_to_2031: +11.788bn gain to Exchequer",
+     "[2030] ab2025__employer_nics_secondary_threshold_freeze_to_2031: +0.770bn gain to Exchequer",
+     "[2030] ab2025__property_income_separate_rates: +0.440bn gain to Exchequer",
+     "[2030] ab2025__dividend_rates_plus_2pp: +1.172bn gain to Exchequer",
+     "[2030] ab2025__savings_rates_plus_2pp_and_starter_limit_held: +0.321bn gain to Exchequer",
+     "[2030] ab2025__salary_sacrifice_pension_nics_cap_2000: +2.940bn gain to Exchequer",
+     "[2030] ab2025__high_value_council_tax_surcharge: +0.218bn gain to Exchequer",
+     "[2030] ab2025__winter_fuel_payment_income_test_35000: -1.137bn gain to Exchequer",
+     "[2030] ab2025__uc_child_element_remove_two_child_limit: -3.563bn gain to Exchequer"
+    ],
+    "min_available_bytes": 20735205376,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 13616480256
+    },
+    "phases": [
+     {
+      "_t": 57.280668817,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 345526272,
+      "seconds": 12.1,
+      "tree_peak_rss_bytes": 345526272,
+      "year": null
+     },
+     {
+      "_t": 69.355139955,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 385171456,
+      "seconds": 1.7,
+      "tree_peak_rss_bytes": 385171456,
+      "year": null
+     },
+     {
+      "_t": 71.018384073,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 7650529280,
+      "seconds": 51.6,
+      "tree_peak_rss_bytes": 7650529280,
+      "year": 2025
+     },
+     {
+      "_t": 122.575893711,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11166801920,
+      "seconds": 77.7,
+      "tree_peak_rss_bytes": 11166801920,
+      "year": 2025
+     },
+     {
+      "_t": 200.229243454,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10664566784,
+      "seconds": 67.3,
+      "tree_peak_rss_bytes": 10664566784,
+      "year": 2025
+     },
+     {
+      "_t": 267.537490144,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10543964160,
+      "seconds": 65.4,
+      "tree_peak_rss_bytes": 10543964160,
+      "year": 2025
+     },
+     {
+      "_t": 332.89647293,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10777538560,
+      "seconds": 71.5,
+      "tree_peak_rss_bytes": 10777538560,
+      "year": 2025
+     },
+     {
+      "_t": 404.436869814,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10703536128,
+      "seconds": 73.2,
+      "tree_peak_rss_bytes": 10703536128,
+      "year": 2025
+     },
+     {
+      "_t": 477.594099265,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10746179584,
+      "seconds": 70.1,
+      "tree_peak_rss_bytes": 10746179584,
+      "year": 2025
+     },
+     {
+      "_t": 547.707832433,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10677207040,
+      "seconds": 65.4,
+      "tree_peak_rss_bytes": 10677207040,
+      "year": 2025
+     },
+     {
+      "_t": 613.075464403,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12448874496,
+      "seconds": 78.7,
+      "tree_peak_rss_bytes": 12448874496,
+      "year": 2025
+     },
+     {
+      "_t": 691.778953619,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12431482880,
+      "seconds": 76.0,
+      "tree_peak_rss_bytes": 12431482880,
+      "year": 2025
+     },
+     {
+      "_t": 767.7947316,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12128505856,
+      "seconds": 45.6,
+      "tree_peak_rss_bytes": 12128505856,
+      "year": 2026
+     },
+     {
+      "_t": 813.425763054,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12294213632,
+      "seconds": 75.7,
+      "tree_peak_rss_bytes": 12294213632,
+      "year": 2026
+     },
+     {
+      "_t": 889.101998453,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12236345344,
+      "seconds": 67.6,
+      "tree_peak_rss_bytes": 12236345344,
+      "year": 2026
+     },
+     {
+      "_t": 956.716567291,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11321782272,
+      "seconds": 69.0,
+      "tree_peak_rss_bytes": 11321782272,
+      "year": 2026
+     },
+     {
+      "_t": 1025.765090493,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11501535232,
+      "seconds": 71.3,
+      "tree_peak_rss_bytes": 11501535232,
+      "year": 2026
+     },
+     {
+      "_t": 1097.039377497,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11845320704,
+      "seconds": 72.5,
+      "tree_peak_rss_bytes": 11845320704,
+      "year": 2026
+     },
+     {
+      "_t": 1169.54607372,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11549798400,
+      "seconds": 70.3,
+      "tree_peak_rss_bytes": 11549798400,
+      "year": 2026
+     },
+     {
+      "_t": 1239.858780082,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11732418560,
+      "seconds": 67.3,
+      "tree_peak_rss_bytes": 11732418560,
+      "year": 2026
+     },
+     {
+      "_t": 1307.141395198,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11738673152,
+      "seconds": 82.4,
+      "tree_peak_rss_bytes": 11738673152,
+      "year": 2026
+     },
+     {
+      "_t": 1389.535129289,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11851083776,
+      "seconds": 91.4,
+      "tree_peak_rss_bytes": 11851083776,
+      "year": 2026
+     },
+     {
+      "_t": 1480.939220338,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11378421760,
+      "seconds": 56.0,
+      "tree_peak_rss_bytes": 11378421760,
+      "year": 2027
+     },
+     {
+      "_t": 1536.961789742,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11859537920,
+      "seconds": 89.4,
+      "tree_peak_rss_bytes": 11859537920,
+      "year": 2027
+     },
+     {
+      "_t": 1626.321186527,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11628511232,
+      "seconds": 77.0,
+      "tree_peak_rss_bytes": 11628511232,
+      "year": 2027
+     },
+     {
+      "_t": 1703.36832119,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12190736384,
+      "seconds": 78.1,
+      "tree_peak_rss_bytes": 12190736384,
+      "year": 2027
+     },
+     {
+      "_t": 1781.518261101,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11888742400,
+      "seconds": 72.6,
+      "tree_peak_rss_bytes": 11888742400,
+      "year": 2027
+     },
+     {
+      "_t": 1854.074696132,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11900407808,
+      "seconds": 72.5,
+      "tree_peak_rss_bytes": 11900407808,
+      "year": 2027
+     },
+     {
+      "_t": 1926.599355475,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11541819392,
+      "seconds": 71.6,
+      "tree_peak_rss_bytes": 11541819392,
+      "year": 2027
+     },
+     {
+      "_t": 1998.235898549,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11488448512,
+      "seconds": 70.4,
+      "tree_peak_rss_bytes": 11488448512,
+      "year": 2027
+     },
+     {
+      "_t": 2068.601795406,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13104529408,
+      "seconds": 79.5,
+      "tree_peak_rss_bytes": 13104529408,
+      "year": 2027
+     },
+     {
+      "_t": 2148.129898533,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12951465984,
+      "seconds": 85.8,
+      "tree_peak_rss_bytes": 12951465984,
+      "year": 2027
+     },
+     {
+      "_t": 2233.934091288,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12849946624,
+      "seconds": 45.0,
+      "tree_peak_rss_bytes": 12849946624,
+      "year": 2028
+     },
+     {
+      "_t": 2278.925664805,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12868820992,
+      "seconds": 72.3,
+      "tree_peak_rss_bytes": 12868820992,
+      "year": 2028
+     },
+     {
+      "_t": 2351.245883929,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12915605504,
+      "seconds": 71.9,
+      "tree_peak_rss_bytes": 12915605504,
+      "year": 2028
+     },
+     {
+      "_t": 2423.160136505,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12915638272,
+      "seconds": 70.1,
+      "tree_peak_rss_bytes": 12915638272,
+      "year": 2028
+     },
+     {
+      "_t": 2493.260542074,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12920881152,
+      "seconds": 70.2,
+      "tree_peak_rss_bytes": 12920881152,
+      "year": 2028
+     },
+     {
+      "_t": 2563.508710881,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12924026880,
+      "seconds": 73.2,
+      "tree_peak_rss_bytes": 12924026880,
+      "year": 2028
+     },
+     {
+      "_t": 2636.710434801,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13000450048,
+      "seconds": 71.5,
+      "tree_peak_rss_bytes": 13000450048,
+      "year": 2028
+     },
+     {
+      "_t": 2708.245389621,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12912545792,
+      "seconds": 72.9,
+      "tree_peak_rss_bytes": 12912545792,
+      "year": 2028
+     },
+     {
+      "_t": 2781.110041672,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13052563456,
+      "seconds": 79.5,
+      "tree_peak_rss_bytes": 13052563456,
+      "year": 2028
+     },
+     {
+      "_t": 2860.637372634,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12942954496,
+      "seconds": 80.2,
+      "tree_peak_rss_bytes": 12942954496,
+      "year": 2028
+     },
+     {
+      "_t": 2940.870808818,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12942954496,
+      "seconds": 45.2,
+      "tree_peak_rss_bytes": 12942954496,
+      "year": 2029
+     },
+     {
+      "_t": 2986.067126764,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12954488832,
+      "seconds": 80.1,
+      "tree_peak_rss_bytes": 12954488832,
+      "year": 2029
+     },
+     {
+      "_t": 3066.178309347,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12964974592,
+      "seconds": 81.1,
+      "tree_peak_rss_bytes": 12964974592,
+      "year": 2029
+     },
+     {
+      "_t": 3147.243730357,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12973346816,
+      "seconds": 77.2,
+      "tree_peak_rss_bytes": 12973346816,
+      "year": 2029
+     },
+     {
+      "_t": 3224.405055307,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12981751808,
+      "seconds": 77.2,
+      "tree_peak_rss_bytes": 12981751808,
+      "year": 2029
+     },
+     {
+      "_t": 3301.594807749,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12989091840,
+      "seconds": 75.6,
+      "tree_peak_rss_bytes": 12989091840,
+      "year": 2029
+     },
+     {
+      "_t": 3377.168378761,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12997480448,
+      "seconds": 72.4,
+      "tree_peak_rss_bytes": 12997480448,
+      "year": 2029
+     },
+     {
+      "_t": 3449.563117465,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13003771904,
+      "seconds": 79.0,
+      "tree_peak_rss_bytes": 13003771904,
+      "year": 2029
+     },
+     {
+      "_t": 3528.543453834,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13013209088,
+      "seconds": 79.4,
+      "tree_peak_rss_bytes": 13013209088,
+      "year": 2029
+     },
+     {
+      "_t": 3607.971123164,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13565607936,
+      "seconds": 78.3,
+      "tree_peak_rss_bytes": 13565607936,
+      "year": 2029
+     },
+     {
+      "_t": 3686.246534041,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13378727936,
+      "seconds": 49.2,
+      "tree_peak_rss_bytes": 13378727936,
+      "year": 2030
+     },
+     {
+      "_t": 3735.464081988,
+      "phase": "ab2025__personal_tax_thresholds_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13413474304,
+      "seconds": 78.9,
+      "tree_peak_rss_bytes": 13413474304,
+      "year": 2030
+     },
+     {
+      "_t": 3814.335933238,
+      "phase": "ab2025__employer_nics_secondary_threshold_freeze_to_2031 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13029986304,
+      "seconds": 74.5,
+      "tree_peak_rss_bytes": 13029986304,
+      "year": 2030
+     },
+     {
+      "_t": 3888.806950507,
+      "phase": "ab2025__property_income_separate_rates baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13047812096,
+      "seconds": 74.1,
+      "tree_peak_rss_bytes": 13047812096,
+      "year": 2030
+     },
+     {
+      "_t": 3962.891769712,
+      "phase": "ab2025__dividend_rates_plus_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13056200704,
+      "seconds": 71.8,
+      "tree_peak_rss_bytes": 13056200704,
+      "year": 2030
+     },
+     {
+      "_t": 4034.67720291,
+      "phase": "ab2025__savings_rates_plus_2pp_and_starter_limit_held baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13063540736,
+      "seconds": 70.9,
+      "tree_peak_rss_bytes": 13063540736,
+      "year": 2030
+     },
+     {
+      "_t": 4105.562740782,
+      "phase": "ab2025__salary_sacrifice_pension_nics_cap_2000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13071929344,
+      "seconds": 70.4,
+      "tree_peak_rss_bytes": 13071929344,
+      "year": 2030
+     },
+     {
+      "_t": 4175.988228739,
+      "phase": "ab2025__high_value_council_tax_surcharge baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13078220800,
+      "seconds": 68.5,
+      "tree_peak_rss_bytes": 13078220800,
+      "year": 2030
+     },
+     {
+      "_t": 4244.507941738,
+      "phase": "ab2025__winter_fuel_payment_income_test_35000 baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13557317632,
+      "seconds": 77.6,
+      "tree_peak_rss_bytes": 13557317632,
+      "year": 2030
+     },
+     {
+      "_t": 4322.157594965,
+      "phase": "ab2025__uc_child_element_remove_two_child_limit baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 13616480256,
+      "seconds": 81.5,
+      "tree_peak_rss_bytes": 13616480256,
+      "year": 2030
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 13616480256,
+    "wall_seconds": 4353.7
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 54,
+    "full_event_complete": true,
+    "full_event_pairs": 54,
+    "years": [
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "autumn_budget_2025",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-ab2025-w1",
+   "measured_at": "2026-10-30T16:26:58Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28224233472,
+    "peak_rss_bytes_by_role": {
+     "child": 66170880,
+     "event_runner": 6116175872
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "child": 1,
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6116175872,
+    "wall_seconds": 49.2
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2024] certified baseline extracted once in 70.8s",
+     "[2024] autumn_budget_2024__private_school_vat_20pct: +0.000bn gain to Exchequer",
+     "[2024] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2024] autumn_budget_2024__employer_nics_package: +0.000bn gain to Exchequer",
+     "[2024] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +1.135bn gain to Exchequer",
+     "[2024] autumn_budget_2024__winter_fuel_means_test: +1.576bn gain to Exchequer",
+     "[pid 18 year 2025] certified baseline extracted once in 42.6s",
+     "[2025] autumn_budget_2024__private_school_vat_20pct: +1.415bn gain to Exchequer",
+     "[2025] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2025] autumn_budget_2024__employer_nics_package: +16.510bn gain to Exchequer",
+     "[2025] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.723bn gain to Exchequer",
+     "[2025] autumn_budget_2024__winter_fuel_means_test: +0.399bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 46.3s",
+     "[2026] autumn_budget_2024__private_school_vat_20pct: +1.453bn gain to Exchequer",
+     "[2026] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2026] autumn_budget_2024__employer_nics_package: +16.745bn gain to Exchequer",
+     "[2026] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.813bn gain to Exchequer",
+     "[2026] autumn_budget_2024__winter_fuel_means_test: +0.399bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 44.9s",
+     "[2027] autumn_budget_2024__private_school_vat_20pct: +1.487bn gain to Exchequer",
+     "[2027] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2027] autumn_budget_2024__employer_nics_package: +16.937bn gain to Exchequer",
+     "[2027] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +2.917bn gain to Exchequer",
+     "[2027] autumn_budget_2024__winter_fuel_means_test: +0.391bn gain to Exchequer",
+     "[pid 18 year 2028] certified baseline extracted once in 39.0s",
+     "[2028] autumn_budget_2024__private_school_vat_20pct: +1.523bn gain to Exchequer",
+     "[2028] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2028] autumn_budget_2024__employer_nics_package: +17.099bn gain to Exchequer",
+     "[2028] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +3.025bn gain to Exchequer",
+     "[2028] autumn_budget_2024__winter_fuel_means_test: +0.398bn gain to Exchequer",
+     "[pid 18 year 2029] certified baseline extracted once in 37.6s",
+     "[2029] autumn_budget_2024__private_school_vat_20pct: +1.561bn gain to Exchequer",
+     "[2029] autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp: +0.000bn gain to Exchequer",
+     "[2029] autumn_budget_2024__employer_nics_package: +17.546bn gain to Exchequer",
+     "[2029] autumn_budget_2024__capital_gains_main_rates_and_reliefs: +3.123bn gain to Exchequer",
+     "[2029] autumn_budget_2024__winter_fuel_means_test: +0.411bn gain to Exchequer"
+    ],
+    "min_available_bytes": 17672540160,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 16674988032
+    },
+    "phases": [
+     {
+      "_t": 51.186500777,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 341229568,
+      "seconds": 10.5,
+      "tree_peak_rss_bytes": 341229568,
+      "year": null
+     },
+     {
+      "_t": 61.714977216,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 407556096,
+      "seconds": 2.8,
+      "tree_peak_rss_bytes": 407556096,
+      "year": null
+     },
+     {
+      "_t": 64.562843396,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12269826048,
+      "seconds": 70.8,
+      "tree_peak_rss_bytes": 12269826048,
+      "year": 2024
+     },
+     {
+      "_t": 135.404916402,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10862874624,
+      "seconds": 60.2,
+      "tree_peak_rss_bytes": 10862874624,
+      "year": 2024
+     },
+     {
+      "_t": 195.571997957,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10153992192,
+      "seconds": 55.1,
+      "tree_peak_rss_bytes": 10153992192,
+      "year": 2024
+     },
+     {
+      "_t": 250.707692684,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10463481856,
+      "seconds": 55.6,
+      "tree_peak_rss_bytes": 10463481856,
+      "year": 2024
+     },
+     {
+      "_t": 306.357260003,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 14886998016,
+      "seconds": 92.5,
+      "tree_peak_rss_bytes": 14886998016,
+      "year": 2024
+     },
+     {
+      "_t": 398.882112138,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 16674988032,
+      "seconds": 85.5,
+      "tree_peak_rss_bytes": 16674988032,
+      "year": 2024
+     },
+     {
+      "_t": 484.390749698,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15215415296,
+      "seconds": 42.6,
+      "tree_peak_rss_bytes": 15215415296,
+      "year": 2025
+     },
+     {
+      "_t": 526.989457035,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15226933248,
+      "seconds": 58.2,
+      "tree_peak_rss_bytes": 15226933248,
+      "year": 2025
+     },
+     {
+      "_t": 585.163422117,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15227981824,
+      "seconds": 60.8,
+      "tree_peak_rss_bytes": 15227981824,
+      "year": 2025
+     },
+     {
+      "_t": 645.940940527,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15236370432,
+      "seconds": 60.7,
+      "tree_peak_rss_bytes": 15236370432,
+      "year": 2025
+     },
+     {
+      "_t": 706.672026511,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15250018304,
+      "seconds": 98.0,
+      "tree_peak_rss_bytes": 15250018304,
+      "year": 2025
+     },
+     {
+      "_t": 804.671155079,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15260504064,
+      "seconds": 73.5,
+      "tree_peak_rss_bytes": 15260504064,
+      "year": 2025
+     },
+     {
+      "_t": 878.218371093,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15244775424,
+      "seconds": 46.3,
+      "tree_peak_rss_bytes": 15244775424,
+      "year": 2026
+     },
+     {
+      "_t": 924.494109092,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15279362048,
+      "seconds": 63.6,
+      "tree_peak_rss_bytes": 15279362048,
+      "year": 2026
+     },
+     {
+      "_t": 988.144311449,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15279378432,
+      "seconds": 62.8,
+      "tree_peak_rss_bytes": 15279378432,
+      "year": 2026
+     },
+     {
+      "_t": 1050.935654849,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15296139264,
+      "seconds": 63.4,
+      "tree_peak_rss_bytes": 15296139264,
+      "year": 2026
+     },
+     {
+      "_t": 1114.286565184,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15304544256,
+      "seconds": 93.8,
+      "tree_peak_rss_bytes": 15304544256,
+      "year": 2026
+     },
+     {
+      "_t": 1208.083250293,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15315013632,
+      "seconds": 69.7,
+      "tree_peak_rss_bytes": 15315013632,
+      "year": 2026
+     },
+     {
+      "_t": 1277.763097212,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15305592832,
+      "seconds": 44.9,
+      "tree_peak_rss_bytes": 15305592832,
+      "year": 2027
+     },
+     {
+      "_t": 1322.661857874,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15327596544,
+      "seconds": 57.7,
+      "tree_peak_rss_bytes": 15327596544,
+      "year": 2027
+     },
+     {
+      "_t": 1380.316068934,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15338082304,
+      "seconds": 61.9,
+      "tree_peak_rss_bytes": 15338082304,
+      "year": 2027
+     },
+     {
+      "_t": 1442.231942278,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15346487296,
+      "seconds": 65.0,
+      "tree_peak_rss_bytes": 15346487296,
+      "year": 2027
+     },
+     {
+      "_t": 1507.263433228,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15361150976,
+      "seconds": 95.1,
+      "tree_peak_rss_bytes": 15361150976,
+      "year": 2027
+     },
+     {
+      "_t": 1602.317520974,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15369555968,
+      "seconds": 69.0,
+      "tree_peak_rss_bytes": 15369555968,
+      "year": 2027
+     },
+     {
+      "_t": 1671.290665349,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15368507392,
+      "seconds": 39.0,
+      "tree_peak_rss_bytes": 15368507392,
+      "year": 2028
+     },
+     {
+      "_t": 1710.275732572,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15386333184,
+      "seconds": 57.8,
+      "tree_peak_rss_bytes": 15386333184,
+      "year": 2028
+     },
+     {
+      "_t": 1768.043243459,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15388413952,
+      "seconds": 58.8,
+      "tree_peak_rss_bytes": 15388413952,
+      "year": 2028
+     },
+     {
+      "_t": 1826.815755889,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15409401856,
+      "seconds": 60.7,
+      "tree_peak_rss_bytes": 15409401856,
+      "year": 2028
+     },
+     {
+      "_t": 1887.489345537,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15407304704,
+      "seconds": 72.2,
+      "tree_peak_rss_bytes": 15407304704,
+      "year": 2028
+     },
+     {
+      "_t": 1959.736023926,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15434567680,
+      "seconds": 64.1,
+      "tree_peak_rss_bytes": 15434567680,
+      "year": 2028
+     },
+     {
+      "_t": 2023.865001356,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15431421952,
+      "seconds": 37.6,
+      "tree_peak_rss_bytes": 15431421952,
+      "year": 2029
+     },
+     {
+      "_t": 2061.484192504,
+      "phase": "autumn_budget_2024__private_school_vat_20pct reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15449231360,
+      "seconds": 59.4,
+      "tree_peak_rss_bytes": 15449231360,
+      "year": 2029
+     },
+     {
+      "_t": 2120.908779265,
+      "phase": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp reform delta",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15448199168,
+      "seconds": 57.5,
+      "tree_peak_rss_bytes": 15448199168,
+      "year": 2029
+     },
+     {
+      "_t": 2178.443972741,
+      "phase": "autumn_budget_2024__employer_nics_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15473364992,
+      "seconds": 57.9,
+      "tree_peak_rss_bytes": 15473364992,
+      "year": 2029
+     },
+     {
+      "_t": 2236.330656417,
+      "phase": "autumn_budget_2024__capital_gains_main_rates_and_reliefs baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15473364992,
+      "seconds": 74.0,
+      "tree_peak_rss_bytes": 15473364992,
+      "year": 2029
+     },
+     {
+      "_t": 2310.355783806,
+      "phase": "autumn_budget_2024__winter_fuel_means_test baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 15496433664,
+      "seconds": 62.7,
+      "tree_peak_rss_bytes": 15496433664,
+      "year": 2029
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 16674988032,
+    "wall_seconds": 2327.6
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 30,
+    "full_event_complete": true,
+    "full_event_pairs": 30,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "autumn_budget_2024",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-autumn_budget_2024-w1",
+   "measured_at": "2026-10-30T17:07:54Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28225150976,
+    "peak_rss_bytes_by_role": {
+     "child": 59969536,
+     "event_runner": 6116130816
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "child": 1,
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6116130816,
+    "wall_seconds": 47.7
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2024] certified baseline extracted once in 66.3s",
+     "[2024] autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p: -10.306bn gain to Exchequer",
+     "[2024] autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p: -0.326bn gain to Exchequer",
+     "[2024] autumn_statement_2023__class_2_self_employed_nics_abolition: -0.420bn gain to Exchequer",
+     "[2024] autumn_statement_2023__lha_reset_to_30th_percentile: -1.215bn gain to Exchequer",
+     "[pid 18 year 2025] certified baseline extracted once in 60.4s",
+     "[2025] autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p: -10.952bn gain to Exchequer",
+     "[2025] autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p: -0.329bn gain to Exchequer",
+     "[2025] autumn_statement_2023__class_2_self_employed_nics_abolition: -0.437bn gain to Exchequer",
+     "[2025] autumn_statement_2023__lha_reset_to_30th_percentile: -1.329bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 66.0s",
+     "[2026] autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p: -11.363bn gain to Exchequer",
+     "[2026] autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p: -0.344bn gain to Exchequer",
+     "[2026] autumn_statement_2023__class_2_self_employed_nics_abolition: -0.442bn gain to Exchequer",
+     "[2026] autumn_statement_2023__lha_reset_to_30th_percentile: -1.371bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 64.0s",
+     "[2027] autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p: -11.692bn gain to Exchequer",
+     "[2027] autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p: -0.364bn gain to Exchequer",
+     "[2027] autumn_statement_2023__class_2_self_employed_nics_abolition: -0.459bn gain to Exchequer",
+     "[2027] autumn_statement_2023__lha_reset_to_30th_percentile: -1.434bn gain to Exchequer",
+     "[pid 18 year 2028] certified baseline extracted once in 54.3s",
+     "[2028] autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p: -11.975bn gain to Exchequer",
+     "[2028] autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p: -0.386bn gain to Exchequer",
+     "[2028] autumn_statement_2023__class_2_self_employed_nics_abolition: -0.473bn gain to Exchequer",
+     "[2028] autumn_statement_2023__lha_reset_to_30th_percentile: -1.480bn gain to Exchequer"
+    ],
+    "min_available_bytes": 21513236480,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 12826005504
+    },
+    "phases": [
+     {
+      "_t": 59.466469393,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 337145856,
+      "seconds": 12.2,
+      "tree_peak_rss_bytes": 337145856,
+      "year": null
+     },
+     {
+      "_t": 71.656373881,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 376778752,
+      "seconds": 1.8,
+      "tree_peak_rss_bytes": 376778752,
+      "year": null
+     },
+     {
+      "_t": 73.472525273,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 8049979392,
+      "seconds": 66.3,
+      "tree_peak_rss_bytes": 8049979392,
+      "year": 2024
+     },
+     {
+      "_t": 139.750069014,
+      "phase": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10968137728,
+      "seconds": 93.5,
+      "tree_peak_rss_bytes": 10968137728,
+      "year": 2024
+     },
+     {
+      "_t": 233.217587884,
+      "phase": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11682344960,
+      "seconds": 84.7,
+      "tree_peak_rss_bytes": 11682344960,
+      "year": 2024
+     },
+     {
+      "_t": 317.935832412,
+      "phase": "autumn_statement_2023__class_2_self_employed_nics_abolition baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11804610560,
+      "seconds": 88.4,
+      "tree_peak_rss_bytes": 11804610560,
+      "year": 2024
+     },
+     {
+      "_t": 406.322583152,
+      "phase": "autumn_statement_2023__lha_reset_to_30th_percentile baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11860422656,
+      "seconds": 97.8,
+      "tree_peak_rss_bytes": 11860422656,
+      "year": 2024
+     },
+     {
+      "_t": 504.12310606,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11624087552,
+      "seconds": 60.4,
+      "tree_peak_rss_bytes": 11624087552,
+      "year": 2025
+     },
+     {
+      "_t": 564.538686281,
+      "phase": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11528540160,
+      "seconds": 89.1,
+      "tree_peak_rss_bytes": 11528540160,
+      "year": 2025
+     },
+     {
+      "_t": 653.670187407,
+      "phase": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11633676288,
+      "seconds": 91.4,
+      "tree_peak_rss_bytes": 11633676288,
+      "year": 2025
+     },
+     {
+      "_t": 745.069911297,
+      "phase": "autumn_statement_2023__class_2_self_employed_nics_abolition baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11656232960,
+      "seconds": 88.1,
+      "tree_peak_rss_bytes": 11656232960,
+      "year": 2025
+     },
+     {
+      "_t": 833.137662739,
+      "phase": "autumn_statement_2023__lha_reset_to_30th_percentile baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11681107968,
+      "seconds": 96.5,
+      "tree_peak_rss_bytes": 11681107968,
+      "year": 2025
+     },
+     {
+      "_t": 929.615907562,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10809876480,
+      "seconds": 66.0,
+      "tree_peak_rss_bytes": 10809876480,
+      "year": 2026
+     },
+     {
+      "_t": 995.664569479,
+      "phase": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11566952448,
+      "seconds": 93.5,
+      "tree_peak_rss_bytes": 11566952448,
+      "year": 2026
+     },
+     {
+      "_t": 1089.213928356,
+      "phase": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11599159296,
+      "seconds": 94.1,
+      "tree_peak_rss_bytes": 11599159296,
+      "year": 2026
+     },
+     {
+      "_t": 1183.314385651,
+      "phase": "autumn_statement_2023__class_2_self_employed_nics_abolition baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11013726208,
+      "seconds": 94.1,
+      "tree_peak_rss_bytes": 11013726208,
+      "year": 2026
+     },
+     {
+      "_t": 1277.378388619,
+      "phase": "autumn_statement_2023__lha_reset_to_30th_percentile baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11677949952,
+      "seconds": 100.6,
+      "tree_peak_rss_bytes": 11677949952,
+      "year": 2026
+     },
+     {
+      "_t": 1377.943517916,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10752241664,
+      "seconds": 64.0,
+      "tree_peak_rss_bytes": 10752241664,
+      "year": 2027
+     },
+     {
+      "_t": 1441.921960313,
+      "phase": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12603301888,
+      "seconds": 95.9,
+      "tree_peak_rss_bytes": 12603301888,
+      "year": 2027
+     },
+     {
+      "_t": 1537.828426103,
+      "phase": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12668731392,
+      "seconds": 93.9,
+      "tree_peak_rss_bytes": 12668731392,
+      "year": 2027
+     },
+     {
+      "_t": 1631.731309656,
+      "phase": "autumn_statement_2023__class_2_self_employed_nics_abolition baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12697387008,
+      "seconds": 95.4,
+      "tree_peak_rss_bytes": 12697387008,
+      "year": 2027
+     },
+     {
+      "_t": 1727.116148577,
+      "phase": "autumn_statement_2023__lha_reset_to_30th_percentile baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12821663744,
+      "seconds": 100.5,
+      "tree_peak_rss_bytes": 12821663744,
+      "year": 2027
+     },
+     {
+      "_t": 1827.576097779,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12778803200,
+      "seconds": 54.3,
+      "tree_peak_rss_bytes": 12778803200,
+      "year": 2028
+     },
+     {
+      "_t": 1881.886003941,
+      "phase": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12796628992,
+      "seconds": 87.7,
+      "tree_peak_rss_bytes": 12796628992,
+      "year": 2028
+     },
+     {
+      "_t": 1969.603797618,
+      "phase": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12809211904,
+      "seconds": 92.3,
+      "tree_peak_rss_bytes": 12809211904,
+      "year": 2028
+     },
+     {
+      "_t": 2061.869960759,
+      "phase": "autumn_statement_2023__class_2_self_employed_nics_abolition baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12818649088,
+      "seconds": 88.9,
+      "tree_peak_rss_bytes": 12818649088,
+      "year": 2028
+     },
+     {
+      "_t": 2150.80749797,
+      "phase": "autumn_statement_2023__lha_reset_to_30th_percentile baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12826005504,
+      "seconds": 93.4,
+      "tree_peak_rss_bytes": 12826005504,
+      "year": 2028
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 12826005504,
+    "wall_seconds": 2189.3
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 20,
+    "full_event_complete": false,
+    "full_event_pairs": 24,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "autumn_statement_2023",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-autumn_statement_2023-w1",
+   "measured_at": "2026-10-30T17:05:41Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28224286720,
+    "peak_rss_bytes_by_role": {
+     "child": 66334720,
+     "event_runner": 6117859328
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "child": 2,
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6117859328,
+    "wall_seconds": 51.5
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2024] certified baseline extracted once in 59.7s",
+     "[2024] spring_budget_2023__pension_annual_allowance_package: -2.208bn gain to Exchequer",
+     "[2024] spring_budget_2023__uc_childcare_cap_increase: -0.052bn gain to Exchequer",
+     "[pid 18 year 2025] certified baseline extracted once in 47.2s",
+     "[2025] spring_budget_2023__pension_annual_allowance_package: -2.526bn gain to Exchequer",
+     "[2025] spring_budget_2023__uc_childcare_cap_increase: -0.054bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 48.7s",
+     "[2026] spring_budget_2023__pension_annual_allowance_package: -2.787bn gain to Exchequer",
+     "[2026] spring_budget_2023__uc_childcare_cap_increase: -0.055bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 47.0s",
+     "[2027] spring_budget_2023__pension_annual_allowance_package: -3.014bn gain to Exchequer",
+     "[2027] spring_budget_2023__uc_childcare_cap_increase: -0.062bn gain to Exchequer"
+    ],
+    "min_available_bytes": 22581542912,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 11755995136
+    },
+    "phases": [
+     {
+      "_t": 59.483142728,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 338378752,
+      "seconds": 12.4,
+      "tree_peak_rss_bytes": 338378752,
+      "year": null
+     },
+     {
+      "_t": 71.884644622,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 378023936,
+      "seconds": 1.8,
+      "tree_peak_rss_bytes": 378023936,
+      "year": null
+     },
+     {
+      "_t": 73.70607325,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 7989043200,
+      "seconds": 59.7,
+      "tree_peak_rss_bytes": 7989043200,
+      "year": 2024
+     },
+     {
+      "_t": 133.444863004,
+      "phase": "spring_budget_2023__pension_annual_allowance_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10600026112,
+      "seconds": 75.3,
+      "tree_peak_rss_bytes": 10600026112,
+      "year": 2024
+     },
+     {
+      "_t": 208.773095463,
+      "phase": "spring_budget_2023__uc_childcare_cap_increase baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11755995136,
+      "seconds": 84.4,
+      "tree_peak_rss_bytes": 11755995136,
+      "year": 2024
+     },
+     {
+      "_t": 293.163238535,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 9075240960,
+      "seconds": 47.2,
+      "tree_peak_rss_bytes": 9075240960,
+      "year": 2025
+     },
+     {
+      "_t": 340.326425163,
+      "phase": "spring_budget_2023__pension_annual_allowance_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10853306368,
+      "seconds": 71.6,
+      "tree_peak_rss_bytes": 10853306368,
+      "year": 2025
+     },
+     {
+      "_t": 411.87739559,
+      "phase": "spring_budget_2023__uc_childcare_cap_increase baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11400921088,
+      "seconds": 80.6,
+      "tree_peak_rss_bytes": 11400921088,
+      "year": 2025
+     },
+     {
+      "_t": 492.441307951,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 9554198528,
+      "seconds": 48.7,
+      "tree_peak_rss_bytes": 9554198528,
+      "year": 2026
+     },
+     {
+      "_t": 541.147180237,
+      "phase": "spring_budget_2023__pension_annual_allowance_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10832420864,
+      "seconds": 68.1,
+      "tree_peak_rss_bytes": 10832420864,
+      "year": 2026
+     },
+     {
+      "_t": 609.222322199,
+      "phase": "spring_budget_2023__uc_childcare_cap_increase baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11445424128,
+      "seconds": 75.6,
+      "tree_peak_rss_bytes": 11445424128,
+      "year": 2026
+     },
+     {
+      "_t": 684.784682285,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10206392320,
+      "seconds": 47.0,
+      "tree_peak_rss_bytes": 10206392320,
+      "year": 2027
+     },
+     {
+      "_t": 731.83152544,
+      "phase": "spring_budget_2023__pension_annual_allowance_package baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10332934144,
+      "seconds": 70.9,
+      "tree_peak_rss_bytes": 10332934144,
+      "year": 2027
+     },
+     {
+      "_t": 802.744296984,
+      "phase": "spring_budget_2023__uc_childcare_cap_increase baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11507220480,
+      "seconds": 82.5,
+      "tree_peak_rss_bytes": 11507220480,
+      "year": 2027
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 11755995136,
+    "wall_seconds": 829.4
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 8,
+    "full_event_complete": false,
+    "full_event_pairs": 10,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "spring_budget_2023",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-spring_budget_2023-w1",
+   "measured_at": "2026-10-30T18:03:35Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28225671168,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 6118596608
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6118596608,
+    "wall_seconds": 55.0
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2024] certified baseline extracted once in 43.0s",
+     "[2024] spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp: -10.306bn gain to Exchequer",
+     "[2024] spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp: -0.652bn gain to Exchequer",
+     "[2024] spring_budget_2024__hicbc_threshold_and_taper: -0.952bn gain to Exchequer",
+     "[pid 18 year 2025] certified baseline extracted once in 36.0s",
+     "[2025] spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp: -10.952bn gain to Exchequer",
+     "[2025] spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp: -0.660bn gain to Exchequer",
+     "[2025] spring_budget_2024__hicbc_threshold_and_taper: -1.116bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 37.2s",
+     "[2026] spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp: -11.363bn gain to Exchequer",
+     "[2026] spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp: -0.689bn gain to Exchequer",
+     "[2026] spring_budget_2024__hicbc_threshold_and_taper: -1.297bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 37.3s",
+     "[2027] spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp: -11.692bn gain to Exchequer",
+     "[2027] spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp: -0.730bn gain to Exchequer",
+     "[2027] spring_budget_2024__hicbc_threshold_and_taper: -1.460bn gain to Exchequer",
+     "[pid 18 year 2028] certified baseline extracted once in 35.6s",
+     "[2028] spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp: -11.975bn gain to Exchequer",
+     "[2028] spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp: -0.774bn gain to Exchequer",
+     "[2028] spring_budget_2024__hicbc_threshold_and_taper: -1.602bn gain to Exchequer"
+    ],
+    "min_available_bytes": 22154137600,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 12191449088
+    },
+    "phases": [
+     {
+      "_t": 40.974581636,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 339574784,
+      "seconds": 8.9,
+      "tree_peak_rss_bytes": 339574784,
+      "year": null
+     },
+     {
+      "_t": 49.877984758,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 379228160,
+      "seconds": 1.3,
+      "tree_peak_rss_bytes": 379228160,
+      "year": null
+     },
+     {
+      "_t": 51.198215036,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 7891439616,
+      "seconds": 43.0,
+      "tree_peak_rss_bytes": 7891439616,
+      "year": 2024
+     },
+     {
+      "_t": 94.15085671,
+      "phase": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10969264128,
+      "seconds": 65.3,
+      "tree_peak_rss_bytes": 10969264128,
+      "year": 2024
+     },
+     {
+      "_t": 159.402755747,
+      "phase": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11691921408,
+      "seconds": 64.1,
+      "tree_peak_rss_bytes": 11691921408,
+      "year": 2024
+     },
+     {
+      "_t": 223.474870607,
+      "phase": "spring_budget_2024__hicbc_threshold_and_taper baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10379841536,
+      "seconds": 54.7,
+      "tree_peak_rss_bytes": 10379841536,
+      "year": 2024
+     },
+     {
+      "_t": 278.199857887,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 9938841600,
+      "seconds": 36.0,
+      "tree_peak_rss_bytes": 9938841600,
+      "year": 2025
+     },
+     {
+      "_t": 314.160345419,
+      "phase": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11409584128,
+      "seconds": 61.7,
+      "tree_peak_rss_bytes": 11409584128,
+      "year": 2025
+     },
+     {
+      "_t": 375.900827746,
+      "phase": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11223199744,
+      "seconds": 60.9,
+      "tree_peak_rss_bytes": 11223199744,
+      "year": 2025
+     },
+     {
+      "_t": 436.821902073,
+      "phase": "spring_budget_2024__hicbc_threshold_and_taper baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10544951296,
+      "seconds": 54.5,
+      "tree_peak_rss_bytes": 10544951296,
+      "year": 2025
+     },
+     {
+      "_t": 491.278686552,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10529239040,
+      "seconds": 37.2,
+      "tree_peak_rss_bytes": 10529239040,
+      "year": 2026
+     },
+     {
+      "_t": 528.508310098,
+      "phase": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12191449088,
+      "seconds": 61.5,
+      "tree_peak_rss_bytes": 12191449088,
+      "year": 2026
+     },
+     {
+      "_t": 590.000798056,
+      "phase": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12119965696,
+      "seconds": 59.5,
+      "tree_peak_rss_bytes": 12119965696,
+      "year": 2026
+     },
+     {
+      "_t": 649.481941229,
+      "phase": "spring_budget_2024__hicbc_threshold_and_taper baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12086362112,
+      "seconds": 56.1,
+      "tree_peak_rss_bytes": 12086362112,
+      "year": 2026
+     },
+     {
+      "_t": 705.599364397,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12021051392,
+      "seconds": 37.3,
+      "tree_peak_rss_bytes": 12021051392,
+      "year": 2027
+     },
+     {
+      "_t": 742.871463867,
+      "phase": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12058800128,
+      "seconds": 59.5,
+      "tree_peak_rss_bytes": 12058800128,
+      "year": 2027
+     },
+     {
+      "_t": 802.405829559,
+      "phase": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12066140160,
+      "seconds": 61.3,
+      "tree_peak_rss_bytes": 12066140160,
+      "year": 2027
+     },
+     {
+      "_t": 863.688912199,
+      "phase": "spring_budget_2024__hicbc_threshold_and_taper baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12074512384,
+      "seconds": 57.3,
+      "tree_peak_rss_bytes": 12074512384,
+      "year": 2027
+     },
+     {
+      "_t": 920.959891044,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12058750976,
+      "seconds": 35.6,
+      "tree_peak_rss_bytes": 12058750976,
+      "year": 2028
+     },
+     {
+      "_t": 956.579084335,
+      "phase": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12078723072,
+      "seconds": 58.7,
+      "tree_peak_rss_bytes": 12078723072,
+      "year": 2028
+     },
+     {
+      "_t": 1015.313294891,
+      "phase": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12087111680,
+      "seconds": 59.6,
+      "tree_peak_rss_bytes": 12087111680,
+      "year": 2028
+     },
+     {
+      "_t": 1074.900988122,
+      "phase": "spring_budget_2024__hicbc_threshold_and_taper baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12097597440,
+      "seconds": 56.0,
+      "tree_peak_rss_bytes": 12097597440,
+      "year": 2028
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 12191449088,
+    "wall_seconds": 1093.5
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 15,
+    "full_event_complete": false,
+    "full_event_pairs": 18,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "spring_budget_2024",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-spring_budget_2024-w1",
+   "measured_at": "2026-10-30T17:25:00Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28225900544,
+    "peak_rss_bytes_by_role": {
+     "child": 66441216,
+     "event_runner": 6114177024
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "child": 2,
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6114177024,
+    "wall_seconds": 37.2
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
+   "years": []
+  },
+  {
+   "candidate": {
+    "policyengine": {
+     "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+     "source": {
+      "pypi": {
+       "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+      }
+     },
+     "version": "6.11.1"
+    },
+    "policyengine_core": {
+     "version": "3.33.3",
+     "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+    },
+    "policyengine_uk": {
+     "version": "2.151.0",
+     "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+    }
+   },
+   "compute": {
+    "exit_code": 0,
+    "log": [
+     "[pid 18 year 2024] certified baseline extracted once in 60.4s",
+     "[2024] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +0.000bn gain to Exchequer",
+     "[2024] spring_statement_2025__uc_standard_allowance_above_inflation: +0.000bn gain to Exchequer",
+     "[pid 18 year 2025] certified baseline extracted once in 51.7s",
+     "[2025] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +0.000bn gain to Exchequer",
+     "[2025] spring_statement_2025__uc_standard_allowance_above_inflation: +0.000bn gain to Exchequer",
+     "[pid 18 year 2026] certified baseline extracted once in 49.2s",
+     "[2026] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +0.755bn gain to Exchequer",
+     "[2026] spring_statement_2025__uc_standard_allowance_above_inflation: -0.736bn gain to Exchequer",
+     "[pid 18 year 2027] certified baseline extracted once in 46.7s",
+     "[2027] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +0.872bn gain to Exchequer",
+     "[2027] spring_statement_2025__uc_standard_allowance_above_inflation: -1.143bn gain to Exchequer",
+     "[pid 18 year 2028] certified baseline extracted once in 49.0s",
+     "[2028] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +1.187bn gain to Exchequer",
+     "[2028] spring_statement_2025__uc_standard_allowance_above_inflation: -1.425bn gain to Exchequer",
+     "[pid 18 year 2029] certified baseline extracted once in 49.8s",
+     "[2029] spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut: +1.603bn gain to Exchequer",
+     "[2029] spring_statement_2025__uc_standard_allowance_above_inflation: -1.673bn gain to Exchequer"
+    ],
+    "min_available_bytes": 22136938496,
+    "peak_rss_bytes_by_role": {
+     "event_runner": 12197908480
+    },
+    "phases": [
+     {
+      "_t": 52.536374081,
+      "phase": "offline bundle preflight",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 331255808,
+      "seconds": 12.2,
+      "tree_peak_rss_bytes": 331255808,
+      "year": null
+     },
+     {
+      "_t": 64.703550833,
+      "phase": "processed-world reversal guard",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 369856512,
+      "seconds": 1.9,
+      "tree_peak_rss_bytes": 369856512,
+      "year": null
+     },
+     {
+      "_t": 66.61429085,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 8049184768,
+      "seconds": 60.4,
+      "tree_peak_rss_bytes": 8049184768,
+      "year": 2024
+     },
+     {
+      "_t": 127.051602033,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11624546304,
+      "seconds": 100.6,
+      "tree_peak_rss_bytes": 11624546304,
+      "year": 2024
+     },
+     {
+      "_t": 227.604192996,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11720830976,
+      "seconds": 94.9,
+      "tree_peak_rss_bytes": 11720830976,
+      "year": 2024
+     },
+     {
+      "_t": 322.467465545,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 9583796224,
+      "seconds": 51.7,
+      "tree_peak_rss_bytes": 9583796224,
+      "year": 2025
+     },
+     {
+      "_t": 374.19191899,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11387056128,
+      "seconds": 79.1,
+      "tree_peak_rss_bytes": 11387056128,
+      "year": 2025
+     },
+     {
+      "_t": 453.272808285,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11350315008,
+      "seconds": 76.9,
+      "tree_peak_rss_bytes": 11350315008,
+      "year": 2025
+     },
+     {
+      "_t": 530.172096323,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11262091264,
+      "seconds": 49.2,
+      "tree_peak_rss_bytes": 11262091264,
+      "year": 2026
+     },
+     {
+      "_t": 579.357647242,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11398234112,
+      "seconds": 78.3,
+      "tree_peak_rss_bytes": 11398234112,
+      "year": 2026
+     },
+     {
+      "_t": 657.61527036,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 12197908480,
+      "seconds": 80.6,
+      "tree_peak_rss_bytes": 12197908480,
+      "year": 2026
+     },
+     {
+      "_t": 738.203425111,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11976257536,
+      "seconds": 46.7,
+      "tree_peak_rss_bytes": 11976257536,
+      "year": 2027
+     },
+     {
+      "_t": 784.921973911,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11962576896,
+      "seconds": 72.1,
+      "tree_peak_rss_bytes": 11962576896,
+      "year": 2027
+     },
+     {
+      "_t": 856.991950118,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11476324352,
+      "seconds": 85.3,
+      "tree_peak_rss_bytes": 11476324352,
+      "year": 2027
+     },
+     {
+      "_t": 942.256995728,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11356987392,
+      "seconds": 49.0,
+      "tree_peak_rss_bytes": 11356987392,
+      "year": 2028
+     },
+     {
+      "_t": 991.225382608,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 11351695360,
+      "seconds": 80.2,
+      "tree_peak_rss_bytes": 11351695360,
+      "year": 2028
+     },
+     {
+      "_t": 1071.445267399,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10540982272,
+      "seconds": 85.1,
+      "tree_peak_rss_bytes": 10540982272,
+      "year": 2028
+     },
+     {
+      "_t": 1156.548772421,
+      "phase": "certified baseline",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10138828800,
+      "seconds": 49.8,
+      "tree_peak_rss_bytes": 10138828800,
+      "year": 2029
+     },
+     {
+      "_t": 1206.351940704,
+      "phase": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10381058048,
+      "seconds": 86.3,
+      "tree_peak_rss_bytes": 10381058048,
+      "year": 2029
+     },
+     {
+      "_t": 1292.633617099,
+      "phase": "spring_statement_2025__uc_standard_allowance_above_inflation baseline modifier",
+      "process": "event_runner",
+      "process_peak_rss_bytes": 10518945792,
+      "seconds": 87.4,
+      "tree_peak_rss_bytes": 10518945792,
+      "year": 2029
+     }
+    ],
+    "process_count_by_role": {
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 12197908480,
+    "wall_seconds": 1331.1
+   },
+   "container": {
+    "cpu": 4,
+    "cpu_count": 4,
+    "mem_total_bytes": 34359738368,
+    "memory_limit_mib": 32768,
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "python": "3.12.10"
+   },
+   "corpus_version": "uk-fiscal-event-replay/2",
+   "coverage": {
+    "artifact_pairs": 12,
+    "full_event_complete": true,
+    "full_event_pairs": 12,
+    "years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ]
+   },
+   "dataset": {
+    "build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "dataset": "microcosm_uk_2024_25",
+    "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+    "size_bytes": 342348841
+   },
+   "event": "spring_statement_2025",
+   "install": {
+    "certified_variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "environment_sha256": "313e69ebf26c4b12cc5191510e846a384507450b15bc3f1e27d79549f5aa184b",
+    "resolution": "certified_constraints"
+   },
+   "label": "pe6111-spring_statement_2025-w1",
+   "measured_at": "2026-10-30T17:48:26Z",
+   "measures": [],
+   "packages": {
+    "policyengine": "6.11.1",
+    "policyengine-core": "3.33.3",
+    "policyengine-uk": "2.151.0"
+   },
+   "phase_peaks": "process_and_tree",
+   "probe": {
+    "exit_code": 0,
+    "min_available_bytes": 28223430656,
+    "peak_rss_bytes_by_role": {
+     "child": 67088384,
+     "event_runner": 6115418112
+    },
+    "phases": [],
+    "process_count_by_role": {
+     "child": 2,
+     "event_runner": 1
+    },
+    "tree_peak_rss_bytes": 6115418112,
+    "wall_seconds": 48.2
+   },
+   "request_id": "25ae5bf35fa2b204650e820d934eced75d963557f2680c3dad4c94f979841565",
+   "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+   "schema_version": 1,
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "workers": 1,
+   "workload_sha256": "c4f4ff4b532f569f60d08bad71d63310a50c6203c2727748c8ac9d4dafdd9486",
    "years": []
   }
  ],
