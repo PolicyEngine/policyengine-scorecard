@@ -359,7 +359,8 @@ PARAMETER = re.compile(
 # [ runs one of two shapes: -n or -z and a word, or a word, = or != and a
 # word. -v evaluates a subscript, and the operator can come from a value or
 # an array ([ "$op" "$x" ]), so it is a literal here and each operand is one
-# word: no $@, $* or [@], and no unquoted expansion (Commands.splits).
+# word: no $@, $* or [@]. An unquoted expansion is refused for every command
+# (Commands.splits).
 SEVERAL = re.compile(r"\$[@*]|\$\{[@*]|\[[@*]\]")
 
 
@@ -597,7 +598,7 @@ class Commands:
                 _, i = self.word(i, function)
 
 
-def plain_test(args, splits):
+def plain_test(args):
     """``args`` of ``[`` in one of the shapes it may run: see SEVERAL."""
     match args:
         case ["-n" | "-z", word, "]"]:
@@ -606,7 +607,7 @@ def plain_test(args, splits):
             operands = [left, right]
         case _:
             return False
-    return not any(word in splits or SEVERAL.search(word) for word in operands)
+    return not any(SEVERAL.search(word) for word in operands)
 
 
 def disallowed(commands):
@@ -651,7 +652,7 @@ def disallowed(commands):
                 found.append(f"{shown} splits {arg} into more words")
         if name not in PROPOSE_RUNS:
             found.append(f"{shown} runs {name}")
-        elif name == "[" and not plain_test(args, commands.splits):
+        elif name == "[" and not plain_test(args):
             found.append(f"{shown} is not a test it may run")
         elif name == "local":
             for arg in args:
@@ -847,6 +848,14 @@ def definitions(text):
     return [keyword or plain for keyword, plain in DEFINITION.findall(unquoted(text))]
 
 
+def runs_text(script):
+    """Each eval, source or . in ``script``, comment lines aside."""
+    code = "\n".join(
+        line for line in script.splitlines() if not line.lstrip().startswith("#")
+    )
+    return RUNS_TEXT.findall(unquoted(code))
+
+
 # pushgit, defined with another program in git's place.
 NOT_PUSHGIT = PUSHGIT.replace("git -C", "b''ash -C")
 
@@ -985,12 +994,10 @@ def test_propose_runs_only_the_commands_it_lists():
     # (reviews of cf8066bc, 2, and f936b49c, 2). field, which plan runs, is
     # the isolated runner's Python on a fixed program that imports json and
     # sys alone.
-    code = "\n".join(
-        line for line in script.splitlines() if not line.lstrip().startswith("#")
-    )
-    assert not RUNS_TEXT.findall(unquoted(code))
+    assert not runs_text(script)
     for evaluates in ("e''val x", "'source' x", "\\. x", "e\\\nval x", ': ; . "$x"'):
-        assert RUNS_TEXT.search(unquoted(evaluates)), evaluates
+        assert runs_text(evaluates), evaluates
+    assert not runs_text('# eval "$x"\n: x')
     for elsewhere in (
         ": ; cat() { :; }",
         "true && cat() { :; }",
