@@ -1,0 +1,292 @@
+{
+ "behavioural_response": "none (static)",
+ "computed_at": "2026-10-26T17:53:11.676790+00:00",
+ "dataset_bytes": 321798995,
+ "dataset_file": "microcosm_uk_2024_25.h5",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "fye2011_line_construction": "absolute_poverty_threshold_<basis> 2020-01-01 entry (the FYE 2011 line, BHC 305.7 / AHC 261.92 a week) x CPI(year)/CPI(2020) on gov.economic_assumptions.indices.obr.consumer_price_index, x 52",
+ "installed": {
+  "microdf-python": "1.3.10",
+  "policyengine": null,
+  "policyengine-core": "3.33.3",
+  "policyengine-uk": "2.148.2"
+ },
+ "kind": "uk_two_child_limit_poverty_diagnostic",
+ "label": "bisect_microcosm_uk2.148.2_core3.33.3",
+ "no_limit_sentinel": 1e+100,
+ "peak_rss_gib": 9.583972930908203,
+ "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+ "python": "3.12.13",
+ "route": "diagnostic: bare policyengine_uk Microsimulation on an explicit dataset file (not attached)",
+ "uc_limit_parameter": "gov.dwp.universal_credit.elements.child.limit.child_count",
+ "worlds": {
+  "current_law": {
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "reform_dict": null,
+   "years": {
+    "2029": {
+     "below": {
+      "ahc": {
+       "absolute_fye2011": {
+        "children": 2314043.3513525426,
+        "pensioners": 705890.7218266167,
+        "people": 8668674.93897751,
+        "under_18": 2187886.3630330414,
+        "working_age_adults": 5648740.86579835
+       },
+       "absolute_served": {
+        "children": 3300332.568176899,
+        "pensioners": 1229834.5165313333,
+        "people": 11617772.145000901,
+        "under_18": 3156397.035194449,
+        "working_age_adults": 7087605.060292669
+       },
+       "relative_fixed_at_with_limit": {
+        "children": 3534594.9999329,
+        "pensioners": 1350854.6506443843,
+        "people": 12395389.4907175,
+        "under_18": 3373812.444510091,
+        "working_age_adults": 7509939.840140216
+       },
+       "relative_moving": {
+        "children": 3567828.8124911785,
+        "pensioners": 1356957.288340319,
+        "people": 12486941.494321581,
+        "under_18": 3407046.2570683695,
+        "working_age_adults": 7562155.3934900835
+       },
+       "relative_moving_disagreeing_households": 0.0
+      },
+      "bhc": {
+       "absolute_fye2011": {
+        "children": 1411868.830201596,
+        "pensioners": 758400.9496684698,
+        "people": 5999155.79262153,
+        "under_18": 1348520.1380619556,
+        "working_age_adults": 3828886.012751464
+       },
+       "absolute_served": {
+        "children": 2127440.609225083,
+        "pensioners": 1223930.5495916149,
+        "people": 8467427.247120567,
+        "under_18": 2032380.2233453728,
+        "working_age_adults": 5116056.088303868
+       },
+       "relative_fixed_at_with_limit": {
+        "children": 2560307.3168645874,
+        "pensioners": 1444321.4359232252,
+        "people": 9843028.189281955,
+        "under_18": 2427876.6802195236,
+        "working_age_adults": 5838399.436494142
+       },
+       "relative_moving": {
+        "children": 2584004.8917825595,
+        "pensioners": 1459894.5159274703,
+        "people": 9895776.325694606,
+        "under_18": 2451574.2551374957,
+        "working_age_adults": 5851876.917984575
+       },
+       "relative_moving_disagreeing_households": 0.0
+      }
+     },
+     "benunits_on_uc": 6377443.831677549,
+     "concepts": {
+      "children": "is_hbai_dependent_child",
+      "working_age_adults": "is_hbai_working_age_adult"
+     },
+     "executed_limit": Infinity,
+     "fy": "2029-30",
+     "gainers_vs_with_limit": {
+      "benunits_uc_falls": 2302.6618325561285,
+      "benunits_uc_rises": 612161.55421656,
+      "equivalised_ahc_income_falls_households": 326.4274822771549,
+      "equivalised_bhc_income_falls_households": 326.4274822771549,
+      "hbai_income_falls": {
+       "households": 326.4274822771549,
+       "largest_loss_gbp_year": 405.671875
+      },
+      "hbai_income_over_0": {
+       "children": 2121548.4162144847,
+       "households": 611835.1267342828,
+       "pensioners": 17211.54960207641,
+       "people": 3254965.671216946,
+       "under_18": 2056400.9045261182,
+       "working_age_adults": 1116205.705400385
+      },
+      "hbai_income_over_1_a_week": {
+       "children": 2050335.3825708814,
+       "households": 588670.479882922,
+       "pensioners": 17211.54960207641,
+       "people": 3123480.5940201245,
+       "under_18": 1985187.8708825149,
+       "working_age_adults": 1055933.6618471667
+      }
+     },
+     "limit_affected_children": 0.0,
+     "limit_gb": {
+      "benunits_on_uc_with_three_or_more_children": 744436.1787842587,
+      "benunits_with_child_without_element": 0.0,
+      "children_without_child_element": 0.0,
+      "uc_children_in_those_benunits": 0.0
+     },
+     "lines_gbp_year": {
+      "ahc": {
+       "absolute_fye2011": 19073.383027215787,
+       "absolute_served": 21824.337890625,
+       "relative_fixed_at_with_limit": 22387.875,
+       "relative_own_median": 22424.39296875
+      },
+      "bhc": {
+       "absolute_fye2011": 22261.504243356238,
+       "absolute_served": 25198.181640625,
+       "relative_fixed_at_with_limit": 26435.92265625,
+       "relative_own_median": 26473.340625
+      }
+     },
+     "population": {
+      "children": 14692121.468318116,
+      "pensioners": 12053932.115482233,
+      "people": 70536604.78688161,
+      "under_18": 14225635.374638645,
+      "working_age_adults": 43790551.20308126
+     },
+     "sums_gbp": {
+      "benefit_cap_reduction": 1392101356.115064,
+      "child_tax_credit": 0.0,
+      "gov_balance": 318010754373.3242,
+      "gov_spending": 700208778534.3002,
+      "gov_tax": 1018219532905.5035,
+      "hbai_household_net_income": 1629773716259.777,
+      "household_net_income": 2023315522066.0354,
+      "two_child_limit_payment": 0.0,
+      "universal_credit": 83313342475.96013
+     }
+    }
+   }
+  },
+  "with_limit": {
+   "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "reform_dict": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2025-01-01.2035-12-31": 2
+    }
+   },
+   "years": {
+    "2029": {
+     "below": {
+      "ahc": {
+       "absolute_fye2011": {
+        "children": 2758608.6521144733,
+        "pensioners": 709065.2670344748,
+        "people": 9322294.776121914,
+        "under_18": 2628796.2185131833,
+        "working_age_adults": 5854620.856972966
+       },
+       "absolute_served": {
+        "children": 3849788.474390026,
+        "pensioners": 1234100.785108462,
+        "people": 12437064.67075963,
+        "under_18": 3705291.0980282873,
+        "working_age_adults": 7353175.411261141
+       },
+       "relative_fixed_at_with_limit": {
+        "children": 4115368.412914358,
+        "pensioners": 1357585.1821069643,
+        "people": 13257466.961146884,
+        "under_18": 3951122.6622070335,
+        "working_age_adults": 7784513.366125561
+       },
+       "relative_moving": {
+        "children": 4115368.412914358,
+        "pensioners": 1357585.1821069643,
+        "people": 13257466.961146884,
+        "under_18": 3951122.6622070335,
+        "working_age_adults": 7784513.366125561
+       },
+       "relative_moving_disagreeing_households": 0.0
+      },
+      "bhc": {
+       "absolute_fye2011": {
+        "children": 1694274.0460034572,
+        "pensioners": 761575.4948763279,
+        "people": 6421923.386620699,
+        "under_18": 1616061.022163462,
+        "working_age_adults": 3966073.8457409143
+       },
+       "absolute_served": {
+        "children": 2452404.7102509215,
+        "pensioners": 1227635.1212067446,
+        "people": 8940786.887128815,
+        "under_18": 2353256.9126875326,
+        "working_age_adults": 5260747.055671148
+       },
+       "relative_fixed_at_with_limit": {
+        "children": 3044021.7414317504,
+        "pensioners": 1448430.535636372,
+        "people": 10540908.79352609,
+        "under_18": 2907503.546685718,
+        "working_age_adults": 6048456.516457967
+       },
+       "relative_moving": {
+        "children": 3044021.7414317504,
+        "pensioners": 1448430.535636372,
+        "people": 10540908.79352609,
+        "under_18": 2907503.546685718,
+        "working_age_adults": 6048456.516457967
+       },
+       "relative_moving_disagreeing_households": 0.0
+      }
+     },
+     "benunits_on_uc": 6341533.064126693,
+     "concepts": {
+      "children": "is_hbai_dependent_child",
+      "working_age_adults": "is_hbai_working_age_adult"
+     },
+     "executed_limit": 2.0,
+     "fy": "2029-30",
+     "limit_affected_children": 911437.1782686934,
+     "limit_gb": {
+      "benunits_on_uc_with_three_or_more_children": 710661.229806669,
+      "benunits_with_child_without_element": 630109.8503988683,
+      "children_without_child_element": 896303.2510421053,
+      "uc_children_in_those_benunits": 2190936.044437863
+     },
+     "lines_gbp_year": {
+      "ahc": {
+       "absolute_fye2011": 19073.383027215787,
+       "absolute_served": 21824.337890625,
+       "relative_fixed_at_with_limit": 22387.875,
+       "relative_own_median": 22387.875
+      },
+      "bhc": {
+       "absolute_fye2011": 22261.504243356238,
+       "absolute_served": 25198.181640625,
+       "relative_fixed_at_with_limit": 26435.92265625,
+       "relative_own_median": 26435.92265625
+      }
+     },
+     "population": {
+      "children": 14692121.468318116,
+      "pensioners": 12053932.115482233,
+      "people": 70536604.78688161,
+      "under_18": 14225635.374638645,
+      "working_age_adults": 43790551.20308126
+     },
+     "sums_gbp": {
+      "benefit_cap_reduction": 947236906.4211456,
+      "child_tax_credit": 0.0,
+      "gov_balance": 321222309491.8429,
+      "gov_spending": 696997223514.9995,
+      "gov_tax": 1018219532905.5035,
+      "hbai_household_net_income": 1626562161038.024,
+      "household_net_income": 2020103966673.9924,
+      "two_child_limit_payment": 0.0,
+      "universal_credit": 80094195818.8928
+     }
+    }
+   }
+  }
+ }
+}

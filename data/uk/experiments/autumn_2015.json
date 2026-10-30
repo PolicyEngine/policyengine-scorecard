@@ -1,0 +1,81 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_2015",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2025-01-01.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2025-01-01.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2025-01-01.2035-12-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2025-01-01.2035-12-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2025-01-01.2035-12-31": 0.17
+    }
+   },
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "heads": [
+    {
+     "base_sheet": "PTT",
+     "channel": "tax",
+     "obr_heads": [
+      "Stamp duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "note": "Takes the original 3pp surcharge off the additional-dwellings scale, keeping Autumn Budget 2024's further 2pp: from 2025-26 the scale becomes the main scale plus 2pp (2%, 4%, 7%, 12%, 14%) instead of plus 5pp. 2024-25 is left out because its main scale carries the Growth Plan relief for part of the year.",
+   "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2025-01-01.2035-12-31": 0.02
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2025-01-01.2035-12-31": 0.04
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2025-01-01.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2025-01-01.2035-12-31": 0.12
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2025-01-01.2035-12-31": 0.14
+    }
+   },
+   "sources": [
+    "Finance Act 2016 s. 128 and Sch. 4A FA 2003",
+    "Autumn Budget 2024 Table 5.1 (the 2pp increase from 31 October 2024)",
+    "pe-uk parameters gov/hmrc/stamp_duty/residential/purchase/additional/rate.yaml"
+   ],
+   "years": [
+    2025,
+    2026
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2015.",
+ "obr_forecast_vintage": "November 2015",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

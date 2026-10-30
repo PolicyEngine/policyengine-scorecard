@@ -1,0 +1,94 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_budget_2017",
+ "experiments": [
+  {
+   "carried_from_fy": "2022-23",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "heads": [
+    {
+     "base_sheet": "PTT",
+     "channel": "tax",
+     "obr_heads": [
+      "Stamp duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "stamp_duty_land_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__stamp_duty_land_tax_abolish_for_first_time_buyers_up_to_300_000",
+   "note": "Removes first-time buyers' relief: a zero price limit sends every purchase to the main scale. First-time-buyer status is an imputed input; pe-uk 2.132.6 also lacks the 2022-25 Growth Plan limits.",
+   "reform": {
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": {
+     "2024-01-01.2025-12-31": 0.0
+    }
+   },
+   "set_outright": {
+    "gov.hmrc.stamp_duty.residential.purchase.main.first.max": "a zero price limit removes the relief on any schedule"
+   },
+   "sources": [
+    "Finance Act 2018 s. 41 (https://www.legislation.gov.uk/ukpga/2018/3/section/41)",
+    "pe-uk 2.132.6 parameters gov/hmrc/stamp_duty/residential/purchase/main/first/max.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2025-12-31": 0.5295
+    }
+   },
+   "carried_from_fy": "2022-23",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "ab2017_fuel_duty_freeze_2018",
+   "heads": [
+    {
+     "base_sheet": "Fuel",
+     "channel": "tax",
+     "obr_heads": [
+      "Fuel duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "fuel_duty"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2017__fuel_duty_freeze_for_2018_19",
+   "note": "Without the freeze the April 2018 uprating would have applied: the November 2017 forecast's RPI for 2018, 3.304% (RPI!L21), on 57.95p. Later freezes keep the higher level and the 2022 5p cut is in cash, so modern law's 52.95p becomes 54.864p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
+   "reform": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2026-12-31": 0.548644
+    }
+   },
+   "sources": [
+    "OBR Historical official forecasts database, Spring 2026, sheet RPI",
+    "pe-uk 2.132.6 parameters gov/hmrc/fuel_duty/petrol_and_diesel.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2017.",
+ "obr_forecast_vintage": "November 2017",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

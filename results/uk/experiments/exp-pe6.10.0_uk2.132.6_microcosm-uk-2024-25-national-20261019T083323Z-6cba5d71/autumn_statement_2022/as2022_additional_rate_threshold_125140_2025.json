@@ -1,0 +1,67 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 949769167.1588135,
+ "engine_version": "2.132.6",
+ "event": "autumn_statement_2022",
+ "event_name": "Autumn Statement 2022",
+ "experiment_id": "as2022_additional_rate_threshold_125140",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 324289366850.0355,
+   "channel": "tax",
+   "effect_gbp": 949769167.1588135,
+   "literal_alternate_minus_modern_gbp": -949769167.1588135,
+   "modern_gbp": 325239136017.19434,
+   "obr_heads": [
+    "Income tax"
+   ],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Statement 2022.",
+ "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+   "alternate_intended": 150000.0,
+   "alternate_processed": 150000.0,
+   "changes_modern_law": false,
+   "modern_processed": 150000,
+   "reached_simulation": true
+  },
+  "gov.hmrc.income_tax.rates.uk[2].threshold": {
+   "alternate_intended": 150000.0,
+   "alternate_processed": 150000.0,
+   "changes_modern_law": true,
+   "modern_processed": 125140,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+   "2024-01-01.2035-12-31": 150000.0
+  },
+  "gov.hmrc.income_tax.rates.uk[2].threshold": {
+   "2024-01-01.2035-12-31": 150000.0
+  }
+ },
+ "registry_sha256": "25c3d327d53e180934acd159fae54b5c3f4cf7e10383a4eb750d2ba6a6c629f1",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

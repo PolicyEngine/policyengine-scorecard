@@ -1,0 +1,129 @@
+{
+ "event": "autumn_2013",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2013.",
+ "obr_forecast_vintage": "December 2013",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [
+    {
+     "code": "sign_mismatch",
+     "diagnosis": {
+      "code": "sign_mismatch",
+      "event": "autumn_2013",
+      "evidence": "Synthetic married couples, 2025, policyengine-uk 2.143.0, statutory max = 0: basic-rate couple's allowance stays \u00a31,260 with tax unchanged; higher-rate couple's allowance becomes \u00a31,260 and tax falls \u00a3504.",
+      "experiment_id": "as2013_marriage_allowance",
+      "fixed_in": "policyengine-uk 2.148.2 (#2553, 52b3bb63d, 'Stop the statutory Marriage Allowance rate from switching on the CPS expanded Marriage Allowance')",
+      "issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2551",
+      "status": "model_bug",
+      "summary": "Setting the statutory Marriage Allowance rate to 0 switches on the CPS expanded Marriage Allowance reform (reforms/cps/marriage_tax_reforms.py: 'rate != original_rate'), which keeps the 10% rate and extends eligibility to higher- and additional-rate taxpayers. So the reversal extends the allowance instead of removing it, and income tax falls. Present in 2.132.6 and 2.143.0; fixed in policyengine-uk 2.148.2 (#2553).",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2018-19",
+   "effect_gbp": 224147794.2080078,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1091532996.415784,
+   "experiment_id": "as2013_marriage_allowance",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 225590967.6241455,
+    "universal_credit+housing_benefit": -1443173.4161376953
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2013__income_tax_transferable_marriage_allowance",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -775000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": -0.28922296026839717,
+   "ratio_scaled": -0.20535136816205418,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.396449574060091,
+     "obr_event_forecast_gbp": 214000000000.0,
+     "pe_base_gbp": 298840208848.8595
+    },
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.3190781030666474,
+     "obr_event_forecast_gbp": 238620683248.9787,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: transferable marriage allowance",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "sign_mismatch",
+     "diagnosis": {
+      "code": "sign_mismatch",
+      "event": "autumn_2013",
+      "evidence": "Synthetic married couples, 2025, policyengine-uk 2.143.0, statutory max = 0: basic-rate couple's allowance stays \u00a31,260 with tax unchanged; higher-rate couple's allowance becomes \u00a31,260 and tax falls \u00a3504.",
+      "experiment_id": "as2013_marriage_allowance",
+      "fixed_in": "policyengine-uk 2.148.2 (#2553, 52b3bb63d, 'Stop the statutory Marriage Allowance rate from switching on the CPS expanded Marriage Allowance')",
+      "issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2551",
+      "status": "model_bug",
+      "summary": "Setting the statutory Marriage Allowance rate to 0 switches on the CPS expanded Marriage Allowance reform (reforms/cps/marriage_tax_reforms.py: 'rate != original_rate'), which keeps the 10% rate and extends eligibility to higher- and additional-rate taxpayers. So the reversal extends the allowance instead of removing it, and income tax falls. Present in 2.132.6 and 2.143.0; fixed in policyengine-uk 2.148.2 (#2553).",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2018-19",
+   "effect_gbp": 235136904.6001892,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1189307023.7620153,
+   "experiment_id": "as2013_marriage_allowance",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 236827705.00665283,
+    "universal_credit+housing_benefit": -1690800.406463623
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2013__income_tax_transferable_marriage_allowance",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -775000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": -0.3034024575486312,
+   "ratio_scaled": -0.19770917004795302,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.5158701363733336,
+     "obr_event_forecast_gbp": 214000000000.0,
+     "pe_base_gbp": 324396209183.8934
+    },
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.3949729024343198,
+     "obr_event_forecast_gbp": 238620683248.9787,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: transferable marriage allowance",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

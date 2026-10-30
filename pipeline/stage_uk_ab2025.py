@@ -96,9 +96,13 @@ def load_artifacts() -> dict[tuple[str, int], dict]:
 
 
 def claims(conn: sqlite3.Connection) -> list[dict]:
+    # The two-child limit lane mints its own claims (DWP's tables) on the
+    # ab2025 measure key; they are that lane's from birth, so this stager
+    # never sees them (scorecard_db/ingest_uk_two_child_limit_poverty.py).
     rows = conn.execute(
         "SELECT claim_id, source, metric, period, unit_concept, value, conditions"
         " FROM external_scores WHERE json_extract(conditions, '$.measure_key') LIKE 'ab2025%'"
+        " AND coalesce(json_extract(publication, '$.registry'), '') != 'uk_two_child_limit_poverty'"
     ).fetchall()
     return [
         {
@@ -540,14 +544,29 @@ HEAD_SIDE = {
 }
 
 
-def owned_elsewhere(cond: dict) -> str | None:
+# Claims another lane took over by id (their identity is unchanged, so no
+# condition marks them): data/uk/two_child_limit_poverty/owned_claims.json.
+TWO_CHILD_LIMIT_OWNED = (
+    ROOT / "data" / "uk" / "two_child_limit_poverty" / "owned_claims.json"
+)
+
+
+def owned_elsewhere(cond: dict, claim_id: str | None = None) -> str | None:
     """The #56 / #140 ownership rule: a claim carrying ``obr_measure_key`` is
     in the OBR costings slice and is answered only by that lane's compute
     (pipeline/compute_uk_obr_costings.py, per OBR head in OBR's conventions);
-    this stager never attaches to it, so no claim gets two computed answers."""
+    a claim listed in the two-child limit lane's owned_claims.json is answered
+    only by that lane, on the certified Microcosm pair. This stager never
+    attaches to either, so no claim gets two computed answers."""
     if cond.get("obr_measure_key"):
         return "owned by the OBR costings lane (claim carries obr_measure_key)"
+    if claim_id is not None and claim_id in two_child_limit_owned():
+        return "owned by the two-child limit poverty lane (data/uk/two_child_limit_poverty/owned_claims.json)"
     return None
+
+
+def two_child_limit_owned() -> frozenset[str]:
+    return frozenset(json.loads(TWO_CHILD_LIMIT_OWNED.read_text())["claims"])
 
 
 def stage(
@@ -611,7 +630,7 @@ def stage(
             },
         )
         bm["claims"] += 1
-        owner = owned_elsewhere(c["conditions"])
+        owner = owned_elsewhere(c["conditions"], c["claim_id"])
         if owner:
             bm["owned_elsewhere"] += 1
             tally["owned_elsewhere"] += 1

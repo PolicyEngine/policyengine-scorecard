@@ -1,0 +1,105 @@
+{
+ "_schema": {
+  "applies_to": "matcher on {models, periods, results}; null = any. models: endogenous_pension_exogenous_labour (Table 2), endogenous_labour_no_pension (Table 3); periods: claim periods (financial-year end years); results: certified",
+  "variants": "the certified variants (data/uk/replay_variants.json) or certified pairs (data/uk/certified_pairs.json) on which a note resting on the engine or a run was checked; it attaches only to those pairs' results. A note resting on the report alone names none and applies to every run",
+  "severity": "period | definitional | construction | caution | gap",
+  "status": "the comparison status this annotation sets, where it sets one; at most one status-setting annotation matches a result",
+  "basis": "traceability: raw/pages_layout.txt (PDF page), engine files at the certified pin, or the measured artifact results/uk/childcare_100k/<variant>.json"
+ },
+ "annotations": [
+  {
+   "id": "cbp-net-after-behaviour",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "severity": "definitional",
+   "status": "concept_mismatch",
+   "text": "CBP's figures are net fiscal impacts after a behavioural response: parents choose pension contributions with labour income fixed (Table 2), or choose labour supply with no pension (Table 3), and bunch at £100,000 only when that gains them more than a £1,000 friction. PolicyEngine's counterpart is a static cost (the engine's labour-supply elasticities are zero at the pin), so the two measure different things. CBP publishes no static leg.",
+   "basis": "raw/pages_layout.txt PDF page 7 (section 1.3.4, the bunching rule with a £1k friction), PDF page 8 (section 1.3.7, Table 2 and note), PDF page 9 (section 1.4.5, the same rule) and PDF page 10 (section 1.4.6, Table 3 and note); policyengine_uk 2.89.2 variables/input/employment_income.py (adds employment_income_behavioral_response) and variables/gov/simulation/labour_supply_response/employment_income_behavioral_response.py (returns 0 when income_elasticity and substitution_elasticity are both 0); parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml and substitution_elasticity.yaml (0 from 2020-01-01), which no world's reform_dict sets; results/uk/childcare_100k/<variant>.json behavioural_response 'none (static)' and gov_tax, which moves by under £1m in every world and year (checked at ingest)"
+  },
+  {
+   "id": "cbp-includes-tfc",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "severity": "definitional",
+   "text": "CBP's subsidy includes Tax-Free Childcare: its tables assume £500 of Tax-Free Childcare per child (the model description says up to £2,000). The PolicyEngine counterpart therefore removes both £100,000 limits and adds Tax-Free Childcare to the three free-hours entitlements. Both are counted for England only, as CBP's children are England's births: the engine applies Tax-Free Childcare across the UK, and the change outside England is stated on each result and left out.",
+   "basis": "raw/pages_layout.txt PDF page 4 (section 1.2.1: 'the forecast number of births for England'), PDF page 5 (section 1.2.3: 'Up to £2000 is then added to the subsidy to simulate the effect of Tax Free Childcare') and PDF pages 8 and 10 (table notes: '£500 utilisation of TFC'); results/uk/childcare_100k/<variant>.json worlds.free_hours_and_tfc sums_gbp and sums_gbp_england; the pe-england-only construction note"
+  },
+  {
+   "id": "cbp-full-utilisation",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "severity": "construction",
+   "text": "CBP assumes every eligible family uses the full working-parent hours, and gives every child two parents and no siblings. PolicyEngine runs the dataset's own families, values the extended hours at each family's weekly usage input (maximum_extended_childcare_hours_usage), and pays each offer only where the family's take-up input is true. Each result states the usage and take-up the run read and whether the dataset or the engine default supplied them.",
+   "basis": "raw/pages_layout.txt PDF page 5 (section 1.2.2: 'every child has two parents and no siblings') and PDF pages 8 and 10 (table notes: 'full utilisation of FCWP'); policyengine_uk 2.89.2 variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage), the eligibility variables' defined_for (would_claim_extended_childcare, would_claim_universal_childcare, would_claim_targeted_childcare, would_claim_tfc; each defaults to true); results/uk/childcare_100k/<variant>.json worlds.baseline.dataset_inputs and years.*.take_up and hours_usage"
+  },
+  {
+   "id": "cbp-synthetic-population",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "severity": "caution",
+   "text": "CBP's population is synthetic: children from ONS births for England, each given two parents whose incomes are drawn from the 2022-23 Survey of Personal Incomes (ages 25 to 44). CenTax's Appendix D says the two estimates differ principally because CenTax observes in administrative data what the synthetic model had to assume, and names the treatment of frictions as the most consequential assumption.",
+   "basis": "raw/pages_layout.txt PDF pages 4-5 (sections 1.2.1-1.2.2); sources/centax-childcare-100k/raw/pages_layout.txt PDF pages 100-101 (printed pages 99-100, Appendix D)"
+  },
+  {
+   "id": "cbp-sign-unstated",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "severity": "caution",
+   "text": "The appendix gives no sign rule for its tables, and its values are carried as printed. CenTax reads them as revenue raised. PolicyEngine's value is negative for a cost to the Exchequer.",
+   "basis": "raw/pages_layout.txt PDF pages 8 and 10 (titles and notes state no sign rule); sources/centax-childcare-100k/raw/pages_layout.txt PDF page 100 (printed page 99: 'CBP estimate that abolishing the threshold would raise between £130 million and £425 million in 2030')"
+  },
+  {
+   "id": "cbp-centax-quote",
+   "applies_to": {
+    "models": [
+     "endogenous_labour_no_pension"
+    ],
+    "periods": [
+     2030
+    ],
+    "results": null
+   },
+   "severity": "caution",
+   "text": "CenTax quotes this cell as £425 million for 2030; the appendix prints 0.427 (£427 million) for 2029/30.",
+   "basis": "raw/pages_layout.txt PDF page 10 (Table 3, Abolish Cliff, 2029/30); sources/centax-childcare-100k/raw/pages_layout.txt PDF page 100 (printed page 99, Appendix D)"
+  },
+  {
+   "id": "cbp-financial-years",
+   "applies_to": {
+    "models": null,
+    "periods": null,
+    "results": null
+   },
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "severity": "period",
+   "text": "CBP's columns are financial years (2026/27 is 2026-27). PolicyEngine's annual period 2026 runs the 2026-27 rules: policyengine-uk sets each government parameter for year Y to its value on 30 April of Y.",
+   "basis": "raw/pages_layout.txt PDF pages 8 and 10 (column labels); policyengine_uk 2.89.2 utils/parameters.py convert_to_fiscal_year_parameters, called in tax_benefit_system.py process_parameters"
+  }
+ ]
+}

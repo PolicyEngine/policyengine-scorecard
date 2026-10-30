@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-21",
+ "updated": "2026-10-26",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -499,7 +499,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-09-24",
-   "note": "1498 claims from 4 families (1730 staged rows = 1498 ingested + 232 tallied drops) \u2014 363 claims with a PolicyEngine counterpart on the certified bundle"
+   "note": "1498 claims from 4 families (1730 staged rows = 1498 ingested + 232 tallied drops) \u2014 353 claims with a PolicyEngine counterpart on the certified bundle"
   },
   {
    "id": "uk-ab2025-microsim",
@@ -510,7 +510,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-09-24",
-   "note": "2649 claims from 8 families (3354 staged rows = 2649 ingested + 705 tallied drops) \u2014 631 claims with a PolicyEngine counterpart on the certified bundle"
+   "note": "2649 claims from 8 families (3354 staged rows = 2649 ingested + 705 tallied drops) \u2014 628 claims with a PolicyEngine counterpart on the certified bundle"
   },
   {
    "id": "uk-ab2025-admin-other",
@@ -577,6 +577,50 @@
    "running": false,
    "updated": "2026-10-15",
    "note": "88 of 132 claims computed \u2014 State individual income tax collections (T40) for 41 States, DC, NH and WA, FY2023-FY2025; FY2023 (a us-6.2.1 calibration target) and FY2025 compared with PE's CY2024 State income tax on us-6.2.1; adapter QC checks the US column against the 50 States on all 25 items; admin outturns staged as claims by decision on #176"
+  },
+  {
+   "id": "ca-fiscal-notes",
+   "source": "CA FTB",
+   "area": "State fiscal notes (YCTC bills)",
+   "mode": 2,
+   "country": "US",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-19",
+   "note": "5 of 5 claims computed \u2014 FTB revenue estimates for the young child tax credit bills AB 397 and AB 1690 (as introduced; via Assembly Revenue and Taxation analyses), against PE's reform-minus-baseline ca_income_tax for the tax year filed in each fiscal year, on us-6.2.1; LAO CalWORKs costs and LAO ranges are later tranches"
+  },
+  {
+   "id": "uk-benefit-uprating",
+   "source": "ONS + OBR + HMT + RF",
+   "area": "benefit uprating and September CPI",
+   "mode": 1,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-22",
+   "note": "2 claims (ONS September 2026 CPI, OBR's March 2026 forecast of it) and 17 PE results, 15 of them on the HM Treasury and Resolution Foundation uprating claims; parameter-tree read-back on policyengine-uk 2.147.2"
+  },
+  {
+   "id": "uk-childcare-100k",
+   "source": "CenTax + Centre for British Progress",
+   "area": "\u00a3100,000 childcare limit (30 funded hours, Tax-Free Childcare)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-25",
+   "note": "22 of 36 claims computed on the certified pair (populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z, policyengine-uk 2.89.2) \u2014 CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published dashboard figure kept as history; pe_gap on the central static rows (microcosm#1126)"
+  },
+  {
+   "id": "uk-two-child-limit-poverty",
+   "source": "DWP + Resolution Foundation + HM Treasury",
+   "area": "Two-child limit: child poverty and cost (relative and absolute low income)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-23",
+   "note": "123 DWP claims (Tables 1-4, FYE 2026, gainers) plus 5 Resolution Foundation and 12 HM Treasury AB2025 claims computed on the certified Microcosm pair (microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71, policyengine-uk 2.132.6); statuses {'comparable': 59, 'concept_mismatch': 6, 'constructed': 87, 'pe_gap': 1}"
   }
  ]
 }
