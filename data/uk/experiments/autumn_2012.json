@@ -1,0 +1,101 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_2012",
+ "experiments": [
+  {
+   "carried_from_fy": "2017-18",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2012_universal_credit_one_percent",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Social security benefits"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__universal_credit_finalise_disregards_and_increase_by_1_for_two_years_fro",
+   "note": "Restores CPI uprating of the Universal Credit standard allowances and child elements in April 2014 and 2015 (2.7%, 1.2%) instead of 1%: each at its modern value times 1.018845. The measure's finalised disregards have no counterpart.",
+   "reform": {},
+   "scale": {
+    "gov.dwp.universal_credit.elements.child.amount": 1.0188452112537987,
+    "gov.dwp.universal_credit.elements.child.first.higher_amount": 1.0188452112537987,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 1.0188452112537987,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 1.0188452112537987,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 1.0188452112537987,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 1.0188452112537987
+   },
+   "sources": [
+    "Welfare Benefits Up-rating Act 2013 s. 1",
+    "ONS CPI annual rate, September 2013 and 2014: 2.7%, 1.2%"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "carried_from_fy": "2017-18",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2012_child_benefit_one_percent",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Social security benefits"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "child_benefit"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__child_benefit_increase_by_1_for_two_years_from_2014_15",
+   "note": "Restores CPI uprating of child benefit in April 2014 and 2015 instead of 1%; the higher benefit raises the high-income charge (income tax).",
+   "reform": {},
+   "scale": {
+    "gov.hmrc.child_benefit.amount.additional": 1.0188452112537987,
+    "gov.hmrc.child_benefit.amount.eldest": 1.0188452112537987
+   },
+   "sources": [
+    "Welfare Benefits Up-rating Act 2013 s. 1",
+    "ONS CPI annual rate, September 2013 and 2014: 2.7%, 1.2%"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2012.",
+ "obr_forecast_vintage": "December 2012",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

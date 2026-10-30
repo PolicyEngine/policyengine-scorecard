@@ -507,3 +507,101 @@ this lane's PMD scores by fiscal event from compact, lossless shards. All scores
 remain accessible. Coverage distinguishes scores with a numerical PE value,
 recorded findings and scores without a recorded result, so adding unanswered
 scores does not imply that a model comparison has been completed.
+
+## 2026-10-21 population: the £100,000 childcare limit (UK)
+
+Two costings of removing the £100,000 adjusted-net-income limit on the
+working-parent childcare offers in England, with PolicyEngine's static
+counterparts, from `ingest_uk_childcare_100k` (lane `uk-childcare-100k`):
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_uk_childcare_100k data/scorecard.db
+```
+
+- **CenTax**, Table 4.2 of "Removing the childcare cliff-edge" (September
+  2026, `sources/centax-childcare-100k/`): 24 claims, the static cost, both
+  behavioural margins and the net cost for three scenarios in 2027-28 and
+  2029-30. The free hours only. The 12 bunching counts stay in
+  `data/externals` with a tallied reason.
+- **Centre for British Progress**, Tables 2 and 3 of the "Rates and wrongs"
+  technical appendix (25 March 2026, `sources/cbp-rates-and-wrongs/`): 12
+  claims, the net impact of abolishing the cliff on the free hours and
+  Tax-Free Childcare, after behaviour, 2026-27 to 2031-32. The 60 taper
+  cells stay in `data/externals`.
+
+All claims are `revenue_change` in pounds, held out, keyed to two
+`policy_ref` worlds (`measure_key` carries the same slug for retrieval
+across producers), and published without a result where PolicyEngine has
+none. The reason is in `publication.pe_missing`, read off the years the
+certified runs computed; it sits outside the claim id, so a new run never
+changes an id, and the feed shows it as `conditions.pe_missing`. The new
+`scenario` condition carries CenTax's scenario.
+
+Results come from `pipeline/compute_uk_childcare_100k.py` on the certified
+pair (the default replay variant): 22 rows, `comparable` for CenTax's static
+cost and `concept_mismatch` for every net figure. Each status is the one
+status-setting entry of the source's `annotations.json` that matches the
+row, so no status is a default. A note whose basis is the engine or a run
+names the certified pairs it was checked on (`variants`) and attaches only
+to their results; ingest refuses an artifact whose pair has no
+`verified_pairs` entry in `results/uk/childcare_100k/construction_annotations.json`.
+PolicyEngine's published dashboard figure (£0.434bn in 2027-28, on
+policyengine.org from 12 to 21 October 2026) is four further result rows,
+older than the certified run: the history keeps the published miss beside
+the current figure. The central static rows carry a `pe_gap` diagnosis
+linked to microcosm#1126 (the hours-usage draw). policyengine.py's current
+certified pair, which has the fixed draw, is not yet run in this lane
+(#228). See `sources/centax-childcare-100k/README.md`.
+
+## 2026-10-23 population: the two-child limit child-poverty benchmarks (UK)
+
+Lane `uk-two-child-limit-poverty`, registry mark `uk_two_child_limit_poverty`,
+ingest `scorecard_db/ingest_uk_two_child_limit_poverty.py`. This lane moves
+policyengine-uk's two-child limit validation page (corrected by
+PolicyEngine/policyengine-uk#1724) into the scorecard.
+
+- **Claims.** 123 DWP claims from `sources/dwp-two-child-limit-poverty`:
+  Tables 1-4 of the Budget 2025 note, its FYE 2026 figure, and children in
+  gaining households. All are held out. `baseline_policy` is `pre_ab2025`
+  (DWP's baseline keeps the limit), and every claim carries
+  `publish_without_result`.
+- **Results.** The lane attaches 153 results. 140 come from one run on
+  policyengine.py 6.11.0's certified Microcosm pair
+  (`data/uk/certified_pairs.json`), computed on Modal by
+  `pipeline/modal_uk_two_child_limit_poverty.py`:
+  - 123 go to its own DWP claims.
+  - 5 go to the Resolution Foundation *No half measures* claims of the
+    `uk_ab2025` registry (480,000 and £3.5 billion in 2029-30, 330,000
+    "today", the further 150,000, a three-child limit). These are matched
+    one for one; none is minted twice.
+  - 12 go to HM Treasury's static and post-behavioural costings,
+    2025-26 to 2030-31.
+
+  The other 13 are the September 2026 Populace answers that the
+  `uk_ab2025` campaign staged for the Resolution Foundation and HM Treasury
+  claims this lane took over
+  (`results/uk/two_child_limit_poverty/history_ab2025_campaign_20260925.jsonl`).
+  Each stays as its claim's earlier history row, and the AB2025 stager
+  skips the claims this lane owns.
+- **Executed worlds.** The with-limit world (registered `pre_ab2025`), plus
+  current law in 2025-26 for the 2025-26 rows.
+- **Statuses.** Each result's status is set by exactly one annotation, from
+  the two sources' `annotations.json` and
+  `results/uk/two_child_limit_poverty/construction_annotations.json`. The
+  facets include a measured `spread`: whether two readings of a convention
+  the source leaves unstated differ by more than half its rounding unit.
+- **Order.** The build step runs after `uk_ab2025_lanes`, because it
+  attaches to that registry's claims.
+- **Diagnostics** (`results/uk/two_child_limit_poverty/diagnostics/`; none
+  feeds a result):
+  - `wrapper_pe6.10.1.json` is the lane's first run, on policyengine.py
+    6.10.1's pair (`docs/uk_two_child_limit_poverty/requirements-pe6101.txt`).
+    A test checks the 6.11.0 run reproduces every count, line and sum.
+  - `losers.json` counts, in aggregate only, who is worse off when the limit
+    goes and which variables moved. The microdata is not public, so it
+    holds no household's own values. In every world and year, each loss is a
+    Universal Credit award that begins and ends the household's Tax-Free
+    Childcare. Benefit units whose Universal Credit "falls" fall by under a
+    penny a year (float rounding).
+  - `<data>_uk<engine>.json` and `bisect_microcosm_uk<v>_core3.33.3.json`
+    are the decomposition's cells (`DECOMPOSITION.md`).

@@ -1,0 +1,88 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": -2150655881.5489974,
+ "engine_version": "2.143.0",
+ "event": "spring_statement_2022",
+ "event_name": "Spring Statement 2022",
+ "experiment_id": "ss2022_nics_primary_threshold_lpl",
+ "fy": "2024-25",
+ "head_groups": [
+  {
+   "alternate_gbp": 174588485916.08942,
+   "channel": "tax",
+   "effect_gbp": -2150655881.5489974,
+   "literal_alternate_minus_modern_gbp": 2150655881.5489974,
+   "modern_gbp": 172437830034.5404,
+   "obr_heads": [
+    "Health and social care levy",
+    "NICs"
+   ],
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "alternate_gbp": 298840208848.8595,
+   "channel": "tax",
+   "effect_gbp": -0.0,
+   "literal_alternate_minus_modern_gbp": 0.0,
+   "modern_gbp": 298840208848.8595,
+   "obr_heads": [
+    "Income tax"
+   ],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spring Statement 2022.",
+ "measure_key": "spring_statement_2022__national_insurance_increase_annual_primary_threshold_and_lower_profits_l",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+   "alternate_intended": 223.0,
+   "alternate_processed": 223.0,
+   "changes_modern_law": true,
+   "modern_processed": 241.73,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+   "alternate_intended": 11596.0,
+   "alternate_processed": 11596.0,
+   "changes_modern_law": true,
+   "modern_processed": 12570,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+   "2024-01-01.2024-12-31": 223.0,
+   "2025-01-01.2025-12-31": 227.0,
+   "2026-01-01.2026-12-31": 227.0
+  },
+  "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+   "2024-01-01.2024-12-31": 11596.0,
+   "2025-01-01.2025-12-31": 11804.0,
+   "2026-01-01.2026-12-31": 11804.0
+  }
+ },
+ "registry_sha256": "f8b2ef658d24895515f09297de812d176e2a12a995b2735b9c1fbe0811845bcb",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2024
+}

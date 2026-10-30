@@ -34,8 +34,8 @@ document is the contract that makes instance N cheap.
 
 ## The tidy row schema (adapter contract)
 
-Every adapter emits rows of exactly this shape; nothing downstream knows
-anything source-specific except the counterpart mapping:
+Every adapter emits rows with at least these fields; nothing downstream
+knows anything source-specific except the counterpart mapping:
 
 ```json
 {
@@ -56,7 +56,11 @@ anything source-specific except the counterpart mapping:
 Conventions: counts in raw units (adapter undoes source scaling), rates as
 fractions, `subgroup` slugs shared across sources where concepts genuinely
 match (age bands, race, disability), `variant` for source-side methodological
-forks (e.g. TANF with/without solely-state-funded programs).
+forks (e.g. TANF with/without solely-state-funded programs, a costing's
+behavioural scenario). An adapter may carry its source's own facets beside
+these fields (a table and column, a fiscal-year label, the value as printed);
+the lane's ingester must name every field it accepts and reject any other
+(`harvest.require_fields`).
 
 ## The PE side
 
@@ -213,6 +217,60 @@ Operating rules for the agent stage:
   the letter's quoted deciles against the workbook, and adds section
   10102's groups to its total. Claims flow through
   `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
+- **UK benefit uprating** (`sources/uk-benefit-uprating/`, lane
+  `uk-benefit-uprating`): the CPI rate for September 2026, which sets the
+  April 2027 uprating of most working-age benefits. Two claims: the ONS
+  outturn (D7G7) and OBR's March 2026 forecast for 2026 Q3 (Table 1.7,
+  from a Wayback copy, as obr.uk refuses scripted fetches). The ONS rate is
+  an official outturn, staged as a claim by decision (2026-10-22), a
+  departure from the boundary rule below. The counterpart is a parameter-tree
+  read-back with no simulation (`pipeline/compute_uk_uprating_readback.py`):
+  the April rise of each rate PolicyEngine-UK holds. The lane also attaches
+  read-backs to the HM Treasury and Resolution Foundation uprating claims of
+  other lanes, by claim_id, without editing them. Both CPI claims are
+  `consumed_as_target`: PolicyEngine-UK takes ONS September rates and OBR
+  determinants as inputs, so a match checks the input, not model skill.
+
+- **The £100,000 childcare limit (UK)** (`sources/centax-childcare-100k/`,
+  `sources/cbp-rates-and-wrongs/`, lane `uk-childcare-100k`): CenTax's
+  Table 4.2 (static cost, two behavioural margins and net cost; three
+  scenarios; 2027-28 and 2029-30) and the Centre for British Progress
+  appendix (net of behaviour, 2026-27 to 2031-32). PDF adapters read a
+  vendored page extract that a test re-extracts from the PDF. Counterparts
+  come from `pipeline/compute_uk_childcare_100k.py` on the certified
+  populace-uk pair: static, the three free-hours entitlements (plus
+  Tax-Free Childcare for CBP) summed for people in English households.
+  Each certified variant's or certified pair's
+  (`data/uk/certified_pairs.json`) artifact keeps its run in the history, and a
+  claim's latest result is the newest run that computed its year. Ingest
+  takes an artifact only for a pair with a `verified_pairs` entry, and an
+  engine or run note attaches only to the pairs its `variants` names.
+  Static against static is `comparable`; net costs are `concept_mismatch`.
+  PolicyEngine's published dashboard figure (on policyengine.org from 12 to
+  21 October 2026) stays as an older history row, so the published miss
+  stays on the page, and the central static rows carry a `pe_gap` diagnosis
+  linked to microcosm#1126 (the hours-usage draw).
+
+- **Two-child limit child poverty** (`sources/dwp-two-child-limit-poverty/`,
+  `sources/rf-no-half-measures/`, lane `uk-two-child-limit-poverty`): the
+  comparison policyengine-uk's docs page used to hard-code. The source rows
+  are DWP's Budget 2025 note (Tables 1-4: relative and absolute low income,
+  BHC and AHC, FYE 2027-2031) and Resolution Foundation's *No half
+  measures*. The Resolution Foundation figures and HM Treasury's costings
+  were already Autumn Budget 2025 claims, so this lane attaches results to
+  them rather than minting copies. The counterparts run on policyengine.py
+  6.11.0's certified Microcosm pair (`data/uk/certified_pairs.json`) through
+  the managed route and that registry's preflight
+  (`pipeline/compute_uk_two_child_limit_poverty.py`, on Modal or locally),
+  for every concept the sources use. The relative line comes in two forms:
+  each world's own median, and the median held at the with-limit world's.
+  The absolute line also comes in two: the FYE 2025 line the engine serves,
+  and a constructed FYE 2011 one. When a source leaves its convention
+  unstated, a result is `comparable` only if the two readings differ by no
+  more than half the source's rounding unit.
+  `pipeline/decompose_uk_two_child_limit_poverty.py` runs an engine x data
+  grid to measure how the September 2026 estimate became October's, and
+  splits the engine step by policyengine-uk release.
 
 ### Staged for Chronicle, not claims
 

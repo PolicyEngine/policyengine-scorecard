@@ -1,0 +1,39 @@
+{
+ "_what": "Notes on how the certified engine builds the PolicyEngine counterpart in lane uk-childcare-100k (CenTax and CBP claims alike), and what was verified about each certified pair the lane has run. Each note cites the engine file it was read from and names, in variants, the pairs it was checked on; it attaches only to those pairs' results. verified_pairs holds each pair's own statements; ingest refuses an artifact whose pair is not listed, so no note written for one pair attaches to another. The measured numbers that go with them are written onto each result by scorecard_db/ingest_uk_childcare_100k.py from the artifact beside this file, not copied here.",
+ "annotations": [
+  {
+   "id": "pe-england-only",
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "text": "Both offers are England's. policyengine-uk 2.89.2 tests country == ENGLAND for the extended, universal and targeted hours but not for Tax-Free Childcare, which it applies across the UK. The counterpart sums each head for people in English households (the household's country projected onto its members); ingest checks that no free-hours head moves outside England, and states the Tax-Free Childcare change outside England.",
+   "basis": "policyengine_uk 2.89.2 variables/gov/dfe/extended_childcare_entitlement/extended_childcare_entitlement_eligible.py, universal_childcare_entitlement/universal_childcare_entitlement_eligible.py and targeted_childcare_entitlement/targeted_childcare_entitlement_eligible.py (in_england); variables/gov/hmrc/tax_free_childcare/ (no country test); pipeline/compute_uk_childcare_100k.py england_masks; results/uk/childcare_100k/<variant>.json sums_gbp_england"
+  },
+  {
+   "id": "pe-universal-switch-off",
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "text": "policyengine-uk 2.89.2 switches a child's universal and targeted hours off once the family is eligible for the extended hours, and values the extended hours at the family's drawn weekly usage (maximum_extended_childcare_hours_usage). The counterpart sums all three entitlements, so the universal hours a newly eligible family loses are netted out rather than double-counted. policyengine-uk#2177 (merged 12 October 2026, after the pin) changed this, closing policyengine-uk#1930.",
+   "basis": "policyengine_uk 2.89.2 variables/gov/dfe/universal_childcare_entitlement/universal_childcare_entitlement_eligible.py and targeted_childcare_entitlement/targeted_childcare_entitlement_eligible.py (~has_extended_childcare), extended_childcare_entitlement/extended_childcare_entitlement.py (min_ with maximum_extended_childcare_hours_usage); https://github.com/PolicyEngine/policyengine-uk/issues/1930; https://github.com/PolicyEngine/policyengine-uk/pull/2177"
+  },
+  {
+   "id": "pe-under-ones",
+   "variants": [
+    "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+   ],
+   "text": "The offer starts at 9 months. The engine's extended-hours scale starts at age 0.75, but every age on this pair is a whole number of years, so a child under 1 has age 0 and no child under 1 receives extended hours in any world or year (both measured). microcosm#1126 records the same for the Microcosm release.",
+   "basis": "policyengine_uk 2.89.2 parameters/gov/dfe/extended_childcare_entitlement/hours.yaml (threshold 0.75 from 2025); results/uk/childcare_100k/<variant>.json counts.people_with_fractional_age and counts.children_under_one_receiving_extended (0 in every world and year); https://github.com/PolicyEngine/microcosm/issues/1126"
+  }
+ ],
+ "verified_pairs": {
+  "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z": {
+   "checked": "2026-10-25",
+   "static_because": "policyengine-uk 2.89.2's labour-supply elasticities are zero, so employment_income_behavioral_response is zero",
+   "hours_draw": "microcosm#1126 traces this draw and puts DfE's mean at about 28.5 hours.",
+   "diagnosis": "microcosm#1126 identifies this draw as the main reason PolicyEngine's free-hours spending is low and derives DfE's mean as about 28.5 hours. The fix merged in microcosm on 16 October 2026 (microcosm#1299); this certified pair was built on 19 June 2026, before it. policyengine.py#685 (merged 21 October 2026) certified a Microcosm pair with the fixed draw, national cut 6cba5d71 with policyengine-uk 2.132.6, which this lane has not run yet (policyengine-scorecard#228). PolicyEngine's published dashboard figure, on policyengine.org from 12 to 21 October 2026, ran on the 2 October Microcosm release that microcosm#1126 examines, with the same draw. Two smaller PolicyEngine-side factors are recorded on the result: the universal-hours switch-off (policyengine-uk#1930, changed after the pin by policyengine-uk#2177) and no hours for children under 1.",
+   "basis": "every note whose variants name this pair, read against policyengine_uk 2.89.2 at the pin and results/uk/childcare_100k/<this variant>.json; static_because: the centax-static-vs-static basis; hours_draw and diagnosis: https://github.com/PolicyEngine/microcosm/issues/1126, https://github.com/PolicyEngine/microcosm/pull/1299 (merged 2026-10-16), https://github.com/PolicyEngine/policyengine.py/pull/685 (merged 2026-10-21; policyengine.py 6.11.0, released 2026-10-25, still pins that pair in src/policyengine/data/bundle/uk.trace.tro.jsonld), sources/centax-childcare-100k/pe/published_dashboard.json (live), this variant's dataset revision in data/uk/replay_variants.json (built 2026-06-19T02:37:11Z), and the pe-universal-switch-off and pe-under-ones notes; child_hours_input: the person, benunit and household table columns of populace_uk_2023.h5 (sha256 f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833), read from the file's HDF metadata on 2026-10-26, and policyengine_uk 2.89.2 variables/gov/dfe/max_free_entitlement_hours_used.py (default_value 30) and extended_childcare_entitlement/extended_childcare_entitlement.py (min_ of both caps)",
+   "child_hours_input": "max_free_entitlement_hours_used, each child's own weekly hours cap beside the family's maximum_extended_childcare_hours_usage, is not a column of this pair's dataset, so every child is at the engine default of 30 hours in every world. This run predates the artifact's record of that input (dataset_inputs)."
+  }
+ }
+}

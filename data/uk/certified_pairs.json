@@ -1,0 +1,98 @@
+{
+ "_what": "Certified pairs a lane runs on outside the replay variant index (pipeline/uk_certified_pairs.py). Each is one policyengine.py release's certified bundle, in the replay variant's identity shape, under the id pair-<variant slug>. Never a replay variant: no event replay runs on one.",
+ "kind": "uk_certified_pairs",
+ "pairs": [
+  {
+   "certification": {
+    "certified_for_model_version": "2.132.6",
+    "compatibility_basis": "built_with_model_package",
+    "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+    "source": "policyengine.py 6.11.0 packaged bundle manifest (policyengine/data/bundle/manifest.json, sha256 bccf23acde631aed4665757094c04f86e60993fb9d388e7dc958b90c876e5a80; PyPI wheel sha256 b2aa90b97a5c608f4aaad5e6833c21014d786bfd96bb831c9c51b9bb60ff2a50); the pair was certified in PolicyEngine/policyengine.py#685 (merged 2026-10-21)"
+   },
+   "data_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "data_years_evidence": {
+    "simulation_dataset_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030,
+     2031,
+     2032
+    ],
+    "source": "Measured for the same policyengine-uk 2.132.6, policyengine-core 3.33.3 and dataset by the experiment population probe under policyengine 6.10.0 (data/uk/experiments/probes/exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71.json); every lane run checks its managed simulation's sim.dataset.years against this list before any calculation."
+   },
+   "executor": [
+    "local",
+    "modal"
+   ],
+   "identity": {
+    "dataset": {
+     "path": "microcosm_uk_2024_25.h5",
+     "repo_id": "policyengine/populace-uk-private",
+     "repo_type": "dataset",
+     "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "size_bytes": 321798995
+    },
+    "materialization": "policyengine_data_dir",
+    "packaged_bundle_manifest_sha256": "bccf23acde631aed4665757094c04f86e60993fb9d388e7dc958b90c876e5a80",
+    "packages": {
+     "policyengine": {
+      "record_sha256": "113897bc23a82dab3fd29a0715c7a111fbb948f9b791eaf866e1324d75c06bbf",
+      "version": "6.11.0"
+     },
+     "policyengine-core": {
+      "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+      "version": "3.33.3"
+     },
+     "policyengine-uk": {
+      "record_sha256": "ca7c36b7617f950f48a04e2816a29e1eb962c44097f3ef08ed4036d7414d2709",
+      "version": "2.132.6"
+     }
+    },
+    "python": "3.12",
+    "release_bundle": {
+     "bundle_id": "uk-6.11.0",
+     "certified_by": "policyengine.py bundle certification",
+     "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+     "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "compatibility_basis": "built_with_model_package",
+     "country_id": "uk",
+     "data_build_fingerprint": null,
+     "data_build_model_git_sha": null,
+     "data_build_model_version": "2.132.6",
+     "data_package": "microcosm-data",
+     "data_version": "0.1.0",
+     "default_dataset": "microcosm_uk_2024_25",
+     "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+     "model_package": "policyengine-uk",
+     "model_version": "2.132.6",
+     "policyengine_version": "6.11.0"
+    },
+    "requirements_sha256": "f57a4899ec639cd89ae0eba15525f1d0bba25ff9bc091c95a14ae4d46d363d80"
+   },
+   "identity_sha256": "9bb966d62e65c29e44a83620b21d720934fb33e57b8fc13695254657acd9b35a",
+   "note": "policyengine.py 6.11.0 (released 25 October 2026) with the pair its bundle certifies: policyengine-uk 2.132.6 and the Microcosm UK 2024-25 national cut built with it. A lane runs on it before the release-replay pipeline qualifies it; no event replay runs on it.",
+   "pair_id": "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "requirements": {
+    "path": "docs/uk_replay/requirements/pairs/pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71.txt",
+    "sha256": "f57a4899ec639cd89ae0eba15525f1d0bba25ff9bc091c95a14ae4d46d363d80"
+   },
+   "status": "certified_pair"
+  }
+ ],
+ "schema_version": 1
+}

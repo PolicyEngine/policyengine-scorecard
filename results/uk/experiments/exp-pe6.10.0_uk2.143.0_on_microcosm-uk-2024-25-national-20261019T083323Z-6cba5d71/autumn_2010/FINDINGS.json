@@ -1,0 +1,93 @@
+{
+ "event": "autumn_2010",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2010.",
+ "obr_forecast_vintage": "November 2010",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2015-16",
+   "effect_gbp": 2147802717.391493,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 3907669964.9168224,
+   "experiment_id": "as2010_high_income_child_benefit_charge",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "child_benefit": 1065162596.4528942,
+    "income_tax": 1082640120.9385986
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2010__child_benefit_remove_from_families_with_a_higher_rate_taxpayer_from_janu",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 2670000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.8044204934050535,
+   "ratio_scaled": 0.549637696293323,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.463546803339634,
+     "obr_event_forecast_gbp": 215066110283.7901,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Child Benefit: remove from families with a higher rate taxpayer from January 2013",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2015-16",
+   "effect_gbp": 2378745615.69215,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 4132502616.821936,
+   "experiment_id": "as2010_high_income_child_benefit_charge",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "child_benefit": 1132007252.5173454,
+    "income_tax": 1246738363.1748047
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2010__child_benefit_remove_from_families_with_a_higher_rate_taxpayer_from_janu",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 2670000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.8909159609333895,
+   "ratio_scaled": 0.575618659262097,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.5477537890718862,
+     "obr_event_forecast_gbp": 215066110283.7901,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Child Benefit: remove from families with a higher rate taxpayer from January 2013",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

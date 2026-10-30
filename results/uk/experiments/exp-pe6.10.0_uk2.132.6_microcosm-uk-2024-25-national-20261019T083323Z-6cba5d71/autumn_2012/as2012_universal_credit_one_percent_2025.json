@@ -1,0 +1,114 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 883206737.8505859,
+ "engine_version": "2.132.6",
+ "event": "autumn_2012",
+ "event_name": "Autumn 2012",
+ "experiment_id": "as2012_universal_credit_one_percent",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 78478578676.47668,
+   "channel": "spending",
+   "effect_gbp": 883206737.8505859,
+   "literal_alternate_minus_modern_gbp": -883206737.8505859,
+   "modern_gbp": 77595371938.6261,
+   "obr_heads": [
+    "Social security benefits"
+   ],
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2012.",
+ "measure_key": "autumn_2012__universal_credit_finalise_disregards_and_increase_by_1_for_two_years_fro",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.dwp.universal_credit.elements.child.amount": {
+   "alternate_intended": 298.3280663072248,
+   "alternate_processed": 298.3280663072248,
+   "changes_modern_law": true,
+   "modern_processed": 292.81,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": {
+   "alternate_intended": 345.38852661503773,
+   "alternate_processed": 345.38852661503773,
+   "changes_modern_law": true,
+   "modern_processed": 339,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+   "alternate_intended": 639.936677188511,
+   "alternate_processed": 639.936677188511,
+   "changes_modern_law": true,
+   "modern_processed": 628.1,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+   "alternate_intended": 506.92643485932757,
+   "alternate_processed": 506.92643485932757,
+   "changes_modern_law": true,
+   "modern_processed": 497.55,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+   "alternate_intended": 407.680722831095,
+   "alternate_processed": 407.680722831095,
+   "changes_modern_law": true,
+   "modern_processed": 400.14,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+   "alternate_intended": 322.95355506322915,
+   "alternate_processed": 322.95355506322915,
+   "changes_modern_law": true,
+   "modern_processed": 316.98,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.universal_credit.elements.child.amount": {
+   "2025-01-01.2025-12-31": 298.3280663072248
+  },
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": {
+   "2025-01-01.2025-12-31": 345.38852661503773
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+   "2025-01-01.2025-12-31": 639.936677188511
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+   "2025-01-01.2025-12-31": 506.92643485932757
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+   "2025-01-01.2025-12-31": 407.680722831095
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+   "2025-01-01.2025-12-31": 322.95355506322915
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": {
+  "gov.dwp.universal_credit.elements.child.amount": 1.0188452112537987,
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": 1.0188452112537987,
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 1.0188452112537987,
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 1.0188452112537987,
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 1.0188452112537987,
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 1.0188452112537987
+ },
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

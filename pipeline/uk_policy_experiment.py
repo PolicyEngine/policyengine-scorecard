@@ -1,0 +1,1846 @@
+"""Policy experiments: past UK fiscal-event measures on the modern population.
+
+These runs are not replays and not PolicyEngine's costing of any past event
+(docs/uk_replay/POLICY_EXPERIMENTS.md). Each experiment expresses one measure
+from an event's source-accounting registry as a parameter change on modern
+law, runs it on an experiment population, and screens the result against the
+OBR's costing for crashes, inert constructions, sign errors and implausible
+magnitudes.
+
+    python3 -m pipeline.uk_policy_experiment plan --event autumn_statement_2022
+    python -m pipeline.uk_policy_experiment run --event autumn_statement_2022 \\
+        --dataset-file PATH --output-dir DIR          # engine; Modal runs this
+    python3 -m pipeline.uk_policy_experiment findings --event autumn_statement_2022
+
+``plan`` and ``findings`` are engine-free. ``run`` needs the population's
+exact environment and reuses the replay's managed simulation path
+(compute_uk_event.run_sim): the dataset's SHA-256 before and after every
+simulation, its year set, and every touched parameter read back from the
+simulation's own processed tree.
+"""
+
+from __future__ import annotations
+
+import argparse
+import gc
+import json
+import math
+import os
+import re
+import sys
+import time
+import traceback
+from decimal import Decimal
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SPEC_DIR = ROOT / "data" / "uk" / "experiments"
+POPULATIONS_PATH = SPEC_DIR / "populations.json"
+DIAGNOSES_PATH = SPEC_DIR / "diagnoses.json"
+OBR_BASES_PATH = SPEC_DIR / "obr_head_forecasts.json"
+RESULT_ROOT = "results/uk/experiments"
+RUNTIME_ROOT = ROOT / ".venv-replay-checks" / "experiments-runtime"
+# Where replays live. An experiment never writes under these.
+REPLAY_ROOTS = ("results/uk/events", "results/uk/replays")
+
+SPEC_KIND = "uk_modern_population_policy_experiments"
+ARTIFACT_KIND = "uk_modern_population_policy_experiment_result"
+POPULATIONS_KIND = "uk_experiment_populations"
+POPULATION_STATUS = "experiment_population"
+PAIRINGS = ("certified_pair", "model_swap")
+LABEL = "modern_population_sensitivity"
+LABEL_TEXT = (
+    "Policy experiment on the modern population: not a replay or a costing of {event}."
+)
+# Experiment constructions -> the replay's orientation rule
+# (compute_uk_obr_costings.orient_exchequer_effect).
+CONSTRUCTIONS = {
+    "reversal_on_modern_law": "reversal_on_certified_world",
+    "forward_on_modern_law": "forward_from_baseline",
+}
+MAGNITUDE_CHECKS = ("scaled", "sign_only")
+DIAGNOSIS_STATUSES = (
+    "expected",
+    "construction_corrected",
+    "model_bug",
+    "data_issue",
+    "engine_route",
+    "under_investigation",
+)
+EXPERIMENT_ID = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
+POPULATION_ID = re.compile(r"^exp-[A-Za-z0-9][A-Za-z0-9_.+-]*$")
+EVENT = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
+FY = re.compile(r"^(\d{4})-(\d{2})$")
+
+# Classification thresholds, GBP (docs/uk_replay/POLICY_EXPERIMENTS.md).
+MOVE_FLOOR = 1e6  # a summed effect below this did not move
+SIGN_MIN_OBR = 20e6
+SIGN_MIN_PE = 5e6
+SIGN_MIN_PE_SHARE = 0.10
+MAGNITUDE_MIN_EXPECTED = 100e6
+MAGNITUDE_MIN_MAPPED_SHARE = 0.5
+OBR_ZERO = 1e6
+OBR_ZERO_PE_MOVES = 100e6
+BAND_CHECK = 3.0
+BAND_INVESTIGATE = 10.0
+MIRROR_TOLERANCE = 1e-9  # relative; the worlds are the same simulations
+
+SEVERITY = {
+    "crash": "investigate",
+    "reform_not_applied": "investigate",
+    "construction_noop": "note",
+    "sign_mismatch": "investigate",
+    "magnitude_outside_10x": "investigate",
+    "magnitude_outside_3x": "check",
+    "obr_zero_pe_moves": "note",
+    "mirror_mismatch": "investigate",
+    "modern_law_differs": "investigate",
+}
+
+
+class ExperimentError(ValueError):
+    """A spec, population or output that breaks the experiment contract."""
+
+
+def canonical_bytes(value: object) -> bytes:
+    return (
+        json.dumps(value, indent=1, sort_keys=True, allow_nan=False) + "\n"
+    ).encode()
+
+
+def sha256_bytes(payload: bytes) -> str:
+    import hashlib
+
+    return hashlib.sha256(payload).hexdigest()
+
+
+def fy_label(year: int) -> str:
+    return f"{year}-{(year + 1) % 100:02d}"
+
+
+def fy_start(label: str) -> int:
+    match = FY.fullmatch(label) if isinstance(label, str) else None
+    if not match or int(match[2]) != (int(match[1]) + 1) % 100:
+        raise ExperimentError(f"invalid fiscal-year label: {label!r}")
+    return int(match[1])
+
+
+def label_text(event_name: str) -> str:
+    return LABEL_TEXT.format(event=event_name)
+
+
+# --- paths --------------------------------------------------------------------
+
+
+def spec_path(event: str) -> Path:
+    if not EVENT.fullmatch(event or ""):
+        raise ExperimentError("event must be a lowercase underscore-separated slug")
+    return SPEC_DIR / f"{event}.json"
+
+
+def output_root(population_id: str, *, root: Path = ROOT) -> Path:
+    if not POPULATION_ID.fullmatch(population_id or ""):
+        raise ExperimentError(f"not an experiment population id: {population_id!r}")
+    return root / RESULT_ROOT / population_id
+
+
+BRACKET_THRESHOLD = re.compile(r"(?P<scale>.+)\[(?P<index>\d+)\]\.threshold")
+
+
+def _within_casefolded(child: Path, parent: Path) -> bool:
+    child_parts = tuple(part.casefold() for part in child.parts)
+    parent_parts = tuple(part.casefold() for part in parent.parts)
+    return child_parts[: len(parent_parts)] == parent_parts
+
+
+def contained_output_dir(
+    population_id: str, event: str, requested: Path | None = None, *, root: Path = ROOT
+) -> Path:
+    """The event's output directory, or a requested one that resolves inside
+    results/uk/experiments/<population>/<event>/ or outside the repository
+    (a scratch or Modal work directory). Never inside a replay root, of this
+    checkout or any other."""
+    canonical = (output_root(population_id, root=root) / event).resolve()
+    if not EVENT.fullmatch(event or ""):
+        raise ExperimentError("event must be a lowercase underscore-separated slug")
+    chosen = (requested or canonical).resolve()
+    repository = root.resolve()
+    # Compared case-insensitively: on a case-insensitive filesystem (macOS)
+    # results/uk/Events is results/uk/events.
+    parts = tuple(part.casefold() for part in chosen.parts)
+    for replay in REPLAY_ROOTS:
+        segments = tuple(part.casefold() for part in Path(replay).parts)
+        if any(parts[i : i + len(segments)] == segments for i in range(len(parts))):
+            raise ExperimentError(f"{chosen} is inside a replay root ({replay})")
+    checks = (repository / ".venv-replay-checks").resolve()
+    # Inside the repository is tested case-insensitively too (a checkout path
+    # spelled /REPO/ on macOS is the same directory); the two allowed places
+    # must match exactly, so a cased spelling of them is refused.
+    if (
+        _within_casefolded(chosen, repository)
+        and not chosen.is_relative_to(canonical)
+        and not chosen.is_relative_to(checks)
+    ):
+        raise ExperimentError(
+            f"{chosen} is inside the repository but outside {canonical}"
+        )
+    return chosen
+
+
+# --- populations -------------------------------------------------------------
+
+
+def load_populations(path: Path = POPULATIONS_PATH) -> dict:
+    document = json.loads(path.read_bytes())
+    if document.get("schema_version") != 1 or document.get("kind") != POPULATIONS_KIND:
+        raise ExperimentError(f"{path}: not an experiment population document")
+    records = document.get("populations")
+    if not isinstance(records, list) or not records:
+        raise ExperimentError(f"{path}: lists no populations")
+    ids = [record.get("population_id") for record in records]
+    if len(ids) != len(set(ids)):
+        raise ExperimentError(f"{path}: repeats a population_id")
+    if document.get("default_population") not in ids:
+        raise ExperimentError(f"{path}: default_population is not listed")
+    return document
+
+
+def get_population(
+    population_id: str | None = None, *, path: Path = POPULATIONS_PATH
+) -> dict:
+    document = load_populations(path)
+    wanted = population_id or document["default_population"]
+    for record in document["populations"]:
+        if record["population_id"] == wanted:
+            validate_population(record)
+            return record
+    raise ExperimentError(f"no experiment population {wanted!r}")
+
+
+def validate_population(record: dict, *, root: Path = ROOT) -> None:
+    """Engine-free: the record is an experiment population, never a variant."""
+    problems = []
+
+    def need(condition: bool, message: str) -> None:
+        if not condition:
+            problems.append(message)
+
+    population_id = record.get("population_id", "")
+    need(bool(POPULATION_ID.fullmatch(population_id)), "population_id must start exp-")
+    need(
+        record.get("status") == POPULATION_STATUS, f"status must be {POPULATION_STATUS}"
+    )
+    need(record.get("label") == LABEL, f"label must be {LABEL}")
+    need(
+        record.get("result_root") == f"{RESULT_ROOT}/{population_id}",
+        f"result_root must be {RESULT_ROOT}/{population_id}",
+    )
+    identity = record.get("identity") or {}
+    dataset = identity.get("dataset") or {}
+    bundle = identity.get("release_bundle") or {}
+    packages = identity.get("packages") or {}
+    need(
+        set(packages) == {"policyengine", "policyengine-uk", "policyengine-core"},
+        "identity.packages must name the three packages",
+    )
+    for name, package in sorted(packages.items()):
+        need(
+            bool(
+                re.fullmatch(r"[0-9a-f]{64}", str((package or {}).get("record_sha256")))
+            ),
+            f"{name}: record_sha256 (probe the population first)",
+        )
+    for field in ("repo_id", "repo_type", "revision", "path", "sha256", "size_bytes"):
+        need(field in dataset, f"identity.dataset.{field}")
+    need(
+        bundle.get("certified_data_artifact_sha256") == dataset.get("sha256"),
+        "the release bundle names another dataset",
+    )
+    # A certified pair runs the model its data was certified for. A model
+    # swap runs a newer model on the same data, to separate model changes
+    # from data: the bundle still names the data's model.
+    pairing = record.get("pairing")
+    need(pairing in PAIRINGS, f"pairing must be one of {PAIRINGS}")
+    installed_model = (packages.get("policyengine-uk") or {}).get("version")
+    if pairing == "model_swap":
+        need(
+            bundle.get("model_version") != installed_model,
+            "a model swap installs another model than the bundle's",
+        )
+        need(
+            record.get("model_swap_of") == bundle.get("model_version"),
+            "model_swap_of must name the bundle's model version",
+        )
+    else:
+        need(
+            bundle.get("model_version") == installed_model,
+            "the release bundle names another model version",
+        )
+    need(
+        bundle.get("policyengine_version")
+        == (packages.get("policyengine") or {}).get("version"),
+        "the release bundle names another policyengine version",
+    )
+    need(identity.get("materialization") == "policyengine_data_dir", "materialization")
+    years = record.get("data_years")
+    need(
+        isinstance(years, list)
+        and bool(years)
+        and all(isinstance(y, int) and not isinstance(y, bool) for y in years)
+        and years == list(range(years[0], years[-1] + 1)),
+        "data_years must be consecutive calendar years",
+    )
+    requirements = record.get("requirements") or {}
+    requirements_path = root / str(requirements.get("path", ""))
+    if not requirements.get("path") or not requirements_path.is_file():
+        problems.append("requirements file is missing")
+    else:
+        need(
+            sha256_bytes(requirements_path.read_bytes()) == requirements.get("sha256"),
+            "requirements sha256 differs",
+        )
+        need(
+            identity.get("requirements_sha256") == requirements.get("sha256"),
+            "the identity binds another requirements file",
+        )
+    if problems:
+        raise ExperimentError(f"{population_id}: " + "; ".join(problems))
+
+
+def variant_view(record: dict) -> dict:
+    """The fields the replay's environment checks read, under the population's
+    own id. In memory only: never written, never added to the variant index."""
+    return {
+        "variant_id": record["population_id"],
+        "identity": record["identity"],
+        "requirements": record["requirements"],
+        "data_years": record["data_years"],
+    }
+
+
+# --- specs ---------------------------------------------------------------------
+
+
+INVENTORY_PATH = "data/uk/events/inventory.jsonl"
+
+
+def load_registry(spec: dict, *, root: Path = ROOT) -> tuple[dict, str]:
+    """The event's OBR rows: its registry, or for an event with none, its
+    rows of the inventory (#158) in the registry's shape."""
+    registry = spec["registry"]
+    path = root / registry["path"]
+    payload = path.read_bytes()
+    digest = sha256_bytes(payload)
+    if digest != registry["sha256"]:
+        raise ExperimentError(
+            f"{registry['path']}: sha256 {digest}, the spec binds {registry['sha256']}"
+        )
+    if registry.get("kind") == "inventory":
+        if registry["path"] != INVENTORY_PATH:
+            raise ExperimentError(f"an inventory source must be {INVENTORY_PATH}")
+        return inventory_registry(payload, spec["event_slug"]), digest
+    return json.loads(payload), digest
+
+
+def inventory_registry(payload: bytes, event: str) -> dict:
+    """Group an event's inventory rows (one per measure and head) into
+    measures with one source row per head and fiscal year. GBP millions
+    become GBP exactly, through the value's decimal string."""
+    measures: dict[str, dict] = {}
+    name = None
+    fys: set[str] = set()
+    for line in payload.decode().splitlines():
+        row = json.loads(line)
+        if row["event_key"] != event:
+            continue
+        name = row["event"]
+        measure = measures.setdefault(
+            row["measure_key"],
+            {
+                "measure_key": row["measure_key"],
+                "title": row["measure"],
+                "fiscal_event": row["event"],
+                "source_rows": [],
+            },
+        )
+        for fy, value in sorted(row["costing_gbp_m"].items()):
+            fys.add(fy)
+            measure["source_rows"].append(
+                {
+                    "source_row_id": f"{row['row_id']}:{fy}",
+                    "fy": fy,
+                    "tax_head": row["head"],
+                    "value_gbp_decimal": str(Decimal(repr(value)) * 1_000_000),
+                    "inventory_class": row["class"],
+                }
+            )
+    if not measures:
+        raise ExperimentError(f"{event}: no rows in the inventory")
+    return {
+        "event_slug": event,
+        "event_name": name,
+        "calendar_years": sorted(fy_start(fy) for fy in fys),
+        "source": "inventory",
+        "measures": list(measures.values()),
+    }
+
+
+def load_spec(event: str, *, root: Path = ROOT) -> dict:
+    path = root / spec_path(event).relative_to(ROOT)
+    return json.loads(path.read_bytes())
+
+
+def load_bases(path: Path = OBR_BASES_PATH) -> dict:
+    document = json.loads(path.read_bytes())
+    if document.get("kind") != "obr_head_forecasts":
+        raise ExperimentError(f"{path}: not the OBR head forecasts")
+    return document
+
+
+def measure_heads(measure: dict) -> set[str]:
+    return {row["tax_head"] for row in measure["source_rows"]}
+
+
+def validate_spec(spec: dict, registry: dict, bases: dict) -> None:
+    """Engine-free consistency of one event's experiments."""
+    from pipeline import compute_uk_event as event_runner
+
+    event = spec.get("event_slug")
+    problems = []
+
+    def need(condition: bool, message: str) -> None:
+        if not condition:
+            problems.append(message)
+
+    need(spec.get("schema_version") == 1, "schema_version must be 1")
+    need(spec.get("kind") == SPEC_KIND, f"kind must be {SPEC_KIND}")
+    need(spec.get("label") == LABEL, f"label must be {LABEL}")
+    need(registry.get("event_slug") == event, "the registry is another event's")
+    need(
+        spec.get("label_text") == label_text(registry.get("event_name", "")),
+        "label_text must be the standard sentence for this event",
+    )
+    need(
+        spec.get("obr_forecast_vintage") in bases["vintages"],
+        "obr_forecast_vintage is not a vintage of the forecasts database",
+    )
+    measures = {m["measure_key"]: m for m in registry["measures"]}
+    experiments = spec.get("experiments")
+    need(isinstance(experiments, list) and bool(experiments), "no experiments")
+    seen = set()
+    for experiment in experiments or []:
+        eid = experiment.get("experiment_id", "")
+        where = f"{eid}: "
+        need(bool(EXPERIMENT_ID.fullmatch(eid)), where + "experiment_id")
+        need(eid not in seen, where + "repeated experiment_id")
+        seen.add(eid)
+        measure = measures.get(experiment.get("measure_key"))
+        if measure is None:
+            problems.append(where + "measure_key is not in the registry")
+            continue
+        need(
+            experiment.get("construction") in CONSTRUCTIONS,
+            where + f"construction must be one of {sorted(CONSTRUCTIONS)}",
+        )
+        reform = experiment.get("reform")
+        scale = experiment.get("scale") or {}
+        if not isinstance(reform, dict) or not (reform or scale):
+            problems.append(where + "reform must be a dict, and it or scale nonempty")
+        else:
+            try:
+                event_runner.annual_reform(reform)
+            except (TypeError, ValueError) as exc:
+                problems.append(where + str(exc))
+        need(isinstance(scale, dict), where + "scale must map paths to factors")
+        for path, factor in scale.items() if isinstance(scale, dict) else []:
+            need(
+                isinstance(factor, (int, float))
+                and not isinstance(factor, bool)
+                and math.isfinite(factor)
+                and factor > 0,
+                where + f"scale factor for {path} must be positive and finite",
+            )
+            need(
+                path not in (reform or {}),
+                where + f"{path} is in both reform and scale",
+            )
+        assumes = experiment.get("assumes_modern") or {}
+        need(
+            isinstance(assumes, dict),
+            where + "assumes_modern must map paths to windows",
+        )
+        if isinstance(assumes, dict) and assumes:
+            try:
+                event_runner.annual_reform(assumes)
+            except (TypeError, ValueError) as exc:
+                problems.append(where + f"assumes_modern: {exc}")
+            unknown = set(assumes) - set(reform or {}) - set(scale or {})
+            need(
+                not unknown,
+                where + f"assumes_modern names untouched paths {sorted(unknown)}",
+            )
+        # Every value a reform sets is written against some current law: the
+        # construction states it (assumes_modern) for every year it can run,
+        # or says why the value holds whatever the current law is.
+        outright = experiment.get("set_outright") or {}
+        need(
+            isinstance(outright, dict)
+            and all(isinstance(r, str) and r.strip() for r in outright.values()),
+            where + "set_outright must map paths to reasons",
+        )
+        if isinstance(outright, dict) and isinstance(assumes, dict):
+            need(
+                not set(outright) - set(reform or {}),
+                where + "set_outright names paths the reform does not set",
+            )
+            need(
+                not set(outright) & set(assumes),
+                where + "a path is both assumed and set outright",
+            )
+            try:
+                annual = event_runner.annual_reform(reform)
+                stated = event_runner.annual_reform(assumes) if assumes else {}
+            except (TypeError, ValueError):
+                annual = None  # reported above
+            if isinstance(reform, dict) and annual is not None:
+                from pipeline import uk_construction_revisions as revisions
+
+                # policyengine adds the rates of brackets that share a
+                # threshold, so a "zero-width" band is not empty: two brackets
+                # of one scale that the reform sets to the same threshold are
+                # refused. A collision with a bracket the reform leaves alone
+                # needs the engine's schedule, which a spec does not hold.
+                brackets: dict[str, list[tuple[str, str]]] = {}
+                for path in reform:
+                    found = BRACKET_THRESHOLD.fullmatch(path)
+                    if found:
+                        brackets.setdefault(found["scale"], []).append(
+                            (found["index"], path)
+                        )
+                for scale_path, members in sorted(brackets.items()):
+                    for year in planned_years(experiment, registry):
+                        taken: dict = {}
+                        for index, path in sorted(members):
+                            sets, value = revisions.window_value(
+                                annual, path, f"{year}-01-01"
+                            )
+                            if not sets:
+                                continue
+                            need(
+                                value not in taken,
+                                where + f"{scale_path} brackets {taken.get(value)} and "
+                                f"{index} share the threshold {value} in {year}; "
+                                "policyengine adds the rates of brackets that "
+                                "share a threshold",
+                            )
+                            taken.setdefault(value, index)
+
+                for path in sorted(set(reform) - set(outright)):
+                    for year in planned_years(experiment, registry):
+                        sets, _ = revisions.window_value(annual, path, f"{year}-01-01")
+                        if not sets:
+                            continue
+                        found, _ = revisions.window_value(stated, path, f"{year}-01-01")
+                        need(
+                            found,
+                            where + f"no current law stated for {path} in {year}",
+                        )
+        heads = experiment.get("heads") or []
+        need(bool(heads), where + "no heads")
+        variables: list[str] = []
+        mapped: list[str] = []
+        source_heads = measure_heads(measure)
+        for head in heads:
+            need(head.get("channel") in ("tax", "spending"), where + "head channel")
+            # A group with no OBR head is a PolicyEngine leg the OBR books
+            # under another group's head (the child benefit charge, an income
+            # tax charge, scored as reduced benefit spending).
+            need(
+                isinstance(head.get("obr_heads"), list),
+                where + "obr_heads must be a list",
+            )
+            obr_heads = head.get("obr_heads") or []
+            for name in obr_heads:
+                need(
+                    name in source_heads,
+                    where + f"OBR head {name!r} has no source row in this measure",
+                )
+            mapped += obr_heads
+            group = head.get("pe_variables") or []
+            need(bool(group), where + "a head group has no variables")
+            variables += group
+            sheet = head.get("base_sheet")
+            need(
+                sheet is None or sheet in bases["sheets"],
+                where + f"base_sheet {sheet!r} is not a forecasts database sheet",
+            )
+            need(
+                isinstance(head.get("pe_base_comparable", False), bool),
+                where + "pe_base_comparable must be a boolean",
+            )
+            need(
+                not head.get("pe_base_comparable") or sheet is not None,
+                where + "a comparable base needs a base_sheet",
+            )
+        need(bool(mapped), where + "no head group maps an OBR head")
+        need(
+            len(variables) == len(set(variables)), where + "a variable is in two heads"
+        )
+        need(len(mapped) == len(set(mapped)), where + "an OBR head is in two groups")
+        check = experiment.get("magnitude_check")
+        need(check in MAGNITUDE_CHECKS, where + "magnitude_check")
+        need(
+            check == "scaled" or bool(experiment.get("magnitude_reason")),
+            where + "a sign_only check needs magnitude_reason",
+        )
+        need(bool(experiment.get("note")), where + "note")
+        need(bool(experiment.get("sources")), where + "sources")
+        limit = experiment.get("years")
+        need(
+            limit is None
+            or (
+                isinstance(limit, list)
+                and bool(limit)
+                and all(isinstance(y, int) and not isinstance(y, bool) for y in limit)
+                and limit == sorted(set(limit))
+            ),
+            where + "years must be a sorted list of calendar years",
+        )
+        carried = experiment.get("carried_from_fy")
+        if carried is not None:
+            need(
+                carried in {row["fy"] for row in measure["source_rows"]},
+                where + "carried_from_fy must be one of the measure's costing years",
+            )
+            need(bool(experiment.get("carry_reason")), where + "carry_reason")
+            need(bool(limit), where + "a carried-forward experiment names its years")
+        mirror = experiment.get("mirror_of")
+        need(
+            mirror is None
+            or (
+                isinstance(mirror, str)
+                and re.fullmatch(r"[a-z0-9_]+:[a-z0-9_]+", mirror) is not None
+            ),
+            where + "mirror_of must be '<event>:<experiment_id>'",
+        )
+    if problems:
+        raise ExperimentError(f"{event}: " + "; ".join(problems))
+
+
+def experiment_years(registry: dict, population: dict) -> list[int]:
+    """Years both the event's costing window and the population cover."""
+    data = set(population["data_years"])
+    return sorted(year for year in registry["calendar_years"] if year in data)
+
+
+def planned_years(experiment: dict, registry: dict) -> list[int]:
+    """The years an experiment runs on any population that covers them: the
+    event's calendar years (limited to the years it names, if any), or, for
+    one carried forward past the window, the years it names."""
+    if experiment.get("carried_from_fy"):
+        return sorted(experiment["years"])
+    limit = experiment.get("years")
+    return sorted(y for y in registry["calendar_years"] if limit is None or y in limit)
+
+
+def experiment_grid_years(
+    experiment: dict, registry: dict, population: dict
+) -> list[int]:
+    """An experiment's years on a population: its planned years the data
+    covers."""
+    data = set(population["data_years"])
+    return [y for y in planned_years(experiment, registry) if y in data]
+
+
+def comparison_fy(experiment: dict, registry: dict, year: int) -> str:
+    """The OBR costing year an experiment-year is compared with."""
+    if year in registry["calendar_years"] or not experiment.get("carried_from_fy"):
+        return fy_label(year)
+    return experiment["carried_from_fy"]
+
+
+def plan(
+    spec: dict, registry: dict, population: dict, *, years=None, selected=None
+) -> dict:
+    ids = [e["experiment_id"] for e in spec["experiments"]]
+    chosen_ids = selected or ids
+    if set(chosen_ids) - set(ids):
+        raise ExperimentError(
+            f"unknown experiments {sorted(set(chosen_ids) - set(ids))}"
+        )
+    allowed = {
+        e["experiment_id"]: experiment_grid_years(e, registry, population)
+        for e in spec["experiments"]
+        if e["experiment_id"] in chosen_ids
+    }
+    available = sorted({y for ys in allowed.values() for y in ys})
+    chosen = sorted(set(years or available))
+    if set(chosen) - set(available):
+        raise ExperimentError(
+            f"years {sorted(set(chosen) - set(available))} are outside "
+            f"{available}, the event window on this population"
+        )
+    return {
+        "kind": "uk_policy_experiment_plan",
+        "label": LABEL,
+        "is_replay": False,
+        "event": spec["event_slug"],
+        "population_id": population["population_id"],
+        "years": [y for y in chosen if any(y in ys for ys in allowed.values())],
+        "event_years_outside_population": sorted(
+            set(registry["calendar_years"]) - set(population["data_years"])
+        ),
+        "experiments": [i for i in ids if i in chosen_ids],
+        "grid": [
+            {"experiment_id": e["experiment_id"], "year": y}
+            for e in spec["experiments"]
+            if e["experiment_id"] in chosen_ids
+            for y in chosen
+            if y in allowed[e["experiment_id"]]
+        ],
+    }
+
+
+# --- the OBR side ----------------------------------------------------------------
+
+
+def obr_values(measure: dict, fy: str, mapped_heads: list[str]) -> dict:
+    """The registry's rows for one fiscal year, split by whether a head group
+    maps them. Decimal throughout: mapped + unmapped = the FY's rows."""
+    mapped = Decimal(0)
+    unmapped = Decimal(0)
+    by_head: dict[str, Decimal] = {}
+    for row in measure["source_rows"]:
+        if row["fy"] != fy:
+            continue
+        value = Decimal(row["value_gbp_decimal"])
+        by_head[row["tax_head"]] = by_head.get(row["tax_head"], Decimal(0)) + value
+        if row["tax_head"] in mapped_heads:
+            mapped += value
+        else:
+            unmapped += value
+    return {
+        "mapped_gbp": float(mapped),
+        "unmapped_gbp": float(unmapped),
+        "by_head_gbp": {head: float(value) for head, value in sorted(by_head.items())},
+        "mapped_decimal": str(mapped),
+        "unmapped_decimal": str(unmapped),
+    }
+
+
+def forecast(bases: dict, sheet: str | None, vintage: str, fy: str) -> float | None:
+    if sheet is None:
+        return None
+    cell = (bases["forecasts"].get(sheet, {}).get(vintage) or {}).get(fy)
+    return None if cell is None else cell["value_gbp_bn"] * 1e9
+
+
+def newest_forecast(
+    bases: dict, sheet: str | None, fy: str
+) -> tuple[str, float] | None:
+    if sheet is None:
+        return None
+    for vintage in reversed(bases["vintages"]):
+        value = forecast(bases, sheet, vintage, fy)
+        if value is not None:
+            return vintage, value
+    return None
+
+
+def group_scale(
+    head: dict,
+    *,
+    pe_base: float | None,
+    bases: dict,
+    vintage: str,
+    fy: str,
+    modern_fy: str | None = None,
+) -> dict:
+    """The factor that carries one head group's OBR costing to the modern
+    population (docs/uk_replay/POLICY_EXPERIMENTS.md, Scaling). ``fy`` is the
+    costing year; ``modern_fy`` the run year, which differs for an
+    experiment carried forward past the event's window."""
+    modern_fy = modern_fy or fy
+    sheet = head.get("base_sheet")
+    event_base = forecast(bases, sheet, vintage, fy)
+    if event_base is None or event_base <= 0:
+        return {"basis": "unscaled", "factor": 1.0, "base_sheet": sheet}
+    if head.get("pe_base_comparable") and pe_base is not None and pe_base > 0:
+        return {
+            "basis": "pe_base_over_obr_event_forecast",
+            "factor": pe_base / event_base,
+            "base_sheet": sheet,
+            "obr_event_forecast_gbp": event_base,
+            "pe_base_gbp": pe_base,
+        }
+    newest = newest_forecast(bases, sheet, modern_fy)
+    if newest is None:
+        return {"basis": "unscaled", "factor": 1.0, "base_sheet": sheet}
+    return {
+        "basis": "obr_newest_over_obr_event_forecast",
+        "factor": newest[1] / event_base,
+        "base_sheet": sheet,
+        "obr_event_forecast_gbp": event_base,
+        "obr_newest_forecast_gbp": newest[1],
+        "obr_newest_vintage": newest[0],
+    }
+
+
+# --- artifacts -----------------------------------------------------------------
+
+
+def orient(raw: float, channel: str, construction: str) -> tuple[float, float]:
+    """(literal alternate - modern in Exchequer terms, announced effect)."""
+    from pipeline import compute_uk_obr_costings as fiscal
+
+    return fiscal.orient_exchequer_effect(raw, channel, CONSTRUCTIONS[construction])
+
+
+def head_effects(experiment: dict, modern: dict, alternate: dict) -> dict:
+    """Announced-orientation effects per head group and in total."""
+    groups = []
+    for head in experiment["heads"]:
+        raw = sum(alternate[v] - modern[v] for v in head["pe_variables"])
+        literal, announced = orient(raw, head["channel"], experiment["construction"])
+        if not math.isfinite(announced):
+            raise ExperimentError(f"{experiment['experiment_id']}: non-finite effect")
+        groups.append(
+            {
+                "obr_heads": head["obr_heads"],
+                "pe_variables": head["pe_variables"],
+                "channel": head["channel"],
+                "literal_alternate_minus_modern_gbp": literal,
+                "effect_gbp": announced,
+                "modern_gbp": sum(modern[v] for v in head["pe_variables"]),
+                "alternate_gbp": sum(alternate[v] for v in head["pe_variables"]),
+            }
+        )
+    # math.fsum: exact, so the total is the same whatever order the groups take.
+    return {"groups": groups, "effect_gbp": math.fsum(g["effect_gbp"] for g in groups)}
+
+
+def touched_paths(experiment: dict) -> list[str]:
+    return sorted(set(experiment["reform"]) | set(experiment.get("scale") or {}))
+
+
+def executed(experiment: dict, year: int, modern_values: dict) -> dict:
+    """The experiment as run in one year: a scaled path becomes that year's
+    modern processed value times its factor, so every later uprating in this
+    engine's own law is kept, whatever the engine."""
+    scale = experiment.get("scale") or {}
+    if not scale:
+        return experiment
+    reform = {path: dict(windows) for path, windows in experiment["reform"].items()}
+    for path, factor in sorted(scale.items()):
+        value = modern_values.get(path)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ExperimentError(f"{path}: no numeric modern value to scale in {year}")
+        reform[path] = {f"{year}-01-01.{year}-12-31": value * factor}
+    return {**experiment, "reform": reform}
+
+
+def intended_alternate(experiment: dict, year: int, modern_values: dict) -> dict:
+    from pipeline import compute_uk_event as event_runner
+    from pipeline import uk_construction_revisions as revisions
+
+    reform = event_runner.annual_reform(experiment["reform"])
+    return {
+        path: revisions.intended_value(
+            reform, path, year, lambda p, d: modern_values[p]
+        )
+        for path in touched_paths(experiment)
+    }
+
+
+def parameter_record(experiment, year, modern_values, alternate_values) -> dict:
+    """Intent against the processed values of both worlds, path by path."""
+    from pipeline import compute_uk_event as event_runner
+
+    intended = intended_alternate(experiment, year, modern_values)
+    rows = {}
+    for path in touched_paths(experiment):
+        rows[path] = {
+            "modern_processed": modern_values.get(path),
+            "alternate_intended": intended[path],
+            "alternate_processed": None
+            if alternate_values is None
+            else alternate_values.get(path),
+            "changes_modern_law": not event_runner.processed_values_match(
+                intended[path], modern_values.get(path)
+            ),
+            "reached_simulation": None
+            if alternate_values is None
+            else event_runner.processed_values_match(
+                intended[path], alternate_values.get(path)
+            ),
+        }
+    return rows
+
+
+def base_artifact(
+    spec: dict, registry: dict, population: dict, experiment: dict, year: int
+) -> dict:
+    return {
+        "schema_version": 1,
+        "kind": ARTIFACT_KIND,
+        "label": LABEL,
+        "label_text": spec["label_text"],
+        "is_replay": False,
+        "event": spec["event_slug"],
+        "event_name": registry["event_name"],
+        "experiment_id": experiment["experiment_id"],
+        "measure_key": experiment["measure_key"],
+        "construction": experiment["construction"],
+        "reform": experiment["reform"],
+        "scale": experiment.get("scale"),
+        "year": year,
+        "fy": fy_label(year),
+        "population_id": population["population_id"],
+        "pairing": population.get("pairing"),
+        "dataset_sha256": population["identity"]["dataset"]["sha256"],
+        "sign_convention": "positive_gain_to_exchequer",
+    }
+
+
+def build_result(
+    spec, registry, population, experiment, year, *, modern, alternate, registry_sha256
+) -> dict:
+    """Numerical facts only: identical inputs give identical bytes."""
+    artifact = base_artifact(spec, registry, population, experiment, year)
+    artifact["registry_sha256"] = registry_sha256
+    parameters = parameter_record(
+        experiment,
+        year,
+        modern["processed_parameter_values"],
+        alternate["processed_parameter_values"] if alternate else None,
+    )
+    artifact["parameters"] = parameters
+    if alternate is None:
+        return artifact
+    effects = head_effects(
+        experiment, modern["aggregates_gbp"], alternate["aggregates_gbp"]
+    )
+    artifact.update(
+        {
+            "status": "computed",
+            "head_groups": effects["groups"],
+            "effect_gbp": effects["effect_gbp"],
+            "engine_version": population["identity"]["packages"]["policyengine-uk"][
+                "version"
+            ],
+            "data_built_with_model_version": alternate["policyengine_bundle"].get(
+                "model_version"
+            ),
+            "policyengine_version": alternate["policyengine_bundle"].get(
+                "policyengine_version"
+            ),
+            "data_build_id": alternate["policyengine_bundle"].get(
+                "certified_data_build_id"
+            ),
+            "dataset_sha256_before": alternate["dataset_sha256_before"],
+            "dataset_sha256_after": alternate["dataset_sha256_after"],
+        }
+    )
+    return artifact
+
+
+def crash_result(
+    spec, registry, population, experiment, year, *, modern, error, registry_sha256
+) -> dict:
+    """A simulation that raised: the type and the first message line only."""
+    artifact = base_artifact(spec, registry, population, experiment, year)
+    message = str(error).strip().splitlines()[0] if str(error).strip() else ""
+    frames = traceback.extract_tb(error.__traceback__)
+    engine_frames = [
+        f"{Path(frame.filename).name}:{frame.lineno} {frame.name}"
+        for frame in frames
+        if "policyengine" in frame.filename
+    ]
+    artifact.update(
+        {
+            "registry_sha256": registry_sha256,
+            "status": "crashed",
+            "error_type": type(error).__name__,
+            "error_message": message[:500],
+            "error_frames": engine_frames[-6:],
+            "parameters": parameter_record(
+                experiment, year, modern["processed_parameter_values"], None
+            ),
+        }
+    )
+    return artifact
+
+
+# --- classification ------------------------------------------------------------
+
+
+def modern_assumption_failures(experiment: dict, artifact: dict) -> list[dict]:
+    """Touched paths whose processed modern value differs from the value the
+    construction assumed for that year: the engine's current law is not the
+    law the counterfactual was written against."""
+    from pipeline import compute_uk_event as event_runner
+    from pipeline import uk_construction_revisions as revisions
+
+    assumes = experiment.get("assumes_modern") or {}
+    if not assumes or "parameters" not in artifact:
+        return []
+    annual = event_runner.annual_reform(assumes)
+    out = []
+    for path in sorted(assumes):
+        found, value = revisions.window_value(annual, path, f"{artifact['year']}-01-01")
+        if not found:
+            continue
+        processed = artifact["parameters"].get(path, {}).get("modern_processed")
+        if not event_runner.processed_values_match(value, processed):
+            out.append({"path": path, "assumed": value, "modern_processed": processed})
+    return out
+
+
+def classify(
+    artifact: dict,
+    *,
+    obr: dict,
+    scales: list[dict],
+    magnitude_check: str,
+    assumption_failures: list | None = None,
+) -> dict:
+    """Pure: an experiment-year's anomaly codes from its artifact, its OBR rows
+    and its group scales (one per head group, in the experiment's order).
+    ``assumption_failures`` (modern_assumption_failures) adds
+    modern_law_differs alongside the other codes."""
+    differs = ["modern_law_differs"] if assumption_failures else []
+    if artifact.get("status") == "crashed":
+        return {"codes": ["crash", *differs], "ratio_raw": None, "ratio_scaled": None}
+    codes: list[str] = list(differs)
+    parameters = artifact["parameters"].values()
+    if any(row["reached_simulation"] is False for row in parameters):
+        codes.append("reform_not_applied")
+    changes = any(row["changes_modern_law"] for row in parameters)
+    pe = artifact["effect_gbp"]
+    mapped = obr["mapped_gbp"]
+    expected = sum(
+        group["obr_mapped_gbp"] * scale["factor"]
+        for group, scale in zip(obr["groups"], scales)
+    )
+    ratio_raw = pe / mapped if abs(mapped) >= OBR_ZERO else None
+    ratio_scaled = pe / expected if abs(expected) >= OBR_ZERO else None
+    out = {
+        "ratio_raw": ratio_raw,
+        "ratio_scaled": ratio_scaled,
+        "expected_gbp": expected,
+    }
+    if not changes:
+        codes.append("construction_noop")
+        out["codes"] = codes
+        return out
+    if abs(pe) < MOVE_FLOOR:
+        codes.append("inert")
+        out["codes"] = codes
+        out["inert_severity"] = (
+            "investigate" if abs(mapped) >= SIGN_MIN_OBR else "check"
+        )
+        return out
+    if abs(mapped) < OBR_ZERO:
+        if abs(pe) >= OBR_ZERO_PE_MOVES:
+            codes.append("obr_zero_pe_moves")
+        out["codes"] = codes
+        return out
+    if (
+        abs(mapped) >= SIGN_MIN_OBR
+        and pe * mapped < 0
+        and abs(pe) >= max(SIGN_MIN_PE, SIGN_MIN_PE_SHARE * abs(mapped))
+    ):
+        codes.append("sign_mismatch")
+    mapped_share = mapped_head_share(obr)
+    out["mapped_share"] = mapped_share
+    if (
+        magnitude_check == "scaled"
+        and "sign_mismatch" not in codes
+        and abs(expected) >= MAGNITUDE_MIN_EXPECTED
+        and mapped_share >= MAGNITUDE_MIN_MAPPED_SHARE
+        and ratio_scaled is not None
+    ):
+        size = abs(ratio_scaled)
+        if ratio_scaled < 0:
+            pass  # opposite sign below the sign floors: not a magnitude question
+        elif size > BAND_INVESTIGATE or size < 1 / BAND_INVESTIGATE:
+            codes.append("magnitude_outside_10x")
+        elif size > BAND_CHECK or size < 1 / BAND_CHECK:
+            codes.append("magnitude_outside_3x")
+    out["codes"] = codes
+    return out
+
+
+def mapped_head_share(obr: dict) -> float:
+    """The share of the OBR's costing on the heads a group maps, by each
+    head's absolute value, so heads that offset (an incorporation response's
+    NICs gain against its income tax loss) do not hide what is mapped.
+    Without a per-head breakdown, the mapped and unmapped totals."""
+    by_head = obr.get("by_head_gbp")
+    if by_head:
+        mapped = {
+            h for group in obr.get("groups", []) for h in group.get("obr_heads", [])
+        }
+        total = sum(abs(v) for v in by_head.values())
+        return (
+            sum(abs(v) for h, v in by_head.items() if h in mapped) / total
+            if total
+            else 0.0
+        )
+    total = abs(obr["mapped_gbp"]) + abs(obr["unmapped_gbp"])
+    return abs(obr["mapped_gbp"]) / total if total else 0.0
+
+
+def severity(code: str, classification: dict) -> str:
+    if code == "inert":
+        return classification.get("inert_severity", "investigate")
+    return SEVERITY[code]
+
+
+# --- engine runs -----------------------------------------------------------------
+
+
+def experiment_preflight(population: dict, *, dataset_source: Path | None) -> dict:
+    """Mirror compute_uk_event.variant_preflight for an experiment population."""
+    from pipeline import compute_uk_ab2025 as worlds
+    from pipeline import compute_uk_event as event_runner
+    from pipeline import compute_uk_obr_costings as fiscal
+    from pipeline import uk_replay_variants as variants
+
+    view = variant_view(population)
+    installed = variants.verify_installed(view)
+    variants.isolate_certification_environment()
+    fiscal.configure_offline()
+    worlds.configure_offline()
+    runtime_root = (RUNTIME_ROOT / population["population_id"]).resolve()
+    dataset = variants.materialize_dataset(view, runtime_root, source=dataset_source)
+    os.chdir(runtime_root)
+    variants.isolate_bytecode(runtime_root)
+    import policyengine as pe
+
+    event_runner.import_engine()
+    release_bundle = dict(pe.uk.uk_latest.release_bundle)
+    variants.verify_release_bundle(view, release_bundle)
+    return event_runner.variant_pre(
+        view, release_bundle=release_bundle, dataset=dataset, installed=installed
+    )
+
+
+def read_check(experiments: list[dict], year: int, world: str) -> list[dict]:
+    """A parameter readback request for every touched path (values ignored)."""
+    return [
+        {
+            "event": "policy_experiment",
+            "measure_key": e["experiment_id"],
+            "year": year,
+            "world": world,
+            "intended_values": {path: None for path in touched_paths(e)},
+        }
+        for e in experiments
+    ]
+
+
+def run_year(
+    spec, registry, population, experiments, year, pre, *, registry_sha256, output_dir
+) -> list[dict]:
+    """Modern law once, then each experiment's alternate world."""
+    from pipeline import compute_uk_event as event_runner
+
+    variables = sorted(
+        {v for e in experiments for head in e["heads"] for v in head["pe_variables"]}
+    )
+    started = time.perf_counter()
+    print(f"[{year}] modern law ({len(variables)} variables)", flush=True)
+    modern = event_runner.run_sim(
+        year,
+        variables,
+        None,
+        {**pre, "parameter_checks": read_check(experiments, year, "modern_law")},
+    )
+    timings = [
+        {"world": "modern_law", "year": year, "seconds": time.perf_counter() - started}
+    ]
+    written = []
+    for planned in experiments:
+        started = time.perf_counter()
+        experiment = planned
+        own = sorted({v for head in experiment["heads"] for v in head["pe_variables"]})
+        try:
+            experiment = executed(planned, year, modern["processed_parameter_values"])
+            alternate = event_runner.run_sim(
+                year,
+                own,
+                experiment["reform"],
+                {
+                    **pre,
+                    "parameter_checks": read_check([experiment], year, "alternate"),
+                },
+            )
+        except Exception as error:  # noqa: BLE001 - a crash is a finding
+            artifact = crash_result(
+                spec,
+                registry,
+                population,
+                experiment,
+                year,
+                modern=modern,
+                error=error,
+                registry_sha256=registry_sha256,
+            )
+            print(
+                f"[{year}] {experiment['experiment_id']}: CRASH {artifact['error_type']}",
+                flush=True,
+            )
+        else:
+            artifact = build_result(
+                spec,
+                registry,
+                population,
+                experiment,
+                year,
+                modern=modern,
+                alternate=alternate,
+                registry_sha256=registry_sha256,
+            )
+            print(
+                f"[{year}] {experiment['experiment_id']}: "
+                f"{artifact['effect_gbp'] / 1e9:+.3f}bn",
+                flush=True,
+            )
+        alternate = None
+        gc.collect()
+        path = output_dir / f"{experiment['experiment_id']}_{year}.json"
+        path.write_bytes(canonical_bytes(artifact))
+        written.append(
+            {"path": path.name, "sha256": sha256_bytes(canonical_bytes(artifact))}
+        )
+        timings.append(
+            {
+                "experiment_id": experiment["experiment_id"],
+                "year": year,
+                "seconds": time.perf_counter() - started,
+            }
+        )
+    baseline_record = {
+        "kind": "uk_policy_experiment_modern_law",
+        "label": LABEL,
+        "is_replay": False,
+        "event": spec["event_slug"],
+        "year": year,
+        "population_id": population["population_id"],
+        "aggregates_gbp": {v: modern["aggregates_gbp"][v] for v in variables},
+        "engine_version": population["identity"]["packages"]["policyengine-uk"][
+            "version"
+        ],
+        "pairing": population["pairing"],
+        "data_build_id": modern["policyengine_bundle"].get("certified_data_build_id"),
+        "dataset_sha256": modern["dataset_sha256_after"],
+    }
+    path = output_dir / f"MODERN_LAW_{year}.json"
+    path.write_bytes(canonical_bytes(baseline_record))
+    written.append(
+        {"path": path.name, "sha256": sha256_bytes(canonical_bytes(baseline_record))}
+    )
+    (output_dir / f"RUN_LOG_{year}.json").write_bytes(
+        canonical_bytes({"timings": timings})
+    )
+    return written
+
+
+def run(args) -> int:
+    from pipeline import compute_uk_ab2025 as worlds
+    from pipeline import compute_uk_obr_costings as fiscal
+
+    fiscal.configure_offline()
+    worlds.configure_offline()
+    population = get_population(args.population)
+    spec = load_spec(args.event)
+    registry, registry_sha256 = load_registry(spec)
+    bases = load_bases()
+    validate_spec(spec, registry, bases)
+    planned = plan(
+        spec, registry, population, years=args.years, selected=args.experiments
+    )
+    output_dir = contained_output_dir(
+        population["population_id"], args.event, args.output_dir
+    )
+    dataset_file = args.dataset_file.resolve() if args.dataset_file else None
+    pre = experiment_preflight(population, dataset_source=dataset_file)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    chosen = [
+        e for e in spec["experiments"] if e["experiment_id"] in planned["experiments"]
+    ]
+    files = []
+    for year in planned["years"]:
+        cells = {c["experiment_id"] for c in planned["grid"] if c["year"] == year}
+        if not cells:
+            continue
+        files += run_year(
+            spec,
+            registry,
+            population,
+            [e for e in chosen if e["experiment_id"] in cells],
+            year,
+            pre,
+            registry_sha256=registry_sha256,
+            output_dir=output_dir,
+        )
+    manifest = {
+        **planned,
+        "kind": "uk_policy_experiment_manifest",
+        "label_text": spec["label_text"],
+        "spec_sha256": sha256_bytes(spec_path(args.event).read_bytes()),
+        "registry_sha256": registry_sha256,
+        "population_identity": population["identity"],
+        "files": sorted(files, key=lambda row: row["path"]),
+    }
+    (output_dir / "EXPERIMENT_MANIFEST.json").write_bytes(canonical_bytes(manifest))
+    print(f"wrote {len(files)} files to {output_dir}", flush=True)
+    return 0
+
+
+# --- findings ----------------------------------------------------------------------
+
+
+def load_diagnoses(path: Path = DIAGNOSES_PATH) -> list[dict]:
+    if not path.exists():
+        return []
+    document = json.loads(path.read_bytes())
+    rows = document.get("diagnoses", [])
+    for row in rows:
+        if row.get("status") not in DIAGNOSIS_STATUSES:
+            raise ExperimentError(f"diagnosis status {row.get('status')!r}")
+        if row.get("code") not in (*SEVERITY, "inert", "model_change"):
+            raise ExperimentError(f"diagnosis code {row.get('code')!r}")
+    return rows
+
+
+def diagnosis_for(
+    diagnoses: list[dict],
+    event: str,
+    eid: str,
+    year: int,
+    code: str,
+    population_id: str | None = None,
+):
+    for row in diagnoses:
+        if (
+            row.get("event") == event
+            and row.get("experiment_id") == eid
+            and row.get("code") == code
+            and (row.get("years") is None or year in row["years"])
+            and (row.get("populations") is None or population_id in row["populations"])
+        ):
+            return row
+    return None
+
+
+def obr_for(experiment: dict, measure: dict, fy: str) -> dict:
+    mapped_heads = [h for head in experiment["heads"] for h in head["obr_heads"]]
+    values = obr_values(measure, fy, mapped_heads)
+    values["groups"] = [
+        {
+            "obr_heads": head["obr_heads"],
+            "obr_mapped_gbp": float(
+                sum(
+                    (
+                        Decimal(row["value_gbp_decimal"])
+                        for row in measure["source_rows"]
+                        if row["fy"] == fy and row["tax_head"] in head["obr_heads"]
+                    ),
+                    Decimal(0),
+                )
+            ),
+        }
+        for head in experiment["heads"]
+    ]
+    return values
+
+
+def evaluate(
+    artifact: dict,
+    experiment: dict,
+    measure: dict,
+    bases: dict,
+    vintage: str,
+    modern: dict | None,
+    registry: dict,
+) -> dict:
+    """One experiment-year: OBR values, scales, ratios and anomaly codes."""
+    year = artifact["year"]
+    fy = comparison_fy(experiment, registry, year)
+    obr = obr_for(experiment, measure, fy)
+    scales = []
+    for head in experiment["heads"]:
+        pe_base = None
+        if modern is not None and head.get("pe_base_comparable"):
+            sign = 1.0 if head["channel"] == "tax" else -1.0
+            pe_base = abs(
+                sign * sum(modern["aggregates_gbp"][v] for v in head["pe_variables"])
+            )
+        scales.append(
+            group_scale(
+                head,
+                pe_base=pe_base,
+                bases=bases,
+                vintage=vintage,
+                fy=fy,
+                modern_fy=fy_label(year),
+            )
+        )
+    failures = modern_assumption_failures(experiment, artifact)
+    result = classify(
+        artifact,
+        obr=obr,
+        scales=scales,
+        magnitude_check=experiment["magnitude_check"],
+        assumption_failures=failures,
+    )
+    return {
+        "obr": obr,
+        "scales": scales,
+        "comparison_fy": fy,
+        "modern_assumption_failures": failures,
+        **result,
+    }
+
+
+def findings(
+    event: str, population_id: str | None = None, *, root: Path = ROOT
+) -> dict:
+    """Engine-free: classify a completed run's artifacts and join diagnoses."""
+    population = get_population(population_id)
+    spec = load_spec(event, root=root)
+    registry, registry_sha256 = load_registry(spec, root=root)
+    bases = load_bases()
+    validate_spec(spec, registry, bases)
+    directory = contained_output_dir(population["population_id"], event, root=root)
+    manifest = json.loads((directory / "EXPERIMENT_MANIFEST.json").read_bytes())
+    if manifest.get("registry_sha256") != registry_sha256:
+        raise ExperimentError("the run used another registry")
+    if manifest.get("spec_sha256") != sha256_bytes(
+        (root / spec_path(event).relative_to(ROOT)).read_bytes()
+    ):
+        raise ExperimentError(f"{event}: the run used another spec; rerun it")
+    for row in manifest["files"]:
+        if sha256_bytes((directory / row["path"]).read_bytes()) != row["sha256"]:
+            raise ExperimentError(f"{row['path']}: bytes differ from the manifest")
+    measures = {m["measure_key"]: m for m in registry["measures"]}
+    diagnoses = load_diagnoses()
+    experiments = {e["experiment_id"]: e for e in spec["experiments"]}
+    rows = []
+    for cell in manifest["grid"]:
+        eid, year = cell["experiment_id"], cell["year"]
+        experiment = experiments[eid]
+        artifact = json.loads((directory / f"{eid}_{year}.json").read_bytes())
+        modern_path = directory / f"MODERN_LAW_{year}.json"
+        modern = json.loads(modern_path.read_bytes()) if modern_path.exists() else None
+        evaluated = evaluate(
+            artifact,
+            experiment,
+            measures[experiment["measure_key"]],
+            bases,
+            spec["obr_forecast_vintage"],
+            modern,
+            registry,
+        )
+        anomalies = []
+        for code in evaluated["codes"]:
+            found = diagnosis_for(
+                diagnoses, event, eid, year, code, population["population_id"]
+            )
+            anomalies.append(
+                {
+                    "code": code,
+                    "severity": severity(code, evaluated),
+                    "diagnosis": found,
+                }
+            )
+        rows.append(
+            {
+                "experiment_id": eid,
+                "measure_key": experiment["measure_key"],
+                "title": measures[experiment["measure_key"]]["title"],
+                "year": year,
+                "fy": fy_label(year),
+                "comparison_fy": evaluated["comparison_fy"],
+                "carried_forward": evaluated["comparison_fy"] != fy_label(year),
+                "status": artifact.get("status"),
+                "effect_gbp": artifact.get("effect_gbp"),
+                "group_effects_gbp": {
+                    "+".join(group["pe_variables"]): group["effect_gbp"]
+                    for group in artifact.get("head_groups", [])
+                },
+                "error_type": artifact.get("error_type"),
+                "error_message": artifact.get("error_message"),
+                "obr_mapped_gbp": evaluated["obr"]["mapped_gbp"],
+                "obr_unmapped_gbp": evaluated["obr"]["unmapped_gbp"],
+                "expected_gbp": evaluated.get("expected_gbp"),
+                "ratio_raw": evaluated.get("ratio_raw"),
+                "ratio_scaled": evaluated.get("ratio_scaled"),
+                "scales": evaluated["scales"],
+                "magnitude_check": experiment["magnitude_check"],
+                "modern_assumption_failures": evaluated["modern_assumption_failures"],
+                "anomalies": anomalies,
+            }
+        )
+    return {
+        "schema_version": 1,
+        "kind": "uk_policy_experiment_findings",
+        "label": LABEL,
+        "label_text": spec["label_text"],
+        "is_replay": False,
+        "event": event,
+        "population_id": population["population_id"],
+        "obr_forecast_vintage": spec["obr_forecast_vintage"],
+        "registry_sha256": registry_sha256,
+        "rows": rows,
+    }
+
+
+def mirror_findings(all_findings: list[dict], specs: dict[str, dict]) -> list[dict]:
+    """Mirrored experiments run the same simulation from opposite sides, so
+    every head group of PolicyEngine variables they share must return exact
+    negatives. A group only one of them maps is not compared."""
+    groups = {
+        (f["event"], row["experiment_id"], row["year"]): row.get("group_effects_gbp")
+        for f in all_findings
+        for row in f["rows"]
+    }
+    out = []
+    seen = set()
+    for event, spec in specs.items():
+        for experiment in spec["experiments"]:
+            mirror = experiment.get("mirror_of")
+            if not mirror:
+                continue
+            pair = tuple(sorted((f"{event}:{experiment['experiment_id']}", mirror)))
+            if pair in seen:
+                continue  # each pair once, from the side that sorts first
+            seen.add(pair)
+            other_event, other_id = mirror.split(":")
+            for (e, eid, year), mine in groups.items():
+                if e != event or eid != experiment["experiment_id"]:
+                    continue
+                theirs = groups.get((other_event, other_id, year))
+                if not mine or not theirs:
+                    continue
+                for variables in sorted(set(mine) & set(theirs)):
+                    a, b = mine[variables], theirs[variables]
+                    scale = max(abs(a), abs(b), 1.0)
+                    out.append(
+                        {
+                            "pair": [f"{event}:{eid}", mirror],
+                            "year": year,
+                            "pe_variables": variables,
+                            "effects_gbp": [a, b],
+                            "agrees": abs(a + b) <= MIRROR_TOLERANCE * scale,
+                        }
+                    )
+    return out
+
+
+def money(value: float | None) -> str:
+    if value is None:
+        return ""
+    return f"{value / 1e9:+,.3f}"
+
+
+def render_findings(document: dict) -> str:
+    lines = [
+        f"# Policy experiments: {document['event']}",
+        "",
+        f"**{document['label_text']}**",
+        "",
+        (
+            f"Population `{document['population_id']}`. OBR costings are the "
+            f"registry's source rows; scaling uses the {document['obr_forecast_vintage']} "
+            "forecast (docs/uk_replay/POLICY_EXPERIMENTS.md). £bn, positive = gain "
+            "to the Exchequer."
+        ),
+        "",
+        "| Experiment | FY | PE | OBR mapped | OBR × scale | Scaled ratio | Anomalies |",
+        "|---|---|---:|---:|---:|---:|---|",
+    ]
+    for row in document["rows"]:
+        anomalies = ", ".join(
+            f"{a['code']} ({a['severity']}"
+            + (f"; {a['diagnosis']['status']}" if a["diagnosis"] else "; undiagnosed")
+            + ")"
+            for a in row["anomalies"]
+        )
+        effect = (
+            money(row["effect_gbp"])
+            if row["status"] == "computed"
+            else f"crash: {row['error_type']}"
+        )
+        ratio = "" if row["ratio_scaled"] is None else f"{row['ratio_scaled']:.2f}"
+        lines.append(
+            f"| `{row['experiment_id']}` | {row['fy']} | {effect} | "
+            f"{money(row['obr_mapped_gbp'])} | {money(row['expected_gbp'])} | {ratio} | {anomalies} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def write_findings(event: str, population_id: str | None = None) -> Path:
+    document = findings(event, population_id)
+    directory = contained_output_dir(document["population_id"], event)
+    (directory / "FINDINGS.json").write_bytes(canonical_bytes(document))
+    (directory / "FINDINGS.md").write_text(render_findings(document))
+    return directory
+
+
+def summary(population_id: str | None = None) -> dict:
+    """Every event this population has run: findings, mirrors, and each
+    comparable head's modern base against the OBR's newest forecast."""
+    population = get_population(population_id)
+    root = output_root(population["population_id"])
+    documents, specs = [], {}
+    for directory in sorted(p for p in root.glob("*") if p.is_dir()):
+        if not (directory / "EXPERIMENT_MANIFEST.json").exists():
+            continue
+        documents.append(findings(directory.name, population["population_id"]))
+        specs[directory.name] = load_spec(directory.name)
+    bases = load_bases()
+    coverage = {}
+    for document in documents:
+        for row in document["rows"]:
+            for scale in row["scales"]:
+                if scale["basis"] != "pe_base_over_obr_event_forecast":
+                    continue
+                newest = newest_forecast(bases, scale["base_sheet"], row["fy"])
+                if newest is None:
+                    continue
+                coverage[(scale["base_sheet"], row["fy"])] = {
+                    "base_sheet": scale["base_sheet"],
+                    "fy": row["fy"],
+                    "pe_base_gbp": scale["pe_base_gbp"],
+                    "obr_newest_vintage": newest[0],
+                    "obr_newest_forecast_gbp": newest[1],
+                    "pe_over_obr": scale["pe_base_gbp"] / newest[1],
+                }
+    counts: dict[str, int] = {}
+    for document in documents:
+        for row in document["rows"]:
+            for anomaly in row["anomalies"]:
+                key = f"{anomaly['code']}:{'diagnosed' if anomaly['diagnosis'] else 'undiagnosed'}"
+                counts[key] = counts.get(key, 0) + 1
+    model_changes = []
+    if population.get("pairing") == "model_swap":
+        model_changes = against_certified_pair(population, documents)
+    return {
+        "schema_version": 1,
+        "kind": "uk_policy_experiment_summary",
+        "label": LABEL,
+        "is_replay": False,
+        "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
+        "population_id": population["population_id"],
+        "pairing": population.get("pairing"),
+        "events": [d["event"] for d in documents],
+        "experiment_years": sum(len(d["rows"]) for d in documents),
+        "anomaly_counts": dict(sorted(counts.items())),
+        "mirrors": mirror_findings(documents, specs),
+        "baseline_coverage": [coverage[k] for k in sorted(coverage)],
+        "model_changes": model_changes,
+    }
+
+
+MODEL_CHANGE_FLOOR = 10e6
+MODEL_CHANGE_SHARE = 0.05
+
+
+def against_certified_pair(population: dict, documents: list[dict]) -> list[dict]:
+    """A model swap against the certified pair on the same data: every
+    experiment-year whose effect moved by at least £10m and 5%. Same data,
+    so each is a model change between the two engines: a fix or a bug."""
+    document = load_populations()
+    pair = next(
+        (
+            record
+            for record in document["populations"]
+            if record.get("pairing") == "certified_pair"
+            and record["identity"]["dataset"]["sha256"]
+            == population["identity"]["dataset"]["sha256"]
+        ),
+        None,
+    )
+    if pair is None:
+        return []
+    diagnoses = load_diagnoses()
+    out = []
+    for mine in documents:
+        path = output_root(pair["population_id"]) / mine["event"] / "FINDINGS.json"
+        if not path.exists():
+            continue
+        theirs = {
+            (row["experiment_id"], row["year"]): row
+            for row in json.loads(path.read_bytes())["rows"]
+        }
+        for row in mine["rows"]:
+            other = theirs.get((row["experiment_id"], row["year"]))
+            if other is None:
+                continue
+            a, b = other.get("effect_gbp"), row.get("effect_gbp")
+            if a is None or b is None:
+                if (a is None) != (b is None):
+                    out.append(
+                        {
+                            "event": mine["event"],
+                            "experiment_id": row["experiment_id"],
+                            "year": row["year"],
+                            "certified_pair_gbp": a,
+                            "model_swap_gbp": b,
+                            "change": "status",
+                        }
+                    )
+                continue
+            change = b - a
+            if abs(change) >= max(
+                MODEL_CHANGE_FLOOR, MODEL_CHANGE_SHARE * max(abs(a), abs(b))
+            ):
+                out.append(
+                    {
+                        "event": mine["event"],
+                        "experiment_id": row["experiment_id"],
+                        "year": row["year"],
+                        "certified_pair_gbp": a,
+                        "model_swap_gbp": b,
+                        "change_gbp": change,
+                        "groups_certified_pair": other.get("group_effects_gbp"),
+                        "groups_model_swap": row.get("group_effects_gbp"),
+                        "diagnosis": diagnosis_for(
+                            diagnoses,
+                            mine["event"],
+                            row["experiment_id"],
+                            row["year"],
+                            "model_change",
+                            population["population_id"],
+                        ),
+                    }
+                )
+    return out
+
+
+def render_summary(document: dict) -> str:
+    lines = [
+        f"# Policy experiments: {document['population_id']}",
+        "",
+        f"**{document['label_text']}**",
+        "",
+        (
+            f"{len(document['events'])} events, {document['experiment_years']} experiment-years "
+            f"({document['pairing']}). Per-event detail is in each event's FINDINGS.md."
+        ),
+        "",
+        "## Anomalies",
+        "",
+        "| Code | Diagnosed | Count |",
+        "|---|---|---:|",
+    ]
+    for key, count in document["anomaly_counts"].items():
+        code, state = key.split(":")
+        lines.append(f"| `{code}` | {state} | {count} |")
+    lines += [
+        "",
+        "## Mirrors",
+        "",
+        "| Pair | FY | Variables | Effects (£bn) | Exact negatives |",
+        "|---|---|---|---|---|",
+    ]
+    for row in document["mirrors"]:
+        lines.append(
+            f"| `{row['pair'][0]}` / `{row['pair'][1]}` | {fy_label(row['year'])} | "
+            f"`{row['pe_variables']}` | {money(row['effects_gbp'][0])} / {money(row['effects_gbp'][1])} | "
+            f"{'yes' if row['agrees'] else '**no**'} |"
+        )
+    lines += [
+        "",
+        "## Modern base against the OBR's newest forecast",
+        "",
+        "| Head | FY | PE base (£bn) | OBR newest (£bn) | Ratio |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for row in document["baseline_coverage"]:
+        lines.append(
+            f"| {row['base_sheet']} | {row['fy']} | {row['pe_base_gbp'] / 1e9:,.1f} | "
+            f"{row['obr_newest_forecast_gbp'] / 1e9:,.1f} ({row['obr_newest_vintage']}) | {row['pe_over_obr']:.3f} |"
+        )
+    if document["model_changes"]:
+        lines += [
+            "",
+            "## Against the certified pair on the same data",
+            "",
+            "Same data, so each row is a model change between the engines: a fix or a bug.",
+            "",
+            "| Event | Experiment | FY | Certified pair (£bn) | This model (£bn) | Change (£bn) | Diagnosis |",
+            "|---|---|---|---:|---:|---:|---|",
+        ]
+        for row in document["model_changes"]:
+            found = row.get("diagnosis")
+            lines.append(
+                f"| {row['event']} | `{row['experiment_id']}` | {fy_label(row['year'])} | "
+                f"{money(row['certified_pair_gbp'])} | {money(row['model_swap_gbp'])} | "
+                f"{money(row.get('change_gbp'))} | "
+                f"{(found['status'] + ': ' + found.get('fixed_in', found.get('issue', ''))) if found else 'undiagnosed'} |"
+            )
+    return "\n".join(lines) + "\n"
+
+
+def write_summary(population_id: str | None = None) -> Path:
+    document = summary(population_id)
+    root = output_root(document["population_id"])
+    (root / "SUMMARY.json").write_bytes(canonical_bytes(document))
+    (root / "SUMMARY.md").write_text(render_summary(document))
+    return root
+
+
+# --- CLI ---------------------------------------------------------------------------
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest="command", required=True)
+    command = commands.add_parser("summary")
+    command.add_argument("--population")
+    for name in ("plan", "run", "findings"):
+        command = commands.add_parser(name)
+        command.add_argument("--event", required=True)
+        command.add_argument("--population")
+        if name != "findings":
+            command.add_argument("--years", nargs="*", type=int)
+            command.add_argument("--experiments", nargs="*")
+        if name == "run":
+            command.add_argument("--dataset-file", type=Path)
+            command.add_argument("--output-dir", type=Path)
+    args = parser.parse_args(argv)
+    if args.command == "plan":
+        population = get_population(args.population)
+        spec = load_spec(args.event)
+        registry, _ = load_registry(spec)
+        validate_spec(spec, registry, load_bases())
+        print(
+            json.dumps(
+                plan(
+                    spec,
+                    registry,
+                    population,
+                    years=args.years,
+                    selected=args.experiments,
+                ),
+                indent=1,
+            )
+        )
+        return 0
+    if args.command == "run":
+        return run(args)
+    if args.command == "summary":
+        root = write_summary(args.population)
+        print(f"wrote {root / 'SUMMARY.md'}")
+        return 0
+    directory = write_findings(args.event, args.population)
+    print(f"wrote {directory / 'FINDINGS.md'}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

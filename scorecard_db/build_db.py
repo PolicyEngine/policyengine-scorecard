@@ -39,6 +39,10 @@ Chain order is dependency order and is part of the contract:
     ons_etb       ONS effects of taxes and benefits (5 income concepts)
     uk_policy_effects  OBR published economic effects of policy
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
+    uk_benefit_uprating  September 2026 CPI claims + pe-uk benefit-rate
+                read-backs (also on the HMT and RF uprating claims)
+    uk_childcare_100k  CenTax + CBP costings of removing the £100,000
+                  childcare limit, certified-pair counterparts
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
     be_pit_reform Belgian PIT-reform claims + Axiom result attachments
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
@@ -83,7 +87,10 @@ from . import (
     ingest_dwp_pensions,
     ingest_lpc_minimum_wage,
     ingest_uk_ab2025,
+    ingest_uk_benefit_uprating,
+    ingest_uk_childcare_100k,
     ingest_uk_thinktanks,
+    ingest_uk_two_child_limit_poverty,
     ingest_us_admin_outturns,
     ingest_ons_etb,
     ingest_urban,
@@ -288,6 +295,23 @@ def build(db_path: Path) -> dict:
         # After the counterpart runs attach, a lane whose claims now carry a
         # computed PE result reads "computed" rather than "ingested" (#136).
         ("uk_ab2025_lanes", lambda: ingest_uk_ab2025.advance_lanes(db_path)),
+        # After the HMT (uk_ab2025) and RF (uk_thinktanks) uprating claims
+        # exist: the read-backs attach to them by claim_id.
+        (
+            "uk_benefit_uprating",
+            lambda: ingest_uk_benefit_uprating.ingest(db_path),
+        ),
+        # The £100,000 childcare limit costings: CenTax (Table 4.2) and the
+        # Centre for British Progress appendix, with the certified pair's
+        # static counterparts and the published dashboard figure as history.
+        ("uk_childcare_100k", lambda: ingest_uk_childcare_100k.ingest(db_path)),
+        # The two-child limit poverty benchmarks on the certified Microcosm
+        # pair: DWP's Budget 2025 note minted here, and new results on the
+        # RF and HM Treasury AB2025 claims above, so it runs after them.
+        (
+            "uk_two_child_limit_poverty",
+            lambda: ingest_uk_two_child_limit_poverty.ingest(db_path),
+        ),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
