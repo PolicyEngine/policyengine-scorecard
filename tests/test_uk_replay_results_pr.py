@@ -394,9 +394,10 @@ class Commands:
     command, after an operator, a newline, ``!`` or a reserved word, and
     after any assignments and redirections before it. What it does not model
     is flagged rather than read past: arithmetic, case, an array element's
-    index, a parameter expansion beyond PARAMETER and a word after a compound
-    command raise Unlexed, and a loop's keywords are commands PROPOSE_RUNS
-    does not list. With no loop, each declaration runs at most once.
+    index or a split in one, a parameter expansion beyond PARAMETER and a word
+    after a compound command raise Unlexed, and a loop's keywords are commands
+    PROPOSE_RUNS does not list. With no loop, each declaration runs at most
+    once.
     ``splits`` holds the words with an expansion or a glob outside double
     quotes, which bash can turn into words the text does not show."""
 
@@ -583,7 +584,8 @@ class Commands:
         return i + 1
 
     def array(self, i, function):
-        """NAME=( WORD... ): the words, over lines, up to ``)``."""
+        """NAME=( WORD... ): the words, over lines, up to ``)``. Bash splits
+        an element, as it does an argument and unlike NAME=$x."""
         t = self.text
         while True:
             i = self.blank(i)
@@ -595,7 +597,9 @@ class Commands:
                 # ([expr]=value): the index is arithmetic.
                 raise Unlexed("an array element's index")
             else:
-                _, i = self.word(i, function)
+                word, i = self.word(i, function)
+                if word in self.splits:
+                    raise Unlexed(f"the array element {word}, which splits")
 
 
 def plain_test(args):
@@ -834,14 +838,18 @@ def test_the_builder_runs_no_release_code_and_never_merges():
 GROUP = '{\necho "::error::; builder check"\n}'
 # A function definition, wherever in a line it starts, and eval, source or
 # . as a word. Both read text after unquoted: a quote, a backslash or a line
-# continuation inside a word does not change what bash runs. A word assembled
-# at run time (n=ev; "${n}al") is beyond any rule on text.
+# continuation inside a word does not change what bash runs. A redirection may
+# touch the word (eval>x y), and anything else that ends it leaves it no
+# arguments. $'...' and $"..." can spell a word in escapes ($'\x65val'), so the
+# script holds neither. A word assembled at run time (n=ev; "${n}al") is beyond
+# any rule on text.
 DEFINITION = re.compile(
     r"(?:^|[\s;&|(){}])"
     r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>$`]+)\s*\(\s*\))",
     re.M,
 )
-RUNS_TEXT = re.compile(r"(?:^|[\s;&|({])(?:eval|source|\.)\s", re.M)
+RUNS_TEXT = re.compile(r"(?:^|[\s;&|({])(?:eval|source|\.)(?:[\s<>]|&>)", re.M)
+SPELLS_WORD = re.compile(r"\$['\"]")
 
 
 def definitions(text):
@@ -849,11 +857,12 @@ def definitions(text):
 
 
 def runs_text(script):
-    """Each eval, source or . in ``script``, comment lines aside."""
+    """Each eval, source or . in ``script``, comment lines aside, and each
+    $'...' or $"..."."""
     code = "\n".join(
         line for line in script.splitlines() if not line.lstrip().startswith("#")
     )
-    return RUNS_TEXT.findall(unquoted(code))
+    return RUNS_TEXT.findall(unquoted(code)) + SPELLS_WORD.findall(code)
 
 
 # pushgit, defined with another program in git's place.
@@ -957,6 +966,10 @@ def test_propose_runs_only_the_commands_it_lists():
         "git ls-remote ?-upload-pack=x .",
         "gh pr list [-]-web",
         "gh pr list $'--web'",
+        # Review of d3770d66: gh ran its browser from an array element that
+        # splits or globs, under every bash.
+        "local o='--web '\nlocal a=($o)\ngh pr list \"${a[@]}\"",
+        'local a=(*)\ngh pr list "${a[@]}"',
         # Every other test: a shape it does not run, or an operand that may
         # be several words.
         "[ -v x ]",
@@ -991,11 +1004,24 @@ def test_propose_runs_only_the_commands_it_lists():
     # once: pushgit as PUSHGIT, and plan as field on the plan. A definition
     # counts wherever it starts (after ;, &&, a quote...), and the script
     # holds no eval, source or . that could define one from text it builds
-    # (reviews of cf8066bc, 2, and f936b49c, 2). field, which plan runs, is
-    # the isolated runner's Python on a fixed program that imports json and
-    # sys alone.
+    # (reviews of cf8066bc, 2, f936b49c, 2, and d3770d66, 2). field, which plan
+    # runs, is the isolated runner's Python on a fixed program that imports
+    # json and sys alone.
     assert not runs_text(script)
-    for evaluates in ("e''val x", "'source' x", "\\. x", "e\\\nval x", ': ; . "$x"'):
+    for evaluates in (
+        "e''val x",
+        "'source' x",
+        "\\. x",
+        "e\\\nval x",
+        ': ; . "$x"',
+        "eval>x y",
+        "'source'<x y",
+        "\\.<x y",
+        "eval&>x y",
+        '$"eval" x',
+        "$'eval' x",
+        "$'\\x65val' x",
+    ):
         assert runs_text(evaluates), evaluates
     assert not runs_text('# eval "$x"\n: x')
     for elsewhere in (
