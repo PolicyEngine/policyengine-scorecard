@@ -1,0 +1,29 @@
+{
+  "id": "ca-fiscal-notes",
+  "name": "California fiscal notes — FTB revenue estimates for young child tax credit bills, as restated in Assembly Revenue and Taxation Committee analyses",
+  "organization": "California Franchise Tax Board (estimates); Assembly Committee on Revenue and Taxation (publication)",
+  "country": "US",
+  "url": "https://arev.assembly.ca.gov/",
+  "data_urls": [
+    "https://arev.assembly.ca.gov/media/898",
+    "https://arev.assembly.ca.gov/media/969"
+  ],
+  "raw_sha256": {
+    "arev_898_ab397.pdf": "42abe4236e43487e42c6921b8d7df3586c33501cb5977c48628cb6fcf866bbd0",
+    "arev_969_ab1690.pdf": "759dc646aadad0c62b665dba73c31b0641496893312eb4eca11e5ca47bb7e863"
+  },
+  "fetched": "2026-10-19",
+  "access_note": "ftb.ca.gov and leginfo.legislature.ca.gov return HTTP 403 to scripted fetches; the committee analyses on arev.assembly.ca.gov restate FTB's estimate verbatim in their FISCAL EFFECT paragraph and are fetchable.",
+  "model": {
+    "name": "Franchise Tax Board revenue estimates",
+    "open_source": false,
+    "method": "General Fund revenue losses by State fiscal year (July-June) for the bill as introduced. The analyses do not state FTB's method (static or behavioural, accrual basis).",
+    "method_basis": "FISCAL EFFECT paragraph of each analysis"
+  },
+  "bills": {
+    "AB 397": "Young child tax credit age limit from under 6 to under 10 (tax year 2025), 13 (2026), 16 (2027) and 19 (2028 on; 24 for students). Estimates: FY 2025-26 to FY 2027-28.",
+    "AB 1690": "Young child tax credit age limit of 6 plus the whole calendar years elapsed since January 1, 2026: under 7 in tax year 2027, under 8 in 2028 (18 from 2038). Estimates: FY 2027-28 and FY 2028-29."
+  },
+  "scope_note": "First tranche of the CA fiscal-note lane: FTB point estimates for bills PolicyEngine can express as a parameter change. The research map (2026-10-15) also lists LAO's CalWORKs grant costs and LAO's ranges (Proposition 3, the March 2026 tax options report) for later tranches. AB 2591 is not re-staged: the reform-validation registry already carries it (ca_fiscal_note, state.ca.ab2591).",
+  "diagnosis_upstream": "FTB's estimating model is closed; a divergence classified as an external-model issue becomes a comparison memo."
+}

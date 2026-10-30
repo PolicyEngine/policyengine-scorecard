@@ -1,0 +1,165 @@
+{
+ "event": "autumn_2012",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2012.",
+ "obr_forecast_vintage": "December 2012",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2017-18",
+   "effect_gbp": 227226582.7304039,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 439604180.503816,
+   "experiment_id": "as2012_child_benefit_one_percent",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "child_benefit": 247663650.46752548,
+    "income_tax": -20437067.737121582
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__child_benefit_increase_by_1_for_two_years_from_2014_15",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 325000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.6991587160935505,
+   "ratio_scaled": 0.5168890397493193,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.3641263356094062,
+     "obr_event_forecast_gbp": 230740591978.90598,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.4471680815925398,
+     "obr_event_forecast_gbp": 206500000000.0,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Child Benefit: increase by 1% for\u00a0 two years from 2014-15",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2017-18",
+   "effect_gbp": 229345386.55976295,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 463075157.33453274,
+   "experiment_id": "as2012_child_benefit_one_percent",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "child_benefit": 253083624.77802467,
+    "income_tax": -23738238.21826172
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__child_benefit_increase_by_1_for_two_years_from_2014_15",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 325000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.7056781124915783,
+   "ratio_scaled": 0.49526601228163114,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.4426130410687288,
+     "obr_event_forecast_gbp": 230740591978.90598,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.5709259524643746,
+     "obr_event_forecast_gbp": 206500000000.0,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Child Benefit: increase by 1% for\u00a0 two years from 2014-15",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2017-18",
+   "effect_gbp": 858694028.4341736,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1684696024.4776168,
+   "experiment_id": "as2012_universal_credit_one_percent",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit": 858694028.4341736
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__universal_credit_finalise_disregards_and_increase_by_1_for_two_years_fro",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1235000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.6952988084487236,
+   "ratio_scaled": 0.5097026501860676,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.3641263356094062,
+     "obr_event_forecast_gbp": 230740591978.90598,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal credit: finalise disregards and increase by 1% for two years from 2014-15",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2017-18",
+   "effect_gbp": 883290153.6394653,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1781627105.71988,
+   "experiment_id": "as2012_universal_credit_one_percent",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit": 883290153.6394653
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2012__universal_credit_finalise_disregards_and_increase_by_1_for_two_years_fro",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1235000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.7152146993032108,
+   "ratio_scaled": 0.49577723127565754,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.4426130410687288,
+     "obr_event_forecast_gbp": 230740591978.90598,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal credit: finalise disregards and increase by 1% for two years from 2014-15",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

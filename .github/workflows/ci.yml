@@ -149,6 +149,11 @@ jobs:
           uv pip install --python .venv-variant/bin/python rfc8785==0.1.4 jsonschema
       - name: The installed environment is exactly the variant's
         run: .venv-variant/bin/python -c "from pipeline import uk_replay_variants as rv; rv.verify_installed(rv.get_variant('$VARIANT')); print('installed environment matches $VARIANT')"
+      # The dashboard export picks a revision submission from this table, not
+      # from the engine it runs on, so each engine checks its own entry. An
+      # unrecorded engine passes unless the variant has a committed export.
+      - name: Check the export's recorded Scenario route on this engine
+        run: .venv-variant/bin/python -m pipeline.export_uk_events_dashboard --check-scenario-capability --variant "$VARIANT"
       - name: Construction guards on the variant's engine
         run: |
           set -euo pipefail

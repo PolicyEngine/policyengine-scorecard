@@ -59,6 +59,11 @@ NO_NETWORK = {
     )
 }
 PROXY_EXCEPTIONS = ("NO_PROXY", "no_proxy")
+# policyengine.py#704 lets POLICYENGINE_<COUNTRY>_DATA_MANIFEST_FILE select a
+# local data release manifest in place of the fetched one. A replay must
+# certify against the wrapper's packaged certification, never a file the
+# host happens to point at, so isolation removes it for every country.
+LOCAL_MANIFEST_VARIABLE = re.compile(r"POLICYENGINE_[A-Z0-9]+_DATA_MANIFEST_FILE")
 ENGINE_MODULES = {
     "policyengine": "policyengine",
     "policyengine-uk": "policyengine_uk",
@@ -227,12 +232,69 @@ def get_variant(
 
 
 def is_legacy(record: dict) -> bool:
-    """The populace-2023 world whose results keep their original layout."""
-    return record["layout"] == "legacy_events"
+    """The populace-2023 world whose results keep their original layout. A
+    lane's certified pair (pipeline/uk_certified_pairs.py) has no layout."""
+    return record.get("layout") == "legacy_events"
 
 
 def validate_record(record: dict, *, root: Path = ROOT) -> None:
-    """Engine-free consistency: the record is one certified pairing."""
+    """Engine-free consistency: the record is one certified pairing, and a
+    replay variant (its status, layout and result root)."""
+    validate_identity(record, record.get("variant_id"), root=root)
+    identity = record["identity"]
+    bundle = identity["release_bundle"]
+    dataset = identity["dataset"]
+    uk = identity["packages"]["policyengine-uk"]["version"]
+    problems = []
+
+    def need(condition: bool, message: str) -> None:
+        if not condition:
+            problems.append(message)
+
+    need(record.get("status") in STATUSES, "status")
+    need(record.get("layout") in LAYOUTS, "layout")
+    expected_root = (
+        LEGACY_RESULT_ROOT
+        if record.get("layout") == "legacy_events"
+        else f"{REPLAY_RESULT_ROOT}/{record.get('variant_id')}"
+    )
+    need(
+        record.get("result_root") == expected_root,
+        f"result_root must be {expected_root}",
+    )
+    if record.get("layout") == "legacy_events":
+        legacy = json.loads(
+            (root / "data" / "uk" / "certified_bundle.json").read_bytes()
+        )
+        need(
+            legacy.get("repo_id") == dataset["repo_id"]
+            and legacy.get("artifact") == dataset["path"]
+            and legacy.get("revision") == dataset["revision"]
+            and legacy.get("revision") == bundle.get("certified_data_build_id")
+            and legacy.get("sha256") == dataset["sha256"]
+            and legacy.get("size_bytes") == dataset["size_bytes"],
+            "the legacy variant differs from data/uk/certified_bundle.json",
+        )
+        need(
+            any(
+                row.get("name") == "policyengine-uk"
+                and row.get("specifier") == f"=={uk}"
+                for row in legacy.get("compatible_model_packages", [])
+            ),
+            "data/uk/certified_bundle.json does not declare this model version",
+        )
+    if problems:
+        raise VariantError(f"{record.get('variant_id')}: " + "; ".join(problems))
+
+
+def validate_identity(
+    record: dict, record_id: str | None, *, root: Path = ROOT
+) -> None:
+    """Engine-free consistency of one certified pairing, whatever indexes it
+    (a replay variant here, or a lane's certified pair in
+    pipeline/uk_certified_pairs.py): the identity and its digest, the id it
+    implies, the certification, the dataset, the executors, the data years
+    and the pinned requirements."""
     problems = []
 
     def need(condition: bool, message: str) -> None:
@@ -246,7 +308,7 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
         dataset = identity["dataset"]
         certification = record["certification"]
     except (KeyError, TypeError) as exc:
-        raise VariantError(f"variant record is missing {exc}") from exc
+        raise VariantError(f"{record_id}: record is missing {exc}") from exc
     if not all(
         isinstance(part, dict)
         for part in (identity, packages, bundle, dataset, certification)
@@ -280,12 +342,12 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
     uk = packages["policyengine-uk"]["version"]
     wrapper = packages["policyengine"]["version"]
     need(
-        record.get("variant_id")
+        record_id
         in (
             variant_slug(identity),
             f"{variant_slug(identity)}--{identity_sha256(identity)[:10]}",
         ),
-        "variant_id differs from its identity",
+        "the variant_id or pair_id differs from its identity",
     )
     need(
         record.get("identity_sha256") == identity_sha256(identity),
@@ -349,8 +411,6 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
         and bool(re.fullmatch(r"3\.[0-9]+", identity.get("python", ""))),
         "identity.python",
     )
-    need(record.get("status") in STATUSES, "status")
-    need(record.get("layout") in LAYOUTS, "layout")
     need(
         isinstance(record.get("executor"), list)
         and bool(record["executor"])
@@ -364,15 +424,6 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
         and all(isinstance(year, int) and not isinstance(year, bool) for year in years)
         and years == list(range(years[0], years[-1] + 1)),
         "data_years must be consecutive calendar years",
-    )
-    expected_root = (
-        LEGACY_RESULT_ROOT
-        if record.get("layout") == "legacy_events"
-        else f"{REPLAY_RESULT_ROOT}/{record.get('variant_id')}"
-    )
-    need(
-        record.get("result_root") == expected_root,
-        f"result_root must be {expected_root}",
     )
     requirements = record.get("requirements") or {}
     need(
@@ -398,29 +449,8 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
                     pins.get(name) == packages[name]["version"],
                     f"requirements pin {name}",
                 )
-    if record.get("layout") == "legacy_events":
-        legacy = json.loads(
-            (root / "data" / "uk" / "certified_bundle.json").read_bytes()
-        )
-        need(
-            legacy.get("repo_id") == dataset["repo_id"]
-            and legacy.get("artifact") == dataset["path"]
-            and legacy.get("revision") == dataset["revision"]
-            and legacy.get("revision") == bundle.get("certified_data_build_id")
-            and legacy.get("sha256") == dataset["sha256"]
-            and legacy.get("size_bytes") == dataset["size_bytes"],
-            "the legacy variant differs from data/uk/certified_bundle.json",
-        )
-        need(
-            any(
-                row.get("name") == "policyengine-uk"
-                and row.get("specifier") == f"=={uk}"
-                for row in legacy.get("compatible_model_packages", [])
-            ),
-            "data/uk/certified_bundle.json does not declare this model version",
-        )
     if problems:
-        raise VariantError(f"{record.get('variant_id')}: " + "; ".join(problems))
+        raise VariantError(f"{record_id}: " + "; ".join(problems))
 
 
 # --- the installed environment ---------------------------------------------
@@ -735,11 +765,15 @@ def isolate_certification_environment(environ=os.environ) -> list[str]:
     (OFFLINE_BUNDLE_AUDIT.json records the 5.0.2 case; 6.2.6 behaves alike).
     Without a token a private data repository answers 401; a public one
     would still answer, so the proxy variables (NO_NETWORK) make the fetch
-    fail for both. Call before importing policyengine; returns the
-    variables removed."""
+    fail for both. A local data release manifest setting
+    (LOCAL_MANIFEST_VARIABLE) is removed too. Call before importing
+    policyengine; returns the variables removed."""
+    local_manifests = sorted(
+        name for name in environ if LOCAL_MANIFEST_VARIABLE.fullmatch(name)
+    )
     removed = [
         name
-        for name in (*TOKEN_VARIABLES, *PROXY_EXCEPTIONS)
+        for name in (*TOKEN_VARIABLES, *PROXY_EXCEPTIONS, *local_manifests)
         if environ.pop(name, None) is not None
     ]
     environ.update(OFFLINE_VARIABLES)

@@ -1,0 +1,54 @@
+{
+ "timings": [
+  {
+   "seconds": 34.245665638000006,
+   "world": "modern_law",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "seconds": 51.481229383999995,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "seconds": 48.41380922100001,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "seconds": 42.969134357,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "seconds": 44.60793041599999,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_dividend_allowance_500",
+   "seconds": 45.51656467800001,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "seconds": 64.70627209100002,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "seconds": 54.639811409,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "seconds": 46.657877016999976,
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "seconds": 48.13428381199998,
+   "year": 2024
+  }
+ ]
+}

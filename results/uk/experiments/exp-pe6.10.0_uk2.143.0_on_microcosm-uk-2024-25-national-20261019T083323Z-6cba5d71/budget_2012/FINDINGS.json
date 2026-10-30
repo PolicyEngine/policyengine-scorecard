@@ -1,0 +1,107 @@
+{
+ "event": "budget_2012",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2012.",
+ "obr_forecast_vintage": "March 2012",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_10x",
+     "diagnosis": {
+      "code": "magnitude_outside_10x",
+      "event": "budget_2012",
+      "evidence": "data/uk/events/inventory.jsonl expressibility note for budget_2012__income_tax_reduce_additional_rate_to_45p_in_2013_14 ('OBR costing is dominated by taxable-income response')",
+      "experiment_id": "b2012_additional_rate_45p",
+      "status": "expected",
+      "summary": "The OBR's costing of the cut to 45p (-\u00a3110m in 2016-17) is net of a taxable-income response that offsets almost all of the static cost; a static run has no such response. Restoring 50% on income above \u00a3125,140 costs \u00a36.3bn to \u00a36.9bn statically on the modern population, which also has a lower threshold than the \u00a3150,000 of 2013 (dividends left out of the construction).",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2016-17",
+   "effect_gbp": -6272062557.93335,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -160118962.36422086,
+   "experiment_id": "b2012_additional_rate_45p",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -6272062557.93335
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2012__income_tax_reduce_additional_rate_to_45p_in_2013_14",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -110000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 57.018750526666814,
+   "ratio_scaled": 39.17126657157793,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.455626930583826,
+     "obr_event_forecast_gbp": 205300000000.0,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Income tax: reduce additional rate to 45p in 2013-14",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_10x",
+     "diagnosis": {
+      "code": "magnitude_outside_10x",
+      "event": "budget_2012",
+      "evidence": "data/uk/events/inventory.jsonl expressibility note for budget_2012__income_tax_reduce_additional_rate_to_45p_in_2013_14 ('OBR costing is dominated by taxable-income response')",
+      "experiment_id": "b2012_additional_rate_45p",
+      "status": "expected",
+      "summary": "The OBR's costing of the cut to 45p (-\u00a3110m in 2016-17) is net of a taxable-income response that offsets almost all of the static cost; a static run has no such response. Restoring 50% on income above \u00a3125,140 costs \u00a36.3bn to \u00a36.9bn statically on the modern population, which also has a lower threshold than the \u00a3150,000 of 2013 (dividends left out of the construction).",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2016-17",
+   "effect_gbp": -6859233196.723877,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -173811899.70885667,
+   "experiment_id": "b2012_additional_rate_45p",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -6859233196.723877
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2012__income_tax_reduce_additional_rate_to_45p_in_2013_14",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -110000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 62.35666542476252,
+   "ratio_scaled": 39.46354195664062,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.5801081791714242,
+     "obr_event_forecast_gbp": 205300000000.0,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Income tax: reduce additional rate to 45p in 2013-14",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

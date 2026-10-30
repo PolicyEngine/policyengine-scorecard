@@ -1,0 +1,357 @@
+{
+ "kind": "uk_two_child_limit_poverty_losers",
+ "pair_id": "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "cases": {
+  "current_law 2025": {
+   "hbai_income_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "weighted_loss_gbp": 0.0,
+    "by_variable": {}
+   },
+   "benunits_uc_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "largest_fall_gbp_year": 0.0,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "current_law 2026": {
+   "hbai_income_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "weighted_loss_gbp": 0.0,
+    "by_variable": {}
+   },
+   "benunits_uc_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "largest_fall_gbp_year": 0.0,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "current_law 2027": {
+   "hbai_income_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "weighted_loss_gbp": 0.0,
+    "by_variable": {}
+   },
+   "benunits_uc_falls": {
+    "sample": 2,
+    "weight": 988.5537528991699,
+    "largest_fall_gbp_year": 0.0009765625,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "current_law 2028": {
+   "hbai_income_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "weighted_loss_gbp": 0.0,
+    "by_variable": {}
+   },
+   "benunits_uc_falls": {
+    "sample": 8,
+    "weight": 3335.593457505107,
+    "largest_fall_gbp_year": 0.001953125,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "current_law 2029": {
+   "hbai_income_falls": {
+    "sample": 2,
+    "weight": 326.4274822771549,
+    "weighted_loss_gbp": 297487.6458015209,
+    "by_variable": {
+     "gov_spending": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8698200.910792314,
+      "world_weighted_total": 8400713.264990794
+     },
+     "hbai_household_net_income": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 19635189.407494266,
+      "world_weighted_total": 19337701.761692744
+     },
+     "household_benefits": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8698200.910792314,
+      "world_weighted_total": 8400713.264990794
+     },
+     "household_net_income": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 26894745.11059692,
+      "world_weighted_total": 26597257.4647954
+     },
+     "tax_free_childcare": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 303717.39695105684,
+      "world_weighted_total": 0.0
+     },
+     "uc_child_element": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 2534310.29128073,
+      "world_weighted_total": 3801465.436921095
+     },
+     "uc_income_reduction": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8070021.186172717,
+      "world_weighted_total": 9330946.794841735
+     },
+     "uc_maximum_amount": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8070021.186172717,
+      "world_weighted_total": 9337176.331813082
+     },
+     "universal_credit": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 0.0,
+      "world_weighted_total": 6229.536971347814
+     }
+    },
+    "mechanism": {
+     "universal_credit_starts": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     },
+     "tax_free_childcare_ends": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     },
+     "both": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     }
+    }
+   },
+   "benunits_uc_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "largest_fall_gbp_year": 0.0,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "current_law 2030": {
+   "hbai_income_falls": {
+    "sample": 2,
+    "weight": 327.89638525247574,
+    "weighted_loss_gbp": 309867.20744460914,
+    "by_variable": {
+     "gov_spending": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 8766252.862111095,
+      "world_weighted_total": 8456385.654666487
+     },
+     "hbai_household_net_income": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 20125077.413102616,
+      "world_weighted_total": 19815210.205658007
+     },
+     "household_benefits": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 8766252.862111095,
+      "world_weighted_total": 8456385.654666487
+     },
+     "household_net_income": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 27417321.67937867,
+      "world_weighted_total": 27107454.47193406
+     },
+     "tax_free_childcare": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 311185.79260480497,
+      "world_weighted_total": 0.0
+     },
+     "uc_child_element": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 2596623.1625273065,
+      "world_weighted_total": 3894934.823843788
+     },
+     "uc_income_reduction": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 8274362.1738032065,
+      "world_weighted_total": 9571355.04482412
+     },
+     "uc_maximum_amount": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 8274362.1738032065,
+      "world_weighted_total": 9572673.67501403
+     },
+     "universal_credit": {
+      "sample": 2,
+      "weight": 327.89638525247574,
+      "with_limit_weighted_total": 0.0,
+      "world_weighted_total": 1318.6301899118116
+     }
+    },
+    "mechanism": {
+     "universal_credit_starts": {
+      "sample": 2,
+      "weight": 327.89638525247574
+     },
+     "tax_free_childcare_ends": {
+      "sample": 2,
+      "weight": 327.89638525247574
+     },
+     "both": {
+      "sample": 2,
+      "weight": 327.89638525247574
+     }
+    }
+   },
+   "benunits_uc_falls": {
+    "sample": 2,
+    "weight": 2235.221300303936,
+    "largest_fall_gbp_year": 0.001953125,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "three_child_limit 2029": {
+   "hbai_income_falls": {
+    "sample": 2,
+    "weight": 326.4274822771549,
+    "weighted_loss_gbp": 297487.6458015209,
+    "by_variable": {
+     "gov_spending": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8698200.910792314,
+      "world_weighted_total": 8400713.264990794
+     },
+     "hbai_household_net_income": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 19635189.407494266,
+      "world_weighted_total": 19337701.761692744
+     },
+     "household_benefits": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8698200.910792314,
+      "world_weighted_total": 8400713.264990794
+     },
+     "household_net_income": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 26894745.11059692,
+      "world_weighted_total": 26597257.4647954
+     },
+     "tax_free_childcare": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 303717.39695105684,
+      "world_weighted_total": 0.0
+     },
+     "uc_child_element": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 2534310.29128073,
+      "world_weighted_total": 3801465.436921095
+     },
+     "uc_income_reduction": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8070021.186172717,
+      "world_weighted_total": 9330946.794841735
+     },
+     "uc_maximum_amount": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 8070021.186172717,
+      "world_weighted_total": 9337176.331813082
+     },
+     "universal_credit": {
+      "sample": 2,
+      "weight": 326.4274822771549,
+      "with_limit_weighted_total": 0.0,
+      "world_weighted_total": 6229.536971347814
+     }
+    },
+    "mechanism": {
+     "universal_credit_starts": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     },
+     "tax_free_childcare_ends": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     },
+     "both": {
+      "sample": 2,
+      "weight": 326.4274822771549
+     }
+    }
+   },
+   "benunits_uc_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "largest_fall_gbp_year": 0.0,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  },
+  "removed_2025 2025": {
+   "hbai_income_falls": {
+    "sample": 0,
+    "weight": 0.0,
+    "weighted_loss_gbp": 0.0,
+    "by_variable": {}
+   },
+   "benunits_uc_falls": {
+    "sample": 4,
+    "weight": 733.5084098875523,
+    "largest_fall_gbp_year": 0.001953125,
+    "over_a_penny": {
+     "sample": 0,
+     "weight": 0.0
+    },
+    "by_variable": {}
+   }
+  }
+ }
+}

@@ -1,0 +1,1501 @@
+{
+ "event": "autumn_statement_2022",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Statement 2022.",
+ "obr_forecast_vintage": "November 2022",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "25c3d327d53e180934acd159fae54b5c3f4cf7e10383a4eb750d2ba6a6c629f1",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 958955923.685791,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 848838849.0108804,
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 958955923.685791
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 789106467.5181677,
+   "obr_unmapped_gbp": 484027.662408185,
+   "ratio_raw": 1.2152427627438154,
+   "ratio_scaled": 1.1297267140909324,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce additional rate threshold from \u00a3150,000 to \u00a3125,140 from April 2023",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 1070533252.5349731,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 860592524.021426,
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 1070533252.5349731
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 765474993.8861324,
+   "obr_unmapped_gbp": 4757048.858545627,
+   "ratio_raw": 1.3985215207359465,
+   "ratio_scaled": 1.2439490498157295,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce additional rate threshold from \u00a3150,000 to \u00a3125,140 from April 2023",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 1105341709.1674805,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 902934963.515008,
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": 1105341709.1674805
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 792451863.1115595,
+   "obr_unmapped_gbp": 8554966.168743232,
+   "ratio_raw": 1.3948376685334047,
+   "ratio_scaled": 1.2241653649832425,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce additional rate threshold from \u00a3150,000 to \u00a3125,140 from April 2023",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 1166497231.9527588,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 955584937.6132457,
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "income_tax": 1166497231.9527588
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_additional_rate_threshold_from_150_000_to_125_140_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 842975929.5554636,
+   "obr_unmapped_gbp": 12976899.65175722,
+   "ratio_raw": 1.3837847452748757,
+   "ratio_scaled": 1.2207153817914989,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce additional rate threshold from \u00a3150,000 to \u00a3125,140 from April 2023",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -261812134.105855,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -259526116.9322803,
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit+housing_benefit": -261812134.105855
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__benefit_cap_levels_uprate_by_cpi_in_2023_24",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -243008000.0,
+   "obr_unmapped_gbp": -220000000.0,
+   "ratio_raw": 1.0773807204119,
+   "ratio_scaled": 1.0088084282252456,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0679735520323623,
+     "obr_event_forecast_gbp": 148780590905.1813,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Benefit Cap levels: uprate by CPI in 2023-24",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -347109516.2505903,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -286672129.3079467,
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit+housing_benefit": -347109516.2505903
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__benefit_cap_levels_uprate_by_cpi_in_2023_24",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -253745000.0,
+   "obr_unmapped_gbp": -232000000.0,
+   "ratio_raw": 1.367946230469922,
+   "ratio_scaled": 1.210824076580256,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.129764642881423,
+     "obr_event_forecast_gbp": 149735967947.90137,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Benefit Cap levels: uprate by CPI in 2023-24",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": -489118631.1838274,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -299099971.73189807,
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "universal_credit+housing_benefit": -489118631.1838274
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__benefit_cap_levels_uprate_by_cpi_in_2023_24",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -253946000.0,
+   "obr_unmapped_gbp": -238000000.0,
+   "ratio_raw": 1.926073382466459,
+   "ratio_scaled": 1.6353014958565588,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1778093442381374,
+     "obr_event_forecast_gbp": 150892919437.1972,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Benefit Cap levels: uprate by CPI in 2023-24",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": -532462774.2221222,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -313387709.8210411,
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "universal_credit+housing_benefit": -532462774.2221222
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__benefit_cap_levels_uprate_by_cpi_in_2023_24",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -263515499.99999997,
+   "obr_unmapped_gbp": -247000000.0,
+   "ratio_raw": 2.0206127314033604,
+   "ratio_scaled": 1.699054422160279,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1892572156895558,
+     "obr_event_forecast_gbp": 154907129537.8267,
+     "obr_newest_forecast_gbp": 184224421564.61713,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Benefit Cap levels: uprate by CPI in 2023-24",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 814550723.97826,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 369867481.8768679,
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "capital_gains_tax": 814550723.97826,
+    "income_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__capital_gains_tax_reduce_the_annual_exempt_amount_from_12_300_to_6_000_f",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 279204692.85277295,
+   "obr_unmapped_gbp": -5089302.141202135,
+   "ratio_raw": 2.9173962502406066,
+   "ratio_scaled": 2.202277204378381,
+   "scales": [
+    {
+     "base_sheet": "CGT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.74187397425359,
+     "obr_event_forecast_gbp": 13288522061.317303,
+     "pe_base_gbp": 23146930734.90328
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Capital Gains Tax: reduce the annual exempt amount from \u00a312,300 to \u00a36,000 from April 2023 then \u00a33,000 from April 2024",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 916881219.2836723,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 641114516.9979796,
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "capital_gains_tax": 916881219.2836723,
+    "income_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__capital_gains_tax_reduce_the_annual_exempt_amount_from_12_300_to_6_000_f",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 423492236.982873,
+   "obr_unmapped_gbp": -819783.039976924,
+   "ratio_raw": 2.1650484689303835,
+   "ratio_scaled": 1.4301364186494652,
+   "scales": [
+    {
+     "base_sheet": "CGT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.920781604959793,
+     "obr_event_forecast_gbp": 14216136486.945513,
+     "pe_base_gbp": 27306093457.722675
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Capital Gains Tax: reduce the annual exempt amount from \u00a312,300 to \u00a36,000 from April 2023 then \u00a33,000 from April 2024",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 952443691.9122658,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 671760732.7334583,
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "capital_gains_tax": 952443691.9122658,
+    "income_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__capital_gains_tax_reduce_the_annual_exempt_amount_from_12_300_to_6_000_f",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 435318004.0901,
+   "obr_unmapped_gbp": -1285029.0584966566,
+   "ratio_raw": 2.1879262584212658,
+   "ratio_scaled": 1.4178317449974813,
+   "scales": [
+    {
+     "base_sheet": "CGT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.8420871368990397,
+     "obr_event_forecast_gbp": 15759552400.751017,
+     "pe_base_gbp": 29030468760.709827
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Capital Gains Tax: reduce the annual exempt amount from \u00a312,300 to \u00a36,000 from April 2023 then \u00a33,000 from April 2024",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 959377906.991108,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 642786715.9443305,
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "capital_gains_tax": 959377906.991108,
+    "income_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__capital_gains_tax_reduce_the_annual_exempt_amount_from_12_300_to_6_000_f",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 440200881.0339495,
+   "obr_unmapped_gbp": -747986.1564603604,
+   "ratio_raw": 2.179409329526349,
+   "ratio_scaled": 1.4925291441060153,
+   "scales": [
+    {
+     "base_sheet": "CGT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.6822032245808896,
+     "obr_event_forecast_gbp": 17904929829.228363,
+     "pe_base_gbp": 30119730694.62251
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    }
+   ],
+   "status": "computed",
+   "title": "Capital Gains Tax: reduce the annual exempt amount from \u00a312,300 to \u00a36,000 from April 2023 then \u00a33,000 from April 2024",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 511391268.8185425,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 561668508.496194,
+   "experiment_id": "as2022_dividend_allowance_500",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 511391268.8185425
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_the_dividend_allowance_from_2_000_to_1_000_from_april",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 522144165.7295642,
+   "obr_unmapped_gbp": -72653478.65647745,
+   "ratio_raw": 0.9794062681979846,
+   "ratio_scaled": 0.9104859202231876,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce the dividend allowance from \u00a32,000 to \u00a31,000 from April 2023 and then \u00a3500 from April 2024",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 533194944.7102661,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1025730513.9448216,
+   "experiment_id": "as2022_dividend_allowance_500",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 533194944.7102661
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_the_dividend_allowance_from_2_000_to_1_000_from_april",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 912361003.5812762,
+   "obr_unmapped_gbp": -103737899.7287578,
+   "ratio_raw": 0.5844122475832751,
+   "ratio_scaled": 0.5198197162524395,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce the dividend allowance from \u00a32,000 to \u00a31,000 from April 2023 and then \u00a3500 from April 2024",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 624131315.6814575,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1130411473.8037694,
+   "experiment_id": "as2022_dividend_allowance_500",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": 624131315.6814575
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_the_dividend_allowance_from_2_000_to_1_000_from_april",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 992094353.0763958,
+   "obr_unmapped_gbp": -129863550.44178401,
+   "ratio_raw": 0.6291047960771898,
+   "ratio_scaled": 0.5521275483707642,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce the dividend allowance from \u00a32,000 to \u00a31,000 from April 2023 and then \u00a3500 from April 2024",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 639341489.65802,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1240576697.0066051,
+   "experiment_id": "as2022_dividend_allowance_500",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "income_tax": 639341489.65802
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_reduce_the_dividend_allowance_from_2_000_to_1_000_from_april",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1094383401.3918364,
+   "obr_unmapped_gbp": -155507190.63047108,
+   "ratio_raw": 0.5842024731414107,
+   "ratio_scaled": 0.5153582936070707,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: reduce the dividend allowance from \u00a32,000 to \u00a31,000 from April 2023 and then \u00a3500 from April 2024",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 3669069959.1979847,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 5351210622.137737,
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -1292143095.7471924,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 4961213054.945177
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_maintain_employer_secondary_threshold_at_current_leve",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 5312591036.665969,
+   "obr_unmapped_gbp": 26771294.793599248,
+   "ratio_raw": 0.69063662794202,
+   "ratio_scaled": 0.6856523165093136,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.007665150905823,
+     "obr_event_forecast_gbp": 171126122481.78915,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: maintain employer secondary threshold at current level from April 2023 until April 2028",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk 2.132.6 class_1/thresholds/secondary_threshold.yaml: 96.153846 a week from 2025-04-06",
+      "experiment_id": "as2022_employer_secondary_threshold_freeze",
+      "status": "expected",
+      "summary": "Autumn Budget 2024 sets the secondary threshold to \u00a35,000 from April 2025, superseding the freeze on modern law, so the construction (2024-25 only) leaves later years at modern law.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 6487913050.550496,
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_maintain_employer_secondary_threshold_at_current_leve",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 5322794544.1939945,
+   "obr_unmapped_gbp": 48869572.71241958,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.217978362179628,
+     "obr_event_forecast_gbp": 175727568223.21573,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: maintain employer secondary threshold at current level from April 2023 until April 2028",
+   "year": 2025
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk 2.132.6 class_1/thresholds/secondary_threshold.yaml: 96.153846 a week from 2025-04-06",
+      "experiment_id": "as2022_employer_secondary_threshold_freeze",
+      "status": "expected",
+      "summary": "Autumn Budget 2024 sets the secondary threshold to \u00a35,000 from April 2025, superseding the freeze on modern law, so the construction (2024-25 only) leaves later years at modern law.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 6604068293.954794,
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_maintain_employer_secondary_threshold_at_current_leve",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 5373079140.219733,
+   "obr_unmapped_gbp": 66466913.27716665,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2281880898609117,
+     "obr_event_forecast_gbp": 181740028711.3496,
+     "pe_base_gbp": 223210938714.2597
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: maintain employer secondary threshold at current level from April 2023 until April 2028",
+   "year": 2026
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "evidence": "pe-uk 2.132.6 class_1/thresholds/secondary_threshold.yaml: 96.153846 a week from 2025-04-06",
+      "experiment_id": "as2022_employer_secondary_threshold_freeze",
+      "status": "expected",
+      "summary": "Autumn Budget 2024 sets the secondary threshold to \u00a35,000 from April 2025, superseding the freeze on modern law, so the construction (2024-25 only) leaves later years at modern law.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 7029477581.956665,
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "income_tax": -0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_maintain_employer_secondary_threshold_at_current_leve",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 5744186542.103859,
+   "obr_unmapped_gbp": 81846124.09743312,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.222751074394597,
+     "obr_event_forecast_gbp": 188351214852.16968,
+     "pe_base_gbp": 230306650324.01807
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: maintain employer secondary threshold at current level from April 2023 until April 2028",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 6254185546.989334,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 5933268137.26324,
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 6342928739.544556,
+    "universal_credit": -88743192.55522156
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_maintaining_the_basic_rate_at_20",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 5516249458.807865,
+   "obr_unmapped_gbp": 452660882.01035213,
+   "ratio_raw": 1.1337749667943673,
+   "ratio_scaled": 1.0540877982086478,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0679735520323623,
+     "obr_event_forecast_gbp": 148780590905.1813,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: maintaining the basic rate at 20%",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 6639898917.020218,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 6996771004.08712,
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 6738870848.276794,
+    "universal_credit": -98971931.25657654
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_maintaining_the_basic_rate_at_20",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6223076338.219231,
+   "obr_unmapped_gbp": 491587866.46585363,
+   "ratio_raw": 1.0669801487475026,
+   "ratio_scaled": 0.9489947453105958,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.129764642881423,
+     "obr_event_forecast_gbp": 149735967947.90137,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: maintaining the basic rate at 20%",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 6921766685.708969,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 6970747052.708601,
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": 7031512581.012573,
+    "universal_credit": -109745895.30360413
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_maintaining_the_basic_rate_at_20",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6114807967.8252325,
+   "obr_unmapped_gbp": 517680805.5177964,
+   "ratio_raw": 1.1319679574779413,
+   "ratio_scaled": 0.9929734407762508,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1778093442381374,
+     "obr_event_forecast_gbp": 150892919437.1972,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: maintaining the basic rate at 20%",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 7130581208.551727,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 7080344949.448177,
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "income_tax": 7246083800.490662,
+    "universal_credit": -115502591.93893433
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__income_tax_maintaining_the_basic_rate_at_20",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6241506616.594858,
+   "obr_unmapped_gbp": 553618081.7321799,
+   "ratio_raw": 1.1424455098057584,
+   "ratio_scaled": 1.007095171133924,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1892572156895558,
+     "obr_event_forecast_gbp": 154907129537.8267,
+     "obr_newest_forecast_gbp": 184224421564.61713,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Income Tax: maintaining the basic rate at 20%",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -16241088780.860367,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -16234249631.611088,
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 3198778067.177185,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -19665940310.038162,
+    "universal_credit": 226073462.00061035
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_reverse_temporary_1_25pp_increase_in_nics_rates_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -16209007013.36056,
+   "obr_unmapped_gbp": -324331464.3299041,
+   "ratio_raw": 1.0019792555752096,
+   "ratio_scaled": 1.0004212790492,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.007665150905823,
+     "obr_event_forecast_gbp": 171126122481.78915,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0756962259865617,
+     "obr_event_forecast_gbp": 277810967101.5921,
+     "pe_base_gbp": 298840208848.8595
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0679735520323623,
+     "obr_event_forecast_gbp": 148780590905.1813,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -18167187919.73967,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -20100279611.421158,
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 3814213402.7076416,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -22255559888.927948,
+    "universal_credit": 274158566.4806366
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_reverse_temporary_1_25pp_increase_in_nics_rates_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -16372883500.005323,
+   "obr_unmapped_gbp": -482738033.4098707,
+   "ratio_raw": 1.1095900071440539,
+   "ratio_scaled": 0.903827621851435,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.217978362179628,
+     "obr_event_forecast_gbp": 175727568223.21573,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1242594871093108,
+     "obr_event_forecast_gbp": 288542114079.00055,
+     "pe_base_gbp": 324396209183.8934
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.129764642881423,
+     "obr_event_forecast_gbp": 149735967947.90137,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": -18973862444.585194,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -20732223332.80581,
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": 4050499674.7957153,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -23326515104.92922,
+    "universal_credit": 302152985.5483093
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_reverse_temporary_1_25pp_increase_in_nics_rates_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -16746323796.093386,
+   "obr_unmapped_gbp": -621667183.9708902,
+   "ratio_raw": 1.1330165757938737,
+   "ratio_scaled": 0.9151870564003496,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2281880898609117,
+     "obr_event_forecast_gbp": 181740028711.3496,
+     "pe_base_gbp": 223210938714.2597
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1394193206507672,
+     "obr_event_forecast_gbp": 302911969702.99,
+     "pe_base_gbp": 345143750735.9666
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1778093442381374,
+     "obr_event_forecast_gbp": 150892919437.1972,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": -19648202173.932453,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -21223458666.400646,
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "income_tax": 4208338131.8450317,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": -24171411467.385532,
+    "universal_credit": 314871161.6080475
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__national_insurance_reverse_temporary_1_25pp_increase_in_nics_rates_from",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -17208281116.36558,
+   "obr_unmapped_gbp": -747798987.8623415,
+   "ratio_raw": 1.141787610341072,
+   "ratio_scaled": 0.9257775786110669,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.222751074394597,
+     "obr_event_forecast_gbp": 188351214852.16968,
+     "pe_base_gbp": 230306650324.01807
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1335850812693615,
+     "obr_event_forecast_gbp": 319223224879.7098,
+     "pe_base_gbp": 361866685318.3335
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1892572156895558,
+     "obr_event_forecast_gbp": 154907129537.8267,
+     "obr_newest_forecast_gbp": 184224421564.61713,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+   "year": 2027
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+      "status": "expected",
+      "summary": "The counterfactual keeps the relief from 2025-26, the first year the measure changes; the OBR's 2024-25 yield is timing around the end date, which an annual construction does not express.",
+      "years": [
+       2024
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 244586746.80132726,
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 199000000.0,
+   "obr_unmapped_gbp": -20000000.0,
+   "ratio_raw": 0.0,
+   "ratio_scaled": 0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2290791296549108,
+     "obr_event_forecast_gbp": 12388950094.918049,
+     "obr_newest_forecast_gbp": 15227000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: ending the Growth Plan change on 31 March 2025",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 1340578157.5575228,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1005435677.2800543,
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": 1340578157.5575228
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 873000000.0,
+   "obr_unmapped_gbp": -23000000.0,
+   "ratio_raw": 1.5355992640979643,
+   "ratio_scaled": 1.3333306026936598,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1517018067354574,
+     "obr_event_forecast_gbp": 14680254596.552721,
+     "obr_newest_forecast_gbp": 16907275742.186272,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: ending the Growth Plan change on 31 March 2025",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 1382415257.1631393,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1592195398.7945716,
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": 1382415257.1631393
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1442000000.0,
+   "obr_unmapped_gbp": 1000000.0,
+   "ratio_raw": 0.9586790965070314,
+   "ratio_scaled": 0.8682447256220852,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1041576968062217,
+     "obr_event_forecast_gbp": 17850600887.478016,
+     "obr_newest_forecast_gbp": 19709878362.524822,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: ending the Growth Plan change on 31 March 2025",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 1426420424.6227427,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1772346205.9730084,
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": 1426420424.6227427
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_ending_the_growth_plan_change_on_31_march_2025",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1631000000.0,
+   "obr_unmapped_gbp": 5000000.0,
+   "ratio_raw": 0.874568010191749,
+   "ratio_scaled": 0.8048204238063328,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0866622967339108,
+     "obr_event_forecast_gbp": 20194504917.19256,
+     "obr_newest_forecast_gbp": 21944607094.72072,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: ending the Growth Plan change on 31 March 2025",
+   "year": 2027
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -1233508075.6331758,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1288074927.8783464,
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -1233508075.6331758
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1048000000.0,
+   "obr_unmapped_gbp": 70000000.0,
+   "ratio_raw": 1.1770115225507403,
+   "ratio_scaled": 0.9576368959102011,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2290791296549108,
+     "obr_event_forecast_gbp": 12388950094.918049,
+     "obr_newest_forecast_gbp": 15227000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: increases to nil-rate thresholds from 23 September 2022",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+      "status": "expected",
+      "summary": "The relief ended on 31 March 2025, so modern law from 2025-26 is the pre-relief world. The OBR's later costings of the increase are offset by its separate 'ending the Growth Plan change' measure.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1379738764.469078,
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1198000000.0,
+   "obr_unmapped_gbp": 79000000.0,
+   "ratio_raw": -0.0,
+   "ratio_scaled": -0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1517018067354574,
+     "obr_event_forecast_gbp": 14680254596.552721,
+     "obr_newest_forecast_gbp": 16907275742.186272,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: increases to nil-rate thresholds from 23 September 2022",
+   "year": 2025
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+      "status": "expected",
+      "summary": "The relief ended on 31 March 2025, so modern law from 2025-26 is the pre-relief world. The OBR's later costings of the increase are offset by its separate 'ending the Growth Plan change' measure.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1592195398.7945716,
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1442000000.0,
+   "obr_unmapped_gbp": 92000000.0,
+   "ratio_raw": -0.0,
+   "ratio_scaled": -0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1041576968062217,
+     "obr_event_forecast_gbp": 17850600887.478016,
+     "obr_newest_forecast_gbp": 19709878362.524822,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: increases to nil-rate thresholds from 23 September 2022",
+   "year": 2026
+  },
+  {
+   "anomalies": [
+    {
+     "code": "construction_noop",
+     "diagnosis": {
+      "code": "construction_noop",
+      "event": "autumn_statement_2022",
+      "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+      "status": "expected",
+      "summary": "The relief ended on 31 March 2025, so modern law from 2025-26 is the pre-relief world. The OBR's later costings of the increase are offset by its separate 'ending the Growth Plan change' measure.",
+      "years": [
+       2025,
+       2026,
+       2027
+      ]
+     },
+     "severity": "note"
+    }
+   ],
+   "carried_forward": false,
+   "comparison_fy": "2027-28",
+   "effect_gbp": 0.0,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1772346205.9730084,
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "fy": "2027-28",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_statement_2022__stamp_duty_land_tax_increases_to_nil_rate_thresholds_from_23_september_2",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1631000000.0,
+   "obr_unmapped_gbp": 101000000.0,
+   "ratio_raw": -0.0,
+   "ratio_scaled": -0.0,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0866622967339108,
+     "obr_event_forecast_gbp": 20194504917.19256,
+     "obr_newest_forecast_gbp": 21944607094.72072,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: increases to nil-rate thresholds from 23 September 2022",
+   "year": 2027
+  }
+ ],
+ "schema_version": 1
+}

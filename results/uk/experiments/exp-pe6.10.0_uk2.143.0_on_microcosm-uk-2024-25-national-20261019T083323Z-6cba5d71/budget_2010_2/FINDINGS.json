@@ -1,0 +1,161 @@
+{
+ "event": "budget_2010_2",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2010 #2.",
+ "obr_forecast_vintage": "June 2010",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2014-15",
+   "effect_gbp": 1318066687.7442856,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1436328757.1741495,
+   "experiment_id": "b2010_child_benefit_three_year_freeze",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "child_benefit": 1436396236.830223,
+    "income_tax": -118329549.0859375
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__child_benefit_freeze_for_3_years_from_2011_12",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 975000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.3518632694813186,
+   "ratio_scaled": 0.9176636484933058,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.4731576996657945,
+     "obr_event_forecast_gbp": 213663016718.39853,
+     "obr_newest_forecast_gbp": 314759318212.53015,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Child benefit: Freeze for 3 years from 2011-12",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2014-15",
+   "effect_gbp": 1324007995.1707172,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1518969718.765673,
+   "experiment_id": "b2010_child_benefit_three_year_freeze",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "child_benefit": 1459630417.1556416,
+    "income_tax": -135622421.98492432
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__child_benefit_freeze_for_3_years_from_2011_12",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 975000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.3579569181238125,
+   "ratio_scaled": 0.871648709525702,
+   "scales": [
+    {
+     "base_sheet": "Total welfare",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.5579176602724851,
+     "obr_event_forecast_gbp": 213663016718.39853,
+     "obr_newest_forecast_gbp": 332869387092.6883,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": null,
+     "basis": "unscaled",
+     "factor": 1.0
+    }
+   ],
+   "status": "computed",
+   "title": "Child benefit: Freeze for 3 years from 2011-12",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2014-15",
+   "effect_gbp": 23229432040.23828,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 21844085754.451736,
+   "experiment_id": "b2010_vat_standard_rate_20",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "vat": 23229432040.23828
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__vat_increase_main_rate_to_20_from_4_january_2011",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 13450000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.727095318976824,
+   "ratio_scaled": 1.0634197421379477,
+   "scales": [
+    {
+     "base_sheet": "VAT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.624095595126523,
+     "obr_event_forecast_gbp": 106700000000.0,
+     "obr_newest_forecast_gbp": 173291000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "VAT: increase main rate to 20% from 4 January 2011",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2014-15",
+   "effect_gbp": 24192170872.91028,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 22808620409.179867,
+   "experiment_id": "b2010_vat_standard_rate_20",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "vat": 24192170872.91028
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2010_2__vat_increase_main_rate_to_20_from_4_january_2011",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 13450000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.7986744143427715,
+   "ratio_scaled": 1.060659103396432,
+   "scales": [
+    {
+     "base_sheet": "VAT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.6958082088609565,
+     "obr_event_forecast_gbp": 106700000000.0,
+     "obr_newest_forecast_gbp": 180942735885.46405,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "VAT: increase main rate to 20% from 4 January 2011",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}
