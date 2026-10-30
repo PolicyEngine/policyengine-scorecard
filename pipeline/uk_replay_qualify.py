@@ -70,6 +70,33 @@ MANIFEST_NAME = "NAMESPACE_MANIFEST.json"
 POLICYENGINE_GIT = "https://github.com/PolicyEngine/policyengine.py"
 # Run in the candidate environment beside the engine, never resolved freely.
 RUNTIME_TOOLS = ("pytest", "hypothesis", "rfc8785==0.1.4", "jsonschema")
+# The corpus's peak memory per dataset and worker count, measured on Modal
+# (pipeline/modal_uk_replay_memory.py). Two year workers run only where it
+# shows they fit in this runner's memory.
+MEMORY_EVIDENCE = Path("docs/uk_replay/evidence/replay_memory.json")
+# A margin left for everything outside the corpus's process tree: the
+# runner's own services, the drain's control process and the page cache.
+MEMORY_RESERVE_BYTES = 2 * 2**30
+# The workload a two-worker peak must cover to schedule two workers: the
+# corpus's largest event (nine measures over six years, each with a modified
+# world), and the one two Microcosm workers could not finish on the runner.
+MEMORY_SCHEDULING_EVENT = "autumn_budget_2025"
+# What runs that event, besides the engine: a change to any of these makes
+# a measurement another workload's.
+MEMORY_WORKLOAD_FILES = (
+    "data/uk/events/autumn_budget_2025_measures.json",
+    "data/uk/events/construction_revisions.json",
+    "pipeline/build_uk_event_registry.py",
+    "pipeline/compute_uk_ab2025.py",
+    "pipeline/compute_uk_event.py",
+    "pipeline/compute_uk_obr_costings.py",
+    "pipeline/stage_uk_ab2025.py",
+    "pipeline/uk_construction_revisions.py",
+    "pipeline/uk_replay_variants.py",
+)
+# Larger than any machine's memory; a bound so a malformed peak cannot
+# overflow the arithmetic and formatting the choice uses.
+MEMORY_PEAK_LIMIT_BYTES = 2**50
 
 
 class Rejected(Exception):
@@ -514,6 +541,212 @@ def candidate_record(
     return record
 
 
+# --- memory ----------------------------------------------------------------------------
+
+
+def gib(value: int) -> str:
+    return f"{value / 2**30:.1f} GiB"
+
+
+def meminfo_bytes(field: str, meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    """One /proc/meminfo field in bytes; None where there is no such file."""
+    try:
+        for line in meminfo.read_text().splitlines():
+            if line.startswith(f"{field}:"):
+                return int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def memory_total_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    return meminfo_bytes("MemTotal", meminfo)
+
+
+def memory_available_bytes(meminfo: Path = Path("/proc/meminfo")) -> int | None:
+    return meminfo_bytes("MemAvailable", meminfo)
+
+
+def candidate_identity(request: dict) -> dict:
+    """The candidate's exact engine: versions, wheel digests, wrapper source."""
+    candidate = request["candidate"]
+    return {
+        key: candidate[key]
+        for key in ("policyengine", "policyengine_uk", "policyengine_core")
+    }
+
+
+def memory_workload_sha256(root: Path = ROOT) -> str:
+    """Digest of the files besides the engine that run the scheduling event."""
+    return sha256_bytes(
+        canonical_bytes(
+            {
+                relative: variants.sha256_file(root / relative)
+                for relative in MEMORY_WORKLOAD_FILES
+            }
+        )
+    )
+
+
+def memory_workload(
+    request: dict, *, requirements_sha256: str, root: Path = ROOT
+) -> dict:
+    """What a two-worker measurement must have run to stand for this request:
+    the candidate, its installed numerical environment (the digest of the
+    normalised freeze ``probe`` records in the variant's identity), the
+    corpus, the scheduling event and the files that run it."""
+    return {
+        "candidate": candidate_identity(request),
+        "requirements_sha256": requirements_sha256,
+        "corpus_version": CORPUS_VERSION,
+        "event": MEMORY_SCHEDULING_EVENT,
+        "workload_sha256": memory_workload_sha256(root),
+    }
+
+
+def simulation_workers(
+    request: dict,
+    *,
+    requirements_sha256: str,
+    root: Path = ROOT,
+    memory_total: int | None = None,
+) -> tuple[int, str]:
+    """Two year workers only when a two-worker peak measured on this exact
+    dataset and workload (the candidate's engine and installed environment,
+    the corpus, and the code and registry that run the scheduling event),
+    plus the reserve, fits in this runner's memory; otherwise one.
+
+    Returns the count and the reason the receipt records. Anything the
+    evidence does not establish (no such measurement, an unknown evidence
+    format, a peak that is not a positive integer below the limit, unknown
+    memory) means one worker.
+    """
+    sha = request["candidate"]["data"]["sha256"]
+    try:
+        workload = memory_workload(
+            request, requirements_sha256=requirements_sha256, root=root
+        )
+        evidence = json.loads((root / MEMORY_EVIDENCE).read_bytes())
+        if evidence["schema_version"] != 1:
+            raise ValueError(f"schema_version {evidence['schema_version']!r}")
+        rows = evidence["datasets"].get(sha, {}).get("two_worker_peaks", [])
+        peaks = [row["peak_rss_bytes"] for row in rows if row["workload"] == workload]
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        return 1, f"memory evidence unreadable ({type(exc).__name__})"
+    if not peaks:
+        return 1, (
+            f"no measured two-worker peak for dataset {sha[:12]} with this "
+            "candidate and workload"
+        )
+    if any(
+        type(peak) is not int or not 0 < peak < MEMORY_PEAK_LIMIT_BYTES
+        for peak in peaks
+    ):
+        return 1, "the memory evidence holds an invalid two-worker peak"
+    if memory_total is None:
+        return 1, "this runner's memory is unknown"
+    peak = max(peaks)
+    need = (
+        f"measured two-worker peak {gib(peak)} plus {gib(MEMORY_RESERVE_BYTES)} reserve"
+    )
+    if peak + MEMORY_RESERVE_BYTES <= memory_total:
+        return 2, f"{need} fits in this runner's {gib(memory_total)}"
+    return 1, f"{need} exceeds this runner's {gib(memory_total)}"
+
+
+def process_tree_rss(root_pid: int, proc: Path = Path("/proc")) -> int | None:
+    """Summed VmRSS of root_pid and every descendant; None without /proc.
+
+    Pages two processes share count in both, so this bounds the tree's
+    resident memory from above."""
+    if not proc.is_dir():
+        return None
+    parents, rss = {}, {}
+    for entry in proc.iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            status = (entry / "status").read_text()
+        except OSError:
+            continue
+        fields = dict(line.split(":", 1) for line in status.splitlines() if ":" in line)
+        try:
+            parents[int(entry.name)] = int(fields["PPid"])
+            rss[int(entry.name)] = int(fields.get("VmRSS", "0 kB").split()[0]) * 1024
+        except (KeyError, ValueError, IndexError):
+            continue
+    tree, frontier = set(), {root_pid}
+    while frontier:
+        tree |= frontier
+        frontier = {pid for pid, ppid in parents.items() if ppid in frontier} - tree
+    return sum(rss.get(pid, 0) for pid in tree)
+
+
+def log_free(label: str) -> None:
+    free = shutil.which("free")
+    if free is not None:
+        print(f"[memory] {label}:", flush=True)
+        subprocess.run([free, "-m"], check=False)
+
+
+class EventMemory:
+    """Log memory around one event so a run that dies mid-event shows why.
+
+    ``free -m`` before and after; while it runs, the process tree under this
+    process (compute and its year workers) is sampled every second, and each
+    new whole GiB it reaches is printed with MemAvailable, so the last line a
+    lost runner streamed shows how close it came."""
+
+    def __init__(self, event: str, workers: int, interval: float = 1.0):
+        import threading
+
+        self.event, self.workers, self.interval = event, workers, interval
+        self.peak = 0
+        self.lowest_available: int | None = None
+        self.stop = threading.Event()
+        self.thread = threading.Thread(target=self._sample_until_stopped, daemon=True)
+
+    def sample(self) -> None:
+        tree = process_tree_rss(os.getpid())
+        available = memory_available_bytes()
+        if available is not None and (
+            self.lowest_available is None or available < self.lowest_available
+        ):
+            self.lowest_available = available
+        if tree is not None and tree > self.peak:
+            if tree // 2**30 > self.peak // 2**30:
+                print(
+                    f"[memory] {self.event}: process tree reached {gib(tree)}"
+                    + (f"; MemAvailable {gib(available)}" if available else ""),
+                    flush=True,
+                )
+            self.peak = tree
+
+    def _sample_until_stopped(self) -> None:
+        while not self.stop.wait(self.interval):
+            self.sample()
+
+    def __enter__(self) -> "EventMemory":
+        log_free(f"before {self.event}")
+        self.thread.start()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self.stop.set()
+        self.thread.join(timeout=5)
+        lowest = (
+            f", lowest MemAvailable {gib(self.lowest_available)}"
+            if self.lowest_available is not None
+            else ""
+        )
+        print(
+            f"[memory] after {self.event}: peak process tree {gib(self.peak)} "
+            f"with {self.workers} year worker(s){lowest}",
+            flush=True,
+        )
+        log_free(f"after {self.event}")
+
+
 # --- the corpus ------------------------------------------------------------------------
 
 
@@ -630,7 +863,8 @@ def run_corpus(
             ]
             if dataset_file is not None:
                 command += ["--dataset-file", str(dataset_file)]
-            run(command, cwd=root)
+            with EventMemory(event, workers):
+                run(command, cwd=root)
             run(
                 [
                     python,
@@ -1188,6 +1422,7 @@ def run_request(
                 "artifact_hash_mismatch",
                 "the fetched dataset bytes differ from the request",
             )
+        log_free("runner at the start of the request")
         checkout = fresh_checkout(work, root=root)
         digests = prepare(request, venv, wheels, root=checkout)
         (work / "wheels.json").write_bytes(canonical_bytes(digests))
@@ -1230,6 +1465,19 @@ def run_request(
         record = variants.get_variant(
             variant_id, path=variants_file, root=checkout, allow_uncertified=True
         )
+        # Chosen once the environment is installed and frozen, so the
+        # measurement must match it too. The receipt's execution block
+        # carries the choice in its runner string: policyengine.py validates
+        # receipts against its vendored copy of the v1 schema, whose
+        # execution block admits no new key.
+        workers, reason = simulation_workers(
+            request,
+            root=root,
+            memory_total=memory_total_bytes(),
+            requirements_sha256=record["identity"]["requirements_sha256"],
+        )
+        runner = f"{runner}; {workers} simulation worker{'s' * (workers > 1)}: {reason}"
+        print(f"simulation workers: {workers} ({reason})", flush=True)
         document = variants.load_document(root / "data/uk/replay_variants.json")
         base = base_namespace(request, record, document, root=root)
         namespace = variants.namespace_root(record, root=checkout)
@@ -1270,6 +1518,8 @@ def run_request(
                 str(diagnostics),
                 "--failures",
                 str(work / "failures.json"),
+                "--workers",
+                str(workers),
             ],
             cwd=checkout,
         )
