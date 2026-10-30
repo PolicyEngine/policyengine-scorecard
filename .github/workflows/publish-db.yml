@@ -41,16 +41,20 @@ name: publish db
 # still publishes <sha>.db.gz, as it did: a newer push cancels the older run,
 # often after its pytest job has passed.
 #
-# latest.db.gz moves only for the commit at main's tip, read from the API as
+# latest.db.gz moves only to the commit at main's tip, read from the API as
 # the job starts, so neither a cancelled run nor a re-run of an older CI or
 # publish run rolls it back. A re-run keeps its original GITHUB_SHA, so
-# GITHUB_SHA cannot answer this.
+# GITHUB_SHA cannot answer this. It lags main while the tip's pytest job has
+# not passed.
 #
 # No concurrency group: GitHub cancels a group's pending job when another
 # enters, so an older run's completion could drop the publish for main's tip.
 # Overlapping publishes write different <sha> objects, or the same commit's
-# database. curl gives up after five minutes, so an upload for an older tip
-# cannot outlast the next commit's CI and overwrite latest.db.gz behind it.
+# database. The job has five minutes, and the next commit's publish waits for
+# that commit's CI, so while CI takes longer (seven minutes at its fastest in
+# October 2026) a publish for an older tip ends before the next one starts.
+# Each upload has two of those minutes, so a stalled upload still ends in the
+# warning below, not a timed-out job.
 #
 # Skips with a notice when the secrets are unset. A failed upload is a
 # warning, not a failed run: nothing in this repository reads the published
@@ -77,6 +81,7 @@ jobs:
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.path == '.github/workflows/ci.yml'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     # Reading CI's jobs and artifacts takes actions: read, and main's tip
     # contents: read. There is no checkout.
     permissions:
@@ -135,7 +140,7 @@ jobs:
           fi
           for name in "$@"; do
             status=0
-            curl -sf --max-time 300 -X POST \
+            curl -sf --max-time 120 -X POST \
               "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
               -H "Authorization: Bearer $SUPABASE_KEY" \
               -H "Content-Type: application/gzip" \
