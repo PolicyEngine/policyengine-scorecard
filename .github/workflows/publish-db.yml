@@ -37,9 +37,11 @@ name: publish db
 #
 # It reads the pytest job's conclusion in the CI attempt that fired it, so a
 # run whose pytest job failed or was cancelled publishes nothing, with a
-# notice, even if an earlier attempt left an artifact. Any other CI conclusion
-# still publishes <sha>.db.gz, as it did: a newer push cancels the older run,
-# often after its pytest job has passed.
+# notice, even if an earlier attempt left an artifact. The upload is that job's
+# last step, so whichever artifact of that name the download takes passed the
+# job's checks on this commit. Any other CI conclusion still publishes
+# <sha>.db.gz, as it did: a newer push cancels the older run, often after its
+# pytest job has passed.
 #
 # latest.db.gz moves only to the commit at main's tip, read from the API as
 # the job starts, so neither a cancelled run nor a re-run of an older CI or
@@ -47,14 +49,11 @@ name: publish db
 # GITHUB_SHA cannot answer this. It lags main while the tip's pytest job has
 # not passed.
 #
-# No concurrency group: GitHub cancels a group's pending job when another
-# enters, so an older run's completion could drop the publish for main's tip.
-# Overlapping publishes write different <sha> objects, or the same commit's
-# database. The job has five minutes, and the next commit's publish waits for
-# that commit's CI, so while CI takes longer (seven minutes at its fastest in
-# October 2026) a publish for an older tip ends before the next one starts.
-# Each upload has two of those minutes, so a stalled upload still ends in the
-# warning below, not a timed-out job.
+# One publish runs at a time and the rest wait, so a publish for an older tip
+# cannot overwrite latest.db.gz behind a newer one, and each reads the tip once
+# its turn comes. The job has no time limit of its own, which could end it
+# before the warning below. Each upload has two minutes, so a stalled one warns
+# and lets the next publish start.
 #
 # Skips with a notice when the secrets are unset. A failed upload is a
 # warning, not a failed run: nothing in this repository reads the published
@@ -81,7 +80,16 @@ jobs:
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.path == '.github/workflows/ci.yml'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # `queue: max` keeps every waiting publish: by default GitHub cancels a
+    # group's pending job when another enters, so an older run's completion
+    # could drop the publish for main's tip. Checked on a throwaway branch on
+    # 30 October 2026: runs 41138146103, 41138172124 and 41138195694, pushed 14
+    # seconds apart, ran one after another and none was cancelled. On the job,
+    # not the workflow: a workflow-level group would hold every run of this
+    # file, the ones the guard skips included.
+    concurrency:
+      group: publish-db
+      queue: max
     # Reading CI's jobs and artifacts takes actions: read, and main's tip
     # contents: read. There is no checkout.
     permissions:

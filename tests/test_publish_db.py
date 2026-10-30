@@ -5,7 +5,7 @@ artifact, once CI completes on a push to main. It moved out of ci.yml so that
 no workflow that runs on pull requests names a secret
 (tests/test_ci_gates.py). These tests pin what the move had to keep: it
 publishes only for main's own pushes, only what passed CI's pytest job, and
-runs no package code beside the key; latest.db.gz never moves off main's tip;
+runs no package code beside the key; latest.db.gz moves only to main's tip;
 unset secrets skip with a notice, a failed upload is a warning, and curl never
 prints the host. The step scripts run here under
 `bash -e`, the shell GitHub's log shows for them, with `gh` and `curl` stubs.
@@ -64,13 +64,15 @@ def test_it_runs_when_ci_completes_on_main():
     }
     assert ci[True]["push"] == {"branches": ["main"]}
     assert list(workflow()["jobs"]) == ["publish-db"]
-    # GitHub cancels a concurrency group's pending job when another enters,
-    # so an older run's completion could drop the publish for main's tip.
-    assert "concurrency" not in workflow() and "concurrency" not in job()
-    # Without a group, this limit keeps a publish for an older tip from ending
-    # after the next commit's, which waits for that commit's CI. Each upload's
-    # time limit fits inside it, so a stalled upload warns before the job ends.
-    assert job()["timeout-minutes"] == 5
+    # One publish at a time, so an older tip's cannot land behind a newer one's,
+    # and none dropped: by default GitHub cancels a group's pending job when
+    # another enters. On the job: a workflow-level group would hold every run
+    # of the file, the ones the guard skips included.
+    assert "concurrency" not in workflow()
+    assert job()["concurrency"] == {"group": "publish-db", "queue": "max"}
+    # A job limit could end the job before the warning. Each upload's own limit
+    # turns a stall into that warning and lets the next publish start.
+    assert "timeout-minutes" not in job()
     assert "--max-time 120 " in step(UPLOAD)["run"]
 
 
@@ -158,6 +160,11 @@ def test_it_downloads_what_ci_uploaded_for_that_commit():
     ]
     assert upload["with"]["name"] == "scorecard-db-${{ github.sha }}"
     assert upload["with"]["path"] == "data/scorecard.db"
+    # So any artifact of this name passed the job's checks, whichever attempt
+    # uploaded it and whichever one the download takes.
+    steps = ci["jobs"]["python"]["steps"]
+    assert steps[-1] is upload and "if" not in upload
+    assert not any("continue-on-error" in s for s in steps)
     download = step(DOWNLOAD)
     assert download["uses"] == DOWNLOAD_ACTION
     assert download["with"] == {
