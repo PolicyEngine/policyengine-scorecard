@@ -661,8 +661,10 @@ def node_id(text: str) -> str:
 def suite_failures(log: str) -> list[str]:
     """The node ids pytest's last short test summary in ``log`` names as
     FAILED or ERROR (a collection error names its module). On CI pytest
-    prints whole messages, over lines; a message line that itself starts
-    with FAILED or ERROR is read as another id."""
+    prints whole messages, over lines. This reads a message line that
+    itself starts with FAILED or ERROR as another id, and one that is
+    itself a summary header drops the ids before it. Only the list changes:
+    a check's exit status, not this list, says whether it failed."""
     starts = [match.end() for match in SUMMARY.finditer(log)]
     if not starts:
         return []
@@ -709,7 +711,9 @@ def read_preflight(text: str) -> dict:
     """The build job's report as the propose job receives it, a string:
     refused unless it has exactly the shape ``preflight`` gives. The
     counts and names are still the build job's word; CI on the pull request
-    runs the checks again."""
+    runs the checks again. A count stays under a billion, because the body
+    prints it: a run that names more distinct failures stops here, with
+    nothing proposed."""
     try:
         value = json.loads(text)
     except ValueError:

@@ -981,11 +981,14 @@ which CI now reads from the index:
    `git status` lists) and the first 50 that are printable ASCII without a
    backtick, with no space at either end and at most 200 characters long,
    as one line of JSON (three full lists keep the body inside GitHub's
-   65,536-character limit). On CI pytest prints whole messages over lines;
-   a message line that itself starts with `FAILED` or `ERROR` is read as
-   another node id. `propose` refuses a report of any other shape. Results pull requests #195, #204 and #206 opened ready
-   and failed CI's `pytest` job; with these checks such a pull request
-   opens as a draft that names the failures.
+   65,536-character limit). On CI pytest prints whole messages over lines:
+   the job reads a message line that itself starts with `FAILED` or `ERROR`
+   as another node id, and one that is itself a summary header drops the
+   ids before it. Only the list changes: a check's exit status, not its
+   list, says whether it failed. `propose` refuses a report of any other
+   shape, a count of a billion or more among them. Results pull requests
+   #195, #204 and #206 opened ready and failed CI's `pytest` job; with these
+   checks such a pull request opens as a draft that names the failures.
 5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
    standard library, skipping only the JSON Schema and RFC 8785 checks
    `build` made. Only when the tree matches is the App token minted. The

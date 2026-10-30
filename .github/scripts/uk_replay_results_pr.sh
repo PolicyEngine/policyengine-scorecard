@@ -192,13 +192,15 @@ preflight() (
   unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY
   # Their output goes to the log, where GitHub would act on a line that is a
   # workflow command (::set-output, ::add-mask:: ...): a token only this
-  # shell holds pauses those until the checks are done.
+  # shell holds pauses those until the checks are done. The runner reads a
+  # command only at the start of a line, so each of these starts its own: a
+  # suite that stops mid-line would otherwise leave commands paused.
   local ruff=0 suite=0 resume
   resume=$(python3 -I -c 'import os; print(os.urandom(16).hex())')
-  echo "::stop-commands::$resume"
+  printf '\n::stop-commands::%s\n' "$resume"
   (cd "$TREE" && "${RUFF[@]}") 2>&1 | tee "$WORK/ruff.log" || ruff=$?
   (cd "$TREE" && PYTHONPATH=. "${SUITE[@]}") 2>&1 | tee "$WORK/suite.log" || suite=$?
-  echo "::$resume::"
+  printf '\n::%s::\n' "$resume"
   git -C "$TREE" status --porcelain > "$WORK/porcelain.txt"
   builder preflight --ruff-exit "$ruff" --ruff-log "$WORK/ruff.log" \
     --suite-exit "$suite" --suite-log "$WORK/suite.log" \

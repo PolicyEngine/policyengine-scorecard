@@ -327,7 +327,9 @@ GH_RUNS = {("pr", "create"), ("pr", "edit"), ("pr", "list"), ("pr", "ready")}
 # gh open an editor or a browser, however it is quoted, escaped, abbreviated
 # (git takes any unambiguous prefix of a long option) or bundled (gh -dw).
 # An option assembled at run time (u=--w; u+=eb) is beyond any rule on
-# words, so these rules cover options written as words.
+# words, so these rules cover options written as words. A default counts as
+# one, and a word that splits (below) is refused, so a value cannot hide a
+# second word.
 GIT_CONFIG = {"credential.helper=", "'credential.helper=!gh auth git-credential'"}
 GIT_OPTIONS_TO_AVOID = ("upload-pack", "receive-pack", "exec", "output")
 GH_OPTIONS_TO_AVOID = {"--editor", "-e", "--web", "-w"}
@@ -352,8 +354,13 @@ ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]+\])?\+?=")
 LOCAL_NAME = re.compile(r"[a-z_][a-z0-9_]*")
 PARAMETER = re.compile(
     r"\$\{#?(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*#?$-])(?:\[(?:[@*]|[0-9]+)\])?"
-    r"(?::?[-+?][^{}\[\]'\"$`\\<>()]*)?\}"
+    r"(?::?[-+?](?P<default>[^{}\[\]'\"$`\\<>()]*))?\}"
 )
+# [ runs one of two shapes: -n or -z and a word, or a word, = or != and a
+# word. -v evaluates a subscript, and the operator can come from a value or
+# an array ([ "$op" "$x" ]), so it is a literal here and each operand is one
+# word: no $@, $* or [@], and no unquoted expansion (Commands.splits).
+SEVERAL = re.compile(r"\$[@*]|\$\{[@*]|\[[@*]\]")
 
 
 def unquoted(word):
@@ -380,17 +387,21 @@ def avoided_option(word):
 class Commands:
     """Every simple command bash would run from ``text`` (a shell_residue),
     each with its words as written, its assignments and redirections, and
-    the function whose body holds it: the top level, the bodies of
-    if/while/until, ``{ }`` and ``( )``, and every ``$(...)``, ``<(...)``,
-    ``>(...)``, bash 5.3 ``${ ...; }`` and ``${|...;}``. A command word is
-    whatever starts a command, after an operator, a newline, ``!`` or a
-    reserved word, and after any assignments and redirections before it.
-    What it does not model (case, for, arithmetic, an array element's
-    index, a parameter expansion beyond PARAMETER, a word after a compound
-    command) raises Unlexed, so it is flagged rather than read past."""
+    the function whose body holds it: the top level, the bodies of if,
+    ``{ }`` and ``( )``, and every ``$(...)``, ``<(...)``, ``>(...)``, bash
+    5.3 ``${ ...; }`` and ``${|...;}``. A command word is whatever starts a
+    command, after an operator, a newline, ``!`` or a reserved word, and
+    after any assignments and redirections before it. What it does not model
+    is flagged rather than read past: arithmetic, case, an array element's
+    index, a parameter expansion beyond PARAMETER and a word after a compound
+    command raise Unlexed, and a loop's keywords are commands PROPOSE_RUNS
+    does not list. With no loop, each declaration runs at most once.
+    ``splits`` holds the words with an expansion or a glob outside double
+    quotes, which bash can turn into words the text does not show."""
 
     def __init__(self, text):
         self.text, self.commands, self.functions, self.words = text, [], [], []
+        self.splits = set()
         self.sequence(0, None, function=None)
 
     def blank(self, i):
@@ -467,18 +478,16 @@ class Commands:
             if command is not None and command["closed"]:
                 raise Unlexed(f"{word} after a compound command")
             if command is None or command["name"] is None:
-                if command is None and word in ("if", "while", "until", "{"):
-                    open_.append(
-                        ({"if": "fi", "{": "}"}.get(word, "done"), None, start)
-                    )
+                if command is None and word in ("if", "{"):
+                    open_.append(("fi" if word == "if" else "}", None, start))
                     continue
-                if command is None and word in ("then", "elif", "else", "do"):
-                    if not open_ or open_[-1][0] != ("done" if word == "do" else "fi"):
-                        raise Unlexed(f"{word} outside its compound command")
+                if command is None and word in ("then", "elif", "else"):
+                    if not open_ or open_[-1][0] != "fi":
+                        raise Unlexed(f"{word} outside its if")
                     continue
-                if command is None and word in ("fi", "done"):
-                    if not open_ or open_[-1][0] != word:
-                        raise Unlexed(f"an unmatched {word}")
+                if command is None and word == "fi":
+                    if not open_ or open_[-1][0] != "fi":
+                        raise Unlexed("an unmatched fi")
                     open_.pop()
                     command = self.record(i, function, closed=True)
                     continue
@@ -519,7 +528,7 @@ class Commands:
     def word(self, i, function):
         """The word at i as written, and the index past it. Its
         substitutions are read as commands."""
-        t, start = self.text, i
+        t, start, bare = self.text, i, False
         while i < len(t) and t[i] not in WORD_END:
             if t[i] == "\\":
                 i += 2
@@ -528,16 +537,18 @@ class Commands:
             elif t[i] == '"':
                 i = self.quoted(i + 1, function)
             elif t[i] == "$":
-                i = self.dollar(i, function)
+                bare, i = True, self.dollar(i, function)
             elif t[i] == "{" and t[i + 1 : i + 2] not in ("", *WORD_END):
                 raise Unlexed(f"a brace expansion at {t[i : i + 20]!r}")
             else:
-                i += 1
+                bare, i = bare or t[i] in "*?[", i + 1
             if t[i : i + 1] == "(" and ASSIGNMENT.fullmatch(t[start:i]):
                 i = self.array(i + 1, function)
         if i == start:
             raise Unlexed(f"no word at {t[i : i + 10]!r}")
         self.words.append(t[start:i])
+        if bare:
+            self.splits.add(t[start:i])
         return t[start:i], i
 
     def quoted(self, i, function):
@@ -563,6 +574,8 @@ class Commands:
             parameter = PARAMETER.match(t, i)
             if not parameter:
                 raise Unlexed(f"the expansion {t[i : i + 20]!r}")
+            if parameter["default"]:
+                self.words.append(parameter["default"])
             return parameter.end()
         if t.startswith('$"', i):
             return self.quoted(i + 2, function)
@@ -582,6 +595,18 @@ class Commands:
                 raise Unlexed("an array element's index")
             else:
                 _, i = self.word(i, function)
+
+
+def plain_test(args, splits):
+    """``args`` of ``[`` in one of the shapes it may run: see SEVERAL."""
+    match args:
+        case ["-n" | "-z", word, "]"]:
+            operands = [word]
+        case [left, "=" | "!=", right, "]"]:
+            operands = [left, right]
+        case _:
+            return False
+    return not any(word in splits or SEVERAL.search(word) for word in operands)
 
 
 def disallowed(commands):
@@ -618,17 +643,24 @@ def disallowed(commands):
             continue
         if command["assigns"]:
             found.append(f"{shown} sets its command's environment")
+        for arg in args:
+            # local NAME=$x is an assignment, which bash does not split.
+            if arg in commands.splits and not (
+                name == "local" and ASSIGNMENT.match(arg)
+            ):
+                found.append(f"{shown} splits {arg} into more words")
         if name not in PROPOSE_RUNS:
             found.append(f"{shown} runs {name}")
-        elif name == "[" and any(unquoted(arg) == "-v" for arg in args):
-            found.append(f"{shown} evaluates a subscript")
+        elif name == "[" and not plain_test(args, commands.splits):
+            found.append(f"{shown} is not a test it may run")
         elif name == "local":
             for arg in args:
                 bound = ASSIGNMENT.match(arg)
                 local = (bound.group().rstrip("+=") if bound else arg).split("[")[0]
                 if local in declared:
-                    # A second local of an array reads a quoted value as
-                    # a compound assignment: local a='($(cmd))'.
+                    # A second local of an array reads a quoted value as a
+                    # compound assignment: local a='($(cmd))'. This counts
+                    # declarations as written, which is enough with no loop.
                     found.append(f"{shown} declares {local} again")
                 declared.append(local)
                 if not LOCAL_NAME.fullmatch(
@@ -799,16 +831,20 @@ def test_the_builder_runs_no_release_code_and_never_merges():
 
 
 GROUP = '{\necho "::error::; builder check"\n}'
-# A function definition, wherever in a line it starts.
+# A function definition, wherever in a line it starts, and eval, source or
+# . as a word. Both read text after unquoted: a quote, a backslash or a line
+# continuation inside a word does not change what bash runs. A word assembled
+# at run time (n=ev; "${n}al") is beyond any rule on text.
 DEFINITION = re.compile(
-    r"(?:^|[\s;&|(){}'\"])"
-    r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>\"'$`]+)\s*\(\s*\))",
+    r"(?:^|[\s;&|(){}])"
+    r"(?:function\s+([^\s(){}]+)|([^\s(){}=;&|<>$`]+)\s*\(\s*\))",
     re.M,
 )
+RUNS_TEXT = re.compile(r"(?:^|[\s;&|({])(?:eval|source|\.)\s", re.M)
 
 
 def definitions(text):
-    return [keyword or plain for keyword, plain in DEFINITION.findall(text)]
+    return [keyword or plain for keyword, plain in DEFINITION.findall(unquoted(text))]
 
 
 # pushgit, defined with another program in git's place.
@@ -897,6 +933,35 @@ def test_propose_runs_only_the_commands_it_lists():
         'local c=(--web)\ngh pr list "${c[@]}"',
         "gh pr list --{web,draft}",
         "gh pr list --we\\\nb",
+        # Review of f936b49c: bash 5.2 and 5.3 ran touch from a test whose
+        # operator sits in a value or an array, every bash from a declaration
+        # a loop repeats, and gh ran its browser from a word that splits or a
+        # default.
+        'local o=-v\nlocal x=\'a[$(touch m)]\'\n[ "$o" "$x" ]',
+        'local o=(-v)\nlocal x=\'a[$(touch m)]\'\n[ "${o[@]}" "$x" ]',
+        "local x=y\nwhile :; do\n  local a='($(touch m))'\n  a=(p)\ndone",
+        "until :; do :; done",
+        "local o='--web '\ngh pr list $o",
+        "gh pr list ${o:---web}",
+        'gh pr list "${o:---web}"',
+        "gh pr list *",
+        "git ls-remote ?-upload-pack=x .",
+        "gh pr list [-]-web",
+        "gh pr list $'--web'",
+        # Every other test: a shape it does not run, or an operand that may
+        # be several words.
+        "[ -v x ]",
+        '[ ! -n "$x" ]',
+        '[ -n "$x"',
+        '[ "$x" ]',
+        '[ "$x" -eq 1 ]',
+        '[ "$a" = "$b" -o -v x ]',
+        "[ -n $x ]",
+        '[ $x = "$y" ]',
+        '[ -n "$@" ]',
+        '[ -n "${a[@]}" ]',
+        '[ "$x" = "${a[*]}" ]',
+        '[ "a"$x"b" = c ]',
     ):
         assert runs_pipeline_code(runs), runs
     for inert in (
@@ -907,6 +972,9 @@ def test_propose_runs_only_the_commands_it_lists():
         'if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then\n  cat x >> "$GITHUB_STEP_SUMMARY"\nfi',
         'echo "$branch already holds this tree" >&2',
         "n=$(gh pr list --head \"$b\" \\\n  --json number --jq '.[0].number // empty')",
+        '[ -z "$x" ] || [ "$(plan branch)" != "${y:-}" ]',
+        '[ "$x" = true ]',
+        "local branch=$BUILT_BRANCH head",
     ):
         assert not runs_pipeline_code(inert), (inert, runs_pipeline_code(inert))
     # A function shadows a program or builtin of the same name, so none in
@@ -914,16 +982,20 @@ def test_propose_runs_only_the_commands_it_lists():
     # once: pushgit as PUSHGIT, and plan as field on the plan. A definition
     # counts wherever it starts (after ;, &&, a quote...), and the script
     # holds no eval, source or . that could define one from text it builds
-    # (review of cf8066bc, 2). field, which plan runs, is the isolated
-    # runner's Python on a fixed program that imports json and sys alone.
+    # (reviews of cf8066bc, 2, and f936b49c, 2). field, which plan runs, is
+    # the isolated runner's Python on a fixed program that imports json and
+    # sys alone.
     code = "\n".join(
         line for line in script.splitlines() if not line.lstrip().startswith("#")
     )
-    assert not re.findall(r"(?:^|[\s;&|({])(?:eval|source|\.)\s", code, re.M)
+    assert not RUNS_TEXT.findall(unquoted(code))
+    for evaluates in ("e''val x", "'source' x", "\\. x", "e\\\nval x", ': ; . "$x"'):
+        assert RUNS_TEXT.search(unquoted(evaluates)), evaluates
     for elsewhere in (
         ": ; cat() { :; }",
         "true && cat() { :; }",
         "eval 'cat() { :; }'",
+        "c\\\nat() { :; }",
     ):
         assert definitions(elsewhere) == ["cat"], elsewhere
     defined = definitions(script)
@@ -953,9 +1025,9 @@ def test_propose_runs_only_the_commands_it_lists():
     ]
 
 
-# The names propose may run with any one argument (git, gh and pushgit
+# The names propose may run with any one argument (git, gh, pushgit and [
 # take only some), and names it may not run at all.
-PLAIN_RUNS = sorted(PROPOSE_RUNS - {"git", "gh", "pushgit"})
+PLAIN_RUNS = sorted(PROPOSE_RUNS - {"git", "gh", "pushgit", "["})
 NOT_RUNS = ["bash", "sh", "dash", "zsh", "ksh", "eval", "exec", "source", "."]
 NOT_RUNS += ["trap", "env", "command", "builtin", "xargs", "python3", "tee", "time"]
 CONTEXTS = [
@@ -968,8 +1040,6 @@ CONTEXTS = [
     ">&2 {w} x",
     "if :; then {w} x; fi",
     "if :; then :; elif {w} x; then :; else {w} x; fi",
-    "while {w} x; do {w} x; done",
-    "until {w} x; do :; done",
     "x=$({w} x)",
     'x="$({w} x)"',
     "( {w} x )",
@@ -1079,10 +1149,11 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         phase(script, "preflight"),
         "no GitHub token in the environment",
         "unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY",
-        'echo "::stop-commands::$resume"',
+        "os.urandom(16).hex()",
+        "printf '\\n::stop-commands::%s\\n' \"$resume\"",
         '"${RUFF[@]}"',
         '"${SUITE[@]}"',
-        'echo "::$resume::"',
+        "printf '\\n::%s::\\n' \"$resume\"",
         'git -C "$TREE" status --porcelain',
         "builder preflight ",
     )
@@ -2168,6 +2239,16 @@ unformatted: File would be reformatted
 OLD_RUFF_LOG = "Would reformat: tests/a.py\nWould reformat: pipeline/b.py\n2 files would be reformatted, 9 files already formatted\n"
 
 
+def test_a_message_line_that_looks_like_a_summary_is_a_stated_limit():
+    # The limits suite_failures states, as they behave: only the list
+    # changes, and a failing suite's exit status still makes the draft.
+    log = f"{SUMMARY_HEADER}FAILED tests/test_t.py::test_x - a\n{SUMMARY_HEADER}"
+    assert builder.suite_failures(log) == []
+    assert builder.report(1, builder.suite_failures(log))["exit"] == 1
+    log = f"{SUMMARY_HEADER}FAILED tests/test_t.py::test_x - a\nERROR b\n"
+    assert builder.suite_failures(log) == ["tests/test_t.py::test_x", "b"]
+
+
 def test_the_failures_are_what_the_last_summary_and_ruff_and_git_name():
     assert builder.suite_failures(SUITE_LOG) == [
         "tests/test_toy.py::test_bad",
@@ -2215,7 +2296,12 @@ NODE_IDS = st.builds(
 )
 MESSAGE_LINE = st.text(
     st.characters(min_codepoint=32, max_codepoint=126), max_size=40
-).filter(lambda line: not line.startswith(("FAILED ", "ERROR ")))
+).filter(
+    lambda line: (
+        not line.startswith(("FAILED ", "ERROR "))
+        and not builder.SUMMARY.fullmatch(line)
+    )
+)
 
 
 @settings(max_examples=200, deadline=None)
@@ -2227,8 +2313,9 @@ def test_the_suites_failures_round_trip_through_its_summary(names, messages):
     # Invariant: the node ids of pytest's short summary come back exactly,
     # in order, whatever the messages hold (" - ", "]", more lines) and
     # whatever a parametrised id holds (" - " or an unmatched "[" inside its
-    # brackets). A message line that starts FAILED or ERROR is the stated
-    # limit, so the messages here hold none.
+    # brackets). A message line that starts FAILED or ERROR, or that is
+    # itself a summary header, is a stated limit, so the messages here hold
+    # none.
     lines = []
     for name, message in zip(names, messages):
         word = "ERROR" if "::" not in name else "FAILED"
@@ -2292,6 +2379,7 @@ MALFORMED = {
     "a float exit": lambda r: r["suite"].update(exit=1.0),
     "a negative count": lambda r: r["suite"].update(exit=1, count=-1),
     "a boolean count": lambda r: r["suite"].update(exit=1, count=True),
+    "a count of a billion": lambda r: r["suite"].update(exit=1, count=10**9),
     "a pass with failures": lambda r: r["ruff"].update(count=1, names=["a.py"]),
     "more names than failures": lambda r: r["suite"].update(
         exit=1, count=1, names=["a", "b"]
@@ -2319,6 +2407,12 @@ def test_the_propose_job_refuses_a_report_of_any_other_shape(edit):
         text = json.dumps(report)
     with pytest.raises(builder.Refused, match="outputs are malformed: preflight"):
         builder.read_preflight(text)
+
+
+def test_a_count_under_a_billion_reads_back():
+    report = passing()
+    report["suite"].update(exit=1, count=10**9 - 1)
+    assert builder.read_preflight(json.dumps(report)) == report
 
 
 @settings(max_examples=100, deadline=None)
@@ -2726,6 +2820,8 @@ with open(os.environ["CHECK_LOG"], "a") as log:
         f"{{check}} {{head}} {{os.environ.get('PYTHONPATH', '-')}} {{exposed}} "
         + " ".join(args) + "\\n"
     )
+with open(os.environ["CHECK_LOG"] + ".env", "a") as seen:
+    seen.write(repr(dict(os.environ)) + "\\n")
 if check == "ruff":
     paths = [p for p in os.environ.get("RUFF_UNFORMATTED", "").split(",") if p]
     for path in paths:
@@ -2741,7 +2837,7 @@ if os.environ.get("SUITE_DRIFT"):
 names = [n for n in os.environ.get("SUITE_FAILS", "").split(",") if n]
 print("..F" if names else "...")
 if os.environ.get("SUITE_EXIT"):
-    print("INTERNALERROR> collection died")
+    print("INTERNALERROR> collection died", end="", flush=True)
     sys.exit(int(os.environ["SUITE_EXIT"]))
 if names:
     print("=" * 27 + " short test summary info " + "=" * 28)
@@ -3118,7 +3214,9 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert paused
     resumed = result.stdout.index(f"\n::{paused.group(1)}::\n")
     assert paused.end() < result.stdout.index("3 passed in 0.01s") < resumed
-    assert paused.group(1) not in remote.check_log.read_text()
+    seen = Path(f"{remote.check_log}.env").read_text()
+    assert seen.count("\n") == 2 and "CHECK_LOG" in seen
+    assert paused.group(1) not in remote.check_log.read_text() + seen
     assert remote.rebuilt["draft"] == "false"
     calls = remote.gh_calls()
     assert [call[:2] for call in calls] == [["pr", "list"], ["pr", "create"]]
@@ -4037,6 +4135,10 @@ def test_a_failing_ci_check_opens_a_draft_that_names_it(
     result = remote.run(rid, **override)
     assert result.returncode == 0, result.stdout + result.stderr
     assert remote.branch(record)
+    # However the check's output ends, commands resume on a line of their
+    # own: the runner would read none after it otherwise (review of f936b49c).
+    paused = re.search(r"^::stop-commands::([0-9a-f]{32})$", result.stdout, re.M)
+    assert f"\n::{paused.group(1)}::\n" in result.stdout
     reported = json.loads(remote.outputs["preflight"])
     assert reported[key] == {"exit": status, "count": len(names), "names": names}
     assert all(reported[other]["exit"] == 0 for other in set(reported) - {key})
