@@ -51,9 +51,10 @@ name: publish db
 #
 # One publish runs at a time and the rest wait, so a publish for an older tip
 # cannot overwrite latest.db.gz behind a newer one, and each reads the tip once
-# its turn comes. The job has no time limit of its own, which could end it
-# before the warning below. Each upload has two minutes, so a stalled one warns
-# and lets the next publish start.
+# its turn comes. Time limits keep a stall from holding the queue: each upload
+# has two minutes, which ends in the warning below, and the two steps before
+# them five each, which fails the run. The job has no limit of its own, which
+# could end it inside an upload, before that warning.
 #
 # Skips with a notice when the secrets are unset. A failed upload is a
 # warning, not a failed run: nothing in this repository reads the published
@@ -80,8 +81,8 @@ jobs:
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.path == '.github/workflows/ci.yml'
     runs-on: ubuntu-latest
-    # `queue: max` keeps every waiting publish: by default GitHub cancels a
-    # group's pending job when another enters, so an older run's completion
+    # `queue: max` keeps up to 100 waiting publishes: by default GitHub cancels
+    # a group's pending job when another enters, so an older run's completion
     # could drop the publish for main's tip. Checked on a throwaway branch on
     # 30 October 2026: runs 41138146103, 41138172124 and 41138195694, pushed 14
     # seconds apart, ran one after another and none was cancelled. On the job,
@@ -102,6 +103,7 @@ jobs:
     steps:
       - name: Find the database CI built
         id: find
+        timeout-minutes: 5
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -123,6 +125,7 @@ jobs:
       # actions, because it runs beside the key.
       - name: Download it
         if: steps.find.outputs.found == 'true'
+        timeout-minutes: 5
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: scorecard-db-${{ github.event.workflow_run.head_sha }}

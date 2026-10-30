@@ -65,15 +65,17 @@ def test_it_runs_when_ci_completes_on_main():
     assert ci[True]["push"] == {"branches": ["main"]}
     assert list(workflow()["jobs"]) == ["publish-db"]
     # One publish at a time, so an older tip's cannot land behind a newer one's,
-    # and none dropped: by default GitHub cancels a group's pending job when
-    # another enters. On the job: a workflow-level group would hold every run
-    # of the file, the ones the guard skips included.
+    # and up to 100 waiting: by default GitHub cancels a group's pending job
+    # when another enters. On the job: a workflow-level group would hold every
+    # run of the file, the ones the guard skips included.
     assert "concurrency" not in workflow()
     assert job()["concurrency"] == {"group": "publish-db", "queue": "max"}
-    # A job limit could end the job before the warning. Each upload's own limit
-    # turns a stall into that warning and lets the next publish start.
-    assert "timeout-minutes" not in job()
+    # A stall must not hold that queue. Each upload's limit turns a stall into
+    # the warning, and the steps before them fail the run. A limit on the job
+    # or the publish step could end it inside an upload, before the warning.
     assert "--max-time 120 " in step(UPLOAD)["run"]
+    assert step(FIND)["timeout-minutes"] == step(DOWNLOAD)["timeout-minutes"] == 5
+    assert "timeout-minutes" not in job() and "timeout-minutes" not in step(UPLOAD)
 
 
 def test_it_is_the_only_workflow_run_workflow():
