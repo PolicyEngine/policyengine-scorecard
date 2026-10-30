@@ -67,6 +67,11 @@ def test_it_runs_when_ci_completes_on_main():
     # GitHub cancels a concurrency group's pending job when another enters,
     # so an older run's completion could drop the publish for main's tip.
     assert "concurrency" not in workflow() and "concurrency" not in job()
+    # Without a group, this limit keeps a publish for an older tip from ending
+    # after the next commit's, which waits for that commit's CI. Each upload's
+    # time limit fits inside it, so a stalled upload warns before the job ends.
+    assert job()["timeout-minutes"] == 5
+    assert "--max-time 120 " in step(UPLOAD)["run"]
 
 
 def test_it_is_the_only_workflow_run_workflow():
@@ -423,7 +428,7 @@ def test_publish_uploads_the_commits_database_then_latest(tmp_path):
         assert call["argv"] == [
             "-sf",
             "--max-time",
-            "300",
+            "120",
             "-X",
             "POST",
             f"https://{HOST}/storage/v1/object/scorecard-artifacts/{name}",
