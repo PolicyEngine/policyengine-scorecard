@@ -1,0 +1,25 @@
+{
+ "by_status": {
+  "constructed": 34,
+  "not_computed": 1100
+ },
+ "computed_measure_years": 30,
+ "event": "autumn_budget_2024",
+ "full_event_complete": true,
+ "full_event_grid_size": 30,
+ "full_supported_grid_complete": true,
+ "missing_measure_years": [],
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "source_rows": 1134,
+ "source_value_gbp": -190164695347.9921,
+ "source_value_gbp_decimal": "-190164695347.9920989661272",
+ "staged_path": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_budget_2024/STAGED.jsonl",
+ "staged_rows": 1134,
+ "staged_sha256": "b1842935568f6c21d39d0f9cfca28f384468a311a5aa3a733e952b2a6911eea1",
+ "staged_value_gbp_decimal": "-190164695347.9920989661272",
+ "supported_grid_size": 30,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+}

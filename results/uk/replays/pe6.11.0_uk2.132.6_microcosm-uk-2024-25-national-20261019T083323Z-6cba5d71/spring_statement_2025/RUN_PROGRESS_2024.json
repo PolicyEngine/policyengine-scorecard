@@ -1,0 +1,18 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2024.json": "0ee433dcc33643f2edd7214d05e318f2fcb8ffda7e6532c7dcf49a5767faaf40",
+  "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2024.json": "70b67f9251506566ad0d557768579285d273f3eef2551fc8bc47d55d5b0b1233"
+ },
+ "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "engine_version": "2.132.6",
+ "event": "spring_statement_2025",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.11.0",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "schema_version": 1,
+ "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "variant_identity_sha256": "0c858984a085d89a32de94ac2d3b771fe14aec6410fddd3d10c32a2c371adfe1",
+ "year": 2024
+}
