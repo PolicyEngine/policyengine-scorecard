@@ -43,9 +43,9 @@ LEVEL = {"none": 0, "read": 1, "write": 2}
 # setup-bun read public releases, and the database artifact is uploaded on
 # the Actions runtime token, not GITHUB_TOKEN.
 NEEDS_MORE: dict[str, dict[str, str]] = {}
-# publish-db.yml lists and downloads another run's artifact, CI's, which
-# takes actions: read. It has no checkout, so it needs no contents scope.
-PUBLISH_NEEDS = {"publish-db": {"actions": "read"}}
+# publish-db.yml reads CI's jobs and downloads its artifact, which takes
+# actions: read, and reads main's tip, which takes contents: read.
+PUBLISH_NEEDS = {"publish-db": {"actions": "read", "contents": "read"}}
 
 # The events a pull request starts runs for: opening or updating it, a review
 # or review comment on it, a comment on its conversation (issue_comment), and
@@ -308,9 +308,9 @@ def test_ci_uploads_the_database_without_a_token():
     assert "download-artifact" not in text
 
 
-def test_publish_db_reads_actions_and_nothing_more():
+def test_publish_db_reads_what_it_needs_and_nothing_more():
     workflow = yaml.safe_load(PUBLISH.read_text())
-    assert granted(workflow, "publish-db") == {"actions": "read"}
+    assert granted(workflow, "publish-db") == PUBLISH_NEEDS["publish-db"]
     assert overreach(workflow, PUBLISH_NEEDS) == []
 
 
@@ -321,7 +321,7 @@ def test_publish_db_reads_actions_and_nothing_more():
         "read-all",
         {"actions": "write"},
         {"actions": "read", "contents": "write"},
-        {"actions": "read", "id-token": "write"},
+        {"actions": "read", "contents": "read", "id-token": "write"},
     ],
 )
 def test_the_check_catches_a_wider_publish_token(scopes):

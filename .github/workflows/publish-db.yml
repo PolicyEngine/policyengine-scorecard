@@ -35,13 +35,22 @@ name: publish db
 # script interpolates the triggering run's fields: the run id and commit go
 # to the scripts as environment variables (tests/test_publish_db.py).
 #
-# The artifact exists only if CI's pytest job got to its last step, so a
+# It reads the pytest job's conclusion in the CI attempt that fired it, so a
 # run whose pytest job failed or was cancelled publishes nothing, with a
-# notice. Any other CI conclusion still publishes <sha>.db.gz, as it did: a
-# newer push cancels the older run, often after its pytest job has passed.
-# latest.db.gz moves only for the commit that is still main's tip when CI
-# completes (GITHUB_SHA, in a workflow_run run), so neither a cancelled run
-# nor a re-run of an older one rolls it back.
+# notice, even if an earlier attempt left an artifact. Any other CI conclusion
+# still publishes <sha>.db.gz, as it did: a newer push cancels the older run,
+# often after its pytest job has passed.
+#
+# latest.db.gz moves only for the commit at main's tip, read from the API as
+# the job starts, so neither a cancelled run nor a re-run of an older CI or
+# publish run rolls it back. A re-run keeps its original GITHUB_SHA, so
+# GITHUB_SHA cannot answer this.
+#
+# No concurrency group: GitHub cancels a group's pending job when another
+# enters, so an older run's completion could drop the publish for main's tip.
+# Overlapping publishes write different <sha> objects, or the same commit's
+# database. curl gives up after five minutes, so an upload for an older tip
+# cannot outlast the next commit's CI and overwrite latest.db.gz behind it.
 #
 # Skips with a notice when the secrets are unset. A failed upload is a
 # warning, not a failed run: nothing in this repository reads the published
@@ -67,20 +76,15 @@ jobs:
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.path == '.github/workflows/ci.yml'
-    # One publish at a time, so two uploads of latest.db.gz never interleave.
-    # A publish waiting behind a running one gives way to a newer one. On the
-    # job, not the workflow: a workflow-level group would hold every run of
-    # this file, the ones the guard skips included.
-    concurrency:
-      group: publish-db
-      cancel-in-progress: false
     runs-on: ubuntu-latest
-    # Listing and downloading another run's artifact takes actions: read,
-    # and nothing else is needed: there is no checkout.
+    # Reading CI's jobs and artifacts takes actions: read, and main's tip
+    # contents: read. There is no checkout.
     permissions:
       actions: read
+      contents: read
     env:
       CI_RUN_ID: ${{ github.event.workflow_run.id }}
+      CI_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
       CI_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
       - name: Find the database CI built
@@ -90,14 +94,18 @@ jobs:
         run: |
           set -euo pipefail
           artifact="scorecard-db-$CI_SHA"
+          pytest=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID/attempts/$CI_ATTEMPT/jobs?per_page=100" \
+            --jq '.jobs[] | select(.name == "pytest · ruff format") | .conclusion')
           count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID/artifacts?name=$artifact" \
             --jq '[.artifacts[] | select(.expired | not)] | length')
-          if [ "$count" -eq 0 ]; then
-            echo "::notice::CI run $CI_RUN_ID has no $artifact: its pytest job did not get as far as uploading it, so there is nothing to publish"
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          else
+          main_tip=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          if [ "$pytest" = "success" ] && [ "$count" -gt 0 ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::CI run $CI_RUN_ID attempt $CI_ATTEMPT has nothing to publish: its pytest job ended ${pytest:-unknown}, with $count $artifact"
+            echo "found=false" >> "$GITHUB_OUTPUT"
           fi
+          echo "main_tip=$main_tip" >> "$GITHUB_OUTPUT"
       # Pinned to a commit, as uk-replay-results.yml's propose job pins its
       # actions, because it runs beside the key.
       - name: Download it
@@ -110,6 +118,7 @@ jobs:
       - name: Publish it
         if: steps.find.outputs.found == 'true'
         env:
+          MAIN_TIP: ${{ steps.find.outputs.main_tip }}
           SUPABASE_URL: ${{ secrets.SUPABASE_SCORECARD_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_SCORECARD_KEY }}
         run: |
@@ -119,14 +128,14 @@ jobs:
           fi
           gzip -9 -c scorecard.db > scorecard.db.gz
           set -- "${CI_SHA}.db.gz"
-          if [ "$CI_SHA" = "$GITHUB_SHA" ]; then
+          if [ "$CI_SHA" = "$MAIN_TIP" ]; then
             set -- "$@" latest.db.gz
           else
-            echo "::notice::main is at $GITHUB_SHA now, not $CI_SHA: latest.db.gz is left to the run for main's tip"
+            echo "::notice::main is at $MAIN_TIP now, not $CI_SHA: latest.db.gz is left to the run for main's tip"
           fi
           for name in "$@"; do
             status=0
-            curl -sf -X POST \
+            curl -sf --max-time 300 -X POST \
               "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
               -H "Authorization: Bearer $SUPABASE_KEY" \
               -H "Content-Type: application/gzip" \

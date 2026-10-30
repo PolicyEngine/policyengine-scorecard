@@ -4,9 +4,10 @@ It publishes the database ci.yml's pytest job built, from that run's
 artifact, once CI completes on a push to main. It moved out of ci.yml so that
 no workflow that runs on pull requests names a secret
 (tests/test_ci_gates.py). These tests pin what the move had to keep: it
-publishes only for main's own pushes, only what CI built, and runs no package
-code beside the key; unset secrets skip with a notice, a failed upload is a
-warning, and curl never prints the host. The step scripts run here under
+publishes only for main's own pushes, only what passed CI's pytest job, and
+runs no package code beside the key; latest.db.gz never moves off main's tip;
+unset secrets skip with a notice, a failed upload is a warning, and curl never
+prints the host. The step scripts run here under
 `bash -e`, the shell GitHub's log shows for them, with `gh` and `curl` stubs.
 """
 
@@ -33,6 +34,7 @@ DOWNLOAD_ACTION = "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5
 SHA = "0123456789abcdef0123456789abcdef01234567"
 NEWER = "fedcba9876543210fedcba9876543210fedcba98"
 RUN_ID = "39698300855"
+ATTEMPT = "2"
 REPOSITORY = "PolicyEngine/policyengine-scorecard"
 HOST = "secret-project-ref.supabase.co"
 KEY = "sb_secret_key_value"
@@ -62,10 +64,9 @@ def test_it_runs_when_ci_completes_on_main():
     }
     assert ci[True]["push"] == {"branches": ["main"]}
     assert list(workflow()["jobs"]) == ["publish-db"]
-    # On the job: a workflow-level group would hold every run of the file,
-    # the ones the guard skips included.
-    assert "concurrency" not in workflow()
-    assert job()["concurrency"] == {"group": "publish-db", "cancel-in-progress": False}
+    # GitHub cancels a concurrency group's pending job when another enters,
+    # so an older run's completion could drop the publish for main's tip.
+    assert "concurrency" not in workflow() and "concurrency" not in job()
 
 
 def test_it_is_the_only_workflow_run_workflow():
@@ -164,8 +165,16 @@ def test_it_downloads_what_ci_uploaded_for_that_commit():
     assert 'artifact="scorecard-db-$CI_SHA"' in step(FIND)["run"]
     assert job()["env"] == {
         "CI_RUN_ID": "${{ github.event.workflow_run.id }}",
+        "CI_ATTEMPT": "${{ github.event.workflow_run.run_attempt }}",
         "CI_SHA": "${{ github.event.workflow_run.head_sha }}",
     }
+
+
+def test_find_reads_the_job_ci_names_pytest():
+    """A rename in ci.yml would otherwise leave nothing to match, and every
+    publish would skip with a notice."""
+    name = yaml.safe_load(CI.read_text())["jobs"]["python"]["name"]
+    assert f'select(.name == "{name}")' in step(FIND)["run"]
 
 
 def test_no_script_interpolates_the_triggering_run():
@@ -200,6 +209,7 @@ def test_the_tokens_are_where_they_are_used():
     with_secrets = [s["name"] for s in job()["steps"] if "secrets." in json.dumps(s)]
     assert with_secrets == [UPLOAD]
     assert step(UPLOAD)["env"] == {
+        "MAIN_TIP": "${{ steps.find.outputs.main_tip }}",
         "SUPABASE_URL": "${{ secrets.SUPABASE_SCORECARD_URL }}",
         "SUPABASE_KEY": "${{ secrets.SUPABASE_SCORECARD_KEY }}",
     }
@@ -208,16 +218,18 @@ def test_the_tokens_are_where_they_are_used():
 
 # Stand-ins for the runner image's gh and curl. Each records its arguments
 # and the variables the script reads; curl also keeps the bytes it would
-# send. Like the real curl, a failing stub prints its error, host included,
-# unless one of its short options includes -s.
+# send. gh answers by endpoint, and fails for the one named in `fails_on`.
+# Like the real curl, a failing stub prints its error, host included, unless
+# one of its short options includes -s.
 GH_STUB = """#!{python} -I
 import json, os, sys
 with open({record!r}, "a") as handle:
     handle.write(json.dumps({{"argv": sys.argv[1:], "token": os.environ.get("GH_TOKEN")}}) + "\\n")
-if {status}:
+endpoint = sys.argv[2]
+if {fails_on!r} and {fails_on!r} in endpoint:
     sys.stderr.write("HTTP 502\\n")
-    sys.exit({status})
-print({count!r})
+    sys.exit(1)
+print(next(answer for path, answer in {answers!r}.items() if path in endpoint))
 """
 CURL_STUB = """#!{python} -I
 import json, sys
@@ -236,7 +248,17 @@ if {status}:
 """
 
 
-def run_step(tmp_path, name, *, env=(), script=None, gh_count="1", status=0):
+def run_step(
+    tmp_path,
+    name,
+    *,
+    env=(),
+    script=None,
+    pytest_conclusion="success",
+    artifacts="1",
+    fails_on="",
+    status=0,
+):
     """``name``'s script under `bash -e`, in a fresh workspace holding a
     database, with gh and curl stubs first on PATH."""
     work = tmp_path / "work"
@@ -249,8 +271,12 @@ def run_step(tmp_path, name, *, env=(), script=None, gh_count="1", status=0):
         GH_STUB.format(
             python=sys.executable,
             record=str(records["gh"]),
-            count=gh_count,
-            status=status,
+            answers={
+                "/jobs": pytest_conclusion,
+                "/artifacts": artifacts,
+                "/git/ref/": NEWER,
+            },
+            fails_on=fails_on,
         )
     )
     (stubs / "curl").write_text(
@@ -273,7 +299,11 @@ def run_step(tmp_path, name, *, env=(), script=None, gh_count="1", status=0):
         "GITHUB_REPOSITORY": REPOSITORY,
         "GITHUB_SERVER_URL": "https://github.com",
         "CI_RUN_ID": RUN_ID,
+        "CI_ATTEMPT": ATTEMPT,
         "CI_SHA": SHA,
+        "MAIN_TIP": SHA,
+        # What the runner sets on a re-run of this commit's publish, whatever
+        # main has moved to since.
         "GITHUB_SHA": SHA,
         "GH_TOKEN": "ghs_runtoken",
         "SUPABASE_URL": f"https://{HOST}",
@@ -296,37 +326,70 @@ def run_step(tmp_path, name, *, env=(), script=None, gh_count="1", status=0):
     return result, calls, output.read_text(), summary.read_text(), work
 
 
-def test_find_says_found_when_ci_uploaded_the_database(tmp_path):
-    result, calls, output, _, _ = run_step(tmp_path, FIND, gh_count="1")
+def test_find_says_found_when_ci_passed_and_uploaded_the_database(tmp_path):
+    result, calls, output, _, _ = run_step(tmp_path, FIND)
     assert result.returncode == 0, result.stderr
-    assert output == "found=true\n"
+    assert output == f"found=true\nmain_tip={NEWER}\n"
     assert "::notice::" not in result.stdout
+    run = f"repos/{REPOSITORY}/actions/runs/{RUN_ID}"
     assert calls["gh"] == [
         {
             "argv": [
                 "api",
-                f"repos/{REPOSITORY}/actions/runs/{RUN_ID}/artifacts"
-                f"?name=scorecard-db-{SHA}",
+                f"{run}/attempts/{ATTEMPT}/jobs?per_page=100",
+                "--jq",
+                '.jobs[] | select(.name == "pytest · ruff format") | .conclusion',
+            ],
+            "token": "ghs_runtoken",
+        },
+        {
+            "argv": [
+                "api",
+                f"{run}/artifacts?name=scorecard-db-{SHA}",
                 "--jq",
                 "[.artifacts[] | select(.expired | not)] | length",
             ],
             "token": "ghs_runtoken",
-        }
+        },
+        {
+            "argv": [
+                "api",
+                f"repos/{REPOSITORY}/git/ref/heads/main",
+                "--jq",
+                ".object.sha",
+            ],
+            "token": "ghs_runtoken",
+        },
     ]
 
 
 def test_find_skips_with_a_notice_when_the_pytest_job_uploaded_nothing(tmp_path):
-    result, calls, output, _, _ = run_step(tmp_path, FIND, gh_count="0")
+    result, calls, output, _, _ = run_step(tmp_path, FIND, artifacts="0")
     assert result.returncode == 0, result.stderr
-    assert output == "found=false\n"
-    assert result.stdout.startswith(
-        f"::notice::CI run {RUN_ID} has no scorecard-db-{SHA}: its pytest job"
+    assert output == f"found=false\nmain_tip={NEWER}\n"
+    assert result.stdout == (
+        f"::notice::CI run {RUN_ID} attempt {ATTEMPT} has nothing to publish: its "
+        f"pytest job ended success, with 0 scorecard-db-{SHA}\n"
     )
     assert not calls["curl"]
 
 
-def test_find_fails_the_run_when_it_cannot_ask(tmp_path):
-    result, _, output, _, _ = run_step(tmp_path, FIND, status=1)
+@pytest.mark.parametrize("conclusion", ["failure", "cancelled", "skipped", ""])
+def test_find_skips_an_artifact_this_attempts_pytest_job_did_not_pass(
+    tmp_path, conclusion
+):
+    """An artifact can outlive the attempt that uploaded it: a re-run of a
+    job that passed shares its attempt's artifact (run 39698458972), so the
+    artifact alone does not say the attempt that fired this run passed."""
+    result, _, output, _, _ = run_step(tmp_path, FIND, pytest_conclusion=conclusion)
+    assert result.returncode == 0, result.stderr
+    assert output == f"found=false\nmain_tip={NEWER}\n"
+    assert f"pytest job ended {conclusion or 'unknown'}," in result.stdout
+
+
+@pytest.mark.parametrize("endpoint", ["/jobs", "/artifacts", "/git/ref/"])
+def test_find_fails_the_run_when_it_cannot_ask(tmp_path, endpoint):
+    result, _, output, _, _ = run_step(tmp_path, FIND, fails_on=endpoint)
     assert result.returncode != 0
     assert output == ""
 
@@ -352,6 +415,8 @@ def test_publish_uploads_the_commits_database_then_latest(tmp_path):
     for call, name in zip(calls["curl"], names, strict=True):
         assert call["argv"] == [
             "-sf",
+            "--max-time",
+            "300",
             "-X",
             "POST",
             f"https://{HOST}/storage/v1/object/scorecard-artifacts/{name}",
@@ -368,16 +433,18 @@ def test_publish_uploads_the_commits_database_then_latest(tmp_path):
 
 
 def test_latest_waits_for_mains_tip(tmp_path):
-    """GITHUB_SHA in a workflow_run run is main's tip. When main has moved on
-    (a newer push cancelled this run, or an older run was re-run), the
-    commit's own copy is uploaded and latest.db.gz is not rolled back."""
-    result, calls, _, summary, _ = run_step(tmp_path, UPLOAD, env={"GITHUB_SHA": NEWER})
+    """When main has moved on (a newer push cancelled this run, or an older
+    CI or publish run was re-run), the commit's own copy is uploaded and
+    latest.db.gz is not rolled back. On a re-run of an old publish GITHUB_SHA
+    is still that commit, as run_step sets it, so only the tip the find step
+    read tells the two apart."""
+    result, calls, _, summary, _ = run_step(tmp_path, UPLOAD, env={"MAIN_TIP": NEWER})
     assert result.returncode == 0, result.stderr
     assert result.stdout == (
         f"::notice::main is at {NEWER} now, not {SHA}: latest.db.gz is left "
         f"to the run for main's tip\nuploaded scorecard-artifacts/{SHA}.db.gz\n"
     )
-    assert [call["argv"][3].rsplit("/", 1)[1] for call in calls["curl"]] == [
+    assert [call["argv"][5].rsplit("/", 1)[1] for call in calls["curl"]] == [
         f"{SHA}.db.gz"
     ]
     assert summary == ""
