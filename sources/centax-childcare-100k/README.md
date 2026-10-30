@@ -78,8 +78,7 @@ runs.
 ## Why PolicyEngine estimates a higher cost
 
 On the latest pair, PolicyEngine's static cost exceeds CenTax's by 26% in
-2027-28 and 25% in 2029-30. The central static rows carry a `pe_gap`
-diagnosis linked to [microcosm#1338](https://github.com/PolicyEngine/microcosm/pull/1338).
+2027-28 and 25% in 2029-30.
 
 | £bn of cost | 2027-28 | 2029-30 |
 |---|---:|---:|
@@ -95,9 +94,10 @@ hold extended take-up true and universal take-up false.
 It receives no universal hours under current law, though those hours have no
 income limit, and receives them only once the reform makes it eligible for
 the extended hours. Every pound of the universal change falls on such
-children. microcosm#1338 (merged 23 October 2026, after this cut) nests the
-universal draw under the extended one, so a family that claims the extended
-hours also claims the universal hours.
+children. [microcosm#1338](https://github.com/PolicyEngine/microcosm/pull/1338)
+(merged 23 October 2026, after this cut) nests the universal draw under the
+extended one, so a family that claims the extended hours also claims the
+universal hours.
 
 The extended hours alone run 8% and 9% above CenTax. Two differences could
 account for that remainder, and this run sizes neither:
@@ -105,7 +105,7 @@ account for that remainder, and this run sizes neither:
 - On this cut, copied high-income families inherit their hosts' take-up
   draws and children under 2 share the older children's take-up.
   microcosm#1338 changes both.
-- The engine starts a working parent above £100,000 from no working-parent
+- The engine starts a family the limit disqualifies from no working-parent
   hours. CenTax nets off the hours that parents with live accounts already
   receive.
 
@@ -114,9 +114,9 @@ weighted mean of 28.3 of the 30 weekly hours
 (`maximum_extended_childcare_hours_usage`), against about 28.5 for DfE in
 [microcosm#1126](https://github.com/PolicyEngine/microcosm/issues/1126).
 With every family at the full 30 hours, the same reform costs £1.055bn in
-2027-28 and £1.278bn in 2029-30 on this pair (a diagnostic run, never
-attached). No child under 1 receives hours on this pair, because every age
-is a whole number of years.
+2027-28 and £1.278bn in 2029-30 on this pair (a diagnostic run). No child
+under 1 receives hours on this pair, because every age is a whole number of
+years.
 
 The 19 June pair ran about 14% below CenTax. Families on that pair drew a
 weighted mean of 15.3 weekly hours, and #1126 identifies that draw as the
@@ -151,7 +151,8 @@ These are the entries with a `variants` list in both sources'
 Add the pair to the notes that still hold, and write replacements for those
 that do not. Then add the pair's `verified_pairs` entry, which says why its
 run is static, what is known about its hours draw, and the `pe_gap`
-diagnosis, if one still applies. Ingest refuses an artifact on a pair with
+diagnosis and link, if one still applies. That diagnosis and link go on the
+central static rows. Ingest refuses an artifact on a pair with
 no such entry. It attaches each note only to results on the pairs it names,
 and it refuses an artifact whose package, release-bundle or dataset identity
 differs from its variant record. It keeps every certified artifact's run.
