@@ -1,0 +1,167 @@
+name: publish db
+
+# Publishes the database CI built for each push to main to the
+# `scorecard-artifacts` bucket on the PE Supabase project, as <sha>.db.gz
+# (gzipped ~14 MB from ~196 MB: the project is on the free plan, 50 MB
+# per-object cap) and a moving latest.db.gz, so consumers fetch and gunzip
+# instead of rebuilding.
+#
+# WHY IT IS NOT IN ci.yml
+#
+# This is the only workflow that names SUPABASE_SCORECARD_URL and
+# SUPABASE_SCORECARD_KEY. ci.yml runs on pull requests and installs and runs
+# PyPI packages and each certified variant's pins, as a runner user with
+# passwordless sudo. A debug re-run of #215's pull-request CI showed a job's
+# runner receiving a secret the job named only in a skipped step, and GitHub
+# scrubs only the secrets "not referenced in the workflow". So while
+# publish-db was a push-only job of ci.yml, the pull-request runners there may
+# have held the key. No workflow that runs on pull requests names a secret
+# now (tests/test_ci_gates.py).
+#
+# WHY workflow_run, NOT A REBUILD
+#
+# It publishes the bytes CI built and tested, once CI's pytest job has
+# passed, as `needs: python` did inside ci.yml. A push workflow that rebuilt
+# the database would run the project's PyPI packages in the job that holds
+# the key, or in a sibling job of the workflow that names it, and would
+# publish a database whose suite had not run. This job runs no package code:
+# no checkout, no uv, no Python, only actions/download-artifact and the
+# runner image's gh, gzip and curl.
+#
+# workflow_run runs main's copy of this file with the repository's secrets,
+# whatever started the CI run, a fork's pull request included, and the
+# `branches` filter names a branch, not an event or a repository. So the
+# job runs only for ci.yml on a push to main of this repository, and no
+# script interpolates the triggering run's fields: the run id and commit go
+# to the scripts as environment variables (tests/test_publish_db.py).
+#
+# It reads the pytest job's conclusion in the CI attempt that fired it, so a
+# run whose pytest job failed or was cancelled publishes nothing, with a
+# notice, even if an earlier attempt left an artifact. The upload is that job's
+# last step, so whichever artifact of that name the download takes passed the
+# job's checks on this commit. Any other CI conclusion still publishes
+# <sha>.db.gz, as it did: a newer push cancels the older run, often after its
+# pytest job has passed.
+#
+# latest.db.gz moves only to the commit at main's tip, read from the API as
+# the job starts, so neither a cancelled run nor a re-run of an older CI or
+# publish run rolls it back. A re-run keeps its original GITHUB_SHA, so
+# GITHUB_SHA cannot answer this. It lags main while the tip's pytest job has
+# not passed.
+#
+# One publish runs at a time and the rest wait, so a publish for an older tip
+# cannot overwrite latest.db.gz behind a newer one, and each reads the tip once
+# its turn comes. Time limits keep a stall from holding the queue: each upload
+# has two minutes, which ends in the warning below, and the two steps before
+# them five each, which fails the run. The job has no limit of its own, which
+# could end it inside an upload, before that warning.
+#
+# Skips with a notice when the secrets are unset. A failed upload is a
+# warning, not a failed run: nothing in this repository reads the published
+# copy, and CI's run keeps the built database as an artifact for 30 days.
+# Every publish from 6 October 2026 failed with curl exit 6 (the storage host
+# no longer resolves; the last upload that worked was 28 September). curl
+# stays silent so the host name in the secret URL is never printed.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  publish-db:
+    name: publish db to supabase storage
+    if: >-
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.path == '.github/workflows/ci.yml'
+    runs-on: ubuntu-latest
+    # `queue: max` keeps up to 100 waiting publishes: by default GitHub cancels
+    # a group's pending job when another enters, so an older run's completion
+    # could drop the publish for main's tip. Checked on a throwaway branch on
+    # 30 October 2026: runs 41138146103, 41138172124 and 41138195694, pushed 14
+    # seconds apart, ran one after another and none was cancelled. On the job,
+    # not the workflow: a workflow-level group would hold every run of this
+    # file, the ones the guard skips included.
+    concurrency:
+      group: publish-db
+      queue: max
+    # Reading CI's jobs and artifacts takes actions: read, and main's tip
+    # contents: read. There is no checkout.
+    permissions:
+      actions: read
+      contents: read
+    env:
+      CI_RUN_ID: ${{ github.event.workflow_run.id }}
+      CI_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+      CI_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Find the database CI built
+        id: find
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          artifact="scorecard-db-$CI_SHA"
+          pytest=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID/attempts/$CI_ATTEMPT/jobs?per_page=100" \
+            --jq '.jobs[] | select(.name == "pytest · ruff format") | .conclusion')
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID/artifacts?name=$artifact" \
+            --jq '[.artifacts[] | select(.expired | not)] | length')
+          main_tip=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          if [ "$pytest" = "success" ] && [ "$count" -gt 0 ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::CI run $CI_RUN_ID attempt $CI_ATTEMPT has nothing to publish: its pytest job ended ${pytest:-unknown}, with $count $artifact"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "main_tip=$main_tip" >> "$GITHUB_OUTPUT"
+      # Pinned to a commit, as uk-replay-results.yml's propose job pins its
+      # actions, because it runs beside the key.
+      - name: Download it
+        if: steps.find.outputs.found == 'true'
+        timeout-minutes: 5
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: scorecard-db-${{ github.event.workflow_run.head_sha }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Publish it
+        if: steps.find.outputs.found == 'true'
+        env:
+          MAIN_TIP: ${{ steps.find.outputs.main_tip }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_SCORECARD_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SCORECARD_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::notice::Supabase secrets not set — skipping publish"
+            exit 0
+          fi
+          gzip -9 -c scorecard.db > scorecard.db.gz
+          set -- "${CI_SHA}.db.gz"
+          if [ "$CI_SHA" = "$MAIN_TIP" ]; then
+            set -- "$@" latest.db.gz
+          else
+            echo "::notice::main is at $MAIN_TIP now, not $CI_SHA: latest.db.gz is left to the run for main's tip"
+          fi
+          for name in "$@"; do
+            status=0
+            curl -sf --max-time 120 -X POST \
+              "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
+              -H "Authorization: Bearer $SUPABASE_KEY" \
+              -H "Content-Type: application/gzip" \
+              -H "x-upsert: true" \
+              --data-binary @scorecard.db.gz > /dev/null || status=$?
+            if [ "$status" -ne 0 ]; then
+              message="curl exit $status uploading scorecard-artifacts/$name: the published database was not updated. The database CI built is the scorecard-db-$CI_SHA artifact of $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID."
+              echo "::warning title=Supabase publish failed::$message"
+              echo "**Supabase publish failed.** $message" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "uploaded scorecard-artifacts/$name"
+          done
