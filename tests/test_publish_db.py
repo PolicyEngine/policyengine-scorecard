@@ -185,6 +185,13 @@ def test_no_script_interpolates_the_triggering_run():
         assert "${{" not in s.get("run", ""), s.get("name")
 
 
+def test_no_script_reads_github_sha():
+    """In a workflow_run run GITHUB_SHA is not the CI commit, and a re-run
+    keeps its original value, so it is not main's tip either."""
+    for s in job()["steps"]:
+        assert "GITHUB_SHA" not in s.get("run", ""), s.get("name")
+
+
 def test_the_job_runs_no_package_code():
     """No checkout and no package manager or interpreter: what runs beside
     the key is actions/download-artifact and the runner image's gh, gzip
