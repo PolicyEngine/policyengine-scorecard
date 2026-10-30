@@ -1,0 +1,187 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+    "2029-01-01.2030-12-31": 0.0
+   },
+   "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+    "2029-01-01.2030-12-31": 1e+100
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "income_tax": 362713363402.8606,
+  "ni_class_1_employee": 54754145312.58388,
+  "ni_class_1_employer": 172369916848.37405,
+  "ni_class_4": 3182588163.0601363
+ },
+ "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "components": [
+  "ab2025__salary_sacrifice_pension_nics_cap_2000"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "engine_version": "2.132.6",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_4": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 0.0,
+  "ni_class_1_employee": 0.0,
+  "ni_class_1_employer": 0.0,
+  "ni_class_4": 0.0
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_4"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_4": -0.0
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": -0.0,
+  "ni_class_1_employer": -0.0,
+  "ni_class_4": -0.0
+ },
+ "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+ "measure_total_gbp": 0.0,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+     "2029-01-01.2030-12-31": 0.0
+    },
+    "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+     "2029-01-01.2030-12-31": 1e+100
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.11.0",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+    "intended": 0.0016,
+    "processed": 0.0016
+   },
+   "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+    "intended": "inf",
+    "processed": "inf"
+   }
+  },
+  "reform_world": {
+   "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+    "intended": 0.0016,
+    "processed": 0.0016
+   },
+   "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+    "intended": "inf",
+    "processed": "inf"
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 362713363402.8606,
+    "ni_class_1_employee": 54754145312.58388,
+    "ni_class_1_employer": 172369916848.37405,
+    "ni_class_4": 3182588163.0601363
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 362713363402.8606,
+    "ni_class_1_employee": 54754145312.58388,
+    "ni_class_1_employer": 172369916848.37405,
+    "ni_class_4": 3182588163.0601363
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "variant_identity_sha256": "0c858984a085d89a32de94ac2d3b771fe14aec6410fddd3d10c32a2c371adfe1",
+ "year": 2027
+}
