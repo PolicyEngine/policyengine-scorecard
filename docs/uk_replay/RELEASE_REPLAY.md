@@ -100,7 +100,7 @@ A variant record:
 | `certification` | Where the pairing is certified: `source` (e.g. `policyengine.py 6.2.6 packaged manifest`), `compatibility_basis`, `certified_for_model_version`, `data_build_id`. |
 | `status` | `certified` (a released policyengine.py bundle), `candidate` (a W4 qualification request), or `retired`. Only a certified variant runs, and the default must be certified; a qualification run, which replays its own candidate record, passes `--allow-uncertified`. |
 | `qualification_request_sha256` | For candidates, the request the variant was built from. |
-| `executor` | `local` (GitHub runner or workstation) and/or `modal`. The populace 1.3GB dataset needs Modal's 32GiB; the 128MB enhanced FRS runs on a 16GB runner. |
+| `executor` | `local` (GitHub runner or workstation) and/or `modal`. The populace 1.3GB dataset needs Modal's 32GiB; the 128MB enhanced FRS runs on a 16GB runner, and the 322MB Microcosm UK 2024-25 runs there with one year worker (see "Memory and year workers"). |
 
 ### What "validated exactly" means
 
@@ -700,7 +700,9 @@ sandbox` job runs `setup`, `run` and `collect` on the runner image on every
 pull request, with no secrets and a stub drain that does what a real run
 needs inside the sandbox (creates a uv environment and installs from PyPI,
 adds a git worktree of the copy, runs a multiprocessing pool) and leaves a
-process behind.
+process behind. `setup` also checks the offline form of the sandbox that the
+real replay uses ([the real replay in the
+sandbox](#the-real-replay-in-the-sandbox)).
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
@@ -745,15 +747,10 @@ through the wrapper's `PolicyEngine/policyengine.py` git source (which can
 name a fork's commit), or a malicious third-party dependency pulled in when
 installation falls back to free resolution.
 
-The real replay in `uk-replay-determinism.yml` is weaker: the variant's
-engine runs as the runner user, so code in a certified freeze could read the
-token from the runner's memory, where it stays until the job ends. Its fetch
-runs before any variant code, which keeps such code from redirecting the
-fetch through `$GITHUB_ENV`, `$GITHUB_PATH` or a planted file, but not from
-that memory. The workflow runs only on pushes to main, with committed,
-certified freezes. CI's `replay engine` legs, which install and run each
-variant on pull requests too, are in a workflow that names no dataset token:
-the runner receives a secret its job names even in a step that never runs.
+The real replay in `uk-replay-determinism.yml` runs a certified variant's
+code in this same sandbox, its replay offline. [The real replay in the
+sandbox](#the-real-replay-in-the-sandbox) says how, and what a malicious
+freeze could still do there.
 
 In the qualification run's sandbox, the drain
 (`.github/scripts/uk_replay_drain.sh`) runs
@@ -858,11 +855,120 @@ rebase conflict,
 abort, check out the latest state branch and enqueue the request again.
 Exhausting retries reports an error.
 
-At most one drain run executes, with at most two simulation workers, so this
-workflow never runs more than two simulations at once. These runs use GitHub
-runners; manual replays on the shared Mac also respect the host reservation
+At most one drain run executes, with one or two simulation workers (see
+"Memory and year workers"), so this workflow never runs more than two
+simulations at once. These runs use GitHub runners; manual replays on the
+shared Mac also respect the host reservation
 (`python3 ~/reviews/fleet-ops/tools/reservation.py allowed w6-replay`), which
 holds heavy local work back from 29 October to 2 November.
+
+### Memory and year workers
+
+`compute_uk_event` runs each event's years one after another in its own
+process (one worker) or across two spawned year workers; each holds one live
+simulation at a time. The run job is a
+GitHub-hosted `ubuntu-latest` runner, which for a public repository has 4
+CPUs and 16 GB of memory
+([GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)).
+`run_request` runs two workers only when
+`docs/uk_replay/evidence/replay_memory.json` records a two-worker peak for
+the request's exact dataset (by SHA-256) and workload, and that peak plus a
+2 GiB reserve fits in the runner's `MemTotal`, read from `/proc/meminfo`.
+The workload is the candidate's identity as the request names it (the three
+engine versions, the wheels' digests and the wrapper's source), its
+installed numerical environment (the digest of the normalised freeze that
+`probe` records in the variant's identity, so the choice is made after
+`probe`), the corpus version, the scheduling event, and a digest of the
+scorecard files that run that event besides the engine
+(`MEMORY_WORKLOAD_FILES`: its registry, the construction revisions and the
+compute modules); a change to any of them makes a measurement another
+workload's. A peak counts only from a completed run of the whole of Autumn
+Budget 2025, the corpus's largest event (nine measures over six years, each
+with a modified world) and the one two Microcosm workers could not finish,
+in which both year workers were spawned and the run manifest's full event
+grid is complete. A slice leaves out years, worlds and the memory a worker
+accumulates over them, so it does not count. Anything else means one
+worker: a dataset or workload nobody has measured, an evidence file of
+another format, a peak that is not a positive integer below 2^50 bytes, or
+an unknown `MemTotal`. The
+reserve is a margin for what lies outside the corpus's process tree (the
+runner's services, the drain's control process, the page cache), not a
+measurement.
+
+The choice and its reason go in the receipt's `execution.runner`, after the
+runner's name: for example `github-actions Linux X64; 1 simulation worker:
+measured two-worker peak … plus 2.0 GiB reserve exceeds this runner's …`.
+It is a string rather than a new key because policyengine.py validates every
+receipt against its vendored copy of `replay_receipt.v1.json`
+(`provenance/qualification.py`, `ReplayReceipt.from_document`), whose
+`execution` object admits no other property.
+
+The evidence comes from `pipeline/modal_uk_replay_memory.py`. It builds the
+candidate environment with the qualifier's own `prepare`, runs `probe` and
+then `compute_uk_event` exactly as `run_corpus` calls it, in a Modal
+container with the runner's 4 CPUs and 32 GiB (so a run that would not fit on
+the runner still finishes and is measured), and samples the summed resident
+memory of `compute_uk_event` and its year workers every 0.2 s. Pages two
+processes share count in both, so the figure bounds the tree from above. The
+container's network is blocked while it runs, and only memory, timings and
+lines matching `compute_uk_event`'s own progress and aggregate formats
+exactly are printed or come back; any other line stays in the container.
+Each measurement records the candidate's identity, the installed
+environment's freeze digest from the container's own `probe`, the workload
+digest (taken from the copy that is uploaded, and checked again in the
+container) and the run manifest's coverage. `summarize` derives each dataset's peaks from
+the measurements, and a test regenerates the committed file's summary from
+its own measurements. The three one-worker measurements below were taken
+before each phase's process peak started from the phase's own first sample,
+so their phases record only the tree's peak (`"phase_peaks": "tree_only"`);
+they inform, and do not schedule.
+
+The committed measurements (Modal, 4 CPUs; the qualifier's own `prepare`
+resolved each candidate within the 6.9.0 certified environment). The two
+whole-event two-worker runs, on 23 October 2026, are the scheduling
+evidence; the one-worker runs, on 22 October, are for reading:
+
+| Slice of Autumn Budget 2025 | Dataset (release) | Workers | Peak summed RSS | Wall |
+|---|---|---|---|---|
+| all years and measures | Microcosm UK 2024-25 (6.10.0) | 2 | 19.2 GiB | 22 min |
+| all years and measures | Microcosm UK 2024-25 (6.10.0) | 1 | 10.2 GiB | 46 min |
+| 2029: baseline and the threshold-freeze world | Microcosm UK 2024-25 (6.10.0) | 1 | 8.5 GiB | 1.6 min |
+| all years and measures | enhanced FRS 1.58.1 (6.9.0) | 2 | 9.1 GiB | 15 min |
+| 2029: baseline and the threshold-freeze world | enhanced FRS 1.58.1 (6.9.0) | 1 | 3.8 GiB | 0.8 min |
+
+Two earlier runs of the Microcosm two-worker slice, before the tool's last
+revisions, measured 18.6 and 18.5 GiB. For the workloads measured,
+Microcosm with 6.10.0's candidate runs one worker on a 16 GB runner (19.2 GiB
+plus the reserve is far above it) and the enhanced FRS 1.58.1 with 6.9.0's
+would run two (9.1 GiB plus the reserve fits). Any other candidate on either
+dataset, 6.10.1's included, has no matching measurement and runs one. #224
+changed `pipeline/uk_replay_variants.py`, a workload file, after these
+measurements, so every request now runs one worker until a dataset is
+measured again with this tool and `summarize`; that is the direction this
+rule errs in. A worker's resident memory grows over its successive years: with one
+worker on Microcosm it went from 8.9 GiB in 2025 to 10.2 GiB in 2030. In
+policyengine.py 6.10.0's first two qualification attempts (requests
+`47fe63f4…` and `dfc9d655…`), two workers finished AB2025's 2025 to 2028,
+where the measured two-worker peak is 17.5 to 17.9 GiB, and the runner was
+lost in 2029 and 2030, where it reaches 19.2 GiB; their 2029 and 2030
+baselines took 60 to 67 s, against 29 to 40 s for the earlier years on the
+runner and 28 to 31 s for the same baselines with one worker here. Summed
+RSS counts shared pages twice, so the runner held somewhat less than these
+figures when it failed.
+
+One worker roughly doubles the corpus's wall time. In those two attempts,
+the year jobs of the five events before AB2025 took 6,078 s and 6,347 s of
+worker time in all, and each AB2025 year from 2025 to 2028 took 548 to
+741 s; one worker therefore needs about 2.6 to 3.0 hours of simulation for
+the whole corpus, inside the run job's 340 minutes.
+
+The run job also logs the runner's memory, swap, CPUs and disk before the
+candidate starts and its memory after it ends. Inside the sandbox,
+`run_corpus` prints `free -m` before and after each event; while the event
+runs it samples the process tree every second and prints each new whole GiB
+it reaches with `MemAvailable`, and after the event the tree's peak and the
+lowest `MemAvailable`. A runner lost to memory leaves those lines as the last
+it streamed.
 
 ### The results pull request
 
@@ -1031,8 +1137,8 @@ gates: CI and an independent review.
 
 ### Replay in CI
 
-CI runs three kinds of replay check. `ci.yml` runs the first two on every
-pull request and push, and `uk-replay-determinism.yml` runs the third on
+CI runs four kinds of replay check. `ci.yml` runs the first three on every
+pull request and push, and `uk-replay-determinism.yml` runs the fourth on
 pushes to main only:
 
 * Engine-free, in the main job: every committed namespace with event run
@@ -1062,6 +1168,9 @@ pushes to main only:
   premises byte for byte. Non-legacy variants also regenerate the re-verified
   diagnostics. The legacy leg skips them. `ci.yml` names no dataset token,
   and a pull request's run emits a notice that nothing was replayed.
+* `real replay sandbox`, with no secrets: the real replay's sandbox modes
+  on the runner image, with a stand-in dataset and a stub engine
+  ([below](#the-real-replay-in-the-sandbox)).
 * `real replay`, in `uk-replay-determinism.yml`, on pushes to main only, one
   leg for each certified variant from the same listing. A non-legacy variant
   with a committed sealed namespace replays one real measure-year on the
@@ -1070,12 +1179,100 @@ pushes to main only:
   checkout, uv's setup and a read of the index, and before anything of the
   variant's is installed. It fetches the dataset into the Hugging Face hub
   cache by uv's absolute path in an emptied environment, with packages no
-  newer than a fixed date and the token on stdin. The variant's engine runs
-  in later steps, without the token in their environment, in a job with
-  `contents: read`, no persisted checkout credential and no cache. The
-  legacy leg replays nothing. Without the secret, or without a committed
-  sealed namespace, the fetch emits a notice stating that nothing was
-  replayed.
+  newer than a fixed date and the token on stdin. The variant's install and
+  replay then run as the unprivileged candidate account in the systemd
+  sandbox, the replay offline
+  ([below](#the-real-replay-in-the-sandbox)), and the runner's own Python
+  compares the artifact that comes back. The job has `contents: read`, no
+  persisted checkout credential and no cache. The legacy leg replays
+  nothing. Without the secret, or without a committed sealed namespace, the
+  fetch emits a notice stating that nothing was replayed.
+
+#### The real replay in the sandbox
+
+The real replay in `uk-replay-determinism.yml` runs a certified variant's
+code as the receiver runs a candidate: as the unprivileged account in the
+systemd sandbox that [the receiver](#the-receiver) describes
+(`.github/scripts/uk_replay_sandbox.sh`). Its token step runs before any
+variant code, which keeps such code from redirecting the fetch through
+`$GITHUB_ENV`, `$GITHUB_PATH` or a planted file. The job then finds the
+fetched dataset by size and SHA-256 (`find_dataset_bytes`, under the
+runner's own Python) and runs `setup`. The variant's code runs in two
+services after that:
+
+* `install` builds the variant's exact freeze in the account's copy, with
+  the network and without the dataset.
+* `replay` checks that nothing of the account is running and has the account
+  write the dataset into its copy from a pipe, inside an offline service,
+  into an `input/` it makes afresh: a link left in the copy can send the
+  bytes nowhere the sandbox cannot already write, and a pipe left there
+  cannot stall the write. It then replays one measure-year from that file
+  (`compute_uk_event --dataset-file`), offline. The service gets its own
+  network namespace, whose only interface is loopback (`PrivateNetwork`),
+  and may open only IPv4, IPv6 and netlink sockets
+  (`RestrictAddressFamilies`; a `socketpair`, which multiprocessing may use,
+  still works). Without Unix sockets it cannot reach systemd-resolved over
+  D-Bus, which on the hosted image resolved a name for the candidate under
+  `PrivateNetwork` alone, or any other host service. systemd enforces that
+  on `socket(2)` only, so the service may make only native system calls
+  (`SystemCallArchitectures=native`: the 32-bit x86 ABI's `socketcall` would
+  pass the filter) and none of io_uring's, which can open a socket without
+  `socket(2)`. `setup` checks from inside an offline service that loopback
+  is the only interface, that an IPv4 socket opens and a Unix socket does
+  not, and that `io_uring_setup` fails with `EPERM`.
+
+Both print the variant's output, its stderr joined to its stdout, with the
+runner's workflow commands stopped (`::stop-commands::` with a token
+generated outside the sandbox). The runner reads stderr as a separate
+stream, where a last line with no newline would reach it after the token.
+They first remove the problem matcher that setup-uv registers for the rest
+of the job (owner `python`), because matchers read plain lines, which
+stopping commands does not stop. So that output cannot set a step output or
+raise an annotation, through a workflow command or a matcher. `collect` then
+checks that no process of the account survives and streams `output/` back;
+an honest run leaves only the replayed artifact there. The runner's own
+Python (`/usr/bin/python3 -E -s`, standard library only) compares it with
+the committed artifact that the job names, and refuses anything but a
+regular file (`pipeline/uk_replay_determinism.py`). Nothing is uploaded or
+cached. The job has a 90-minute timeout.
+
+So a compromised package among a certified freeze's pins cannot read the
+token, short of a kernel exploit (below). The token is not in the sandbox's
+environment, the runner's processes are invisible, sudo and setuid programs
+cannot raise privileges, and the runner's home, workspace, command files and
+every directory on its `PATH` are read-only or hidden. It cannot leave a
+process behind; it can leave files in `/dev/shm` and `/dev/mqueue` and
+System V IPC objects, which nothing later in the job reads. The freeze pins
+versions, not file hashes (`docs/uk_replay/requirements/`), so this sandbox,
+not the pins, is what keeps such a package from the token.
+
+What such a package can still do:
+
+* It reads the dataset, as the engine must, and its output goes to the
+  workflow's public log, so it could print household-level data there.
+* It controls the bytes it hands back, and its copy of the repository holds
+  the committed artifact. So it can make the comparison pass: the check
+  catches an honest engine whose output drifts, not a malicious one.
+* During `install` it has the network, but not the dataset.
+* It can fail the job, or hold it until the timeout.
+* A kernel privilege escalation would defeat the sandbox, as it would any
+  sandbox on that kernel; the `install` service, unlike `replay`, also runs
+  without the system call filters.
+
+The workflow runs only on pushes to main. CI's `replay engine` legs install
+and run each variant on pull requests too, so `ci.yml` names no dataset
+token: the runner receives a secret its job names even in a step that never
+runs. CI's `real replay sandbox` job runs `setup`, `install`, `replay` and
+`collect` on every pull request, with no secrets: a stand-in dataset, plus a
+one-package freeze and a stub engine module in the account's copy. The
+freeze installs from PyPI in the sandbox. The stub reports what it finds
+offline, leaves a process behind, and forges workflow commands (on stdout,
+and on stderr with no newline) and a traceback the matcher would read. The
+runner's comparison must find exactly loopback, no connection out, no name
+lookup and no D-Bus, the stand-in's SHA-256, a working process pool and the
+arguments the job passed. The stub must have set no step output, while a
+control step outside the fence sets one the same deprecated way. No step can
+read the job's annotations, so the job does not check them.
 
 ## Invariants
 
@@ -1101,6 +1298,16 @@ Each has deterministic boundary cases and Hypothesis properties in
   output bytes.
 * **Sealed namespaces.** Every byte under a sealed namespace matches its
   receipt.
+* **Year workers.** Two workers exactly when the measured two-worker peak
+  for the request's dataset and workload plus the reserve is at most the
+  runner's memory; more memory never means fewer workers and a higher peak
+  never means more; no such peak, or an invalid one, means one, and so does
+  any change to the candidate's identity, its installed environment or the
+  workload's files. Only a
+  completed whole-event Autumn Budget 2025 run with both year workers
+  spawned sets that peak, and it is the largest such run. The committed evidence is its own
+  measurements summarized, and a process tree's total is its root's
+  resident memory plus each child's total.
 * **Engine matrix.** For any index the lister accepts, CI's engine matrix is
   exactly its certified ids in index order; one bad record refuses the whole
   matrix; the lister's plain-id rule is the results pull request's on any

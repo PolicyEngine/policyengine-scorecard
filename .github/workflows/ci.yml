@@ -178,8 +178,9 @@ jobs:
     # (.github/scripts/uk_replay_sandbox.sh) on a real runner image, with a
     # stub drain that leaves a process behind. No secrets, so it runs on pull
     # requests too: setup checks the account has no sudo, no supplementary
-    # groups and no write access to the runner's files; collect must kill
-    # everything and bring a guarded output back.
+    # groups and no write access to the runner's files, and that offline it
+    # has only loopback and no Unix socket; collect must kill everything and bring
+    # a guarded output back.
     name: receiver sandbox
     runs-on: ubuntu-latest
     permissions:
@@ -226,6 +227,163 @@ jobs:
           test "$(stat -c %U output/outcome.json)" = "$(id -un)"
           test -f output/probe.json
           python3 -I .github/scripts/uk_replay_output_guard.py output
+
+  real-replay-sandbox:
+    # The real replay's way through the same sandbox
+    # (uk-replay-determinism.yml: uk_replay_sandbox.sh install, replay and
+    # collect, which run .github/scripts/uk_replay_determinism.sh as the
+    # candidate) on a real runner image, with no secrets: a stand-in
+    # dataset and, in the candidate's copy only, a small freeze and a stub
+    # engine module. install builds that freeze from PyPI in the sandbox.
+    # The stub replay imports it, and reports what it finds offline (its
+    # interfaces, whether a connection out, a name lookup or D-Bus works,
+    # the SHA-256 of the dataset handed in, a multiprocessing pool, the
+    # arguments it was given). It also leaves a process behind and forges
+    # workflow commands, on stdout and on stderr with no newline, and a
+    # traceback that setup-uv's problem matcher would read. collect must
+    # kill everything, and the runner's own Python must find that the
+    # report reproduces, byte for byte, the one the runner expects.
+    name: real replay sandbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      VARIANT: stub-variant
+      REPLAY_EVENT: stub_event
+      REPLAY_MEASURE: stub_measure
+      REPLAY_YEAR: "2026"
+      REQUIREMENTS: stub-requirements.txt
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+      - name: A stand-in dataset on the runner
+        run: |
+          set -euo pipefail
+          head -c 3000000 /dev/urandom > "$RUNNER_TEMP/dataset.h5"
+          echo "DATASET_FILE=$RUNNER_TEMP/dataset.h5" >> "$GITHUB_ENV"
+      - name: Set up the candidate account and check it
+        run: bash .github/scripts/uk_replay_sandbox.sh setup
+      - name: Give the copy a small freeze and a stub engine module
+        run: |
+          set -euo pipefail
+          echo rfc8785==0.1.4 | sudo -u replay-candidate tee /home/replay-candidate/scorecard/stub-requirements.txt > /dev/null
+          sudo -u replay-candidate tee /home/replay-candidate/scorecard/pipeline/compute_uk_event.py > /dev/null <<'PY'
+          import argparse, hashlib, json, multiprocessing, socket, subprocess, sys
+          from pathlib import Path
+
+          import rfc8785  # the freeze, installed in the sandbox
+
+
+          def connects():
+              try:
+                  socket.create_connection(("1.1.1.1", 443), timeout=5).close()
+                  return True
+              except OSError:
+                  return False
+
+
+          def resolves():
+              try:
+                  socket.getaddrinfo("pypi.org", 443)
+                  return True
+              except OSError:
+                  return False
+
+
+          def reaches_dbus():
+              try:
+                  with socket.socket(socket.AF_UNIX) as client:
+                      client.connect("/run/dbus/system_bus_socket")
+                  return True
+              except OSError:
+                  return False
+
+
+          def main():
+              parser = argparse.ArgumentParser()
+              for flag in ("--event", "--variant", "--measures", "--years", "--workers", "--dataset-file", "--output-dir"):
+                  parser.add_argument(flag)
+              args = parser.parse_args()
+              with open("/proc/self/net/dev") as handle:
+                  interfaces = [line.split(":")[0].strip() for line in handle.readlines()[2:]]
+              report = {
+                  "arguments": [args.event, args.variant, args.measures, args.years, args.workers, args.dataset_file],
+                  "connects_out": connects(),
+                  "dataset_sha256": hashlib.sha256(Path(args.dataset_file).read_bytes()).hexdigest(),
+                  "interfaces": interfaces,
+                  "pool": sum(multiprocessing.get_context("spawn").Pool(2).map(abs, [-1, -2])),
+                  "rfc8785": rfc8785.dumps({"b": 1, "a": 2}).decode(),
+                  "reaches_dbus": reaches_dbus(),
+                  "resolves": resolves(),
+              }
+              subprocess.Popen(["sleep", "600"], start_new_session=True)
+              # Workflow commands, and two lines setup-uv's problem matcher
+              # would turn into an annotation; then a command on stderr with
+              # no newline, which the runner reads as a separate stream.
+              print('  File "forged.py", line 1, in forged')
+              print("    raise Forged('an annotation from the stub engine')")
+              print("::error::forged by the stub engine")
+              print("::set-" "output name=forged::true")  # deprecated, still honoured
+              sys.stdout.flush()  # so the stderr fragment is the stream's last line
+              sys.stderr.write("::set-" "output name=forged::from stderr")
+              output = Path(args.output_dir)
+              output.mkdir(parents=True, exist_ok=True)
+              text = json.dumps(report, indent=1, sort_keys=True) + "\n"
+              (output / f"{args.measures}_{args.years}.json").write_text(text)
+
+
+          if __name__ == "__main__":
+              main()
+          PY
+      - name: Install the stub freeze in the sandbox
+        run: bash .github/scripts/uk_replay_sandbox.sh install
+      # The control: outside the fence, the runner still honours the
+      # deprecated command the stub forges, so an empty forged output below
+      # means the fence held.
+      - name: Set a step output the deprecated way
+        id: control
+        run: echo "::set-""output name=honoured::yes"
+      - name: Replay with the stub engine in the sandbox, offline
+        id: replay
+        run: bash .github/scripts/uk_replay_sandbox.sh replay
+      - name: Nothing survives and the report comes back
+        env:
+          CONTROL: ${{ steps.control.outputs.honoured }}
+          FORGED: ${{ steps.replay.outputs.forged }}
+        run: |
+          set -euo pipefail
+          bash .github/scripts/uk_replay_sandbox.sh collect
+          if pgrep -u replay-candidate; then
+            echo "::error::candidate processes survive collect"
+            exit 1
+          fi
+          if [ "$CONTROL" != yes ] || [ -n "$FORGED" ]; then
+            echo "::error::the control set [$CONTROL] and the stub engine [$FORGED]"
+            exit 1
+          fi
+          report="output/${REPLAY_MEASURE}_${REPLAY_YEAR}.json"
+          test "$(stat -c %U "$report")" = "$(id -un)"
+          /usr/bin/python3 -I - "$(sha256sum "$DATASET_FILE" | cut -d' ' -f1)" > "$RUNNER_TEMP/expected.json" <<'PY'
+          import json, os, sys
+
+          expected = {
+              "arguments": [os.environ["REPLAY_EVENT"], os.environ["VARIANT"], os.environ["REPLAY_MEASURE"], os.environ["REPLAY_YEAR"], "1", "input/dataset.h5"],
+              "connects_out": False,
+              "dataset_sha256": sys.argv[1],
+              "interfaces": ["lo"],
+              "pool": 3,
+              "rfc8785": '{"a":2,"b":1}',
+              "reaches_dbus": False,
+              "resolves": False,
+          }
+          print(json.dumps(expected, indent=1, sort_keys=True))
+          PY
+          /usr/bin/python3 -E -s -m pipeline.uk_replay_determinism "$report" "$RUNNER_TEMP/expected.json"
 
   app:
     name: typecheck · build
