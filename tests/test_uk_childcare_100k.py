@@ -2786,8 +2786,8 @@ def test_no_reform_estimate_is_a_calibration_target():
 def test_exported_feed_rows_state_the_lane_signs_and_history():
     """The deployed feed is what a reader sees: CenTax rows point the same
     way as PolicyEngine's; CBP states no sign rule, so its rows are
-    unknown; the central static rows carry both results, the published
-    figure first and the certified run as the latest."""
+    unknown; the central static rows carry every result, the published
+    figure first and the newest certified run as the latest."""
     feed = json.loads((REPO / "data" / "populations.json").read_text())
     rows = [
         r
@@ -2810,10 +2810,19 @@ def test_exported_feed_rows_state_the_lane_signs_and_history():
     ]
     assert len(central) == 2
     for r in central:
-        assert [x["engine_version"] for x in r["results"]] == ["2.102.3", "2.89.2"]
-        assert r["latest"]["data_bundle"] == CERTIFIED["revision"]
+        assert [x["engine_version"] for x in r["results"]] == [
+            "2.102.3",
+            "2.89.2",
+            "2.132.6",
+        ]
+        assert (
+            r["latest"]["data_bundle"]
+            == lane.run_records()[PAIR_6110]["identity"]["dataset"]["revision"]
+        )
         assert r["latest"]["status_effective"] == "comparable"
         assert r["results"][0]["status_effective"] == "constructed"
     unscored = [r for r in rows if not r["results"]]
-    assert len(unscored) == 14  # 12 CenTax margins + CBP's two 2031-32 cells
+    # the 12 CenTax margins; #228's run computes CBP's two 2031-32 cells
+    assert len(unscored) == 12
+    assert {r["source"] for r in unscored} == {lane.CENTAX}
     assert all(r["conditions"].get("pe_missing") for r in unscored)
