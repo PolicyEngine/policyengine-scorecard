@@ -993,23 +993,27 @@ five minutes into Autumn Budget 2024 with two workers. Its measurements, also
 in the evidence file, need more memory and time than 2.132.6's: two workers
 peak at 27.3 GiB on Autumn Budget 2024, where one year worker alone reaches
 15.5 GiB. This repository does not establish which change between
-policyengine-uk 2.132.6 and 2.151.0 adds the memory. With one worker:
+policyengine-uk 2.132.6 and 2.151.0 adds the memory.
 
-| Event | Peak summed RSS | Wall on Modal |
-|---|---|---:|
-| Autumn Budget 2024 | 15.5 GiB | 39 min |
-| Autumn Budget 2025 | 12.7 GiB | 73 min |
-| Autumn Statement 2023 | 12.0 GiB | 36 min |
-| Spring Statement 2025 | 11.4 GiB | 22 min |
-| Spring Budget 2024 | 11.4 GiB | 18 min |
-| Spring Budget 2023 | 11.0 GiB | 14 min |
+Its second attempt (`d1e672fe…`, run 41143889866) ran the whole corpus with
+one worker and completed in 190 minutes of simulation, inside the run job's
+340. The table sets its `[memory]` lines beside the one-worker measurements:
+
+| Event | Peak summed RSS on Modal | Peak process tree on the runner | Lowest `MemAvailable` | Minutes on Modal | Minutes on the runner |
+|---|---|---|---|---:|---:|
+| Autumn Budget 2024 | 15.5 GiB | 14.7 GiB | 0.1 GiB | 39 | 43.2 |
+| Autumn Budget 2025 | 12.7 GiB | 12.7 GiB | 2.1 GiB | 73 | 68.4 |
+| Autumn Statement 2023 | 12.0 GiB | 11.9 GiB | 2.8 GiB | 36 | 27.4 |
+| Spring Statement 2025 | 11.4 GiB | 11.3 GiB | 3.4 GiB | 22 | 18.0 |
+| Spring Budget 2024 | 11.4 GiB | 11.4 GiB | 3.3 GiB | 18 | 20.5 |
+| Spring Budget 2023 | 11.0 GiB | 10.9 GiB | 3.8 GiB | 14 | 12.2 |
 
 So Autumn Budget 2025 no longer has the corpus's largest peak on that release.
-The 15.5 GiB exceeds the 14.7 GiB of memory the corpus had on the runner in
-6.11.0's run (peak tree plus lowest `MemAvailable`), and the 3 GiB of swap
-covers the difference. The whole corpus took 3.4 hours on Modal. 6.11.0's
-AB2025 took 36.5 minutes on the runner against 46 on Modal, so 6.11.1 should
-need about 2.7 hours there.
+Autumn Budget 2024 filled the runner's memory. Swap held nothing before the
+candidate started and 175 MiB after that event, and the run does not log swap
+at the peak. One worker fits policyengine-uk 2.151.0 with only the swap to
+spare, so a later release that needs more memory on this path can lose the
+runner again.
 
 The run job also logs the runner's memory, swap, CPUs and disk before the
 candidate starts and its memory after it ends. Inside the sandbox,
