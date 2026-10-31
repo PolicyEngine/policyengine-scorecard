@@ -655,7 +655,7 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
     if blend:
         assert KEY in manifest["construction_revisions"]
         assert artifact["construction_revision"]["revision_id"] == (
-            "ab2024_cgt_fiscal_year_blend.v1"
+            "ab2024_cgt_fiscal_year_blend.v2"
         )
         window = "2024-04-06.2036-04-05" if statutory else "2024-01-01.2035-12-31"
         assert reversal[PATH] == {window: 0.1}

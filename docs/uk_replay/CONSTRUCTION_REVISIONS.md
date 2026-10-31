@@ -301,9 +301,10 @@ The diagnostic `annual_allowance_charge_single_marginal_rate` kept reporting
 `persists` for a reason unrelated to its defect. 2.151.0 charges band slices
 above reduced net income and no longer reads the case's `taxed_income`
 override, so the case's person had no income and the £20,000 excess fell wholly
-in the basic-rate band, which also gives £4,000. The case now also sets
-`employment_income` to £42,570. Less the £12,570 personal allowance, that leaves
-£30,000, and an engine reading `taxed_income` sees the same base.
+in the basic-rate band, which also gives £4,000. Where an engine's formula does
+not read the override, the case now also sets `employment_income` to £42,570,
+and less the £12,570 personal allowance that leaves £30,000. The engines through
+2.132.6 read the override, so their case and recorded status stay as they were.
 
 ### Remaining candidates
 

@@ -59,6 +59,27 @@ def _source(package_root: Path, relative: str, *, tolerant: bool = False) -> dic
     }
 
 
+def _with_income_behind_taxed_income(
+    package_root: Path, evidence_path: str, people: dict
+) -> dict:
+    """A case's people, with income where its formula ignores the override.
+
+    An engine charging above reduced net income no longer reads taxed_income,
+    so a person with only that override has no income. £42,570 less the £12,570
+    personal allowance leaves the override's £30,000. Engines reading the
+    override keep the case they recorded.
+    """
+    source = _source(package_root, evidence_path, tolerant=True).get("source", "")
+    if "taxed_income" in source:
+        return people
+    return {
+        name: {**inputs, "employment_income": {"2024": 42570}}
+        if "taxed_income" in inputs
+        else inputs
+        for name, inputs in people.items()
+    }
+
+
 def _additional_model_checks(
     package_root: Path, simulation_type, case: str | None, *, tolerant: bool = False
 ):
@@ -113,10 +134,6 @@ def _additional_model_checks(
             {
                 "worker": {
                     "age": {"2024": 45},
-                    # Formulas that charge above net income read this, and
-                    # older ones read taxed_income: £42,570 less the £12,570
-                    # personal allowance leaves £30,000 either way.
-                    "employment_income": {"2024": 42570},
                     "taxed_income": {"2024": 30000},
                     "pension_contributions_for_annual_allowance": {"2024": 80000},
                     "pension_annual_allowance": {"2024": 60000},
@@ -146,6 +163,7 @@ def _additional_model_checks(
     ) in specifications:
         if case is not None and case != identifier:
             continue
+        people = _with_income_behind_taxed_income(package_root, evidence_path, people)
         situation = {
             "people": people,
             "benunits": {name: {"members": [name]} for name in people},
