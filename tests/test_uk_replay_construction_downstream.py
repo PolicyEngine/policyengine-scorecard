@@ -172,10 +172,15 @@ def test_staging_scores_the_reversal_from_the_activation_year(
     }
     monkeypatch.setattr(compute, "ROOT", tmp_path)
     monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
-    _, tally = stage.stage_event(
+    manifest["missing_legs_statement"] = "authored_engine_label.v1"
+    rows, tally = stage.stage_event(
         registry, manifest, artifact_dir=tmp_path, registry_sha256="b" * 64
     )
     assert bool(tally.get("inert_measure_years")) is (aggregate[0] == aggregate[1])
+    label = f"Authored against policyengine-uk {revisions.AUTHORED_ENGINE}: "
+    assert rows[0]["partial_missing"] == [
+        label + leg for leg in measure["missing_legs"]
+    ]
 
 
 LEGS = {"measure_key": "a_measure", "missing_legs": ["first leg", "second leg"]}
