@@ -327,6 +327,8 @@ def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_for_its_workload(
     runner = 15 * GIB + 600 * 2**20
     chosen = {}
     for sha, entry in committed_evidence()["datasets"].items():
+        if not entry["two_worker_peaks"]:
+            continue
         (row,) = entry["two_worker_peaks"]
         monkeypatch.setattr(
             qualify,
@@ -343,12 +345,22 @@ def test_microcosm_runs_one_worker_and_the_enhanced_frs_two_for_its_workload(
     assert chosen["enhanced_frs_2024_25"][0] == 2, chosen
 
 
+def test_a_two_worker_run_of_another_event_schedules_nothing():
+    """6.11.1's two-worker Autumn Budget 2024 run diagnoses its lost runner;
+    it is not the scheduling event, so that dataset has no two-worker peak."""
+    entry = committed_evidence()["datasets"][
+        "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e"
+    ]
+    assert "pe6111-ab2024-w2" in entry["measurements"]
+    assert entry["two_worker_peaks"] == []
+
+
 def test_microcosm_runs_one_worker_whatever_the_workload_files_hold():
     """6.10.0 and 6.10.1 on Microcosm run one worker on the runner, whether
     the evidence still matches the current workload files or not."""
     runner = 15 * GIB + 600 * 2**20
     for sha, entry in committed_evidence()["datasets"].items():
-        if entry["dataset"] != "microcosm_uk_2024_25":
+        if entry["dataset"] != "microcosm_uk_2024_25" or not entry["two_worker_peaks"]:
             continue
         (row,) = entry["two_worker_peaks"]
         assert (

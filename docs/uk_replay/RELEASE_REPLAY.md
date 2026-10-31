@@ -881,6 +881,8 @@ simulation at a time. The run job is a
 GitHub-hosted `ubuntu-latest` runner, which for a public repository has 4
 CPUs and 16 GB of memory
 ([GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)).
+On 30 October 2026 `free -m` on that runner reported 15,983 MiB of memory and
+3,071 MiB of swap, and `df` 83 GB free on `/`.
 `run_request` runs two workers only when
 `docs/uk_replay/evidence/replay_memory.json` records a two-worker peak for
 the request's exact dataset (by SHA-256) and workload, and that peak plus a
@@ -894,9 +896,10 @@ scorecard files that run that event besides the engine
 (`MEMORY_WORKLOAD_FILES`: its registry, the construction revisions and the
 compute modules); a change to any of them makes a measurement another
 workload's. A peak counts only from a completed run of the whole of Autumn
-Budget 2025, the corpus's largest event (nine measures over six years, each
-with a modified world) and the one two Microcosm workers could not finish,
-in which both year workers were spawned and the run manifest's full event
+Budget 2025, the corpus's event with the most measure-years (nine measures
+over six years, each with a modified world) and the one two Microcosm workers
+could not finish on policyengine-uk 2.132.6, in which both year workers were
+spawned and the run manifest's full event
 grid is complete. A slice leaves out years, worlds and the memory a worker
 accumulates over them, so it does not count. Anything else means one
 worker: a dataset or workload nobody has measured, an evidence file of
@@ -967,11 +970,50 @@ runner and 28 to 31 s for the same baselines with one worker here. Summed
 RSS counts shared pages twice, so the runner held somewhat less than these
 figures when it failed.
 
-One worker roughly doubles the corpus's wall time. In those two attempts,
-the year jobs of the five events before AB2025 took 6,078 s and 6,347 s of
-worker time in all, and each AB2025 year from 2025 to 2028 took 548 to
-741 s; one worker therefore needs about 2.6 to 3.0 hours of simulation for
-the whole corpus, inside the run job's 340 minutes.
+The first attempts of 6.10.2 (`4d08f87c…`) and 6.11.0 (`ad44443d…`), on the
+same policyengine-uk 2.132.6, policyengine-core 3.33.3 and Microcosm build,
+lost their runners with two workers at the same AB2025 years. 6.11.0's second
+attempt (`55070155…`, run 41079735503) ran the whole corpus with one worker
+and completed in 97 minutes of simulation, inside the run job's 340. Its
+`[memory]` lines match the measurement above:
+
+| Event | Peak process tree | Lowest `MemAvailable` | Minutes |
+|---|---|---|---|
+| Autumn Budget 2024 | 9.3 GiB | 5.4 GiB | 20.5 |
+| Autumn Statement 2023 | 9.1 GiB | 5.5 GiB | 14.1 |
+| Spring Budget 2024 | 8.7 GiB | 5.9 GiB | 10.7 |
+| Spring Statement 2025 | 8.5 GiB | 6.1 GiB | 9.1 |
+| Spring Budget 2023 | 8.4 GiB | 6.2 GiB | 6.0 |
+| Autumn Budget 2025 | 10.2 GiB | 4.5 GiB | 36.5 |
+
+policyengine.py 6.11.1's first attempt (`25ae5bf3…`, run 40433159238) moved to
+policyengine-uk 2.151.0 and a newer Microcosm build
+(`…20261025T091414Z-a6299504`, whose file is 6% larger) and lost its runner
+five minutes into Autumn Budget 2024 with two workers. Its measurements, also
+in the evidence file, need more memory and time than 2.132.6's: two workers
+peak at 27.3 GiB on Autumn Budget 2024, where one year worker alone reaches
+15.5 GiB. This repository does not establish which change between
+policyengine-uk 2.132.6 and 2.151.0 adds the memory.
+
+Its second attempt (`d1e672fe…`, run 41143889866) ran the whole corpus with
+one worker and completed in 190 minutes of simulation, inside the run job's
+340. The table sets its `[memory]` lines beside the one-worker measurements:
+
+| Event | Peak summed RSS on Modal | Peak process tree on the runner | Lowest `MemAvailable` | Minutes on Modal | Minutes on the runner |
+|---|---|---|---|---:|---:|
+| Autumn Budget 2024 | 15.5 GiB | 14.7 GiB | 0.1 GiB | 39 | 43.2 |
+| Autumn Budget 2025 | 12.7 GiB | 12.7 GiB | 2.1 GiB | 73 | 68.4 |
+| Autumn Statement 2023 | 11.9 GiB | 11.9 GiB | 2.8 GiB | 36 | 27.4 |
+| Spring Statement 2025 | 11.4 GiB | 11.3 GiB | 3.4 GiB | 22 | 18.0 |
+| Spring Budget 2024 | 11.4 GiB | 11.4 GiB | 3.3 GiB | 18 | 20.5 |
+| Spring Budget 2023 | 10.9 GiB | 10.9 GiB | 3.8 GiB | 14 | 12.2 |
+
+So Autumn Budget 2025 no longer has the corpus's largest peak on that release.
+Autumn Budget 2024 filled the runner's memory. Swap held nothing before the
+candidate started and 175 MiB after that event, and the run does not log swap
+at the peak. One worker fits policyengine-uk 2.151.0 with only the swap to
+spare, so a later release that needs more memory on this path can lose the
+runner again.
 
 The run job also logs the runner's memory, swap, CPUs and disk before the
 candidate starts and its memory after it ends. Inside the sandbox,
