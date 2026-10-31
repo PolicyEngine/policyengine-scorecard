@@ -1,0 +1,25 @@
+{
+ "by_status": {
+  "constructed": 12,
+  "not_computed": 486
+ },
+ "computed_measure_years": 12,
+ "event": "spring_statement_2025",
+ "full_event_complete": true,
+ "full_event_grid_size": 12,
+ "full_supported_grid_complete": true,
+ "missing_measure_years": [],
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "source_rows": 498,
+ "source_value_gbp": 5575279133.025794,
+ "source_value_gbp_decimal": "5575279133.02579407146152",
+ "staged_path": "results/uk/replays/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/STAGED.jsonl",
+ "staged_rows": 498,
+ "staged_sha256": "2ce4f69cdd361461537b9976b70bb4640c931bc91905e0aa0e50559f64702621",
+ "staged_value_gbp_decimal": "5575279133.02579407146152",
+ "supported_grid_size": 12,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+}
