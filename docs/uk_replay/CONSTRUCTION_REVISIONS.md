@@ -197,6 +197,15 @@ delta runs.
 rates first differ at the 2025 annual lookup, so the part year from
 31 October 2024 has no effect here.
 
+**Row size.** The revised row measures a different base from 6.11.0's forward
+delta. In 2.132.6, `additional_residential_property_purchased` charged a
+buyer's whole stock of other residential property. In 2.151.0 it holds an input,
+nil unless set directly or imputed by a dataset, and 2.134.1's changelog entry
+names that change. A one-year Modal run on the 6.11.1 candidate scored the
+reversal at £0.98bn in 2025, where 6.11.0 scored £1.87bn. The Microcosm build
+moved between the two releases as well, and these runs do not separate the
+causes.
+
 ### SS2025 UC standard allowance
 
 **What changed in the engine.** 2.132.6's `standard_allowance/amount.yaml`
