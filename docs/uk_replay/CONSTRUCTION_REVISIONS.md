@@ -22,8 +22,10 @@ engines that have since enacted a measure; see
 [Summary for 2.132.6 → 2.151.0](#summary-for-21326--21510). A run binds each
 revision to the SHA-256 of the file holding it, so no file changes once a
 sealed namespace records it. Each later revision goes in a later file, and
-every sealed namespace keeps validating. Selection reads either metadata or
-current-law values in the installed engine, never its version string.
+every sealed namespace keeps validating. A later file's revision can supersede
+an earlier one for new runs, and a sealed run keeps the revision it recorded.
+Selection reads either metadata or current-law values in the installed engine,
+never its version string.
 
 Inputs (both parameter-tree only; no dataset or simulation):
 
@@ -145,17 +147,18 @@ route and rate files were read from its PyPI wheel on 15 October 2026
 Its table row is the route-derived expectation, tested with fakes, rather
 than a local simulation observation; CI and the receiver must verify the
 real installed 2.130.1 run. No microsimulation was run for this change.
-The pooled-gains limitation and the unreversed reliefs remain: this
-revision changes annualisation of the three main rates and does not
-implement the full rates-and-reliefs package.
+The unreversed reliefs remain: this revision changes annualisation of the
+three main rates and does not implement the full rates-and-reliefs package.
+The limitation that this revision also stated about pooled gains was wrong;
+see [AB2024 CGT limitation](#ab2024-cgt-limitation).
 
 ## Summary for 2.132.6 → 2.151.0
 
 The qualification of policyengine.py 6.11.1 (request `d1e672fe…`, run
 41143889866) ran on policyengine-uk 2.151.0, and that run's results (#238) did
 not land because of what this section corrects. Four constructions newly failed
-a premise, beside the CGT annualisation premise recorded above, and a row stated
-a limitation the engine no longer has.
+a premise, beside the CGT annualisation premise recorded above, and two rows
+stated limitations the engine does not have.
 
 | Measure | Failed premise on 2.151.0 | Treatment |
 |---|---|---|
@@ -163,6 +166,7 @@ a limitation the engine no longer has.
 | SS2025 `uc_standard_allowance_above_inflation` | `authored_construction_reproduces` | `ss2025_uc_uplifts_in_current_law.v1` |
 | SS2025 `uc_health_element_freeze_and_new_claimant_cut` | `authored_construction_reproduces` | Candidate |
 | SB2023 `uc_childcare_cap_increase` | `authored_construction_reproduces` | Candidate |
+| AB2024 `capital_gains_main_rates_and_reliefs` | None new; its limitation misdescribed the engine | `ab2024_cgt_fiscal_year_blend.v2` |
 
 ### AB2024 SDLT surcharge
 
@@ -230,6 +234,32 @@ uplifts. The revision's limitation says so, and
 `authored_construction_reproduces` keeps recording it. Its condition reads only
 the index name, so a later engine that keeps the name and changes what the index
 applies would need a new revision.
+
+### AB2024 CGT limitation
+
+`ab2024_cgt_fiscal_year_blend.v1` states: "The engine pools gains rather than
+distinguishing their statutory types." The 2.89.2 audit found that, and the
+revision carried it forward without a check. `capital_gains_tax.py` charges
+four schedules in the 2.130.1, 2.132.6 and 2.151.0 wheels, the three engines
+that have run v1 or could select it. The national Microcosm build that 6.11.1
+ran fills two of them: 4,220 person records hold residential property gains
+and 1,702 hold relief gains, out of 33,985 with gains.
+
+The sentence therefore misdescribes the engine in the namespaces that record
+v1: `pe6.5.0_uk2.130.1…`, `pe6.9.0_uk2.130.1…` and `pe6.11.0_uk2.132.6…`.
+Those namespaces keep their sealed bytes, and this section corrects them.
+
+`ab2024_cgt_fiscal_year_blend.v2` supersedes v1 for new runs. It carries v1's
+condition, windows, values and intent, so it builds the same worlds and moves
+no number. It drops the sentence and states that the reversal moves the main
+rates alone, while residential property gains, carried interest and relief
+gains keep their installed rates in both worlds. It also states that the replay
+leaves `gov.simulation.capital_gains_responses` at the engine's defaults.
+
+Those defaults moved between the two most recent engines:
+`gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.132.6 and 1.0
+on 2.151.0. The revision records the setting. It does not size what that move
+adds to the row's fall against 6.11.0.
 
 ### Remaining candidates
 
@@ -312,8 +342,7 @@ except where noted:
 * UC childcare cap (×122.69, the largest move): the childcare-cost tail among
   reported UC families in the new population; eligibility fixes contribute an
   unsized share.
-* AB2024 CGT (×0.51): a smaller capital-gains base, not day-weighting; the
-  pooled-gains limitation stays.
+* AB2024 CGT (×0.51): a smaller capital-gains base, not day-weighting.
 * Private-school VAT: the replay figure is consistent with a zero dedicated
   baseline head, and the dedicated statutory mechanism defect persists. It
   does not show £2.0bn missing from total baseline VAT: generic VAT targets

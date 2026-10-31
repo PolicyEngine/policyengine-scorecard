@@ -24,6 +24,18 @@ PATHS = (
 RATES = (0.1, 0.2, 0.2)
 
 
+def recorded_evidence(path):
+    """What a run records for the CGT revision that the file at path holds."""
+    payload = path.read_bytes()
+    revision = json.loads(payload)["revisions"][KEY]
+    return revisions._evidence(revision, hashlib.sha256(payload).hexdigest())
+
+
+def sealed_evidence():
+    """What every sealed namespace with a CGT revision records."""
+    return recorded_evidence(revisions.REVISIONS_PATH)
+
+
 def frozen_measure():
     registry = json.loads(
         (premises.EVENTS_DIR / "autumn_budget_2024_measures.json").read_bytes()
@@ -46,7 +58,7 @@ def test_revision_selected_exactly_when_all_installed_paths_carry_true(flags):
     if selected:
         assert (
             selected["registry_sha256"]
-            == hashlib.sha256(revisions.REVISIONS_PATH.read_bytes()).hexdigest()
+            == hashlib.sha256(revisions.ENACTED_REVISIONS_PATH.read_bytes()).hexdigest()
         )
         assert selected["activation_fy"] == "2024-25"
         assert selected["part_year_rule"] == "part_year_day_weighted"
@@ -97,13 +109,18 @@ def test_revision_changes_only_annual_baseline_from_2024_and_is_digest_bound():
             revisions.apply_selected_revision(KEY, original, changed)
 
 
-def test_revision_changes_invalidates_previously_recorded_digest(tmp_path, monkeypatch):
-    selected = revisions.select_revision(KEY, lambda path: {"fiscal_year_blend": True})
-    changed = tmp_path / "construction_revisions.json"
-    changed.write_bytes(revisions.REVISIONS_PATH.read_bytes() + b"\n")
-    monkeypatch.setattr(revisions, "REVISIONS_PATH", changed)
+@pytest.mark.parametrize("attribute", ["REVISIONS_PATH", "ENACTED_REVISIONS_PATH"])
+def test_revision_changes_invalidate_previously_recorded_digest(
+    attribute, tmp_path, monkeypatch
+):
+    path = getattr(revisions, attribute)
+    recorded = recorded_evidence(path)
+    assert revisions.get_revision(KEY, recorded)
+    changed = tmp_path / path.name
+    changed.write_bytes(path.read_bytes() + b"\n")
+    monkeypatch.setattr(revisions, attribute, changed)
     with pytest.raises(ValueError, match="does not match registry"):
-        revisions.get_revision(KEY, selected)
+        revisions.get_revision(KEY, recorded)
 
 
 def test_premises_and_runtime_share_intended_rule_for_selected_cgt():
@@ -302,14 +319,68 @@ def test_every_sealed_namespace_still_validates_its_recorded_revisions():
         assert revisions.get_revision(key, evidence)["revision_id"]
 
 
-def test_the_sealed_revision_file_stays_frozen_and_the_files_share_no_measure():
+def test_the_sealed_revision_file_stays_frozen_and_a_later_file_only_supersedes():
     digest = hashlib.sha256(revisions.REVISIONS_PATH.read_bytes()).hexdigest()
     assert digest == "23993c8fbdcff319045b10bf316b29eb093c283dc6d135c430db237de0050a57"
     sealed, enacted = (
         json.loads(path.read_bytes())["revisions"]
         for path in (revisions.REVISIONS_PATH, revisions.ENACTED_REVISIONS_PATH)
     )
-    assert not set(sealed) & set(enacted)
+    assert set(sealed) & set(enacted) == {KEY}
+    assert enacted[KEY]["supersedes"] == sealed[KEY]["revision_id"]
+    assert enacted[KEY]["revision_id"] != sealed[KEY]["revision_id"]
+
+
+def test_the_cgt_restatement_changes_the_statement_and_nothing_a_run_executes():
+    sealed, enacted = (
+        json.loads(path.read_bytes())["revisions"][KEY]
+        for path in (revisions.REVISIONS_PATH, revisions.ENACTED_REVISIONS_PATH)
+    )
+    stated = {"revision_id", "supersedes", "limitations"}
+    assert {k: v for k, v in sealed.items() if k not in stated} == {
+        k: v for k, v in enacted.items() if k not in stated
+    }
+    worlds_by_evidence = [
+        revisions.apply_selected_revision(KEY, frozen_world(), evidence)
+        for evidence in (
+            sealed_evidence(),
+            recorded_evidence(revisions.ENACTED_REVISIONS_PATH),
+        )
+    ]
+    for world in worlds_by_evidence:
+        world.pop("construction_revision")
+    assert worlds_by_evidence[0] == worlds_by_evidence[1]
+
+
+def test_the_restatement_drops_the_pooled_gains_claim():
+    limitations = json.loads(revisions.ENACTED_REVISIONS_PATH.read_bytes())[
+        "revisions"
+    ][KEY]["limitations"]
+    assert not any("pools gains" in limitation for limitation in limitations)
+    assert any("on their own schedules" in limitation for limitation in limitations)
+
+
+def test_a_sealed_run_keeps_the_revision_it_recorded():
+    sealed = sealed_evidence()
+    assert revisions.get_revision(KEY, sealed)["revision_id"] == (
+        "ab2024_cgt_fiscal_year_blend.v1"
+    )
+    blended = lambda path: {"fiscal_year_blend": True}  # noqa: E731
+    assert revisions.select_revision(KEY, blended) != sealed
+    assert revisions.recorded_revision_holds(KEY, sealed, blended)
+    assert not revisions.recorded_revision_holds(KEY, sealed, lambda path: {})
+
+
+def test_a_new_run_falls_back_when_a_later_condition_fails(monkeypatch, tmp_path):
+    document = json.loads(revisions.ENACTED_REVISIONS_PATH.read_bytes())
+    document["revisions"][KEY]["condition"]["metadata_key"] = "another_flag"
+    later = tmp_path / "construction_revisions_enacted.json"
+    later.write_text(json.dumps(document))
+    monkeypatch.setattr(revisions, "ENACTED_REVISIONS_PATH", later)
+    assert (
+        revisions.select_revision(KEY, lambda path: {"fiscal_year_blend": True})
+        == sealed_evidence()
+    )
 
 
 def test_evidence_binds_the_digest_of_the_file_holding_the_revision():
@@ -685,6 +756,49 @@ def test_a_namespace_audit_checks_recorded_selection_against_installed_values(
     with pytest.raises(ValueError, match="does not match installed"):
         audited_surcharge(
             surcharge_namespace, EnactedEngine(lambda path, date: PRIOR[path])
+        )
+
+
+def test_a_namespace_audit_keeps_a_superseded_revision_while_its_condition_holds(
+    tmp_path,
+):
+    class Engine:
+        reads_blend = reads_calendar = True
+        flag = True
+
+        def metadata(self, path):
+            return {"fiscal_year_blend": self.flag}
+
+        def current_law(self, path, date):
+            return 0.1346 if path.endswith("basic_rate") else 0.2173
+
+        raw_30_april = current_law
+        resolve = current_law
+
+        def annualisation(self, path):
+            return {"fiscal_year_blend": self.flag, "preserve_calendar_dates": False}
+
+    sealed = sealed_evidence()
+    world = frozen_world()
+    measure = frozen_measure()
+    audited = premises.audit_measure(
+        "autumn_budget_2024",
+        measure,
+        world,
+        [2024, 2025],
+        Engine(),
+        revision_selection=sealed,
+    )
+    assert audited["construction_revision"] == sealed
+    Engine.flag = False
+    with pytest.raises(ValueError, match="does not match installed"):
+        premises.audit_measure(
+            "autumn_budget_2024",
+            measure,
+            world,
+            [2024, 2025],
+            Engine(),
+            revision_selection=sealed,
         )
 
 

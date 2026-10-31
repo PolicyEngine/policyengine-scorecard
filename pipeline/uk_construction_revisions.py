@@ -26,7 +26,8 @@ REVISIONS_PATH = REGISTRY
 AUTHORED_ENGINE = "2.89.2"
 # A run binds its revisions to the SHA-256 of the file holding them, so a file
 # stays frozen once a sealed namespace records it. New revisions go in the next
-# file, and every sealed namespace keeps validating.
+# file, a later file's revision supersedes an earlier one's for new runs, and
+# every sealed namespace keeps validating.
 ENACTED_REVISIONS_PATH = REGISTRY.with_name("construction_revisions_enacted.json")
 
 
@@ -73,17 +74,18 @@ def intended_value(
     return value if found else scalar(current_law(path, date))
 
 
-def _registry(measure_key: str) -> tuple[dict | None, str | None]:
-    """A measure's revision and the SHA-256 of the file holding it."""
-    for path in (REVISIONS_PATH, ENACTED_REVISIONS_PATH):
+def _registry(measure_key: str) -> list[tuple[dict, str]]:
+    """A measure's revisions, latest first, each with its file's SHA-256."""
+    found = []
+    for path in (ENACTED_REVISIONS_PATH, REVISIONS_PATH):
         payload = path.read_bytes()
         document = json.loads(payload)
         if document.get("schema_version") != 1:
             raise ValueError("unsupported construction revisions schema")
         if measure_key in document["revisions"]:
             digest = hashlib.sha256(payload).hexdigest()
-            return document["revisions"][measure_key], digest
-    return None, None
+            found.append((document["revisions"][measure_key], digest))
+    return found
 
 
 def _evidence(revision: dict, digest: str) -> dict:
@@ -127,25 +129,37 @@ def select_revision(
     """Select exactly when the installed engine meets the revision's condition.
 
     A condition names either a metadata value on every listed parameter or
-    the current-law value of every listed parameter at one annual lookup.
+    the current-law value of every listed parameter at one annual lookup. The
+    latest revision whose condition holds wins.
     """
-    revision, digest = _registry(measure_key)
-    if revision is None:
-        return None
-    if not _condition_holds(revision["condition"], metadata, current_law):
-        return None
-    return _evidence(revision, digest)
+    for revision, digest in _registry(measure_key):
+        if _condition_holds(revision["condition"], metadata, current_law):
+            return _evidence(revision, digest)
+    return None
 
 
 def get_revision(measure_key: str, evidence: dict) -> dict:
-    """Validate recorded selection against the exact revision registry bytes."""
-    revision, digest = _registry(measure_key)
-    expected = None if revision is None else _evidence(revision, digest)
-    if evidence != expected:
-        raise ValueError(
-            f"{measure_key}: construction revision evidence does not match registry"
-        )
-    return revision
+    """Validate recorded selection against the exact revision registry bytes.
+
+    A run keeps the revision it recorded after a later file supersedes it.
+    """
+    for revision, digest in _registry(measure_key):
+        if evidence == _evidence(revision, digest):
+            return revision
+    raise ValueError(
+        f"{measure_key}: construction revision evidence does not match registry"
+    )
+
+
+def recorded_revision_holds(
+    measure_key: str,
+    evidence: dict,
+    metadata: Callable[[str], dict],
+    current_law: Callable[[str, str], Any] | None = None,
+) -> bool:
+    """Whether the installed engine meets a recorded revision's own condition."""
+    revision = get_revision(measure_key, evidence)
+    return _condition_holds(revision["condition"], metadata, current_law)
 
 
 def _reverse_enacted_delta(measure_key: str, world: dict, revision: dict) -> dict:
