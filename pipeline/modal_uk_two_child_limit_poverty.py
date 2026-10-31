@@ -153,6 +153,7 @@ FILES = (
     "data/uk/replay_variants.json",
     "data/uk/certified_bundle.json",
     "data/uk/events/construction_revisions.json",
+    "data/uk/events/construction_revisions_enacted.json",
     "data/uk/two_child_limit_poverty/owned_claims.json",
     PAIR["requirements"]["path"],
 )

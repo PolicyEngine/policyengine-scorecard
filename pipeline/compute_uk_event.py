@@ -980,20 +980,25 @@ def verify_registry_identity(path: Path, expected_sha256: str) -> None:
 
 
 def revised_worlds(runnable: dict) -> dict:
-    """Read selection metadata from the installed engine, only if needed."""
+    """Read selection evidence from the installed engine, only if needed."""
     parameters = None
 
-    def metadata(path):
+    def node(path):
         nonlocal parameters
         if parameters is None:
             import policyengine_uk
 
             parameters = policyengine_uk.CountryTaxBenefitSystem().parameters
-        node = worlds._resolve_parameter(parameters, path)
-        return dict(getattr(node, "metadata", None) or {})
+        return worlds._resolve_parameter(parameters, path)
+
+    def metadata(path):
+        return dict(getattr(node(path), "metadata", None) or {})
+
+    def current_law(path, date):
+        return node(path)(date)
 
     return {
-        key: revisions.apply_revision(key, world, metadata)
+        key: revisions.apply_revision(key, world, metadata, current_law)
         for key, world in runnable.items()
     }
 
@@ -1364,6 +1369,7 @@ def main(argv: list[str] | None = None) -> int:
     }
     if not legacy:
         manifest["processed_value_check"] = "processed_period_values.v1"
+        manifest["missing_legs_statement"] = "authored_engine_label.v1"
         manifest.update(
             variants.manifest_fields(
                 variant,

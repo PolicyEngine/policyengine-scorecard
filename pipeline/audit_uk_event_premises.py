@@ -193,6 +193,7 @@ def audit_measure(
             measure["measure_key"],
             world,
             engine.metadata if hasattr(engine, "metadata") else engine.annualisation,
+            engine.current_law,
         )
     else:
         if revision_selection is not None:
@@ -201,6 +202,7 @@ def audit_measure(
                 engine.metadata
                 if hasattr(engine, "metadata")
                 else engine.annualisation,
+                engine.current_law,
             )
             if selected_here != revision_selection:
                 raise ValueError(
@@ -380,7 +382,7 @@ def audit(
                         for measure in json.loads(payload)["measures"]
                         if (
                             chosen := revisions.select_revision(
-                                measure["measure_key"], metadata
+                                measure["measure_key"], metadata, engine.current_law
                             )
                         )
                     }

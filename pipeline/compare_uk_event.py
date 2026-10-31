@@ -108,6 +108,8 @@ def run_identity(directory: Path) -> dict:
     }
     if manifest.get("construction_revisions"):
         identity["construction_revisions"] = manifest["construction_revisions"]
+    if manifest.get("missing_legs_statement"):
+        identity["missing_legs_statement"] = manifest["missing_legs_statement"]
     return identity
 
 
@@ -292,6 +294,30 @@ def review_diagnosis(
             }
         ]
     }
+
+
+def stated_missing_legs(
+    measure: dict, identity: dict | None = None
+) -> tuple[str, list[str]]:
+    """The label and frozen missing legs a comparison row states.
+
+    The legs describe policyengine-uk 2.89.2, so a run that records
+    ``missing_legs_statement`` labels them as authored there. Older sealed
+    namespaces record no such field and keep their bytes. A selected revision
+    may restate the legs for the engine that ran them; those need no label.
+    """
+    key = measure["measure_key"]
+    evidence = (identity or {}).get("construction_revisions", {}).get(key)
+    if evidence is not None:
+        from pipeline import uk_construction_revisions as revisions
+
+        recorded = revisions.get_revision(key, evidence)
+        if "missing_legs" in recorded:
+            return "", recorded["missing_legs"]
+    legs = measure.get("missing_legs", [])
+    if legs and (identity or {}).get("missing_legs_statement"):
+        return f"Authored against policyengine-uk {LEGACY_ENGINE}: ", legs
+    return "", legs
 
 
 def construction_note(
@@ -763,8 +789,9 @@ def build_comparison_rows(
                 or source.get("classification_reason")
                 or reason
             )
+        legs_label, missing_legs = stated_missing_legs(measure, identity)
         if not reason and classification == "partial":
-            reason = "; ".join(measure.get("missing_legs", []))
+            reason = legs_label + "; ".join(missing_legs)
         record = {
             "event_slug": registry["event_slug"],
             "source_row_id": key,
@@ -795,7 +822,7 @@ def build_comparison_rows(
             "construction_note": construction_note(
                 measure, engine_version, identity=identity
             ),
-            "missing_legs": measure.get("missing_legs", []),
+            "missing_legs": [legs_label + leg for leg in missing_legs],
             "head_variables": variables,
             "artifact": reference,
             "artifact_sha256": digest,

@@ -86,6 +86,7 @@ MEMORY_SCHEDULING_EVENT = "autumn_budget_2025"
 MEMORY_WORKLOAD_FILES = (
     "data/uk/events/autumn_budget_2025_measures.json",
     "data/uk/events/construction_revisions.json",
+    "data/uk/events/construction_revisions_enacted.json",
     "pipeline/build_uk_event_registry.py",
     "pipeline/compute_uk_ab2025.py",
     "pipeline/compute_uk_event.py",
