@@ -43,6 +43,22 @@ class ProcessedValueMismatch(RuntimeError):
         super().__init__(failure)
 
 
+# The parameters that switch on the engine's capital gains and labour supply
+# responses. No construction sets them, so every run executes their defaults.
+RESPONSE_PARAMETERS = (
+    "gov.simulation.capital_gains_responses.elasticity",
+    "gov.simulation.capital_gains_responses.mtr_elasticity",
+    "gov.simulation.capital_gains_responses.separate_badr_elasticity",
+    "gov.simulation.labour_supply_responses.income_elasticity",
+    "gov.simulation.labour_supply_responses.substitution_elasticity",
+)
+STATIC_SCOPE = "sum of declared fiscal heads; static household microsimulation"
+RESPONSIVE_SCOPE = (
+    "sum of declared fiscal heads; household microsimulation with the engine's "
+    "default capital gains and labour supply response parameters"
+)
+
+
 def parameter_scalar(value):
     """JSON representation shared with the parameter-only premises audit."""
     return revisions.scalar(value)
@@ -387,6 +403,7 @@ def build_artifact(
     event: str,
     variant_fields: dict | None = None,
     intended_current_law: dict | None = None,
+    scope: str = STATIC_SCOPE,
 ) -> dict:
     """Numerical facts only: identical inputs produce identical artifact bytes.
 
@@ -469,7 +486,7 @@ def build_artifact(
         "registry_sha256": registry_sha256,
         "sign_convention": "positive_gain_to_exchequer",
         "calendar_year_proxy": f"PE calendar year {year} proxies FY {fiscal.fy_label(year)}.",
-        "scope": "sum of declared fiscal heads; static household microsimulation",
+        "scope": scope,
     }
     if reversal:
         artifact["literal_reversal_minus_certified_gbp"] = literal
@@ -768,6 +785,9 @@ def run_year_job(job: dict) -> dict:
             event=job["event"],
             variant_fields=job.get("variant_fields"),
             intended_current_law=current,
+            scope=RESPONSIVE_SCOPE
+            if revisions.runs_behavioural_responses(pre)
+            else STATIC_SCOPE,
         )
         # run_sim refuses a result without processed values whenever checks
         # were requested, so every real run is evaluated here.
@@ -1215,6 +1235,11 @@ def main(argv: list[str] | None = None) -> int:
         }
         for year in years
     }
+    if not legacy:
+        pre["response_parameters"] = {
+            path: parameter_scalar(resolve(path, f"{years[0]}-01-01"))
+            for path in RESPONSE_PARAMETERS
+        }
     print(f"[pid {os.getpid()}] processed-world reversal guard complete", flush=True)
     verify_registry_identity(registry_path, registry_sha256)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1369,7 +1394,8 @@ def main(argv: list[str] | None = None) -> int:
     }
     if not legacy:
         manifest["processed_value_check"] = "processed_period_values.v1"
-        manifest["missing_legs_statement"] = "authored_engine_label.v1"
+        manifest["statement_version"] = "authored_engine_label.v2"
+        manifest["response_parameters"] = pre["response_parameters"]
         manifest.update(
             variants.manifest_fields(
                 variant,

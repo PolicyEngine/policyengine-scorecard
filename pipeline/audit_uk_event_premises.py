@@ -197,14 +197,15 @@ def audit_measure(
         )
     else:
         if revision_selection is not None:
-            selected_here = revisions.select_revision(
+            holds = revisions.recorded_revision_holds(
                 measure["measure_key"],
+                revision_selection,
                 engine.metadata
                 if hasattr(engine, "metadata")
                 else engine.annualisation,
                 engine.current_law,
             )
-            if selected_here != revision_selection:
+            if not holds:
                 raise ValueError(
                     f"{measure['measure_key']}: recorded construction revision "
                     "does not match installed parameter metadata or revision registry"

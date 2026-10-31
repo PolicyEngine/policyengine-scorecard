@@ -172,7 +172,7 @@ def test_staging_scores_the_reversal_from_the_activation_year(
     }
     monkeypatch.setattr(compute, "ROOT", tmp_path)
     monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
-    manifest["missing_legs_statement"] = "authored_engine_label.v1"
+    manifest["statement_version"] = "authored_engine_label.v2"
     rows, tally = stage.stage_event(
         registry, manifest, artifact_dir=tmp_path, registry_sha256="b" * 64
     )
@@ -190,7 +190,7 @@ LEGS = {"measure_key": "a_measure", "missing_legs": ["first leg", "second leg"]}
 def test_a_sealed_namespace_states_its_legs_as_it_always_did(tmp_path):
     (tmp_path / "RUN_MANIFEST.json").write_text(json.dumps({"variant_id": "variant"}))
     identity = compare.run_identity(tmp_path)
-    assert "missing_legs_statement" not in identity
+    assert "statement_version" not in identity
     assert revisions.stated_missing_legs(LEGS, identity) == ("", LEGS["missing_legs"])
 
 
@@ -199,7 +199,7 @@ def test_a_run_recording_the_statement_labels_its_legs_as_authored_elsewhere(tmp
         json.dumps(
             {
                 "variant_id": "variant",
-                "missing_legs_statement": "authored_engine_label.v1",
+                "statement_version": "authored_engine_label.v2",
             }
         )
     )
@@ -214,11 +214,126 @@ def test_a_run_recording_the_statement_labels_its_legs_as_authored_elsewhere(tmp
 def test_staged_rows_and_the_export_state_the_legs_as_the_comparison_does(tmp_path):
     from pipeline import export_uk_events_dashboard as export
 
-    run = {"missing_legs_statement": "authored_engine_label.v1"}
+    run = {"statement_version": "authored_engine_label.v2"}
     label, legs = revisions.stated_missing_legs(LEGS, run)
     assert export.stated_legs(LEGS, run) == [label + leg for leg in legs]
     assert export.stated_legs(LEGS, {}) == LEGS["missing_legs"]
     assert export.stated_legs({"measure_key": "a", "missing_legs": None}, {}) == []
+
+
+def test_the_export_labels_frozen_reasons_as_the_comparison_does():
+    from pipeline import export_uk_events_dashboard as export
+
+    run = {"statement_version": "authored_engine_label.v2"}
+    measure = {
+        "pe_gap": "The engine lacks this",
+        "classification": "not_expressible",
+    }
+    assert export.measure_reason(measure, [], {}) == measure["pe_gap"]
+    assert (
+        export.measure_reason(measure, [], run)
+        == revisions.AUTHORED_LABEL + measure["pe_gap"]
+    )
+    scoped = {
+        "classification": "out_of_household_scope",
+        "source_rows": [
+            {
+                "classification": "out_of_household_scope",
+                "classification_reason": "Outside household scope",
+            }
+        ],
+    }
+    assert export.measure_reason(scoped, [], {}) == "Outside household scope"
+    assert export.measure_reason(scoped, [], run) == (
+        revisions.AUTHORED_LABEL + "Outside household scope"
+    )
+
+
+@pytest.mark.parametrize(
+    ("classification", "field"),
+    [("not_expressible", "pe_gap"), ("out_of_household_scope", "scope_reason")],
+)
+def test_staging_labels_a_frozen_reason_only_on_a_run_recording_the_statement(
+    tmp_path, monkeypatch, classification, field
+):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
+    measure = {
+        "measure_key": "a_measure",
+        "title": "A measure",
+        "classification": classification,
+        "computability": classification,
+        field: "A frozen reason",
+        "source_rows": [
+            {
+                "source_row_id": "a_row",
+                "fy": "2024-25",
+                "metric": "a metric",
+                "value_gbp": 1.0,
+                "tax_head": "Income tax",
+            }
+        ],
+    }
+    registry = {
+        "event_slug": EVENT,
+        "calendar_years": [2024],
+        "measures": [measure],
+    }
+    manifest = {
+        "event": EVENT,
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": {},
+    }
+
+    def staged_reason(run):
+        rows, _ = stage.stage_event(
+            registry, run, artifact_dir=tmp_path, registry_sha256="b" * 64
+        )
+        return rows[0]["reason"]
+
+    assert staged_reason(manifest) == "A frozen reason"
+    assert staged_reason(
+        {**manifest, "statement_version": "authored_engine_label.v2"}
+    ) == (revisions.AUTHORED_LABEL + "A frozen reason")
+
+
+def test_staged_notes_state_what_the_run_recorded():
+    sealed = stage.behaviour_note()
+    assert "PE is static" in sealed
+    assert stage.behaviour_note({"variant_id": "sealed"}) == sealed
+    static_engine = {"response_parameters": {"a": 0, "b": False}}
+    assert stage.behaviour_note(static_engine) == sealed
+    responsive = stage.behaviour_note({"response_parameters": {"a": 1.0}})
+    assert "static" not in responsive
+    assert "capital gains and labour supply response parameters" in responsive
+    variant = {
+        "identity": {
+            "dataset": {"path": "d.h5", "repo_id": "org/repo", "revision": "r"}
+        }
+    }
+    assert "later calibration" in stage.population_note(variant)
+    current = stage.population_note(
+        variant, {"statement_version": "authored_engine_label.v2"}
+    )
+    assert "later calibration" not in current
+    assert "d.h5, org/repo r" in current
+
+
+def test_the_variant_description_states_the_fiscal_year_windows_it_ran():
+    identity = {
+        "engine_version": "2.151.0",
+        "policyengine_version": "6.11.1",
+        "data_bundle": "bundle",
+        "data_years": [2024],
+    }
+    sealed = compare.variant_description(identity)
+    assert "whole fiscal years" not in sealed
+    current = compare.variant_description(
+        {**identity, "statement_version": "authored_engine_label.v2"}
+    )
+    assert "explicit 1 January windows" in current
+    assert "whole fiscal years" in current
 
 
 def test_a_selected_revision_restates_the_legs_for_its_engine():
@@ -239,7 +354,7 @@ def test_a_selected_revision_restates_the_legs_for_its_engine():
     )
     identity = {
         "construction_revisions": {ALLOWANCE: evidence},
-        "missing_legs_statement": "authored_engine_label.v1",
+        "statement_version": "authored_engine_label.v2",
     }
     label, legs = revisions.stated_missing_legs(frozen, identity)
     assert label == ""

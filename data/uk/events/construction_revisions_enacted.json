@@ -1,6 +1,39 @@
 {
   "schema_version": 1,
   "revisions": {
+    "autumn_budget_2024__capital_gains_main_rates_and_reliefs": {
+      "revision_id": "ab2024_cgt_fiscal_year_blend.v2",
+      "supersedes": "ab2024_cgt_fiscal_year_blend.v1",
+      "condition": {
+        "metadata_key": "fiscal_year_blend",
+        "equals": true,
+        "all_paths": [
+          "gov.hmrc.cgt.basic_rate",
+          "gov.hmrc.cgt.higher_rate",
+          "gov.hmrc.cgt.additional_rate"
+        ]
+      },
+      "baseline_start": "2024-01-01",
+      "baseline_values": {
+        "gov.hmrc.cgt.basic_rate": 0.1,
+        "gov.hmrc.cgt.higher_rate": 0.2,
+        "gov.hmrc.cgt.additional_rate": 0.2
+      },
+      "activation_fy": "2024-25",
+      "part_year_rule": "part_year_day_weighted",
+      "decision": "cos d1344 (Max, 2026-10-15): W6 chooses the reading supported by law, records its evidence, and lands on independent review.",
+      "law": {
+        "title": "Finance Act 2025, section 7: Capital gains tax rates",
+        "url": "https://www.legislation.gov.uk/ukpga/2025/8/section/7",
+        "effect": "The main rates increase from 10% and 20% to 18% and 24% for disposals on or after 30 October 2024."
+      },
+      "intent": "Keep the installed engine's fiscal_year_blend treatment. Reverse to pre-announcement main rates for the whole of FY2024-25, represented by period 2024; FY2023-24 stays unchanged. At a statutory reprocessing entry point the annual windows are submitted as 6 April to 5 April fiscal-year windows.",
+      "limitations": [
+        "The reversal moves the main rates alone. The engine charges residential property gains, carried interest and relief gains on their own schedules, which keep their installed rates in both worlds.",
+        "Business Asset Disposal Relief and Investors' Relief changes remain unreversed.",
+        "The replay leaves gov.simulation.capital_gains_responses at the engine's defaults."
+      ]
+    },
     "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp": {
       "revision_id": "ab2024_sdlt_surcharge_in_current_law.v1",
       "condition": {
@@ -60,7 +93,7 @@
         "The counterfactual keeps the benefit-CPI path frozen on policyengine-uk 2.89.2, so later-year effects also carry any gap between that path and this engine's benefit index; CONSTRUCTION_PREMISES.json records the values this engine re-authors."
       ],
       "missing_legs": [
-        "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
+        "Existing/new-claimant health-element protections interact with the allowance change; this leg leaves the health policy parameters unchanged, and protected LCWRA amounts still depend on the standard allowances from 2027.",
         "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
       ]
     }

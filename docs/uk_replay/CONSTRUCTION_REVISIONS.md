@@ -22,8 +22,10 @@ engines that have since enacted a measure; see
 [Summary for 2.132.6 → 2.151.0](#summary-for-21326--21510). A run binds each
 revision to the SHA-256 of the file holding it, so no file changes once a
 sealed namespace records it. Each later revision goes in a later file, and
-every sealed namespace keeps validating. Selection reads either metadata or
-current-law values in the installed engine, never its version string.
+every sealed namespace keeps validating. A later file's revision can supersede
+an earlier one for new runs, and a sealed run keeps the revision it recorded.
+Selection reads either metadata or current-law values in the installed engine,
+never its version string.
 
 Inputs (both parameter-tree only; no dataset or simulation):
 
@@ -145,17 +147,18 @@ route and rate files were read from its PyPI wheel on 15 October 2026
 Its table row is the route-derived expectation, tested with fakes, rather
 than a local simulation observation; CI and the receiver must verify the
 real installed 2.130.1 run. No microsimulation was run for this change.
-The pooled-gains limitation and the unreversed reliefs remain: this
-revision changes annualisation of the three main rates and does not
-implement the full rates-and-reliefs package.
+The unreversed reliefs remain: this revision changes annualisation of the
+three main rates and does not implement the full rates-and-reliefs package.
+The limitation that this revision also stated about pooled gains was wrong;
+see [AB2024 CGT limitation](#ab2024-cgt-limitation).
 
 ## Summary for 2.132.6 → 2.151.0
 
 The qualification of policyengine.py 6.11.1 (request `d1e672fe…`, run
 41143889866) ran on policyengine-uk 2.151.0, and that run's results (#238) did
 not land because of what this section corrects. Four constructions newly failed
-a premise, beside the CGT annualisation premise recorded above, and a row stated
-a limitation the engine no longer has.
+a premise, beside the CGT annualisation premise recorded above, and two rows
+stated limitations the engine does not have.
 
 | Measure | Failed premise on 2.151.0 | Treatment |
 |---|---|---|
@@ -163,6 +166,7 @@ a limitation the engine no longer has.
 | SS2025 `uc_standard_allowance_above_inflation` | `authored_construction_reproduces` | `ss2025_uc_uplifts_in_current_law.v1` |
 | SS2025 `uc_health_element_freeze_and_new_claimant_cut` | `authored_construction_reproduces` | Candidate |
 | SB2023 `uc_childcare_cap_increase` | `authored_construction_reproduces` | Candidate |
+| AB2024 `capital_gains_main_rates_and_reliefs` | None new; its limitation misdescribed the engine | `ab2024_cgt_fiscal_year_blend.v2` |
 
 ### AB2024 SDLT surcharge
 
@@ -231,6 +235,80 @@ uplifts. The revision's limitation says so, and
 the index name, so a later engine that keeps the name and changes what the index
 applies would need a new revision.
 
+### AB2024 CGT limitation
+
+`ab2024_cgt_fiscal_year_blend.v1` states: "The engine pools gains rather than
+distinguishing their statutory types." That sentence comes from the 2.89.2
+audit, and it no longer held when the revision first ran.
+`capital_gains_tax.py` charges four schedules in the 2.130.1, 2.132.6 and
+2.151.0 wheels, the three engines that have run v1. The national Microcosm
+build that 6.11.1 ran fills two of them: 4,220 person records hold residential
+property gains and 1,702 hold relief gains, out of 33,985 with gains.
+
+The sentence therefore misdescribes the engine in the namespaces that record
+v1: `pe6.5.0_uk2.130.1…`, `pe6.9.0_uk2.130.1…` and `pe6.11.0_uk2.132.6…`.
+Those namespaces keep their sealed bytes, and this section corrects them.
+
+`ab2024_cgt_fiscal_year_blend.v2` supersedes v1 for new runs. It carries v1's
+condition, windows, values and intent, so it builds the same worlds and moves
+no number. It drops the sentence and states that the reversal moves the main
+rates alone, while residential property gains, carried interest and relief
+gains keep their installed rates in both worlds. It also states that the replay
+leaves `gov.simulation.capital_gains_responses` at the engine's defaults.
+
+Those defaults moved between the two most recent engines:
+`gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.132.6 and 1.0
+on 2.151.0. The revision records the setting. It does not size what that move
+adds to the row's fall against 6.11.0.
+
+### Statements checked against 2.151.0
+
+The CGT sentence prompted two sweeps of every other sentence in the first 6.11.1
+namespace, each tested against the 2.151.0 wheel, the run's manifests and
+aggregate counts from its dataset. Runs that record `statement_version` in
+`RUN_MANIFEST.json` state the following. Sealed namespaces record no such field
+and keep their bytes, and this section corrects them where they differ.
+
+| Output | Sealed text | Text from `statement_version` | Evidence |
+|---|---|---|---|
+| Year artifact `scope`, staged annotation | "static" | "the engine's default capital gains and labour supply response parameters", when one of `compute_uk_event.RESPONSE_PARAMETERS` reads other than 0 or false | `gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.130.1 and 2.132.6 and 1.0 on 2.151.0; `elasticity.yaml` in each wheel |
+| Staged population note | "with later calibration and uprating targets" | "projected by the engine to each year" | The manifests establish one dataset, not the vintage of its targets |
+| Reform window sentence | "use explicit 1 January windows" | adds the fiscal-year windows a selected blended revision submits | `compute_uk_event.revision_reform_route`; the CGT artifacts record April windows |
+| Row `reason` from a frozen registry | unlabelled | "Authored against policyengine-uk 2.89.2: " | The registry builder matched these reasons from measure titles; see below |
+| Summary issue line | "Evidence-backed" candidates; "No upstream issues were filed by this replay lane." | Counts candidates; "This report files no upstream issues." | The report can state only what it does |
+
+A compute run records the same parameters as `response_parameters`, so its
+manifest states what the scope rests on. A year artifact's `scope` turns on the
+engine's values rather than on `statement_version`, because the pinned replay in
+CI compares those bytes on the older engines. No construction sets one of these
+parameters, so the recorded values are the engine's defaults. Constructions can
+set other behavioural parameters: the AB2025 salary sacrifice reversal sets
+`gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate` to 0
+for 2029–2030.
+
+The frozen reasons fail on 2.151.0 in specific ways. They say Carer's Allowance
+has no earnings test (`is_gainfully_employed_for_carers_allowance.py` reads
+`earnings_limit`), that the population holds no ISA products, and that it holds
+no vehicles or bus journeys (the dataset carries those columns). Title matching
+also gave a non-domestic heat-network row the non-domicile reason and the
+Reserved Investor Fund the transport reason. The registries stay frozen, so
+the label marks each of these as history, and a label does not make one true of
+this engine.
+
+The `spring_statement_2025` allowance revision said its leg "holds the certified
+health world fixed". `protected_lcwra_floor` in `scenarios/uc_reform.py` reads
+the standard allowances, so protected LCWRA amounts depend on them from 2027.
+The revision now says that. No sealed namespace records this revision.
+
+The diagnostic `annual_allowance_charge_single_marginal_rate` kept reporting
+`persists` for a reason unrelated to its defect. 2.151.0 charges band slices
+above reduced net income and no longer reads the case's `taxed_income`
+override, so the case's person had no income and the £20,000 excess fell wholly
+in the basic-rate band, which also gives £4,000. Where an engine's formula does
+not read the override, the case now also sets `employment_income` to £42,570,
+and less the £12,570 personal allowance that leaves £30,000. The engines through
+2.132.6 read the override, so their case and recorded status stay as they were.
+
 ### Remaining candidates
 
 Re-authoring on 2.151.0 gives 0.39–1.67% above the frozen health element in
@@ -248,9 +326,11 @@ engine as "Authored against policyengine-uk 2.89.2" and omits the
 `prior_diagnoses` with `status: not_reverified`.
 
 Frozen `missing_legs` carry the same label from the run that records
-`missing_legs_statement` in `RUN_MANIFEST.json`. Earlier namespaces record no
+`statement_version` in `RUN_MANIFEST.json`. Earlier namespaces record no
 such field and keep their sealed bytes, unlabelled. A selected revision can
-restate the legs for the engine that ran, and those need no label.
+restate the legs for the engine that ran, and those need no label. The same
+run labels frozen `scope_reason`, `classification_reason` and `pe_gap` text in
+staged rows, comparisons and the dashboard export.
 
 * AS2023 Class 2 abolition: the "£3.15 for 2023-24" statement is a 2.89.2
   fact; 2.125.1's processed 2023 flat rate is £3.45. CY2023 is outside the
@@ -312,8 +392,7 @@ except where noted:
 * UC childcare cap (×122.69, the largest move): the childcare-cost tail among
   reported UC families in the new population; eligibility fixes contribute an
   unsized share.
-* AB2024 CGT (×0.51): a smaller capital-gains base, not day-weighting; the
-  pooled-gains limitation stays.
+* AB2024 CGT (×0.51): a smaller capital-gains base, not day-weighting.
 * Private-school VAT: the replay figure is consistent with a zero dedicated
   baseline head, and the dedicated statutory mechanism defect persists. It
   does not show £2.0bn missing from total baseline VAT: generic VAT targets

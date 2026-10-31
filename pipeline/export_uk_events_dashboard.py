@@ -294,20 +294,26 @@ def stated_legs(measure: dict, run: dict) -> list[str]:
     return [label + leg for leg in legs or [] if leg]
 
 
-def measure_reason(measure: dict, legs: list[str]) -> str | None:
+def measure_reason(measure: dict, legs: list[str], run: dict) -> str | None:
     """Why a measure, or part of it, has no PolicyEngine counterpart."""
     classification = measure.get("classification", measure.get("computability"))
     if classification == "out_of_household_scope":
         reasons = sorted(
             {
-                row.get("classification_reason")
+                construction_revisions.stated_reason(
+                    row.get("classification_reason"), run
+                )
                 for row in measure["source_rows"]
                 if row.get("classification") == "out_of_household_scope"
                 and row.get("classification_reason")
             }
         )
         legs = legs or reasons
-    return " ".join(legs) or measure.get("pe_gap") or None
+    return (
+        " ".join(legs)
+        or construction_revisions.stated_reason(measure.get("pe_gap"), run)
+        or None
+    )
 
 
 def accounting(registry: dict) -> dict:
@@ -584,7 +590,7 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
             "gap_kind": measure.get("gap_kind")
             if classification == "not_expressible"
             else None,
-            "reason": measure_reason(measure, stated_legs(measure, run)),
+            "reason": measure_reason(measure, stated_legs(measure, run), run),
             "missing_legs": stated_legs(measure, run),
             "construction_note": next(
                 (
