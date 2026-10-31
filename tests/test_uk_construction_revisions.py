@@ -850,6 +850,32 @@ def test_a_run_recording_nothing_states_what_it_always_stated():
     assert not revisions.states_current_engine({"variant_id": "sealed"})
 
 
+def test_no_construction_sets_a_response_parameter():
+    # The stated scope and note say these parameters run at the engine's
+    # defaults, which holds only while no reform dictionary names one.
+    def keys(value):
+        if isinstance(value, dict):
+            for key, inner in value.items():
+                yield key
+                yield from keys(inner)
+        elif isinstance(value, list):
+            for inner in value:
+                yield from keys(inner)
+
+    response_trees = {path.rpartition(".")[0] for path in compute.RESPONSE_PARAMETERS}
+    events = compute.ROOT / "data/uk/events"
+    documents = sorted(events.glob("*_measures.json"))
+    assert len(documents) >= 6
+    documents += [revisions.REVISIONS_PATH, revisions.ENACTED_REVISIONS_PATH]
+    for document in documents:
+        named = [
+            key
+            for key in keys(json.loads(document.read_bytes()))
+            if key.startswith(tuple(response_trees))
+        ]
+        assert named == [], document
+
+
 def test_the_engine_defaults_decide_the_scope_a_year_artifact_states():
     responsive = {"response_parameters": {compute.RESPONSE_PARAMETERS[0]: 1.0}}
     assert revisions.runs_behavioural_responses(responsive)

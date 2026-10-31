@@ -255,6 +255,30 @@ def test_variant_summary_reproduces_statuses_and_counts_only_current_candidates(
         ]
 
 
+def test_the_summary_states_only_what_a_report_can_of_its_candidates():
+    record = {
+        **established()[0],
+        "engine_version": VARIANT["engine_version"],
+        "established_on": [compare.LEGACY_ENGINE],
+        "events": ["autumn_budget_2024"],
+        "class": "pe_gap",
+        "status": "persists",
+    }
+    sealed = compare.render_summary(
+        {"autumn_budget_2024": []}, diagnostics=[record], identity=VARIANT
+    )
+    assert "Evidence-backed PolicyEngine issue candidates recorded: 1." in sealed
+    assert "No upstream issues were filed by this replay lane." in sealed
+    current = compare.render_summary(
+        {"autumn_budget_2024": []},
+        diagnostics=[record],
+        identity={**VARIANT, "statement_version": "authored_engine_label.v2"},
+    )
+    assert "Evidence-backed" not in current
+    assert "PolicyEngine issue candidates recorded: 1." in current
+    assert "This report files no upstream issues." in current
+
+
 def test_legacy_summary_counts_established_candidates_without_a_status():
     diagnostic = established()[0]
     assert "status" not in diagnostic

@@ -127,7 +127,8 @@ def population_note(record: dict | None, manifest: dict | None = None) -> str:
 def behaviour_note(manifest: dict | None = None) -> str:
     """The second row annotation: how PE's households respond."""
     behaviour = (
-        "PE runs the engine's default behavioural responses"
+        "PE runs the engine's default capital gains and labour supply response "
+        "parameters"
         if revisions.runs_behavioural_responses(manifest)
         else "PE is static"
     )

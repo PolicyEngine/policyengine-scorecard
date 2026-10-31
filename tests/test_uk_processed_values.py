@@ -621,6 +621,19 @@ def ab2024_cgt():
     return cgt
 
 
+def test_a_run_states_the_response_parameters_its_engine_holds(tmp_path, monkeypatch):
+    elasticity = compute.RESPONSE_PARAMETERS[0]
+    run = variant_run(
+        tmp_path, monkeypatch, ab2024_cgt(), {**BLENDED, elasticity: 1.0}, blend=True
+    )
+    assert compute.main(run["argv"]) == 0
+    output = run["output"]
+    manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
+    artifact = json.loads((output / f"{KEY}_2024.json").read_bytes())
+    assert manifest["response_parameters"][elasticity] == 1.0
+    assert artifact["scope"] == compute.RESPONSIVE_SCOPE
+
+
 @pytest.mark.parametrize("statutory", [False, True])
 @pytest.mark.parametrize("blend", [True, False])
 def test_a_variant_run_selects_the_revision_and_checks_each_world(
@@ -636,6 +649,8 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
     output, calls = run["output"], run["calls"]
     manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
     artifact = json.loads((output / f"{KEY}_2024.json").read_bytes())
+    assert set(manifest["response_parameters"]) == set(compute.RESPONSE_PARAMETERS)
+    assert artifact["scope"] == compute.STATIC_SCOPE
     # The certified baseline is the reform world (current law) and also reads
     # current law; the reversal world carries its own check and the revision.
     assert calls == [

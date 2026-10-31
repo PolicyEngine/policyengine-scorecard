@@ -43,8 +43,8 @@ class ProcessedValueMismatch(RuntimeError):
         super().__init__(failure)
 
 
-# The parameters that switch on the engine's behavioural responses. No
-# construction sets them, so every run executes the engine's defaults.
+# The parameters that switch on the engine's capital gains and labour supply
+# responses. No construction sets them, so every run executes their defaults.
 RESPONSE_PARAMETERS = (
     "gov.simulation.capital_gains_responses.elasticity",
     "gov.simulation.capital_gains_responses.mtr_elasticity",
@@ -55,7 +55,7 @@ RESPONSE_PARAMETERS = (
 STATIC_SCOPE = "sum of declared fiscal heads; static household microsimulation"
 RESPONSIVE_SCOPE = (
     "sum of declared fiscal heads; household microsimulation with the engine's "
-    "default behavioural responses"
+    "default capital gains and labour supply response parameters"
 )
 
 

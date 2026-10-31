@@ -249,6 +249,55 @@ def test_the_export_labels_frozen_reasons_as_the_comparison_does():
     )
 
 
+@pytest.mark.parametrize(
+    ("classification", "field"),
+    [("not_expressible", "pe_gap"), ("out_of_household_scope", "scope_reason")],
+)
+def test_staging_labels_a_frozen_reason_only_on_a_run_recording_the_statement(
+    tmp_path, monkeypatch, classification, field
+):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
+    measure = {
+        "measure_key": "a_measure",
+        "title": "A measure",
+        "classification": classification,
+        "computability": classification,
+        field: "A frozen reason",
+        "source_rows": [
+            {
+                "source_row_id": "a_row",
+                "fy": "2024-25",
+                "metric": "a metric",
+                "value_gbp": 1.0,
+                "tax_head": "Income tax",
+            }
+        ],
+    }
+    registry = {
+        "event_slug": EVENT,
+        "calendar_years": [2024],
+        "measures": [measure],
+    }
+    manifest = {
+        "event": EVENT,
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": {},
+    }
+
+    def staged_reason(run):
+        rows, _ = stage.stage_event(
+            registry, run, artifact_dir=tmp_path, registry_sha256="b" * 64
+        )
+        return rows[0]["reason"]
+
+    assert staged_reason(manifest) == "A frozen reason"
+    assert staged_reason(
+        {**manifest, "statement_version": "authored_engine_label.v2"}
+    ) == (revisions.AUTHORED_LABEL + "A frozen reason")
+
+
 def test_staged_notes_state_what_the_run_recorded():
     sealed = stage.behaviour_note()
     assert "PE is static" in sealed
@@ -257,7 +306,7 @@ def test_staged_notes_state_what_the_run_recorded():
     assert stage.behaviour_note(static_engine) == sealed
     responsive = stage.behaviour_note({"response_parameters": {"a": 1.0}})
     assert "static" not in responsive
-    assert "default behavioural responses" in responsive
+    assert "capital gains and labour supply response parameters" in responsive
     variant = {
         "identity": {
             "dataset": {"path": "d.h5", "repo_id": "org/repo", "revision": "r"}

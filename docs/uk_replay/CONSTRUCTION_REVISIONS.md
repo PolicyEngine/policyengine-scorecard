@@ -271,7 +271,7 @@ and keep their bytes, and this section corrects them where they differ.
 
 | Output | Sealed text | Text from `statement_version` | Evidence |
 |---|---|---|---|
-| Year artifact `scope`, staged annotation | "static" | "the engine's default behavioural responses", when a parameter in `compute_uk_event.RESPONSE_PARAMETERS` reads other than 0 or false | `gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.130.1 and 2.132.6 and 1.0 on 2.151.0; `elasticity.yaml` in each wheel |
+| Year artifact `scope`, staged annotation | "static" | "the engine's default capital gains and labour supply response parameters", when one of `compute_uk_event.RESPONSE_PARAMETERS` reads other than 0 or false | `gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.130.1 and 2.132.6 and 1.0 on 2.151.0; `elasticity.yaml` in each wheel |
 | Staged population note | "with later calibration and uprating targets" | "projected by the engine to each year" | The manifests establish one dataset, not the vintage of its targets |
 | Reform window sentence | "use explicit 1 January windows" | adds the fiscal-year windows a selected blended revision submits | `compute_uk_event.revision_reform_route`; the CGT artifacts record April windows |
 | Row `reason` from a frozen registry | unlabelled | "Authored against policyengine-uk 2.89.2: " | The registry builder matched these reasons from measure titles; see below |
@@ -280,8 +280,11 @@ and keep their bytes, and this section corrects them where they differ.
 A compute run records the same parameters as `response_parameters`, so its
 manifest states what the scope rests on. A year artifact's `scope` turns on the
 engine's values rather than on `statement_version`, because the pinned replay in
-CI compares those bytes on the older engines. No construction sets a response
-parameter, so the values are the engine's defaults.
+CI compares those bytes on the older engines. No construction sets one of these
+parameters, so the recorded values are the engine's defaults. Constructions can
+set other behavioural parameters: the AB2025 salary sacrifice reversal sets
+`gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate` to 0
+for 2029–2030.
 
 The frozen reasons fail on 2.151.0 in specific ways. They say Carer's Allowance
 has no earnings test (`is_gainfully_employed_for_carers_allowance.py` reads
@@ -294,7 +297,7 @@ this engine.
 
 The `spring_statement_2025` allowance revision said its leg "holds the certified
 health world fixed". `protected_lcwra_floor` in `scenarios/uc_reform.py` reads
-the standard allowances, so protected LCWRA amounts move with them from 2027.
+the standard allowances, so protected LCWRA amounts depend on them from 2027.
 The revision now says that. No sealed namespace records this revision.
 
 The diagnostic `annual_allowance_charge_single_marginal_rate` kept reporting
