@@ -1003,10 +1003,10 @@ one worker and completed in 190 minutes of simulation, inside the run job's
 |---|---|---|---|---:|---:|
 | Autumn Budget 2024 | 15.5 GiB | 14.7 GiB | 0.1 GiB | 39 | 43.2 |
 | Autumn Budget 2025 | 12.7 GiB | 12.7 GiB | 2.1 GiB | 73 | 68.4 |
-| Autumn Statement 2023 | 12.0 GiB | 11.9 GiB | 2.8 GiB | 36 | 27.4 |
+| Autumn Statement 2023 | 11.9 GiB | 11.9 GiB | 2.8 GiB | 36 | 27.4 |
 | Spring Statement 2025 | 11.4 GiB | 11.3 GiB | 3.4 GiB | 22 | 18.0 |
 | Spring Budget 2024 | 11.4 GiB | 11.4 GiB | 3.3 GiB | 18 | 20.5 |
-| Spring Budget 2023 | 11.0 GiB | 10.9 GiB | 3.8 GiB | 14 | 12.2 |
+| Spring Budget 2023 | 10.9 GiB | 10.9 GiB | 3.8 GiB | 14 | 12.2 |
 
 So Autumn Budget 2025 no longer has the corpus's largest peak on that release.
 Autumn Budget 2024 filled the runner's memory. Swap held nothing before the
