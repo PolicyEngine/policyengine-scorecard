@@ -22,6 +22,8 @@ REGISTRY = (
     / "data/uk/events/construction_revisions.json"
 )
 REVISIONS_PATH = REGISTRY
+# The engine the frozen registries' notes and missing legs describe.
+AUTHORED_ENGINE = "2.89.2"
 # A run binds its revisions to the SHA-256 of the file holding them, so a file
 # stays frozen once a sealed namespace records it. New revisions go in the next
 # file, and every sealed namespace keeps validating.
@@ -210,3 +212,26 @@ def apply_revision(
     return apply_selected_revision(
         measure_key, world, select_revision(measure_key, metadata, current_law)
     )
+
+
+def stated_missing_legs(
+    measure: dict, manifest: dict | None = None
+) -> tuple[str, list[str]]:
+    """The label and missing legs a run's outputs state for a measure.
+
+    ``manifest`` is the run's manifest or anything carrying its revision and
+    statement fields. The frozen legs describe the authored engine, so a run
+    recording ``missing_legs_statement`` labels them. Older sealed namespaces
+    record no such field and keep their bytes. A selected revision may restate
+    the legs for the engine that ran them; those need no label.
+    """
+    key = measure["measure_key"]
+    evidence = (manifest or {}).get("construction_revisions", {}).get(key)
+    if evidence is not None:
+        recorded = get_revision(key, evidence)
+        if "missing_legs" in recorded:
+            return "", recorded["missing_legs"]
+    legs = measure.get("missing_legs", [])
+    if legs and (manifest or {}).get("missing_legs_statement"):
+        return f"Authored against policyengine-uk {AUTHORED_ENGINE}: ", legs
+    return "", legs

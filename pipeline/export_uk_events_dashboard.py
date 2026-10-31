@@ -285,10 +285,18 @@ def optional_number(text: str) -> float | None:
     return float(text) if text != "" else None
 
 
-def measure_reason(measure: dict) -> str | None:
+def stated_legs(measure: dict, run: dict) -> list[str]:
+    """The missing legs as the run's own comparison states them."""
+    try:
+        label, legs = construction_revisions.stated_missing_legs(measure, run)
+    except ValueError as exc:
+        raise ExportError(str(exc)) from exc
+    return [label + leg for leg in legs or [] if leg]
+
+
+def measure_reason(measure: dict, legs: list[str]) -> str | None:
     """Why a measure, or part of it, has no PolicyEngine counterpart."""
     classification = measure.get("classification", measure.get("computability"))
-    legs = [leg for leg in measure.get("missing_legs") or [] if leg]
     if classification == "out_of_household_scope":
         reasons = sorted(
             {
@@ -576,8 +584,8 @@ def build_event_export(namespace: Namespace, event: str) -> dict:
             "gap_kind": measure.get("gap_kind")
             if classification == "not_expressible"
             else None,
-            "reason": measure_reason(measure),
-            "missing_legs": [leg for leg in measure.get("missing_legs") or [] if leg],
+            "reason": measure_reason(measure, stated_legs(measure, run)),
+            "missing_legs": stated_legs(measure, run),
             "construction_note": next(
                 (
                     rows_by_id[r["source_row_id"]]["construction_note"]

@@ -405,6 +405,7 @@ def stage_event(
                     + source.get("divergence_axes", [])
                 )
             )
+            legs_label, missing_legs = revisions.stated_missing_legs(measure, manifest)
             row = {
                 "source_row_id": identity,
                 "source_row_number": source.get("source_row_number"),
@@ -431,7 +432,7 @@ def stage_event(
                 "reason": None,
                 "sign_convention": "positive_gain_to_exchequer",
                 "partial_missing": measure.get("partial_missing")
-                or measure.get("missing_legs")
+                or [legs_label + leg for leg in missing_legs]
                 or measure.get("pe_gap"),
                 "source_table": source.get("source_table"),
                 "source_column": source.get("source_column"),

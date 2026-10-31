@@ -185,7 +185,7 @@ def test_a_sealed_namespace_states_its_legs_as_it_always_did(tmp_path):
     (tmp_path / "RUN_MANIFEST.json").write_text(json.dumps({"variant_id": "variant"}))
     identity = compare.run_identity(tmp_path)
     assert "missing_legs_statement" not in identity
-    assert compare.stated_missing_legs(LEGS, identity) == ("", LEGS["missing_legs"])
+    assert revisions.stated_missing_legs(LEGS, identity) == ("", LEGS["missing_legs"])
 
 
 def test_a_run_recording_the_statement_labels_its_legs_as_authored_elsewhere(tmp_path):
@@ -198,10 +198,21 @@ def test_a_run_recording_the_statement_labels_its_legs_as_authored_elsewhere(tmp
         )
     )
     identity = compare.run_identity(tmp_path)
-    label, legs = compare.stated_missing_legs(LEGS, identity)
+    label, legs = revisions.stated_missing_legs(LEGS, identity)
     assert label == f"Authored against policyengine-uk {compare.LEGACY_ENGINE}: "
+    assert revisions.AUTHORED_ENGINE == compare.LEGACY_ENGINE
     assert legs == LEGS["missing_legs"]
-    assert compare.stated_missing_legs({"measure_key": "a"}, identity) == ("", [])
+    assert revisions.stated_missing_legs({"measure_key": "a"}, identity) == ("", [])
+
+
+def test_staged_rows_and_the_export_state_the_legs_as_the_comparison_does(tmp_path):
+    from pipeline import export_uk_events_dashboard as export
+
+    run = {"missing_legs_statement": "authored_engine_label.v1"}
+    label, legs = revisions.stated_missing_legs(LEGS, run)
+    assert export.stated_legs(LEGS, run) == [label + leg for leg in legs]
+    assert export.stated_legs(LEGS, {}) == LEGS["missing_legs"]
+    assert export.stated_legs({"measure_key": "a", "missing_legs": None}, {}) == []
 
 
 def test_a_selected_revision_restates_the_legs_for_its_engine():
@@ -224,7 +235,7 @@ def test_a_selected_revision_restates_the_legs_for_its_engine():
         "construction_revisions": {ALLOWANCE: evidence},
         "missing_legs_statement": "authored_engine_label.v1",
     }
-    label, legs = compare.stated_missing_legs(frozen, identity)
+    label, legs = revisions.stated_missing_legs(frozen, identity)
     assert label == ""
     assert any("policyengine-uk#2239" in leg for leg in frozen["missing_legs"])
     assert not any("policyengine-uk#2239" in leg or "unused" in leg for leg in legs)
