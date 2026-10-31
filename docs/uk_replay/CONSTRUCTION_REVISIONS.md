@@ -238,12 +238,12 @@ applies would need a new revision.
 ### AB2024 CGT limitation
 
 `ab2024_cgt_fiscal_year_blend.v1` states: "The engine pools gains rather than
-distinguishing their statutory types." The 2.89.2 audit found that, and the
-revision carried it forward without a check. `capital_gains_tax.py` charges
-four schedules in the 2.130.1, 2.132.6 and 2.151.0 wheels, the three engines
-that have run v1 or could select it. The national Microcosm build that 6.11.1
-ran fills two of them: 4,220 person records hold residential property gains
-and 1,702 hold relief gains, out of 33,985 with gains.
+distinguishing their statutory types." That sentence comes from the 2.89.2
+audit, and it no longer held when the revision first ran.
+`capital_gains_tax.py` charges four schedules in the 2.130.1, 2.132.6 and
+2.151.0 wheels, the three engines that have run v1. The national Microcosm
+build that 6.11.1 ran fills two of them: 4,220 person records hold residential
+property gains and 1,702 hold relief gains, out of 33,985 with gains.
 
 The sentence therefore misdescribes the engine in the namespaces that record
 v1: `pe6.5.0_uk2.130.1…`, `pe6.9.0_uk2.130.1…` and `pe6.11.0_uk2.132.6…`.
