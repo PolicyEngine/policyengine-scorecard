@@ -334,14 +334,14 @@ def test_surcharge_revision_selected_exactly_when_every_enacted_rate_is_law(held
 
 
 def test_surcharge_revision_reads_current_law_at_the_2025_annual_lookup():
-    def enacted_from(first):
-        return lambda path, date: ENACTED[path] if date >= first else PRIOR[path]
+    dates = set()
 
-    assert revisions.select_revision(SURCHARGE, no_metadata, enacted_from("2025-01-01"))
-    assert (
-        revisions.select_revision(SURCHARGE, no_metadata, enacted_from("2026-01-01"))
-        is None
-    )
+    def law(path, date):
+        dates.add(date)
+        return enacted_law(path, date)
+
+    assert revisions.select_revision(SURCHARGE, no_metadata, law)
+    assert dates == {"2025-01-01"}
 
 
 def test_a_value_condition_refuses_a_caller_without_current_law():
@@ -479,21 +479,26 @@ def test_premises_keep_the_forward_check_on_an_engine_without_the_surcharge():
     assert audit["checks"]["forward_delta_changes_current_law"]["holds"] is True
 
 
+def surcharge_simulation(variables, aggregate):
+    return {
+        "aggregates_gbp": {variable: aggregate for variable in variables},
+        "variable_metadata": {variable: {} for variable in variables},
+        "policyengine_bundle": {
+            "model_version": "test",
+            "certified_data_build_id": "test",
+        },
+        "dataset_sha256_before": "a" * 64,
+        "dataset_sha256_after": "a" * 64,
+        "performance": {},
+    }
+
+
 def build_surcharge_artifact(world, *, baseline, reform, certified):
     measure = registered("autumn_budget_2024", SURCHARGE, [2025])[0]
     variables = compute.variable_channels(measure)
 
     def simulation(aggregate):
-        return {
-            "aggregates_gbp": {variable: aggregate for variable in variables},
-            "variable_metadata": {variable: {} for variable in variables},
-            "policyengine_bundle": {
-                "model_version": "test",
-                "certified_data_build_id": "test",
-            },
-            "dataset_sha256_before": "a" * 64,
-            "dataset_sha256_after": "a" * 64,
-        }
+        return surcharge_simulation(variables, aggregate)
 
     return compute.build_artifact(
         measure=measure,
@@ -505,6 +510,41 @@ def build_surcharge_artifact(world, *, baseline, reform, certified):
         registry_sha256="b" * 64,
         event="autumn_budget_2024",
     )
+
+
+@pytest.mark.parametrize("revised", [False, True])
+def test_a_year_runs_the_certified_world_and_one_alternate(
+    revised, tmp_path, monkeypatch
+):
+    measure = registered("autumn_budget_2024", SURCHARGE, [2025])[0]
+    variables = list(compute.variable_channels(measure))
+    world = surcharge_world()
+    if revised:
+        world = revisions.apply_revision(SURCHARGE, world, no_metadata, enacted_law)
+    submitted = []
+
+    def run_sim(year, requested, reform, pre):
+        submitted.append(reform)
+        return surcharge_simulation(variables, 1_000.0)
+
+    monkeypatch.setattr(compute, "run_sim", run_sim)
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(compute, "progress_receipt", lambda job, artifacts: {})
+    compute.run_year_job(
+        {
+            "year": 2025,
+            "pre": {},
+            "event": "autumn_budget_2024",
+            "registry_sha256": "b" * 64,
+            "variables": variables,
+            "selected": [SURCHARGE],
+            "runnable": {SURCHARGE: world},
+            "index": {SURCHARGE: measure},
+            "output_dir": tmp_path,
+        }
+    )
+    alternate = world["baseline_reform"] if revised else world["reform_reform"]
+    assert submitted == [None, alternate]
 
 
 def test_the_reversal_scores_the_enacted_rise_as_a_gain_to_the_exchequer():
