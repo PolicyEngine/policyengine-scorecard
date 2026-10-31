@@ -534,3 +534,76 @@ def test_allowance_revision_runs_the_frozen_worlds_on_their_own_windows(monkeypa
 def test_a_metadata_condition_keeps_identity_for_a_boolean_flag():
     # 1 == True, but the CGT revision has always required the flag itself.
     assert revisions.select_revision(KEY, lambda path: {"fiscal_year_blend": 1}) is None
+
+
+def test_the_executor_selects_on_the_values_its_engine_loaded(monkeypatch):
+    class Node:
+        metadata = {}
+
+        def __init__(self, path):
+            self.path = path
+
+        def __call__(self, date):
+            return enacted_law(self.path, date)
+
+    monkeypatch.setitem(
+        sys.modules,
+        "policyengine_uk",
+        SimpleNamespace(
+            CountryTaxBenefitSystem=lambda: SimpleNamespace(parameters=None)
+        ),
+    )
+    monkeypatch.setattr(
+        worlds, "_resolve_parameter", lambda parameters, path: Node(path)
+    )
+    revised = compute.revised_worlds({SURCHARGE: surcharge_world()})[SURCHARGE]
+    assert revised["construction"] == "reversal_on_certified_world"
+    assert revised["construction_revision"]["revision_id"].startswith("ab2024_sdlt")
+
+
+@pytest.fixture
+def surcharge_namespace(tmp_path):
+    measure, _ = registered("autumn_budget_2024", SURCHARGE, [2024])
+    registry_dir = tmp_path / "registries"
+    registry_dir.mkdir()
+    (registry_dir / "autumn_budget_2024_measures.json").write_text(
+        json.dumps({"calendar_years": [2024, 2025], "measures": [measure]})
+    )
+    namespace = tmp_path / "namespace"
+    (namespace / "autumn_budget_2024").mkdir(parents=True)
+    return registry_dir, namespace
+
+
+def audited_surcharge(paths, engine):
+    registry_dir, namespace = paths
+    report = premises.audit(
+        ["autumn_budget_2024"], engine, events_dir=registry_dir, namespace=namespace
+    )
+    return report["events"]["autumn_budget_2024"]["measures"][SURCHARGE]
+
+
+def test_a_namespace_audit_checks_recorded_selection_against_installed_values(
+    surcharge_namespace,
+):
+    _, namespace = surcharge_namespace
+    selected = revisions.select_revision(SURCHARGE, no_metadata, enacted_law)
+    (namespace / "autumn_budget_2024" / "RUN_MANIFEST.json").write_text(
+        json.dumps({"construction_revisions": {SURCHARGE: selected}})
+    )
+    measure = audited_surcharge(surcharge_namespace, EnactedEngine())
+    assert measure["construction_revision"] == selected
+    with pytest.raises(ValueError, match="does not match installed"):
+        audited_surcharge(
+            surcharge_namespace, EnactedEngine(lambda path, date: PRIOR[path])
+        )
+
+
+def test_a_failed_run_listed_in_the_corpus_audits_what_this_engine_selects(
+    surcharge_namespace,
+):
+    registry_dir, namespace = surcharge_namespace
+    (namespace / "CORPUS.json").write_text(
+        json.dumps({"events": ["autumn_budget_2024"]})
+    )
+    measure = audited_surcharge(surcharge_namespace, EnactedEngine())
+    assert measure["construction"] == "reversal_on_certified_world"
