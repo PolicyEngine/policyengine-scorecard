@@ -587,7 +587,7 @@ def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
     manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
     assert manifest["variant_id"] == CURRENT
     assert manifest["variant_identity_sha256"] == record()["identity_sha256"]
-    assert manifest["missing_legs_statement"] == "authored_engine_label.v1"
+    assert manifest["statement_version"] == "authored_engine_label.v2"
     assert manifest["supported_years"] == [2024]
     assert manifest["unsupported_years"] == [
         {"year": 2023, "reason": "before_data_year"}

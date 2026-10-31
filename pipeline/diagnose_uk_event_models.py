@@ -113,6 +113,10 @@ def _additional_model_checks(
             {
                 "worker": {
                     "age": {"2024": 45},
+                    # Formulas that charge above net income read this, and
+                    # older ones read taxed_income: £42,570 less the £12,570
+                    # personal allowance leaves £30,000 either way.
+                    "employment_income": {"2024": 42570},
                     "taxed_income": {"2024": 30000},
                     "pension_contributions_for_annual_allowance": {"2024": 80000},
                     "pension_annual_allowance": {"2024": 60000},

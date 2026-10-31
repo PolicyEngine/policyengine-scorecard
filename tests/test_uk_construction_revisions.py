@@ -811,3 +811,50 @@ def test_a_failed_run_listed_in_the_corpus_audits_what_this_engine_selects(
     )
     measure = audited_surcharge(surcharge_namespace, EnactedEngine())
     assert measure["construction"] == "reversal_on_certified_world"
+
+
+STATED = {"statement_version": "authored_engine_label.v2"}
+
+
+@given(st.text(max_size=40))
+def test_a_stated_reason_labels_frozen_text_once(reason):
+    label = revisions.AUTHORED_LABEL
+    stated = revisions.stated_reason(reason, STATED)
+    if reason:
+        assert stated.startswith(label) and stated.endswith(reason)
+        assert revisions.stated_reason(stated, STATED) == stated
+    else:
+        assert stated == reason
+
+
+@given(st.none() | st.text(max_size=40), st.none() | st.fixed_dictionaries({}))
+def test_a_sealed_namespace_keeps_its_reasons_as_they_were(reason, manifest):
+    assert revisions.stated_reason(reason, manifest) == reason
+
+
+RESPONSES = st.dictionaries(
+    st.sampled_from(compute.RESPONSE_PARAMETERS),
+    st.booleans() | st.integers(0, 2) | st.floats(0, 2) | st.none(),
+)
+
+
+@given(RESPONSES)
+def test_a_run_responds_exactly_when_it_recorded_a_live_parameter(parameters):
+    recorded = {"response_parameters": parameters}
+    assert revisions.runs_behavioural_responses(recorded) == any(parameters.values())
+
+
+def test_a_run_recording_nothing_states_what_it_always_stated():
+    assert not revisions.runs_behavioural_responses(None)
+    assert not revisions.runs_behavioural_responses({})
+    assert not revisions.states_current_engine({"variant_id": "sealed"})
+
+
+def test_the_engine_defaults_decide_the_scope_a_year_artifact_states():
+    responsive = {"response_parameters": {compute.RESPONSE_PARAMETERS[0]: 1.0}}
+    assert revisions.runs_behavioural_responses(responsive)
+    assert "static" not in compute.RESPONSIVE_SCOPE
+    # Pinned certified engines replay this exact string (uk-replay-determinism).
+    assert compute.STATIC_SCOPE == (
+        "sum of declared fiscal heads; static household microsimulation"
+    )

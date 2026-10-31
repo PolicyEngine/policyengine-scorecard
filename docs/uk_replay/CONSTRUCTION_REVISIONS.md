@@ -261,6 +261,50 @@ Those defaults moved between the two most recent engines:
 on 2.151.0. The revision records the setting. It does not size what that move
 adds to the row's fall against 6.11.0.
 
+### Statements checked against 2.151.0
+
+The CGT sentence prompted two sweeps of every other sentence in the first 6.11.1
+namespace, each tested against the 2.151.0 wheel, the run's manifests and
+aggregate counts from its dataset. Runs that record `statement_version` in
+`RUN_MANIFEST.json` state the following. Sealed namespaces record no such field
+and keep their bytes, and this section corrects them where they differ.
+
+| Output | Sealed text | Text from `statement_version` | Evidence |
+|---|---|---|---|
+| Year artifact `scope`, staged annotation | "static" | "the engine's default behavioural responses", when a parameter in `compute_uk_event.RESPONSE_PARAMETERS` reads other than 0 or false | `gov.simulation.capital_gains_responses.elasticity` reads 0 on 2.130.1 and 2.132.6 and 1.0 on 2.151.0; `elasticity.yaml` in each wheel |
+| Staged population note | "with later calibration and uprating targets" | "projected by the engine to each year" | The manifests establish one dataset, not the vintage of its targets |
+| Reform window sentence | "use explicit 1 January windows" | adds the fiscal-year windows a selected blended revision submits | `compute_uk_event.revision_reform_route`; the CGT artifacts record April windows |
+| Row `reason` from a frozen registry | unlabelled | "Authored against policyengine-uk 2.89.2: " | The registry builder matched these reasons from measure titles; see below |
+| Summary issue line | "Evidence-backed" candidates; "No upstream issues were filed by this replay lane." | Counts candidates; "This report files no upstream issues." | The report can state only what it does |
+
+A compute run records the same parameters as `response_parameters`, so its
+manifest states what the scope rests on. A year artifact's `scope` turns on the
+engine's values rather than on `statement_version`, because the pinned replay in
+CI compares those bytes on the older engines. No construction sets a response
+parameter, so the values are the engine's defaults.
+
+The frozen reasons fail on 2.151.0 in specific ways. They say Carer's Allowance
+has no earnings test (`is_gainfully_employed_for_carers_allowance.py` reads
+`earnings_limit`), that the population holds no ISA products, and that it holds
+no vehicles or bus journeys (the dataset carries those columns). Title matching
+also gave a non-domestic heat-network row the non-domicile reason and the
+Reserved Investor Fund the transport reason. The registries stay frozen, so
+the label marks each of these as history, and a label does not make one true of
+this engine.
+
+The `spring_statement_2025` allowance revision said its leg "holds the certified
+health world fixed". `protected_lcwra_floor` in `scenarios/uc_reform.py` reads
+the standard allowances, so protected LCWRA amounts move with them from 2027.
+The revision now says that. No sealed namespace records this revision.
+
+The diagnostic `annual_allowance_charge_single_marginal_rate` kept reporting
+`persists` for a reason unrelated to its defect. 2.151.0 charges band slices
+above reduced net income and no longer reads the case's `taxed_income`
+override, so the case's person had no income and the £20,000 excess fell wholly
+in the basic-rate band, which also gives £4,000. The case now also sets
+`employment_income` to £42,570. Less the £12,570 personal allowance, that leaves
+£30,000, and an engine reading `taxed_income` sees the same base.
+
 ### Remaining candidates
 
 Re-authoring on 2.151.0 gives 0.39–1.67% above the frozen health element in
@@ -278,9 +322,11 @@ engine as "Authored against policyengine-uk 2.89.2" and omits the
 `prior_diagnoses` with `status: not_reverified`.
 
 Frozen `missing_legs` carry the same label from the run that records
-`missing_legs_statement` in `RUN_MANIFEST.json`. Earlier namespaces record no
+`statement_version` in `RUN_MANIFEST.json`. Earlier namespaces record no
 such field and keep their sealed bytes, unlabelled. A selected revision can
-restate the legs for the engine that ran, and those need no label.
+restate the legs for the engine that ran, and those need no label. The same
+run labels frozen `scope_reason`, `classification_reason` and `pe_gap` text in
+staged rows, comparisons and the dashboard export.
 
 * AS2023 Class 2 abolition: the "£3.15 for 2023-24" statement is a 2.89.2
   fact; 2.125.1's processed 2023 flat rate is £3.45. CY2023 is outside the

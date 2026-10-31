@@ -108,8 +108,8 @@ def run_identity(directory: Path) -> dict:
     }
     if manifest.get("construction_revisions"):
         identity["construction_revisions"] = manifest["construction_revisions"]
-    if manifest.get("missing_legs_statement"):
-        identity["missing_legs_statement"] = manifest["missing_legs_statement"]
+    if manifest.get("statement_version"):
+        identity["statement_version"] = manifest["statement_version"]
     return identity
 
 
@@ -758,15 +758,17 @@ def build_comparison_rows(
             "classification",
             measure.get("classification", measure.get("computability")),
         )
+        from pipeline import uk_construction_revisions as revisions
+
         reason = row.get("reason") or ""
         if classification == "out_of_household_scope":
             reason = (
-                source.get("scope_reason")
-                or source.get("classification_reason")
+                revisions.stated_reason(
+                    source.get("scope_reason") or source.get("classification_reason"),
+                    identity,
+                )
                 or reason
             )
-        from pipeline import uk_construction_revisions as revisions
-
         legs_label, missing_legs = revisions.stated_missing_legs(measure, identity)
         if not reason and classification == "partial":
             reason = legs_label + "; ".join(missing_legs)
@@ -870,13 +872,21 @@ def variant_description(identity: dict) -> str:
     this repository's own executor."""
     years = identity.get("data_years") or []
     span = f"{years[0]}–{years[-1]}" if years else "unrecorded"
+    from pipeline import uk_construction_revisions as revisions
+
+    exception = (
+        ", except that a selected blended revision covers whole fiscal years "
+        "(compute_uk_event.revision_reform_route)"
+        if revisions.states_current_engine(identity)
+        else ""
+    )
     return (
         f"PolicyEngine is policyengine-uk {identity['engine_version']} with "
         f"policyengine {identity['policyengine_version']}, on certified data build "
         f"{identity['data_bundle']}: one survey population whose data years are "
         f"{span}, projected by the engine to calendar year Y. Reform dictionaries "
         "use explicit 1 January windows for annual lookups "
-        "(compute_uk_event.annual_reform)."
+        f"(compute_uk_event.annual_reform){exception}."
     )
 
 
@@ -1527,10 +1537,16 @@ def render_summary(
         if d.get("class") == "pe_gap"
         and d.get("status", "not re-verified" if variant else "persists") == "persists"
     ]
+    from pipeline import uk_construction_revisions as revisions
+
+    candidates = len(concrete) + len({r["measure_key"] for r in diagnosed})
     lines += [
         "",
         (
-            f"Evidence-backed PolicyEngine issue candidates recorded: {len(concrete) + len({r['measure_key'] for r in diagnosed})}. "
+            f"PolicyEngine issue candidates recorded: {candidates}. "
+            "This report files no upstream issues."
+            if revisions.states_current_engine(identity)
+            else f"Evidence-backed PolicyEngine issue candidates recorded: {candidates}. "
             "No upstream issues were filed by this replay lane."
         ),
         "",
