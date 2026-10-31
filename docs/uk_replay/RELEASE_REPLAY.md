@@ -992,8 +992,8 @@ policyengine-uk 2.151.0 and a newer Microcosm build
 five minutes into Autumn Budget 2024 with two workers. Its measurements, also
 in the evidence file, need more memory and time than 2.132.6's: two workers
 peak at 27.3 GiB on Autumn Budget 2024, where one year worker alone reaches
-15.5 GiB. This repository does not establish which change in those 19
-policyengine-uk minor and patch series adds the memory. With one worker:
+15.5 GiB. This repository does not establish which change between
+policyengine-uk 2.132.6 and 2.151.0 adds the memory. With one worker:
 
 | Event | Peak summed RSS | Wall on Modal |
 |---|---|---:|
