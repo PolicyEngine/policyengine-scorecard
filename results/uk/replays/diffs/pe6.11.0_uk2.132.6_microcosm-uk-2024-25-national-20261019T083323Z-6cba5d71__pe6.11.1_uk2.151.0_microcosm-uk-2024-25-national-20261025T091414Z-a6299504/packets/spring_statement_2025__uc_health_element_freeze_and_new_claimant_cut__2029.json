@@ -1,0 +1,927 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026-01-01.2026-12-31": 437.66,
+     "2027-01-01.2027-12-31": 447.73,
+     "2028-01-01.2028-12-31": 456.68,
+     "2029-01-01.2029-12-31": 465.81
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "a2e5856beeb4afbb7d1829fa37f7a8873cf4a3e0b3b85f9e4037e09a8bc8e591"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026-01-01.2026-12-31": 437.66,
+     "2027-01-01.2027-12-31": 447.73,
+     "2028-01-01.2028-12-31": 456.68,
+     "2029-01-01.2029-12-31": 465.81
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "4c257795163d7fb3852987a39fafe3fc7617e1c934b11590f5c553efbb0c570f"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_statement_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical",
+  "construction"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.132.6",
+   "policyengine_version": "6.11.0",
+   "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+  },
+  "head": {
+   "certified_dataset_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+   "data_bundle": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.151.0",
+   "policyengine_version": "6.11.1",
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+  }
+ },
+ "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "counterfactual_derivation": {
+    "amount_2025_26": 423.27,
+    "formula": "round(monthly_health_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",
+    "index_parameter": "gov.benefit_uprating_cpi"
+   },
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2025": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2026": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2027": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2028": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2029": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    }
+   },
+   "fiscal_event": "Spring Statement 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "measure_type": "universal_credit",
+   "missing_legs": [
+    "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.",
+    "The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.",
+    "Later legislated protections and rate paths differ from the original March2025 announcement."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.rebalancing\\.new_claimant_health_element",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The executor re-runs uc_reform.py after applying the dictionary reform, replacing its previously fixed LCWRA inputs for the same seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026": 437.66,
+     "2027": 447.73,
+     "2028": 456.68,
+     "2029": 465.81
+    }
+   },
+   "pe_gap": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+   "program": "universal_credit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23315:dad0cc239a4e63b0",
+     "source_row_number": 23315,
+     "source_row_sha256": "dad0cc239a4e63b0198c1163a07187694d4206b237a17942f6a298fc196dc1cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23316:f668186ed5d65ba8",
+     "source_row_number": 23316,
+     "source_row_sha256": "f668186ed5d65ba81de1452b21dca7718e0ec216a086891a058c0a2e7c432c26",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23317:1b983354102bb14d",
+     "source_row_number": 23317,
+     "source_row_sha256": "1b983354102bb14d8a84192cada5ae2a86db0c77f64d261c9f0ec6393377ae17",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 760288239.1244123,
+     "value_gbp_decimal": "760288239.1244123"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23318:dcc529f309fec572",
+     "source_row_number": 23318,
+     "source_row_sha256": "dcc529f309fec572ca9e335e644875ea2506748e75d34d487e60cd12bf929321",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 1555705616.0371184,
+     "value_gbp_decimal": "1555705616.0371184"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23319:c6ce8500db20415e",
+     "source_row_number": 23319,
+     "source_row_sha256": "c6ce8500db20415e37ac360375a6f8d063080330e1335bcbc6205c58649f3ab4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 2328372386.4247274,
+     "value_gbp_decimal": "2328372386.4247274"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+     "source_row_number": 23320,
+     "source_row_sha256": "4c41d84635ed82addd7ab8c402be5d8d0ca7a62c8cb88fe612a50fe6ea9aeeda",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 3053484644.7733545,
+     "value_gbp_decimal": "3053484644.7733545"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23321:a8fcc648d1c77779",
+     "source_row_number": 23321,
+     "source_row_sha256": "a8fcc648d1c77779232150a8d13f89fef31d4552ccc57b78efd4dd9b577cb67d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23322:e7a91df8ca137075",
+     "source_row_number": 23322,
+     "source_row_sha256": "e7a91df8ca13707551cb02864ebab9bca17a08c0a2b4e3b5c55222c1ae5ddcee",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23323:4c879dd87db87b3f",
+     "source_row_number": 23323,
+     "source_row_sha256": "4c879dd87db87b3fec619f6d701ff7c3f49d5b92e21c31e3f9071553de61ba96",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -10977936.5847094,
+     "value_gbp_decimal": "-10977936.5847094"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23324:9399b2f27fbfd06e",
+     "source_row_number": 23324,
+     "source_row_sha256": "9399b2f27fbfd06efc494dce0abc1492ac5e9d945648736ece19bfcdf8c5944d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -22250267.5487044,
+     "value_gbp_decimal": "-22250267.5487044"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23325:2a220260e99cd7fb",
+     "source_row_number": 23325,
+     "source_row_sha256": "2a220260e99cd7fbef39bac13146fba54483e38f3d2ecef714d65a70d557681d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -33928763.4409638,
+     "value_gbp_decimal": "-33928763.4409638"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23326:9e0a9cbad29c3f53",
+     "source_row_number": 23326,
+     "source_row_sha256": "9e0a9cbad29c3f5387be7bb297de6bebd5f068ff1d1de883191e6855fd187d66",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -46010603.7804599,
+     "value_gbp_decimal": "-46010603.7804599"
+    }
+   ],
+   "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "counterfactual_derivation": {
+    "amount_2025_26": 423.27,
+    "formula": "round(monthly_health_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",
+    "index_parameter": "gov.benefit_uprating_cpi"
+   },
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2025": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2026": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2027": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2028": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    },
+    "2029": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": 217.26
+    }
+   },
+   "fiscal_event": "Spring Statement 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "measure_type": "universal_credit",
+   "missing_legs": [
+    "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.",
+    "The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.",
+    "Later legislated protections and rate paths differ from the original March2025 announcement."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.rebalancing\\.new_claimant_health_element",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The executor re-runs uc_reform.py after applying the dictionary reform, replacing its previously fixed LCWRA inputs for the same seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026": 437.66,
+     "2027": 447.73,
+     "2028": 456.68,
+     "2029": 465.81
+    }
+   },
+   "pe_gap": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+   "program": "universal_credit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23315:dad0cc239a4e63b0",
+     "source_row_number": 23315,
+     "source_row_sha256": "dad0cc239a4e63b0198c1163a07187694d4206b237a17942f6a298fc196dc1cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23316:f668186ed5d65ba8",
+     "source_row_number": 23316,
+     "source_row_sha256": "f668186ed5d65ba81de1452b21dca7718e0ec216a086891a058c0a2e7c432c26",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23317:1b983354102bb14d",
+     "source_row_number": 23317,
+     "source_row_sha256": "1b983354102bb14d8a84192cada5ae2a86db0c77f64d261c9f0ec6393377ae17",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 760288239.1244123,
+     "value_gbp_decimal": "760288239.1244123"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23318:dcc529f309fec572",
+     "source_row_number": 23318,
+     "source_row_sha256": "dcc529f309fec572ca9e335e644875ea2506748e75d34d487e60cd12bf929321",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 1555705616.0371184,
+     "value_gbp_decimal": "1555705616.0371184"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23319:c6ce8500db20415e",
+     "source_row_number": 23319,
+     "source_row_sha256": "c6ce8500db20415e37ac360375a6f8d063080330e1335bcbc6205c58649f3ab4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 2328372386.4247274,
+     "value_gbp_decimal": "2328372386.4247274"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The default simulation modifier assigns new-claimant cohorts using seeded synthetic shares (11%, 13%, 16%, 22% in 2026-29), not observed claim-start history or the March2025 OBR forecast cohorts.; The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.; Later legislated protections and rate paths differ from the original March2025 announcement.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+     "source_row_number": 23320,
+     "source_row_sha256": "4c41d84635ed82addd7ab8c402be5d8d0ca7a62c8cb88fe612a50fe6ea9aeeda",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 3053484644.7733545,
+     "value_gbp_decimal": "3053484644.7733545"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23321:a8fcc648d1c77779",
+     "source_row_number": 23321,
+     "source_row_sha256": "a8fcc648d1c77779232150a8d13f89fef31d4552ccc57b78efd4dd9b577cb67d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23322:e7a91df8ca137075",
+     "source_row_number": 23322,
+     "source_row_sha256": "e7a91df8ca13707551cb02864ebab9bca17a08c0a2b4e3b5c55222c1ae5ddcee",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23323:4c879dd87db87b3f",
+     "source_row_number": 23323,
+     "source_row_sha256": "4c879dd87db87b3fec619f6d701ff7c3f49d5b92e21c31e3f9071553de61ba96",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -10977936.5847094,
+     "value_gbp_decimal": "-10977936.5847094"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23324:9399b2f27fbfd06e",
+     "source_row_number": 23324,
+     "source_row_sha256": "9399b2f27fbfd06efc494dce0abc1492ac5e9d945648736ece19bfcdf8c5944d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -22250267.5487044,
+     "value_gbp_decimal": "-22250267.5487044"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23325:2a220260e99cd7fb",
+     "source_row_number": 23325,
+     "source_row_sha256": "2a220260e99cd7fbef39bac13146fba54483e38f3d2ecef714d65a70d557681d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -33928763.4409638,
+     "value_gbp_decimal": "-33928763.4409638"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23326:9e0a9cbad29c3f53",
+     "source_row_number": 23326,
+     "source_row_sha256": "9e0a9cbad29c3f5387be7bb297de6bebd5f068ff1d1de883191e6855fd187d66",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+     "value_gbp": -46010603.7804599,
+     "value_gbp_decimal": "-46010603.7804599"
+    }
+   ],
+   "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+      "baseline_world": 465.81,
+      "current_law": 217.26,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 217.26,
+      "reform_world": 217.26
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters gives other values than the frozen registry",
+     "differences": {
+      "pe_baseline_modifier": {
+       "authored_here": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "2026": 439.35,
+         "2027": 454.73,
+         "2028": 464.28,
+         "2029": 473.57
+        }
+       },
+       "frozen": {
+        "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+         "2026": 437.66,
+         "2027": 447.73,
+         "2028": 456.68,
+         "2029": 465.81
+        }
+       }
+      }
+     },
+     "holds": false
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+      "baseline_world": 465.81,
+      "current_law": 217.26,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 217.26,
+      "reform_world": 217.26
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 1653224856.0520935,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 3053484644.7733545,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.5_to_0.8",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -50163112.82745361,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 16532248.560520936
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1603061743.22464,
+   "key": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 16532248.560520936,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -46010603.7804599,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23326:9e0a9cbad29c3f53",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 1653224856.0520935,
+   "context": {},
+   "delta_gbp": -50163112.82745361,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 16532248.560520936
+    },
+    {
+     "base": true,
+     "check": "authored_construction_reproduces",
+     "code": "premise_check_changed",
+     "flag": "construction",
+     "head": false
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical",
+    "construction"
+   ],
+   "head_gbp": 1603061743.22464,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 16532248.560520936,
+   "year": 2029
+  },
+  {
+   "base_gbp": 1653224856.0520935,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -50163112.82745361,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 16532248.560520936
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1603061743.22464,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 16532248.560520936,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+  "head": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 --registry data/uk/events/spring_statement_2025_measures.json --measures spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504 --registry data/uk/events/spring_statement_2025_measures.json --measures spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 1653224856.0520935,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 1603061743.22464,
+   "obr_value_gbp": 3053484644.7733545,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+   "source_row_number": 23320,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -46010603.7804599,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23326:9e0a9cbad29c3f53",
+   "source_row_number": 23326,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 1653224856.0520935,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 1603061743.22464,
+   "obr_value_gbp": 3053484644.7733545,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+   "source_row_number": 23320,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -46010603.7804599,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23326:9e0a9cbad29c3f53",
+   "source_row_number": 23326,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+ "year": 2029
+}

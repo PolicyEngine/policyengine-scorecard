@@ -576,6 +576,102 @@
    "result_root": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
    "status": "certified",
    "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+  },
+  {
+   "certification": {
+    "certified_for_model_version": "2.151.0",
+    "compatibility_basis": "built_with_model_package",
+    "data_build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "source": "policyengine.py 6.11.1 packaged bundle manifest (qualification request; {\"pypi\": {\"wheel_sha256\": \"9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b\"}})"
+   },
+   "data_years": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032
+   ],
+   "data_years_evidence": {
+    "simulation_dataset_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030,
+     2031,
+     2032
+    ],
+    "source": "Measured by pipeline/uk_replay_qualify.py probe in the candidate environment."
+   },
+   "executor": [
+    "local"
+   ],
+   "identity": {
+    "dataset": {
+     "path": "microcosm_uk_2024_25.h5",
+     "repo_id": "policyengine/populace-uk-private",
+     "repo_type": "dataset",
+     "revision": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+     "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+     "size_bytes": 342348841
+    },
+    "materialization": "policyengine_data_dir",
+    "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+    "packages": {
+     "policyengine": {
+      "record_sha256": "1cbe7c39b44aec8372f3f8616721224caade0b631aaad6386688b0b57946d85c",
+      "version": "6.11.1",
+      "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+     },
+     "policyengine-core": {
+      "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+      "version": "3.33.3",
+      "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+     },
+     "policyengine-uk": {
+      "record_sha256": "5107c6f7cbfb5ed2680237286612c4eeebea827c8da6a549a6155f025bfe160e",
+      "version": "2.151.0",
+      "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+     }
+    },
+    "python": "3.12",
+    "release_bundle": {
+     "bundle_id": "uk-6.11.1",
+     "certified_by": "policyengine.py bundle certification",
+     "certified_data_artifact_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+     "certified_data_build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+     "compatibility_basis": "built_with_model_package",
+     "country_id": "uk",
+     "data_build_fingerprint": null,
+     "data_build_model_git_sha": null,
+     "data_build_model_version": "2.151.0",
+     "data_package": "microcosm-data",
+     "data_version": "0.1.0",
+     "default_dataset": "microcosm_uk_2024_25",
+     "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+     "model_package": "policyengine-uk",
+     "model_version": "2.151.0",
+     "policyengine_version": "6.11.1"
+    },
+    "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed"
+   },
+   "identity_sha256": "20f9f81d378be19a58d4e79422c0abbdcbad833d6e3ec16cc5003f4d4832be36",
+   "layout": "replay_namespace",
+   "note": "The 6.11.1 released bundle, qualified through the receiver on 31 October 2026 (request 62397224, receipt e0fbc787); data built with policyengine-uk 2.151.0 and certified for 2.151.0.",
+   "qualification_request_sha256": "62397224f55f552c197d206cae50a11af350539380fb1be8e55fa936b6a25cbd",
+   "requirements": {
+    "path": "docs/uk_replay/requirements/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504.txt",
+    "sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed"
+   },
+   "result_root": "results/uk/replays/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "status": "certified",
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
   }
  ]
 }
