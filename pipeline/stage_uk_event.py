@@ -422,7 +422,9 @@ def stage_event(
                     "value_gbp_decimal", str(source["value_gbp"])
                 ),
                 "computability": classification,
-                "construction": measure.get("construction"),
+                "construction": planned[key]["construction"]
+                if key in selected_revisions
+                else measure.get("construction"),
                 "head_variables": [],
                 "head_effects": {},
                 "measure_total_gbp": None,

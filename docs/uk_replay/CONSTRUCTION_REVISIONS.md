@@ -153,8 +153,9 @@ implement the full rates-and-reliefs package.
 
 The qualification of policyengine.py 6.11.1 (request `d1e672fe…`, run
 41143889866) ran on policyengine-uk 2.151.0, and that run's results (#238) did
-not land because of what this section corrects. Its premises failed for four
-constructions, and a row stated a limitation the engine no longer has.
+not land because of what this section corrects. Four constructions newly failed
+a premise, beside the CGT annualisation premise recorded above, and a row stated
+a limitation the engine no longer has.
 
 | Measure | Failed premise on 2.151.0 | Treatment |
 |---|---|---|
@@ -186,7 +187,10 @@ rates over the delta's own windows, and the certified world is the reform
 world. The measure's sign stays the same, and the run gains no simulation. The
 revision keeps annual windows, because these rates carry no `fiscal_year_blend`.
 On 2.132.6 the rates differ, `select_revision` returns nothing and the frozen
-delta runs.
+delta runs. Artifacts and staged rows report `reversal_on_certified_world` when
+a run selects the revision. The condition reads only those five rates, so a
+later engine that keeps them and changes how a lookup reaches them would need a
+new revision.
 
 | Annual lookup | Current law (reform world) | Baseline world |
 |---|---|---|
@@ -223,7 +227,9 @@ four amounts and changes neither world. It restates the note and the legs the
 comparison prints. Re-authoring on 2.151.0 raises the frozen counterfactual by
 1.17–1.27% from 2027, so later-year effects carry that gap as well as the
 uplifts. The revision's limitation says so, and
-`authored_construction_reproduces` keeps recording it.
+`authored_construction_reproduces` keeps recording it. Its condition reads only
+the index name, so a later engine that keeps the name and changes what the index
+applies would need a new revision.
 
 ### Remaining candidates
 

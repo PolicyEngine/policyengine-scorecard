@@ -181,6 +181,7 @@ def test_staging_scores_the_reversal_from_the_activation_year(
     assert rows[0]["partial_missing"] == [
         label + leg for leg in measure["missing_legs"]
     ]
+    assert {row["construction"] for row in rows} == {"reversal_on_certified_world"}
 
 
 LEGS = {"measure_key": "a_measure", "missing_legs": ["first leg", "second leg"]}

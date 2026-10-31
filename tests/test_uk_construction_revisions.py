@@ -333,6 +333,17 @@ def test_surcharge_revision_selected_exactly_when_every_enacted_rate_is_law(held
     assert (selected is not None) is all(held)
 
 
+def test_surcharge_revision_reads_current_law_at_the_2025_annual_lookup():
+    def enacted_from(first):
+        return lambda path, date: ENACTED[path] if date >= first else PRIOR[path]
+
+    assert revisions.select_revision(SURCHARGE, no_metadata, enacted_from("2025-01-01"))
+    assert (
+        revisions.select_revision(SURCHARGE, no_metadata, enacted_from("2026-01-01"))
+        is None
+    )
+
+
 def test_a_value_condition_refuses_a_caller_without_current_law():
     with pytest.raises(ValueError, match="current-law values"):
         revisions.select_revision(SURCHARGE, no_metadata)
@@ -366,6 +377,32 @@ def test_revised_surcharge_worlds_differ_exactly_from_the_first_annual_lookup(ye
         intended = revisions.intended_value(baseline, path, year, enacted_law)
         assert intended == (PRIOR[path] if year >= 2025 else law)
         assert revisions.intended_value(None, path, year, enacted_law) == law
+
+
+def test_the_reversal_runs_one_modified_world_as_the_forward_delta_did():
+    original = surcharge_world()
+    revised = revisions.apply_revision(SURCHARGE, original, no_metadata, enacted_law)
+    for world in (original, revised):
+        assert bool(world["baseline_reform"]) is not bool(world["reform_reform"])
+
+
+def test_the_reversal_keeps_its_annual_windows_on_either_reform_route(monkeypatch):
+    revised = revisions.apply_revision(
+        SURCHARGE, surcharge_world(), no_metadata, enacted_law
+    )
+    annual = compute.annual_reform(revised["baseline_reform"])
+    assert all(set(windows) == {"2025-01-01.2035-12-31"} for windows in annual.values())
+    for dated_reforms in (None, [annual]):
+        scenario = SimpleNamespace(
+            from_reform=lambda reform, d=dated_reforms: SimpleNamespace(dated_reforms=d)
+        )
+        monkeypatch.setitem(
+            sys.modules,
+            "policyengine_uk.utils.scenario",
+            SimpleNamespace(Scenario=scenario),
+        )
+        evidence = revised["construction_revision"]
+        assert compute.revision_reform_route(annual, evidence) == annual
 
 
 def test_an_older_scale_keeps_the_exact_frozen_forward_delta():
@@ -468,6 +505,19 @@ def build_surcharge_artifact(world, *, baseline, reform, certified):
         registry_sha256="b" * 64,
         event="autumn_budget_2024",
     )
+
+
+def test_the_reversal_scores_the_enacted_rise_as_a_gain_to_the_exchequer():
+    artifact = build_surcharge_artifact(
+        revisions.apply_revision(
+            SURCHARGE, surcharge_world(), no_metadata, enacted_law
+        ),
+        baseline=9_000.0,
+        reform=10_000.0,
+        certified=10_000.0,
+    )
+    assert artifact["head_effects"] == {"stamp_duty_land_tax": 1_000.0}
+    assert artifact["measure_total_gbp"] == 1_000.0
 
 
 @given(
