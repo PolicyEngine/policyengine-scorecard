@@ -72,6 +72,7 @@ REPOSITORY_FILES = (
     "pipeline/uk_replay_variants.py",
     "pipeline/uk_construction_revisions.py",
     "data/uk/events/construction_revisions.json",
+    "data/uk/events/construction_revisions_enacted.json",
     "data/uk/experiments/populations.json",
     "data/uk/experiments/obr_head_forecasts.json",
 )

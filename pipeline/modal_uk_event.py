@@ -84,6 +84,7 @@ REPOSITORY_FILES = (
     "data/uk/certified_bundle.json",
     "data/uk/replay_variants.json",
     "data/uk/events/construction_revisions.json",
+    "data/uk/events/construction_revisions_enacted.json",
     "docs/uk_replay/requirements.txt",
     "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
     "sources/uk_replay/source.json",

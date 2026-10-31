@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "revisions": {
+    "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp": {
+      "revision_id": "ab2024_sdlt_surcharge_in_current_law.v1",
+      "condition": {
+        "date": "2025-01-01",
+        "values": {
+          "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.05,
+          "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.07,
+          "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.1,
+          "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.15,
+          "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.17
+        }
+      },
+      "reform_route_paths": [],
+      "prior_law_values": {
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": 0.03,
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": 0.05,
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": 0.08,
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": 0.13,
+        "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": 0.15
+      },
+      "activation_fy": "2025-26",
+      "part_year_rule": null,
+      "decision": "cos d1344 (Max, 2026-10-15): W6 chooses the reading supported by law, records its evidence, and lands on independent review.",
+      "law": {
+        "title": "Finance Act 2025, section 51: Increased rates for additional dwellings: transactions on or after 1 April 2025",
+        "url": "https://www.legislation.gov.uk/ukpga/2025/8/section/51/enacted",
+        "effect": "Substitutes the additional-dwellings table: 5% to £125,000, 7% to £250,000, 10% to £925,000, 15% to £1,500,000 and 17% on the remainder, for transactions on or after 1 April 2025."
+      },
+      "intent": "Installed current law already holds the enacted surcharge, so the frozen forward delta changes nothing. Reverse the five rates to the 3%, 5%, 8%, 13% and 15% they replaced, over the delta's own windows, and keep the certified world as the reform world.",
+      "limitations": [
+        "FY2024-25 stays unscored, as in the frozen construction: the rates first differ at the 2025 annual lookup, so the part year from 31 October 2024 has no effect here."
+      ]
+    },
+    "spring_statement_2025__uc_standard_allowance_above_inflation": {
+      "revision_id": "ss2025_uc_uplifts_in_current_law.v1",
+      "condition": {
+        "metadata_key": "uprating",
+        "equals": "gov.economic_assumptions.indices.uc_standard_allowance",
+        "all_paths": [
+          "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD",
+          "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG",
+          "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD",
+          "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG"
+        ]
+      },
+      "reform_route_paths": [],
+      "activation_fy": null,
+      "part_year_rule": null,
+      "decision": "cos d1344 (Max, 2026-10-15): W6 chooses the reading supported by law, records its evidence, and lands on independent review.",
+      "law": {
+        "title": "Universal Credit Act 2025, section 1: Standard allowance for tax years 2026-27 to 2029-30",
+        "url": "https://www.legislation.gov.uk/ukpga/2025/22/section/1/enacted",
+        "effect": "Sets minimum standard allowance amounts: CPI growth, then uplifts of 2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30."
+      },
+      "intent": "Installed current law uprates the allowance by the index that applies the legislated uplifts, so the certified world holds them through 2029-30. The frozen counterfactual still runs unchanged, and each row measures current law against that path.",
+      "limitations": [
+        "The counterfactual keeps the benefit-CPI path frozen on policyengine-uk 2.89.2, so later-year effects also carry any gap between that path and this engine's benefit index; CONSTRUCTION_PREMISES.json records the values this engine re-authors."
+      ],
+      "missing_legs": [
+        "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
+        "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+      ]
+    }
+  }
+}

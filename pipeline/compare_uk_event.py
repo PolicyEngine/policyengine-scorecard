@@ -108,6 +108,8 @@ def run_identity(directory: Path) -> dict:
     }
     if manifest.get("construction_revisions"):
         identity["construction_revisions"] = manifest["construction_revisions"]
+    if manifest.get("missing_legs_statement"):
+        identity["missing_legs_statement"] = manifest["missing_legs_statement"]
     return identity
 
 
@@ -763,8 +765,11 @@ def build_comparison_rows(
                 or source.get("classification_reason")
                 or reason
             )
+        from pipeline import uk_construction_revisions as revisions
+
+        legs_label, missing_legs = revisions.stated_missing_legs(measure, identity)
         if not reason and classification == "partial":
-            reason = "; ".join(measure.get("missing_legs", []))
+            reason = legs_label + "; ".join(missing_legs)
         record = {
             "event_slug": registry["event_slug"],
             "source_row_id": key,
@@ -795,7 +800,7 @@ def build_comparison_rows(
             "construction_note": construction_note(
                 measure, engine_version, identity=identity
             ),
-            "missing_legs": measure.get("missing_legs", []),
+            "missing_legs": [legs_label + leg for leg in missing_legs],
             "head_variables": variables,
             "artifact": reference,
             "artifact_sha256": digest,

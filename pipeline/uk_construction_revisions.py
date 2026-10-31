@@ -22,6 +22,12 @@ REGISTRY = (
     / "data/uk/events/construction_revisions.json"
 )
 REVISIONS_PATH = REGISTRY
+# The engine the frozen registries' notes and missing legs describe.
+AUTHORED_ENGINE = "2.89.2"
+# A run binds its revisions to the SHA-256 of the file holding them, so a file
+# stays frozen once a sealed namespace records it. New revisions go in the next
+# file, and every sealed namespace keeps validating.
+ENACTED_REVISIONS_PATH = REGISTRY.with_name("construction_revisions_enacted.json")
 
 
 def scalar(value: Any) -> Any:
@@ -67,55 +73,110 @@ def intended_value(
     return value if found else scalar(current_law(path, date))
 
 
-def _registry() -> tuple[dict, str]:
-    payload = REVISIONS_PATH.read_bytes()
-    document = json.loads(payload)
-    if document.get("schema_version") != 1:
-        raise ValueError("unsupported construction revisions schema")
-    return document["revisions"], hashlib.sha256(payload).hexdigest()
+def _registry(measure_key: str) -> tuple[dict | None, str | None]:
+    """A measure's revision and the SHA-256 of the file holding it."""
+    for path in (REVISIONS_PATH, ENACTED_REVISIONS_PATH):
+        payload = path.read_bytes()
+        document = json.loads(payload)
+        if document.get("schema_version") != 1:
+            raise ValueError("unsupported construction revisions schema")
+        if measure_key in document["revisions"]:
+            digest = hashlib.sha256(payload).hexdigest()
+            return document["revisions"][measure_key], digest
+    return None, None
 
 
-def select_revision(measure_key: str, metadata: Callable[[str], dict]) -> dict | None:
-    """Select exactly when every named installed parameter carries the flag."""
-    records, digest = _registry()
-    revision = records.get(measure_key)
-    if revision is None:
-        return None
-    condition = revision["condition"]
-    if not all(
-        metadata(path).get(condition["metadata_key"]) is condition["equals"]
-        for path in condition["all_paths"]
-    ):
-        return None
+def _evidence(revision: dict, digest: str) -> dict:
+    """What a run records. ``paths`` are those the executor moves to fiscal years."""
+    routed = revision.get("reform_route_paths", revision["condition"].get("all_paths"))
     return {
         "revision_id": revision["revision_id"],
         "registry_sha256": digest,
         "activation_fy": revision["activation_fy"],
-        "paths": list(condition["all_paths"]),
+        "paths": list(routed),
         "part_year_rule": revision["part_year_rule"],
     }
 
 
+def _condition_holds(
+    condition: dict,
+    metadata: Callable[[str], dict],
+    current_law: Callable[[str, str], Any] | None,
+) -> bool:
+    if "values" in condition:
+        if current_law is None:
+            raise ValueError("this revision selects on current-law values")
+        return all(
+            scalar(current_law(path, condition["date"])) == value
+            for path, value in condition["values"].items()
+        )
+    expected = condition["equals"]
+    found = (
+        metadata(path).get(condition["metadata_key"]) for path in condition["all_paths"]
+    )
+    if isinstance(expected, str):
+        return all(value == expected for value in found)
+    return all(value is expected for value in found)
+
+
+def select_revision(
+    measure_key: str,
+    metadata: Callable[[str], dict],
+    current_law: Callable[[str, str], Any] | None = None,
+) -> dict | None:
+    """Select exactly when the installed engine meets the revision's condition.
+
+    A condition names either a metadata value on every listed parameter or
+    the current-law value of every listed parameter at one annual lookup.
+    """
+    revision, digest = _registry(measure_key)
+    if revision is None:
+        return None
+    if not _condition_holds(revision["condition"], metadata, current_law):
+        return None
+    return _evidence(revision, digest)
+
+
 def get_revision(measure_key: str, evidence: dict) -> dict:
     """Validate recorded selection against the exact revision registry bytes."""
-    records, digest = _registry()
-    revision = records.get(measure_key)
-    expected = (
-        None
-        if revision is None
-        else {
-            "revision_id": revision["revision_id"],
-            "registry_sha256": digest,
-            "activation_fy": revision["activation_fy"],
-            "paths": list(revision["condition"]["all_paths"]),
-            "part_year_rule": revision["part_year_rule"],
-        }
-    )
+    revision, digest = _registry(measure_key)
+    expected = None if revision is None else _evidence(revision, digest)
     if evidence != expected:
         raise ValueError(
             f"{measure_key}: construction revision evidence does not match registry"
         )
     return revision
+
+
+def _reverse_enacted_delta(measure_key: str, world: dict, revision: dict) -> dict:
+    """Current law holds a forward delta already: reverse it to prior law.
+
+    The delta's own windows stay, so the effect starts at the same annual
+    lookup, and the certified world becomes the reform world.
+    """
+    prior = revision["prior_law_values"]
+    enacted = revision["condition"]["values"]
+    delta = world["reform_reform"] or {}
+    if (
+        world["baseline_reform"]
+        or set(delta) != set(prior)
+        or set(delta) != set(enacted)
+        or any(
+            value != enacted[path]
+            for path, windows in delta.items()
+            for value in windows.values()
+        )
+    ):
+        raise ValueError(f"{measure_key}: frozen delta no longer fits revision")
+    return {
+        **world,
+        "construction": "reversal_on_certified_world",
+        "baseline_reform": {
+            path: {window: prior[path] for window in windows}
+            for path, windows in delta.items()
+        },
+        "reform_reform": None,
+    }
 
 
 def apply_selected_revision(
@@ -126,7 +187,9 @@ def apply_selected_revision(
         return world
     revision = get_revision(measure_key, evidence)
     revised = copy.deepcopy(world)
-    for path, value in revision["baseline_values"].items():
+    if "prior_law_values" in revision:
+        revised = _reverse_enacted_delta(measure_key, revised, revision)
+    for path, value in revision.get("baseline_values", {}).items():
         windows = revised["baseline_reform"][path]
         first = min(windows)
         _, stop = first.split(".")
@@ -141,8 +204,34 @@ def apply_selected_revision(
 
 
 def apply_revision(
-    measure_key: str, world: dict, metadata: Callable[[str], dict]
+    measure_key: str,
+    world: dict,
+    metadata: Callable[[str], dict],
+    current_law: Callable[[str, str], Any] | None = None,
 ) -> dict:
     return apply_selected_revision(
-        measure_key, world, select_revision(measure_key, metadata)
+        measure_key, world, select_revision(measure_key, metadata, current_law)
     )
+
+
+def stated_missing_legs(
+    measure: dict, manifest: dict | None = None
+) -> tuple[str, list[str]]:
+    """The label and missing legs a run's outputs state for a measure.
+
+    ``manifest`` is the run's manifest or anything carrying its revision and
+    statement fields. The frozen legs describe the authored engine, so a run
+    recording ``missing_legs_statement`` labels them. Older sealed namespaces
+    record no such field and keep their bytes. A selected revision may restate
+    the legs for the engine that ran them; those need no label.
+    """
+    key = measure["measure_key"]
+    evidence = (manifest or {}).get("construction_revisions", {}).get(key)
+    if evidence is not None:
+        recorded = get_revision(key, evidence)
+        if "missing_legs" in recorded:
+            return "", recorded["missing_legs"]
+    legs = measure.get("missing_legs", [])
+    if legs and (manifest or {}).get("missing_legs_statement"):
+        return f"Authored against policyengine-uk {AUTHORED_ENGINE}: ", legs
+    return "", legs
