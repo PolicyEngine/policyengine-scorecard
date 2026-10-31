@@ -8,10 +8,11 @@ that release qualification (W4, policyengine.py) can consume before a
 model/data pair is promoted.
 
 The registries remain frozen. An explicit construction revision may be
-selected from `data/uk/events/construction_revisions.json` by metadata in
-the installed engine; its SHA-256 is bound in the run manifest and
-premises, and the comparison and release diff identify it. The AB2024 CGT
-revision follows W6's methodology choice under cos d1344 (Max, 15 October
+selected from `data/uk/events/construction_revisions.json` or
+`construction_revisions_enacted.json` by metadata or current-law values in
+the installed engine; the SHA-256 of the file holding it is bound in the run
+manifest and premises, and the comparison and release diff identify it. The
+revisions follow W6's methodology choice under cos d1344 (Max, 15 October
 2026): use the reading supported by the law and land on independent review.
 Other failed premises remain revision candidates. See
 [CONSTRUCTION_REVISIONS.md](CONSTRUCTION_REVISIONS.md) for the decision,
