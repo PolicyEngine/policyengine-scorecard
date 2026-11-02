@@ -1,0 +1,29 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_statement_2025",
+ "outputs_sha256": {
+  "COMPARISON.csv": "cb6f9b46e39f3fd7f28ad910802b822467a1d0620eb0c38718069c4585b6ffc6",
+  "COMPARISON.json": "9813c5c40bd2055bce89bfcee4b060a30b9a4fb45bf5ee090d924ec93756135f",
+  "COMPARISON.md": "e56527f735147f25de0583294ba959b9e85d3abe1ea75e18d25a1f5b5e106cf2"
+ },
+ "registry_path": "data/uk/events/spring_statement_2025_measures.json",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "replay_grid": {
+  "computed_measure_years": 12,
+  "full_event_complete": true,
+  "full_event_grid_size": 12,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [],
+  "supported_grid_size": 12,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/RUN_MANIFEST.json",
+ "run_manifest_sha256": "2143066849c43e34c822488c482f994fc622580afcec509b1c7c9e93c0cc051e",
+ "source_rows": 498,
+ "staged_path": "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/STAGED.jsonl",
+ "staged_sha256": "45df62a3b1f7e70bbc8ff9a0fe0fe8cbb7f0ac99acad4cc14299afaefd684b04",
+ "staging_manifest_path": "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/spring_statement_2025/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "e3df0a771ca60914d7f264113cb41cb00d3636804a0977bc8f0d697f2cc8f6f3"
+}

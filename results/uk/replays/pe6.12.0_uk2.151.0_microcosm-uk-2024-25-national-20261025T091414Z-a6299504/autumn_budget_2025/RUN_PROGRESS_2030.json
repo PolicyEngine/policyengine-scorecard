@@ -1,0 +1,25 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2030.json": "2bf0f4e3e0293c3a5a59662c5e9a308437edf23893c9e1b57bc72ecc5c401d39",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2030.json": "dad0c2b7f0d61d82c4fb4f5d2e9b9a707981cbd1413319c61215296cdde5d0fd",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030.json": "6fa38817b7be9b69b2441b03480145d8c6064ed75c6c17b7595b5766795cd0a4",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2030.json": "732a4d50d14a2edad778b04e864a042f3fadeaecc058b2a2e891852a4a3d0117",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__property_income_separate_rates_2030.json": "cd74fd00b69460f4c84de2af5d29ac92d3a6dc83c85f6711a6bd2a4f26a2ef6e",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2030.json": "9447f7c85775851404896e8c4b31b28b7b3f4536d83b093844f83d4e6f4dd356",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030.json": "d31df4d01bd3682489dba8e147a802c4eb99c1c8736738d049b67742980eb653",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2030.json": "25fb24334044196d488677c80e1854566f61abb1a68db303478e36bcf2bf6e6e",
+  "results/uk/replays/pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2030.json": "7c846d5723492307d064912c6800856d57b5e5a64a29c35fa5df784cf4297d6c"
+ },
+ "certified_dataset_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+ "data_bundle": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+ "engine_version": "2.151.0",
+ "event": "autumn_budget_2025",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.12.0",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "variant_id": "pe6.12.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+ "variant_identity_sha256": "0ed70dd85d0670e336c7d81e45d2821af78ed932ef1a5cab7a34dcd60dd8d857",
+ "year": 2030
+}
