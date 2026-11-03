@@ -127,6 +127,10 @@ def base_row(src, *, title, fy, value, locator, table, column, conditions, metri
 
 
 REVENUE = {"metric": "revenue_change", "unit_concept": "gbp"}
+# README rule 10: Table 6.1's three total rows give the Budget's effect on
+# PSNB, which models.py keeps apart from revenue_change, a receipts line, so
+# they take this metric.
+BORROWING = {"metric": "decisions_effect_on_borrowing", "unit_concept": "gbp"}
 FT = {"proposed_metric": "financial_transaction_cash_impact", "unit_concept": "gbp"}
 
 
@@ -222,7 +226,7 @@ def stage_t61(wb, out):
                                 "table": "6.1",
                                 "row_type": "total",
                             },
-                            metric=REVENUE,
+                            metric=BORROWING,
                         ),
                         "measure_key": K.package_key(slug),
                         "note": "Table footnote 1: totals may not sum due to rounding.",

@@ -141,7 +141,7 @@ New proposals, each with TPA's own words:
 
 - **`revenue_share_by_fiscal_event` (share):** "About two-fifths of that comes from Conservative Budgets", the share of the £123bn of extra tax in 2030-31 coming from a group of Budgets. The registered `revenue_share` is a group's share of one measure's yield, so it does not fit.
 
-Registered Metrics used: `revenue_change`, `caseload`. No baselines are proposed (`baseline_policy` is null throughout).
+The family uses the registered Metrics `revenue_change`, `caseload` and, for the totals of the Budget's tax measures, `decisions_effect_on_borrowing` (README rule 10, below). No row proposes a baseline (`baseline_policy` is null throughout).
 
 ## Not staged, and why
 
@@ -193,3 +193,6 @@ The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md`
 - **Finding 6:** the two by-tax scopes carry the registry caveat in the proposed-key table.
 - **Verification:** the contract checker reports 305 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
 
+## README rule 10, 3 November 2026
+
+Under README rule 10, `stage.py` moves TPA's figures for all the Budget's tax measures from `revenue_change` to `decisions_effect_on_borrowing`: the 37 rows keyed to `ab2026__package_total_tax_policy_decisions`, in pounds or as a share of GDP, and the three unkeyed 0.0 cells that TPA's charts print for years before Table 6.1 starts. Counting from 0, the rows are 2–4, 25–28, 98–104, 130–135, 143–154, 168, 235–240 and 264. Single measures and groups of measures keep `revenue_change`. No value or sign changed.

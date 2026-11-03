@@ -11,6 +11,7 @@ manifests, and per-family pins that the ingest's exact accounting will read.
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -24,6 +25,7 @@ from pipeline.ab2026_harvest_contract import (
 )
 from pipeline.ab2026_proposed_keys import render
 from pipeline.harvest_counts import counts
+from scorecard_db import signs
 
 ROOT = Path(__file__).resolve().parent.parent
 HARVEST = ROOT / "sources" / "harvest-uk-ab2026-2026-10-29"
@@ -116,6 +118,10 @@ def test_table_61_stages_every_line_and_total_for_six_years():
         )
     }
     assert len(totals) == 3 * 6
+    # README rule 10: the totals take the borrowing metric, the lines keep
+    # revenue_change
+    assert {r["metric"] for r in totals} == {"decisions_effect_on_borrowing"}
+    assert {r["metric"] for r in measures} == {"revenue_change"}
 
 
 def test_table_61_rows_carry_the_written_out_key_for_their_line():
@@ -176,3 +182,114 @@ def test_table_62_rows_are_financial_transactions_not_revenue():
             r["measure_key"]
             == K.PREFIX + K.TABLE_62[int(r["conditions"]["table_line"])]
         )
+
+
+# --- README rule 10: totals of the Budget's decisions -----------------------
+
+BORROWING = "decisions_effect_on_borrowing"
+
+# keys that name only a total of the Budget's decisions or one of its splits
+TOTAL_KEYS = {
+    K.package_key(s)
+    for s in (
+        "package_total_policy_decisions",
+        "package_total_tax_policy_decisions",
+        "package_total_spending_policy_decisions",
+        "package_tax_decisions_since_march_2026",
+        "package_spending_decisions_since_march_2026",
+        "package_non_scorecard_decisions",
+        "package_ifs_announced_tax_changes",
+    )
+} | {"ab2026_option__tax_decisions_with_continued_fuel_duty_freeze"}
+# the OBR's total, which also keys its Table 1.1 lines by head
+GOVERNMENT_DECISIONS = K.package_key("package_government_decisions_since_march_2026")
+
+
+def _key(r):
+    return r.get("measure_key") or r["conditions"].get("proposed_measure_key")
+
+
+def _label(r):
+    c = r["conditions"]
+    return c.get("table_row") or c.get("aggregate") or r.get("reform_hint") or ""
+
+
+def test_rows_keyed_to_a_total_take_the_borrowing_metric():
+    keyed = [(fam, r) for fam in FAMILIES for r in rows(fam) if _key(r) in TOTAL_KEYS]
+    assert {_key(r) for _, r in keyed} == TOTAL_KEYS
+    for fam, r in keyed:
+        assert r["metric"] == BORROWING, (fam, _key(r), r["value_raw"])
+
+
+def test_a_totals_lines_by_head_keep_revenue_change():
+    """The OBR keys its Table 1.1 lines by tax and spending head to the total
+    they add up to. Those lines keep revenue_change; every other row on that
+    key gives the total, its direct or indirect effects or a part of them,
+    and takes the borrowing metric or, for the current budget deficit,
+    proposes fiscal_balance_change."""
+    on_key = [
+        r for fam in FAMILIES for r in rows(fam) if _key(r) == GOVERNMENT_DECISIONS
+    ]
+    by_head = [r for r in on_key if r.get("metric") == "revenue_change"]
+    assert len(by_head) == 288
+    for r in by_head:
+        assert r["source_table"].startswith("Table 1.1: Breakdown of policy decisions")
+        assert not re.search(r"\b(total|effects? of)\b", _label(r), re.I), _label(r)
+    for r in on_key:
+        if r.get("metric") != "revenue_change":
+            assert (
+                r.get("metric") == BORROWING
+                or r.get("proposed_metric") == "fiscal_balance_change"
+            ), _label(r)
+
+
+def test_a_measure_takes_the_borrowing_metric_only_where_its_producer_says_so():
+    """README rule 10's exception: the OBR's paragraphs 3.20, 3.21 and 3.43
+    give four policies' effects on borrowing, and IFS gives the Budget's new
+    giveaways' effect on it."""
+    outside = Counter(
+        (fam, r["source_table"] if fam == "uk_obr_tables" else _key(r))
+        for fam in FAMILIES
+        for r in rows(fam)
+        if r.get("metric") == BORROWING
+        and _key(r) not in TOTAL_KEYS | {GOVERNMENT_DECISIONS, None}
+    )
+    assert outside == {
+        ("uk_obr_tables", "para 3.20"): 2,
+        ("uk_obr_tables", "para 3.21"): 4,
+        ("uk_obr_tables", "para 3.43"): 1,
+        ("uk_ifs_ab2026", "ab2026__package_ifs_new_giveaways"): 2,
+    }
+
+
+def test_the_current_budget_memos_name_that_deficit():
+    memos = [
+        (fam, r)
+        for fam in FAMILIES
+        for r in rows(fam)
+        if re.search(r"memo:.*current budget deficit", _label(r), re.I)
+    ]
+    assert sorted(Counter(fam for fam, _ in memos).items()) == [
+        ("uk_hmt_redbook", 11),
+        ("uk_obr_tables", 6),
+    ]
+    for fam, r in memos:
+        assert r.get("metric") is None, fam
+        assert r["proposed_metric"] == "fiscal_balance_change", fam
+        assert "current budget deficit" in r["conditions"]["sign_convention"], fam
+
+
+def test_every_borrowing_row_says_which_way_it_runs():
+    """signs.py reads each row's sign_convention as same or opposite, or as a
+    stated reason no sign applies (a total that adds rows under two
+    conventions, or an average of absolute values), never as unrecognised."""
+    for fam in FAMILIES:
+        for r in rows(fam):
+            if r.get("metric") != BORROWING:
+                continue
+            relation, basis = signs.classify(
+                {"metric": BORROWING, "conditions": r["conditions"], "country": "UK"}
+            )
+            assert relation in ("same", "opposite") or basis.endswith(
+                ":not_this_quantity"
+            ), (fam, r["conditions"].get("sign_convention"))

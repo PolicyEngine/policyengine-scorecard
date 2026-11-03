@@ -381,3 +381,7 @@ The coordinator gave each scope one key across families (tranche 1, task 3.4). T
 - `ab2026_option__obr_tax_measures_with_continued_fuel_duty_freeze` → `ab2026_option__tax_decisions_with_continued_fuel_duty_freeze`
 
 RF's three OBR groupings are restatements of the OBR's own Table 3.1 rows, so they take the OBR family's scope names, which carry no `obr` (OBR review, finding 9). The minimum wage key takes the red book's spelling for the same measure. `ab2026_option__fuel_duty_continued_freeze` is now shared with the OBR family, whose paragraph 3.43 prints the same alternative's £4.3bn in 2029-30.
+
+## README rule 10, 3 November 2026
+
+Under README rule 10, `stage.py` moves the family's totals of the Budget's decisions from `revenue_change` to `decisions_effect_on_borrowing`: Table 6.1's total of policy decisions (1 row), the OBR's direct effect of tax measures that Figure 10 plots (13 rows) and that total with fuel duty frozen (11 rows). Counting from 0, the rows are 66, 102, 141–151, 385–390 and 432–437. The OBR's total effect of the Budget's decisions (3 rows) already took the metric, and single measures and groups of measures keep `revenue_change`. No value or sign changed. The contract checker reports 766 rows, 0 problems, and a re-run of `stage.py` reproduces the gzip byte for byte.

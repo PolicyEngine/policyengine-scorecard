@@ -132,7 +132,7 @@ Attribution: 263 rows `own`, 169 `restated` (OBR, ONS, IMF, DWP, DBT, the Britis
   - Exchequer costs: "positive = cost to the Exchequer (as printed; not re-signed)";
   - savings: "positive = saving to the Exchequer";
   - yields, including Table 6.3: "positive = yield to the Exchequer (reduces borrowing)";
-  - Table 1.3: "positive = increase in PSNB" (the opposite of Table 6.1's yield convention);
+  - Table 1.3: "positive = increase in PSNB" (the opposite of Table 6.1's yield convention), except on its two memo lines, which give the change in the current budget deficit: "positive = increase in current budget deficit" (README rule 10, since 3 November);
   - Table 1.2: deficits and debt positive, surpluses negative, as printed.
 - **Periods.** Fiscal-year figures carry `conditions.fy`, end-year `period` and `time_basis: fiscal_year`. A multi-year total keeps its whole horizon in `conditions.horizon`, sits at its final fiscal year and is never annualised. An undated figure ("by the late 2030s", "this winter") sits at the publication year 2026 with the printed horizon in conditions and, where the year matters, `parse_confidence: medium`.
 - **Prices.** Every money figure is cash, as printed; Table 1.3's rows carry `price_basis: current prices`. No basis is converted. (The first staging tagged the £595 million administration saving `real terms`; paragraph 2.14's "real terms" belongs to the Spending Review's 16% cut, and the £595 million equals Table 6.1 line 63's cash +595.)
@@ -314,3 +314,7 @@ The coordinator gave each scope one key across families (tranche 1, task 3.4). T
 - `ab2026__defence_investment_plan` → `ab2026__package_defence_investment_plan`
 
 The OBR's Table 3.1 "Total effect of Government decisions" prints the same figures as Table 1.3's "Total effect of policy decisions" (2.1 in 2028-29 in both), so the red book's restatement shares the OBR family's key. The Barnett key names the scope the Welsh Government's figures share (£450 million here, £448m there). The Defence Investment Plan crosses Table 6.1 lines 40–42, so it is a package, shared with the OBR's DIP funding row. Table 1.3's Tax and Spending parts stay components of the total, as staged.
+
+## README rule 10, 3 November 2026
+
+Table 1.3's total effect of policy decisions and its tax and spending parts (18 rows) already took `decisions_effect_on_borrowing`, and its two memo lines on the current budget deficit (11 rows) already proposed `fiscal_balance_change`. The memo rows' sign convention named PSNB, so `stage.py` now states which way the current budget deficit moves on rows 138–142 (underlying forecast differences) and 161–166 (policy decisions). No value or sign changed. The contract checker reports 432 rows, 0 problems, and a re-run of `stage.py` reproduces the gzip byte for byte.

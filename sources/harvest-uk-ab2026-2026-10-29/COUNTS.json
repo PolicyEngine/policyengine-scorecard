@@ -27,7 +27,7 @@
  "uk_hmt_redbook": {
   "rows": 432,
   "primaries": 5,
-  "claims_sha256": "1ea59fa28e9914b0c473a30fce88cc335d64917f77ea972dcdfc58d0723513da",
+  "claims_sha256": "fbb4c6e185201f8904007545f17b750bbae35182833fe2b77887dbc385d23b69",
   "sources": [
    "hm_treasury"
   ]
@@ -35,7 +35,7 @@
  "uk_hmt_tables": {
   "rows": 762,
   "primaries": 2,
-  "claims_sha256": "c71472c6957ebc95406002f360da47bc344ba0da43d3702ad6f833d47898dd45",
+  "claims_sha256": "b962aabb0064fe51860db293bee21aaff644894d472e409d05bd96dd8f2276e8",
   "sources": [
    "hm_treasury"
   ]
@@ -43,7 +43,7 @@
  "uk_ifs_ab2026": {
   "rows": 144,
   "primaries": 14,
-  "claims_sha256": "b7b612261417ffaa580a43d938bba218d1b1894adb34d81b977e33930c1b2061",
+  "claims_sha256": "bb1ce115de1d141db8af91dd84ec8f94417c051f6994a85fe2d91220c19704b5",
   "sources": [
    "ifs"
   ]
@@ -59,7 +59,7 @@
  "uk_obr_tables": {
   "rows": 2797,
   "primaries": 3,
-  "claims_sha256": "0fa9a6f30a898b4b0a8f89de52b1c878621144394d8f7d289778c36ba250e24c",
+  "claims_sha256": "abe826475c2e5da312fb55a69bbe08b5e5dc71ab12e3b655b8923ff782cdd23a",
   "sources": [
    "obr_efo"
   ]
@@ -67,7 +67,7 @@
  "uk_rf_ab2026": {
   "rows": 766,
   "primaries": 7,
-  "claims_sha256": "a251c700f0f10d4ae47ca8c1d2c2a8ba9ba660f768d0169406a14dd28e8c3f85",
+  "claims_sha256": "48e9f2889097817a177bc98f9b0a903020222be6c034b2f74fb61c4bf35dee6b",
   "sources": [
    "resolution_foundation"
   ]
@@ -86,7 +86,7 @@
  "uk_tpa": {
   "rows": 305,
   "primaries": 10,
-  "claims_sha256": "114f27d2e28955ced736752d4962525adc4d494160a0d2da689cd8fd18c58d4d",
+  "claims_sha256": "4225c7cddab4e4d85a94efd4e624319d4457ed040f7b2656aae1ee6a5b5826df",
   "sources": [
    "tax_policy_associates"
   ]

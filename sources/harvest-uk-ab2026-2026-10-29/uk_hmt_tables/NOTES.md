@@ -19,7 +19,7 @@ The two XLSX attachments of [Supporting documents for Budget 2026](https://www.g
 ## What is staged
 
 - **Table 6.1:** every cell of every measure line, 2026-27 to 2031-32.
-  - Fields: `metric: revenue_change`, `unit_concept: gbp`, value = cell × 1e6.
+  - Fields: `metric: revenue_change`, `unit_concept: gbp`, value = cell × 1e6. Since 3 November, the three total rows take `decisions_effect_on_borrowing` (README rule 10), with no value or sign changed.
   - Conditions carry the line (`table_line`), the Tax/Spend head (`head`), the fiscal head where printed (`fiscal_head`: RDEL, TDEL, RAME, SUBTOTAL, Tax, Tax/TME, …), and the run of headings above the line (`heading`).
   - The table marks no hierarchy beyond adjacency. Two headings with no line between them are recorded as "A > B".
   - The three total rows carry the package keys `ab2026__package_total_policy_decisions`, `…_total_tax_policy_decisions` and `…_total_spending_policy_decisions`.

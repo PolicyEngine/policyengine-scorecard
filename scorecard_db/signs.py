@@ -95,6 +95,7 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "(positive = yield",
             "(positive = increase in yield)",
             "reduction in borrowing",
+            "reduces borrowing",
             "higher government revenue",
             "here we present higher taxes as positive numbers",
             "reduction in public spending",
@@ -102,6 +103,8 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = saving to the exchequer",
             "positive = saving against the current budget rule",
             "positive = fiscal tightening",
+            # the OBR's Table 1.1 workbook legend
+            "a negative sign implies a loss to the exchequer",
         ),
     ),
     "spending": (
@@ -114,9 +117,24 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
         ),
     ),
     "borrowing": (
-        (),
-        ("reduction in borrowing",),
-        ("increase in borrowing",),
+        # a printed total that adds rows under two conventions, or an
+        # average of absolute values, which has no direction
+        ("mixed:", "no directional sign"),
+        (
+            "reduction in borrowing",
+            "reduces borrowing",
+            "borrowing reduction",
+            "positive = yield",
+            "a negative sign implies a loss to the exchequer",
+            "positive = increase in net tax",
+            "positive = additional investment income",
+        ),
+        (
+            "increase in borrowing",
+            "borrowing increase",
+            "positive = increase in psnb",
+            "positive = cost",
+        ),
     ),
     "household_gain": (
         ("reduction in benefit entitlement from the two-child limit",),
