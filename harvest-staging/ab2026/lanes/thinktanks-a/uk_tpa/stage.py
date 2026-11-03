@@ -933,6 +933,32 @@ for raw, v, tax, quote in [("£400", 400, "income tax", "Income tax £400"), ("�
         geography=CBGEO, table="Marginal rate", column=quote.rsplit(" ", 1)[0], note=CBN + CBB)
 
 
+# === review fixes, 3 November 2026 ========================================
+# verify-thinktanks-a.md, uk_tpa (PR #231). Explicit edits on top of the rows
+# above; no primary was re-opened (the session's network policy refused
+# taxpolicy.org.uk), and no printed value changes.
+
+def _row(i, value_raw):
+    """Row i (0-based, the reviewed order), checked by its printed value."""
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+# Finding 5 (optional, applied): "about two-fifths" is the share of the
+# £123bn coming from a group of Budgets, not models.py's revenue_share (a
+# group's share of one measure's yield).
+_r = _row(1, "About two-fifths")
+_r.pop("metric")
+_r["proposed_metric"] = "revenue_share_by_fiscal_event"
+
+# Finding 1 (the coordinator's call): £93 is the most tax the Pension Tax
+# Allowance removes, 20% x (£13,036.40 - £12,570), the same quantity as the
+# "up to £94" maximum: design under rule 8. It moves to row 17's conditions.
+_row(17, "53%")["conditions"]["tax_removed"] = "£93 (as printed)"
+_row(16, "£93")
+del ROWS[16]
+
+
 # === output =================================================================
 
 def manifest_lines():

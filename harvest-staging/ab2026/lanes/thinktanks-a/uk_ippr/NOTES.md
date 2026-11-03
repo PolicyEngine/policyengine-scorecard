@@ -8,6 +8,8 @@ This family stages IPPR's three responses to the Budget on 28 October 2026, foun
 
 The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB2025 `uk_ippr` family.
 
+**Working files.** `stage.py`, the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_ippr/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/uk_ippr/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+
 `stage.py` holds the rows as data and rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its page's text. Result: 0 problems.
 
 - **Rows:** 3 (restated 2, own 1).
@@ -29,12 +31,12 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
 
 | measure_key | rows |
 |---|--:|
-| `null` (2 with a proposed key, 1 context) | 3 |
+| `null` (1 with a proposed key, 2 context) | 3 |
 
 ## The three rows
 
 1. **"It will lower inflation by at least 0.2 percentage points"** (Carsten Jung, on "the cost of living support announced today").
-   - Staged as `cpi_inflation_effect`, −0.2 (`range_low`, magnitude at least 0.2). Proposed key `ab2026__package_cost_of_living_support`.
+   - Staged as `cpi_inflation_effect`, −0.2, `range_high`: "lower by at least 0.2" makes the signed −0.2 an upper bound. Context, with no proposed key: IPPR's words do not define the scope (changed on 3 November, thinktanks-a review finding 1).
    - IPPR names no source and no period. The OBR's EFO paragraph 3.10 says the fuel duty changes and the temporary VAT cut on domestic electricity (Table 6.1 lines 2 and 3) "reduce CPI inflation by 0.22 percentage points in the second quarter of 2027". So the row is `restated` with `parse_confidence: medium`, at `period` 2027 (`point_in_time`).
 2. **"the £18 billion annual taxpayer losses at the Bank of England"** (Carsten Jung).
    - Staged as `apf_indemnity_losses`, the AB2025 uk_ippr proposal, which staged IPPR's "£22 billion" the same way. `restated`, source not stated.
@@ -45,7 +47,6 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
 
 ## Proposed keys and their scope
 
-- **`ab2026__package_cost_of_living_support`:** IPPR's "cost of living support announced today", which IPPR does not define. The OBR figure it matches covers Table 6.1 lines 2 and 3. It is not `ab2026__package_household_energy_vat_and_fuel_duty` (lines 1-3), because IPPR doesn't say its scope includes the Household Energy Payment (line 1). README rule 3 makes it a proposal.
 - **`ab2026_option__income_tax_5pc_share_devolved_to_mayors`:** "Five per cent of income tax devolved to mayors". No Table 6.1 line. The Budget made commitments "on devolving business rates and a share of income tax to England's mayors" (line 21 covers the business rates share) without setting a 5% share.
 
 ## Not staged, and why
@@ -71,3 +72,11 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
     - property taxes at 10.5% of revenue against an OECD average of 5.1%;
     - business rates of £27.6bn.
   The papers behind them were not fetched: "Cost of living, economic growth and stability: How to make this autumn budget a success", "Bricks vs clicks", "Devolution that delivers" and "Beyond headroom".
+
+## Review fixes, 3 November 2026
+
+The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch) approved this family with one fix, applied in an explicit block at the end of `stage.py`'s rows:
+
+- **Finding 1:** row 0 (−0.2pp CPI) is context. Jung says only "The cost of living support announced today", and Quilter-Pinner "action to support families with the cost of living". The lines 2 and 3 scope came from matching the OBR's paragraph 3.10, which is our inference, and README rule 3 says the scope must be the producer's. So the proposed key `ab2026__package_cost_of_living_support` is withdrawn, the reform hint and note stay, and `value_kind` is `range_high`.
+- **Verification:** no primary was re-opened (the session's network policy refused ippr.org); the contract checker reports 3 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte.
+

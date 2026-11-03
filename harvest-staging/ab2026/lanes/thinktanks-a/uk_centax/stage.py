@@ -524,6 +524,48 @@ add("UR", bn(10), "just under £10 billion",
     hint=H_CGT, conf="medium", note="CenTax's adjustment of its 2024 estimate.")
 
 
+# === review fixes, 3 November 2026 ========================================
+# verify-thinktanks-a.md, uk_centax (PR #231). Explicit edits on top of the
+# rows above; no primary was re-opened (the session's network policy refused
+# centax.org.uk), and no printed value changes.
+
+def _row(i, value_raw):
+    """Row i (0-based, the reviewed order), checked by its printed value."""
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+# Finding 1: p. 22's £3bn, £0.6bn and £0.4bn are the parts of key finding
+# 7's "up to £4 billion" (row 24); tag them so an ingest never adds them to
+# it (rule 9, by analogy for an option key).
+for _i, _raw in ((84, "£3 billion"), (85, "£0.6 billion"), (86, "£0.4 billion")):
+    _c = _row(_i, _raw)["conditions"]
+    _c["row_type"] = "measure_component"
+    _c["component"] = _c["income_type"]
+
+# Finding 2: row 2's derivation (Table 6.3 row 3: 1,355, 1,605 and 1,815)
+# was confirmed against uk_hmt_redbook's staged Table 6.3 cells; no edit.
+
+# Finding 3: record the #207 file's differences in row 27's note.
+_r = _row(27, "11,980")
+_r["note"] += (" The #207 file (data/externals/centax-childcare-100k.json) holds 16,280 for 2030's"
+               " central 'Number Bunching, Before Removal'; this may be a different concept, or"
+               " CenTax may differ between its two publications. Neither is corrected.")
+
+# Finding 4 (optional, applied): values are not re-signed (AB2025 README);
+# "raise £20 million" is a yield of £20 million.
+_r = _row(105, "£20 million")
+_r["value"] = 20000000
+_r["conditions"]["sign_convention"] = YIELD
+_r["normalization"] = "£ million × 1e6"
+
+# Finding 5 (optional, applied): a 25th-percentile EATR is an average tax
+# rate, as rows 7-15 stage it.
+_r = _row(18, "23%")
+_r["metric"] = "average_tax_rate"
+_r.pop("proposed_metric")
+
+
 # === output and --verify ====================================================
 
 def manifest_lines():

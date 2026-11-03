@@ -2,9 +2,11 @@
 
 Dan Neidle's "Budget 2026 – what it means" (taxpolicy.org.uk, 28 October 2026), the seven chart data files the article embeds, and the calculator screenshot its footnote 1 links. Source slug `tax_policy_associates`, as in the AB2025 `uk_tpa` family.
 
+**Working files.** `stage.py`, the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_tpa/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/uk_tpa/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256. `stage.py` reads `uk_hmt_tables` from its sibling directory, so run it from a checkout where the family sits beside that one.
+
 `stage.py` holds the rows as data and rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks the primaries' hashes, finds every quote in its primary, reads every chart value back from its JSON path, and re-derives each TPA group's Table 6.1 lines from `../uk_hmt_tables` (result: 0 problems).
 
-- **Rows:** 306 (own 245, restated 61).
+- **Rows:** 305 (own 244, restated 61).
 - **Primaries:** 10 (the article, seven chart data files, one PNG, and the calculator page as a 0-row descriptor).
 
 ## Access recipe
@@ -14,7 +16,7 @@ Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with
 - **The article** carries `article:published_time` 2026-10-28T15:51Z and `article:modified_time` 2026-10-29T09:59Z, so TPA edited it once after publication. The copy hashed here is the 16:17Z fetch.
 - **The charts** are ECharts embeds. Each chart's `data-json` attribute names a JSON file under `/wp-content/assets/`, and those files are the primaries, URLs as named (three carry a `?v=20261028-n` cache-buster). As in AB2025, `doc_type` is `flourish_json`, the nearest enum for a chart-data file.
 - **Values come from the data files, not from bar heights.** Where the chart prints a data label (`label.formatter`), the label is kept in `conditions.chart_label`. Each chart file also has an `aria.label.description` sentence, and the net totals are staged from it.
-- **Quotes** from a JSON file are the element as it stands in the file, whitespace-normalised and with `£` decoded to £ (the AB2025 `uk_tpa` precedent).
+- **Quotes** from a JSON file are the element re-serialised with `json.dumps`, with `£` decoded to £ (the AB2025 `uk_tpa` precedent); the file itself may print the same element across several lines with `\u00a3` escapes.
 - **The PNG** (`child_benefit_budget_2026.png`, linked from footnote 1) is a calculator screenshot. Its values are printed text in the tooltip panel, read off the image (`parse_confidence: medium`).
 - **The "Download as PDF" button** builds a PDF in the browser (`tpa-pdf-exporter-loader.js`). It is not a separate document.
 
@@ -22,7 +24,7 @@ Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with
 
 | primary | sha256 | rows |
 |---|---|--:|
-| Budget 2026 – what it means (HTML) | `9d8031655aa08411…` | 50 |
+| Budget 2026 – what it means (HTML) | `9d8031655aa08411…` | 49 |
 | budget_tax_rises_by_event.json | `62d64a909445ce61…` | 63 |
 | tax_take_by_government.json | `b13087894131a927…` | 31 |
 | budget_2026_tax_gdp_impact.json | `a96c8f8f29b1e0e7…` | 12 |
@@ -42,7 +44,7 @@ Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with
 | `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 15 |
 | `ab2026__bank_surcharge_6pc_temporary` | 11 |
 | `ab2026__hmrc_tax_gap_package` | 8 |
-| `ab2026__pension_tax_allowance` | 3 |
+| `ab2026__pension_tax_allowance` | 2 |
 | `ab2026__foreign_permanent_establishment_exemption_mandatory` | 5 |
 | `ab2026__foreign_sovereign_investments_taxation` | 4 |
 | `ab2026__electricity_vat_zero_rate_to_july_2027` | 2 |
@@ -66,11 +68,11 @@ TPA builds no yield estimates of its own. Every £ yield in the article and its 
 TPA's own calculations from statutory parameters are `own` with no `derived_from`:
 
 - capital-allowance present values;
-- the Pension Tax Allowance's 53% marginal rate and the £93 bill it removes;
+- the Pension Tax Allowance's 53% marginal rate;
 - the notional investment bank's tax rates;
 - the calculator outputs.
 
-Under README rule 8, a measure's own parameters are its design, not rows. The allowance's "£282 withdrawal band" and "up to £94 a year" maximum therefore sit in the conditions of the 53% and £93 rows.
+Under README rule 8, a measure's own parameters are its design, not rows. The allowance's "£282 withdrawal band", "up to £94 a year" maximum and the "£93" it removes therefore sit in the conditions of the 53% row.
 
 ## Conventions
 
@@ -110,12 +112,12 @@ A chart group that is exactly one Table 6.1 line carries that line's registry ke
 | `ab2026__package_tpa_business_rates` | 12, 13, 14, 57, 76, 80 | "Business rates" (all three charts) | 8 |
 | `ab2026__package_tpa_energy_and_environment` | 17, 69, 71, 90, 96 | "Energy and environment" (by-year) | 6 |
 | `ab2026__package_tpa_other_income_tax` | 5, 15, 28, 52, 53, 86, 94 | "Other income tax" (by-year); "Income tax: mileage rates, Pension Tax Allowance and other" (by-tax) | 7 |
-| `ab2026__package_tpa_other_vat` | 36, 46, 51, 59, 88, 89 (the by-tax bar may also hold line 66, zero in 2027-28) | "Other VAT" (by-year, by-tax) | 7 |
+| `ab2026__package_tpa_other_vat` | 36, 46, 51, 59, 88, 89 (the by-tax bar may also hold line 66, zero in 2027-28) | "Other VAT" (by-year, by-tax) | 7 Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. |
 | `ab2026__package_tpa_other_corporate_tax` | 49, 50, 54, 68, 97 | "Other corporate tax" (by-year, by-tax) | 7 |
 | `ab2026__package_tpa_other_by_year` | 10, 16, 19, 26, 44, 56, 60, 77, 78, 79, 93, 95, 98 | "Other" (by-year) | 6 |
 | `ab2026__package_tpa_tariffs` | 10, 16, 77, 78, 95 | "Tariffs (incl. UK-India)" (by-tax, by-measure) | 2 |
 | `ab2026__package_tpa_cgt_founders_relief_and_badr` | 26, 60 | "CGT (Founders' Relief, BADR)" (by-tax) | 1 |
-| `ab2026__package_tpa_other_by_tax_2027_28` | 17, 19, 44, 56, 69, 71, 79, 90, 93, 96, 98 (line 66 undetermined) | "Other" (by-tax). The non-zero 2027-28 lines are 19, 44, 56, 69, 79, 90 and 93; the zero lines come from the by-year mapping | 1 |
+| `ab2026__package_tpa_other_by_tax_2027_28` | 17, 19, 44, 56, 69, 71, 79, 90, 93, 96, 98 (line 66 undetermined) | "Other" (by-tax). The non-zero 2027-28 lines are 19, 44, 56, 69, 79, 90 and 93; the zero lines come from the by-year mapping | 1 Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. |
 | `ab2026__package_tpa_other_by_measure` | 11, 17, 18, 19, 28, 36, 50, 51, 53, 65, 66, 69, 71, 79, 88, 89, 90, 93, 94, 97, 98 | "Other" (by-measure) | 1 |
 
 `ab2026__package_total_tax_policy_decisions` is registered. It carries TPA's rows for "today's Budget" and "the tax measures", the net totals, and the 2026 Budget series of the history charts from 2026-27, because their scope is all Table 6.1 tax lines. The totals come in two kinds:
@@ -137,12 +139,15 @@ New proposals, each with TPA's own words:
 - **`tax_to_gdp_ratio` (`percent_of_gdp`):** "tax burden … 33% of GDP", "Tax take".
 - **Context levels from footnote 2:** `public_sector_net_debt_change` (percentage points), `programme_cost` (gbp) and `debt_interest_cost` (gbp, the uk_thinktank_misc spelling).
 
-Registered Metrics used: `revenue_change`, `revenue_share`, `tax_liability`, `caseload`. No baselines are proposed (`baseline_policy` is null throughout).
+- **`revenue_share_by_fiscal_event` (share):** "About two-fifths of that comes from Conservative Budgets", the share of the £123bn of extra tax in 2030-31 coming from a group of Budgets. The registered `revenue_share` is a group's share of one measure's yield, so it does not fit.
+
+Registered Metrics used: `revenue_change`, `caseload`. No baselines are proposed (`baseline_policy` is null throughout).
 
 ## Not staged, and why
 
 - **Policy parameters** (README rule 8, "stage estimates, not design"):
-  - the Pension Tax Allowance's "up to £94 a year" maximum and "£282 withdrawal band" (in the conditions of the 53% and £93 rows);
+  - the Pension Tax Allowance's "up to £94 a year" maximum and "£282 withdrawal band" (in the conditions of the 53% row);
+  - "£93", the most tax the allowance removes (20% × (£13,036.40 − £12,570) = £93.28), the same quantity as the £94 maximum: staged on 29 October, dropped on 3 November and kept as `conditions.tax_removed` on the 53% row;
   - savings and property rates of 24%, 44% and 49%;
   - writing-down allowance rates of 18%, 14%, 12% and 6%, and first-year allowances of 40% and 50%;
   - the £1m annual investment allowance;
@@ -175,3 +180,16 @@ Registered Metrics used: `revenue_change`, `revenue_share`, `tax_liability`, `ca
 - **Start year of the history total:** the £123bn sentence says tax changes "since 2021"; footnote 3 says measures "announced since March 2020".
 - **OBR's property figure:** footnote 8 quotes the OBR (EFO paragraph 3.17) correctly, but the OBR's "£0.4 billion a year on average from 2028-29" for the property rise sits below Table 6.1 line 61's average over 2028-29 to 2031-32 (£478m).
 - **Rounding:** the bank chart's stacked components sum within 0.1pp of the printed totals, for example the Netherlands at 43.7 against 43.8.
+
+## Review fixes, 3 November 2026
+
+The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch) approved this family with fixes. Each sits in an explicit block at the end of `stage.py`'s rows. No primary was re-opened (the session's network policy refused taxpolicy.org.uk); no printed value changed.
+
+- **Finding 1 (the coordinator's call):** row 16, "£93", is the allowance's design under rule 8 and is dropped; row 17 (53%) carries `conditions.tax_removed: "£93 (as printed)"`. 306 rows become 305.
+- **Finding 2:** no change. The group, deflated and %-of-GDP rows carry `conditions.derived_from`; tranche 2 separates them from model estimates on it.
+- **Finding 3:** no change. The 2027-28 total tax policy decisions appear in several rows (3, 26, 27, 147, 169 and 237, 0-based before the drop) and the six-year total in rows 4, 28 and 265; tranche 2 should deduplicate them.
+- **Finding 4:** the quote convention above now says JSON elements are re-serialised.
+- **Finding 5 (optional, applied):** row 1 ("About two-fifths") uses `proposed_metric: revenue_share_by_fiscal_event`, not the registered `revenue_share`.
+- **Finding 6:** the two by-tax scopes carry the registry caveat in the proposed-key table.
+- **Verification:** the contract checker reports 305 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
+

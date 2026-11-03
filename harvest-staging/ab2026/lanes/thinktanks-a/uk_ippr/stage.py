@@ -138,6 +138,20 @@ add("NORTH", 4_000_000_000, "£4billion", "Five per cent of income tax devolved 
     note="IPPR North's own estimate of an option beyond the Budget's income tax devolution commitment.")
 
 
+# === review fixes, 3 November 2026 ========================================
+# verify-thinktanks-a.md, uk_ippr (PR #231). No primary was re-opened (the
+# session's network policy refused ippr.org), and no printed value changes.
+
+# Finding 1: IPPR's words ("the cost of living support announced today") do
+# not define a scope; lines 2 and 3 were our match to the OBR, so under rule
+# 3 the row is context. "At least 0.2" lower makes the signed -0.2 an upper
+# bound.
+_r = ROWS[0]
+assert _r["value_raw"] == "0.2 percentage points"
+del _r["conditions"]["proposed_measure_key"]
+_r["value_kind"] = "range_high"
+
+
 def manifest_lines():
     keys = ["url", "title", "date", "publisher", "sha256", "bytes", "doc_type", "access", "retrieved", "note"]
     return "".join(json.dumps({k: p[k] for k in keys}, ensure_ascii=False) + "\n" for p in PUBS.values())

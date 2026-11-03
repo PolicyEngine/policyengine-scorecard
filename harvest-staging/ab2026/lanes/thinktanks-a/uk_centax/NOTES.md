@@ -7,6 +7,8 @@ This family stages three CenTax publications:
 
 The source slug is `centax`, as in the AB2025 `uk_centax` family, and `source_model` is `hmrc_administrative_microdata` for CenTax's estimates and descriptive statistics.
 
+**Working files.** `stage.py`, the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_centax/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/uk_centax/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+
 `stage.py` holds the rows as data and rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its primary's text (HTML text, or `pdftotext -layout`, whitespace-normalised). Result: 0 problems.
 
 - **Rows:** 110 (own 108, restated 2).
@@ -61,7 +63,7 @@ The £1.6bn timely-payment figure carries `ab2026__hmrc_tax_gap_package` under R
 - **Tax years:** CenTax gives tax years as the later year ("2022 is tax year 2021-22", Taxes at the top footnote 2). So "2030" is staged as `fy` 2029-30, "2028" as 2027-28, and the descriptive 2022 data as 2021-22. Every such row carries a `year_note`. This matches #207's reading of the same CenTax childcare figures.
 - **Sign:**
   - Revenue-raising options are `positive = yield to the Exchequer`.
-  - The childcare options are `positive = cost to the Exchequer`, so "raise £20 million" (28p taper) is staged as −2e7 (AB2025 uk_centax precedent for its allowance cost).
+  - The childcare options are `positive = cost to the Exchequer`, except "raise £20 million" (28p taper), which is staged as +2e7 with `positive = yield to the Exchequer`: values are not re-signed (AB2025 README; changed on 3 November, review finding 4).
 - **"Central":** CenTax's central scenario (`conditions.scenario: central`). It uses "elasticities drawn from the best available international evidence" for CGT, its "central revenue estimate, after accounting for behavioural responses" for partnership NICs, and its central bunching scenario for childcare. The investment-income NICs figures are static upper bounds ("naturally at the upper bound", footnote 13), so they are `range_high` with `basis: static`.
 - **Units:**
   - Shares are fractions (`share`).
@@ -82,7 +84,6 @@ Registered: `revenue_change`, `revenue_share` (also for "paid 60% of Income Tax 
 Proposed, with CenTax's own words:
 
 - **`marginal_tax_rate` (percent):** "a new marginal rate of 53%".
-- **`effective_tax_rate` (percent, AB2025 README list):** "this lower threshold is likely to have risen to 23%".
 - **`effective_tax_rate_gap` (percentage points):** "the gap between headline rates and the average EATRs".
 - **`taxpayer_share` (share):** "one in ten pays close to the headline rate of 47%" and the other dispersion statements on p. 11.
 - **`behavioural_response_share` (share):** "fewer than one in ten employees with eligible children responded to the cliff-edge".
@@ -90,6 +91,8 @@ Proposed, with CenTax's own words:
 - **`partner_not_in_work_share` (share):** "the share of parents whose partner is not in work is about 6%".
 
 ## Not staged, and why
+
+- **"Around four times as many parents would be bunching"** (p. 25), the halved-unresponsiveness sensitivity: a scenario ratio, not an estimate of an option's effect (added on 3 November, review finding 6).
 
 - **Duplicates within one primary,** staged once:
   - in "Taxes at the top": 62%, 88%, £19.7bn, £2.1bn, 98%, 1,100, 90% and £640m (Key findings, repeated on pp. 17-27); 37%, 34% and 30% (p. 9); 17%→12%, 33%→36% and 37%→33% (p. 13); 40.5%, 60%, 43.9%, 61.5%, 47%, 20% and 23% (Conclusion);
@@ -110,5 +113,22 @@ Proposed, with CenTax's own words:
   - the £750m / US$1bn threshold;
   - EMI and SEIS limits.
   These illustrate design choices rather than estimate outcomes, the same test AB2025 uk_centax applied ("thresholds/equivalences, not scoreable values"). The report says it does not cost Unicorn Relief ("It is difficult to model how much Unicorn Relief would cost").
-- **The September 2026 childcare report** ("Removing the £100,000 childcare cliff-edge: Impacts and cost of reform", linked from the reaction page) is not re-staged. Its Table 4.2 is already in `data/externals/centax-childcare-100k.json` (#207). The £520m and £640m staged here are CenTax repeating its own central net fiscal cost in AB2026 publications; the ingest should treat them as the same estimate as #207's.
+- **The September 2026 childcare report** ("Removing the £100,000 childcare cliff-edge: Impacts and cost of reform", linked from the reaction page) is not re-staged. Its Table 4.2 is already in `data/externals/centax-childcare-100k.json` (#207). That file differs from this family in three ways (thinktanks-a review, finding 3):
+  - **sign:** #207 stores the full removal's central net fiscal cost as −640m, negative for a cost; this family stores +640m with `positive = cost to the Exchequer`;
+  - **coverage:** #207 holds only Table 4.2's full removal; the cheaper options (rows 101–106) come only from "Taxes at the top";
+  - **bunching counts:** row 27 has "11,980 by 2030", where #207's 2030 central "Number Bunching, Before Removal" is 16,280. This may be a different concept, or CenTax may differ between its two publications; row 27's note says so. The £520m and £640m staged here are CenTax repeating its own central net fiscal cost in AB2026 publications; the ingest should treat them as the same estimate as #207's.
 - **LinkedIn:** CenTax's 28 October LinkedIn post (seed inventory) needs a login; not used.
+
+## Review fixes, 3 November 2026
+
+The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch) approved this family with fixes. Each sits in an explicit block at the end of `stage.py`'s rows. No primary was re-opened (the session's network policy refused centax.org.uk); no printed value changed.
+
+- **Finding 1:** rows 84–86 (£3bn, £0.6bn and £0.4bn, p. 22) are the parts of row 24's "up to £4 billion" (3 + 0.6 + 0.4 = 4.0). They carry `conditions.row_type: measure_component` and `conditions.component` naming the income type, so an ingest never adds them to the total.
+- **Finding 2:** confirmed. Row 2's derivation cites Table 6.3 row 3 at 1,355, 1,605 and 1,815 (£m, 2029-30 to 2031-32); `uk_hmt_redbook` stages exactly those cells.
+- **Finding 3:** the #207 file's three differences are recorded under "Not staged" and in row 27's note.
+- **Finding 4 (optional, applied):** row 105 is +2e7 with `positive = yield to the Exchequer` and normalisation "£ million × 1e6".
+- **Finding 5 (optional, applied):** row 18 (23%, a 25th-percentile EATR) uses the registered `average_tax_rate`, as rows 7–15 do. Rows 19–20 put `revenue_change` in `percent`; tranche 2 must not read them as £.
+- **Finding 6:** p. 25's "around four times as many parents would be bunching" in the halved-unresponsiveness scenario is a scenario ratio and is listed under "Not staged".
+- **Finding 7:** rows 20, 58, 108 and 109 are CenTax's 2024-era estimates at fy 2025-26 under the CGT option key; their `scenario` condition says so, for tranche 2.
+- **Verification:** the contract checker reports 110 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
+
