@@ -558,6 +558,25 @@ MANIFEST[4]["note"] = MANIFEST[4]["note"].replace(
 assert not any("/Users/" in m["note"] for m in MANIFEST)
 
 
+# README rule 10 (3 November 2026; IFS review of d5e323dc, finding 3). Table
+# 1.3's two memo lines give the change in the current budget deficit, from
+# policy decisions and from underlying forecast differences, not in PSNB, so
+# their eleven rows now say which way that deficit moves. They already propose
+# fiscal_balance_change, and Table 1.3's total and its tax and spending split
+# already take decisions_effect_on_borrowing.
+_CB = (
+    "Memo: Impact on the current budget deficit (policy decisions)",
+    "Memo: Impact on the current budget deficit (underlying forecast differences)",
+)
+_cb = [_r for _r in ROWS if _r["conditions"].get("aggregate") in _CB]
+assert len(_cb) == 11 and all(_r["proposed_metric"] == "fiscal_balance_change" for _r in _cb)
+for _r in _cb:
+    assert _r["conditions"]["sign_convention"] == "positive = increase in PSNB; negative = reduction in PSNB"
+    _r["conditions"]["sign_convention"] = (
+        "positive = increase in current budget deficit; negative = reduction in current budget deficit"
+    )
+
+
 def main():
     destination = Path(__file__).resolve().parent
     buf = io.BytesIO()

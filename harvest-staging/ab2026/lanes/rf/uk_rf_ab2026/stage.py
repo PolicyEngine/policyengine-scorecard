@@ -2523,6 +2523,26 @@ for _r in ROWS:
         _r["conditions"]["proposed_measure_key"] = KEY_MAP[_pk]
 
 
+# README rule 10 (3 November 2026; IFS review of d5e323dc, finding 3).
+# Totals of the Budget's decisions take decisions_effect_on_borrowing, PSNB
+# as models.py defines it: Table 6.1's total of policy decisions, the OBR's
+# direct effect of tax measures that Figure 10 plots, and that total with
+# fuel duty frozen. Single measures and groups of measures keep
+# revenue_change. No value or sign changes.
+RULE10_KEYS = {
+    TOTAL,
+    "ab2026__package_tax_decisions_since_march_2026",
+    "ab2026_option__tax_decisions_with_continued_fuel_duty_freeze",
+}
+_moved = 0
+for _r in ROWS:
+    _k = _r["measure_key"] or _r["conditions"].get("proposed_measure_key")
+    if _k in RULE10_KEYS and _r.get("metric") == "revenue_change":
+        _r["metric"] = "decisions_effect_on_borrowing"
+        _moved += 1
+assert _moved == 25, _moved
+
+
 # ===========================================================================
 # Write, and check against the primaries
 # ===========================================================================

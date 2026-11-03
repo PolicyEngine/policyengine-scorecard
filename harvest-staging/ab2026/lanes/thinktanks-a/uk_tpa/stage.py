@@ -1110,6 +1110,27 @@ def verify():
     return bad
 
 
+# README rule 10 (3 November 2026; IFS review of d5e323dc, finding 3).
+# Totals of the Budget's decisions take decisions_effect_on_borrowing, PSNB
+# as models.py defines it. TPA's figures for all the Budget's tax measures
+# move from revenue_change, with the 0.0 cells its charts print for the years
+# before Table 6.1 starts; single measures and groups of measures keep it.
+# No value or sign changes.
+_TOTAL_SERIES = (
+    "re-expression of Table 6.1 total tax policy decisions",
+    "Table 6.1 total tax policy decisions over nominal GDP",
+)
+_moved = 0
+for _r in ROWS:
+    _k = _r["measure_key"] or _r["conditions"].get("proposed_measure_key")
+    if _r.get("metric") == "revenue_change" and (
+        _k == TOTAL_TAX or (_k is None and any(t in _r["note"] for t in _TOTAL_SERIES))
+    ):
+        _r["metric"] = "decisions_effect_on_borrowing"
+        _moved += 1
+assert _moved == 40, _moved
+
+
 if __name__ == "__main__":
     (HERE / "manifest.jsonl").write_text(manifest_lines(), encoding="utf-8")
     data = claims_bytes()

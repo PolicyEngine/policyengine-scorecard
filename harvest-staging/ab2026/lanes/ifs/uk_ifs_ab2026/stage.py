@@ -7242,6 +7242,68 @@ ROWS.extend(json.loads(r"""
 ]
 """))
 
+# ---------------------------------------------------------------------------
+# Review of d5e323dc (3 November 2026), findings 1 and 2: explicit edits on
+# top of the rows above. No printed value, sign or year changes. Indices are
+# the output's 1-based row numbers, as the review cites them.
+
+def _out(n, value_raw):
+    r = ROWS[n - 1]
+    assert r["value_raw"] == value_raw, (n, r["value_raw"], value_raw)
+    return r
+
+# Finding 1: the initial response names no OBR line and doesn't say its new
+# giveaways cover every Government decision since March, so the two rows
+# leave the OBR's key and component for a key in IFS's own terms.
+for _n, _v in ((90, "£8 billion"), (91, "£4 billion")):
+    _r = _out(_n, _v)
+    _r["conditions"]["proposed_measure_key"] = "ab2026__package_ifs_new_giveaways"
+    del _r["conditions"]["component"]
+    _r["parse_confidence"] = "medium"
+    _r["note"] = (
+        "IFS's 'new giveaways' this year and next, read as 2026-27 and 2027-28 at the "
+        "Budget date. The page names no OBR line and doesn't say the giveaways cover every "
+        "Government decision since March, so the rows propose a key in IFS's own terms. To "
+        "the nearest billion they match the OBR's direct effects of Government decisions in "
+        "EFO Table 3.1, 7.6 (2026-27) and 3.5 (2027-28) (uk_obr_tables), so we infer that IFS "
+        "restates the OBR; the page doesn't say so. Neither the total effect including "
+        "indirect effects (6.3 and 7.0) nor Table 6.1's total policy decisions (£7,595m and "
+        "£2,475m) matches both years. Medium confidence."
+    )
+
+# Finding 2: neither the opening remarks nor Boileau slide 11 names a source
+# for the reserve shares, so all four rows infer the restated attribution.
+for _n, _v in ((96, "25%"), (97, "40%")):
+    _r = _out(_n, _v)
+    _r["parse_confidence"] = "medium"
+    _r["note"] = (
+        "The page gives the share of each reserve the government has already spent but names "
+        "no source for it, so we infer the restated attribution. Boileau slide 11 prints the "
+        "same two shares, also without a source (rows 74 and 75). The addendum lists the "
+        "reserve shares as estimates to stage. Period 2026 records the briefing snapshot; the "
+        "row imports no allocation window from the deck. Medium confidence."
+    )
+for _n, _v in ((74, "40%"), (75, "25%")):
+    _r = _out(_n, _v)
+    assert _r["proposed_metric"] == "reserve_allocated_share", _n
+    _r["parse_confidence"] = "medium"
+    _r["note"] = (
+        "Restated government reserve allocation. The slide names no source for the share, so "
+        "we infer the restated attribution. Multi-year allocation window is retained in "
+        "conditions; period is its ending fiscal year, not a separate annual rate. Medium "
+        "confidence."
+    )
+
+# README rule 10 (finding 3): totals of the Budget's decisions take
+# decisions_effect_on_borrowing, PSNB as models.py defines it. The net tax
+# rise IFS restates from Table 6.1 and its own total of the Budget's tax changes
+# move from revenue_change. No value or sign changes.
+for _n, _v in ((76, "£7bn"), (129, "0.2")):
+    _r = _out(_n, _v)
+    assert _r["metric"] == "revenue_change", _n
+    _r["metric"] = "decisions_effect_on_borrowing"
+
+
 def main():
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as stream:

@@ -3731,14 +3731,77 @@ KEY_MAP = {
 
 
 
+# ===========================================================================
+# README rule 10, 3 November 2026 (PR #231; IFS review of d5e323dc, finding 3)
+# ===========================================================================
+# Totals of the Budget's decisions take decisions_effect_on_borrowing: PSNB,
+# as models.py defines it, and as ingest_obr_policy_effects.py takes March
+# 2026 Table B.1's total, direct and indirect effects and its tax and
+# spending split. Single measures, groups of measures and a total's lines by
+# tax or spending head keep revenue_change; paragraphs 3.20, 3.21 and 3.43
+# give four policies' effects on borrowing, and their seven rows already take
+# this metric. The current budget memo proposes fiscal_balance_change, as the
+# red book family's Table 1.3 memos do, and its sign convention names that
+# deficit. No value or sign changes.
+
+WB11 = "Table 1.1: Breakdown of policy decisions since March 2026 (£ million)"
+
+RULE10_BORROWING = {
+    # EFO Table 3.1, £ billion
+    ("Table 3.1", "Total effect of Government decisions"): 6,
+    ("Table 3.1", "Direct effect of spending measures"): 6,
+    ("Table 3.1", "Direct effect of tax measures"): 6,
+    ("Table 3.1", "Indirect effects of Government decisions"): 6,
+    ("Table 3.1", "Direct effects of Government decisions"): 6,
+    ("Table 3.1", "Memo: direct effect of decisions on HM Treasury's October 2026 Budget policy decisions table"): 6,
+    ("Table 3.1", "Memo: direct effect of decisions not on HM Treasury's October 2026 Budget policy decisions table"): 6,
+    # the policy workbook's Table 1.1, the same lines in £ million
+    (WB11, "Total effects of receipts measures (£ millions)"): 6,
+    (WB11, "Total effects of expenditure measures (£ millions)"): 6,
+    (WB11, "Total effect of Government decisions "): 6,
+    (WB11, "Direct effect of Government decisions"): 6,
+    (WB11, "Direct effect of scorecard decisions"): 6,
+    (WB11, "Direct effect of non-scorecard decisions"): 6,
+    (WB11, "Indirect effect of Government decisions"): 6,
+    # chapter 3 text: spending and tax decisions, and a part of the
+    # indirect effects
+    ("para 3.3", "Policies that affect public spending"): 1,
+    ("para 3.4", "Changes to tax policy"): 1,
+    ("para 3.5", "Reduction in estimated departmental underspends due to spending policy"): 1,
+}
+RULE10_CURRENT_BUDGET = ("Table 3.1", "Memo: total effect of Government decisions on current budget deficit")
+
+
+def rule10(R):
+    seen = dict.fromkeys(RULE10_BORROWING, 0)
+    current = 0
+    for r in R:
+        label = r["conditions"].get("table_row") or r["reform_hint"]
+        k = (r["source_table"], label)
+        if k in RULE10_BORROWING:
+            assert r["metric"] == "revenue_change", k
+            r["metric"] = "decisions_effect_on_borrowing"
+            seen[k] += 1
+        elif k == RULE10_CURRENT_BUDGET:
+            assert r["metric"] == "revenue_change", k
+            r["metric"] = None
+            r["proposed_metric"] = "fiscal_balance_change"
+            r["proposed_unit"] = None
+            r["conditions"]["sign_convention"] += " (On this memo line: an increase in the current budget deficit.)"
+            current += 1
+    assert seen == RULE10_BORROWING, {k: v for k, v in seen.items() if v != RULE10_BORROWING[k]}
+    assert current == 6, current
+    return R
+
+
 def main():
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode='wb', mtime=0, filename='') as gz:
-        for row in review_fixes(list(rows())):
+        for row in rule10(review_fixes(list(rows()))):
             gz.write((json.dumps(row, sort_keys=True, ensure_ascii=False) + '\n').encode('utf-8'))
     target = Path(__file__).with_name('claims_staged.jsonl.gz')
     target.write_bytes(buf.getvalue())
-    print(f'{len(review_fixes(list(rows())))} rows -> {target.name}')
+    print(f'{len(rule10(review_fixes(list(rows()))))} rows -> {target.name}')
 
 
 if __name__ == '__main__':
