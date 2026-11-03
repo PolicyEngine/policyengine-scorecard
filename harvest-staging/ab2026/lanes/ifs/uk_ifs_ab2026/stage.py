@@ -4558,6 +4558,98 @@ ROWS = json.loads(r"""
 """)
 
 
+# ---------------------------------------------------------------------------
+# IFS addendum, sections 3 and 4 (briefs/ifs-addendum.md), applied on
+# 3 November 2026 (PR #231) as explicit edits on top of the first lane's rows.
+# No primary was re-opened: the session's network policy refused ifs.org.uk
+# and the Flourish hosts, so each edit relabels or drops a row and none
+# changes a printed value. Indices are the first lane's 0-based order.
+
+def _row(i, value_raw):
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+def _key(i, value_raw, key):
+    """Re-key a row to a registered key (README rules 2, 3 and 9)."""
+    r = _row(i, value_raw)
+    r["measure_key"] = key
+    r["conditions"].pop("proposed_measure_key", None)
+    return r
+
+def _propose(i, value_raw, key):
+    r = _row(i, value_raw)
+    r["measure_key"] = None
+    r["conditions"]["proposed_measure_key"] = key
+    return r
+
+# Rule 8: a measure's design is not a row. Each dropped number stays in the
+# kept rows' reform_hint where one names the measure.
+DROP = {
+    # parameters: rates, payment amounts, thresholds, a fare cap
+    42: "£100",      # Household Energy Payment amount (slide 3)
+    43: "5p",        # fuel duty cut per litre
+    44: "0%",        # VAT rate on domestic electricity (TW_1 slide 3)
+    59: "£2",        # bus fare cap
+    96: "10%",       # Founders' Relief CGT rate
+    97: "24%",       # standard CGT rate comparator
+    98: "£10m",      # Founders' Relief gains limit
+    102: "£12,000",  # RHL rateable-value range, lower bound
+    103: "£21,000",  # RHL rateable-value range, upper bound
+    105: "0%",       # VAT rate on electricity (Adam slide 5; the brief's row 106)
+    # government targets, restated
+    62: "3%",        # defence 3% of GDP by 2030
+    63: "2.7%",      # DIP's earlier 2.7% of GDP in 2029-30
+    72: "3%",        # defence 3% of GDP, repeated
+    # inputs of IFS's own spending scenarios (their outcomes stay)
+    70: "2.7%",      # defence held at 2.7% of GDP
+    79: "3%",        # defence at 3% of GDP by 2030-31
+    # financing and allocations
+    65: "~£1bn per year",   # NWF and BBB financing for defence
+    61: "£1.2bn per year",  # DIP funding the government provided (allocation)
+    # the gas standing charge's current level and bill share: the base the
+    # measure moves, not an effect (the red book dropped its £108 the same way)
+    53: "£108",
+    54: "13%",
+}
+for _i, _raw in DROP.items():
+    _row(_i, _raw)
+
+# Lines 1, 2 and 3 exactly: IFS's "three cash giveaways" (£5bn; Table 6.1
+# lines 1+2+3 print 2,625 + 755 + 575 in 2026-27 and 305 + 780 in 2027-28,
+# 5,040 in all) are the energy payment, the whole electricity VAT cut and
+# the fuel duty cut (README rule 3).
+for _i, _raw in ((45, "£5bn"), (46, "£140"), (52, "35%")):
+    _key(_i, _raw, "ab2026__package_household_energy_vat_and_fuel_duty")
+# The whole electricity VAT cut, October 2026 to June 2027, is line 2.
+_key(48, "£36", "ab2026__electricity_vat_zero_rate_to_july_2027")
+
+# Rule 9: parts of Table 6.1 line 45 (HMRC tax gap package), matched to
+# Table 6.3's items by value in 2031-32.
+for _i, _raw, _part in (
+    (89, "£1.8bn", "More timely payment for Self Assessment (Table 6.3 row 3, +1,815m)"),
+    (92, "£1bn", "HMRC debt collection and additional compliance officers (Table 6.3 rows 7 and 8, +575m and +415m)"),
+):
+    _c = _key(_i, _raw, "ab2026__hmrc_tax_gap_package")["conditions"]
+    _c["component"] = _part
+    _c["row_type"] = "measure_component"
+
+# Exactly lines 61 and 62 (455 + 590 = 1,045 in 2031-32 against IFS's £1.1bn).
+_propose(91, "£1.1bn", "ab2026__package_property_and_savings_income_rates")
+# The gas standing charge moved to unit rates has no Table 6.1 line.
+for _i, _raw in ((55, "60%"), (56, "40%"), (57, "£13")):
+    _propose(_i, _raw, "ab2026__gas_standing_charge_moved_to_unit_rates")
+
+# Key harmonisation (task 3.4): one key per scope across families.
+KEY_MAP = {}
+for _r in ROWS:
+    _pk = _r["conditions"].get("proposed_measure_key")
+    if _pk in KEY_MAP:
+        _r["conditions"]["proposed_measure_key"] = KEY_MAP[_pk]
+
+ROWS = [r for i, r in enumerate(ROWS) if i not in DROP]
+
+
 def main():
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as stream:

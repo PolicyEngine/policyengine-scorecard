@@ -1,11 +1,99 @@
 # uk_ifs_ab2026 — Institute for Fiscal Studies, Autumn Budget 2026
 
-106 rows from four current briefing decks; five manifested PDF versions including
-superseded TW_0. `source: ifs`. `stage.py` contains all row data and writes the
-requested deterministic gzip with mtime 0 and an empty embedded filename. It
-needs no primary files or network access to reproduce the gzip. No git state
-changes, commits or pushes were made. No existing family files were overwritten:
-this family directory did not exist at the start.
+**Working files.** `stage.py`, which writes `claims_staged.jsonl.gz` and is the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/ifs/uk_ifs_ab2026/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. `.ab2026-primaries/uk_ifs_ab2026/` was the lane's local primaries folder and was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+
+**87 rows from four current briefing decks** (five manifested PDF versions, including the superseded TW_0). `source: ifs`. The first lane staged 106 rows on 29 October. On 3 November the IFS addendum (`briefs/ifs-addendum.md` on the staging branch) was applied: sections 3 and 4 in full, section 2 as far as the network allowed (none), section 1 not at all (see "Pending" below). Its edits sit in an explicit block at the end of `stage.py`'s data. The sections below this summary keep the first lane's per-deck record; where they differ from the summary, the summary wins.
+
+## Pending: rows to be added from browser-read text (addendum section 1)
+
+These two IFS pages refuse non-browser clients, and their text is not on GitHub. The coordinator read them in a browser on 29 October and adds their rows locally after this family lands:
+
+- https://ifs.org.uk/articles/autumn-budget-2026-initial-response — pending: rows to be added from browser-read text.
+- https://ifs.org.uk/collections/autumn-budget-2026 (Helen Miller's opening remarks) — pending: rows to be added from browser-read text.
+
+The addendum brief records that the coordinator's browser read found no estimates in the IFS explainer or the fiscal devolution comment, so those pages are no longer listed as unreached for want of access; they hold nothing to stage.
+
+## Unreached: the seven IFS data items (addendum section 2)
+
+The seven charts in the collection's "Key charts" section (listed in `harvest-staging/ab2026/ifs/data-items.json` on the staging branch) serve their data through Flourish. On 3 November the session's network policy refused public.flourish.studio and flo.uri.sh at the proxy (HTTP 403 to CONNECT), so no visualisation's data was read and none is staged. No value was read off an image. Each is unreached:
+
+| Data item | Flourish |
+|---|---|
+| https://ifs.org.uk/data-items/growth-real-household-disposable-income-over-decade-1950s-2020s | visualisation/30734907 |
+| https://ifs.org.uk/data-items/current-budget-deficit-march-2026-and-october-2026-forecasts | visualisation/30726471 |
+| https://ifs.org.uk/data-items/headroom-share-gdp | visualisation/30726788 |
+| https://ifs.org.uk/data-items/real-gdp-growth-over-forecast | visualisation/30726917 |
+| https://ifs.org.uk/data-items/average-annual-growth-real-household-disposable-income-parliament | visualisation/30726939 |
+| https://ifs.org.uk/data-items/long-term-impact-announced-tax-changes-fiscal-event | visualisation/30726047 |
+| https://ifs.org.uk/data-items/number-individuals-aged-16-paying-higher-or-additional-rate-income-tax-0 | visualisation/30727239 |
+
+## Coverage
+
+| Primary | Rows |
+|---|--:|
+| Weathering the fiscal storm? (Isabel Stockton) | 39 |
+| Cost of living measures, TW_1 (Tom Wernham) | 15 |
+| Cost of living measures, TW_0 (superseded) | 0 |
+| Spending on public services: the Achilles' heel? (Bee Boileau) | 21 |
+| Tax measures (Stuart Adam) | 12 |
+
+| measure_key | Rows | of which components (rule 9) |
+|---|--:|--:|
+| `null`, context (no proposed key) | 60 | 0 |
+| `null` with a proposed key | 4 | 0 |
+| `ab2026__founders_relief_cgt` | 4 | 0 |
+| `ab2026__household_energy_payment_100_bands_a_to_d` | 3 | 0 |
+| `ab2026__package_household_energy_vat_and_fuel_duty` | 3 | 0 |
+| `ab2026__hmrc_tax_gap_package` | 2 | 2 |
+| `ab2026__badr_lifetime_limit_500000` | 1 | 0 |
+| `ab2026__business_rates_sbrr_rhl_thresholds_raised` | 1 | 0 |
+| `ab2026__distributions_framework_modernised` | 1 | 0 |
+| `ab2026__electricity_vat_zero_rate_to_july_2027` | 1 | 0 |
+| `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` | 1 | 0 |
+| `ab2026__package_total_tax_policy_decisions` | 1 | 0 |
+| `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 1 | 0 |
+
+Attribution: 36 `own`, 51 `restated`.
+
+## Proposed measure keys
+
+- `ab2026__package_property_and_savings_income_rates` (1 row): exactly Table 6.1 lines 61 and 62, Adam slide 2's "Increased income tax on savings & property income", £1.1bn in 2031–32 (lines 61 and 62 print 455 + 590 = 1,045).
+- `ab2026__gas_standing_charge_moved_to_unit_rates` (3 rows): no Table 6.1 line. Wernham slide 8's "Shifting gas standing charge onto unit price": "This charge will be scrapped, but per-unit price will be increased to absorb this". The spelling is the RF family's.
+
+## Keys the addendum changed (rules 3 and 9)
+
+| Rows (first lane, 0-based) | Was | Now | Why |
+|---|---|---|---|
+| 45, 46, 52 (£5bn, £140, 35%) | proposed `ab2026__package_ifs_cost_of_living_support` | `ab2026__package_household_energy_vat_and_fuel_duty` | IFS's three measures are the energy payment, the whole electricity VAT cut and the fuel duty cut, exactly lines 1, 2 and 3 (README rule 3, corrected). Lines 1+2+3 print 5,040 over 2026-27 and 2027-28, IFS's £5bn. |
+| 48 (£36) | proposed `ab2026__package_ifs_electricity_vat_oct_2026_june_2027` | `ab2026__electricity_vat_zero_rate_to_july_2027` | Line 2 costs the whole cut, 1 October 2026 to 1 July 2027, including the weeks before the Budget. |
+| 89 (£1.8bn) | proposed `ab2026__package_ifs_self_assessment_payment_timing` | `ab2026__hmrc_tax_gap_package`, component | Table 6.3 row 3, "More timely payment" for Self Assessment, +1,815m in 2031–32: a part of line 45. |
+| 92 (£1bn) | proposed `ab2026__package_ifs_hmrc_compliance_staff_and_debt_collection` | `ab2026__hmrc_tax_gap_package`, component | Table 6.3 rows 7 (debt management, +575m) and 8 (compliance officers, +415m), 990 in 2031–32: a part of line 45. |
+| 91 (£1.1bn) | proposed `ab2026__package_ifs_savings_and_property_income_tax` | proposed `ab2026__package_property_and_savings_income_rates` | The name README rule 2 gives exactly lines 61 and 62. |
+| 55–57 | proposed `ab2026__package_ifs_gas_standing_charge_reallocation` | proposed `ab2026__gas_standing_charge_moved_to_unit_rates` | A measure with no Table 6.1 line is `ab2026__<slug>`; the RF family's spelling. |
+| 61 (£1.2bn per year) | proposed `ab2026__package_ifs_defence_investment_plan_funding` | dropped | See below. |
+
+**Defence Investment Plan funding.** The addendum asked whether IFS's "£1.2bn per year gap in Defence Investment Plan funding" is an estimate (keep, as context) or not. The first lane's own note calls it the government's DIP funding announcement, restated: the Budget "filled" the gap. That makes it a spending allocation, which rule 8 excludes, so it is dropped rather than kept as context. It is close to, but not exactly, Table 6.1 line 41 (capital reallocation to fully fund the DIP: +1,100, +1,135, +1,180 in 2029-30 to 2031-32), so it is not keyed there either.
+
+## Not staged (rules 8 and 9)
+
+The addendum dropped 19 of the first lane's 106 rows, all under rule 8:
+
+| Category | Rows | Examples (deck, slide) |
+|---|--:|---|
+| Measure parameters: rates, payment amounts, thresholds, a fare cap | 10 | £100 Household Energy Payment (Wernham 3); 5p fuel duty cut (Wernham 3); 0% VAT on electricity (Wernham 3, Adam 5); £2 bus fare cap (Wernham 15); Founders' Relief 10% rate, 24% comparator and £10m limit (Adam 3); RHL rateable values £12,000 and £21,000 (Adam 4) |
+| Government targets | 3 | defence at 3% of GDP by 2030 (Boileau 4, repeated on 8); the DIP's earlier 2.7% in 2029–30 (Boileau 4) |
+| Inputs of IFS's own spending scenarios | 2 | defence held at 2.7% of GDP, or at 3% by 2030–31 (Boileau 7 and 9); the scenarios' computed growth rates stay |
+| Financing and allocations | 2 | ~£1bn a year of NWF and BBB financing for defence (Boileau 5); the £1.2bn a year of DIP funding (Boileau 4) |
+| The base a measure moves | 2 | the £108 average gas standing charge and its 13% share of a typical gas bill (Wernham 8), as the red book dropped its £108 |
+
+Each dropped parameter that names a measure stays in the kept rows' `reform_hint`. The 25% capital and 40% day-to-day reserve shares (Boileau 11) stay: the addendum lists them as estimates. The bond spread and debt-ownership context rows (Stockton 7) are not design and stay as context.
+
+## Verification (3 November 2026)
+
+- **Checker:** `PYTHONPATH=. python pipeline/ab2026_harvest_contract.py sources/harvest-uk-ab2026-2026-10-29/uk_ifs_ab2026` reports 87 rows, 0 problems.
+- **Determinism:** a re-run of `stage.py` reproduces `claims_staged.jsonl.gz` byte for byte. COUNTS.json pins its sha256.
+- **Spot check: not done.** The addendum asked for 15 random rows re-opened at their locators, five from the new primaries. There are no new primaries (sections 1 and 2 above), and the session's network policy refused ifs.org.uk, so no deck could be re-fetched. Every kept row's printed value is unchanged from the first lane, whose spot checks are recorded in the deck sections below.
+- **Stale files:** the family had no report or spot-check files.
 
 ## Access recipe and primary inventory
 
@@ -36,8 +124,7 @@ supplied local PDF was copied to `TW_0-local.pdf` and hashed. All rows from the
 cost-of-living presentation cite TW_1, not the superseded version. Full TW_0/TW_1
 changes are documented below; no numerical claim changed.
 
-Unreached HTML primaries (all returned a Cloudflare challenge, HTTP 403, with the
-required User-Agent at 15:43:43 UTC):
+HTML pages that returned a Cloudflare challenge (HTTP 403) to the first lane at 15:43:43 UTC; see "Pending" above for what has become of each:
 
 - https://ifs.org.uk/articles/autumn-budget-2026-initial-response
 - https://ifs.org.uk/articles/autumn-budget-2026-explained
@@ -52,31 +139,6 @@ challenge response. The blocked collection and event pages prevent discovering
 additional AB2026 items or linked xlsx/csv downloads. No data file was identified
 inside the reachable PDFs; this is an access limit, not a finding that IFS posted
 no data. No Wayback, alternative domain or other bypass was attempted.
-
-## Coverage by measure key
-
-| measure_key | Rows |
-|---|--:|
-| `None` | 85 |
-| `ab2026__badr_lifetime_limit_500000` | 1 |
-| `ab2026__bus_fare_cap_2_england_outside_london_2027` | 1 |
-| `ab2026__business_rates_sbrr_rhl_thresholds_raised` | 3 |
-| `ab2026__distributions_framework_modernised` | 1 |
-| `ab2026__electricity_vat_zero_rate_to_july_2027` | 1 |
-| `ab2026__founders_relief_cgt` | 6 |
-| `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` | 2 |
-| `ab2026__household_energy_payment_100_bands_a_to_d` | 4 |
-| `ab2026__package_total_tax_policy_decisions` | 1 |
-| `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 1 |
-
-Of the 85 null-key rows, 12 have seven proposed package keys and 73 are context,
-forecasts, spending plans/pressures, comparator parameters, or hypothetical
-scenarios with no measure scored. The package proposals and exact producer
-scopes are listed in the Wernham, Boileau and Adam sections below, including
-related Table 6.1 line numbers and places where no exact mapping is possible.
-No registry key was attached solely on the basis of a similar title. In
-particular, the support chart's full electricity-VAT period, the HMRC subset,
-and the DIP funding gap are not forced onto broader/incremental registered keys.
 
 ## Family conventions
 
@@ -180,17 +242,13 @@ Tom Wernham component: 21 rows from the revised 17-slide Cost of living measures
 
 Access/version evidence:
 
-- TW_1 freshly fetched directly at 2026-10-29 15:43:43Z using the assigned Safari user agent. SHA256 `6ed174b22b4d22a34c8bbd450194fb2b4181a9d566b137913bee52ca49a0299b`, 222191 bytes. This hash is identical to `/Users/maxghenis/reviews/scorecard-ab2026-harvest/local-primaries/ifs/Cost-of-living-measures-TW_1.pdf`.
+- TW_1 freshly fetched directly at 2026-10-29 15:43:43Z using the assigned Safari user agent. SHA256 `6ed174b22b4d22a34c8bbd450194fb2b4181a9d566b137913bee52ca49a0299b`, 222191 bytes. This hash is identical to the coordinator's local copy of the TW_1 PDF.
 - TW_0 fresh URL returned HTTP403, so the assigned local file was copied to `.ab2026-primaries/uk_ifs_ab2026/TW_0-local.pdf`, hashed, and extracted using `pdftotext -layout`. SHA256 `abb63d9c4ecd21c3c9173077c5e92d8015c7cc30aebd12be159185d7d157f12a`, 231180 bytes; manifest access must be `local copy`. No bypass was attempted.
 - Text diff: TW_0 has18 pages, TW_1 has17. TW_0 p4 already includes the80%/91% eligibility annotations; TW_1 p4 omits these. TW_0 p5 has those eligibility annotations overlapping the VAT/fuel commentary. TW_1 p5 relocates eligibility to the lower chart and VAT/fuel commentary to the upper chart. TW_0 p6 is another copy of the unannotated support chart and was removed. TW_0 p7–18 correspond to TW_1 p6–17. No printed numerical claim changes. All staged rows cite TW_1; TW_0 contributes zero rows but is manifested as the changed primary required by rule7.
 
 Coverage by measure_key: null14; `ab2026__household_energy_payment_100_bands_a_to_d`4; `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred`2; `ab2026__bus_fare_cap_2_england_outside_london_2027`1. Within null: 6 unscored context rows; the remaining8 use proposed measure keys below. Rows per primary: TW_1=21, TW_0=0.
 
-Exact proposed measure scopes:
-
-- `ab2026__package_ifs_cost_of_living_support` (3 rows): IFS's "three main temporary measures" / "Cost of living support, Oct-June, England": £100 Household Energy Payment January2027 (Table6.1 line1), fuel duty freeze and5p cut extended January–June2027 (line3), and removal of VAT on electricity October2026–June2027 (the line2 extension plus the previously announced October2026–April2027 relief). It differs from only the incremental AB2026 lines1–3 because the chart includes the previously announced electricity-VAT period. The Exchequer-cost row is UK; household-support and35%-offset rows are England.
-- `ab2026__package_ifs_electricity_vat_oct_2026_june_2027` (2 rows): "Removal of VAT on electricity (Oct2026 - Jun2027)" / "Previously announced for Oct to April, extended to end of June". Related Table6.1 line2, plus the previously announced October2026–April2027 portion. It records the full policy period, not just the incremental extension costing.
-- `ab2026__package_ifs_gas_standing_charge_reallocation` (3 rows): "Shifting gas standing charge onto unit price" / "This charge will be scrapped, but per-unit price will be increased to absorb this". No Table6.1 line corresponds to this regulatory gas tariff reallocation. Electricity's possible future analogous reform is excluded. The primary gives no implementation year or explicit geography; period2026 and point_in_time identify the publication date, not an assumed implementation date, and `conditions.horizon` states the missing year. No current-bill level is attached to this proposed reform.
+Proposed measure scopes: the first lane's three Wernham proposals were re-keyed on 3 November (see "Keys the addendum changed" above). The cost-of-living package is exactly lines 1, 2 and 3, because line 2 costs the whole VAT cut including the weeks before the Budget; the full-period VAT row is line 2; the gas standing-charge rows use `ab2026__gas_standing_charge_moved_to_unit_rates`.
 
 Proposed metrics and units:
 
@@ -238,15 +296,7 @@ By slide: 3:1, 4:4, 5:1, 7:6, 8:1, 9:10, 10:3, 11:2.
 The figures are 21 own arithmetic calculations/scenario assumptions and 7 restated
 announced policy/target/reserve figures. No exact registered AB2026 measure is assigned.
 
-One proposed measure key:
-
-- `ab2026__package_ifs_defence_investment_plan_funding`: IFS's exact scope is
-  “Filled the £1.2bn per year gap in Defence Investment Plan funding” (slide 4).
-  Table 6.1 lines 40–42 concern DIP savings, DIP capital reallocation and defence
-  administration savings. The deck does not allocate this £1.2bn to those lines,
-  or identify the exact line set. This proposal deliberately preserves the
-  producer's package and must not be registered as a package exactly equal to
-  lines 40–42 without additional evidence. No fiscal year is printed.
+The first lane's one proposed key here, for the £1.2bn a year of DIP funding, went with that row, which the addendum dropped as an allocation (see "Keys the addendum changed" above). The rule 8 drops also removed slide 4's and 8's targets, slide 5's financing and the two scenario inputs on slides 7 and 9, so the deck now has 21 rows.
 
 Metric proposals reuse `spending_pressure`, `forecast_spending_change` and
 `real_spending_growth` from AB2025. The historical one-percentage-point revision uses `real_spending_growth_revision`. New `reserve_allocated_share` means the
@@ -327,23 +377,9 @@ Rows by registered key: `ab2026__package_total_tax_policy_decisions` 1;
 `ab2026__founders_relief_cgt` 6;
 `ab2026__business_rates_sbrr_rhl_thresholds_raised` 3;
 `ab2026__electricity_vat_zero_rate_to_july_2027` 1; null 4.
-Three of the null rows propose package keys; the standard 24% CGT rate is
-context with no proposed measure.
-
 ### Proposed measure scopes
 
-- `ab2026__package_ifs_self_assessment_payment_timing`: IFS's
-  “Self-assessment income taxpayers to pay their tax earlier”, £1.8bn in
-  2031–32. No standalone Table 6.1 line names this measure. It may form part
-  of line 45 (the broad tax-gap package), but the deck does not establish an
-  exact allocation. No whole-line registry key is assigned.
-- `ab2026__package_ifs_savings_and_property_income_tax`: exactly Table 6.1
-  lines 61 and 62, “Increased income tax on savings & property income”,
-  £1.1bn in 2031–32. There is no registered package for those two lines.
-- `ab2026__package_ifs_hmrc_compliance_staff_and_debt_collection`: the subset
-  of Table 6.1 line 45 described as “More HMRC compliance staff & use of debt
-  collection agencies”, £1bn in 2031–32. It excludes the remainder of the
-  broad tax-gap package and therefore does not use the whole-line key.
+Superseded on 3 November (see "Keys the addendum changed" above): the self-assessment timing and the compliance-staff and debt-collection figures are line 45 components, matched to Table 6.3's items by value, and the savings and property income figure uses `ab2026__package_property_and_savings_income_rates`. Rule 8 dropped this deck's six parameter rows (the Founders' Relief rate, comparator and limit, the RHL rateable values and the 0% VAT rate), so it now has 12 rows.
 
 ### Conventions and metric proposals
 
