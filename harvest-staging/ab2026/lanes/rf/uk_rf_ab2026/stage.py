@@ -157,7 +157,8 @@ DIP = "ab2026__defence_investment_plan_further_savings"
 # Proposed keys (scopes in NOTES.md)
 P_HEP_VAT = "ab2026__package_household_energy_payment_and_electricity_vat"
 P_ENERGY_SUPPORT = "ab2026__package_rf_energy_bill_support_announced_at_budget"
-P_SAV_PROP = "ab2026__package_savings_and_property_income_rates_plus_2pp"
+# verify-rf.md finding 1: README rule 2 names exactly lines 61 and 62 this.
+P_SAV_PROP = "ab2026__package_property_and_savings_income_rates"
 P_AB26_PERM = "ab2026__package_rf_ab26_permanent_personal_measures"
 P_PARLIAMENT = "ab2026__package_rf_parliament_permanent_tax_and_benefit_measures"
 P_OBR_TAX = "ab2026__package_obr_direct_effect_of_tax_measures"
@@ -2461,6 +2462,50 @@ for r in range(67, 72):
              bench="administrative_fact" if out else "different_model",
              norm="percentage points as stored", table=FIG[23], col=f"{label} / {fy_}",
              note="2023-24 is the zero base and not staged." + (" 2024-25 is HBAI outturn." if out else ""))
+
+
+# ===========================================================================
+# Review fixes, 3 November 2026 (verify-rf.md, PR #231)
+# ===========================================================================
+# Explicit edits on top of the rows above (finding 1 is the P_SAV_PROP
+# constant). No primary was re-opened: the session's network policy refused
+# resolutionfoundation.org, and no printed value changes. Indices are the
+# reviewed 0-based order.
+
+def _row(i, value_raw):
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+# Finding 3: say whose figure the restated 2.7 per cent is.
+_row(168, "2.7 per cent")["note"] = "Restates the Government's Defence Investment Plan projection (Spread thin p.30)."
+# Finding 4: name the restated outturn's source.
+_row(38, "2.5 per cent")["note"] = "Restates the ONS/OBR outturn for public sector net investment in 2023-24 (inherited from Jeremy Hunt)."
+# Finding 8: RF sets -0.4 against "an average of just 0.6 per cent a year",
+# so it is most likely the last Parliament's average annual growth.
+_r = _row(23, "-0.4 per cent")
+_r["value_kind"] = "point"
+_r["conditions"]["statistic"] = "RHDI per person, average annual growth"
+_r["parse_confidence"] = "medium"
+# Finding 9: Figure 14 on the same page plots average annual change, and its
+# 2028-29 to 2031-32 RDEL bar is about 0.5%.
+_r = _row(167, "0.5 per cent")
+_r["conditions"]["statistic"] = "real RDEL per person, average annual change (Figure 14)"
+_r["note"] = _r["note"].replace("The text does not say whether this is total or a yearly average; ", "")
+_r["note"] = _r["note"][:1].upper() + _r["note"][1:]
+# Finding 10: the halves' averages are Figure 8's cash figures, as rows 74
+# and 76 say.
+for _i, _raw in ((28, "under £145"), (29, "over £130"), (56, "£158"), (57, "£144"), (61, "£158"), (63, "£144")):
+    _row(_i, _raw)["conditions"]["price_basis"] = "cash terms (Figure 8)"
+# Finding 12 (optional, applied): the households set to receive the £100
+# rebate are in England, as row 108 says.
+for _i, _raw in ((109, "£358"), (110, "20 per cent")):
+    _row(_i, _raw)["conditions"]["geography"] = "England"
+# Finding 11 (optional, applied): F10 C48 is a floating-point zero
+# (-7.46e-7 bn; no Fuel Duty freeze effect in 2026-27, and the chart draws
+# no bar), like the structural zeros skipped elsewhere.
+_row(397, "-7.4636114533177533E-7")
+del ROWS[397]
 
 
 # ===========================================================================
