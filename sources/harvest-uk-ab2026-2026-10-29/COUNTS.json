@@ -16,6 +16,14 @@
    "welsh_government"
   ]
  },
+ "uk_hmt_costings": {
+  "rows": 597,
+  "primaries": 1,
+  "claims_sha256": "d84725f64c8ba4d14060c90b01df55f92f10490f0e042e5a2ad5fcbcc835bfb3",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
  "uk_hmt_redbook": {
   "rows": 432,
   "primaries": 5,
@@ -76,9 +84,9 @@
   ]
  },
  "_totals": {
-  "rows": 1731,
-  "restated": 292,
-  "families": 9,
+  "rows": 2328,
+  "restated": 294,
+  "families": 10,
   "pinned_on": "2026-10-29"
  }
 }
