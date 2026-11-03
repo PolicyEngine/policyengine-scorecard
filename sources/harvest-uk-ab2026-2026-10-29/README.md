@@ -57,6 +57,8 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
 | resolution_foundation | Resolution Foundation | uk_rf_ab2026 |
 | ifs | Institute for Fiscal Studies | uk_ifs_ab2026 |
 | tax_policy_associates, centax, cpag, ippr, niesr, fraser_of_allander, scottish_fiscal_commission, cps, institute_for_government, age_uk, … | other producers, each in the AB2025 family of the same name where one exists | uk_tpa, uk_centax, uk_cpag, uk_ippr, uk_niesr, uk_fai_sfc, uk_thinktank_misc, … |
+| scottish_government, welsh_government | the devolved governments' responses | uk_devolved_govts |
+| trussell_wpi | Trussell, as in AB2025 | uk_trussell_wpi |
 | commercial firms and platforms | worked examples (mode 3, #63) | uk_cases_commercial |
 
 Macro calls by banks and City forecasters belong to the #55 lane and are not staged here (AB2025 rule 10).

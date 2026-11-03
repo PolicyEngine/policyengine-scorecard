@@ -1,4 +1,13 @@
 {
+ "uk_devolved_govts": {
+  "rows": 19,
+  "primaries": 2,
+  "claims_sha256": "745a5df6a7d0250658bafb2ad71ca49f90ec383a806633ef82adf381164d4440",
+  "sources": [
+   "scottish_government",
+   "welsh_government"
+  ]
+ },
  "uk_hmt_redbook": {
   "rows": 432,
   "primaries": 5,
@@ -23,10 +32,29 @@
    "ifs"
   ]
  },
+ "uk_thinktank_misc": {
+  "rows": 12,
+  "primaries": 5,
+  "claims_sha256": "15a0efea0765f575d08a7184f1f7ca60edc20d53b3866edbe596638283ba3613",
+  "sources": [
+   "citizens_advice",
+   "cps",
+   "institute_for_government",
+   "learning_and_work_institute"
+  ]
+ },
+ "uk_trussell_wpi": {
+  "rows": 1,
+  "primaries": 1,
+  "claims_sha256": "8589f64e0c03ebaf6ab7f81e888577e89f723dbe26301537b57c5968a6679476",
+  "sources": [
+   "trussell_wpi"
+  ]
+ },
  "_totals": {
-  "rows": 1281,
-  "restated": 220,
-  "families": 3,
+  "rows": 1313,
+  "restated": 227,
+  "families": 6,
   "pinned_on": "2026-10-29"
  }
 }
