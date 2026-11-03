@@ -1,4 +1,12 @@
 {
+ "uk_hmt_redbook": {
+  "rows": 432,
+  "primaries": 5,
+  "claims_sha256": "3dde1f25fa36df598b54340324e49787e5483bf12962371a25adc0319955a476",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
  "uk_hmt_tables": {
   "rows": 762,
   "primaries": 2,
@@ -8,9 +16,9 @@
   ]
  },
  "_totals": {
-  "rows": 762,
-  "restated": 0,
-  "families": 1,
+  "rows": 1194,
+  "restated": 169,
+  "families": 2,
   "pinned_on": "2026-10-29"
  }
 }
