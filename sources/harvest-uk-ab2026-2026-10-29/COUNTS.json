@@ -15,10 +15,18 @@
    "hm_treasury"
   ]
  },
+ "uk_ifs_ab2026": {
+  "rows": 87,
+  "primaries": 5,
+  "claims_sha256": "2e8b2dc5a85bb66fb11431f5c20565a40b2cf546e7edaabedd3a6c56ddb68d49",
+  "sources": [
+   "ifs"
+  ]
+ },
  "_totals": {
-  "rows": 1194,
-  "restated": 169,
-  "families": 2,
+  "rows": 1281,
+  "restated": 220,
+  "families": 3,
   "pinned_on": "2026-10-29"
  }
 }
