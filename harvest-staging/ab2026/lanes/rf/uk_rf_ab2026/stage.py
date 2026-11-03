@@ -2507,6 +2507,21 @@ for _i, _raw in ((109, "£358"), (110, "20 per cent")):
 _row(397, "-7.4636114533177533E-7")
 del ROWS[397]
 
+# Key harmonisation (task 3.4): one key per scope across families. RF's
+# restatements of the OBR's Table 3.1 groupings take the OBR family's
+# scope names, and the minimum wage takes the red book's spelling.
+KEY_MAP = {
+    'ab2026__minimum_wage_rates_april_2027': 'ab2026__minimum_wage_uprating_april_2027',
+    'ab2026__package_obr_total_effect_of_government_decisions': 'ab2026__package_government_decisions_since_march_2026',
+    'ab2026__package_obr_direct_effect_of_tax_measures': 'ab2026__package_tax_decisions_since_march_2026',
+    'ab2026__package_obr_tax_administration_compliance_and_debt_collection': 'ab2026__package_tax_administration_compliance_and_debt_collection',
+    'ab2026_option__obr_tax_measures_with_continued_fuel_duty_freeze': 'ab2026_option__tax_decisions_with_continued_fuel_duty_freeze',
+}
+for _r in ROWS:
+    _pk = _r["conditions"].get("proposed_measure_key")
+    if _pk in KEY_MAP:
+        _r["conditions"]["proposed_measure_key"] = KEY_MAP[_pk]
+
 
 # ===========================================================================
 # Write, and check against the primaries

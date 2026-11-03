@@ -536,7 +536,11 @@ for _i, _raw in ((20, "23.6"), (21, "-12.0"), (22, "0.9"), (23, "12.5"), (24, "2
     _c["chart_bar"] = _c.pop("component")
 
 # Key harmonisation (task 3.4): one key per scope across families.
-KEY_MAP = {}
+KEY_MAP = {
+    'ab2026__package_obr_forecast_policy_effects': 'ab2026__package_government_decisions_since_march_2026',
+    'ab2026__package_budget_barnett_consequentials': 'ab2026__package_barnett_consequentials',
+    'ab2026__defence_investment_plan': 'ab2026__package_defence_investment_plan',
+}
 for _r in ROWS:
     _pk = _r["conditions"].get("proposed_measure_key")
     if _pk in KEY_MAP:
