@@ -8,7 +8,7 @@ The 29 October harvest ran as seven local lanes, each in its own worktree at com
 |---|---|---|
 | `lanes/<lane>/<family>/` | Each lane's staged family: `stage.py`, `NOTES.md`, `manifest.jsonl`, `claims_staged.jsonl.gz`, and any report the lane left | `<lane worktree>/sources/harvest-uk-ab2026-2026-10-29/<family>/` |
 | `lane-reports/<lane>.md` | Each lane's final report | `/Users/maxghenis/reviews/scorecard-ab2026-harvest/out/<lane>.md` |
-| `reviews/verify-*.md` | The five independent reviews (GPT-6.1 Sol, read-only, 29 October) | `/Users/maxghenis/reviews/scorecard-ab2026-harvest/out/verify-*.md` |
+| `reviews/verify-*.md` | The five independent reviews (Opus 5.5 on Subfleet lanes, read-only, 29 October) | `/Users/maxghenis/reviews/scorecard-ab2026-harvest/out/verify-*.md` |
 | `briefs/` | The lane briefs, the shared instructions (`COMMON.md`, `verify-COMMON.md`) and the two rework briefs | `/Users/maxghenis/reviews/scorecard-ab2026-harvest/briefs/` |
 | `ifs/data-items.json` | The seven IFS data items (page URL, lead sentence, Flourish id) for the IFS addendum's section 2 | `/Users/maxghenis/reviews/scorecard-ab2026-harvest/local-primaries/ifs/browser/data-items.json` |
 
