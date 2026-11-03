@@ -48,7 +48,7 @@ Four proposed keys name seven rows. README rule 2 sets their spelling, and each 
 
 - `ab2026__package_property_and_savings_income_rates` (1 row): exactly Table 6.1 lines 61 and 62, Adam slide 2's "Increased income tax on savings & property income", £1.1bn in 2031–32 (lines 61 and 62 print 455 + 590 = 1,045).
 - `ab2026__gas_standing_charge_moved_to_unit_rates` (3 rows): no Table 6.1 line. Wernham slide 8's "Shifting gas standing charge onto unit price": "This charge will be scrapped, but per-unit price will be increased to absorb this". The spelling is the RF family's.
-- `ab2026__package_government_decisions_since_march_2026` (2 rows, from the initial response): the key the OBR, HM Treasury red book and RF families share for all Government decisions since the March 2026 forecast, the OBR's "Total effect of Government decisions". The page's £8 billion this year and £4 billion next year measure how much the Budget's new giveaways add to borrowing. To the nearest billion they match the OBR's direct effects of Government decisions in EFO Table 3.1, 7.6 in 2026-27 and 3.5 in 2027-28 (uk_obr_tables), so both rows name that component in `conditions.component`, as the OBR family does. Neither the total effect including indirect effects (6.3 and 7.0) nor Table 6.1's total of policy decisions (7,595 and 2,475 £m, uk_hmt_tables) matches both years.
+- `ab2026__package_ifs_new_giveaways` (2 rows, from the initial response): IFS's new giveaways, which push up borrowing by £8 billion this year and £4 billion next. The page names no OBR line and doesn't say the giveaways cover every Government decision since March, so the rows don't take the key the OBR, HM Treasury red book and RF families share for those decisions. To the nearest billion they match the OBR's direct effects of Government decisions in EFO Table 3.1, 7.6 in 2026-27 and 3.5 in 2027-28 (uk_obr_tables). We infer from that match that IFS restates the OBR, so both rows have medium confidence. Neither the total effect including indirect effects (6.3 and 7.0) nor Table 6.1's total of policy decisions (7,595 and 2,475 £m, uk_hmt_tables) matches both years.
 - `ab2026__package_ifs_announced_tax_changes` (1 row, from Flourish 30726047): the tax change that Budget 2026 announced, at the forecast horizon, as a share of GDP as forecast at the event. The chart's footer credits IFS calculations from the OBR's October 2026 EFO, policy measures database and historical official forecasts database. The chart lists no Table 6.1 line and names no OBR grouping, and one rounded figure cannot tie it to the scope of `ab2026__package_total_tax_policy_decisions` or of the OBR's tax decisions since March, so the row proposes a key in IFS's own terms.
 
 ## Keys the addendum changed (rules 3 and 9)
@@ -75,7 +75,7 @@ The rows cite each page's saved `<main>` text by line.
 The initial response (rows 87 to 91):
 
 - Line 16: £13 billion and £15 billion, `fiscal_headroom` in 2029–30 before and after the Budget's policy decisions (`policy_scenario` pre-measures and post-measures). They restate the OBR, which the sentence names. The OBR family stages £12.5 billion and £14.5 billion against the target "Current budget to be in surplus by 2029-30" (uk_obr_tables); the rows keep the page's rounded figures.
-- Line 18: £8 billion and £4 billion, `decisions_effect_on_borrowing` in 2026-27 and 2027-28 (this year and next at the 28 October Budget), restated, keyed as above.
+- Line 18: £8 billion and £4 billion, `decisions_effect_on_borrowing` in 2026-27 and 2027-28 (this year and next at the 28 October Budget), under the proposed key above. We infer the OBR attribution from the rounded match to Table 3.1, so both rows have medium confidence.
 - Line 28: 80%, `affected_share` 0.8. IFS's estimate of the share of households in England that receive the £100 payment, keyed to `ab2026__household_energy_payment_100_bands_a_to_d`; `reform_hint` keeps the £100.
 
 The opening remarks (rows 92 to 97; the saved text holds the whole speech on line 6):
@@ -83,7 +83,7 @@ The opening remarks (rows 92 to 97; the saved text holds the whole speech on lin
 - 98: proposed metric `measure_count` in proposed unit `measures`, `measure_key` null, no proposed key. A count of the Budget's measures, staged as the AB2025 and AB2026 uk_thinktank_misc families stage such counts (`own`, `different_model`). Table 6.1 numbers its lines 1 to 98 (`data/uk/ab2026_measures.json`).
 - £17 billion: proposed metric `spending_pressure`, IFS's estimate of the top-up that avoiding real-terms cuts could need. The page prints its year as "2030-21", a typo, most likely for 2030–31. The row keeps "2030-21" in the quote and `conditions.horizon`, sets no `fy`, takes 2026 as a publication-year marker, and has medium confidence.
 - £11 billion: `spending_pressure` for defence plans, on top of the £17 billion. The page prints no year; Boileau slide 4 prints £11 billion more defence spending in 2030–31 (row 55). Medium confidence and a 2026 marker.
-- 25% and 40%: proposed metric `reserve_allocated_share`, the shares of the capital and day-to-day reserves already spent. Restated `administrative_fact`, like the Boileau slide 11 rows, which print the same two shares.
+- 25% and 40%: proposed metric `reserve_allocated_share`, the shares of the capital and day-to-day reserves already spent, restated `administrative_fact`. Neither the remarks nor Boileau slide 11, which prints the same two shares, names a source, so all four rows infer the restated attribution and have medium confidence.
 - 80%: `affected_share` 0.8 of households, for the £100 payment through council tax bands A-D, keyed to `ab2026__household_energy_payment_100_bands_a_to_d`.
 
 ### The seven visualisations (46 rows)
@@ -155,11 +155,11 @@ The pages' other numbers are not figures to stage: publication dates, titles and
 | 30727239 | 58 | 15 | 43 | the Current plans series, 1990-91 to 2025-26 (36); the two freeze series' 2025-26 cells (2), each 8510, the Current plans value for that year; and the CPI-uprating series for 2021-22 to 2025-26 (5), a counterfactual path for the years before the forecast years, whose 2021-22 cell equals Current plans' 4950 |
 | **Total** | **302** | **46** | **256** | |
 
-Outside the data cells, the headroom chart draws a reference line labelled with the 2010s average headroom, 0.9% of GDP: a historical average, which no row stages. The lead sentences in `data-items.json` belong to no manifested primary. Each estimate a lead states repeats a staged cell (0.4% a year is row 127, around 0.2% of GDP is row 128, 10.8 million is row 142), and their other numbers are dates. Axis titles define index bases; tick labels, guide positions and chart settings hold no estimates. No row reads a value off an image, a bar, a line or a tick.
+Outside the data cells, the headroom chart draws a reference line labelled with the 2010s average headroom, 0.9% of GDP: a historical average, which no row stages. The lead sentences in `data-items.json` belong to no manifested primary. Each estimate a lead states repeats a staged cell (0.4% a year is row 127, around 0.2% of GDP is row 128, 10.8 million is row 142), and their other numbers are dates. Axis titles define index bases, and apart from the labelled 0.9% line, no tick or guide adds an estimate. No row reads a value off an image, a bar, a line or a tick.
 
 ## Unreached
 
-Nothing the addendum names remains unreached.
+We couldn't fetch two of the sources the addendum names, and two others held nothing to stage:
 
 - **The seven IFS data-item pages.** ifs.org.uk refuses curl, and the addendum rules out any other route, so each manifest line names its data item's URL and hashes the chart's public Flourish embed instead. The rows do not use the "Download data" link that each chart's footer template names.
 - **The explainer and the fiscal devolution comment.** The browser read of 29 October found only an embedded video in the first and only design parameters in the second, so neither has a manifest line or rows.
@@ -408,7 +408,8 @@ its printed multi-year window. No new unit or baseline proposal.
 `arithmetic` is the IFS's own scenario/growth calculation, or an announced target
 restated without a named model; the £1.2bn funding amount is marked restated with
 `hmt_costing_obr_certified`. Restated rows name their government/DIP origin in
-`note`; two announced reserve allocation shares are `administrative_fact`.
+`note`; two announced reserve allocation shares are `administrative_fact`, with
+medium confidence, since the slide names no source for them.
 Real growth remains percent, growth revisions are percentage points, cash
 amounts are GBP, and signs are as printed. Positive pressure means additional
 spending required; negative growth is a real cut. There are no central-value
