@@ -192,18 +192,18 @@ Each row below has `measure_key: null` and this key in `conditions.proposed_meas
 | `ab2026__package_property_and_savings_income_rates` | 25 | Table 6.1 lines 61 and 62 together: F10 "Savings & property" (their sum) and F20 "Property and savings tax rise". |
 | `ab2026__package_rf_ab26_permanent_personal_measures` | 19 | F20 "AB26 Changes" = lines 52, 56, 61, 62 plus the gas standing charge (the workbook's column K equals columns F + G + I + J). |
 | `ab2026_option__lha_unfreeze_2027_28` | 17 | Unfreezing Local Housing Allowance in 2027-28 instead of prolonging the freeze (no Table 6.1 line). Figure 9 "Would benefit if LHA were unfrozen"; "over a million families lose out, 91 per cent … in the bottom half". |
-| `ab2026__package_obr_direct_effect_of_tax_measures` | 13 | The OBR's Table 3.1 "Direct effect of tax measures" since March, sign flipped. F10 "Net direct effects", the p.23 labels, and p.4 "about £5 billion annually from next year". Differs from Table 6.1's tax total (-£1,749m vs -£1,645m in 2026-27). |
-| `ab2026_option__obr_tax_measures_with_continued_fuel_duty_freeze` | 11 | The OBR's direct effect of tax measures plus keeping Fuel Duty at current rates: F10 "Net effect if Fuel Duty frozen" and its p.23 labels. |
-| `ab2026__package_obr_tax_administration_compliance_and_debt_collection` | 7 | The OBR's Table 3.1 group "Tax administration, compliance and debt collection measures" (it includes line 45 and timely payment for Self Assessment; RF doesn't list the lines). F10 row 52; p.4 "over £3 billion annually by 2030-31". |
+| `ab2026__package_tax_decisions_since_march_2026` | 13 | The OBR's Table 3.1 "Direct effect of tax measures" since March, sign flipped. F10 "Net direct effects", the p.23 labels, and p.4 "about £5 billion annually from next year". Differs from Table 6.1's tax total (-£1,749m vs -£1,645m in 2026-27). |
+| `ab2026_option__tax_decisions_with_continued_fuel_duty_freeze` | 11 | The OBR's direct effect of tax measures plus keeping Fuel Duty at current rates: F10 "Net effect if Fuel Duty frozen" and its p.23 labels. |
+| `ab2026__package_tax_administration_compliance_and_debt_collection` | 7 | The OBR's Table 3.1 group "Tax administration, compliance and debt collection measures" (it includes line 45 and timely payment for Self Assessment; RF doesn't list the lines). F10 row 52; p.4 "over £3 billion annually by 2030-31". |
 | `ab2026_option__fuel_duty_continued_freeze` | 6 | Fuel Duty rates held at 52.95p a litre instead of rising to 60.59p in July 2027, relative to the announced policy: the OBR's constant-duty-rate alternative less its central forecast. F10 "… and if Fuel Duty frozen"; p.24 £4.3bn in 2029-30. |
 | `ab2026__package_rf_other_tax_measures` | 6 | RF's residual in F10 "Other tax measures": OBR net direct effects less Fuel Duty, Bank Surcharge, capital allowances, savings and property, and tax administration. |
 | `ab2026__package_household_energy_payment_and_electricity_vat` | 5 | Lines 1 and 2: "A £3.7 billion package of household support"; p.17 "£3.4 billion in 2026-27", "£0.3 billion in 2027-28", 45 per cent. The sums show line 2 is the whole cut; see the discrepancies below. |
-| `ab2026__package_obr_total_effect_of_government_decisions` | 3 | The OBR's total effect of the Budget's decisions on borrowing, direct and indirect, including decisions not on Table 6.1: "an average of £2 billion a year" (two documents); fn 47 "no overall impact". |
+| `ab2026__package_government_decisions_since_march_2026` | 3 | The OBR's total effect of the Budget's decisions on borrowing, direct and indirect, including decisions not on Table 6.1: "an average of £2 billion a year" (two documents); fn 47 "no overall impact". |
 | `ab2026__package_rdel_decisions_excluding_household_energy_payment` | 3 | All the Budget's RDEL decisions over the Spending Review period except the Household Energy Payment: "£3 billion a year", "£9 billion top up" (two documents). A fiscal aggregate, not a programme allocation. |
 | `ab2026__package_rf_absolute_policy_changes` | 2 | Every policy decision counted at absolute value (RF's fiscal-event size measure): "£7 billion". RF lists no lines. |
 | `ab2026__package_rf_energy_bill_support_announced_at_budget` | 2 | "Support of up to £116 announced today" and "less than a fifth" of the 2027 bill rise. RF doesn't itemise the £116; it includes the £100 Household Energy Payment. |
 | `ab2026_option__fuel_duty_rpi_uprating_since_2011` | 2 | Fuel Duty uprated by RPI since January 2011: "around £20 billion" a year (two documents). |
-| `ab2026__minimum_wage_rates_april_2027` | 2 | The April 2027 minimum wage rates the Chancellor confirmed (no Table 6.1 line): "worth £1,040 a year for someone working 40 hours a week" (PDF p.12 and the comment). The rates (3.9 per cent; £13.21; 50p) sit in `reform_hint`. |
+| `ab2026__minimum_wage_uprating_april_2027` | 2 | The April 2027 minimum wage rates the Chancellor confirmed (no Table 6.1 line): "worth £1,040 a year for someone working 40 hours a week" (PDF p.12 and the comment). The rates (3.9 per cent; £13.21; 50p) sit in `reform_hint`. |
 | `ab2026__gas_supplier_levy_funded_from_general_taxation` | 1 | Funding the Gas Supplier Levy from general taxation: "save the typical household £7 in 2027-28" (fn 12). No Table 6.1 line found. |
 
 ## Proposed metrics
@@ -370,3 +370,14 @@ The RF review (`harvest-staging/ab2026/reviews/verify-rf.md` on the staging bran
 
 - **Verification:** the contract checker reports 766 rows, 0 problems, and a re-run of `stage.py` reproduces the gzip byte for byte. COUNTS.json pins its sha256. Proposed-key names may change again in the cross-family harmonisation recorded below.
 
+## Key harmonisation, 3 November 2026
+
+The coordinator gave each scope one key across families (tranche 1, task 3.4). This family's renames:
+
+- `ab2026__minimum_wage_rates_april_2027` → `ab2026__minimum_wage_uprating_april_2027`
+- `ab2026__package_obr_total_effect_of_government_decisions` → `ab2026__package_government_decisions_since_march_2026`
+- `ab2026__package_obr_direct_effect_of_tax_measures` → `ab2026__package_tax_decisions_since_march_2026`
+- `ab2026__package_obr_tax_administration_compliance_and_debt_collection` → `ab2026__package_tax_administration_compliance_and_debt_collection`
+- `ab2026_option__obr_tax_measures_with_continued_fuel_duty_freeze` → `ab2026_option__tax_decisions_with_continued_fuel_duty_freeze`
+
+RF's three OBR groupings are restatements of the OBR's own Table 3.1 rows, so they take the OBR family's scope names, which carry no `obr` (OBR review, finding 9). The minimum wage key takes the red book's spelling for the same measure. `ab2026_option__fuel_duty_continued_freeze` is now shared with the OBR family, whose paragraph 3.43 prints the same alternative's £4.3bn in 2029-30.
