@@ -56,6 +56,14 @@
    "ippr"
   ]
  },
+ "uk_obr_tables": {
+  "rows": 2797,
+  "primaries": 3,
+  "claims_sha256": "0fa9a6f30a898b4b0a8f89de52b1c878621144394d8f7d289778c36ba250e24c",
+  "sources": [
+   "obr_efo"
+  ]
+ },
  "uk_rf_ab2026": {
   "rows": 766,
   "primaries": 7,
@@ -92,9 +100,9 @@
   ]
  },
  "_totals": {
-  "rows": 3094,
-  "restated": 378,
-  "families": 11,
+  "rows": 5891,
+  "restated": 401,
+  "families": 12,
   "pinned_on": "2026-10-29"
  }
 }
