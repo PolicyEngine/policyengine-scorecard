@@ -3544,14 +3544,201 @@ def rows():
         yield row
 
 
+# ===========================================================================
+# Review fixes and key harmonisation, 3 November 2026 (PR #231)
+# ===========================================================================
+# verify-obr.md (verdict REWORK) applied as explicit edits on top of the
+# rows above, with the coordinator's calls on findings 5, 6, 9 and 10. No
+# primary was re-opened: the session's network policy refused obr.uk, and
+# this lane's primaries were local copies. No printed value changes; the one
+# added row (finding 10) is the review's own quotation of Box 3.1.
+# Indices are the reviewed 0-based order of rows().
+
+T61 = "ab2026__hmrc_tax_gap_package"
+
+def review_fixes(R):
+    def at(i, raw):
+        assert R[i]["value_raw"] == raw, (i, R[i]["value_raw"], raw)
+        return R[i]
+
+    def key(i, raw, k, component=None, row_type="measure_component"):
+        r = at(i, raw)
+        r["measure_key"] = k
+        r["conditions"].pop("proposed_measure_key", None)
+        if component:
+            r["conditions"]["component"] = component
+            if row_type and r.get("metric") != "costing_uncertainty_rating" \
+                    and r.get("proposed_metric") != "costing_uncertainty_rating":
+                r["conditions"]["row_type"] = row_type
+        return r
+
+    drop = set()
+
+    # Finding 1 (rule 8): staffing inputs, Table 3.2's funding allocations,
+    # guarantee capacity, a lending allocation and a financing requirement.
+    drop |= {2689, 2690, 2691, 2695, 2696, 2697}
+    drop |= set(range(2699, 2746))
+    drop |= {2776, 2778, 2782, 2783, 2771}  # 2771: the review's "probable"; applied
+    at(2689, "2,000"); at(2695, "5,500"); at(2697, "23 per cent")
+    at(2699, "2,715"); at(2745, R[2745]["value_raw"]); at(2776, "£40 billion")
+    at(2778, "£7 billion"); at(2782, "£0.7 billion"); at(2783, "£1 billion"); at(2771, "£1.9 billion")
+    # ...the staffing figures move into their yield rows' conditions.
+    at(2688, "£0.5 billion")["conditions"]["staffing"] = (
+        "2,000 verification assurance officers, 200 staff on fraud and error from those living "
+        "abroad and 150 on capital-related fraud and error in pension credit (para 3.12)")
+    at(2694, "£0.4 billion")["conditions"]["staffing"] = (
+        "accelerates the previously announced 5,500 HMRC compliance officers and funds an additional "
+        "670 staff by the end of 2029-30, a 23 per cent increase on March 2024 (para 3.13)")
+
+    # Finding 5 (the coordinator's call): text that repeats a staged table
+    # cell or earlier text, and Table 3.1's "Spending measures" and "Tax
+    # measures" rows that repeat its "Direct effect" rows. The table cells
+    # are the staged rows, as in the AB2025 OBR family.
+    drop |= {2520, 2521, 2522, 2523, 2524, 2527, 2528, 2534, 2536, 2537, 2678, 2679, 2680,
+             2692, 2746, 2751, 2759, 2760, 2761}
+    drop |= {2681, 2682, 2683, 2687, 2693, 2747}
+    drop |= set(range(2574, 2580)) | set(range(2604, 2610))
+    at(2520, "£7.6 billion"); at(2747, "£1 billion"); at(2574, "5.8"); at(2609, "-7.5")
+
+    # Finding 2 (rule 9): parts of one Table 6.1 measure take its key.
+    for i in range(2797, 2803):
+        key(i, R[i]["value_raw"], T61, "Direct recovery of debt (Table 3.3, Tax head)")
+    for i in range(2821, 2827):
+        key(i, R[i]["value_raw"], T61, "E-invoicing mandation")
+    for i in list(range(2616, 2622)) + [2538, 2827]:
+        key(i, R[i]["value_raw"], T61, "Timely payment for self assessment")
+    key(2694, "£0.4 billion", T61, "Changes to HMRC's compliance workforce")
+    for i in range(2809, 2815):
+        key(i, R[i]["value_raw"], "ab2026__dwp_fraud_and_error_prevention",
+            "Verification assurance officers (Table 3.3, Spend head)")
+    key(2833, "0.13 per cent", "ab2026__uk_india_ceta_and_double_contributions_convention",
+        "India-UK FTA (CETA) GDP effect")
+    for i in range(2815, 2821):
+        key(i, R[i]["value_raw"], "ab2026__emi2_option_limit_120000",
+            "Tax head (Table 3.3; OBR title: Company Share Option Plan scheme reform)")
+    r = key(2777, "£0.2 billion", "ab2026__uk_export_finance_defence_capacity")
+    r["period"], r["conditions"]["fy"], r["source_column"] = 2031, "2030-31", "2030-31"  # line 44 is 0 in 2031-32
+    for i, raw in ((2779, "£0.1 billion"), (2780, "£0.1 billion"), (2781, "£0.2 billion")):
+        key(i, raw, "ab2026__growth_guarantee_scheme_expansion")
+    key(2540, "£1 billion", "ab2026__writing_down_allowance_12pc_and_fya_50pc")  # date note kept
+
+    # Finding 3: keyed parts that carried no row type.
+    for i in list(range(2785, 2790)) + list(range(2791, 2796)) + list(range(2803, 2808)):
+        c = R[i]["conditions"]
+        c["row_type"], c["component"] = "measure_component", "Tax head (receipts), Table 3.3"
+    for i, raw in ((2749, "£190 million"), (2753, "£0.2 billion"), (2755, "£0.1 billion")):
+        at(i, raw)["conditions"]["row_type"] = "measure_component"
+    at(2749, "£190 million")["value_kind"] = "cumulative"  # as its sibling row 2748
+    c = at(2688, "£0.5 billion")["conditions"]
+    c["row_type"], c["component"] = "measure_component", "welfare spending (AME), para 3.12"
+
+    # Finding 4: sign conventions an ingest reads.
+    for i in range(2514, 2520):
+        R[i]["conditions"]["sign_convention"] = (
+            "positive = increase in PSNB (matches EFO Table 3.1; contradicts the workbook legend)")
+    for i in range(2490, 2496):
+        R[i]["conditions"]["sign_convention"] = (
+            "mixed: row 551 (negative = loss to Exchequer) plus row 555 (positive = increase in PSNB)")
+
+    # Finding 6 (the coordinator's calls).
+    r = at(2774, "£0.6 billion")
+    r["metric"] = "decisions_effect_on_borrowing"
+    r["conditions"]["component"] = "gross additional investment income"
+    r = at(2828, "£0.4 billion")
+    r["measure_key"] = "ab2025__salary_sacrifice_pension_nics_cap_2000"
+    r["conditions"]["recosting_of"] = "autumn_budget_2025"
+    r["note"] = ("Recosting of the Budget 2025 salary-sacrifice measure, keyed to its AB2025 key with "
+                 "conditions.recosting_of (README rule 2's recosting exception).")
+
+    # Finding 10: Box 3.1's estimate, from the review's quotation (verify-obr.md
+    # finding 10); the PDF could not be re-opened in this session.
+    box = copy.deepcopy(R[2698])
+    box.update(
+        value=0.3333, value_raw="a third", value_kind="point", metric=None,
+        proposed_metric="tax_gap_share_of_compliance_yield", unit_concept="share",
+        normalization="'a third' -> 0.3333 share", period=2026, time_basis="point_in_time",
+        reform_hint="Compliance measures announced in this Budget", source_column=None,
+        source_table="Box 3.1", parse_confidence="medium",
+        quote="Of the compliance measures announced in this Budget, a third of the yield is expected to reduce the tax gap",
+        note=("Added on 3 November from the OBR review's quotation of Box 3.1 (printed p.66); the PDF "
+              "was not re-opened, so the sentence may continue beyond the quoted words. The OBR gives "
+              "no year, so the period is the publication-year anchor."),
+    )
+    box["publication"] = dict(box["publication"], locator="Box 3.1 (p.66)")
+    box["conditions"] = {
+        "basis": "forecast", "fiscal_event": "autumn_budget_2026", "geography": "UK",
+        "horizon": "not stated", "proposed_measure_key": "ab2026__package_compliance_measures_announced",
+        "statistic": "share of the compliance measures' yield expected to reduce the tax gap",
+    }
+
+    out = []
+    for i, r in enumerate(R):
+        if i not in drop:
+            out.append(r)
+        if i == 2698:  # Box 3.1 (p.66) sits after para 3.13 (p.65)
+            out.append(box)
+
+    # Finding 9 and the cross-family harmonisation: one key per scope.
+    for r in out:
+        pk = r["conditions"].get("proposed_measure_key")
+        if pk in KEY_MAP:
+            r["conditions"]["proposed_measure_key"] = KEY_MAP[pk]
+    # Table 3.1's "Direct effect of tax measures" is its own scope, shared
+    # with RF's restatement, not a component of the total.
+    for r in out:
+        c = r["conditions"]
+        if c.get("component") == "tax measures (OBR classification)":
+            del c["component"]
+            c["proposed_measure_key"] = "ab2026__package_tax_decisions_since_march_2026"
+    return out
+
+
+KEY_MAP = {
+    # single measures: ab2026__<slug>
+    "ab2026__package_obr_landlord_registration_fee": "ab2026__private_landlord_register_fee_65",
+    "ab2026__package_obr_pwlb_distress_debt_relief": "ab2026__pwlb_debt_relief_councils_severe_distress",
+    "ab2026__package_obr_scottish_air_passenger_duty_devolution": "ab2026__scottish_air_passenger_duty_devolution",
+    "ab2026__package_obr_departmental_spending_growth_2031_32": "ab2026__departmental_spending_growth_2031_32",
+    "ab2026__package_obr_public_sector_pensions_2024_valuations": "ab2026__public_sector_pensions_2024_valuations",
+    "ab2026__package_obr_adjusted_state_pension_triple_lock": "ab2026__state_pension_triple_lock_adjustment",
+    # scope packages: no `obr` in the slug
+    "ab2026__package_obr_government_decisions_since_march_2026": "ab2026__package_government_decisions_since_march_2026",
+    "ab2026__package_obr_spending_decisions_since_march": "ab2026__package_spending_decisions_since_march_2026",
+    "ab2026__package_obr_non_scorecard_decisions": "ab2026__package_non_scorecard_decisions",
+    "ab2026__package_obr_other_ame_spending_decisions": "ab2026__package_other_ame_spending_decisions",
+    "ab2026__package_obr_other_departmental_spending_changes": "ab2026__package_other_departmental_spending_changes",
+    "ab2026__package_obr_other_tax_measures": "ab2026__package_other_tax_measures",
+    "ab2026__package_obr_tax_administration_compliance_and_debt": "ab2026__package_tax_administration_compliance_and_debt_collection",
+    "ab2026__package_obr_corporation_and_bank_tax_changes": "ab2026__package_corporation_and_bank_tax_changes",
+    "ab2026__package_obr_dividend_and_capital_gains_tax_changes": "ab2026__package_dividend_and_capital_gains_tax_changes",
+    "ab2026__package_obr_fuel_duty_and_electricity_vat": "ab2026__package_fuel_duty_and_electricity_vat",
+    # Table 3.1's grouping is receipts-only (0.1 in 2027-28 and 0.9 in
+    # 2029-30, against lines 61+62's totals of 160 and 954), so it is not
+    # exactly lines 61 and 62.
+    "ab2026__package_obr_savings_and_property_income_tax_rates": "ab2026__package_property_and_savings_income_rates_receipts",
+    "ab2026__package_obr_temporary_business_rates_reliefs": "ab2026__package_temporary_business_rates_reliefs",
+    "ab2026__package_obr_national_wealth_fund_and_british_business_bank": "ab2026__package_national_wealth_fund_and_british_business_bank",
+    "ab2026__package_obr_carbon_price_support_and_cfd_levies": "ab2026__package_carbon_price_support_and_cfd_levies",
+    "ab2026__package_obr_civil_service_transformation_programme": "ab2026__package_civil_service_transformation_programme",
+    "ab2026__package_obr_defence_investment_plan": "ab2026__package_defence_investment_plan",
+    "ab2026__package_obr_planned_capital_spending_reductions": "ab2026__package_planned_capital_spending_reductions",
+    "ab2026__package_obr_historical_fuel_duty_freezes_and_5p_cut": "ab2026__package_fuel_duty_freezes_since_2010_11",
+    "ab2026__package_obr_other_hmrc_compliance_and_debt": "ab2026__package_other_hmrc_compliance_and_debt",
+    # options
+    "ab2026_option__obr_fuel_duty_frozen_until_2029_30": "ab2026_option__fuel_duty_continued_freeze",
+    "ab2026_option__obr_health_foundation_social_care_reforms": "ab2026_option__health_foundation_social_care_reforms",
+}
+
+
+
 def main():
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode='wb', mtime=0, filename='') as gz:
-        for row in rows():
+        for row in review_fixes(list(rows())):
             gz.write((json.dumps(row, sort_keys=True, ensure_ascii=False) + '\n').encode('utf-8'))
     target = Path(__file__).with_name('claims_staged.jsonl.gz')
     target.write_bytes(buf.getvalue())
-    print(f'{len(CELLS)} rows -> {target.name}')
+    print(f'{len(review_fixes(list(rows())))} rows -> {target.name}')
 
 
 if __name__ == '__main__':
