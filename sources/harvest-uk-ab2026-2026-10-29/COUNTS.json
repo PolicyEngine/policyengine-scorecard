@@ -1,4 +1,12 @@
 {
+ "uk_centax": {
+  "rows": 110,
+  "primaries": 5,
+  "claims_sha256": "ccac3eb6af8eff5eebba81f24ab7b8082a13526ac308943f72db18b9e445bdb6",
+  "sources": [
+   "centax"
+  ]
+ },
  "uk_devolved_govts": {
   "rows": 19,
   "primaries": 2,
@@ -32,6 +40,14 @@
    "ifs"
   ]
  },
+ "uk_ippr": {
+  "rows": 3,
+  "primaries": 3,
+  "claims_sha256": "457ac8cabd815ca698b375f3271b3f6861f99bd958c6b7db779ede0a8e993c4b",
+  "sources": [
+   "ippr"
+  ]
+ },
  "uk_thinktank_misc": {
   "rows": 12,
   "primaries": 5,
@@ -43,6 +59,14 @@
    "learning_and_work_institute"
   ]
  },
+ "uk_tpa": {
+  "rows": 305,
+  "primaries": 10,
+  "claims_sha256": "114f27d2e28955ced736752d4962525adc4d494160a0d2da689cd8fd18c58d4d",
+  "sources": [
+   "tax_policy_associates"
+  ]
+ },
  "uk_trussell_wpi": {
   "rows": 1,
   "primaries": 1,
@@ -52,9 +76,9 @@
   ]
  },
  "_totals": {
-  "rows": 1313,
-  "restated": 227,
-  "families": 6,
+  "rows": 1731,
+  "restated": 292,
+  "families": 9,
   "pinned_on": "2026-10-29"
  }
 }
