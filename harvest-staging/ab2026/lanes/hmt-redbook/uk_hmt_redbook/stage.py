@@ -515,6 +515,45 @@ MANIFEST = json.loads(r"""[
 ]""")
 
 
+# ---------------------------------------------------------------------------
+# Tranche 1 finish, 3 November 2026 (PR #231). Explicit, commented edits on
+# top of the rows above, so each change can be read against the rework brief
+# (briefs/rework-hmt-redbook.md) and the key harmonisation. No primary was
+# re-opened: the session's network policy refused gov.uk, so every edit here
+# relabels fields and none changes a printed value.
+
+def _row(i, value_raw):
+    """Row i (0-based, the rework's order), checked by its printed value."""
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+# Rework brief item 5 ("component means a part only"): Chart 1.6's six data
+# labels are steps of the headroom bridge, not parts of a Table 6.1 measure,
+# so they name their bar in `chart_bar`, not `component`.
+for _i, _raw in ((20, "23.6"), (21, "-12.0"), (22, "0.9"), (23, "12.5"), (24, "2.0"), (25, "14.5")):
+    _c = _row(_i, _raw)["conditions"]
+    _c["chart_bar"] = _c.pop("component")
+
+# Key harmonisation (task 3.4): one key per scope across families.
+KEY_MAP = {}
+for _r in ROWS:
+    _pk = _r["conditions"].get("proposed_measure_key")
+    if _pk in KEY_MAP:
+        _r["conditions"]["proposed_measure_key"] = KEY_MAP[_pk]
+
+# The repository is public: manifest notes name no local machine paths.
+MANIFEST[0]["note"] = MANIFEST[0]["note"].replace(
+    "supplied at /Users/maxghenis/reviews/scorecard-ab2026-harvest/local-primaries/hmt-2026-10-28/E03668986_HMT_Budget_2026_ELAY__2_.pdf; copied into ignored primaries folder and hashed",
+    "supplied by the coordinator as a local download; hashed from that copy",
+)
+MANIFEST[4]["note"] = MANIFEST[4]["note"].replace(
+    "copied from /Users/maxghenis/reviews/scorecard-ab2026-harvest/local-primaries/hmt-2026-10-29/pension-tax-allowance-explainer.json",
+    "supplied by the coordinator as a local download",
+)
+assert not any("/Users/" in m["note"] for m in MANIFEST)
+
+
 def main():
     destination = Path(__file__).resolve().parent
     buf = io.BytesIO()

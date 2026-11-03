@@ -1,5 +1,7 @@
 # uk_hmt_redbook: Autumn Budget 2026 red book, Impact on households and Pension Tax Allowance explainer
 
+**Working files.** `stage.py`, which writes this family's two data files and is the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-redbook/uk_hmt_redbook/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. `.ab2026-primaries/uk_hmt_redbook/` was the lane's local primaries folder and was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+
 Source `hm_treasury`. **432 rows from 3 cited primaries (5 hashed versions), 23 proposed measure keys.** `stage.py` embeds every row and manifest line as data; `python3 stage.py` rewrites `claims_staged.jsonl.gz` and `manifest.jsonl` byte for byte with the standard library alone. No primary bytes are vendored.
 
 The first staging (29 October, morning) produced 1,699 rows and 250 proposed keys. This rework applies README rules 8 and 9: it keeps estimates of effects, drops design (parameters, allocations, financing, contingent liabilities), and gives each printed part of one Table 6.1 measure that measure's key. The section "Not staged (rules 8 and 9)" accounts for all 1,267 dropped rows.
@@ -136,7 +138,7 @@ Attribution: 263 rows `own`, 169 `restated` (OBR, ONS, IMF, DWP, DBT, the Britis
 - **Prices.** Every money figure is cash, as printed; Table 1.3's rows carry `price_basis: current prices`. No basis is converted. (The first staging tagged the £595 million administration saving `real terms`; paragraph 2.14's "real terms" belongs to the Spending Review's 16% cut, and the £595 million equals Table 6.1 line 63's cash +595.)
 - **"Central".** HM Treasury prints single estimates; `point` means the printed figure. No row is an inferred scenario. The one OBR scenario row (borrowing £12 billion lower if energy prices follow a lower path) carries `conditions.scenario`.
 - **Rule 9 components.** A printed part of one Table 6.1 measure carries the line's key, `conditions.component` naming the part and `conditions.row_type: measure_component`. Components are never summed with the line's total. This family has 94: the 66 Table 6.3 item cells and the 160,000 employees (line 45); the £3 billion and £1.7 billion parts of line 41's £4.7 billion; the two food-tariff consumer savings (line 10); the Scotland, Wales and Northern Ireland GDP effects of the India agreement (line 77); and, under proposed keys, the Tax and Spending parts of the OBR's policy effect, the three devolved Barnett consequentials and three parts of the regulatory administrative savings.
-- **`component` means a part only.** Where the first staging used `component` for a Chapter 6 paragraph title on a whole-measure row, the condition is now `paragraph_heading`; in the pension worked cases it is `quantity`.
+- **`component` means a part only.** Where the first staging used `component` for a Chapter 6 paragraph title on a whole-measure row, the condition is now `paragraph_heading`; in the pension worked cases it is `quantity`. Chart 1.6's six headroom-bridge data labels name their bar in `chart_bar` (changed on 3 November; the rework had left them under `component`).
 - **Attribution.** OBR forecasts are `restated` with source model `obr_efo_forecast`; ONS, IMF, DWP, DBT and British Business Bank figures are `restated` and their notes name the original. HM Treasury's own costings, counts and worked cases are `own`.
 
 ### Which spending figures stay (rule 8 exception)
@@ -255,8 +257,8 @@ Rule 9 moved 74 kept rows from proposed keys to a Table 6.1 line's key: the 66 T
 ## Verification
 
 - **Checker:** `PYTHONPATH=. uv run -q python pipeline/ab2026_harvest_contract.py sources/harvest-uk-ab2026-2026-10-29/uk_hmt_redbook` reports 432 rows, 0 problems.
-- **Determinism:** two runs of `stage.py` write the same `claims_staged.jsonl.gz`, sha256 `076f12ec3cf4245d70e3aba76710a5782a9c8c4e8b7f71940d69db45138cbfdd`, and an unchanged `manifest.jsonl`.
-- **Spot check:** 30 rows drawn with `random.Random(20261029).sample(range(432), 30)` (0-based row numbers), each re-opened at its locator in the hashed primaries: red-book and Impact on households pages extracted with `pdftotext -layout -f N -l N`; table cells read against the printed row and column. All 30 match on value, sign, unit and period.
+- **Determinism:** two runs of `stage.py` write the same `claims_staged.jsonl.gz` and an unchanged `manifest.jsonl`. COUNTS.json pins the gzip's sha256.
+- **Spot check (the rework's, 29 October):** 30 rows drawn with `random.Random(20261029).sample(range(432), 30)` (0-based row numbers), each re-opened at its locator in the hashed primaries: red-book and Impact on households pages extracted with `pdftotext -layout -f N -l N`; table cells read against the printed row and column. All 30 match on value, sign, unit and period.
 
 | Row | Locator | Printed | Staged value and unit | Period |
 |---:|---|---|---|---|
@@ -290,3 +292,16 @@ Rule 9 moved 74 kept rows from proposed keys to a Table 6.1 line's key: the 66 T
 | 369 | Impact on households para 2.10 | £33,500 | £33,500 gross household income, decile 3 | 2029, fy 2028-29 |
 | 395 | Table 2.C, fifth decile, 1 adult | 30,400 | £30,400 | 2029, fy 2028-29 |
 | 400 | Table 2.C, fourth decile, 1 adult | 26,300 | £26,300 | 2029, fy 2028-29 |
+
+### Tranche 1 finish (3 November 2026)
+
+The rework stopped before its report, so on 3 November each instruction of `briefs/rework-hmt-redbook.md` (on the staging branch) was checked against the rows:
+
+- **Removed metrics.** No `policy_parameter` row remains, and of the nine allocation and financing metrics only `spending_to_tax_ratio` remains, on one row (paragraph 1.10's "over four times"). It stays: it is a distributional statement printed in Impact on households, which item 3 of the brief keeps, not the fiscal aggregate the drop list targets. See the judgement calls above.
+- **Rule 9 and the "Also fix" section.** The 84% row is `unaffected_share` as printed. No row carries `ab2026__package_tax_gap_timely_payment`; line 45's items carry line 45's key as components. No measure without a Table 6.1 line is named as a package. No kept row has the scope of the coordinator's shared spellings (see "Proposed measure keys").
+- **`component`.** Six rows still used `component` for a chart bar; they now use `chart_bar`.
+- **Stale files.** The family had no REPORT.md or spot-check files left.
+- **Keys** were harmonised across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the proposed keys above give the final spellings.
+- **Checker:** 0 problems. **Determinism:** a re-run of `stage.py` reproduces the gzip and manifest byte for byte.
+- **Spot check: not repeated.** The brief asked for 15 random rows re-opened at their locators. The 3 November session's network policy refused gov.uk and assets.publishing.service.gov.uk (HTTP 403 at the proxy), so no primary could be fetched, and no row was re-opened. The 30-row check above is the rework's own; nobody independent has checked this rework yet.
+
