@@ -75,7 +75,7 @@ macro/fiscal-stance lane. This inventory records their exclusion, not claims:
 | Opening paragraph, buffer sentence | £23.6 billion in March; £14.5 billion now | Restated official fiscal headroom forecast; #55 |
 | Higher borrowing costs are here to stay, paragraph 1 | around 100 basis points; around 5.3 per cent | Gilt market context; #55 |
 | Same section, paragraph 2 | £7.4 billion; £250.6 billion; 2026-27 | DMO financing-remit revision and gilt issuance; #55 |
-| The debt rachet and path credibility, final paragraph | £12.4 billion over the next three years; £7 billion on average afterwards | Restated OBR borrowing effects; macro fiscal stance, #55 |
+| The debt rachet and path credibility, final paragraph | £12.4 billion over the next three years; £7 billion on average afterwards | Restated OBR estimate of the policy package's borrowing effect; AB2025 NIESR precedent stages no restated OBR/HMT figures (the OBR's own figure belongs to `uk_obr_tables`). Reason corrected on 3 November (thinktanks-b review finding 8). |
 | Same paragraph, debt forecast sentence | around 97 per cent in 2028-29; 96 per cent in 2031-32; 94 per cent in August | Restated OBR debt forecasts and debt-ratio context; #55 |
 | Global markets are fragile, paragraph 2 | £9 billion | Rounded fiscal-headroom reduction; #55 |
 | Same section, paragraph 3 | around £150 billion annually by end of decade | Debt-interest forecast; #55 |

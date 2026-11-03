@@ -139,9 +139,10 @@ ROWS = [
         proposed_metric="public_debt_change", normalization="£ billion × 1e9",
         conditions={"geography": "UK", "basis": "forecast", "horizon": "each year; no start or end year specified",
                     "sign_convention": "positive = increase in public debt",
-                    "proposed_measure_key": "ab2026__package_cps_public_financial_institutions"},
-        reform_hint="By channelling investment into Public Financial Institutions (PuFins)",
-        note="CPS's own asserted annual debt effect; method and component measures are not supplied in this primary. Table 6.1 and 6.2 line membership is unresolved, so no registered package is assigned. Point-in-time period anchors the annual-rate assertion at publication, without inventing a fiscal or calendar scoring year.",
+                    # thinktanks-b review finding 1: context, not a proposal.
+                    "measure_type": "debt increase from channelling investment into Public Financial Institutions (PuFins), as asserted by CPS"},
+        reform_hint=None,
+        note="CPS's own asserted annual debt effect of the government's whole Public Financial Institutions channel, tied to a CPS paper from the week before the Budget; it names no Budget decision, Table 6.1 or 6.2 line or year, so it is context with no measure or proposed key. Method and components are not supplied in this primary. Point-in-time period anchors the annual-rate assertion at publication, without inventing a fiscal or calendar scoring year.",
         parse_confidence="medium"),
     row("ifg", "institute_for_government", "arithmetic", "almost 100", 100,
         "the scorecard stretching to almost 100 policies",
@@ -152,13 +153,15 @@ ROWS = [
         conditions={"geography": "UK", "measure_type": "number of policies on the Budget scorecard",
                     "horizon": "scorecard as published on 28 October 2026"},
         note="Context count about the Budget document, not a scored package effect. The exact count is not inferred from ‘almost’; 100 is the printed upper threshold."),
+    # thinktanks-b review finding 6: the measure IfG counted is a `subgroup`
+    # of this context count, not a rule 9 `component`.
     row("ifg", "institute_for_government", "arithmetic", "one", 1,
         "Only one tax measure",
         "‘A budget of many measures but a mostly unchanged fiscal picture’, first paragraph",
         proposed_metric="measure_count", unit=None, proposed_unit="measures",
         normalization="printed word 'one' → 1 measure",
         conditions={"geography": "UK", "measure_type": "tax measures costing or saving more than £1bn in the last forecast year",
-                    "component": "a change to capital allowances", "horizon": "last year of the forecast; year not printed"},
+                    "subgroup": "a change to capital allowances", "horizon": "last year of the forecast; year not printed"},
         note="IfG's tally of measures exceeding the printed £1bn threshold, not a £1bn costing. Document-level context count; no policy-effect package is inferred."),
     row("ifg", "institute_for_government", "obr_efo_forecast", "56%", 56,
         "a 56% chance, based on past forecast errors",
@@ -232,6 +235,14 @@ ROWS = [
         note="Trussell explicitly attributes this finding to its own research, but does not identify its method, research dates or an exact percentage. Source model is unstated. Retrospective food-insecurity observation, not a modelled effect of freezing LHA.",
         parse_confidence="medium"),
 ]
+
+
+# thinktanks-b review finding 5: Trussell's row and primary move to the
+# AB2026 family uk_trussell_wpi (source trussell_wpi), as AB2025 staged
+# Trussell's Budget responses; its stage.py there carries the row unchanged
+# except the source slug.
+ROWS = [r for r in ROWS if r["source"] != "trussell"]
+del DOCUMENTS["trussell"]
 
 
 def main():

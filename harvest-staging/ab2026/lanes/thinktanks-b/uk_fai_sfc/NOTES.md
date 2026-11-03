@@ -1,5 +1,7 @@
 # uk_fai_sfc — Autumn Budget 2026
 
+**Superseded on 3 November 2026: this family has no rows and is not carried on #231's branch.** The thinktanks-b review's finding 7 moved the five Scottish Government rows and their primary to `uk_devolved_govts`, which now stages both devolved governments; `stage.py` here writes an empty claims file. The FAI reaction refused the lane's fetch (HTTP 403) and the SFC published nothing in scope on 28–29 October. The record below is the 29 October lane's, kept for its access and verification history.
+
 Staged 29 October 2026. This family covers the assigned Fraser of Allander Institute (FAI) reaction and a Scottish Government response about Scotland's funding. The Scottish Government publication was found while checking for Scottish Fiscal Commission (SFC) or Scottish Government consequences published on 28–29 October, as requested. FAI was blocked; no qualifying SFC publication was found.
 
 The family contains **5 rows from 1 primary**, all from the Scottish Government, source `scottish_government`, source_model `arithmetic`. They are the producer's reported funding projections and are marked `own` / `different_model`. The article names no other original estimator. The assigned `fraser_of_allander` and `scottish_fiscal_commission` sources contribute zero rows.

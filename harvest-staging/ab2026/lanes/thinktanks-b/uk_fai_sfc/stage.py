@@ -77,6 +77,13 @@ FIGURES = [
 ]
 
 
+# 3 November 2026: the thinktanks-b review (finding 7) moved these five
+# Scottish Government rows and their manifest line to uk_devolved_govts,
+# whose stage.py now writes them. This family keeps no rows: the FAI page
+# refused the lane's fetch and the SFC published nothing in scope.
+FIGURES = []
+
+
 def rows():
     for figure in FIGURES:
         yield {

@@ -1,4 +1,10 @@
-"""Reproduce the Welsh Government AB2026 harvest without refetching a page."""
+"""Reproduce the devolved governments' AB2026 harvest without refetching a page.
+
+The Welsh Government's written statement (rows 0-13) and, since
+3 November 2026, the Scottish Government's news release (rows 14-18), which
+the thinktanks-b review (finding 7) moved here from uk_fai_sfc so that both
+devolved governments sit in one family.
+"""
 
 import gzip
 import io
@@ -10,7 +16,10 @@ HERE = Path(__file__).resolve().parent
 SHA256 = "87490552c36d8ffd5787db18127704e467d93599e5708627adb6da7dcfe17c7c"
 URL = "https://www.gov.wales/written-statement-welsh-government-response-uk-autumn-budget-2026"
 TITLE = "Written Statement: Welsh Government response to the UK Autumn Budget 2026"
-PROPOSED_PACKAGE = "ab2026__package_welsh_settlement_changes"
+# Review finding 3: the key names the scope (Barnett consequentials of the
+# Budget's decisions), not the nation, so that HM Treasury's own figures for
+# the same scope (uk_hmt_redbook) share it. The nation is in `geography`.
+PROPOSED_PACKAGE = "ab2026__package_barnett_consequentials"
 MANIFEST = {
     "url": URL,
     "title": TITLE,
@@ -38,10 +47,10 @@ TABLE = [
     ("Total", ["172", "146", "148", "-18"]),
 ]
 SCOPE_NOTE = (
-    "Welsh Government's reported settlement changes following the Budget, "
-    "excluding employer pension contribution savings. The primary does not "
-    "enumerate Table 6.1 lines, so this is a proposed package, not a claim "
-    "that its scope equals all Table 6.1 spending decisions."
+    "Welsh Government's reported changes to its block grant from UK Government "
+    "decisions at the Budget, by resource and capital, as printed in Table 1, "
+    "excluding employer pension contribution savings. Wales's part of the "
+    "proposed package of the Budget's Barnett consequentials."
 )
 
 
@@ -100,7 +109,7 @@ def rows():
             "£448m", 448000000,
             "an additional £448m of funding over the current spending review period.",
             "Paragraph immediately before Table 1, first sentence",
-            {**change, "component": "Total", "horizon": "2026-27 to 2029-30 (Table 1)"},
+            {**change, "row_type": "total", "horizon": "2026-27 to 2029-30 (Table 1)"},
             2030, value_kind="cumulative",
         )
     ]
@@ -111,7 +120,12 @@ def rows():
             result.append(row(
                 raw, int(raw) * 1000000, raw,
                 f"Table 1: Changes to the Welsh Government Settlement; {component} row; {fy} column (£m)",
-                {**change, "component": component, "fy": fy}, int(fy[:4]) + 1,
+                # Review finding 2: Resource and Capital are parts of the
+                # Total; the Totals carry row_type "total" and no component.
+                ({**change, "row_type": "total", "fy": fy} if component == "Total"
+                 else {**change, "component": component,
+                       "row_type": "measure_component", "fy": fy}),
+                int(fy[:4]) + 1,
                 source_table="Table 1: Changes to the Welsh Government Settlement",
                 source_column=fy,
             ))
@@ -125,12 +139,17 @@ def rows():
     ]:
         result.append(row(
             raw, value, quote, locator,
-            {"component": component, "fy": fy, "basis": "forecast",
+            # Context rows: `budget`, not `component` (rule 9 reserves
+            # `component` for parts of a measure; review finding 6's reasoning).
+            {"budget": component, "fy": fy, "basis": "forecast",
              "price_basis": "real terms; price year not stated",
              "sign_convention": "positive = magnitude of reported real-terms funding reduction",
              "qualifier": qualifier,
              "comparison": "settlement level; comparison year not expressly stated"},
             int(fy[:4]) + 1, unit_concept="percent",
+            # Review finding 4: a real-terms change in the whole settlement is
+            # not a policy's effect on the grant (AB2025's block_grant_effect).
+            proposed_metric="devolved_funding_real_terms_change",
             normalization="percent as printed; lower denotes reduction, magnitude retained",
             value_kind="range_high" if component == "Capital" else "point",
             reform_hint=None,
@@ -142,16 +161,152 @@ def rows():
     return result
 
 
+# ---------------------------------------------------------------------------
+# Scottish Government, moved from uk_fai_sfc on 3 November 2026 (review
+# finding 7). Rows and manifest line unchanged except the metric (finding 4)
+# and `component` renamed `budget` on these context rows.
+
+SCOT_MANIFEST = {
+    "url": "https://www.gov.scot/news/uk-budget-delivers-real-cut-to-scotlands-funding/",
+    "title": "UK Budget delivers real cut to Scotland’s funding",
+    "date": "2026-10-28",
+    "publisher": "Scottish Government",
+    "sha256": "f3d0183e470f711b6821e4956e108c5d17210a392e6a6e471eccf297c807a6ac",
+    "bytes": 27662,
+    "doc_type": "html",
+    "access": "direct",
+    "retrieved": "2026-10-29",
+    "note": "Fresh exact prescribed browser-UA curl fetched HTTP 200 at 2026-10-29T15:22:47Z. SHA256 covers the fetched HTML bytes. Visible publication timestamp is 28 October 2026 15:45. JSON-LD dateModified is 2026-10-29T08:22:59Z, while dc.date.modified repeats 2026-10-28 15:45; no earlier copy was supplied, so a numerical change cannot be established. Five rows, read from opening body paragraphs 1–2. Local file .ab2026-primaries/uk_fai_sfc/scottish_government_budget_response.html."
+}
+
+
+SCOT_PUBLICATION = {
+    "title": "UK Budget delivers real cut to Scotland’s funding",
+    "url": "https://www.gov.scot/news/uk-budget-delivers-real-cut-to-scotlands-funding/",
+    "date": "2026-10-28",
+    "publisher": "Scottish Government",
+    "primary_sha256": "f3d0183e470f711b6821e4956e108c5d17210a392e6a6e471eccf297c807a6ac",
+    "access": "direct",
+}
+
+# Scottish Government. Reading order: the opening paragraph, then paragraph 2 from left to right.
+# Positive values retain the printed magnitudes; the conditions say "reduction".
+FIGURES = [
+    {
+        "component": "Resource and capital budgets",
+        "value_raw": "£650 million",
+        "value": 650_000_000,
+        "unit_concept": "gbp",
+        "normalization": "£ million × 1e6 -> GBP; positive magnitude of the reported reduction",
+        "quote": "around £650 million in 2027-28",
+        "locator": "Opening body paragraph, sentence beginning 'The UK Budget delivers' (HTML line 347)",
+        "source_column": "Total real-terms reduction",
+        "precision": "around",
+    },
+    {
+        "component": "Resource Block Grant",
+        "value_raw": "1.3%",
+        "value": 1.3,
+        "unit_concept": "percent",
+        "normalization": "percent as printed; positive magnitude of the reported reduction",
+        "quote": "reduce by 1.3%",
+        "locator": "Body paragraph 2, first sentence, resource block grant percentage (HTML line 348)",
+        "source_column": "Resource real-terms percentage reduction",
+        "precision": "as printed",
+    },
+    {
+        "component": "Resource Block Grant",
+        "value_raw": "£550 million",
+        "value": 550_000_000,
+        "unit_concept": "gbp",
+        "normalization": "£ million × 1e6 -> GBP; positive magnitude of the reported reduction",
+        "quote": "around £550 million",
+        "locator": "Body paragraph 2, first sentence, cash equivalent of resource reduction (HTML line 348)",
+        "source_column": "Resource real-terms reduction, cash equivalent",
+        "precision": "around",
+    },
+    {
+        "component": "Capital budget",
+        "value_raw": "1.5%",
+        "value": 1.5,
+        "unit_concept": "percent",
+        "normalization": "percent as printed; positive magnitude of the reported reduction",
+        "quote": "a 1.5% real terms reduction",
+        "locator": "Body paragraph 2, second sentence, capital percentage (HTML line 348)",
+        "source_column": "Capital real-terms percentage reduction",
+        "precision": "as printed",
+    },
+    {
+        "component": "Capital budget",
+        "value_raw": "£100 million",
+        "value": 100_000_000,
+        "unit_concept": "gbp",
+        "normalization": "£ million × 1e6 -> GBP; positive magnitude of the reported reduction",
+        "quote": "around £100 million",
+        "locator": "Body paragraph 2, second sentence, cash equivalent of capital reduction (HTML line 348)",
+        "source_column": "Capital real-terms reduction, cash equivalent",
+        "precision": "around",
+    },
+]
+
+
+def scottish_rows():
+    for figure in FIGURES:
+        yield {
+            "source": "scottish_government",
+            "source_model": "arithmetic",
+            "proposed_metric": "devolved_funding_real_terms_change",  # review finding 4
+            "unit_concept": figure["unit_concept"],
+            "value": figure["value"],
+            "value_raw": figure["value_raw"],
+            "normalization": figure["normalization"],
+            "value_kind": "point",
+            "period": 2028,
+            "time_basis": "fiscal_year",
+            "conditions": {
+                "fiscal_event": "autumn_budget_2026",
+                "fy": "2027-28",
+                "geography": "Scotland",
+                "basis": "forecast",
+                "budget": figure["component"],  # a context row: `budget`, not `component`
+                "price_basis": "real terms; base year not specified",
+                "comparison_basis": "reported funding reduction; comparator not specified in the primary",
+                "sign_convention": "positive = magnitude of reduction in Scottish Government funding",
+                "precision": figure["precision"],
+            },
+            "reform_hint": None,
+            "measure_key": None,
+            "attribution": "own",
+            "benchmark_class": "different_model",
+            "baseline_policy": None,
+            "publication": {**SCOT_PUBLICATION, "locator": figure["locator"]},
+            "source_table": None,
+            "source_column": figure["source_column"],
+            "quote": figure["quote"],
+            "note": (
+                "Scottish Government's reported real-terms funding projection, not an isolated "
+                "costing of AB2026 decisions. The article does not name an original estimator, "
+                "a comparison baseline or a price base year. No measure key or proposed measure "
+                "key is assigned. Positive printed magnitudes are retained, with the reduction "
+                "direction recorded in conditions. This is not a cash-terms Barnett consequential."
+            ),
+            "parse_confidence": "high",
+            "status": "ok",
+        }
+
+
 def main():
     (HERE / "manifest.jsonl").write_text(
-        json.dumps(MANIFEST, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
+        "".join(json.dumps(m, sort_keys=True, ensure_ascii=False) + "\n" for m in (MANIFEST, SCOT_MANIFEST)),
+        encoding="utf-8",
     )
+    claims = rows() + list(scottish_rows())
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as fh:
-        for item in rows():
+        for item in claims:
             fh.write((json.dumps(item, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8"))
     (HERE / "claims_staged.jsonl.gz").write_bytes(buf.getvalue())
-    print(f"{HERE.name}: {len(rows())} rows")
+    print(f"{HERE.name}: {len(claims)} rows")
 
 
 if __name__ == "__main__":
