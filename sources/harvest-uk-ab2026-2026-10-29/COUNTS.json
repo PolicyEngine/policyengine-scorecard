@@ -56,6 +56,14 @@
    "ippr"
   ]
  },
+ "uk_rf_ab2026": {
+  "rows": 766,
+  "primaries": 7,
+  "claims_sha256": "d4976001ec1985cbdd65ceddfc8768ca85bf5611ee480ac2b7e9fa138420f9c9",
+  "sources": [
+   "resolution_foundation"
+  ]
+ },
  "uk_thinktank_misc": {
   "rows": 12,
   "primaries": 5,
@@ -84,9 +92,9 @@
   ]
  },
  "_totals": {
-  "rows": 2328,
-  "restated": 294,
-  "families": 10,
+  "rows": 3094,
+  "restated": 378,
+  "families": 11,
   "pinned_on": "2026-10-29"
  }
 }
