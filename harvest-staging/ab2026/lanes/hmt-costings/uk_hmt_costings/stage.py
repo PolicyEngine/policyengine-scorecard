@@ -3992,6 +3992,42 @@ def text_rows(t, n):
         }
 
 
+# === review fixes, 3 November 2026 ========================================
+# verify-costings.md (PR #231). Explicit edits to the data above; no primary
+# was re-opened (the session's network policy refused gov.uk), and no
+# printed value changes.
+
+# Finding 1: p.50's UK tax gap (6.4%, £59.2bn) is HMRC's whole-economy
+# statistic, not a part of line 45 and not even the costing's base, so the
+# two rows are context: null key and reform_hint, no mapping conditions.
+_p50 = [t for t in TEXT_CLAIMS if t["page"] == 50]
+assert [t["value_raw"] for t in _p50] == ["6.4%", "£59.2 billion"], _p50
+for _t in _p50:
+    _t["context"] = True
+
+# Finding 2: the p.41 British Business Bank costing keeps its proposed key,
+# with the double-counting risk stated.
+_BBB = (" By Table 6.1's footnote 2 and its £10m bar, this costing is very probably inside a"
+        " Table 6.1 line, most plausibly line 41 (lines 29 and 44 are fully accounted for by"
+        " their own notes); tranche 2 must never add it to Table 6.1 lines or totals.")
+_p41 = [n for n in COSTINGS if n["page"] == 41]
+assert len(_p41) == 1 and _p41[0]["mapping_note"].startswith("No Table 6.1 title names this measure.")
+_p41[0]["mapping_note"] += _BBB
+
+# Finding 3: the line 45 and 47 component notes do not sum to their line.
+_GAP = {
+    "Component of Table 6.1 line 45 ": " These ten notes do not sum to the line: Table 6.1 is lower by 100, 190, 125, 160, 150 and 200.",
+    "Component of Table 6.1 line 47 ": " These five notes do not sum to the line: Table 6.1 differs by +205, \u2212135, \u221265, +10, +10 and +5.",
+}
+_seen = {k: 0 for k in _GAP}
+for _n in COSTINGS:
+    for _prefix, _text in _GAP.items():
+        if _n["mapping_note"].startswith(_prefix):
+            _n["mapping_note"] += _text
+            _seen[_prefix] += 1
+assert list(_seen.values()) == [10, 5], _seen
+
+
 def build():
     by_page = {n["page"]: n for n in COSTINGS}
     texts = {}
