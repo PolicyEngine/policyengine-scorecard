@@ -48,7 +48,7 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
 
 ## Families staged
 
-12 families, 5,891 rows (401 `restated`), as `COUNTS.json` pins them.
+12 families, 5,948 rows (446 `restated`), as `COUNTS.json` pins them.
 
 | family | rows | primaries | producer slugs |
 |---|--:|--:|---|
@@ -57,7 +57,7 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
 | `uk_hmt_costings` | 597 | 1 | `hm_treasury` |
 | `uk_hmt_redbook` | 432 | 5 | `hm_treasury` |
 | `uk_hmt_tables` | 762 | 2 | `hm_treasury` |
-| `uk_ifs_ab2026` | 87 | 5 | `ifs` |
+| `uk_ifs_ab2026` | 144 | 14 | `ifs` |
 | `uk_ippr` | 3 | 3 | `ippr` |
 | `uk_obr_tables` | 2,797 | 3 | `obr_efo` |
 | `uk_rf_ab2026` | 766 | 7 | `resolution_foundation` |
@@ -65,7 +65,7 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
 | `uk_tpa` | 305 | 10 | `tax_policy_associates` |
 | `uk_trussell_wpi` | 1 | 1 | `trussell_wpi` |
 
-Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the five reviews; this branch carries only each family's three files, as AB2025 does. The review fixes, the IFS addendum's sections 3 and 4 and the cross-family key harmonisation were applied on 3 November 2026; each family's NOTES.md records them.
+Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the five reviews; this branch carries only each family's three files, as AB2025 does. On 3 November 2026 we applied the review fixes, all four sections of the IFS addendum and the cross-family key harmonisation, and each family's NOTES.md records them.
 
 **Families with no rows** are not carried here, as AB2025 has no empty family. Their working files stay on the staging branch:
 
@@ -73,8 +73,6 @@ Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab
 - `uk_smf`: the Social Market Foundation page returned a challenge to every fetch on 29 October.
 - `uk_niesr`: NIESR's Budget-day reaction ("Breathing Space, Not a Strategy") was fetched, but it holds macro and fiscal-stance commentary for the #55 lane and restated OBR figures, which the AB2025 NIESR family did not stage either.
 - `uk_fai_sfc`: the Fraser of Allander Institute's reaction refused the fetch (HTTP 403), and the Scottish Fiscal Commission published nothing in scope on 28 or 29 October. The Scottish Government's five rows, first staged here, moved to `uk_devolved_govts` on 3 November.
-
-**Still to come from the coordinator:** rows from the two IFS pages read in a browser on 29 October (the initial response and the collection's opening remarks), which are not on GitHub. `uk_ifs_ab2026/NOTES.md` lists them as pending.
 
 ## Producer slugs and families
 

@@ -41,9 +41,9 @@
   ]
  },
  "uk_ifs_ab2026": {
-  "rows": 87,
-  "primaries": 5,
-  "claims_sha256": "2e8b2dc5a85bb66fb11431f5c20565a40b2cf546e7edaabedd3a6c56ddb68d49",
+  "rows": 144,
+  "primaries": 14,
+  "claims_sha256": "40331bc6beb36fc78d2e10731730c4c8a15942d4419bd840d0cebc95988e6125",
   "sources": [
    "ifs"
   ]
@@ -100,8 +100,8 @@
   ]
  },
  "_totals": {
-  "rows": 5891,
-  "restated": 401,
+  "rows": 5948,
+  "restated": 446,
   "families": 12,
   "pinned_on": "2026-10-29"
  }
