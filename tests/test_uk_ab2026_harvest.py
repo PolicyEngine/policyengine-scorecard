@@ -364,3 +364,32 @@ def test_every_borrowing_row_says_which_way_it_runs():
             assert relation in ("same", "opposite") or basis.endswith(
                 ":not_this_quantity"
             ), (fam, r["conditions"].get("sign_convention"))
+
+
+# review A H-5: every (metric, sign convention) pair a staged row carries, for
+# a metric signs.py orients, with the relation a reviewer checked it reads
+# (4 November 2026). A new phrase, or a signs.py edit that changes a reading,
+# fails here until the pair is reviewed and pinned.
+SIGN_READINGS = {
+    (p["metric"], p["sign_convention"]): p["relation"]
+    for p in json.loads(
+        (ROOT / "tests" / "fixtures" / "ab2026_sign_readings.json").read_text()
+    )
+}
+
+
+def test_every_staged_sign_convention_reads_as_reviewed():
+    seen = set()
+    for fam in FAMILIES:
+        for r in rows(fam):
+            metric = r.get("metric")
+            if metric not in signs.ORIENTATION:
+                continue
+            pair = (metric, r["conditions"].get("sign_convention"))
+            seen.add(pair)
+            assert pair in SIGN_READINGS, (fam, pair)
+            relation, _ = signs.classify(
+                {"metric": metric, "conditions": r["conditions"], "country": "UK"}
+            )
+            assert relation == SIGN_READINGS[pair], (fam, pair, relation)
+    assert seen == set(SIGN_READINGS), set(SIGN_READINGS) - seen

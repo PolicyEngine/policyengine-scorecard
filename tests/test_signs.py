@@ -200,6 +200,38 @@ def _row(metric, convention=None, *, country="UK", source="x", annotations=(), *
         ),
         (_row("energy_bill_change", "positive = saving"), "opposite"),
         (_row("energy_bill_change", "positive = higher council tax bill"), "same"),
+        # review A H-4: a phrase's negative leg doesn't decide its sign, and a
+        # phrase that matches both lists reads unknown
+        (
+            _row(
+                "decisions_effect_on_borrowing",
+                "positive = increase in borrowing; negative = reduction in borrowing",
+            ),
+            "same",
+        ),
+        (
+            _row(
+                "revenue_change",
+                "positive = yield to the Exchequer; negative = increase in borrowing",
+            ),
+            "same",
+        ),
+        (
+            _row(
+                "average_household_income_change",
+                "positive = gain to households; negative = loss to households",
+            ),
+            "same",
+        ),
+        (_row("revenue_change", "positive = cost saving to the Exchequer"), "unknown"),
+        (_row("revenue_change", "negative = increase in borrowing"), "unknown"),
+        (
+            _row(
+                "decisions_effect_on_borrowing",
+                "positive = increase in PSNB; negative = reduction in PSNB",
+            ),
+            "same",
+        ),
         # levels, and changes with no stated convention
         (_row("poverty_rate"), "same"),
         (_row("revenue_change", country="US"), "same"),
@@ -256,11 +288,20 @@ _DEFINITE = sorted(
         for phrase in phrases
     }
 )
-_FILLER = st.text(alphabet=" 0123456789;,()=-", max_size=12)
+_FILLER = st.text(alphabet=" 0123456789;,()=-abcdefghijklmnopqrstuvwxyz", max_size=12)
+# a negative leg that names any definite phrase (review A H-5)
+# (a phrase that itself describes the negative side can't head one)
+_NEGATIVE_LEG = st.sampled_from([p for p in _DEFINITE if "negative" not in p]).map(
+    lambda p: "; negative = " + p
+)
 
 
-@settings(max_examples=200, deadline=None)
-@given(phrase=st.sampled_from(_DEFINITE), before=_FILLER, after=_FILLER)
+@settings(max_examples=300, deadline=None)
+@given(
+    phrase=st.sampled_from(_DEFINITE),
+    before=_FILLER,
+    after=st.one_of(_FILLER, _NEGATIVE_LEG),
+)
 def test_one_phrase_reads_opposite_ways_for_revenue_and_borrowing(
     phrase, before, after
 ):
