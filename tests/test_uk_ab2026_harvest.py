@@ -201,8 +201,8 @@ TOTAL_KEYS = {
         "package_non_scorecard_decisions",
     )
 } | {"ab2026_option__tax_decisions_with_continued_fuel_duty_freeze"}
-# the OBR's total, which also keys its Table 1.1 lines by head and its total
-# of receipts measures
+# the key of the OBR's total, which the OBR stager also gives the workbook's
+# Table 1.1 lines by head and its total of receipts measures
 GOVERNMENT_DECISIONS = K.package_key("package_government_decisions_since_march_2026")
 RECEIPTS_TOTAL = "Total effects of receipts measures (£ millions)"
 IFS_TAX_CHANGE = K.package_key("package_ifs_announced_tax_changes")
@@ -225,11 +225,12 @@ def test_rows_keyed_to_a_total_take_the_borrowing_metric():
 
 
 def test_a_totals_lines_by_head_keep_revenue_change():
-    """The OBR keys its Table 1.1 lines by tax and spending head, and the
-    total of its receipts heads, to the total they add up to. Those rows keep
-    revenue_change; every other row on that key gives the total, its direct
-    or indirect effects or a part of them, and takes the borrowing metric or,
-    for the current budget deficit, proposes fiscal_balance_change."""
+    """The OBR stager keys the workbook's Table 1.1 lines by tax and spending
+    head, and its total of receipts measures, to the total effect of
+    Government decisions. Those rows keep revenue_change; every other row on
+    that key gives the total, its direct or indirect effects or a part of
+    them, and takes the borrowing metric or, for the current budget deficit,
+    proposes fiscal_balance_change."""
     on_key = [
         r for fam in FAMILIES for r in rows(fam) if _key(r) == GOVERNMENT_DECISIONS
     ]
