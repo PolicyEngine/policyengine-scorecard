@@ -261,3 +261,4 @@ def test_each_receipt_matches_the_dashboard_commit(key):
     )
     assert ex["data"]["dataset_revision"] == rc["dataset_revision"]
     assert ex["data"]["dataset_sha256"] == rc["dataset_sha256"]
+    assert ex["wrapper"] == {"name": "policyengine", "version": rc["policyengine"]}
