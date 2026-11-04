@@ -237,6 +237,53 @@ ROWS = [
 ]
 
 
+# === review B fixes, 4 November 2026 ======================================
+# Review B (PR #231, issue comment 6635498758): uk_thinktank_misc findings
+# 1-3 and uk_trussell_wpi finding 1 (with review A's H-6(a)). The data above
+# is shared by uk_thinktank_misc's and uk_trussell_wpi's stage.py (judgement
+# call 10), so this block is identical in both. No primary was re-opened, and
+# no printed value changes.
+
+def _row(i, value_raw):
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+
+# H-6(a), misc finding 2 and Trussell finding 1: a registered Metric goes in
+# `metric`, not `proposed_metric`.
+for _i, _raw, _metric in ((2, "£15 billion", "fiscal_headroom"), (8, "80%", "affected_share"),
+                          (10, "one million", "affected_count"), (12, "over half", "affected_share")):
+    _r = _row(_i, _raw)
+    assert _r["proposed_metric"] == _metric, _r
+    _r["metric"], _r["proposed_metric"] = _metric, None
+
+# Misc finding 1: IfG's "around 80%" restates HM Treasury's paragraph 3.5
+# ("around 80% of households in England will gain further from the £100
+# Household Energy Payment"), which uk_hmt_redbook row 193 stages.
+_r = _row(8, "80%")
+_r["attribution"] = "restated"
+_r["source_model"] = "administrative_data"
+_r["conditions"]["originator"] = "HM Treasury, Budget 2026 para 3.5"
+_r["conditions"]["geography"] = "England"
+_r["conditions"]["denominator"] = "households in England (HM Treasury)"
+_r["note"] = ("Restates HM Treasury's Budget 2026 paragraph 3.5 ('around 80% of households in England"
+              " will gain further from the £100 Household Energy Payment'; its footnote counts 20 million"
+              " households in bands A-D), which uk_hmt_redbook row 193 stages; IfG cites no source. The"
+              " numerator is the £100 council-tax rebate for bands A-D, Table 6.1 line 1. No fiscal year"
+              " is printed.")
+
+# Misc finding 3: the OBR's restated figure (EFO para 1.2) is real household
+# disposable income per person.
+_row(9, "2%")["conditions"]["measure_type"] = "real household disposable income per person"
+
+# H-6(d): every row names its geography from the closed list; Citizens
+# Advice prints none, so it is "not stated" (the note already says so).
+_r = _row(11, "£60")
+assert "geography" not in _r["conditions"]
+_r["conditions"]["geography"] = "not stated"
+
+
 # thinktanks-b review finding 5: Trussell's row and primary move to the
 # AB2026 family uk_trussell_wpi (source trussell_wpi), as AB2025 staged
 # Trussell's Budget responses; its stage.py there carries the row unchanged

@@ -14,7 +14,7 @@ The thinktanks-b lane found [Our response to the Autumn Budget 2026](https://www
 |---|---:|---|
 | `null` | 1 | Helen Barnard's “over half of private renters on low incomes” in receipt of Local Housing Allowance ran out of food and could not afford more, in the last 12 months |
 
-- `proposed_metric: affected_share`, unit `share`: “over half” is the strict lower bound 0.5, `value_kind: range_low`.
+- `metric: affected_share`, the registered metric (`models.py` registers it, so it goes in `metric`, not `proposed_metric`; changed on 4 November, review B finding 1 and review A's H-6(a)), unit `share`: “over half” is the strict lower bound 0.5, `value_kind: range_low`.
 - Trussell calls the finding its own research but gives no method, research dates or exact percentage: `source_model: unstated`, `own`, `administrative_fact` for a retrospective reported observation, `parse_confidence: medium`.
 - Context, not the modelled effect of the LHA freeze or of any Budget measure: no measure key and no proposed key. The 12-month window is `conditions.horizon`; the period is the publication-year anchor 2026, `point_in_time`.
 
@@ -25,5 +25,6 @@ The thinktanks-b lane found [Our response to the Autumn Budget 2026](https://www
 
 ## Verification
 
+- **4 November:** review B (PR #231, issue comment 6635498758) finding 1: the row carries the registered `affected_share` in `metric`, with `proposed_metric` null. The edit sits in the review-fixes block `stage.py` shares word for word with `uk_thinktank_misc`. The contract checker reports 1 row, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. No primary was re-opened.
 - **3 November:** the contract checker reports 1 row, 0 problems; a re-run of `stage.py` reproduces `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. No primary was re-opened (the session's network policy refused trussell.org.uk).
 - **29 October (in `uk_thinktank_misc`):** the lane re-opened the saved page at the locator and checked the quote and value against it, and checked the quote is contiguous text under 15 words containing `value_raw`.
