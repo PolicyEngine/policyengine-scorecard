@@ -152,6 +152,20 @@ del _r["conditions"]["proposed_measure_key"]
 _r["value_kind"] = "range_high"
 
 
+# === review B fixes, 4 November 2026 ======================================
+# Review B (PR #231, issue comment 6635498758), uk_ippr finding 1, taken as
+# the coordinator's brief says. IPPR prints an unsigned 0.2 ("lower ... by at
+# least"); README rule 10 keeps the sign the producer prints, so the row
+# keeps the magnitude with an "as worded" convention, as uk_obr_tables row
+# 2653 does, and "at least" makes it a lower bound.
+_r = ROWS[0]
+assert _r["value_raw"] == "0.2 percentage points"
+_r["value"] = 0.2
+_r["value_kind"] = "range_low"
+_r["normalization"] = "'lower inflation by at least 0.2 percentage points' -> 0.2 (magnitude as worded; 'at least' -> lower bound)"
+_r["conditions"]["sign_convention"] = "as worded: positive = reduction in CPI inflation"
+
+
 def manifest_lines():
     keys = ["url", "title", "date", "publisher", "sha256", "bytes", "doc_type", "access", "retrieved", "note"]
     return "".join(json.dumps({k: p[k] for k in keys}, ensure_ascii=False) + "\n" for p in PUBS.values())

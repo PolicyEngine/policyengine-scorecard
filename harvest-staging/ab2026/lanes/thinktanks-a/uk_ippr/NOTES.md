@@ -19,7 +19,7 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
 
 - **The listing:** the media-office listing (https://www.ippr.org/media-office, pages 1 and 2) was fetched on 2026-10-29 to find the responses. `/news-and-media` returns 404, and `/articles` lists no Budget piece.
 - **The releases:** all three were fetched directly (`curl -sSL`, browser User-Agent, HTTP 200), "Unfinished business" at 16:17Z and the North and Scotland releases at 16:35Z.
-- **Edits after publication:** each page's JSON-LD shows a `dateModified` on 29 October (16:04Z, 16:21Z, 16:34Z), after its 28 October `datePublished`. The copies hashed are the fetches above. Nothing came from a local copy.
+- **`dateModified` is a render time, not an edit:** each page's JSON-LD showed a `dateModified` on 29 October (16:04Z, 16:21Z, 16:34Z), after its 28 October `datePublished`. Review B's fetches on 4 November show 14:39–14:46Z that day with byte-identical length, and two fetches of the same page 30 minutes apart differ only in that field and Cloudflare's email tokens. So the field records when the page was served, and no edit after publication is shown. The copies hashed are the fetches above. Nothing came from a local copy.
 
 ## Rows by primary and measure key
 
@@ -36,7 +36,7 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
 ## The three rows
 
 1. **"It will lower inflation by at least 0.2 percentage points"** (Carsten Jung, on "the cost of living support announced today").
-   - Staged as `cpi_inflation_effect`, −0.2, `range_high`: "lower by at least 0.2" makes the signed −0.2 an upper bound. Context, with no proposed key: IPPR's words do not define the scope (changed on 3 November, thinktanks-a review finding 1).
+   - Staged as `cpi_inflation_effect`, 0.2, `range_low`, with `sign_convention: "as worded: positive = reduction in CPI inflation"`: IPPR prints the magnitude unsigned, README rule 10 keeps the producer's sign, and "at least" makes it a lower bound (changed on 4 November, review B finding 1). Context, with no proposed key: IPPR's words do not define the scope (changed on 3 November, thinktanks-a review finding 1).
    - IPPR names no source and no period. The OBR's EFO paragraph 3.10 says the fuel duty changes and the temporary VAT cut on domestic electricity (Table 6.1 lines 2 and 3) "reduce CPI inflation by 0.22 percentage points in the second quarter of 2027". So the row is `restated` with `parse_confidence: medium`, at `period` 2027 (`point_in_time`).
 2. **"the £18 billion annual taxpayer losses at the Bank of England"** (Carsten Jung).
    - Staged as `apf_indemnity_losses`, the AB2025 uk_ippr proposal, which staged IPPR's "£22 billion" the same way. `restated`, source not stated.
@@ -52,8 +52,8 @@ The listing shows nothing on 29 October. The source slug is `ippr`, as in the AB
 ## Not staged, and why
 
 - **Design, not estimates** (README rule 8: spending allocations, financing remits and payment amounts are a measure's design):
-  - IPPR North's "£285million of good growth funds" is HM Treasury's allocation ("£285 million in 2027-28, comprising £165 million to support places with a mayor … to establish Good Growth Funds and £120 million of incubator capital funding for areas transitioning towards a devolution deal"), restated. It is a spending allocation, and part of Table 6.1 line 20, whose costing (−£340m in 2027-28) also includes the subsidy on the £1.5bn finance. The uk_hmt_redbook family stages HM Treasury's own £285m as a row keyed to `ab2026__good_growth_funds`, which rule 8 may also exclude.
-  - IPPR North's "£1.5billion borrowing facilities for building infrastructure" is the size of HM Treasury's lending facility for Mayoral Strategic Authorities, a financing remit (uk_hmt_redbook stages it as `policy_parameter`).
+  - IPPR North's "£285million of good growth funds" is HM Treasury's allocation ("£285 million in 2027-28, comprising £165 million to support places with a mayor … to establish Good Growth Funds and £120 million of incubator capital funding for areas transitioning towards a devolution deal"), restated. It is a spending allocation, and part of Table 6.1 line 20, whose costing (−£340m in 2027-28) also includes the subsidy on the £1.5bn finance. The reworked uk_hmt_redbook family does not stage HM Treasury's £285m either (rule 8).
+  - IPPR North's "£1.5billion borrowing facilities for building infrastructure" is the size of HM Treasury's lending facility for Mayoral Strategic Authorities, a financing remit; the reworked uk_hmt_redbook family stages no `policy_parameter` row and does not stage it either.
   - IPPR Scotland's "Bill support of £100 for households in lower council tax bands" is the Household Energy Payment's amount.
 - **IPPR Scotland** prints no other number, so it gives 0 rows; it is manifested for the tally.
 - **Pre-Budget IPPR releases about this Budget,** outside the assigned "responses of 28–29 October". Each was fetched and hashed on 2026-10-29, and each is a candidate for a follow-up if the family is to include pre-Budget options, as AB2025's did:
@@ -80,3 +80,9 @@ The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md`
 - **Finding 1:** row 0 (−0.2pp CPI) is context. Jung says only "The cost of living support announced today", and Quilter-Pinner "action to support families with the cost of living". The lines 2 and 3 scope came from matching the OBR's paragraph 3.10, which is our inference, and README rule 3 says the scope must be the producer's. So the proposed key `ab2026__package_cost_of_living_support` is withdrawn, the reform hint and note stay, and `value_kind` is `range_high`.
 - **Verification:** no primary was re-opened (the session's network policy refused ippr.org); the contract checker reports 3 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte.
 
+## Review fixes, 4 November 2026
+
+Review B (PR #231, issue comment 6635498758) approved this family with fixes; review A's K-7(f) asked for the same NOTES correction as its second item. This session re-opened no primary.
+
+- **Finding 1 (coordinator's call: take the fix):** row 0 stores 0.2, `range_low`, `sign_convention: "as worded: positive = reduction in CPI inflation"`, as the OBR and red book CPI rows keep the magnitude (`uk_obr_tables` row 2653).
+- **Finding 2 and K-7(f):** "Not staged" no longer says the red book stages HM Treasury's £285m or the £1.5bn as `policy_parameter`; the reworked red book stages neither. The access recipe reads JSON-LD `dateModified` as a render time, not an edit.
