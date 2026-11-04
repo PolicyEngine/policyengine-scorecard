@@ -566,6 +566,92 @@ _r["metric"] = "average_tax_rate"
 _r.pop("proposed_metric")
 
 
+# === review B fixes, 4 November 2026 ======================================
+# Review B (PR #231, issue comment 6635498758), uk_centax findings 1-6, with
+# the coordinator's call on finding 2. Explicit edits on top of the rows
+# above; no primary was re-opened in this session. The two added rows come
+# from the reaction page's 4 November version (review B's hash, matched by
+# the coordinator's own fetch), quoted as the coordinator's brief gives them.
+
+# Finding 1: row 2's £1.6bn repeats the OBR's printed average (EFO paras 3.4
+# and 3.13), so it is restated, not CenTax's own arithmetic.
+_r = _row(2, "£1.6 billion")
+_r["attribution"] = "restated"
+_r["source_model"] = "obr_efo_forecast"
+_r["conditions"].pop("derived_from")
+_r["conditions"]["originator"] = "OBR, Economic and fiscal outlook October 2026, paras 3.4 and 3.13"
+_r["note"] = "Repeats the OBR's average (the mean of red book Table 6.3 row 3 is £1,592m)."
+
+# Finding 3: the bunching counts have no registered metric (the repository's
+# childcare adapter drops them as "a behavioural-model count of parents").
+for _i, _raw in ((26, "1,100"), (27, "11,980")):
+    _r = _row(_i, _raw)
+    _r.pop("metric")
+    _r["proposed_metric"] = "parents_bunching"
+
+# Finding 4: rows 87-92 give the revenue shares of one income type each, so
+# they are parts of the investment-income option (rule 9, as rows 84-86).
+for _i, _raw in ((87, "45%"), (88, "6%"), (89, "69%"), (90, "4%"), (91, "74%"), (92, "4%")):
+    _c = _row(_i, _raw)["conditions"]
+    assert _c.get("income_type"), _i
+    _c["row_type"] = "measure_component"
+    _c["component"] = _c["income_type"]
+
+# Finding 5: Table 1's "share of affected population" rows name their
+# denominator, as rows 63-64 do.
+for _i in (67, 69, 71, 73, 75, 77, 79, 81, 83):
+    _r = ROWS[_i]
+    assert _r["metric"] == "affected_share" and "Table 1" in _r["publication"]["locator"], _i
+    _r["conditions"]["denominator"] = "taxpayers affected by the reform"
+
+# Finding 6: row 0 says why it sits at 2027-28.
+_r = _row(0, "53%")
+_r["conditions"]["year_note"] = ("no year in the sentence; staged at 2027-28, the first year of the"
+                                 " Pension Tax Allowance (Table 6.1 line 52: from 6 April 2027)")
+
+# Finding 2 (coordinator's call): the reaction page finished updating after
+# the hashed copy. Its 4 November version is a second primary (rule 7), and
+# its two in-scope figures are staged from it.
+PUBS["RX2"] = {
+    "url": "https://centax.org.uk/autumn-budget-2026-reaction/",
+    "title": "Autumn Budget 2026: Initial reaction (4 November version, finished updating)",
+    "date": "2026-10-28",
+    "publisher": PUBLISHER,
+    "sha256": "5103e06ae3a5831ac866ded44b6aa68187adae2b2fa5dc8b68700938a02b3446",
+    "bytes": 271039,
+    "doc_type": "html",
+    "access": "direct",
+    "retrieved": "2026-11-04",
+    "note": ("The reaction page after it finished updating ('This page has finished updating'),"
+             " hashed by review B on 4 November and matched by the coordinator's own fetch that"
+             " day. It adds seven sections the 29 October copy lacks: Big picture; Tax reliefs for"
+             " founders and employees (CGT, BADR, Founders' Relief, EMI2/CSOP and evaluation parts);"
+             " Company distributions framework. 2 rows cite it; the 3 earlier rows keep citing"
+             " the 29 October copy, whose quotes this version still prints."),
+    "file": "autumn-budget-2026-reaction-2026-11-04.html",
+}
+add("RX2", mn(800), "£800 million",
+    "The Government’s proposed changes are estimated to raise £800 million in 2029-30.",
+    "'Company distributions framework' section, under 'Comment'",
+    metric="revenue_change", unit="gbp", normalization="£ million × 1e6", fy="2029-30",
+    key="ab2026__distributions_framework_modernised", attribution="restated",
+    model="hmt_costing_obr_certified",
+    cond={"basis": "forecast", "sign_convention": YIELD,
+          "originator": "HM Treasury, Budget 2026 Table 6.1 line 49"},
+    hint="Distributions: Modernise the distributions framework from 6 April 2028",
+    note="Restates HM Treasury's Table 6.1 line 49 (£800m in 2029-30). CenTax cites the Government.")
+add("RX2", 0.5, "over half", "would result in lower tax for over half of CGT payers",
+    "'Tax reliefs for founders and employees' section, under 'Comment', subsection"
+    " 'Wider picture on Capital Gains Tax (CGT) reform' (the sentence opening 'The interaction"
+    " of our proposed reforms to the CGT base with the increase in rates')",
+    metric="share_with_tax_cut", unit="share", normalization="'over half' -> 0.5 (lower bound)",
+    fy="2029-30", pkey=CGT, kind="range_low",
+    cond={"denominator": "CGT payers",
+          "year_note": "no year in the sentence; staged with the 2030 costing of the package it describes; " + YEARS},
+    hint=H_CGT, conf="medium",
+    note="CenTax's own claim about its CGT package (its base reforms together with the rate increase).")
+
+
 # === output and --verify ====================================================
 
 def manifest_lines():
