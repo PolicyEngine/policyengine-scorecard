@@ -1,0 +1,247 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.8545701209999947,
+    "end_rss_bytes": 12188545024,
+    "peak_rss_bytes": 12188545024,
+    "rss_after_gc_bytes": 10264006656,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 350806016,
+    "wall_seconds": 72.46723289799999
+   },
+   "seconds": 73.32624054500002,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 62.82368792700004,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 61.536148372000014,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 64.00822303400003,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 104.19732944500004,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 125.88274003799995,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.0950844170000664,
+    "end_rss_bytes": 15430426624,
+    "peak_rss_bytes": 15498461184,
+    "rss_after_gc_bytes": 15430426624,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 15390306304,
+    "wall_seconds": 49.32184773999995
+   },
+   "seconds": 50.421647699999994,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 62.996831068000006,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 63.0687238349999,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 66.23045274499998,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 110.86979960999986,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 76.622975215,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.2307987809999759,
+    "end_rss_bytes": 14084337664,
+    "peak_rss_bytes": 14084390912,
+    "rss_after_gc_bytes": 14084337664,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14084337664,
+    "wall_seconds": 47.45645760299999
+   },
+   "seconds": 48.69242421000013,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 67.50896874,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 66.44621076299995,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 71.68550237499994,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 107.87537439900007,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 77.08595000199989,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.3782605270000658,
+    "end_rss_bytes": 14148218880,
+    "peak_rss_bytes": 14148272128,
+    "rss_after_gc_bytes": 14147170304,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14148218880,
+    "wall_seconds": 47.965476469999885
+   },
+   "seconds": 49.34883373400021,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 65.17708934799998,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 65.6963797100002,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 68.8810578250002,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 107.93063527100003,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 80.81976594799994,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.6219324379999307,
+    "end_rss_bytes": 14224695296,
+    "peak_rss_bytes": 14224748544,
+    "rss_after_gc_bytes": 14224695296,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14224695296,
+    "wall_seconds": 43.95134767000013
+   },
+   "seconds": 45.57904195600008,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 65.0748962319999,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 65.4547239970002,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 66.910605433,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 92.97488679000026,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 73.49881555399998,
+   "year": 2028
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.6620907070000612,
+    "end_rss_bytes": 14290354176,
+    "peak_rss_bytes": 14290407424,
+    "rss_after_gc_bytes": 14290354176,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14290354176,
+    "wall_seconds": 41.58346534400016
+   },
+   "seconds": 43.251733608999984,
+   "world": "certified_baseline",
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "seconds": 65.52504568699987,
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "seconds": 65.7473641370002,
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "seconds": 66.45326891600007,
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "seconds": 91.67337217399972,
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "seconds": 72.80788899699974,
+   "year": 2029
+  }
+ ],
+ "wall_seconds": 2626.878984487,
+ "workers": 1
+}
