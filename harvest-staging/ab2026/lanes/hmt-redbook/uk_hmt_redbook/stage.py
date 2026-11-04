@@ -576,6 +576,338 @@ for _r in _cb:
         "positive = increase in current budget deficit; negative = reduction in current budget deficit"
     )
 
+# ---------------------------------------------------------------------------
+# Review A at 4f424b9 (issue comment 6635870934, 4 November 2026), findings
+# RB-1 to RB-21, K-7(b) and the coordinator's calls. Explicit edits on top of
+# the rows above, by the rework's 0-based row index (checked by value_raw).
+# Rows are dropped only at the end, so every index below is the 4f424b9 one.
+# No primary was re-opened: every quote and value used here is in the review
+# comment or already in the row.
+
+def _c(i, value_raw):
+    return _row(i, value_raw)["conditions"]
+
+_DROP = set()
+
+# RB-1: totals "over the forecast" (para 5.17) are dated to the forecast's
+# final year, as paras 1.20 and 1.40 date the forecast, not calendar 2026.
+for _i, _raw in ((265, "£1.4 billion"), (266, "£20 billion")):
+    _r = _row(_i, _raw)
+    _r["period"] = 2032
+    _r["time_basis"] = "fiscal_year"
+    _r["parse_confidence"] = "medium"
+    _r["conditions"]["fy"] = "2031-32"
+    _r["conditions"]["horizon"] = (
+        "2026-27 to 2031-32 (over the forecast, as paras 1.20 and 1.40 date it; annual profile not printed)"
+    )
+    _r["conditions"]["aggregation"] = "total over the forecast; indexed to its final fiscal year"
+    # RB-8: HM Treasury doesn't say how either figure was estimated.
+    _r["source_model"] = "hmt_published_estimate_method_unspecified"
+_row(265, "£1.4 billion")["value_kind"] = "cumulative"
+_row(267, "£250 million")["time_basis"] = "point_in_time"
+
+# RB-2: three printings of the Household Energy Payment's £2.6 billion share
+# one claim identity, which an AB2025-pattern ingest refuses. Keep para 2.48's
+# (row 179), dated to 2026-27 as Table 6.1 line 1 is; drop Box 3.A's and
+# para 3.5's repeats.
+_r = _row(179, "£2.6 billion")
+_r["conditions"]["fy"] = "2026-27"
+_r["time_basis"] = "fiscal_year"
+_row(191, "£2.6 billion"); _row(200, "£2.6 billion")
+_DROP |= {191, 200}
+
+# RB-3: para 3.21's "Taken together" values the whole 35% relief, not line 12.
+_r = _row(226, "£3,000")
+_r["measure_key"] = None
+_r["conditions"]["proposed_measure_key"] = "ab2026__package_pubs_relief_35pc_total"
+_r["note"] = (
+    "Para 3.21's 'Taken together' values the total 35% relief: the 15% announced in January 2026 "
+    "(para 6.189; no AB2026 Table 6.1 line) plus line 12's 20ppt."
+)
+
+# RB-4: Chart 1.6's bridge steps are changes in the stability rule's headroom,
+# i.e. in the 2029-30 current budget (para 1.22), not headroom levels.
+for _i, _raw in ((21, "-12.0"), (22, "0.9"), (24, "2.0")):
+    _r = _row(_i, _raw)
+    _r["metric"] = None
+    _r["proposed_metric"] = "fiscal_balance_change"
+    _r["conditions"]["sign_convention"] = (
+        "positive = reduction in current budget deficit (increase in stability rule headroom); "
+        "negative = increase in current budget deficit (as printed; not re-signed)"
+    )
+_r = _row(24, "2.0")
+_r["conditions"]["proposed_measure_key"] = "ab2026__package_government_decisions_since_march_2026"
+_r["reform_hint"] = "Effect of policy"
+for _i, _raw, _vintage in ((20, "23.6", "March 2026"), (23, "12.5", "October 2026"), (25, "14.5", "October 2026")):
+    _c(_i, _raw)["forecast_vintage"] = _vintage
+for _i, _raw in ((20, "23.6"), (21, "-12.0"), (22, "0.9"), (23, "12.5"), (24, "2.0"), (25, "14.5")):
+    _c(_i, _raw)["fiscal_rule"] = "stability"
+_c(23, "12.5")["policy_scenario"] = "pre-measures"
+_c(25, "14.5")["policy_scenario"] = "post-measures"
+
+# RB-5(a): the BBB's "three measures" are the capacity half of line 29
+# (Policy Costings p.34), so the row is a line 29 component.
+_r = _row(246, "40,000")
+_r["measure_key"] = "ab2026__british_business_bank_backing_innovation"
+del _r["conditions"]["proposed_measure_key"]
+_r["conditions"]["row_type"] = "measure_component"
+_r["conditions"]["component"] = (
+    "British Business Bank: Increase the British Business Bank's total financial capacity "
+    "to deliver additional investment into UK businesses"
+)
+# RB-5(b): para 3.22's second and third bullets are parts of line 14.
+for _i, _raw in ((232, "14,000"), (233, "£7,500"), (234, "120,000"), (235, "£3,250")):
+    _c(_i, _raw)["component"] = "Two-year real-terms bills freeze for qualifying RHL properties (2027-28 and 2028-29)"
+    _c(_i, _raw)["row_type"] = "measure_component"
+for _i, _raw in ((236, "37,000"), (237, "£3,000")):
+    _c(_i, _raw)["component"] = "One-year extension of the 2026 Supporting Small Business scheme to 2023 SSB recipients"
+    _c(_i, _raw)["row_type"] = "measure_component"
+# RB-5(c): the £4.8bn is the trade deal alone (para 4.124).
+_c(254, "£4.8 billion")["component"] = (
+    "UK-India Comprehensive Economic and Trade Agreement (excludes the Double Contributions Convention)"
+)
+_c(254, "£4.8 billion")["row_type"] = "measure_component"
+
+# RB-6: the June-and-November figure contains the November-only one.
+for _i, _raw in ((219, "£245-595 million"), (220, "£245-595 million")):
+    _c(_i, _raw)["component"] = (
+        "Food products suspended in June and November 2026 (includes the November 2026 food "
+        "suspensions of rows 217-218; never add the two)"
+    )
+
+# RB-7 (coordinator's call: drop both): para 4.51's progress predates this
+# Budget (category F); para 4.68's 90% counts existing agreements (category E).
+_row(247, "£2 billion"); _row(252, "90%")
+_DROP |= {247, 252}
+
+# RB-8: the red book doesn't list the £1.4 billion's measures, and the figure
+# reconciles with no printed line-47 basis.
+_row(265, "£1.4 billion")["note"] = (
+    "Total over the forecast. HM Treasury doesn't list the measures, and the figure reconciles with no "
+    "printed basis for Table 6.1 line 47: the line prints +600m over 2026-27 to 2031-32 (+940m with "
+    "Table 6.2 line 9's +340m), and Policy Costings pp.54-58 sum to +570m. So it isn't keyed to line 47 (rule 3)."
+)
+
+# RB-9: jobs created or supported are not people affected.
+for _i, _raw in ((245, "100,000"), (246, "40,000"), (253, "3,300"), (268, "60,000")):
+    _r = _row(_i, _raw)
+    _r["metric"] = None
+    _r["proposed_metric"] = "jobs_created_or_supported"
+_r = _row(245, "100,000")
+_r["attribution"] = "restated"
+_r["note"] = "National Wealth Fund estimate: footnote 134 cites the National Wealth Fund's own statement."
+for _i, _raw in ((253, "3,300"), (268, "60,000")):
+    _row(_i, _raw)["source_model"] = "hmt_published_estimate_method_unspecified"
+
+# RB-10: Table 6.1 line 19 prints 0 in 2026-27 and -10 a year from 2027-28.
+for _i in (11, 240):
+    _r = _row(_i, "£10 million")
+    _r["period"] = 2028
+    _r["time_basis"] = "fiscal_year"
+    _r["conditions"]["fy"] = "2027-28"
+    _r["conditions"]["aggregation"] = "per year from 2027-28 (Table 6.1 line 19)"
+
+# RB-11: geography, from the harvest's closed list (GB, not "Great Britain";
+# detail in geography_note).
+for _i, _raw in ((5, "around £50"), (9, "around £30"), (196, "£30"), (199, "£50"), (205, "£30"),
+                 (8, "10,000"), (197, "25%"), (198, "10,000"), (202, "10,000"), (203, "20-25%"), (204, "20-25%")):
+    _c(_i, _raw)["geography"] = "GB"
+for _i, _raw in ((190, "20 million"), (14, "70,000"), (275, "70,000")):
+    _c(_i, _raw)["geography"] = "England"
+_c(269, "£500 million")["geography"] = "UK"
+_c(269, "£500 million")["geography_note"] = "support to Ukraine; the Exchequer cost is the UK's (Table 6.1 line 43)"
+for _i in (180, 201):
+    _r = _row(_i, "20 million")
+    _r["conditions"]["geography"] = "England"
+    _r["note"] = (
+        "The count and the direct £100 payment are England's; the £2.6 billion funding total is UK-wide "
+        "and includes the devolved governments' shares."
+    )
+_c(258, "£1.3 billion")["geography"] = "Scotland, Wales and Northern Ireland"
+for _r in ROWS:
+    if _r["conditions"].get("geography") == "Great Britain":
+        _r["conditions"]["geography"] = "GB"
+
+# RB-12: Box 1.C's sign conventions say which way each figure runs, and its
+# ONS outturns are administrative data.
+for _i, _raw, _sc in (
+    (30, "0.7 percentage points", "positive = fall in borrowing (PSNB, % of GDP, as worded: fell by)"),
+    (31, "4.4%", "as printed; positive = borrowing (PSNB, % of GDP)"),
+    (32, "1.8%", "as printed; positive = borrowing (PSNB, % of GDP)"),
+    (34, "1 percentage point", "positive = reduction in the current budget deficit (as worded: fell by)"),
+    (35, "2.5%", "as printed; positive = current budget deficit (% of GDP)"),
+    (36, "1.5%", "as printed; positive = current budget deficit (% of GDP)"),
+    (38, "0.8%", "positive = reduction in the primary deficit (as worded: fell by)"),
+    (39, "1.7%", "as printed; positive = primary surplus (% of GDP)"),
+):
+    _c(_i, _raw)["sign_convention"] = _sc
+for _i, _raw in ((30, "0.7 percentage points"), (31, "4.4%"), (34, "1 percentage point"),
+                 (35, "2.5%"), (36, "1.5%"), (38, "0.8%")):
+    _row(_i, _raw)["source_model"] = "administrative_data"
+    _row(_i, _raw)["benchmark_class"] = "administrative_fact"
+
+# RB-13: the rework brief's drop list names spending_to_tax_ratio; para 1.10's
+# "over four times" is its only row.
+_row(366, "four")
+_DROP.add(366)
+
+# RB-14 is a manifest line (below).
+
+# RB-15: repeats share their figure's dating, and undated multi-year totals
+# take the multi-year convention.
+_r = _row(271, "£50 million")
+_r.update(period=2029, time_basis="fiscal_year", value_kind="cumulative")
+_r["conditions"].pop("period_detail", None)
+_r["conditions"].update(
+    fy="2028-29",
+    horizon="across 2027-28 and 2028-29 (para 2.15)",
+    aggregation="total across the printed multi-year horizon; indexed to its final fiscal year",
+)
+_r["note"] = "£50 million reinvested from the administration savings; dated as para 2.15 dates the fund (row 176)."
+_r = _row(10, "70,000")
+_r.update(period=2028, time_basis="fiscal_year")
+_r["conditions"]["fy"] = "2027-28"
+_r["conditions"].pop("period_detail", None)
+_row(14, "70,000")["period"] = 2026
+for _i, _raw in ((9, "around £30"), (196, "£30"), (205, "£30")):
+    _row(_i, _raw)["time_basis"] = "annual"
+for _i, _raw in ((248, "£116 million"), (249, "£105 million"), (250, "£640 million"), (251, "£290 million"),
+                 (273, "up to £640 million")):
+    _r = _row(_i, _raw)
+    _r.update(period=2026, time_basis="point_in_time")
+    _r["conditions"]["aggregation"] = "per annum"
+    _r["conditions"]["period_detail"] = "no year printed for the annual saving; publication year used"
+for _i in (0, 19):
+    _r = _row(_i, "£14 billion")
+    _r.update(period=2032, time_basis="fiscal_year")
+    _r["conditions"].update(
+        fy="2031-32",
+        horizon="2026-27 to 2031-32 (over the forecast, as paras 1.20 and 1.40 date it)",
+        aggregation="annual average over the forecast; indexed to its final fiscal year",
+    )
+    _r["note"] = "OBR EFO; an annual average over the forecast, with no single year printed."
+_r = _row(215, "£100 million")
+_r.update(period=2029, time_basis="fiscal_year", value_kind="cumulative", parse_confidence="high")
+_r["conditions"].pop("period_detail", None)
+_r["conditions"].update(
+    fy="2028-29",
+    horizon="over the next two years: 2027-28 and 2028-29 (Table 6.1 line 32)",
+    aggregation="total across the printed multi-year horizon; indexed to its final fiscal year",
+)
+_r = _row(244, "£235 million")
+_r.update(period=2032, time_basis="fiscal_year", value_kind="cumulative")
+_r["conditions"].pop("period_interpretation", None)
+_r["conditions"].update(
+    fy="2031-32",
+    horizon="next five years, as printed; Table 6.1 line 71 prints 2028-29 to 2031-32",
+    aggregation="total across the printed multi-year horizon; indexed to its final fiscal year",
+)
+
+# RB-16: Table 1.3's policy rows name the line they belong to.
+for _i in range(143, 167):
+    _r = ROWS[_i]
+    assert _r["conditions"].get("proposed_measure_key") == "ab2026__package_government_decisions_since_march_2026", _i
+    _r["reform_hint"] = "Total effect of policy decisions"
+
+# RB-17: sign conventions signs.py reads; row 185 keeps its own key (the
+# coordinator's call; NOTES records the three scopes); row 182 as a share.
+_c(185, "0.1 percentage points")["sign_convention"] = "positive = reduction in CPI inflation (as worded: reduce inflation by)"
+_c(216, "£150")["sign_convention"] = "positive = gain to the EV driver (saving, as printed)"
+_c(226, "£3,000")["sign_convention"] = "positive = gain to the pub (tax cut, as printed)"
+_c(237, "£3,000")["sign_convention"] = "positive = gain to the ratepayer (protection, as printed)"
+_r = _row(182, "84%")
+_r.update(value=0.84, unit_concept="share", normalization="percent / 100")
+
+# RB-18: labels.
+for _i, _raw in ((33, "Two-thirds"), (37, "90%")):
+    _r = _row(_i, _raw)
+    _r.update(attribution="own", source_model="arithmetic")
+    _fn = {33: "54", 37: "56"}[_i]
+    _r["note"] = (
+        f"HM Treasury's own arithmetic from ONS public finances and the OBR's EFO "
+        f"(footnote {_fn}: 'Calculated based on…')."
+    )
+for _i, _raw, _model in ((6, "£2.6 billion", "hmt_costing_obr_certified"), (7, "up to 20 million", "administrative_data"),
+                         (8, "10,000", "administrative_data"), (10, "70,000", "administrative_data"),
+                         (11, "£10 million", "hmt_costing_obr_certified"), (12, "over 2,000", "administrative_data"),
+                         (14, "70,000", "administrative_data")):
+    _row(_i, _raw)["source_model"] = _model
+_r = _row(222, "£910")
+_r.update(source_model="arithmetic", benchmark_class="different_model")
+_r["conditions"]["subgroup"] = "full-time worker on the National Living Wage (£13.21, 52 weeks; footnote 105)"
+_c(183, "Around half")["income_group"] = "decile_10"
+_r = _row(184, "three-quarters")
+_r.update(period=2028, time_basis="fiscal_year", parse_confidence="medium",
+          source_model="hmt_published_estimate_method_unspecified")
+_r["conditions"]["fy"] = "2027-28"
+del _c(168, "95.6%")["presentation"]
+_row(267, "£250 million")["source_model"] = "hmt_published_estimate_method_unspecified"
+
+# RB-19: quotes cut to the sentence that carries the number, without a
+# following paragraph, heading or leading paragraph number; locators.
+_QUOTES = {
+    15: "Government borrowing is falling, by more than £15 billion in 2025‑26 compared with the year before.",
+    29: "Last year (2025‑26), ONS data shows that borrowing fell by 0.7% of GDP to its lowest level in six years.",
+    41: "Adjusting the Triple Lock is estimated to reduce State Pension spending by £15 billion a year by the late 2030s, and by £50 billion a year by the late 2040s.",
+    42: "Adjusting the Triple Lock is estimated to reduce State Pension spending by £15 billion a year by the late 2030s, and by £50 billion a year by the late 2040s.",
+}
+for _i, _q in _QUOTES.items():
+    assert _q in ROWS[_i]["quote"], _i
+    ROWS[_i]["quote"] = _q
+for _i in (103, 104, 167):
+    _q = ROWS[_i]["quote"]
+    assert _q.startswith(("1.39 ", "1.40 ")), _i
+    ROWS[_i]["quote"] = _q[5:]
+for _i, _old, _new in ((248, "printed p.62", "printed p.63"), (249, "printed p.62", "printed p.63"),
+                       (172, "printed p.31", "printed pp.31–32"), (190, "printed p.43", "printed pp.43–44"),
+                       (227, "printed p.51", "printed pp.50–51")):
+    _pub = ROWS[_i]["publication"]
+    assert _pub["locator"].startswith(_old), (_i, _pub["locator"])
+    _pub["locator"] = _new + _pub["locator"][len(_old):]
+
+# K-7(b) and the coordinator's Barnett call: the three-government £1.3 billion
+# is the total; each government is a component (rows 259-261), as
+# uk_devolved_govts types Wales. All four say which way they run.
+_c(258, "£1.3 billion")["row_type"] = "total"
+for _i, _raw in ((258, "£1.3 billion"), (259, "£600 million"), (260, "£450 million"), (261, "£270 million")):
+    _c(_i, _raw)["sign_convention"] = "positive = increase in devolved government funding"
+
+# RB-21 (info): rows on a proposed metric say metric: null explicitly.
+for _r in ROWS:
+    if _r.get("proposed_metric") and "metric" not in _r:
+        _r["metric"] = None
+
+# RB-14: the explainer was republished after the lane's fetch (README rule 7).
+MANIFEST.append({
+    "access": "govuk_api",
+    "bytes": 24356,
+    "date": "2026-10-28",
+    "doc_type": "govuk_api_json",
+    "note": (
+        "Republished version, fetched by review A on 4 November 2026 (content API updated_at "
+        "2026-10-29T15:55:28Z, 19,206-character body). All twelve explainer rows' quotes and values are "
+        "unchanged in it; it fixes 'part-time wok', drops a repeated FAQ question, and still prints "
+        "'£13.319'. No rows cite this version; they cite cc3ec22e…, which they were read from."
+    ),
+    "publisher": "HM Treasury",
+    "retrieved": "2026-11-04",
+    "sha256": "83f8c894ce76a8e9ce80854f9b7287442d5f6b521a4eb260e5cfacae1c98909b",
+    "title": "Pension Tax Allowance Explainer (republished 29 October)",
+    "url": "https://www.gov.uk/api/content/government/publications/pension-tax-allowance-explainer/pension-tax-allowance-explainer",
+})
+
+# RB-2's rule, applied to the count the same paragraphs repeat: once RB-11
+# gives rows 180 and 201 England, four printings of "up to 20 million
+# households" (paras 2.48, 3.3 and 3.5, and Box 3.A) share one claim identity.
+# Keep para 2.48's (row 180, beside its £2.6 billion) and para 3.5's (row 190,
+# which names bands A-D), and drop para 3.3's and Box 3.A's repeats, as RB-2
+# drops Box 3.A's and para 3.5's £2.6 billion.
+_row(188, "20 million"); _row(201, "20 million")
+_DROP |= {188, 201}
+
+ROWS = [_r for _i, _r in enumerate(ROWS) if _i not in _DROP]
+assert len(ROWS) == 432 - 7
+
 
 def main():
     destination = Path(__file__).resolve().parent
