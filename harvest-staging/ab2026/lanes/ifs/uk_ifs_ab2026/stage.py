@@ -7294,11 +7294,15 @@ for _n, _v in ((74, "40%"), (75, "25%")):
         "confidence."
     )
 
-# README rule 10 (finding 3): totals of the Budget's decisions take
-# decisions_effect_on_borrowing, PSNB as models.py defines it. The net tax
-# rise IFS restates from Table 6.1 and its own total of the Budget's tax changes
-# move from revenue_change. No value or sign changes.
-for _n, _v in ((76, "£7bn"), (129, "0.2")):
+# README rule 10 (finding 3; delta review of 8b7b23db, finding 2): a stated
+# effect of the Budget's decisions on PSNB, or a restatement of one, takes
+# decisions_effect_on_borrowing, PSNB as models.py defines it. Row 76
+# restates Table 6.1's total of tax policy decisions, which HM Treasury
+# defines as direct effects on PSNB, so it moves from revenue_change. Row 129
+# gives IFS's own estimate of the Budget's tax change at the forecast horizon;
+# neither the chart nor its notes tie it to PSNB, so it keeps revenue_change.
+# No value or sign changes.
+for _n, _v in ((76, "£7bn"),):
     _r = _out(_n, _v)
     assert _r["metric"] == "revenue_change", _n
     _r["metric"] = "decisions_effect_on_borrowing"

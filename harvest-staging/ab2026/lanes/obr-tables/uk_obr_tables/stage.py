@@ -3732,17 +3732,23 @@ KEY_MAP = {
 
 
 # ===========================================================================
-# README rule 10, 3 November 2026 (PR #231; IFS review of d5e323dc, finding 3)
+# README rule 10 (PR #231): IFS review of d5e323dc, finding 3, and the delta
+# review of 8b7b23db, finding 1
 # ===========================================================================
-# Totals of the Budget's decisions take decisions_effect_on_borrowing: PSNB,
-# as models.py defines it, and as ingest_obr_policy_effects.py takes March
-# 2026 Table B.1's total, direct and indirect effects and its tax and
-# spending split. Single measures, groups of measures and a total's lines by
-# tax or spending head keep revenue_change; paragraphs 3.20, 3.21 and 3.43
-# give four policies' effects on borrowing, and their seven rows already take
-# this metric. The current budget memo proposes fiscal_balance_change, as the
-# red book family's Table 1.3 memos do, and its sign convention names that
-# deficit. No value or sign changes.
+# The OBR's stated effects of the Budget's decisions on PSNB take
+# decisions_effect_on_borrowing: PSNB, as models.py defines it, and as
+# ingest_obr_policy_effects.py takes March 2026 Table B.1's total, direct and
+# indirect effects and its tax and spending split. Table 3.1 and paragraphs
+# 3.3 to 3.5 state them, and the policy workbook's Table 1.1 gives the same
+# effects in £ million. The workbook's total of receipts measures (cells
+# I490:N490) sums its receipts heads, from air passenger duty to visa fees,
+# so it keeps revenue_change, the receipts line models.py keeps apart from
+# PSNB, as single measures, groups of measures and a total's lines by tax or
+# spending head do. Paragraphs 3.20, 3.21 and 3.43 give four policies'
+# effects on borrowing, and their seven rows already take this metric. The
+# current budget memo proposes fiscal_balance_change, as the red book
+# family's Table 1.3 memos do, and its sign convention names that deficit. No
+# value or sign changes.
 
 WB11 = "Table 1.1: Breakdown of policy decisions since March 2026 (£ million)"
 
@@ -3755,8 +3761,8 @@ RULE10_BORROWING = {
     ("Table 3.1", "Direct effects of Government decisions"): 6,
     ("Table 3.1", "Memo: direct effect of decisions on HM Treasury's October 2026 Budget policy decisions table"): 6,
     ("Table 3.1", "Memo: direct effect of decisions not on HM Treasury's October 2026 Budget policy decisions table"): 6,
-    # the policy workbook's Table 1.1, the same lines in £ million
-    (WB11, "Total effects of receipts measures (£ millions)"): 6,
+    # the policy workbook's Table 1.1, the same effects in £ million; its
+    # total of receipts measures keeps revenue_change
     (WB11, "Total effects of expenditure measures (£ millions)"): 6,
     (WB11, "Total effect of Government decisions "): 6,
     (WB11, "Direct effect of Government decisions"): 6,
