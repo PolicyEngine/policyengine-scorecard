@@ -16,7 +16,7 @@ No primary was re-opened on 3 November (the session's network policy refused eve
 
 Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's H-6(a) asked for its finding 2. The fixes sit in a block after the rows in `stage.py`, shared word for word with `uk_trussell_wpi`'s (judgement call 10). No primary was re-opened, and no value changed.
 
-- **Finding 1:** IfG's "around 80%" (row 8) restates HM Treasury's paragraph 3.5, which `uk_hmt_redbook` row 193 stages: `restated`, `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)", and a rewritten note. Own 4, restated 8.
+- **Finding 1:** IfG's "around 80%" (row 8) restates HM Treasury's paragraph 3.5, which `uk_hmt_redbook` row 191 stages: `restated`, `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)", and a rewritten note. Own 4, restated 8.
 - **Finding 2 and H-6(a):** rows 2, 8 and 10 carry the registered `fiscal_headroom`, `affected_share` and `affected_count` in `metric`, with `proposed_metric` null.
 - **Finding 3:** row 9's `measure_type` is "real household disposable income per person".
 - **H-6(d):** row 11 (Citizens Advice) carries `geography: "not stated"`.
@@ -55,7 +55,7 @@ Reading order is CPS, IfG, Age UK, LWI, Citizens Advice, then top to bottom with
 | `ab2026__household_energy_payment_100_bands_a_to_d` | 1 | IfG's share of households in England receiving the £100 council-tax rebate for bands A–D (restating HM Treasury's paragraph 3.5); Table 6.1 line 1 |
 | `null` | 11 | context and document-tally observations; none carries a proposed key |
 
-The sole registered key is attached to the specific rebate's coverage, not to the entire cost-of-living package. IfG's exact identification of the £100 council-tax rebate for bands A–D identifies line 1; it gives no contrary scope. Its "around 80%" restates HM Treasury's paragraph 3.5 ("around 80% of households in England"), so the row is `restated`, `administrative_data`, geography England, as `uk_hmt_redbook` row 193 stages it (changed on 4 November, review B finding 1). Context forecasts, outturns and document counts, including CPS's PuFins assertion, have null measure keys and null reform hints.
+The sole registered key is attached to the specific rebate's coverage, not to the entire cost-of-living package. IfG's exact identification of the £100 council-tax rebate for bands A–D identifies line 1; it gives no contrary scope. Its "around 80%" restates HM Treasury's paragraph 3.5 ("around 80% of households in England"), so the row is `restated`, `administrative_data`, geography England, as `uk_hmt_redbook` row 191 stages it (changed on 4 November, review B finding 1). Context forecasts, outturns and document counts, including CPS's PuFins assertion, have null measure keys and null reform hints.
 
 - GBP values preserve printed signs and cash magnitudes. “Tops £3 trillion” is the printed strict lower bound of debt stock. The six-month £61 billion debt-interest total is not multiplied to a year. Fiscal headroom is positive headroom; PuFins' £3.1 billion is a positive debt increase. No sign is reversed.
 - Percentages remain percentages. “Almost 100” retains the printed upper threshold 100; no exact policy count is inferred. “Around 80%” retains the qualifier in conditions.

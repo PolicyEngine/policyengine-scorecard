@@ -416,3 +416,4 @@ Review A (PR #231, issue comment 6635870934) approved this family with fixes C-1
 - **C-6:** p.84's precedent is the AB2025 uk_obr_tables family, in NOTES and the row note.
 - **C-7:** `stage.py` is on the staging branch.
 - **T-3 (uk_hmt_tables):** `uk_hmt_tables` no longer emits `conditions.fiscal_head`, read from the workbook's hidden check column. The sentences here that reasoned from it (the p.41 bullet, lines 9, 48, 81 and 84, and the lines without a costing note) now rely only on Table 6.1's printed Tax and Spend heads.
+- **D2-1 (GPT-6.1 Sol's delta review of these fixes):** C-1's step had marked p.108's whole costing record, which also feeds the note's text row, so row 584 (the 4.9 million properties in scope, `tax_base`) had become a receipts component. `stage.py` now marks only the six Exchequer rows, and row 584 matches its 4f424b9 version again.
