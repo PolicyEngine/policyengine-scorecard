@@ -103,8 +103,8 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "reduction in public spending",
             "reduction in welfare spending",
             "positive = saving to the exchequer",
-            # a cost saving is a yield, though "positive = cost" also matches:
-            # the two lists conflict, so such a phrase reads unknown
+            # a cost saving is a yield, though "positive = cost" also matches
+            # the same words: the reading conflicts, so it is unknown
             "cost saving",
             "positive = saving against the current budget rule",
             "positive = fiscal tightening",
@@ -244,19 +244,29 @@ def classify(row: dict) -> tuple[str, str]:
             return UNKNOWN, f"stated:{family}:not_this_quantity"
         positive = _NEGATIVE_LEG.sub(" ", text)
 
-        def hits(phrases, where):
+        def spans(phrases):
             # a phrase that names the negative side itself ("a negative sign
             # implies a loss ...") is read where it stands
-            return [p for p in phrases if p in (text if "negative" in p else where)]
+            out = []
+            for p in phrases:
+                where = text if "negative" in p else positive
+                i = where.find(p)
+                while i >= 0:
+                    out.append((i, i + len(p), where is text))
+                    i = where.find(p, i + 1)
+            return out
 
-        opp, sam = hits(opposite, positive), hits(same, positive)
-        if opp and sam:
+        opp, sam = spans(opposite), spans(same)
+        # one stretch of text read both ways ("positive = cost saving ...")
+        if any(
+            a0 < b1 and b0 < a1 and wa == wb for a0, a1, wa in opp for b0, b1, wb in sam
+        ):
             return UNKNOWN, f"stated:{family}:conflicting"
         if opp:
             return OPPOSITE, f"stated:{family}:opposite"
         if sam:
             return SAME, f"stated:{family}:same"
-        if hits(opposite, text) or hits(same, text):
+        if any(p in text for p in opposite + same):
             return UNKNOWN, f"stated:{family}:negative_leg"
         return UNKNOWN, f"stated:{family}:unrecognised"
     # US producers publish signed changes, after minus before, which is
