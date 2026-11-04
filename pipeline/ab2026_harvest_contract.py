@@ -108,6 +108,17 @@ WORD_SCALE = (
     (re.compile(r"%|per ?cent|percentage point|ppts?\b|pp\b", re.I), 0.01),
 )
 NUMBER = re.compile(r"(?<![\w.])[-−–]?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
+# "N in M" prints a ratio: the share N/M, never N or M on its own (delta
+# review D1-1). A year after "in" ("£5 in 2027") is no denominator.
+RATIO = re.compile(
+    r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s+in\s+(\d[\d,]*(?:\.\d+)?)(?!\w|\.\d)"
+)
+YEAR = re.compile(r"(?:19|20)\d\d")
+# A locator that names Figure 1.A or 1.B places a bar reading there, unless it
+# also names the paragraph, table, box or data label that prints the number
+# (README rule 4; delta review D1).
+FIGURE_1 = re.compile(r"\bfigure 1\.[ab]\b", re.I)
+PRINTED_AT = re.compile(r"\b(?:paragraph|para|table|box|data label)s?\b", re.I)
 WORDS = {
     "half": 0.5,
     "a half": 0.5,
@@ -125,23 +136,38 @@ WORDS = {
 }
 
 
-def _numbers(text):
-    """The signed numbers printed in a string, as floats."""
+def _ratios(text):
+    """The ratios a string prints, as ((start, end), N/M)."""
     out = []
+    for m in RATIO.finditer(text):
+        if YEAR.fullmatch(m.group(2)):
+            continue
+        b = float(m.group(2).replace(",", ""))
+        if b:
+            out.append((m.span(), float(m.group(1).replace(",", "")) / b))
+    return out
+
+
+def _numbers(text):
+    """The numbers a string prints, as (exact, fractions). Exact numbers are
+    its signed digits. Fractions are its ratios ("1 in 4" -> 0.25), whose two
+    numbers count for nothing on their own, and its worded fractions ("a
+    third"), which a stored share may round (delta review D1-1)."""
     text = re.sub(r"([-−–])\s*[£$€]", r"\1", text)  # "-£1.7bn"
+    fractions = []
+    for (start, end), share in reversed(_ratios(text)):
+        fractions.append(share)
+        text = f"{text[:start]} {text[end:]}"
+    exact = []
     for m in NUMBER.findall(text):
         t = m.replace(",", "").replace("−", "-").replace("–", "-")
         try:
-            out.append(float(t))
+            exact.append(float(t))
         except ValueError:
             pass
-    for a, b in re.findall(r"(\d[\d,]*(?:\.\d+)?)\s+in\s+(\d[\d,]*(?:\.\d+)?)", text):
-        b = float(b.replace(",", ""))
-        if b:
-            out.append(float(a.replace(",", "")) / b)
     low = text.lower()
-    out += [v for w, v in WORDS.items() if re.search(rf"\b{w}\b", low)]
-    return out
+    fractions += [v for w, v in WORDS.items() if re.search(rf"\b{w}\b", low)]
+    return exact, fractions
 
 
 def _factors(normalization):
@@ -175,30 +201,46 @@ def _scales(raw, normalization):
     return set(SCALES)
 
 
+def _number(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
+def _same(a, b):
+    """A printed number at its scale, equal up to floating-point error."""
+    return math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12)
+
+
+def _rounded(a, b):
+    """A stored share of a printed fraction, rounded ("a third" -> 0.3333)."""
+    return math.isclose(a, b, rel_tol=1e-3)
+
+
 def value_problems(r):
     """review A H-2: `value` is finite and is value_raw's number at its scale,
-    with value_raw's sign unless the normalization documents a worded sign."""
+    with value_raw's sign unless the normalization documents a worded sign.
+    Delta review D1-1: a printed number matches exactly, and only the share
+    of a printed ratio or worded fraction, the fraction itself, may round."""
     v = r["value"]
     if not isinstance(v, (int, float)) or isinstance(v, bool):
         return ["value is not a number"]
     if not math.isfinite(v):
         return ["value is not finite"]
     raw = r["value_raw"] if isinstance(r["value_raw"], str) else ""
-    numbers = _numbers(raw)
-    if not numbers:
+    exact, fractions = _numbers(raw)
+    if not (exact or fractions):
         return []  # nothing printed to compare (a categorical label)
     norm = r.get("normalization") or ""
-    scales = _scales(raw, norm)
-    worded = bool(WORDED_SIGN.search(norm))
-
-    def close(a, b):
-        # stored shares round printed fractions ("a third" -> 0.3333)
-        return math.isclose(a, b, rel_tol=1e-3, abs_tol=1e-9)
-
-    magnitude = [(n, s) for n in numbers for s in scales if close(abs(v), abs(n) * s)]
-    if not magnitude:
+    printed = [n * s for n in exact for s in _scales(raw, norm)]
+    if not (
+        any(_same(abs(v), abs(p)) for p in printed)
+        or any(_rounded(abs(v), f) for f in fractions)
+    ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
-    if worded or any(close(v, n * s) for n, s in magnitude):
+    if (
+        WORDED_SIGN.search(norm)
+        or any(_same(v, p) for p in printed)
+        or any(_rounded(v, f) for f in fractions)
+    ):
         return []
     return [f"value {v!r} has the opposite sign to value_raw {raw!r}"]
 
@@ -236,12 +278,15 @@ def read_manifest(family_dir):
 
 
 def proposed_keys(rows):
-    """The proposed measure keys a family's rows name (README rule 2)."""
+    """The proposed measure keys a family's rows name (README rule 2). A
+    malformed row names none; row_problems reports it (delta review D1-3)."""
     return {
         r["conditions"]["proposed_measure_key"]
         for r in rows
-        if isinstance(r.get("conditions"), dict)
-        and r["conditions"].get("proposed_measure_key")
+        if isinstance(r, dict)
+        and isinstance(r.get("conditions"), dict)
+        and isinstance(r["conditions"].get("proposed_measure_key"), str)
+        and r["conditions"]["proposed_measure_key"]
     }
 
 
@@ -369,12 +414,13 @@ def _row_problems(r, keys, earlier, metrics, units):
         or r["source_model"] != "policyengine_uk"
     ):
         out.append("same_assumptions rows are PolicyEngine-computed")
+    locator = pub.get("locator") or ""
     if (
         r["source"] == "hm_treasury"
-        and "impact on households" in pub.get("title", "").lower()
+        and "impact on households" in (pub.get("title") or "").lower()
         and (
             r["value_kind"] == "approx_chart_reading"
-            or re.search(r"figure 1\.[ab]\b", pub.get("locator") or "", re.I)
+            or (FIGURE_1.search(locator) and not PRINTED_AT.search(locator))
         )
     ):
         out.append("no HMT Impact on households bar readings (README rule 4)")
@@ -393,9 +439,12 @@ def family_problems(family_dir):
         return [f"{family_dir.name}: missing {missing}"]
     out = []
     manifest = read_manifest(family_dir)
-    shas = [m.get("sha256", "") for m in manifest]
-    for m in manifest:
-        if not SHA256.fullmatch(m.get("sha256", "")):
+    entries = [m for m in manifest if isinstance(m, dict)]
+    if len(entries) < len(manifest):
+        out.append("manifest has a line that is not an object")
+    shas = [m["sha256"] for m in entries if isinstance(m.get("sha256"), str)]
+    for m in entries:
+        if not (isinstance(m.get("sha256"), str) and SHA256.fullmatch(m["sha256"])):
             out.append(f"manifest {m.get('url')}: sha256 is not a sha256")
         if not (m.get("url") and m.get("title") and m.get("retrieved")):
             out.append(f"manifest {m.get('url')}: needs url, title and retrieved")
@@ -409,7 +458,7 @@ def family_problems(family_dir):
             out.append(f"row {i}: {p}")
         pub = r.get("publication") if isinstance(r, dict) else None
         sha = pub.get("primary_sha256") if isinstance(pub, dict) else None
-        if sha not in set(shas):
+        if not (isinstance(sha, str) and sha in shas):
             out.append(f"row {i}: primary_sha256 is not in manifest.jsonl")
     out += duplicate_problems(rows)
     notes = (family_dir / "NOTES.md").read_text()
@@ -461,6 +510,8 @@ def duplicate_problems(rows):
             out.append(f"rows {idx} share one claim identity (more than 2)")
         elif len(idx) == 2:
             a, b = (rows[i]["value"] for i in idx)
+            if not (_number(a) and _number(b)):
+                continue  # row_problems reports the value (delta review D1-3)
             if not math.isclose(a, b, rel_tol=0.005, abs_tol=1e-9):
                 out.append(
                     f"rows {idx} share one claim identity but differ by over 0.5%"

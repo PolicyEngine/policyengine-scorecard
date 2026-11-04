@@ -51,10 +51,12 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
 
 ## Row contract additions
 
-`pipeline/ab2026_harvest_contract.py` checks the AB2025 row contract with these additions (review A, H-1 to H-6):
+`pipeline/ab2026_harvest_contract.py` checks the AB2025 row contract with these additions (review A, H-1 to H-6, and delta review D1):
 
 - `value_kind` may also be `categorical` (a rating, such as the OBR's Table 3.3 uncertainty ratings).
-- `value` is finite, and it is `value_raw`'s number at the scale `value_raw`'s word gives (bn, m, k, %), failing that at the factor `normalization` states, failing that at 1, 10³, 10⁶, 10⁹, 0.01 or 100. Its sign is `value_raw`'s unless `normalization` says the sign comes from the wording.
+- `value` is finite and equals `value_raw`'s number, to floating-point error, at the scale `value_raw`'s word gives (bn, m, k, %), failing that at the factor `normalization` states, failing that at 1, 10³, 10⁶, 10⁹, 0.01 or 100. A ratio ("1 in 4") or a worded fraction ("a third") gives a share, the fraction itself, which `value` may round within 0.1%; a ratio's two numbers don't count on their own. Its sign is `value_raw`'s unless `normalization` says the sign comes from the wording.
+- An HM Treasury Impact on households row reads a bar (rule 4) if its `value_kind` is `approx_chart_reading`, or if its locator names Figure 1.A or 1.B and no paragraph, table, box or data label that prints the number.
+- A malformed row (not an object, or a field of the wrong type) gives a problem, never an exception, and the checks across rows skip what they can't compare.
 - A row that carries `conditions.component` is a part: `row_type` is `measure_component` (or the OBR workbook's `measure_total` marker), and the component isn't blank (rule 9).
 - No more than two non-restated rows share the AB2025 ingest's claim identity, and two that do agree within 0.5%.
 - A registered metric goes in `metric`, never `proposed_metric`.
@@ -90,7 +92,7 @@ Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab
 - `uk_cpag`: both CPAG pages (its Budget response and a pre-Budget call) returned Cloudflare's challenge (HTTP 403) to every fetch on 29 October.
 - `uk_smf`: the Social Market Foundation page returned a challenge to every fetch on 29 October.
 - `uk_niesr`: NIESR's Budget-day reaction ("Breathing Space, Not a Strategy") was fetched, but it holds macro and fiscal-stance commentary for the #55 lane and restated OBR figures, which the AB2025 NIESR family did not stage either.
-- `uk_fai_sfc`: the Fraser of Allander Institute's reaction refused the fetch (HTTP 403), and the Scottish Fiscal Commission published nothing in scope on 28 or 29 October. The reaction's feed text holds only restated OBR figures. A second FAI post, "Rising or falling? Why both claims about Scotland's funding can be true" (29 October), was found on 4 November through FAI's RSS feed and sits behind the same 403. Its table of Scotland's Barnett consequentials is not staged: FAI says the split emerged late on 28 October, so it probably restates HM Treasury's allocations, which `uk_hmt_redbook` rows 258–261 stage. The Scottish Government's five rows, first staged here, moved to `uk_devolved_govts` on 3 November.
+- `uk_fai_sfc`: the Fraser of Allander Institute's reaction refused the fetch (HTTP 403), and the Scottish Fiscal Commission published nothing in scope on 28 or 29 October. The reaction's feed text holds only restated OBR figures. On 4 November, review B found a second FAI post through FAI's RSS feed, "Rising or falling? Why both claims about Scotland's funding can be true" (29 October), behind the same 403. The coordinator left its table of Scotland's Barnett consequentials for tranche 2: FAI says the split emerged late on 28 October, so the table probably restates HM Treasury's allocations, which `uk_hmt_redbook` stages in rows 252–255 (paragraphs 4.150, 4.154, 4.157 and 4.160). The Scottish Government's five rows moved from this family to `uk_devolved_govts` on 3 November.
 
 ## Producer slugs and families
 

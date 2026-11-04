@@ -10,6 +10,7 @@ import copy
 import gzip
 import io
 import json
+import math
 import shutil
 from pathlib import Path
 
@@ -150,6 +151,19 @@ def test_a_staged_row_has_no_problems():
         ({"measure_key": ["ab2026__x"]}, "measure_key is not a string"),
         ({"publication": None}, "publication is not an object"),
         ({"value_raw": None}, "value_raw is empty"),
+        # delta review D1-1: a printed £m cell is that many millions exactly
+        ({"value": -2626312500}, "at a stated scale"),
+        ({"value": -2625100000}, "at a stated scale"),
+        # delta review D1: each arm the dedicated tests didn't reach
+        (
+            {"conditions__component": " ", "conditions__row_type": "measure_total"},
+            "a component row has row_type",
+        ),
+        ({"conditions__component": 1}, "row is malformed"),
+        (
+            {"measure_key": None, "conditions__proposed_measure_key": ["ab2026__x"]},
+            "row is malformed",
+        ),
     ],
 )
 def test_each_rule_broken_on_a_valid_row_is_a_problem(changes, expected):
@@ -176,6 +190,66 @@ def test_value_raw_scale_words_set_the_scale():
     assert problems(worded) == []
 
 
+def _share(raw, value, normalization="N in M -> N/M"):
+    return mutated(value_raw=raw, quote=raw, value=value, normalization=normalization)
+
+
+@pytest.mark.parametrize("wrong", [0.01, 0.04, 1, 4, 25])
+def test_a_ratio_is_its_share_not_its_numbers(wrong):
+    """Delta review D1-1: IFS's "1 in 4" (its row 38) is the share 0.25.
+    Neither number on its own, at any scale, is."""
+    assert problems(_share("1 in 4", 0.25)) == []
+    assert any("at a stated scale" in p for p in problems(_share("1 in 4", wrong)))
+
+
+def test_a_worded_fraction_is_its_share():
+    """Delta review D1: "a third" is 1/3, which a stored share may round to
+    0.3333 (OBR row 2662), and nothing else. A row whose fraction went
+    unparsed would compare nothing and pass whatever its value."""
+    note = "'a third' -> 0.3333 share"
+    assert problems(_share("a third", 0.3333, note)) == []
+    assert any("at a stated scale" in p for p in problems(_share("a third", 0.5, note)))
+    assert any("opposite sign" in p for p in problems(_share("a third", -0.3333, note)))
+
+
+def test_a_year_after_in_is_no_denominator():
+    """A year after "in" prints a year: "5 in 2027" gives 5 (here £5m) and
+    2027, not the ratio 5/2027."""
+    assert problems(mutated(value_raw="5 in 2027", quote="5 in 2027", value=5e6)) == []
+
+
+@settings(max_examples=200, deadline=None)
+@given(n=st.integers(1, 50), extra=st.integers(1, 1000))
+def test_a_ratio_passes_only_at_its_share(n, extra):
+    """Delta review D1-1, for every "N in M": N/M passes, and N, M, N% and M%
+    fail unless they round to N/M."""
+    m = n + extra
+    raw = f"{n} in {m:,}"
+    assert problems(_share(raw, n / m)) == []
+    for wrong in (n, m, n / 100, m / 100, 100 * n / m):
+        if not math.isclose(wrong, n / m, rel_tol=1e-3):
+            found = problems(_share(raw, wrong))
+            assert any("at a stated scale" in p for p in found), (raw, wrong)
+
+
+@settings(max_examples=200, deadline=None)
+@given(cell=st.integers(-9999, 9999), off=st.integers(1_000, 10**8), up=st.booleans())
+def test_a_money_cell_passes_only_at_its_exact_value(cell, off, up):
+    """Delta review D1-1: a cell printed in £ million is that many millions,
+    to floating-point error. £1,000 off any cell under £10bn fails: the 0.1%
+    rounding allowance covers a share of a printed fraction, nothing else."""
+    raw = str(cell)
+    quote = f"Line 1 | 2026-27: {raw}"
+    exact = mutated(value_raw=raw, quote=quote, value=cell * 1e6)
+    moved = mutated(
+        value_raw=raw, quote=quote, value=cell * 1e6 + (off if up else -off)
+    )
+    assert problems(exact) == []
+    assert any(
+        "at a stated scale" in p or "opposite sign" in p for p in problems(moved)
+    )
+
+
 def test_malformed_rows_are_reported_not_raised():
     """review A H-6(h)."""
     for row in (
@@ -194,6 +268,28 @@ def test_rule_4_holds_whatever_the_title_case():
         value_kind="approx_chart_reading",
     )
     assert any("rule 4" in p for p in problems(row))
+
+
+@pytest.mark.parametrize(
+    ("locator", "bar_reading"),
+    [
+        ("Figure 1.A, decile 3 bar", True),
+        ("p.5, Figure 1.B, top bar", True),
+        ("paragraph 1.7, p.8; discussion of Figure 1.A", False),
+        ("Figure 1.A data label, decile 3", False),
+        ("Table 2.C, decile 3", False),
+    ],
+)
+def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
+    """README rule 4: a locator that places the number on Figure 1.A's or
+    1.B's bars marks a bar reading; one that names the paragraph, table or
+    data label printing it doesn't (delta review D1: red book row 357's 20%
+    sits in paragraph 1.7)."""
+    row = mutated(
+        publication__title="Budget 2026: Impact on households",
+        publication__locator=locator,
+    )
+    assert any("rule 4" in p for p in problems(row)) == bar_reading
 
 
 def test_a_component_with_its_measure_or_a_proposed_key_is_valid():
@@ -330,6 +426,7 @@ def _rewrite_manifest(fam, edit):
         (lambda m: [{**m[0], "retrieved": ""}, *m[1:]], "needs url, title"),
         (lambda m: [*m, m[0]], "lists a primary twice"),
         (lambda m: m[1:], "primary_sha256 is not in manifest.jsonl"),
+        (lambda m: [*m, "not an object"], "a line that is not an object"),
     ],
 )
 def test_each_manifest_rule_broken_is_a_problem(tmp_path, edit, expected):
@@ -344,3 +441,30 @@ def test_a_family_missing_a_file_is_a_problem(tmp_path):
     fam = _family(tmp_path)
     (fam / "NOTES.md").unlink()
     assert family_problems(fam) == ["uk_test_family: missing ['NOTES.md']"]
+
+
+@pytest.mark.parametrize(
+    ("extra", "expected"),
+    [
+        # a copy of the base row whose value is a string: the pair check
+        # compares the two values
+        ([{**BASE, "value": "-2625000000"}], "value is not a number"),
+        (["not a row", None], "row is not an object"),
+        (
+            [mutated(measure_key=None, conditions__proposed_measure_key=["ab2026__x"])],
+            "row is malformed",
+        ),
+        (
+            [mutated(publication__primary_sha256=["abc"])],
+            "primary_sha256 is not in manifest.jsonl",
+        ),
+    ],
+)
+def test_a_family_reports_malformed_rows_without_raising(tmp_path, extra, expected):
+    """Delta review D1-3: family_problems reports a malformed row as
+    row_problems does. The pair check, the proposed-key scope check and the
+    manifest lookup skip a value, key or hash they can't compare."""
+    fam = _family(tmp_path)
+    _write(fam, read_rows(fam) + extra)
+    found = family_problems(fam)
+    assert any(expected in p for p in found), found[:5]

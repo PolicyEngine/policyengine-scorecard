@@ -9,6 +9,7 @@ a Table 6.4 recosting, in the earlier event's registry, sha256-shaped
 manifests, and per-family pins that the ingest's exact accounting will read.
 """
 
+import copy
 import json
 import re
 from collections import Counter
@@ -210,6 +211,52 @@ def test_table_62_rows_are_financial_transactions_not_revenue():
         assert abs(total - summed) <= 25e6, fy
 
 
+YEARS = {f"{y}-{(y + 1) % 100:02d}" for y in range(2026, 2032)}
+# every line or total each table prints, by (table, row_type)
+CELLS = {
+    ("6.1", "measure"): {str(n) for n in range(1, 99)},
+    ("6.1", "total"): {
+        K.package_key(s)
+        for s in (
+            "package_total_policy_decisions",
+            "package_total_tax_policy_decisions",
+            "package_total_spending_policy_decisions",
+        )
+    },
+    ("6.2", "measure"): {str(n) for n in K.TABLE_62},
+    ("6.2", "total"): {T62_TOTAL},
+    ("6.4", "recosting"): {str(n) for n in K.TABLE_64},
+}
+
+
+def _cell_problems(hmt_rows):
+    """The (table, row_type) groups whose rows aren't exactly one per line,
+    or total, and year, plus any group the tables don't print."""
+    out = []
+    for (table, row_type), ids in CELLS.items():
+        staged = Counter(
+            (r["conditions"].get("table_line") or _key(r), r["conditions"]["fy"])
+            for r in hmt_rows
+            if (r["conditions"]["table"], r["conditions"]["row_type"])
+            == (table, row_type)
+        )
+        if staged != Counter({(i, fy): 1 for i in ids for fy in YEARS}):
+            out.append((table, row_type))
+    groups = {(r["conditions"]["table"], r["conditions"]["row_type"]) for r in hmt_rows}
+    return out + sorted(groups - set(CELLS))
+
+
+def test_each_table_cell_is_staged_once():
+    """Delta review D1: one row for each line, or total, and year in every
+    table. A copy of line 1's 2027-28 cell over its 2028-29 cell (both zero)
+    leaves every row valid and every sum intact, and fails here."""
+    hmt = rows(HMT)
+    assert _cell_problems(hmt) == []
+    copied = list(hmt)
+    copied[2] = copied[1]
+    assert _cell_problems(copied) == [("6.1", "measure")]
+
+
 # --- README rule 10: stated effects of the Budget's decisions on PSNB --------
 
 BORROWING = "decisions_effect_on_borrowing"
@@ -319,16 +366,50 @@ def test_a_measure_takes_the_borrowing_metric_only_where_its_producer_says_so():
     }
 
 
-def test_the_current_budget_memos_name_that_deficit():
-    """Every row that proposes fiscal_balance_change names, in its sign, the
-    deficit it measures (selected on the metric, not the label: review A
-    H-7). The memos by label are among them."""
-    balance = [
+DEFICITS = ("current budget deficit", "primary deficit")
+
+
+def _deficit_measured(r):
+    """The deficit a fiscal_balance_change row measures, read from its
+    producer's label (its aggregate, table row or fiscal rule), never from
+    its sign convention (delta review D1-2). The stability rule targets the
+    current budget."""
+    c = r["conditions"]
+    label = (c.get("aggregate") or c.get("table_row") or "").lower()
+    if "primary" in label:
+        return "primary deficit"
+    if "current budget" in label or c.get("fiscal_rule") == "stability":
+        return "current budget deficit"
+    return None
+
+
+def _names_its_deficit(r):
+    """The row's sign convention names the deficit it measures, and not the
+    other one."""
+    measured = _deficit_measured(r)
+    sign = r["conditions"].get("sign_convention") or ""
+    return measured is not None and all(
+        (d in sign) == (d == measured) for d in DEFICITS
+    )
+
+
+def _balance_rows():
+    return [
         (fam, r)
         for fam in FAMILIES
         for r in rows(fam)
         if r.get("proposed_metric") == "fiscal_balance_change"
     ]
+
+
+def test_each_balance_row_names_the_deficit_it_measures():
+    """Every row that proposes fiscal_balance_change names, in its sign, the
+    deficit it measures and only that one (rows selected on the metric, not
+    the label: review A H-7; the deficit read from the label, not the sign:
+    delta review D1-2). The red book's primary balance outturn measures the
+    primary deficit. Its current budget outturn, Chart 1.6's stability rule
+    steps and both producers' memo lines measure the current budget deficit."""
+    balance = _balance_rows()
     memos = [
         (fam, r)
         for fam in FAMILIES
@@ -341,13 +422,35 @@ def test_the_current_budget_memos_name_that_deficit():
     ]
     ids = {json.dumps(r, sort_keys=True) for _, r in balance}
     assert all(json.dumps(r, sort_keys=True) in ids for _, r in memos)
+    assert Counter(_deficit_measured(r) for _, r in balance) == {
+        "current budget deficit": 21,
+        "primary deficit": 1,
+    }
     for fam, r in balance:
         assert r.get("metric") is None, fam
-        sign = r["conditions"]["sign_convention"]
-        assert "current budget deficit" in sign or "primary deficit" in sign, (
+        assert _names_its_deficit(r), (
             fam,
-            sign,
+            _label(r),
+            r["conditions"]["sign_convention"],
         )
+
+
+def test_a_balance_row_naming_the_other_deficit_fails():
+    """Delta review D1-2: swap the two deficits' names in any balance row's
+    sign convention, the red book's current budget and primary balance
+    outturns among them, and the check above fails."""
+    balance = _balance_rows()
+    assert {"current budget", "primary balance"} <= {
+        r["conditions"].get("aggregate") for _, r in balance
+    }
+    current, primary = DEFICITS
+    for fam, r in balance:
+        swapped = copy.deepcopy(r)
+        sign = swapped["conditions"]["sign_convention"]
+        swapped["conditions"]["sign_convention"] = (
+            sign.replace(current, "\0").replace(primary, current).replace("\0", primary)
+        )
+        assert not _names_its_deficit(swapped), (fam, _label(r))
 
 
 def test_every_borrowing_row_says_which_way_it_runs():
