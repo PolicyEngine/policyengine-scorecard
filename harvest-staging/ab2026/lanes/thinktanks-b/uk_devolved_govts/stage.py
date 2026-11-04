@@ -176,7 +176,7 @@ SCOT_MANIFEST = {
     "doc_type": "html",
     "access": "direct",
     "retrieved": "2026-10-29",
-    "note": "Fresh exact prescribed browser-UA curl fetched HTTP 200 at 2026-10-29T15:22:47Z. SHA256 covers the fetched HTML bytes. Visible publication timestamp is 28 October 2026 15:45. JSON-LD dateModified is 2026-10-29T08:22:59Z, while dc.date.modified repeats 2026-10-28 15:45; no earlier copy was supplied, so a numerical change cannot be established. Five rows, read from opening body paragraphs 1–2. Local file .ab2026-primaries/uk_fai_sfc/scottish_government_budget_response.html."
+    "note": "Fresh exact prescribed browser-UA curl fetched HTTP 200 at 2026-10-29T15:22:47Z. SHA256 covers the fetched HTML bytes. Visible publication timestamp is 28 October 2026 15:45. JSON-LD dateModified is 2026-10-29T08:22:59Z, while dc.date.modified repeats 2026-10-28 15:45; no earlier copy was supplied, so a numerical change cannot be established. Five rows, read from opening body paragraphs 1–2. First staged in the uk_fai_sfc lane on 29 October; moved to uk_devolved_govts on 3 November 2026."
 }
 
 
@@ -281,7 +281,7 @@ def scottish_rows():
             "baseline_policy": None,
             "publication": {**SCOT_PUBLICATION, "locator": figure["locator"]},
             "source_table": None,
-            "source_column": figure["source_column"],
+            "source_column": None,  # review B, finding 2: no printed column label
             "quote": figure["quote"],
             "note": (
                 "Scottish Government's reported real-terms funding projection, not an isolated "
@@ -295,12 +295,45 @@ def scottish_rows():
         }
 
 
+# === review B fixes, 4 November 2026 ======================================
+# Review B (PR #231, issue comment 6635498758), uk_devolved_govts findings 1
+# and 2, with the coordinator's Barnett call (brief section 3.3): the shared
+# key's scope is the red book's (the consequentials of the Budget's decisions
+# for the three devolved governments), so every Welsh row on it is a part,
+# named "Welsh Government" (rule 9: "a part can be ... a nation"). Red book
+# row 258 is the key's total. No primary was re-opened; no value changes.
+
+def review_fixes(result):
+    welsh = result[:14]
+    for r in welsh[:12]:
+        c = r["conditions"]
+        assert c["proposed_measure_key"] == PROPOSED_PACKAGE, r
+        if c["row_type"] == "total":  # the £448m and the four Table 1 Totals
+            assert "component" not in c, r
+            c["component"] = "Welsh Government"
+        else:  # Table 1's Resource and Capital cells
+            c["component"] = "Welsh Government: " + c["component"]
+        c["row_type"] = "measure_component"
+    # Finding 1: the £448m is the total over 2026-27 to 2029-30, indexed to
+    # the final year (period 2030), so it names that fiscal year.
+    assert welsh[0]["value_raw"] == "£448m" and welsh[0]["period"] == 2030
+    welsh[0]["conditions"]["fy"] = "2029-30"
+    # Finding 2: row 13's quote is the paragraph's third sentence, and the
+    # "next financial year" sentence of the shared note belongs to row 12.
+    r13 = welsh[13]
+    assert r13["value_raw"] == "almost 10%"
+    r13["publication"]["locator"] = "Second paragraph after Table 1, third sentence"
+    r13["note"] = r13["note"].replace(
+        " Next financial year means 2027-28 given publication on 28 October 2026.", "")
+    return result
+
+
 def main():
     (HERE / "manifest.jsonl").write_text(
         "".join(json.dumps(m, sort_keys=True, ensure_ascii=False) + "\n" for m in (MANIFEST, SCOT_MANIFEST)),
         encoding="utf-8",
     )
-    claims = rows() + list(scottish_rows())
+    claims = review_fixes(rows()) + list(scottish_rows())
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as fh:
         for item in claims:
