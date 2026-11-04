@@ -40,6 +40,7 @@ The two XLSX attachments of [Supporting documents for Budget 2026](https://www.g
     - lines 15–16: `autumn_budget_2024`;
     - line 17: `spring_budget_2024` (`data/uk/events/*_measures.json`).
   - The cells are £ million. The table's units header prints "(£)", and its footnotes give no unit, but every value cell carries the number format `\+#,##0"m"` (I9 = 7130 displays as "+7,130m"), so the rows are `parse_confidence: high` (review A, T-6). The sheet is read by name ("Rounded Table 6.4"), not as the workbook's active sheet.
+  - Footnote 2 (cell F25) sets the table's scope: "Measures that interact with new measures announced at this Budget, for example on savings income tax changes, as well as measures that extend an existing policy such as personal tax threshold measures have not been included." (review A, T-6).
 
 ## Conventions (load-bearing)
 
