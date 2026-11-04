@@ -2529,10 +2529,16 @@ for _r in ROWS:
 # direct effect of tax measures that Figure 10 plots, and that total with
 # fuel duty frozen. Single measures and groups of measures keep
 # revenue_change. No value or sign changes.
+# Review B, RF finding 3, option (b) (coordinator's call, 4 November 2026):
+# the "Net effect if Fuel Duty frozen" totals (F10 row 54) add the receipts
+# effect of a freeze the Budget didn't adopt, which row 154's note derives
+# from the OBR's constant-duty-rate Fuel Duty forecast less its central
+# forecast, and RF's Figure 10 title frames them as revenue. Under rule 10
+# they are a tax-change estimate whose evidence doesn't establish PSNB scope,
+# so they keep revenue_change, and their option key is not a rule 10 key.
 RULE10_KEYS = {
     TOTAL,
     "ab2026__package_tax_decisions_since_march_2026",
-    "ab2026_option__tax_decisions_with_continued_fuel_duty_freeze",
 }
 _moved = 0
 for _r in ROWS:
@@ -2540,7 +2546,153 @@ for _r in ROWS:
     if _k in RULE10_KEYS and _r.get("metric") == "revenue_change":
         _r["metric"] = "decisions_effect_on_borrowing"
         _moved += 1
-assert _moved == 25, _moved
+assert _moved == 14, _moved
+
+
+# ===========================================================================
+# Review fixes, 4 November 2026 (reviews A and B of PR #231 at 4f424b9)
+# ===========================================================================
+# Review B's RF findings 1-8 (issue comment 6635498758) and review A's K-4,
+# K-6, K-7(c), K-7(d), K-7(h) and H-1 (issue comment 6635870934), with the
+# coordinator's calls. Indices are 4f424b9's 0-based gzip order (after the
+# 3 November drop of row 397). No printed or stored value changes.
+
+def _loc(r):
+    return r["publication"]["locator"]
+
+# Finding 1: Figure 8 and the figures that restate it are totals over
+# 2026-27 and 2027-28 ("Shows total cash impact of each measure", v2 p.20;
+# workbook F8 N35), so they are cumulative, as rows 47, 93, 99 and 152 are.
+F8_TOTAL = "£ per household as stored: total cash impact over 2026-27 and 2027-28 (Figure 8 note)"
+_f8 = 0
+for _r in ROWS:
+    if _loc(_r).startswith("sheet F8, cell "):
+        _r["value_kind"] = "cumulative"
+        if _r["normalization"] == "£ per household per year as stored":
+            _r["normalization"] = F8_TOTAL
+        _f8 += 1
+assert _f8 == 114, _f8
+for _i, _raw in ((56, "£158"), (57, "£144"), (61, "£158"), (63, "£144"), (74, "£145"), (76, "£130"),
+                 (62, "£14"), (75, "£15"), (34, "£4.4 billion"), (54, "£4.4 billion"), (127, "£4.4 billion")):
+    _row(_i, _raw)["value_kind"] = "cumulative"
+
+# Review A, K-4: the £4.4bn counts line 3 only at its household share
+# (fn 19), so it is not exactly Table 6.1 lines 1-3 (rule 3).
+P_HH_SHARE = "ab2026__package_household_energy_vat_and_household_share_of_fuel_duty"
+for _i in (34, 54, 127):
+    _r = _row(_i, "£4.4 billion")
+    assert _r["measure_key"] == PKG
+    _r["measure_key"] = None
+    _r["conditions"]["proposed_measure_key"] = P_HH_SHARE
+
+# Finding 2 (rule 7): the Spread thin page changed by 4 November
+# (dateModified 2026-11-04T09:21:48Z); its Key findings now print v2's
+# £145 / £130, which v2 rows 74 and 76 already carry. Rows 56-57 rightly cite
+# the 29 October bytes. The 4 November page is a 0-row primary in the
+# manifest (coordinator's call: its £145 / £130 are not staged again).
+for _i, _raw in ((56, "£158"), (57, "£144")):
+    _r = _row(_i, _raw)
+    _r["conditions"]["document_version"] = "29 October page text (superseded by 4 November)"
+    _r["note"] = (_r["note"].rstrip() + " Superseded: by 4 November the page's Key findings print v2's "
+                  "£145 / £130 (manifest line 8; no row cites that version).")
+
+# Finding 4: RF repeats HM Treasury's count ("up to 20 million households in
+# England") and cites nothing.
+for _i, _raw in ((55, "up to 20 million"), (72, "20 million")):
+    _r = _row(_i, _raw)
+    _r["attribution"] = "restated"
+    _r["source_model"] = "hm_government_publication"
+    _r["parse_confidence"] = "medium"
+    _r["note"] = "Restates HM Treasury, Budget 2026 ('up to 20 million households in England'); RF cites no source."
+
+# Finding 6: RF prints no year for the gas standing-charge change.
+for _i in range(115, 126):
+    _r = ROWS[_i]
+    assert _r["conditions"]["proposed_measure_key"] == P_GAS_SC and "fy" not in _r["conditions"], _i
+    _r["conditions"]["horizon"] = "year not printed: the change lands by the end of 2027 or soon after (p.18)"
+    _r["parse_confidence"] = "medium"
+
+# Finding 7: every change row states its sign. Review A K-7(d) asked the
+# same of row 117.
+_g = 0
+for _r in ROWS:
+    if _loc(_r).startswith(("sheet F21, ", "sheet F22, ")):
+        assert "sign_convention" not in _r["conditions"]
+        _r["conditions"]["sign_convention"] = "positive = growth"
+        _g += 1
+assert _g == 122, _g
+for _i, _raw in ((21, "0.6 per cent"), (23, "-0.4 per cent"), (89, "1.4 per cent"), (117, "£46"),
+                 (198, "1.8 per cent"), (200, "5.0 per cent"), (203, "2.0 per cent"), (204, "1.1 per cent")):
+    _r = _row(_i, _raw)
+    assert "sign_convention" not in _r["conditions"]
+    _r["conditions"]["sign_convention"] = "positive = gain to households"
+# Nit: the wording rows 98, 99 and 111 use.
+_row(10, "up to £116")["conditions"]["sign_convention"] = "positive = saving (a reduction in the household's bills)"
+
+# Review A H-1 and review B's nit: `component` held the chart series label on
+# rows that are not rule 9 parts. Every chart row now names its series in
+# `series`; only the rule 9 parts (Figure 8's two VAT-cut columns and p.17's
+# extension) keep `component`. The text rows' drivers of a forecast change
+# and the defence scenario's spending type, which are context, use `driver`
+# and `spending_type`.
+for _r in ROWS:
+    _c = _r["conditions"]
+    if _loc(_r).startswith("sheet ") and "component" in _c:
+        _c["series"] = _c["component"]
+        if _c.get("row_type") != "measure_component":
+            del _c["component"]
+for _i, _raw in ((51, "£12 billion"), (80, "£4 billion"), (81, "£2.5 billion"), (82, "£12 billion"),
+                 (91, "£6.7 billion"), (92, "60 per cent")):
+    _c = _row(_i, _raw)["conditions"]
+    _c["driver"] = _c.pop("component")
+_c = _row(170, "£6 billion")["conditions"]
+_c["spending_type"] = _c.pop("component")
+for _r in ROWS:
+    _c = _r["conditions"]
+    if "component" in _c:
+        assert _c.get("row_type") == "measure_component" and _r["measure_key"] == VAT, _loc(_r)
+
+# Nits: F22's category labels lost a line break ("2025- 26").
+for _r in ROWS:
+    if _loc(_r).startswith("sheet F22, "):
+        for _f in ("source_column", "quote"):
+            _r[_f] = re.sub(r"(\d{4})- (\d{2})", r"\1-\2", _r[_f])
+# Nits: stored cells say "as stored", not "as printed" (F7 C/I/M, F9).
+for _r in ROWS:
+    if _loc(_r).startswith(("sheet F7, ", "sheet F9, ")) and _r["normalization"] == "as printed":
+        _r["normalization"] = "as stored"
+# Nits: F7's support series name their support in reform_hint.
+for _i in (222, 226, 236, 241):
+    _r = ROWS[_i]
+    assert _r["reform_hint"] is None and _loc(_r).startswith("sheet F7, ")
+    _r["reform_hint"] = _r["conditions"]["series"]
+# Nits: the gap rows take the price basis F10 of the earlier review gave
+# their siblings.
+for _i, _raw in ((30, "less than £15"), (62, "£14"), (75, "£15")):
+    _row(_i, _raw)["conditions"]["price_basis"] = "cash terms (Figure 8)"
+
+# Review A K-7(c): the AB2025 spelling of the earnings metric, which the red
+# book family uses for the same measure.
+for _i in (88, 211):
+    _r = _row(_i, "£1,040")
+    assert _r["proposed_metric"] == "annual_earnings_change"
+    _r["proposed_metric"] = "gross_earnings_change"
+
+# Review A K-7(h): RF's "over £3 billion annually by 2030-31" sits above the
+# OBR's group in that year.
+_row(67, "over £3 billion")["conditions"]["discrepancy"] = (
+    "RF prints over £3 billion by 2030-31; the OBR's Table 3.1 group (workbook F10 row 52) is "
+    "2.89 in 2030-31 and 3.64 in 2031-32")
+
+# Review B, OBR finding 3: the OBR's tax administration group is the receipts
+# of Table 6.1 lines 45 and 46, so its key carries "_receipts" (RF's 7 rows
+# restate the same group).
+_n = 0
+for _r in ROWS:
+    if _r["conditions"].get("proposed_measure_key") == "ab2026__package_tax_administration_compliance_and_debt_collection":
+        _r["conditions"]["proposed_measure_key"] += "_receipts"
+        _n += 1
+assert _n == 7, _n
 
 
 # ===========================================================================
