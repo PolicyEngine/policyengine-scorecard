@@ -7308,6 +7308,49 @@ for _n, _v in ((76, "£7bn"),):
     _r["metric"] = "decisions_effect_on_borrowing"
 
 
+# ---------------------------------------------------------------------------
+# Review A (PR #231, issue comment 6635870934), 4 November 2026: K-7(a),
+# K-7(e) and H-6(a), with the coordinator's calls (brief section 3.2). The
+# coordinator read Adam's deck (slide 2) and Wernham's (slide 3). Explicit
+# edits; no printed value, sign or year changes. Indices here are 0-based in
+# output order, as review A cites them.
+
+def _row0(i, value_raw):
+    r = ROWS[i]
+    assert r["value_raw"] == value_raw, (i, r["value_raw"], value_raw)
+    return r
+
+# H-6(a): a registered Metric goes in `metric`, not `proposed_metric`.
+for _i, _v, _m in ((39, "3.8%", "cpi_inflation_rate"), (40, "1.9%", "cpi_inflation_rate"),
+                   (47, "80%", "affected_share"), (48, "91%", "affected_share")):
+    _r = _row0(_i, _v)
+    assert _r["proposed_metric"] == _m, _i
+    _r["metric"], _r["proposed_metric"] = _m, None
+
+# K-7(a): slide 2's list opens "Biggest revenue-raisers in 2031-32", so the
+# year stands; record the gap to Table 6.1.
+_r = _row0(78, "£1.1bn")
+assert _r["conditions"]["fy"] == "2031-32"
+_r["conditions"]["discrepancy"] = (
+    "IFS prints £1.1bn for 2031-32, where Table 6.1 gives lines 61 and 62 a combined £1,045m.")
+
+# K-7(e): row 42's £5bn is exactly lines 1 to 3, a two-year total, dated as
+# RF's two-year totals are (cumulative, indexed to the final fiscal year,
+# with the years in `horizon`).
+_r = _row0(42, "£5bn")
+assert _r["measure_key"] == "ab2026__package_household_energy_vat_and_fuel_duty"
+_r["note"] = (
+    "IFS's £5bn covers the three measures over the nine months to June 2027. Table 6.1 line 2 "
+    "costs the whole VAT cut from 1 October 2026, including the part announced before the "
+    "Budget, so the scope is exactly lines 1 to 3 (£5,040m over 2026-27 and 2027-28).")
+_r["value_kind"] = "cumulative"
+_r["period"] = 2028
+_r["time_basis"] = "fiscal_year"
+_r["conditions"]["horizon"] = (
+    "2026-27 and 2027-28: IFS's 'next nine months', October 2026 to June 2027, which Table 6.1 "
+    "lines 1 to 3 cost in those two years")
+
+
 def main():
     buf = io.BytesIO()
     with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as stream:
