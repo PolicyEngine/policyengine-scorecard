@@ -4027,6 +4027,38 @@ for _n in COSTINGS:
             _seen[_prefix] += 1
 assert list(_seen.values()) == [10, 5], _seen
 
+# === review A fixes, 4 November 2026 (PR #231, issue comment 6635870934) ===
+# Explicit edits to the data above; no primary was re-opened and no printed
+# value changes.
+
+# C-1: p.108 prints the landlord fee's receipts, then "Note: this is offset by
+# increased DEL spending so is fiscally neutral." The OBR stages the same
+# receipts as a component and the measure's total as 0, so these rows are
+# the receipts part of the measure, not the whole (rule 9).
+_p108 = [n for n in COSTINGS if n["page"] == 108]
+assert len(_p108) == 1 and _p108[0]["row_type"] == "measure", _p108
+_p108[0]["row_type"] = "measure_component"
+_p108[0]["component"] = "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"
+
+# C-2: the p.50 context rows keep no "tax-base input" clause.
+_C2_OLD = "Staged as a tax-base input of the measure (README rule 8) and attributed restated"
+_C2_NEW = ("A context figure, not a part of the measure, so measure_key and reform_hint are null"
+           " (AB2025 rule 3); attributed restated")
+for _t in _p50:
+    assert _C2_OLD in _t["note"], _t["note"]
+    _t["note"] = _t["note"].replace(_C2_OLD, _C2_NEW)
+
+# C-3: the p.41 text rows carry finding 2's double-counting sentence too.
+_t41 = [t for t in TEXT_CLAIMS if t["page"] == 41]
+assert len(_t41) == 3, _t41
+for _t in _t41:
+    _t["note"] = (_t["note"] + _BBB).strip()
+
+# C-6: the GBP behavioural_parameter precedent is AB2025's OBR family.
+_t84 = [t for t in TEXT_CLAIMS if t["page"] == 84]
+assert len(_t84) == 1 and "as in uk_obr_tables" in _t84[0]["note"], _t84
+_t84[0]["note"] = _t84[0]["note"].replace("as in uk_obr_tables", "as in the AB2025 uk_obr_tables family")
+
 
 def build():
     by_page = {n["page"]: n for n in COSTINGS}
