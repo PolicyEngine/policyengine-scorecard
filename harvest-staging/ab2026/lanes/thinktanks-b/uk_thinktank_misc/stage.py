@@ -260,7 +260,7 @@ for _i, _raw, _metric in ((2, "£15 billion", "fiscal_headroom"), (8, "80%", "af
 
 # Misc finding 1: IfG's "around 80%" restates HM Treasury's paragraph 3.5
 # ("around 80% of households in England will gain further from the £100
-# Household Energy Payment"), which uk_hmt_redbook row 193 stages.
+# Household Energy Payment"), which uk_hmt_redbook row 191 stages.
 _r = _row(8, "80%")
 _r["attribution"] = "restated"
 _r["source_model"] = "administrative_data"
@@ -269,7 +269,7 @@ _r["conditions"]["geography"] = "England"
 _r["conditions"]["denominator"] = "households in England (HM Treasury)"
 _r["note"] = ("Restates HM Treasury's Budget 2026 paragraph 3.5 ('around 80% of households in England"
               " will gain further from the £100 Household Energy Payment'; its footnote counts 20 million"
-              " households in bands A-D), which uk_hmt_redbook row 193 stages; IfG cites no source. The"
+              " households in bands A-D), which uk_hmt_redbook row 191 stages; IfG cites no source. The"
               " numerator is the £100 council-tax rebate for bands A-D, Table 6.1 line 1. No fiscal year"
               " is printed.")
 

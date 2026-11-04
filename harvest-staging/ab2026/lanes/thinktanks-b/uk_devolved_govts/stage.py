@@ -301,7 +301,8 @@ def scottish_rows():
 # key's scope is the red book's (the consequentials of the Budget's decisions
 # for the three devolved governments), so every Welsh row on it is a part,
 # named "Welsh Government" (rule 9: "a part can be ... a nation"). Red book
-# row 258 is the key's total. No primary was re-opened; no value changes.
+# row 252 (258 at 4f424b9) is the key's total. No primary was re-opened; no
+# value changes.
 
 def review_fixes(result):
     welsh = result[:14]
