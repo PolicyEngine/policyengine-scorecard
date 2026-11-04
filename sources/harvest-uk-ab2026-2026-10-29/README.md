@@ -44,36 +44,53 @@ The AB2025 harvest README's rules 1–10 and its row contract apply, with the AB
    - a consequential for a devolved government.
 
    A measure's own parameters are its design: rates, thresholds, payment amounts, dates and durations. So are spending allocations to programmes, financing remits and contingent liabilities. They go in `reform_hint` or `conditions`, never as rows (the AB2025 red book family kept "£9.90" in `reform_hint` the same way). A worked example's inputs follow this rule too, and its computed outcome is a row.
+
+   Lending and financing follow one rule across families. The harvest stages HM Treasury's Tables 6.1, 6.2 and 6.4 and the OBR's policy workbook whole, as the decisions' costings. Elsewhere, an amount a scheme will lend or spend is design, and an effect on borrowing, debt or the financing requirement is an estimate. So the OBR's paragraph 3.22 loan volumes for Your First Home are not staged, while its effect on debt is, and paragraph 3.20's rise in the Government's financing requirement is staged on `cash_requirement_change`.
 9. **A component of one measure keeps that measure's key.** A printed part of one Table 6.1 measure carries that measure's key, with `conditions.component` naming the part and `conditions.row_type: measure_component`. A part can be a fiscal head, a sub-measure within a line (the tax-gap package's items, for example) or a nation. Components are never summed with the measure's total. Proposed package keys are for scopes that cross Table 6.1 lines, or have none.
-10. **A producer's stated effect of the Budget's decisions on PSNB takes `decisions_effect_on_borrowing`.** That covers the total effect of Government decisions, its direct and indirect effects and any part of them the producer identifies, its splits into tax and spending and into scorecard and non-scorecard decisions, and figures that restate or recombine those effects without ambiguity. `models.py` defines the metric as PSNB and keeps it apart from `revenue_change`, a receipts line, and `ingest_obr_policy_effects.py` maps March 2026 Table B.1's totals, its direct effects and their tax and spending split to it. HM Treasury sets out in Table 6.1 the cost or yield of the decisions "which have a direct effect on Public Sector Net Borrowing", so Table 6.1's three totals, and the figures that restate them, take the metric. A receipts total or a tax-change estimate keeps `revenue_change` unless its evidence establishes PSNB scope, and a total key or a package label alone doesn't establish it. The OBR sums its receipts heads, from air passenger duty to visa fees, into its policy workbook's total of receipts measures, so that total keeps `revenue_change`. IFS doesn't tie its own estimate of the Budget's tax change at the forecast horizon to PSNB, so that estimate keeps `revenue_change` too. `ingest_uk_ab2025.py` maps AB2025's `package_tax_rise_size` rows to the same metric. Single measures, groups of measures and a total's lines by tax or spending head keep `revenue_change`, unless their producer states the effect on borrowing, as the OBR does for four policies in paragraphs 3.20, 3.21 and 3.43 and IFS does for the Budget's new giveaways. A row giving the effect on the current budget deficit proposes `fiscal_balance_change`, and its sign convention names that deficit. Each row keeps the sign its producer prints, and `conditions.sign_convention` says which way it runs.
+10. **A producer's stated effect of the Budget's decisions on PSNB takes `decisions_effect_on_borrowing`.** That covers the total effect of Government decisions, its direct and indirect effects and any part of them the producer identifies, its splits into tax and spending and into scorecard and non-scorecard decisions, and figures that restate or recombine those effects without ambiguity. `models.py` defines the metric as PSNB and keeps it apart from `revenue_change`, a receipts line, and `ingest_obr_policy_effects.py` maps March 2026 Table B.1's totals, its direct effects and their tax and spending split to it. HM Treasury sets out in Table 6.1 the cost or yield of the decisions "which have a direct effect on Public Sector Net Borrowing", so Table 6.1's three totals, and the figures that restate them, take the metric. A receipts total or a tax-change estimate keeps `revenue_change` unless its evidence establishes PSNB scope, and a total key or a package label alone doesn't establish it. The OBR sums its receipts heads, from air passenger duty to visa fees, into its policy workbook's total of receipts measures, so that total keeps `revenue_change`. IFS doesn't tie its own estimate of the Budget's tax change at the forecast horizon to PSNB, so that estimate keeps `revenue_change` too. `ingest_uk_ab2025.py` maps AB2025's `package_tax_rise_size` rows to the same metric. Single measures, groups of measures and a total's lines by tax or spending head keep `revenue_change`, unless their producer states the effect on borrowing, as the OBR does for four policies in paragraphs 3.20, 3.21 and 3.43 and IFS does for the Budget's new giveaways. Text that restates a Table 3.1 group or a single measure as an effect on borrowing keeps that row's metric (the OBR's paragraph 3.11 "increase borrowing by £5 billion in 2026-27" restates Table 3.1's other departmental spending changes, which keep `revenue_change`), and Table 3.1's "A positive sign implies an increase in borrowing" is a sign convention, not a statement of PSNB scope. A total that adds the receipts effect of an option the Budget didn't adopt is not a restatement or recombination of the decisions' effects, so it keeps `revenue_change` unless its evidence establishes PSNB scope: Resolution Foundation's Figure 10 "Net effect if Fuel Duty frozen" adds a continued freeze's receipts effect, which its note derives from the OBR's constant-duty-rate fuel duty forecast, and the OBR states the freeze's effect on borrowing for 2029-30 only (paragraph 3.43). A row giving the effect on the current budget deficit (or, for an outturn, the primary deficit) proposes `fiscal_balance_change`, and its sign convention names that deficit. Each row keeps the sign its producer prints, and `conditions.sign_convention` says which way it runs.
+
+## Row contract additions
+
+`pipeline/ab2026_harvest_contract.py` checks the AB2025 row contract with these additions (review A, H-1 to H-6):
+
+- `value_kind` may also be `categorical` (a rating, such as the OBR's Table 3.3 uncertainty ratings).
+- `value` is finite, and it is `value_raw`'s number at the scale `value_raw`'s word gives (bn, m, k, %), failing that at the factor `normalization` states, failing that at 1, 10³, 10⁶, 10⁹, 0.01 or 100. Its sign is `value_raw`'s unless `normalization` says the sign comes from the wording.
+- A row that carries `conditions.component` is a part: `row_type` is `measure_component` (or the OBR workbook's `measure_total` marker), and the component isn't blank (rule 9).
+- No more than two non-restated rows share the AB2025 ingest's claim identity, and two that do agree within 0.5%.
+- A registered metric goes in `metric`, never `proposed_metric`.
+- `conditions.recosting_of` appears only on `row_type: recosting` rows (Table 6.4).
+- `conditions.fy` is one fiscal year, and a `fiscal_year` row without `fy` gives `conditions.horizon`.
+- `conditions.geography` is a code: UK, GB, England, Wales, Scotland, Northern Ireland, England and Wales, UK_excl_scotland, "Scotland, Wales and Northern Ireland", "not stated", or a country a producer compares the UK with. Prose goes in `conditions.geography_note`.
+- A restated row's `note` says whose figure it restates.
+- A proposed key is `ab2026__` or `ab2026_option__` followed by lower-case words joined by single underscores, and NOTES scopes it as a whole token.
 
 ## Families staged
 
-12 families, 5,948 rows (446 `restated`), as `COUNTS.json` pins them.
+12 families, 5,952 rows (450 `restated`), as `COUNTS.json` pins them.
 
 | family | rows | primaries | producer slugs |
 |---|--:|--:|---|
-| `uk_centax` | 110 | 5 | `centax` |
+| `uk_centax` | 112 | 6 | `centax` |
 | `uk_devolved_govts` | 19 | 2 | `scottish_government`, `welsh_government` |
 | `uk_hmt_costings` | 597 | 1 | `hm_treasury` |
-| `uk_hmt_redbook` | 432 | 5 | `hm_treasury` |
-| `uk_hmt_tables` | 762 | 2 | `hm_treasury` |
+| `uk_hmt_redbook` | 425 | 6 | `hm_treasury` |
+| `uk_hmt_tables` | 768 | 2 | `hm_treasury` |
 | `uk_ifs_ab2026` | 144 | 14 | `ifs` |
 | `uk_ippr` | 3 | 3 | `ippr` |
-| `uk_obr_tables` | 2,797 | 3 | `obr_efo` |
-| `uk_rf_ab2026` | 766 | 7 | `resolution_foundation` |
+| `uk_obr_tables` | 2,800 | 4 | `obr_efo` |
+| `uk_rf_ab2026` | 766 | 8 | `resolution_foundation` |
 | `uk_thinktank_misc` | 12 | 5 | `citizens_advice`, `cps`, `institute_for_government`, `learning_and_work_institute` |
 | `uk_tpa` | 305 | 10 | `tax_policy_associates` |
 | `uk_trussell_wpi` | 1 | 1 | `trussell_wpi` |
 
-Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the five reviews; this branch carries only each family's three files, as AB2025 does. On 3 November 2026 we applied the review fixes, all four sections of the IFS addendum and the cross-family key harmonisation, and each family's NOTES.md records them.
+Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the five reviews; this branch carries only each family's three files, as AB2025 does. On 3 November 2026 we applied the review fixes, all four sections of the IFS addendum and the cross-family key harmonisation, and each family's NOTES.md records them. On 4 November we applied reviews A and B of 4f424b9 (the registry, the HM Treasury families and the harness; the OBR, Resolution Foundation and think-tank families), and each NOTES.md records those too.
 
 **Families with no rows** are not carried here, as AB2025 has no empty family. Their working files stay on the staging branch:
 
 - `uk_cpag`: both CPAG pages (its Budget response and a pre-Budget call) returned Cloudflare's challenge (HTTP 403) to every fetch on 29 October.
 - `uk_smf`: the Social Market Foundation page returned a challenge to every fetch on 29 October.
 - `uk_niesr`: NIESR's Budget-day reaction ("Breathing Space, Not a Strategy") was fetched, but it holds macro and fiscal-stance commentary for the #55 lane and restated OBR figures, which the AB2025 NIESR family did not stage either.
-- `uk_fai_sfc`: the Fraser of Allander Institute's reaction refused the fetch (HTTP 403), and the Scottish Fiscal Commission published nothing in scope on 28 or 29 October. The Scottish Government's five rows, first staged here, moved to `uk_devolved_govts` on 3 November.
+- `uk_fai_sfc`: the Fraser of Allander Institute's reaction refused the fetch (HTTP 403), and the Scottish Fiscal Commission published nothing in scope on 28 or 29 October. The reaction's feed text holds only restated OBR figures. A second FAI post, "Rising or falling? Why both claims about Scotland's funding can be true" (29 October), was found on 4 November through FAI's RSS feed and sits behind the same 403. Its table of Scotland's Barnett consequentials is not staged: FAI says the split emerged late on 28 October, so it probably restates HM Treasury's allocations, which `uk_hmt_redbook` rows 258–261 stage. The Scottish Government's five rows, first staged here, moved to `uk_devolved_govts` on 3 November.
 
 ## Producer slugs and families
 
@@ -85,9 +102,10 @@ Each family's `stage.py`, which writes its claims file, is kept on branch `uk/ab
 | obr_efo | OBR: Economic and fiscal outlook, October 2026, and its detailed tables | uk_obr_tables |
 | resolution_foundation | Resolution Foundation | uk_rf_ab2026 |
 | ifs | Institute for Fiscal Studies | uk_ifs_ab2026 |
-| tax_policy_associates, centax, cpag, ippr, niesr, fraser_of_allander, scottish_fiscal_commission, cps, institute_for_government, age_uk, … | other producers, each in the AB2025 family of the same name where one exists | uk_tpa, uk_centax, uk_cpag, uk_ippr, uk_niesr, uk_fai_sfc, uk_thinktank_misc, … |
+| tax_policy_associates, centax, ippr, cps, institute_for_government, learning_and_work_institute, citizens_advice | other producers, each in the AB2025 family of the same name where one exists | uk_tpa, uk_centax, uk_ippr, uk_thinktank_misc |
+| cpag, smf, niesr, fraser_of_allander, scottish_fiscal_commission | producers with no rows (see "Families with no rows"); their working files are on the staging branch, not here | none |
 | scottish_government, welsh_government | the devolved governments' responses | uk_devolved_govts |
 | trussell_wpi | Trussell, as in AB2025 | uk_trussell_wpi |
-| commercial firms and platforms | worked examples (mode 3, #63) | uk_cases_commercial |
+| commercial firms and platforms | worked examples (mode 3, #63); none was staged for AB2026 | none (AB2025: uk_cases_commercial) |
 
 Macro calls by banks and City forecasters belong to the #55 lane and are not staged here (AB2025 rule 10).
