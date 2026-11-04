@@ -58,10 +58,33 @@ SIGN = (
     "Energy Payment is -, as in the AB2025 Table 4.1 harvest)"
 )
 FT_SIGN = (
-    "positive = cash inflow to the public sector; negative = cash outflow "
-    "(financial transactions: the table prints no legend; convention observed "
-    "from the rows, e.g. the National Wealth Fund's investment is -)"
+    "positive = improves the public sector's cash position (cash inflow or "
+    "lower outflow); negative = worsens it (financial transactions: the table "
+    "prints no legend; convention observed from the rows, e.g. the National "
+    "Wealth Fund's investment is -, and line 6's reprioritisation of existing "
+    "budgets is +)"
 )
+# Table 6.1 footnotes 1 and 2, as the red book prints them (review A T-8).
+T61_FOOTNOTES = (
+    "Table footnote 1: totals may not sum due to rounding. Footnote 2 sets the "
+    "totals' scope: 'Measures with no net increase to borrowing are not "
+    "included, these are debt relief for councils in severe financial distress "
+    "through the Public Works Loan Board and a landlord registration fee for the "
+    "Private Rented Sector.' and 'AME and tax costings with an impact of less "
+    "than +-£10 million in every year are not included'."
+)
+# Table 6.2 line 6 reprioritises existing financial transactions budgets to
+# fund line 5's new equity loan scheme. Its cells are not the scheme's, so it
+# takes its own proposed key (README rule 2), as Table 6.1 line 34's
+# reprioritisation does (review A T-1).
+T62_PROPOSED = {6: "ab2026__your_first_home_ft_reprioritisation"}
+# The workbook shades its five top-level section headings (B5, B27, B43, B58,
+# B82) with this fill, as the red book shades them (review A T-4).
+SECTION_FILL = "FFFFCCCC"
+# A footnote marker HM Treasury prints as a superscript run glued to a title
+# (lines 45 and 47 end "...4"; review A T-5). openpyxl's cached value joins the
+# runs, so the trailing marker is stripped from the title.
+FOOTNOTE_MARKER = re.compile(r"(?<=[a-z])\d$")
 
 
 def fy_end(fy):
@@ -143,13 +166,27 @@ def header_years(ws, row):
     return cols
 
 
+def title_of(text):
+    return FOOTNOTE_MARKER.sub("", " ".join(text.split()))
+
+
+def is_section(cell):
+    fill = cell.fill
+    return bool(
+        fill is not None
+        and fill.fill_type
+        and getattr(fill.fgColor, "rgb", None) == SECTION_FILL
+    )
+
+
 def stage_t61(wb, out):
     ws = wb["Table 6.1"]
     years = header_years(ws, 4)
-    # Headings sit in column B with nothing beside them. A run of headings
-    # with no measure line between them is recorded whole ("A > B"): the
-    # table marks no hierarchy beyond that adjacency.
-    run, heading = [], ""
+    # Headings sit in column B with nothing beside them. The five top-level
+    # sections are shaded (SECTION_FILL); a section's sub-headings follow it,
+    # so each line's heading is "section > sub-heading", carrying the last
+    # section down to lines whose sub-heading has none directly above it.
+    run, heading, section = [], "", None
     seen = set()
     for row in ws.iter_rows(min_row=5):
         b, c = row[1].value, row[2].value
@@ -161,13 +198,17 @@ def stage_t61(wb, out):
             text = " ".join(b.split())
             if text[0].isdigit():
                 break  # footnotes
-            run.append(text)
-            heading = " > ".join(run)
+            if is_section(row[1]):
+                section, run = text, []
+            else:
+                run.append(text)
+            heading = " > ".join(([section] if section else []) + run)
             continue
         run = []
         if isinstance(b, int) and isinstance(c, str):
-            line, title = b, " ".join(c.split())
-            fiscal_head = (row[3].value or "").strip() or None
+            # Column D ("Fiscal Head check (hide)") is a hidden check column
+            # the red book doesn't print, so it isn't staged (review A T-3).
+            line, title = b, title_of(c)
             head = row[4].value.strip()
             seen.add(line)
             for col, fy in years.items():
@@ -182,8 +223,6 @@ def stage_t61(wb, out):
                     "heading": heading,
                     "row_type": "measure",
                 }
-                if fiscal_head:
-                    cond["fiscal_head"] = fiscal_head
                 out.append(
                     {
                         **base_row(
@@ -229,22 +268,24 @@ def stage_t61(wb, out):
                             metric=BORROWING,
                         ),
                         "measure_key": K.package_key(slug),
-                        "note": "Table footnote 1: totals may not sum due to rounding.",
+                        "note": T61_FOOTNOTES,
                     }
                 )
     assert seen == set(K.TABLE_61), sorted(set(K.TABLE_61) ^ seen)
 
 
-def stage_t62(wb, out):
+def stage_t62(wb, out, totals):
+    """Table 6.2's lines go to `out`; its total row goes to `totals`, which
+    main() writes after Table 6.4, so the rows staged before the total was
+    added (review A T-2) keep their positions."""
     ws = wb["Table 6.2"]
     years = header_years(ws, 4)
     seen = set()
     for row in ws.iter_rows(min_row=5):
         b, c = row[1].value, row[2].value
         if isinstance(b, int) and isinstance(c, str):
-            line, title = b, " ".join(c.split())
+            line, title = b, title_of(c)
             seen.add(line)
-            fiscal_head = (row[3].value or "").strip()
             for col, fy in years.items():
                 v = ws.cell(row=row[0].row, column=col).value
                 assert isinstance(v, (int, float)), (line, fy, v)
@@ -254,29 +295,65 @@ def stage_t62(wb, out):
                     "table_line": str(line),
                     "row_type": "measure",
                 }
-                if fiscal_head:
-                    cond["fiscal_head"] = fiscal_head
-                out.append(
+                key = K.PREFIX + K.TABLE_62[line]
+                if line in T62_PROPOSED:
+                    cond["proposed_measure_key"] = T62_PROPOSED[line]
+                    key = None
+                r = {
+                    **base_row(
+                        T61,
+                        title=title,
+                        fy=fy,
+                        value=v,
+                        locator=f"Table 6.2 line {line}, {fy} (cell {ws.cell(row=row[0].row, column=col).coordinate})",
+                        table="Table 6.2 Budget 2026 Financial Transactions (cash impact, £ million)",
+                        column=fy,
+                        conditions=cond,
+                        metric=FT,
+                    ),
+                    "measure_key": key,
+                }
+                if key is None:
+                    r["note"] = (
+                        "Table 6.2 line 6 reprioritises existing financial "
+                        "transactions budgets to fund line 5's equity loan scheme; "
+                        "it has no Table 6.1 line, so it takes its own proposed key "
+                        "(README rule 2), never line 5's."
+                    )
+                out.append(r)
+            continue
+        if not b and isinstance(c, str) and c.strip().startswith("Total"):
+            label = " ".join(c.split())
+            for col, fy in years.items():
+                v = ws.cell(row=row[0].row, column=col).value
+                assert isinstance(v, (int, float)), (label, fy, v)
+                totals.append(
                     {
                         **base_row(
                             T61,
-                            title=title,
+                            title=label,
                             fy=fy,
                             value=v,
-                            locator=f"Table 6.2 line {line}, {fy} (cell {ws.cell(row=row[0].row, column=col).coordinate})",
+                            locator=f"Table 6.2 '{label}', {fy} (cell {ws.cell(row=row[0].row, column=col).coordinate})",
                             table="Table 6.2 Budget 2026 Financial Transactions (cash impact, £ million)",
                             column=fy,
-                            conditions=cond,
+                            conditions={
+                                "sign_convention": FT_SIGN,
+                                "table": "6.2",
+                                "row_type": "total",
+                                "proposed_measure_key": "ab2026__package_total_financial_transactions",
+                            },
                             metric=FT,
                         ),
-                        "measure_key": K.PREFIX + K.TABLE_62[line],
+                        "measure_key": None,
+                        "note": "Table footnote 1: totals may not sum due to rounding.",
                     }
                 )
     assert seen == set(K.TABLE_62), seen
 
 
 def stage_t64(wb, out):
-    ws = wb.active
+    ws = wb["Rounded Table 6.4"]
     years = header_years(ws, 3)
     group = None
     seen = set()
@@ -319,14 +396,23 @@ def stage_t64(wb, out):
                         "note": (
                             "A recosting at Budget 2026 of a measure announced at an "
                             "earlier event; measure_key is that event's registry key. "
-                            "The table's units header prints '(£)', but its "
-                            "footnotes and magnitudes are those of Table 6.1 "
-                            "(£ million), which this row assumes."
+                            "The table's units header prints '(£)', and its footnotes "
+                            "give no unit, but every value cell carries the number "
+                            'format \\+#,##0"m" (I9 = 7130 displays as "+7,130m"), so '
+                            "the cells are £ million."
                         ),
-                        "parse_confidence": "medium",
                     }
                 )
     assert seen == set(K.TABLE_64), seen
+
+
+def stage_all(wb61, wb64):
+    rows, totals = [], []
+    stage_t61(wb61, rows)
+    stage_t62(wb61, rows, totals)
+    stage_t64(wb64, rows)
+    assert len(totals) == 6, len(totals)
+    return rows + totals
 
 
 def write_gz(rows, path):
@@ -350,11 +436,10 @@ def main(argv=None):
         got = sha256(path)
         if got != src["sha256"]:
             raise SystemExit(f"{path}: sha256 {got} != pinned {src['sha256']}")
-    rows = []
-    wb = openpyxl.load_workbook(args.t61, data_only=True)
-    stage_t61(wb, rows)
-    stage_t62(wb, rows)
-    stage_t64(openpyxl.load_workbook(args.t64, data_only=True), rows)
+    rows = stage_all(
+        openpyxl.load_workbook(args.t61, data_only=True),
+        openpyxl.load_workbook(args.t64, data_only=True),
+    )
     FAMILY.mkdir(parents=True, exist_ok=True)
     write_gz(rows, FAMILY / "claims_staged.jsonl.gz")
     manifest = [
