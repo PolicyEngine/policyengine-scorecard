@@ -105,6 +105,8 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = fiscal tightening",
             # the OBR's Table 1.1 workbook legend
             "a negative sign implies a loss to the exchequer",
+            # IFS's chart of the Budget's tax change at the forecast horizon
+            "positive = increase in net tax",
         ),
     ),
     "spending": (

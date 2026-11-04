@@ -184,11 +184,12 @@ def test_table_62_rows_are_financial_transactions_not_revenue():
         )
 
 
-# --- README rule 10: totals of the Budget's decisions -----------------------
+# --- README rule 10: stated effects of the Budget's decisions on PSNB --------
 
 BORROWING = "decisions_effect_on_borrowing"
 
-# keys that name only a total of the Budget's decisions or one of its splits
+# keys that name only a stated effect of the Budget's decisions on PSNB or one
+# of its splits
 TOTAL_KEYS = {
     K.package_key(s)
     for s in (
@@ -198,11 +199,13 @@ TOTAL_KEYS = {
         "package_tax_decisions_since_march_2026",
         "package_spending_decisions_since_march_2026",
         "package_non_scorecard_decisions",
-        "package_ifs_announced_tax_changes",
     )
 } | {"ab2026_option__tax_decisions_with_continued_fuel_duty_freeze"}
-# the OBR's total, which also keys its Table 1.1 lines by head
+# the OBR's total, which also keys its Table 1.1 lines by head and its total
+# of receipts measures
 GOVERNMENT_DECISIONS = K.package_key("package_government_decisions_since_march_2026")
+RECEIPTS_TOTAL = "Total effects of receipts measures (£ millions)"
+IFS_TAX_CHANGE = K.package_key("package_ifs_announced_tax_changes")
 
 
 def _key(r):
@@ -222,15 +225,19 @@ def test_rows_keyed_to_a_total_take_the_borrowing_metric():
 
 
 def test_a_totals_lines_by_head_keep_revenue_change():
-    """The OBR keys its Table 1.1 lines by tax and spending head to the total
-    they add up to. Those lines keep revenue_change; every other row on that
-    key gives the total, its direct or indirect effects or a part of them,
-    and takes the borrowing metric or, for the current budget deficit,
-    proposes fiscal_balance_change."""
+    """The OBR keys its Table 1.1 lines by tax and spending head, and the
+    total of its receipts heads, to the total they add up to. Those rows keep
+    revenue_change; every other row on that key gives the total, its direct
+    or indirect effects or a part of them, and takes the borrowing metric or,
+    for the current budget deficit, proposes fiscal_balance_change."""
     on_key = [
         r for fam in FAMILIES for r in rows(fam) if _key(r) == GOVERNMENT_DECISIONS
     ]
-    by_head = [r for r in on_key if r.get("metric") == "revenue_change"]
+    by_head = [
+        r
+        for r in on_key
+        if r.get("metric") == "revenue_change" and _label(r) != RECEIPTS_TOTAL
+    ]
     assert len(by_head) == 288
     for r in by_head:
         assert r["source_table"].startswith("Table 1.1: Breakdown of policy decisions")
@@ -241,6 +248,18 @@ def test_a_totals_lines_by_head_keep_revenue_change():
                 r.get("metric") == BORROWING
                 or r.get("proposed_metric") == "fiscal_balance_change"
             ), _label(r)
+
+
+def test_receipts_totals_and_tax_change_estimates_keep_revenue_change():
+    """README rule 10 (delta review of 8b7b23db, findings 1 and 2): a receipts
+    total or a tax-change estimate keeps revenue_change unless its evidence
+    establishes PSNB scope. The OBR workbook's total of receipts measures sums
+    its receipts heads, and nothing in IFS's chart ties its estimate of the
+    Budget's tax change at the forecast horizon to PSNB."""
+    receipts = [r for r in rows("uk_obr_tables") if _label(r) == RECEIPTS_TOTAL]
+    tax_change = [r for r in rows("uk_ifs_ab2026") if _key(r) == IFS_TAX_CHANGE]
+    assert (len(receipts), len(tax_change)) == (6, 1)
+    assert {r["metric"] for r in receipts + tax_change} == {"revenue_change"}
 
 
 def test_a_measure_takes_the_borrowing_metric_only_where_its_producer_says_so():

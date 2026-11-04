@@ -74,6 +74,12 @@ def _row(metric, convention=None, *, country="UK", source="x", annotations=(), *
             ),
             "unknown",
         ),
+        # IFS's estimate of the Budget's tax change, which keeps revenue_change
+        # (the Autumn Budget 2026 harvest's README rule 10)
+        (
+            _row("revenue_change", "positive = increase in net tax as a share of GDP"),
+            "same",
+        ),
         # borrowing conventions, verbatim from the Autumn Budget 2026 harvest,
         # whose totals of the Budget's decisions take this metric (its README
         # rule 10)
@@ -283,7 +289,7 @@ def test_published_conventions_read_opposite_ways_for_revenue_and_borrowing():
         if {revenue, borrowing} <= {"same", "opposite"}:
             read_by_both += 1
             assert revenue != borrowing, text
-    # 31 with the feed and the Autumn Budget 2026 harvest alone, 32 with
+    # 32 with the feed and the Autumn Budget 2026 harvest alone, 33 with
     # every harvest and the PMD feed
     assert read_by_both >= 30
 

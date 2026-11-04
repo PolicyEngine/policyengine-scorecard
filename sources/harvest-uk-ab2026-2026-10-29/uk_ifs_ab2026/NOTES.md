@@ -97,7 +97,7 @@ The opening remarks (rows 92 to 97; the saved text holds the whole speech on lin
 | 30726788 | 2 | `fiscal_headroom`, `share` | headroom at the March 2026 and October 2026 forecasts, as fractions of GDP | `restated` OBR |
 | 30726917 | 11 | `real_gdp_index` (proposed), `index` (proposed) | the March 2026 forecast for 2026-27 to 2030-31 and the October 2026 forecast for 2026-27 to 2031-32, with 2025-26 = 100 | `restated` OBR; the addendum classes this chart as restated |
 | 30726939 | 1 | `real_income_growth`, `percent` | 0.4% a year over the 2024-2029 parliament | `own`: the footer credits IFS calculations |
-| 30726047 | 1 | `decisions_effect_on_borrowing` (README rule 10; `revenue_change` until 3 November), `percent` | Budget 2026's tax change at the forecast horizon, 0.2% of GDP, with the proposed key above | `own`: the footer credits IFS calculations |
+| 30726047 | 1 | `revenue_change`, `percent` | Budget 2026's tax change at the forecast horizon, 0.2% of GDP, with the proposed key above | `own`: the footer credits IFS calculations |
 | 30727239 | 15 | `taxpayer_count`, `persons` | the three forecast series (the freeze at the March and October 2026 forecasts, and CPI uprating at the October forecast), 2026-27 to 2030-31 | `restated` OBR: the footer cites the OBR EFO, October 2026 |
 
 Only the tax-change row carries a key. The other 45 hold forecast levels or IFS indicators, not the effect of one measure, so they have `measure_key` null and no proposed key.
@@ -175,7 +175,7 @@ We couldn't fetch two of the sources the addendum names, and two others held not
 - **Flourish bytes:** fetches on 29 October and 3 November returned byte-identical embeds.
 - **Tests:** `PYTHONPATH=. python -m pytest -n 4 --noconftest tests/test_ab2026_harvest_contract.py tests/test_uk_ab2026_harvest.py`: 52 passed. `--noconftest` skips the conftest's build of the derived database, which neither file uses.
 - **Generated files:** `pipeline/ab2026_proposed_keys.py` and `pipeline/harvest_counts.py --pinned-on 2026-10-29` regenerate PROPOSED_KEYS.md and COUNTS.json, and both `--check` runs pass.
-- **After the review:** commit f4c7c94a's fixes and README rule 10's two moves changed no value, sign or year. COUNTS.json pins the gzip's current sha256, and `stage.py` still writes it byte for byte.
+- **After the review:** commit f4c7c94a's fixes and README rule 10's move of row 76 changed no value, sign or year. COUNTS.json pins the gzip's current sha256, and `stage.py` still writes it byte for byte.
 
 The scripts and their outputs sit in the ignored `.ab2026-primaries/uk_ifs_ab2026/a3/`.
 
