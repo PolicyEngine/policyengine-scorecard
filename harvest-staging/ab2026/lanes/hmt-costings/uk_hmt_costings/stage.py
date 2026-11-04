@@ -3964,6 +3964,11 @@ def text_rows(t, n):
         c.update(t["conditions"])
         if not context:
             c.update(mapping_conditions(n))
+            if t.get("whole_measure"):
+                # a figure about the whole measure, not the part its note's
+                # table costs (D2-1, below)
+                c["row_type"] = "measure"
+                c.pop("component", None)
         value = number(Decimal(t["value"]) * Decimal(t["scale"]))
         yield {
             **COMMON,
@@ -4039,6 +4044,14 @@ _p108 = [n for n in COSTINGS if n["page"] == 108]
 assert len(_p108) == 1 and _p108[0]["row_type"] == "measure", _p108
 _p108[0]["row_type"] = "measure_component"
 _p108[0]["component"] = "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"
+
+# D2-1 (delta review D2 of 6e06907c, 4 November 2026): C-1's marker belongs
+# on p.108's six Exchequer rows, the receipts. The note's text row counts the
+# properties in scope ("The tax base"), a figure about the whole measure, so
+# it keeps row_type measure and no component, as before C-1.
+_t108 = [t for t in TEXT_CLAIMS if t["page"] == 108]
+assert len(_t108) == 1 and _t108[0]["proposed_metric"] == "tax_base", _t108
+_t108[0]["whole_measure"] = True
 
 # C-2: the p.50 context rows keep no "tax-base input" clause.
 _C2_OLD = "Staged as a tax-base input of the measure (README rule 8) and attributed restated"
