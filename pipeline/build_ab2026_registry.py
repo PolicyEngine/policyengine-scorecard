@@ -688,6 +688,7 @@ entry(
 # Out of the household model's scope
 # ---------------------------------------------------------------------------
 
+
 def _spend(lever):
     return (
         "Public spending ({what}), out of the household model's scope. The engine's spending channel, "
@@ -721,7 +722,11 @@ REGULATE = "A regulatory change ({what}) with no tax or benefit rule for househo
 DETAINED = "A change to the {what}: the search finds no parameter or variable for hospital detention, prison or offending, so the engine cannot identify the people it affects."
 
 SCOPE = {
-    9: (SPEND_EDUCATION, "books for children aged 0 to 5", r"early_years|childcare|book"),
+    9: (
+        SPEND_EDUCATION,
+        "books for children aged 0 to 5",
+        r"early_years|childcare|book",
+    ),
     10: (
         INDIRECT,
         "tariffs on food products, heating oil and fertiliser",
@@ -1139,9 +1144,7 @@ def registry():
 PRE_EVENT = {
     "ab2026__property_income_tax_rate_rise": "an AB2025 measure (ab2025__property_income_separate_rates: "
     "22%/42%/47% from 6 April 2027); Table 6.4 line 6 recosts it, and Table 6.1 line 61 raises those "
-    "rates by a further 2ppts to 24%/44%/49% ("
-    + K.key(61)
-    + ")",
+    "rates by a further 2ppts to 24%/44%/49% (" + K.key(61) + ")",
     "ab2026__bank_profit_surcharge_increase": "announced: Table 6.1 line 55 ("
     + K.key(55)
     + "), temporary, 3% to 6% for 15 months",

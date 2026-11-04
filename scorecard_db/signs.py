@@ -32,6 +32,8 @@ lists, which classify the same strings for that stager.
 
 from __future__ import annotations
 
+import re
+
 SAME = "same"
 OPPOSITE = "opposite"
 MAGNITUDE = "magnitude"
@@ -101,6 +103,9 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "reduction in public spending",
             "reduction in welfare spending",
             "positive = saving to the exchequer",
+            # a cost saving is a yield, though "positive = cost" also matches:
+            # the two lists conflict, so such a phrase reads unknown
+            "cost saving",
             "positive = saving against the current budget rule",
             "positive = fiscal tightening",
             # the OBR's Table 1.1 workbook legend
@@ -206,6 +211,10 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
 }
 
 _ORIENTED_TO_CLAIM = ("PE oriented to it", "PE's own orientation")
+# A phrase's negative leg ("...; negative = loss to households") states the
+# same direction from the other side, so a deciding fragment found only
+# there says nothing about what a positive value means (review A H-4).
+_NEGATIVE_LEG = re.compile(r"\bnegative\s*(?:=|implies|means)[^;]*")
 MAGNITUDE_CONVENTION = "magnitude_with_direction_in_label"
 
 
@@ -233,10 +242,22 @@ def classify(row: dict) -> tuple[str, str]:
         unanswerable, opposite, same = _PHRASES[family]
         if any(p in text for p in unanswerable):
             return UNKNOWN, f"stated:{family}:not_this_quantity"
-        if any(p in text for p in opposite):
+        positive = _NEGATIVE_LEG.sub(" ", text)
+
+        def hits(phrases, where):
+            # a phrase that names the negative side itself ("a negative sign
+            # implies a loss ...") is read where it stands
+            return [p for p in phrases if p in (text if "negative" in p else where)]
+
+        opp, sam = hits(opposite, positive), hits(same, positive)
+        if opp and sam:
+            return UNKNOWN, f"stated:{family}:conflicting"
+        if opp:
             return OPPOSITE, f"stated:{family}:opposite"
-        if any(p in text for p in same):
+        if sam:
             return SAME, f"stated:{family}:same"
+        if hits(opposite, text) or hits(same, text):
+            return UNKNOWN, f"stated:{family}:negative_leg"
         return UNKNOWN, f"stated:{family}:unrecognised"
     # US producers publish signed changes, after minus before, which is
     # PolicyEngine's reform-minus-baseline orientation; no US adapter

@@ -132,15 +132,20 @@ def test_table_61_rows_carry_the_written_out_key_for_their_line():
 
 
 def test_every_hmt_cell_is_a_multiple_of_5m():
+    """Every cell is a multiple of £5m and below £10bn (the largest is Table
+    6.1's total of 7,595), so a cell staged at the wrong scale fails."""
     for r in rows(HMT):
         assert r["value"] % 5e6 == 0, (r["conditions"]["table"], r["value_raw"])
+        assert abs(r["value"]) < 10e9, (r["conditions"]["table"], r["value_raw"])
 
 
 def test_table_61_lines_sum_to_the_printed_totals_within_rounding():
     """Footnote 1: totals may not sum due to rounding. Every staged cell is a
     multiple of £5m, so if HM Treasury rounds each line to the nearest £5m, 98
-    lines drift at most 98 × £2.5m from the exact total; the observed gaps are
-    £5m to £10m. Tax plus spend equals the grand total within the same rule."""
+    lines could drift up to 98 × £2.5m from the exact total; the observed gaps
+    are up to £10m for the grand total and £15m for the Tax and Spend totals
+    (Spend, 2029-30), so the bound is £25m. Tax plus spend equals the grand
+    total within the same rule."""
     t61 = _hmt("6.1")
     for fy in {r["conditions"]["fy"] for r in t61}:
         year = [r for r in t61 if r["conditions"]["fy"] == fy]
@@ -156,8 +161,9 @@ def test_table_61_lines_sum_to_the_printed_totals_within_rounding():
         tax = total[K.package_key("package_total_tax_policy_decisions")]
         spend = total[K.package_key("package_total_spending_policy_decisions")]
         grand = total[K.package_key("package_total_policy_decisions")]
-        assert abs(by_head["Tax"] - tax) <= 98 * 2.5e6, fy
-        assert abs(by_head["Spend"] - spend) <= 98 * 2.5e6, fy
+        assert abs(by_head["Tax"] - tax) <= 25e6, fy
+        assert abs(by_head["Spend"] - spend) <= 25e6, fy
+        assert abs(by_head["Tax"] + by_head["Spend"] - grand) <= 25e6, fy
         assert abs(tax + spend - grand) <= 3 * 2.5e6, fy
 
 
@@ -172,16 +178,36 @@ def test_table_64_recostings_name_their_event():
         assert c["row_type"] == "recosting"
 
 
+# Table 6.2 line 6 reprioritises FT budgets to fund line 5's scheme, and the
+# table's total spans lines 1-9: neither is a Table 6.1 measure (review A T-1,
+# T-2), so each takes its own proposed key.
+T62_PROPOSED = {"6": "ab2026__your_first_home_ft_reprioritisation"}
+T62_TOTAL = "ab2026__package_total_financial_transactions"
+
+
 def test_table_62_rows_are_financial_transactions_not_revenue():
     t62 = _hmt("6.2")
-    assert len(t62) == 9 * 6
+    lines = [r for r in t62 if r["conditions"]["row_type"] == "measure"]
+    totals = [r for r in t62 if r["conditions"]["row_type"] == "total"]
+    assert (len(lines), len(totals)) == (9 * 6, 6)
     for r in t62:
         assert r["proposed_metric"] == "financial_transaction_cash_impact"
         assert "metric" not in r
-        assert (
-            r["measure_key"]
-            == K.PREFIX + K.TABLE_62[int(r["conditions"]["table_line"])]
-        )
+    for r in lines:
+        line = r["conditions"]["table_line"]
+        if line in T62_PROPOSED:
+            assert r["measure_key"] is None
+            assert r["conditions"]["proposed_measure_key"] == T62_PROPOSED[line]
+        else:
+            assert r["measure_key"] == K.PREFIX + K.TABLE_62[int(line)]
+    for r in totals:
+        assert r["measure_key"] is None
+        assert r["conditions"]["proposed_measure_key"] == T62_TOTAL
+    # the total is the lines' sum within rounding (footnote 1)
+    for fy in {r["conditions"]["fy"] for r in totals}:
+        total = next(r["value"] for r in totals if r["conditions"]["fy"] == fy)
+        summed = sum(r["value"] for r in lines if r["conditions"]["fy"] == fy)
+        assert abs(total - summed) <= 25e6, fy
 
 
 # --- README rule 10: stated effects of the Budget's decisions on PSNB --------
@@ -200,7 +226,12 @@ TOTAL_KEYS = {
         "package_spending_decisions_since_march_2026",
         "package_non_scorecard_decisions",
     )
-} | {"ab2026_option__tax_decisions_with_continued_fuel_duty_freeze"}
+}
+# RF's totals that add a continued fuel duty freeze's receipts effect keep
+# revenue_change: the freeze's effect on borrowing is stated for 2029-30 only
+# (OBR para 3.43), and RF's other years are receipts differences
+# (coordinator's call on review B's RF finding 3, option (b)).
+FREEZE_TOTALS = "ab2026_option__tax_decisions_with_continued_fuel_duty_freeze"
 # the key of the OBR's total, which the OBR stager also gives the workbook's
 # Table 1.1 lines by head and its total of receipts measures
 GOVERNMENT_DECISIONS = K.package_key("package_government_decisions_since_march_2026")
@@ -251,6 +282,12 @@ def test_a_totals_lines_by_head_keep_revenue_change():
             ), _label(r)
 
 
+def test_the_fuel_freeze_totals_keep_revenue_change():
+    freeze = [r for r in rows("uk_rf_ab2026") if _key(r) == FREEZE_TOTALS]
+    assert len(freeze) == 11
+    assert {r["metric"] for r in freeze} == {"revenue_change"}
+
+
 def test_receipts_totals_and_tax_change_estimates_keep_revenue_change():
     """README rule 10 (delta review of 8b7b23db, findings 1 and 2): a receipts
     total or a tax-change estimate keeps revenue_change unless its evidence
@@ -283,20 +320,34 @@ def test_a_measure_takes_the_borrowing_metric_only_where_its_producer_says_so():
 
 
 def test_the_current_budget_memos_name_that_deficit():
+    """Every row that proposes fiscal_balance_change names, in its sign, the
+    deficit it measures (selected on the metric, not the label: review A
+    H-7). The memos by label are among them."""
+    balance = [
+        (fam, r)
+        for fam in FAMILIES
+        for r in rows(fam)
+        if r.get("proposed_metric") == "fiscal_balance_change"
+    ]
     memos = [
         (fam, r)
         for fam in FAMILIES
         for r in rows(fam)
         if re.search(r"memo:.*current budget deficit", _label(r), re.I)
     ]
-    assert sorted(Counter(fam for fam, _ in memos).items()) == [
-        ("uk_hmt_redbook", 11),
+    assert sorted(Counter(fam for fam, _ in balance).items()) == [
+        ("uk_hmt_redbook", 16),
         ("uk_obr_tables", 6),
     ]
-    for fam, r in memos:
+    ids = {json.dumps(r, sort_keys=True) for _, r in balance}
+    assert all(json.dumps(r, sort_keys=True) in ids for _, r in memos)
+    for fam, r in balance:
         assert r.get("metric") is None, fam
-        assert r["proposed_metric"] == "fiscal_balance_change", fam
-        assert "current budget deficit" in r["conditions"]["sign_convention"], fam
+        sign = r["conditions"]["sign_convention"]
+        assert "current budget deficit" in sign or "primary deficit" in sign, (
+            fam,
+            sign,
+        )
 
 
 def test_every_borrowing_row_says_which_way_it_runs():
