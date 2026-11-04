@@ -4,6 +4,14 @@
 
 **144 rows from 13 primaries.** `source: ifs`. The manifest lists 14 primaries: four current briefing decks, the superseded TW_0 deck (no rows), two IFS pages read as browser text, and the public data of seven Flourish visualisations. The first lane staged 106 rows from the decks on 29 October. On 3 November the harvest applied the IFS addendum (`briefs/ifs-addendum.md` on the staging branch). Its sections 3 and 4 cut the deck rows to 87, through an explicit block that follows the deck rows in `stage.py`. Its sections 1 and 2 then appended 57 rows in a second JSON block: 11 from the two pages and 46 from the seven visualisations. Attribution: 48 `own`, 96 `restated`. No primary mentions PolicyEngine. From "Family conventions" on, the sections keep the first lane's record of 29 October; where they differ from the sections above them, the sections above win.
 
+## Review A fixes, 4 November 2026
+
+Review A (PR #231, issue comment 6635870934) asked for three changes to this family. They sit in a block before `main()` in `stage.py`; its indices are 0-based, as review A cites them. The coordinator read Adam's deck (slide 2) and Wernham's (slide 3) for K-7(a) and K-7(e); this session re-opened no primary. No printed value, sign or year changed.
+
+- **H-6(a):** rows 39 and 40 (`cpi_inflation_rate`) and 47 and 48 (`affected_share`) carry the registered metric in `metric`, with `proposed_metric` null.
+- **K-7(a):** row 78 (£1.1bn, lines 61 and 62) keeps 2031-32 ("Biggest revenue-raisers in 2031–32") and adds `conditions.discrepancy`: "IFS prints £1.1bn for 2031-32, where Table 6.1 gives lines 61 and 62 a combined £1,045m."
+- **K-7(e):** row 42 (£5bn): slide 3 gives it as the cost of the three measures "over next nine months", and Table 6.1 line 2 costs the whole VAT cut from 1 October 2026, so the re-key to lines 1–3 stands (£5,040m over 2026-27 and 2027-28). Its note says so, and it is `cumulative` with the time basis of RF's two-year totals: period 2028 (the final fiscal year), `fiscal_year`, no `fy`, and `conditions.horizon` naming both years.
+
 ## Coverage
 
 | Primary | Access | Rows | own | restated |
@@ -46,7 +54,7 @@ Rows 0 to 86 come from the decks, by deck, slide and position. Rows 87 to 143 fo
 
 Four proposed keys name seven rows. README rule 2 sets their spelling, and each takes the producer's printed scope (rule 3).
 
-- `ab2026__package_property_and_savings_income_rates` (1 row): exactly Table 6.1 lines 61 and 62, Adam slide 2's "Increased income tax on savings & property income", £1.1bn in 2031–32 (lines 61 and 62 print 455 + 590 = 1,045).
+- `ab2026__package_property_and_savings_income_rates` (1 row): exactly Table 6.1 lines 61 and 62, Adam slide 2's "Increased income tax on savings & property income", £1.1bn in 2031–32 (lines 61 and 62 print 455 + 590 = 1,045). Slide 2's list opens "Biggest revenue-raisers in 2031–32", so the year stands, and the row's `conditions.discrepancy` records the £55m gap (review A, K-7(a)).
 - `ab2026__gas_standing_charge_moved_to_unit_rates` (3 rows): no Table 6.1 line. Wernham slide 8's "Shifting gas standing charge onto unit price": "This charge will be scrapped, but per-unit price will be increased to absorb this". The spelling is the RF family's.
 - `ab2026__package_ifs_new_giveaways` (2 rows, from the initial response): IFS's new giveaways, which push up borrowing by £8 billion this year and £4 billion next. The page names no OBR line and doesn't say the giveaways cover every Government decision since March, so the rows don't take the key the OBR, HM Treasury red book and RF families share for those decisions. To the nearest billion they match the OBR's direct effects of Government decisions in EFO Table 3.1, 7.6 in 2026-27 and 3.5 in 2027-28 (uk_obr_tables). We infer from that match that IFS restates the OBR, so both rows have medium confidence. Neither the total effect including indirect effects (6.3 and 7.0) nor Table 6.1's total of policy decisions (7,595 and 2,475 £m, uk_hmt_tables) matches both years.
 - `ab2026__package_ifs_announced_tax_changes` (1 row, from Flourish 30726047): the tax change that Budget 2026 announced, at the forecast horizon, as a share of GDP as forecast at the event. The chart's footer credits IFS calculations from the OBR's October 2026 EFO, policy measures database and historical official forecasts database. The chart lists no Table 6.1 line and names no OBR grouping, and one rounded figure cannot tie it to the scope of `ab2026__package_total_tax_policy_decisions` or of the OBR's tax decisions since March, so the row proposes a key in IFS's own terms.
@@ -55,7 +63,7 @@ Four proposed keys name seven rows. README rule 2 sets their spelling, and each 
 
 | Rows (first lane, 0-based) | Was | Now | Why |
 |---|---|---|---|
-| 45, 46, 52 (£5bn, £140, 35%) | proposed `ab2026__package_ifs_cost_of_living_support` | `ab2026__package_household_energy_vat_and_fuel_duty` | IFS's three measures are the energy payment, the whole electricity VAT cut and the fuel duty cut, exactly lines 1, 2 and 3 (README rule 3, corrected). Lines 1+2+3 print 5,040 over 2026-27 and 2027-28, IFS's £5bn. |
+| 45, 46, 52 (£5bn, £140, 35%) | proposed `ab2026__package_ifs_cost_of_living_support` | `ab2026__package_household_energy_vat_and_fuel_duty` | IFS's three measures are the energy payment, the whole electricity VAT cut and the fuel duty cut, exactly lines 1, 2 and 3 (README rule 3, corrected). Lines 1+2+3 print 5,040 over 2026-27 and 2027-28, IFS's £5bn. Since 4 November the £5bn row (0-based row 42) is `cumulative`, period 2028, `fiscal_year`, with the two years in `horizon`, as RF dates its two-year totals, and its note no longer says the scope differs from lines 1–3 (review A, K-7(e)). |
 | 48 (£36) | proposed `ab2026__package_ifs_electricity_vat_oct_2026_june_2027` | `ab2026__electricity_vat_zero_rate_to_july_2027` | Line 2 costs the whole cut, 1 October 2026 to 1 July 2027, including the weeks before the Budget. |
 | 89 (£1.8bn) | proposed `ab2026__package_ifs_self_assessment_payment_timing` | `ab2026__hmrc_tax_gap_package`, component | Table 6.3 row 3, "More timely payment" for Self Assessment, +1,815m in 2031–32: a part of line 45. |
 | 92 (£1bn) | proposed `ab2026__package_ifs_hmrc_compliance_staff_and_debt_collection` | `ab2026__hmrc_tax_gap_package`, component | Table 6.3 rows 7 (debt management, +575m) and 8 (compliance officers, +415m), 990 in 2031–32: a part of line 45. |
@@ -259,11 +267,9 @@ The table lists every proposed metric in the 144 rows.
 
 | Proposed metric | Rows | Unit(s) | Where and what |
 |---|--:|---|---|
-| `affected_share` | 2 | share | Wernham slide 5: households receiving the £100 payment, 80% of all households in England and 91% of the poorest 30% |
 | `average_energy_bill_change` | 1 | gbp | Wernham slide 2: EDF's forecast £470 rise in annual household energy prices |
 | `average_household_support` | 4 | gbp | Wernham slide 4: nine-month cost-of-living support per household, £140 and the £24, £36 and £80 labels |
 | `business_rates_bill_change` | 1 | gbp | Adam slide 4: the maximum annual bill saving, £7,146 in 2027-28 |
-| `cpi_inflation_rate` | 2 | percent | Wernham slide 2: the OBR's CPI inflation forecasts for Q1 2027, 3.8% and March's 1.9% |
 | `current_budget_deficit` | 15 | percent, gbp | Stockton slide 7, % of GDP (4); Flourish 30726471, £ (11) |
 | `current_budget_deficit_revision_risk` | 1 | share | Stockton slide 8: roughly 1 in 4 revisions |
 | `debt_interest_share_of_revenue` | 4 | percent | Stockton slide 7 |
@@ -286,7 +292,7 @@ The table lists every proposed metric in the 144 rows.
 | `taxpayer_gain` | 1 | gbp | Adam slide 3: the maximum Founders' Relief gain, £1.4m |
 | `ten_year_bond_spread_other_g7` | 1 | percentage_points | Stockton slide 7: 134bp |
 
-The proposed units are `index` (16 rows, the two index charts) and `measures` (the measure count); no row proposes a baseline. The first lane's rows propose `affected_share` and `cpi_inflation_rate`, which the Metric registry now carries. They keep their proposals, because this extension leaves the 87 deck rows byte for byte as they were; the new rows use the registered `affected_share`. The new rows also use the registered metrics `taxpayer_count` (15), `fiscal_headroom` (4), `decisions_effect_on_borrowing` (2), `real_income_growth` (1) and `revenue_change` (1).
+The proposed units are `index` (16 rows, the two index charts) and `measures` (the measure count); no row proposes a baseline. The first lane's rows proposed `affected_share` and `cpi_inflation_rate`, which the Metric registry carries; since 4 November (review A's H-6(a)) those four rows (Wernham slides 2 and 5) carry them in `metric`, and the new rows use the registered `affected_share` too. The new rows also use the registered metrics `taxpayer_count` (15), `fiscal_headroom` (4), `decisions_effect_on_borrowing` (2), `real_income_growth` (1) and `revenue_change` (1).
 
 ## Family conventions
 
