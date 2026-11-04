@@ -307,3 +307,40 @@ def test_a_pair_that_disagrees_is_a_problem(tmp_path):
     # a value off by 1% (value_raw unchanged) is also a value_raw mismatch
     found = family_problems(_family_with_copies(tmp_path, 1, factor=1.01))
     assert any("differ by over 0.5%" in p for p in found), found
+
+
+def _family(tmp_path):
+    fam = tmp_path / "uk_test_family"
+    shutil.copytree(FAMILY, fam)
+    return fam
+
+
+def _rewrite_manifest(fam, edit):
+    lines = [
+        json.loads(x) for x in (fam / "manifest.jsonl").read_text().splitlines() if x
+    ]
+    lines = edit(lines)
+    (fam / "manifest.jsonl").write_text("".join(json.dumps(m) + "\n" for m in lines))
+
+
+@pytest.mark.parametrize(
+    ("edit", "expected"),
+    [
+        (lambda m: [{**m[0], "sha256": "abc"}, *m[1:]], "sha256 is not a sha256"),
+        (lambda m: [{**m[0], "retrieved": ""}, *m[1:]], "needs url, title"),
+        (lambda m: [*m, m[0]], "lists a primary twice"),
+        (lambda m: m[1:], "primary_sha256 is not in manifest.jsonl"),
+    ],
+)
+def test_each_manifest_rule_broken_is_a_problem(tmp_path, edit, expected):
+    """review A H-7: the manifest checks, reached by a test."""
+    fam = _family(tmp_path)
+    _rewrite_manifest(fam, edit)
+    found = family_problems(fam)
+    assert any(expected in p for p in found), found[:5]
+
+
+def test_a_family_missing_a_file_is_a_problem(tmp_path):
+    fam = _family(tmp_path)
+    (fam / "NOTES.md").unlink()
+    assert family_problems(fam) == ["uk_test_family: missing ['NOTES.md']"]
