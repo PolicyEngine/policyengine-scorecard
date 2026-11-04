@@ -75,7 +75,6 @@ def _t61():
                     {
                         "title": r["reform_hint"],
                         "head": c["head"],
-                        "fiscal_head": c.get("fiscal_head"),
                         "heading": c["heading"],
                         "values": {},
                     },
@@ -83,7 +82,7 @@ def _t61():
                 e["values"][c["fy"]] = r["value_raw"]
             elif c["table"] == "6.1" and c["row_type"] == "total":
                 totals.setdefault(r["reform_hint"], {})[c["fy"]] = r["value_raw"]
-            elif c["table"] == "6.2" and c["table_line"] == "4":
+            elif c["table"] == "6.2" and c.get("table_line") == "4":
                 e = lines.setdefault("t62_4", {"title": r["reform_hint"], "values": {}})
                 e["values"][c["fy"]] = r["value_raw"]
     return lines, totals
@@ -96,7 +95,9 @@ T61, TOTALS = _t61()
 def ns(pattern):
     rx = re.compile(pattern, re.I)
     ph = [p for p in P if rx.search(p) and not p.startswith("baseline.")]
-    vh = [v for v in V if rx.search(v)]
+    # The parameter tree loads in sorted order, but policyengine-core adds
+    # variables in glob order, which differs by filesystem: sort them.
+    vh = sorted(v for v in V if rx.search(v))
     return (
         f"Searched BOTH the parameter tree and the VARIABLE list for /{pattern}/. "
         f"Parameters: {len(ph)} node(s) {ph[:6]}. Variables: {len(vh)} {vh[:6]}. "
@@ -126,6 +127,9 @@ LEVERS = {
     "consumer": "gov.contrib.policyengine.budget.consumer_incident_tax_change ('Tax increase incident on consumers')",
     "corporate": "gov.contrib.policyengine.budget.corporate_incident_tax_change ('Tax increase incident on owners of capital')",
     "spending": "gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset')",
+    "nhs": "gov.contrib.policyengine.budget.nhs ('Increase in NHS spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset')",
+    "education": "gov.contrib.policyengine.budget.education ('Increase in education, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset')",
+    "high_income": "gov.contrib.policyengine.budget.high_income_incident_tax_change ('Tax rise for high income earners (functioning proportional to income over £100,000)')",
 }
 
 measures = []
@@ -138,9 +142,8 @@ def entry(line, program, computability, **kw):
         "title": t["title"],
         "reported_status": "announced",
         "source_note": (
-            f"HM Treasury, Budget 2026 Table 6.1 line {line} ({t['head']}"
-            + (f", {t['fiscal_head']}" if t.get("fiscal_head") else "")
-            + f"); exchequer impact GBP m by FY: {t['values']}"
+            f"HM Treasury, Budget 2026 Table 6.1 line {line} ({t['head']}); "
+            f"exchequer impact GBP m by FY: {t['values']}"
         ),
         "table_61_line": line,
         "table_61_head": t["head"],
@@ -454,7 +457,7 @@ entry(
     "income_tax",
     "expressible",
     construction="delta_on_current_law",
-    dashboard_measure_id="savings_income_rates_up",
+    dashboard_registered_id="savings_income_rates_up",
     pe_reform_delta=rates_up(
         [
             f"gov.hmrc.income_tax.rates.savings.{b}"
@@ -468,7 +471,7 @@ entry(
             for b in ("basic", "higher", "additional")
         ]
     ),
-    note="Registered by the dashboard but not in its published release, so there is no published receipt to cite; tranche 3 computes it from this delta.",
+    note="Registered by the dashboard (dashboard_registered_id) but not in its published release, and not run on Budget day, so there is no published receipt to cite; tranche 3 computes it from this delta.",
 )
 
 # ---------------------------------------------------------------------------
@@ -486,7 +489,12 @@ entry(
     delta_kind="absolute_value_by_year",
     engine_baseline_2026=baseline("gov.hmrc.cgt.badr.lifetime_limit"),
     head_variables=["capital_gains_tax", "capital_gains_badr"],
-    note="capital_gains_tax reads gov.hmrc.cgt.badr.lifetime_limit at the pin (variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py). Not run on Budget day.",
+    note=(
+        "capital_gains_tax reads gov.hmrc.cgt.badr.lifetime_limit at the pin (variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py). "
+        "capital_gains_badr is an input, and capital_gains_tax applies the lifetime limit to one year's qualifying gains: "
+        "the variable's documentation says it does so 'as if none of the limit had been used before', so a lower limit "
+        "binds only on a year's gains above it, not on gains already relieved in earlier years. Not run on Budget day."
+    ),
 )
 
 
@@ -514,7 +522,8 @@ entry(
     missing=(
         "The pre-measure 2027 cap. The engine already carries the measure: "
         "gov.dft.bus.fares.cap is £2 from 1 January 2027 to 1 January 2028 "
-        "(its metadata cites DfT's '£2 bus fares from January 2027'). A "
+        "(its metadata cites 'DfT two-pound bus fares from January to December 2027', "
+        "https://www.gov.uk/government/speeches/2-bus-fares-from-january-2027). A "
         "counterpart reverses it, which needs the cap 2027 would have had "
         "without the measure; the parameter has one upstream revision "
         "(policyengine-uk c8d1f89a9d, 5 October 2026) and records no "
@@ -679,11 +688,17 @@ entry(
 # Out of the household model's scope
 # ---------------------------------------------------------------------------
 
-SPEND = (
-    "Public spending ({what}), out of the household model's scope. The engine's spending channel, "
-    + LEVERS["spending"]
-    + ", distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it."
-)
+def _spend(lever):
+    return (
+        "Public spending ({what}), out of the household model's scope. The engine's spending channel, "
+        + LEVERS[lever]
+        + ", distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it."
+    )
+
+
+SPEND = _spend("spending")
+SPEND_NHS = _spend("nhs")
+SPEND_EDUCATION = _spend("education")
 BUSINESS = (
     "A tax on businesses ({what}), out of the household model's scope: it changes what companies owe. The engine's corporate channel, "
     + LEVERS["corporate"]
@@ -706,7 +721,7 @@ REGULATE = "A regulatory change ({what}) with no tax or benefit rule for househo
 DETAINED = "A change to the {what}: the search finds no parameter or variable for hospital detention, prison or offending, so the engine cannot identify the people it affects."
 
 SCOPE = {
-    9: (SPEND, "books for children aged 0 to 5", r"early_years|childcare|book"),
+    9: (SPEND_EDUCATION, "books for children aged 0 to 5", r"early_years|childcare|book"),
     10: (
         INDIRECT,
         "tariffs on food products, heating oil and fertiliser",
@@ -866,7 +881,7 @@ SCOPE = {
     82: (SPEND, "infected blood compensation", r"infected_blood|compensation"),
     84: (SPEND, "Landfill Tax costs of illegal waste clearances", r"landfill|waste"),
     85: (
-        SPEND,
+        SPEND_NHS,
         "the NHS and the Violence against Women and Girls Strategy",
         r"nhs|violence",
     ),
@@ -884,7 +899,7 @@ SCOPE = {
         r"higher_education|franchise|student",
     ),
     92: (
-        SPEND,
+        SPEND_EDUCATION,
         "local authority high needs budgets",
         r"high_needs|special_educational|send",
     ),
@@ -917,6 +932,8 @@ SCOPE = {
 
 PROGRAM = {
     SPEND: "public_spending",
+    SPEND_NHS: "public_spending",
+    SPEND_EDUCATION: "public_spending",
     BUSINESS: "business_tax",
     INDIRECT: "indirect_tax",
     FINANCE: "financial_transactions",
@@ -971,7 +988,13 @@ for slug, spec in K.PACKAGES.items():
         "source_note": (
             f"HM Treasury, Budget 2026 Table 6.1 row '{spec['table_61_row']}'; GBP m by FY: {TOTALS[spec['table_61_row']]}"
             if spec["table_61_row"]
-            else "A composition of Table 6.1 lines that producers score together; see `package_of`."
+            else (
+                "PolicyEngine's combined Budget-day run of Table 6.1 lines "
+                + ", ".join(str(l) for l in lines[:-1])
+                + f" and {lines[-1]} (receipt in pe_modifier); no producer row uses it"
+                if slug == "package_policyengine_seven"
+                else "A composition of Table 6.1 lines that producers score together; see `package_of`."
+            )
         ),
         "program": "package",
         "construction": "package_of_registry_measures",
@@ -1007,9 +1030,17 @@ for slug, spec in K.PACKAGES.items():
             )
     else:
         m["computability"] = "partial"
+        not_expr = [l for l, c in zip(lines, comp) if c == "not_expressible"]
+        partial = [l for l, c in zip(lines, comp) if c == "partial"]
         m["missing"] = (
-            f"{len(lines) - len(expressible)} of {len(lines)} legs are not expressible "
-            "(see each leg's verdict); a PolicyEngine number covers only "
+            f"{len(not_expr)} of {len(lines)} legs are not expressible"
+            + (
+                f" and {len(partial)} {'is' if len(partial) == 1 else 'are'} partial "
+                f"(line{'s' if len(partial) > 1 else ''} {', '.join(map(str, partial))})"
+                if partial
+                else ""
+            )
+            + " (see each leg's verdict); a PolicyEngine number covers only "
             f"the {len(expressible)} expressible legs: {expressible}"
         )
         m["expressible_legs"] = expressible
@@ -1032,8 +1063,9 @@ def registry():
             "One entry per measure ANNOUNCED at Autumn Budget 2026: every HM Treasury Table 6.1 line "
             "(including the lines a household model cannot touch), the one Table 6.2 financial "
             "transaction with no Table 6.1 line, and the packages producers score. It is the port's "
-            "key space (#230): every staged AB2026 claim carries conditions.measure_key from this "
-            "file, and every measure carries a computability verdict against the engine the Budget-day "
+            "key space (#230): every staged claim's measure_key is a key from this file, null with "
+            "conditions.proposed_measure_key (rule 2), or for Table 6.4 recostings the earlier event's "
+            "key named in conditions.recosting_of; and every measure carries a computability verdict against the engine the Budget-day "
             "runs used. It stages NO value claims; values live in the harvest under their producers "
             "(sources/harvest-uk-ab2026-2026-10-29/)."
         ),
@@ -1105,7 +1137,9 @@ def registry():
 # consideration. "Not in Table 6.1 or 6.4" is a statement about those two
 # tables, read in full, nothing more.
 PRE_EVENT = {
-    "ab2026__property_income_tax_rate_rise": "announced: Table 6.1 line 61 ("
+    "ab2026__property_income_tax_rate_rise": "an AB2025 measure (ab2025__property_income_separate_rates: "
+    "22%/42%/47% from 6 April 2027); Table 6.4 line 6 recosts it, and Table 6.1 line 61 raises those "
+    "rates by a further 2ppts to 24%/44%/49% ("
     + K.key(61)
     + ")",
     "ab2026__bank_profit_surcharge_increase": "announced: Table 6.1 line 55 ("

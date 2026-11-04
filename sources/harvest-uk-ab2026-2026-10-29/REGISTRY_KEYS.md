@@ -60,9 +60,9 @@ earlier event's registry named in `conditions.recosting_of`.
 | `ab2026__defence_admin_savings_reinvested` | 42 | not_expressible | Defence: Reinvest defence and security administration savings into frontline defence and national security |
 | `ab2026__ukraine_winter_air_defence` | 43 | not_expressible | Ukraine: Emergency winter support for air defence |
 | `ab2026__uk_export_finance_defence_capacity` | 44 | not_expressible | UK Export Finance: Increase capacity to support UK defence exports from June 2026 (increased income from additional activity) |
-| `ab2026__hmrc_tax_gap_package` | 45 | not_expressible | HMRC: Measures to close the tax gap4 |
+| `ab2026__hmrc_tax_gap_package` | 45 | not_expressible | HMRC: Measures to close the tax gap |
 | `ab2026__online_marketplace_liability_uk_businesses` | 46 | not_expressible | Online Marketplace Liability: Extend to UK businesses with a minimum annual sales threshold per platform of £90,000 from 1 October 2027 |
-| `ab2026__dwp_fraud_and_error_prevention` | 47 | not_expressible | DWP Fraud and Error: Expand use of data and targeted controls to prevent fraud from entering the benefits system4 |
+| `ab2026__dwp_fraud_and_error_prevention` | 47 | not_expressible | DWP Fraud and Error: Expand use of data and targeted controls to prevent fraud from entering the benefits system |
 | `ab2026__benefits_removed_hospitalised_serious_offenders` | 48 | not_expressible | Welfare Reform: Remove benefit entitlements from serious offenders hospitalised in Great Britain from 6 April 2027 |
 | `ab2026__distributions_framework_modernised` | 49 | not_expressible | Distributions: Modernise the distributions framework from 6 April 2028 |
 | `ab2026__advance_corporation_tax_abolished` | 50 | not_expressible | Advance Corporation Tax (ACT): Abolish Advance Corporation Tax from 1 April 2031 |

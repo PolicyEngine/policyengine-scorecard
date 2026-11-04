@@ -1,6 +1,9 @@
 """Autumn Budget 2026 measure keys, one per HM Treasury Table 6.1 line.
 
-The key space every AB2026 claim carries in conditions.measure_key (#230).
+The key space of the AB2026 harvest (#230): every staged claim's measure_key is
+a key from data/uk/ab2026_measures.json, null with
+conditions.proposed_measure_key (README rule 2), or for Table 6.4 recostings
+the earlier event's key named in conditions.recosting_of.
 Keys are written out here rather than derived from titles, so a reworded
 title in a later edition of the table cannot move a key. Both the Table 6.1
 stager (pipeline/stage_ab2026_hmt_tables.py) and the registry builder
