@@ -905,6 +905,47 @@ MANIFEST.append({
 _row(188, "20 million"); _row(201, "20 million")
 _DROP |= {188, 201}
 
+# ---------------------------------------------------------------------------
+# The coordinator's finish of RB-18 and RB-19 (4 November 2026). Brief 82's
+# hand-off (issue comment 6639062906) left these three edits open because
+# each needs a primary. The coordinator read them from the pinned primaries'
+# text (pdftotext -layout): the red book at 19b337ac…, which row 194 cites,
+# and Impact on households at 36cd5afb…, which rows 365 and 368 cite. Same
+# 4f424b9 indices as review A's section above.
+
+# RB-18: row 194's note gives footnote 84's definition of "fuel stressed".
+# The footnote's marker follows this sentence ("…income deciles.84").
+_r = _row(194, "83%")
+assert _r["conditions"]["subgroup"] == "fuel-stressed households"
+_r["note"] = (
+    "Footnote 84 defines the group: \"'Fuel stressed' is defined as a household "
+    "spending more than 10% of their after-housing-cost income on energy.\" "
+    "HM Treasury's Distributional Analysis model measures it from ONS Living Costs "
+    "and Food Survey data for 2019-20, 2022-23 and 2023-24 (footnote 84)."
+)
+
+# RB-19: rows 365 and 368 quote their whole sentence. Row 365's sentence
+# introduces para 1.10's bullets and dates them to 2028-29; the family keeps a bullet's
+# glyph when it quotes a lead-in with its bullet.
+_WHOLE = {
+    (365, "60%"): (
+        "This shows that government policy continues to be highly redistributive, "
+        "and that in 2028-29: • on average, the bottom and middle of the income "
+        "distribution – 60% of all households – will receive more in public spending "
+        "than they contribute in tax"
+    ),
+    (368, "approximately 20%"): (
+        "While there is a strong correlation between income and expenditure, there are "
+        "many households with both low income and high expenditure (and vice versa) – "
+        "approximately 20% of households in the bottom income decile are in the top "
+        "half of the expenditure distribution, for example."
+    ),
+}
+for (_i, _raw), _q in _WHOLE.items():
+    _r = _row(_i, _raw)
+    assert _r["quote"] in _q and _raw in _q, _i
+    _r["quote"] = _q
+
 ROWS = [_r for _i, _r in enumerate(ROWS) if _i not in _DROP]
 assert len(ROWS) == 432 - 7
 
