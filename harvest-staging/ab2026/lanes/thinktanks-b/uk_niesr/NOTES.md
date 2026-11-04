@@ -2,7 +2,7 @@
 
 Source slug `niesr`. **0 rows; 1 primary.** The Budget-day reaction contains
 macro/fiscal-stance commentary and no household/static estimates. The AB2025
-NIESR precedent and README rule 10 reserve the former for the #55 lane.
+NIESR precedent and the AB2025 harvest README's rule 10 reserve the former for the #55 lane (AB2026's rule 10 is the borrowing-metric rule).
 `stage.py` embeds the empty row list and the manifest, and reproduces both
 output files. The empty claims file is intentional.
 
@@ -19,7 +19,8 @@ Professor Stephen Millard, NIESR, 28 October 2026:
   Hash checked with `shasum -a 256`.
 - Fetch command: `curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15" -D .ab2026-primaries/uk_niesr/breathing-space-not-strategy.headers -o .ab2026-primaries/uk_niesr/breathing-space-not-strategy.html https://niesr.ac.uk/blog/breathing-space-not-strategy`.
 - Read the fetched HTML's own body text using BeautifulSoup. Figure 1 is an
-  embedded image; no values were read off its plotted line.
+  embedded Prezi presentation, not an image; no values were read off its
+  plotted line.
 - No local fallback or assignment copy was supplied. No block, login wall,
   changed-version comparison or second primary was encountered.
 
@@ -114,6 +115,11 @@ The page describes the fall from £23.6 billion to £14.5 billion as £9 billion
 later on; this appears to be rounding and is recorded as printed. Its
 £12.4 billion borrowing sentence does not clearly say whether this is a
 three-year total or an annual average, while the following £7 billion is
-explicitly an average. The credibility dividend has only an end-of-parliament
+explicitly an average. Review B (4 November) found it is the three-year sum
+of the OBR's £8 billion, £4 billion and £0.4 billion, so a total, restated. The credibility dividend has only an end-of-parliament
 horizon; no fiscal year is printed. No period, sum, sign or missing precision
 has been inferred to repair these statements.
+
+## Review B nits, 4 November 2026
+
+Review B (PR #231, issue comment 6635498758) approved this family and listed three optional nits, applied here: the rule 10 reference names AB2025's README, the £12.4 billion is the three-year sum of the OBR's £8 billion + £4 billion + £0.4 billion, and Figure 1 is a Prezi embed. No row or manifest line changed.

@@ -2,6 +2,16 @@
 
 **Superseded on 3 November 2026: this family has no rows and is not carried on #231's branch.** The thinktanks-b review's finding 7 moved the five Scottish Government rows and their primary to `uk_devolved_govts`, which now stages both devolved governments; `stage.py` here writes an empty claims file. The FAI reaction refused the lane's fetch (HTTP 403) and the SFC published nothing in scope on 28–29 October. The record below is the 29 October lane's, kept for its access and verification history.
 
+## Update, 4 November 2026 (review B)
+
+Review B (PR #231, issue comment 6635498758) approved this empty family with one fix, and the coordinator settled it. No page was re-opened in this session; the facts below are review B's.
+
+- **FAI's 29 October post, unreached.** FAI's public RSS feed (https://fraserofallander.org/feed/, used for discovery only) lists a second in-window post: "Rising or falling? Why both claims about Scotland's funding can be true" (29 October 2026, https://fraserofallander.org/rising-or-falling-why-both-claims-about-scotlands-funding-can-be-true/). It was found on 4 November and sits behind the same 403 as the reaction. Per the feed, it prints a table of Scotland's Barnett consequentials by year and funding type (resource, capital, financial transactions), totalling £600.1m.
+- **Not staged: that table.** FAI says the year and type split emerged late on 28 October, so it probably restates HM Treasury's allocations, which `uk_hmt_redbook` rows 258–261 stage on `ab2026__package_barnett_consequentials`; and the post sits behind the same 403, so no primary could be hashed. Tranche 2 may stage it from a browser-read copy, `restated`, on that key with `geography: Scotland`.
+- **The reaction's feed text** (28 October, "UK Budget 2026: Rearranging not reimagining") holds only restated OBR figures (£9bn of headroom used, debt interest £15bn higher, the £139bn fuel-duty cost) and no FAI estimate of its own.
+- **SFC:** its indexes list two 30 October items, a process note with no figures and a letter on the working protocol; neither is in scope. A 30 October FAI post on property income taxes in Scotland falls after the window.
+- **`stage.py`** now describes the empty family and writes an empty `manifest.jsonl`, as the other three empty families' stagers do; the claims file is unchanged (`9ceffb73…`, empty).
+
 Staged 29 October 2026. This family covers the assigned Fraser of Allander Institute (FAI) reaction and a Scottish Government response about Scotland's funding. The Scottish Government publication was found while checking for Scottish Fiscal Commission (SFC) or Scottish Government consequences published on 28–29 October, as requested. FAI was blocked; no qualifying SFC publication was found.
 
 The family contains **5 rows from 1 primary**, all from the Scottish Government, source `scottish_government`, source_model `arithmetic`. They are the producer's reported funding projections and are marked `own` / `different_model`. The article names no other original estimator. The assigned `fraser_of_allander` and `scottish_fiscal_commission` sources contribute zero rows.
