@@ -1131,6 +1131,88 @@ for _r in ROWS:
 assert _moved == 40, _moved
 
 
+# === review fixes, 4 November 2026 ========================================
+# Review B's TPA findings 1-6 (issue comment 6635498758) and review A's K-5,
+# H-6(d) and H-6(e) (issue comment 6635870934), with the coordinator's calls
+# (TPA 1: the first fix; TPA 2: NOTES only). Indices are 4f424b9's 0-based
+# gzip order. No printed value changes.
+
+# Finding 1: the pre-Budget 0.0 cells moved with their series, so they take
+# its key; Table 6.1 has no column for these years.
+for _i, _raw in ((98, "0.0"), (99, "0.0"), (130, "0.0")):
+    _r = _row(_i, _raw)
+    assert _r["measure_key"] is None and _r["metric"] == "decisions_effect_on_borrowing", _i
+    _r["measure_key"] = TOTAL_TAX
+    _r["note"] = re.sub(r" Table 6\.1 starts in 2026-27; TPA's chart prints 0\.0 for this year, so the row carries no measure key\.$",
+                        " Table 6.1 has no column for this year; TPA's chart prints 0.0.", _r["note"])
+    assert _r["note"].endswith("TPA's chart prints 0.0."), _r["note"]
+
+# Finding 3 (and H-6(e)): each restated row's note names whose figure it is.
+_r = _row(21, "over £300bn")
+_r["conditions"]["originator"] = "OBR, Fiscal risks and sustainability, July 2025 (footnote 2 links costing)"
+_RESTATES = {
+    18: ("33%", "Restates an ONS/OBR outturn for the 2019-20 tax burden. TPA names no source."),
+    19: ("38.5%", "Restates the OBR's forecast tax burden (TPA names no source in the footnote). Matches the chart data's 2030-31 'Tax take' (38.5%)."),
+    20: ("14 percentage points", "Restates an ONS/OBR outturn for the pandemic's effect on government debt ('government debt' as printed; no debt measure named). TPA names no source."),
+    21: ("over £300bn", "Restates the OBR, Fiscal risks and sustainability, July 2025 (footnote 2 links its costing)."),
+    22: ("£110 billion", "Restates an ONS/OBR outturn for 2025-26 debt interest spending. TPA names no source."),
+    23: ("2.1 million", "Restates DWP statistics (footnote 2 links the OBR's paragraph 5.30)."),
+    24: ("3.2 million", "Restates DWP statistics (footnote 2 links the OBR's paragraph 5.30)."),
+    26: ("£695m", "Restates HM Treasury's Table 6.1 total tax policy decisions (the Red Book's £695m)."),
+    142: ("32.9%", "Restates an ONS/OBR outturn for the 2019-20 tax burden. TPA names no source. Footnote 2 says 'around 33%'."),
+}
+for _i in (43, 44, 45, 46, 47, 48):
+    _RESTATES[_i] = (ROWS[_i]["value_raw"], f"Restates {ROWS[_i]['conditions']['originator']}.")
+for _i in range(136, 142):
+    _RESTATES[_i] = (ROWS[_i]["value_raw"], "Restates the OBR's tax-take forecast (TPA's chart; the line's source is not footnoted).")
+for _i, (_raw, _note) in _RESTATES.items():
+    _r = _row(_i, _raw)
+    assert _r["attribution"] == "restated", _i
+    _r["note"] = _note
+for _r in ROWS:
+    assert _r["attribution"] != "restated" or _r["note"].strip(), _r["publication"]["locator"]
+
+# Finding 4: the bank chart's corporate income taxes are a printed part of
+# the after-Budget total (row 268) on the same key.
+_c = _row(278, "30.5")["conditions"]
+_c["row_type"] = "measure_component"
+_c["component"] = "Corporate income taxes"
+
+# Review A, K-5 (and the coordinator's reconciliation): the OBR's £0.4bn is
+# line 61's receipts head, not the whole line. The optional alignment of
+# rows 29-30's dating with the OBR family's paragraph 3.17 rows is applied:
+# indexed to 2031-32, the end of the forecast the average runs over.
+for _i, _raw in ((29, "£0.6 billion"), (30, "£0.4 billion")):
+    _r = _row(_i, _raw)
+    _r["conditions"]["fy"] = "2031-32"
+    _r["period"] = 2032
+    _r["conditions"]["horizon"] = "annual average from 2028-29, as the OBR prints it (para 3.17); indexed to 2031-32, the forecast's final year, as the uk_obr_tables family does"
+_c = _row(30, "£0.4 billion")["conditions"]
+_c["row_type"] = "measure_component"
+_c["component"] = "Tax head (receipts), annual average 2028-29 to 2031-32 (para 3.17)"
+
+# Finding 6, nits.
+# Rows 299-304: AB2025's geography code, and the tooltip's "Smoothed tapers".
+for _i in range(299, 305):
+    _c = ROWS[_i]["conditions"]
+    assert _c["geography"] == "UK excluding Scotland", _i
+    _c["geography"] = "UK_excl_scotland"
+    _c["calculator_setting"] = "Smoothed tapers (as the tooltip panel shows)"
+# Row 9: no year stated.
+_r = _row(9, "84%")
+_r["conditions"]["year_note"] = "no year stated; staged at 2027-28, as uk_hmt_redbook stages para 2.50"
+_r["parse_confidence"] = "medium"
+# Row 1: no range is printed.
+_row(1, "About two-fifths")["value_kind"] = "point"
+# Rows 10-12: the figures are in the third paragraph after the excerpt.
+for _i in (10, 11, 12):
+    _p = ROWS[_i]["publication"]
+    assert _p["locator"] == "'Writing-down allowance', paragraph after the Red Book excerpt", _i
+    _p["locator"] = "'Writing-down allowance', third paragraph after the Red Book excerpt"
+# Row 141 (review B's sample): the item prints a data label.
+_row(141, "38.5")["conditions"]["chart_label"] = "38.5%"
+
+
 if __name__ == "__main__":
     (HERE / "manifest.jsonl").write_text(manifest_lines(), encoding="utf-8")
     data = claims_bytes()

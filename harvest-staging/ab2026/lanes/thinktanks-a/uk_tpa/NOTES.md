@@ -14,9 +14,11 @@ Dan Neidle's "Budget 2026 – what it means" (taxpolicy.org.uk, 28 October 2026)
 Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with `curl -sSL` and the browser User-Agent in the brief (HTTP 200). The bytes are under `.ab2026-primaries/uk_tpa/`; nothing came from a local copy.
 
 - **The article** carries `article:published_time` 2026-10-28T15:51Z and `article:modified_time` 2026-10-29T09:59Z, so TPA edited it once after publication. The copy hashed here is the 16:17Z fetch.
+- **The article changed again on 4 November.** Review B's fetch that day (217,180 bytes, sha256 `d95a0e8f8a0e6465…`) carries `article:modified_time` 2026-11-04T10:10:31Z. Five reader comments account for 15,211 of the 15,247 added bytes; all 49 quotes and footnotes 1–15 are unchanged, and it holds no figure the rows and these notes don't know. The article's own text and figures didn't change, so it is not a second primary under README rule 7 (the coordinator's call), and the rows keep citing the 29 October bytes. Like every HTML page, the article embeds per-request content, so a later fetch's sha256 differs; the check is that the quotes are still there.
 - **The charts** are ECharts embeds. Each chart's `data-json` attribute names a JSON file under `/wp-content/assets/`, and those files are the primaries, URLs as named (three carry a `?v=20261028-n` cache-buster). As in AB2025, `doc_type` is `flourish_json`, the nearest enum for a chart-data file.
 - **Values come from the data files, not from bar heights.** Where the chart prints a data label (`label.formatter`), the label is kept in `conditions.chart_label`. Each chart file also has an `aria.label.description` sentence, and the net totals are staged from it.
-- **Quotes** from a JSON file are the element re-serialised with `json.dumps`, with `£` decoded to £ (the AB2025 `uk_tpa` precedent); the file itself may print the same element across several lines with `\u00a3` escapes.
+- **Quotes** from a JSON file are the element re-serialised with `json.dumps`, with `£` decoded to £ (the AB2025 `uk_tpa` precedent); the file itself may print the same element across several lines. Three of the chart files print £ as the JSON unicode escape `\u00a3`.
+- **Chart descriptions:** only four of the seven chart files carry an `aria.label.description`; the net totals are staged from those that do.
 - **The PNG** (`child_benefit_budget_2026.png`, linked from footnote 1) is a calculator screenshot. Its values are printed text in the tooltip panel, read off the image (`parse_confidence: medium`).
 - **The "Download as PDF" button** builds a PDF in the browser (`tpa-pdf-exporter-loader.js`). It is not a separate document.
 
@@ -39,8 +41,8 @@ Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with
 
 | measure_key | rows |
 |---|--:|
-| `null` (65 with a proposed key, 142 context) | 207 |
-| `ab2026__package_total_tax_policy_decisions` | 37 |
+| `null` (65 with a proposed key, 139 context) | 204 |
+| `ab2026__package_total_tax_policy_decisions` | 40 |
 | `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 15 |
 | `ab2026__bank_surcharge_6pc_temporary` | 11 |
 | `ab2026__hmrc_tax_gap_package` | 8 |
@@ -50,9 +52,9 @@ Every primary was fetched directly on 2026-10-29 between 16:17Z and 16:19Z, with
 | `ab2026__electricity_vat_zero_rate_to_july_2027` | 2 |
 | 14 other single measures (Table 6.1 lines 3, 5, 15, 26, 44, 46, 49, 56, 59, 60, 61, 62, 86, 96), one row each | 14 |
 
-The 142 context rows have no measure key and no proposal:
+The 139 context rows have no measure key and no proposal:
 
-- the earlier fiscal events in the two history charts (`conditions.policy_event`), and the 2026 Budget series' 0.0 fills for 2024-25 and 2025-26, years before Table 6.1 starts;
+- the earlier fiscal events in the two history charts (`conditions.policy_event`). The 2026 Budget series' 0.0 fills for 2024-25 and 2025-26, years Table 6.1 has no column for, carry the series' key (rows 98, 99 and 130; review B, TPA finding 1);
 - the other countries, the pre-Budget UK, and the after-Budget UK's bank levy and VAT components (which the surcharge leaves unchanged) in the bank chart;
 - the fiscal-context levels in footnote 2;
 - capital-allowance present values under pre-Budget regimes;
@@ -62,7 +64,7 @@ The 142 context rows have no measure key and no proposal:
 
 TPA builds no yield estimates of its own. Every £ yield in the article and its charts is HM Treasury's Table 6.1 costing (or the OBR's), and TPA uses it in one of two ways:
 
-- **Repeats it,** for example a chart group that is exactly one Table 6.1 line, or "about £0.7bn" for the £695m total. These rows are `restated`, with `source_model: hmt_costing_obr_certified` (or `obr_efo_forecast` for the OBR's paragraph 3.17 averages) and `conditions.originator`.
+- **Repeats it,** for example a chart group that is exactly one Table 6.1 line, or "about £0.7bn" for the £695m total. These rows are `restated`, with `source_model: hmt_costing_obr_certified` (or `obr_efo_forecast` for the OBR's paragraph 3.17 averages) and `conditions.originator`. Every restated row's `note` names whose figure it is ("Restates …"), and says "TPA names no source" where TPA cites none.
 - **Re-expresses it.** TPA groups lines, sums them over years, deflates them to 2026-27 prices, or divides them by GDP. These rows are `own`, with `source_model: arithmetic` and a `conditions.derived_from` naming the HMT or OBR input, and every note says "arithmetic on HM Treasury's costings, not an independent estimate". This matches the IFS lane's treatment of IFS's own aggregate of HMT costings. The ingest can separate these rows on `derived_from` if it treats them as restatements.
 
 TPA's own calculations from statutory parameters are `own` with no `derived_from`:
@@ -88,8 +90,10 @@ Under README rule 8, a measure's own parameters are its design, not rows. The al
   - every other £ figure is cash.
 - **Cumulative rows:** the six-year totals sit at `fy` 2031-32 (`value_kind: cumulative`, `horizon` "2026-27 to 2031-32 (cumulative)").
 - **Present values and the bank chart:** the capital-allowance present values are properties of a regime, so they are `point_in_time` 2027, with the regime in `conditions.regime`. The bank chart is under "2027 rules" (`annual` 2027).
-- **Rows with no stated year:** "about £1bn a year in the medium term" and similar figures sit at a stated year, with a `year_note` and `parse_confidence: medium`. Footnote 15's "£450m to £495m a year" (a range across 2028-29 to 2031-32) is staged at the years Table 6.1 line 68 shows those values: £450m in 2029-30 and £495m in 2028-29.
-- **"Central":** TPA states no ranges for its own estimates. The one `central` row is "About two-fifths".
+- **Rows with no stated year:** "about £1bn a year in the medium term", HM Treasury's 84% (row 9, staged at 2027-28 as uk_hmt_redbook stages para 2.50) and similar figures sit at a stated year, with a `year_note` and `parse_confidence: medium`. The OBR's paragraph 3.17 averages that footnote 8 quotes (rows 29–30, "a year on average from 2028-29") sit at 2031-32, the forecast's final year, as the uk_obr_tables family indexes the same sentences. Footnote 15's "£450m to £495m a year" (a range across 2028-29 to 2031-32) is staged at the years Table 6.1 line 68 shows those values: £450m in 2029-30 and £495m in 2028-29.
+- **Value kinds:** TPA states no ranges for its own estimates, so "About two-fifths" is a `point`, like the family's other "about" figures.
+- **Geography:** the calculator rows use AB2025's code `UK_excl_scotland`; the bank chart's other countries are named.
+- **Parts (README rule 9):** the bank chart's "Corporate income taxes" for the after-Budget UK (row 278) is a printed part of the 33.7% total (row 268), so it is a `measure_component`. The OBR's £0.4bn (row 30) is Table 6.1 line 61's receipts head, so it is a `measure_component` of that line ("Tax head (receipts), annual average 2028-29 to 2031-32 (para 3.17)").
 
 ## How each TPA group's Table 6.1 lines were found
 
@@ -109,18 +113,18 @@ A chart group that is exactly one Table 6.1 line carries that line's registry ke
 | `ab2026__package_tpa_savings_property_income_and_cash_isa` | 11, 61, 62 | "Savings and property income" (by-year), "Savings and property income tax" (by-tax). The group includes line 11, the cash ISA limit held at £20,000, which TPA doesn't mention | 7 |
 | `ab2026__package_tpa_temporary_vat_and_fuel_cuts` | 2, 3, 18, 65, 66 | "Temporary VAT and fuel cuts" (by-year) | 6 |
 | `ab2026__package_tpa_fuel_duty_red_diesel_and_hgv_ved` | 3, 18, 65 | "Fuel duty cut, red diesel and HGV VED (temporary)" (by-tax) | 1 |
-| `ab2026__package_tpa_business_rates` | 12, 13, 14, 57, 76, 80 | "Business rates" (all three charts) | 8 |
+| `ab2026__package_tpa_business_rates` | 12, 13, 14, 57, 76, 80 | "Business rates" (all three charts). Registry caveat (review B, TPA finding 5): on the by-tax bar, line 76, zero in 2027-28, is placed by assumption; the values do not depend on it. | 8 |
 | `ab2026__package_tpa_energy_and_environment` | 17, 69, 71, 90, 96 | "Energy and environment" (by-year) | 6 |
-| `ab2026__package_tpa_other_income_tax` | 5, 15, 28, 52, 53, 86, 94 | "Other income tax" (by-year); "Income tax: mileage rates, Pension Tax Allowance and other" (by-tax) | 7 |
-| `ab2026__package_tpa_other_vat` | 36, 46, 51, 59, 88, 89 (the by-tax bar may also hold line 66, zero in 2027-28) | "Other VAT" (by-year, by-tax) | 7 Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. |
-| `ab2026__package_tpa_other_corporate_tax` | 49, 50, 54, 68, 97 | "Other corporate tax" (by-year, by-tax) | 7 |
+| `ab2026__package_tpa_other_income_tax` | 5, 15, 28, 52, 53, 86, 94 | "Other income tax" (by-year); "Income tax: mileage rates, Pension Tax Allowance and other" (by-tax). Registry caveat (review B, TPA finding 5): on the by-tax bar, lines 15 and 86, zero in 2027-28, are placed by assumption; the values do not depend on them. | 7 |
+| `ab2026__package_tpa_other_vat` | 36, 46, 51, 59, 88, 89 (the by-tax bar may also hold line 66, zero in 2027-28) | "Other VAT" (by-year, by-tax). Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. | 7 |
+| `ab2026__package_tpa_other_corporate_tax` | 49, 50, 54, 68, 97 | "Other corporate tax" (by-year, by-tax). Registry caveat (review B, TPA finding 5): on the by-tax bar, lines 49 and 50, zero in 2027-28, are placed by assumption; the values do not depend on them. | 7 |
 | `ab2026__package_tpa_other_by_year` | 10, 16, 19, 26, 44, 56, 60, 77, 78, 79, 93, 95, 98 | "Other" (by-year) | 6 |
-| `ab2026__package_tpa_tariffs` | 10, 16, 77, 78, 95 | "Tariffs (incl. UK-India)" (by-tax, by-measure) | 2 |
+| `ab2026__package_tpa_tariffs` | 10, 16, 77, 78, 95 | "Tariffs (incl. UK-India)" (by-tax, by-measure). Registry caveat (review B, TPA finding 5): on the by-tax bar, line 95, zero in 2027-28, is placed by assumption (the by-measure bar settles it); the values do not depend on it. | 2 |
 | `ab2026__package_tpa_cgt_founders_relief_and_badr` | 26, 60 | "CGT (Founders' Relief, BADR)" (by-tax) | 1 |
-| `ab2026__package_tpa_other_by_tax_2027_28` | 17, 19, 44, 56, 69, 71, 79, 90, 93, 96, 98 (line 66 undetermined) | "Other" (by-tax). The non-zero 2027-28 lines are 19, 44, 56, 69, 79, 90 and 93; the zero lines come from the by-year mapping | 1 Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. |
+| `ab2026__package_tpa_other_by_tax_2027_28` | 17, 19, 44, 56, 69, 71, 79, 90, 93, 96, 98 (line 66 undetermined) | "Other" (by-tax). The non-zero 2027-28 lines are 19, 44, 56, 69, 79, 90 and 93; the zero lines come from the by-year mapping. Registry caveat (thinktanks-a review, finding 6): the by-tax lines that are zero in 2027-28 are placed by assumption and line 66 is undetermined; the values do not depend on it. | 1 |
 | `ab2026__package_tpa_other_by_measure` | 11, 17, 18, 19, 28, 36, 50, 51, 53, 65, 66, 69, 71, 79, 88, 89, 90, 93, 94, 97, 98 | "Other" (by-measure) | 1 |
 
-`ab2026__package_total_tax_policy_decisions` is registered. It carries TPA's rows for "today's Budget" and "the tax measures", the net totals, and the 2026 Budget series of the history charts from 2026-27, because their scope is all Table 6.1 tax lines. The totals come in two kinds:
+`ab2026__package_total_tax_policy_decisions` is registered. It carries TPA's rows for "today's Budget" and "the tax measures", the net totals, and the 2026 Budget series of the history charts, because their scope is all Table 6.1 tax lines. The series' 0.0 cells for 2024-25 and 2025-26 (rows 98, 99 and 130) carry the key too; Table 6.1 has no column for those years. The totals come in two kinds:
 
 - **Sums of the 53 tax lines** (`own`, `arithmetic`): footnote 5's £700m, the by-tax chart's "Net £0.7bn", footnote 7's £19.1bn and £21.0bn, and the by-measure chart's net. These differ from HM Treasury's printed totals by rounding only (£700m against £695m in 2027-28).
 - **HM Treasury's printed totals** (`restated`): the by-year chart's "Net total" (it prints £-1.65bn for 2026-27, HMT's −£1,645m; the 53 lines sum to −£1,635m), the GDP chart's £ figures, footnote 5's £695m and the article's "about £0.7bn".
@@ -141,7 +145,7 @@ New proposals, each with TPA's own words:
 
 - **`revenue_share_by_fiscal_event` (share):** "About two-fifths of that comes from Conservative Budgets", the share of the £123bn of extra tax in 2030-31 coming from a group of Budgets. The registered `revenue_share` is a group's share of one measure's yield, so it does not fit.
 
-Registered Metrics used: `revenue_change`, `caseload`. No baselines are proposed (`baseline_policy` is null throughout).
+The family uses the registered Metrics `revenue_change`, `caseload` and, for the totals of the Budget's tax measures, `decisions_effect_on_borrowing` (README rule 10, below). No row proposes a baseline (`baseline_policy` is null throughout).
 
 ## Not staged, and why
 
@@ -160,6 +164,7 @@ Registered Metrics used: `revenue_change`, `caseload`. No baselines are proposed
   - "the UK's approximately £3,000bn GDP": an approximate OBR level with no year.
   - "over twice its pre-pandemic share of GDP": a ratio with no printed base.
 - **Not numeric:** the OBR's "High" uncertainty rating for the property costing (footnote 8) is categorical. It belongs to the OBR family.
+- **Out of scope:** the calculator page's 69.5% marginal rate under Reform UK's £15,000 allowance is an opposition proposal, not the Budget's.
 - **Not TPA's:**
   - image-6.png reproduces Red Book paragraph 2.54, HM Treasury's text, which holds only parameters.
   - Reader comments under the article, for example "the cost is £1.2bn" for Founders' Relief, are not TPA's.
@@ -193,3 +198,19 @@ The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md`
 - **Finding 6:** the two by-tax scopes carry the registry caveat in the proposed-key table.
 - **Verification:** the contract checker reports 305 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
 
+## README rule 10, 3 November 2026
+
+Under README rule 10, `stage.py` moves TPA's figures for all the Budget's tax measures from `revenue_change` to `decisions_effect_on_borrowing`: the 37 rows keyed to `ab2026__package_total_tax_policy_decisions`, in pounds or as a share of GDP, and the three 0.0 cells that TPA's charts print for years before Table 6.1 starts, which now carry the key too (40 rows). Counting from 0, the rows are 2–4, 25–28, 98–104, 130–135, 143–154, 168, 235–240 and 264. Single measures and groups of measures keep `revenue_change`. No value or sign changed.
+
+## Review fixes, 4 November 2026
+
+Two independent reviews of PR #231 at 4f424b9 approved this family with fixes, all low: review B (TPA findings 1–6) and review A (K-5, H-6(d) and H-6(e)). They sit in an explicit block after the rule 10 block in `stage.py`. No printed value changed. Indices are 4f424b9's.
+
+- **Finding 1 (the first fix, the coordinator's call):** rows 98, 99 and 130, the 2026 Budget series' 0.0 cells for 2024-25 and 2025-26, carry `ab2026__package_total_tax_policy_decisions`, with the note "Table 6.1 has no column for this year; TPA's chart prints 0.0". The key has 40 rows and the context rows go from 142 to 139.
+- **Finding 2 (NOTES only, the coordinator's call):** the access recipe records the article's 4 November edit (reader comments only); it is not a second primary.
+- **Finding 3 (and review A's H-6(e)):** the 21 restated rows 18–24, 26, 43–48 and 136–142 each name their originator in `note`, and rows 18, 20, 22 and 142 say "TPA names no source". Row 21's originator is the OBR's *Fiscal risks and sustainability*, July 2025, which footnote 2 links.
+- **Finding 4:** row 278 (corporate income taxes, 30.5%) is a `measure_component` of row 268's 33.7%.
+- **Finding 5:** the by-tax caveat is on the four further scopes (`…tpa_other_corporate_tax`, `…tpa_other_income_tax`, `…tpa_tariffs`, `…tpa_business_rates`), and the two existing caveats moved into the scope column.
+- **Finding 6, nits:** rows 299–304 use `UK_excl_scotland` and record the tooltip's "Smoothed tapers" (`conditions.calculator_setting`); row 9 has a `year_note` and medium confidence; row 1 is a `point`; rows 10–12's locator names the third paragraph after the Red Book excerpt; the chart notes, the £ escapes and the Reform UK rate are recorded. Also applied: row 141 carries its printed `chart_label` (38.5%), which review B's sample noted.
+- **Review A, K-5:** row 30 (the OBR's £0.4bn, line 61's receipts) is a `measure_component` with `component: "Tax head (receipts), annual average 2028-29 to 2031-32 (para 3.17)"`. The optional alignment is applied: rows 29 and 30 sit at 2031-32, as the OBR family's paragraph 3.17 rows do.
+- **Verification:** the contract checker reports 305 rows, 0 problems, and a re-run of `stage.py` in a scratch directory reproduces both files byte for byte.
