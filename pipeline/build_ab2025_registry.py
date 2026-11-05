@@ -26,7 +26,6 @@ collapsed fuel-duty path) were read at the pin on 2026-09-24.
 
 import gzip
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -40,8 +39,10 @@ DATES = [f"{y}-06-01" for y in range(2025, 2032)]
 
 # Keep the pinned traversal shared with the event-parametrised replay builder.
 try:
+    from pipeline.name_search import name_search as _name_search
     from pipeline.uk_engine_registry import engine_dumps as _engine_dumps
 except ModuleNotFoundError:  # direct script invocation without PYTHONPATH
+    from name_search import name_search as _name_search
     from uk_engine_registry import engine_dumps as _engine_dumps
 
 
@@ -106,17 +107,7 @@ def r10(x):
 
 
 def ns(pattern):
-    rx = re.compile(pattern, re.I)
-    ph = [p for p in P if rx.search(p) and not p.startswith("baseline.")]
-    # policyengine-core adds variables in glob order, which differs by
-    # filesystem, so we sort them.
-    vh = sorted(v for v in V if rx.search(v))
-    return (
-        f"Searched BOTH the parameter tree and the VARIABLE list for /{pattern}/. "
-        f"Parameters: {len(ph)} node(s) {ph[:6]}. Variables: {len(vh)} {vh[:6]}. "
-        "Both are searched because a parameter-only search misses a variable "
-        f"(#106). Re-run at policyengine-uk {PIN}."
-    )
+    return _name_search(pattern, P, V, PIN)
 
 
 UPSTREAM = {
