@@ -193,8 +193,9 @@ def test_claim_ids_are_unique(staged):
 
 
 def test_each_hm_treasury_figure_is_counted_once(staged):
-    """The costings repeat 408 Table 6.1 cells and the red book 24; the
-    ingest keeps each Table 6.1 claim and records its twins on it."""
+    """HM Treasury repeats 408 Table 6.1 cells in the costings and 24 in the
+    red book; the ingest keeps each Table 6.1 claim and records its twins on
+    it."""
     scores, acct = staged
     assert acct["drops"]["hmt_figure_staged_twice"]["rows"] == 432
     assert (
@@ -219,6 +220,35 @@ def test_each_hm_treasury_figure_is_counted_once(staged):
         assert RAW[fam][i]["publication"]["locator"] in {
             p["locator"] for p in kept.publication["also_printed_in"]
         }, (fam, i)
+
+
+# Each reviewed red book row, the Table 6.1 row it repeats and both printings,
+# read from the documents apart from I.REVIEWED_TWINS:
+# red book row -> (table row, red book print, table cell, table value, table year)
+REVIEWED_PINS = {
+    6: (0, "£2.6 billion", "-2625", -2_625_000_000, 2027),
+    179: (0, "£2.6 billion", "-2625", -2_625_000_000, 2027),
+    11: (109, "£10 million", "-10", -10_000_000, 2028),
+    236: (109, "£10 million", "-10", -10_000_000, 2028),
+    220: (49, "£5 million", "-5", -5_000_000, 2028),
+    270: (49, "£5 million", "-5", -5_000_000, 2028),
+    263: (252, "£500 million", "-500", -500_000_000, 2027),
+    271: (252, "£500 million", "-500", -500_000_000, 2027),
+    272: (252, "£500 million", "-500", -500_000_000, 2027),
+}
+
+
+def test_each_reviewed_twin_repeats_the_cell_we_read():
+    assert set(I.REVIEWED_TWINS) == {("uk_hmt_redbook", i) for i in REVIEWED_PINS}
+    for i, (t, printed, cell, value, year) in REVIEWED_PINS.items():
+        assert I.REVIEWED_TWINS[("uk_hmt_redbook", i)][0] == t, i
+        assert RAW["uk_hmt_redbook"][i]["value_raw"] == printed, i
+        table = RAW["uk_hmt_tables"][t]
+        assert (table["value_raw"], table["value"], table["period"]) == (
+            cell,
+            value,
+            year,
+        ), i
 
 
 # A costings or red book claim within 5% of a Table 6.1 or 6.2 claim on the
@@ -307,6 +337,44 @@ def test_the_continued_fuel_duty_freeze_has_one_metric(staged):
     assert [s.conditions["staged_metric"] for s in obr] == [
         "decisions_effect_on_borrowing"
     ]
+
+
+def test_ifs_keeps_the_one_off_payment_and_tallies_the_partial_year_support():
+    """IFS averages January 2027's Household Energy Payment across households in
+    England, and the whole payment falls in one fiscal year. Its other three
+    averages cover part of a year."""
+    rows = RAW["uk_ifs_ab2026"]
+    scores, acct = I.stage({"uk_ifs_ab2026": [(i, rows[i]) for i in (43, 44, 45, 46)]})
+    [claim] = scores
+    assert claim.metric == Metric.AVERAGE_HOUSEHOLD_INCOME_CHANGE
+    assert claim.unit_concept.value == "gbp_per_household"
+    assert (claim.value, claim.period) == (80, 2027)
+    c = claim.conditions
+    assert c["measure_key"] == "ab2026__household_energy_payment_100_bands_a_to_d"
+    assert c["staged_metric"] == "average_household_support"
+    assert (c["geography"], c["payment_date"], c["price_basis"], c["horizon"]) == (
+        "England",
+        "January 2027",
+        "2026-27 prices",
+        "October 2026 to June 2027",
+    )
+    assert acct["drops"]["partial_year_household_support"]["rows"] == 3
+
+
+def test_a_row_metric_on_another_row_raises(monkeypatch):
+    """A re-staged family can't move a metric call onto another row."""
+    monkeypatch.setitem(
+        I.ROW_METRICS,
+        ("uk_ifs_ab2026", 45),
+        (
+            "average_household_support",
+            "£80",
+            Metric.AVERAGE_HOUSEHOLD_INCOME_CHANGE,
+            "x",
+        ),
+    )
+    with pytest.raises(ValueError, match="ROW_METRICS uk_ifs_ab2026 row 45"):
+        I.stage()
 
 
 def test_the_obr_receipts_total_lands_on_revenue_and_its_restatement_drops(staged):
@@ -636,6 +704,11 @@ def _staged_unit(row):
     return {"dwellings": "properties"}.get(unit, unit)
 
 
+# The one row whose stored unit the ingest overrides, apart from I.ROW_UNITS:
+# (family, locator, printed value) -> unit
+STORED_UNITS = {("uk_ifs_ab2026", "slide 4", "£80"): "gbp_per_household"}
+
+
 def test_every_claim_preserves_its_staged_row(staged):
     """Read each family's claims file directly, find the row behind each
     claim by its printed place and printed value, and require the claim to
@@ -652,6 +725,9 @@ def test_every_claim_preserves_its_staged_row(staged):
     scores, _ = staged
     for s in scores:
         fam = s.publication["family"]
+        stored_unit = STORED_UNITS.get(
+            (fam, s.publication.get("locator"), s.conditions["value_verbatim"])
+        )
         found = index.get(
             (
                 fam,
@@ -663,13 +739,19 @@ def test_every_claim_preserves_its_staged_row(staged):
         assert found, (fam, s.publication.get("locator"))
         assert any(
             float(r["value"]) == s.value
-            and _staged_unit(r) == s.unit_concept.value
+            and (stored_unit or _staged_unit(r)) == s.unit_concept.value
             and (r.get("value_kind") or s.unit_concept.value) == s.value_kind
+            and s.conditions.get("estimate_kind")
+            == (r.get("value_kind") if r.get("value_kind") != "point" else None)
             and int(r["period"]) == s.period
             and r["time_basis"] == s.time_basis.value
             and r.get("quote") == s.publication.get("quote")
             and r.get("source_table") == s.publication.get("table")
             and r["attribution"] == s.publication.get("attribution")
+            and all(
+                (r.get("conditions") or {}).get(k) == s.conditions.get(k)
+                for k in ("statistic", "horizon", "component_horizon")
+            )
             for r in found
         ), (fam, s.publication.get("locator"), s.value)
 
@@ -678,7 +760,7 @@ def test_every_claim_preserves_its_staged_row(staged):
 
 
 def test_each_ab2026_disposition_lands_on_its_metric(staged):
-    """One staged row per DISPOSITIONS_AB2026 entry, by quote."""
+    """Every AB2026 adoption emits claims on its assigned metric."""
     scores, _ = staged
     pins = {
         "financial_transaction_cash_impact": Metric.CASH_REQUIREMENT_CHANGE,
@@ -755,6 +837,55 @@ def test_a_reviewed_twin_that_is_a_component_raises(monkeypatch):
         I._check_row_calls("uk_hmt_redbook", rows)
 
 
+def _point_twin(monkeypatch, row, table_row):
+    key = ("uk_hmt_redbook", row)
+    monkeypatch.setitem(I.REVIEWED_TWINS, key, (table_row, I.REVIEWED_TWINS[key][1]))
+
+
+def test_a_reviewed_twin_on_another_key_raises(monkeypatch):
+    red_book = RAW["uk_hmt_redbook"][11]
+    other = next(
+        i
+        for i, r in enumerate(RAW["uk_hmt_tables"])
+        if abs(r["value"]) == abs(red_book["value"])
+        and r["period"] == red_book["period"]
+        and r.get("measure_key") != red_book.get("measure_key")
+    )
+    _point_twin(monkeypatch, 11, other)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+
+
+def test_a_reviewed_twin_of_a_zero_cell_raises(monkeypatch):
+    assert RAW["uk_hmt_tables"][108]["value"] == 0
+    _point_twin(monkeypatch, 11, 108)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+
+
+def test_a_reviewed_twin_of_another_year_raises(monkeypatch):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[11]["period"] += 1
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_a_reviewed_twin_outside_the_printed_rounding_raises(monkeypatch):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6].update(value=2.7e9, value_raw="£2.7 billion")
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+@given(st.integers(1, 99_999), st.integers(0, 3), st.booleans())
+def test_the_printed_unit_follows_the_last_printed_digit(digits, places, billions):
+    number = digits / 10**places
+    word, scale = ("billion", 1e9) if billions else ("million", 1e6)
+    raw = f"£{number:,.{places}f} {word}"
+    unit = I._printed_unit({"value": number * scale, "value_raw": raw})
+    assert unit == pytest.approx(scale / 10**places)
+
+
 def test_the_stage_checks_its_row_calls(monkeypatch):
     monkeypatch.setitem(
         I.ROW_DROPS, ("uk_obr_tables", 0), ("not this value", "no_registered_metric")
@@ -769,6 +900,41 @@ def test_a_recosting_takes_no_registry_verdict():
     I._verdict_conditions({"measure_key": key}, cond, Metric.REVENUE_CHANGE)
     assert cond["measure_key"] == key
     assert "pe_expressibility" not in cond
+
+
+def test_row_order_never_decides_a_printing_that_differs_only_in_its_url():
+    """The tie-breaker reads every primary publication field."""
+    i, row = T61[0]
+    a, b = copy.deepcopy(row), copy.deepcopy(row)
+    a["publication"]["url"] = "https://example.org/a"
+    b["publication"]["url"] = "https://example.org/b"
+    forward, _ = I.stage({"uk_hmt_tables": [(i, a), (i + 10_000, b)]})
+    backward, _ = I.stage({"uk_hmt_tables": [(i, b), (i + 10_000, a)]})
+    assert [s.publication["url"] for s in forward] == ["https://example.org/b"]
+    assert [s.publication["url"] for s in backward] == ["https://example.org/b"]
+
+
+def test_a_printing_s_twins_never_move_the_tie_breaker():
+    """The ingest attaches a costings repetition to the printing it meets first,
+    so the tie-breaker leaves out ``also_printed_in``."""
+    i, row = T61[0]
+    a, b = copy.deepcopy(row), copy.deepcopy(row)
+    a["publication"]["url"] = "https://example.org/a"
+    b["publication"]["url"] = "https://example.org/b"
+    twin = copy.deepcopy(row)
+    twin["conditions"]["costing_leg_heading"] = "Exchequer impact (£m)"
+    twin["publication"]["locator"] = "costings"
+    for first, second in ((a, b), (b, a)):
+        [kept], _ = I.stage(
+            {
+                "uk_hmt_tables": [(i, first), (i + 10_000, second)],
+                "uk_hmt_costings": [(1, twin)],
+            }
+        )
+        assert kept.publication["url"] == "https://example.org/b"
+        assert [t["locator"] for t in kept.publication["also_printed_in"]] == [
+            "costings"
+        ]
 
 
 def test_a_merged_printing_keeps_its_twins():

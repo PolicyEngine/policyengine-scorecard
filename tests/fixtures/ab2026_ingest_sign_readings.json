@@ -1,5 +1,10 @@
 [
  {
+  "metric": "average_household_income_change",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
   "metric": "average_tax_change",
   "sign_convention": "positive = saving or gain as printed",
   "relation": "opposite"
