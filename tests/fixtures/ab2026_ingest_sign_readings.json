@@ -28,10 +28,5 @@
   "metric": "energy_bill_change",
   "sign_convention": "positive = increase in household energy bills",
   "relation": "same"
- },
- {
-  "metric": "revenue_change",
-  "sign_convention": "as worded: positive = borrowing increase",
-  "relation": "opposite"
  }
 ]

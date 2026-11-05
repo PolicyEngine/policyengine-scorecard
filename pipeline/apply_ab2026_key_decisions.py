@@ -143,7 +143,8 @@ def render(harvest=HARVEST):
         f"We register {len(D.DECISIONS) - len(D.FOLDED)} AB2026 keys ({kinds['measure']} measures, {kinds['package']} packages and {kinds['option']} options) for {total} staged figures. "
         "We give two producers' packages one key only when they identify the same legs (rule 3). "
         f"For {len(D.RENAMED)} key, we retain the proposed name in `proposed_as`. "
-        "We store registered keys in `measure_key` and copy each producer's scope from NOTES.md into `source_note`.",
+        "We store registered keys in `measure_key` and copy each producer's scope from NOTES.md into `source_note`. "
+        "We number each family's rows from 0, in the order of its `claims_staged.jsonl.gz`, and register the keys in `data/uk/ab2026_measures.json`.",
         "",
         "| proposed key | decision | registered key | verdict | why | rows |",
         "|---|---|---|---|---|---|",

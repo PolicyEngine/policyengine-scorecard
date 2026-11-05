@@ -323,7 +323,9 @@ def test_table_6_2_and_the_obr_financing_requirement_share_one_metric(staged):
     assert [s.metric for s in obr] == [Metric.CASH_REQUIREMENT_CHANGE]
 
 
-def test_the_continued_fuel_duty_freeze_has_one_metric(staged):
+def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
+    """The OBR states the option's effect on public sector net borrowing, so
+    its claim keeps that metric and takes the macro verdict (rule 10, #55)."""
     scores, _ = staged
     freeze = [
         s
@@ -332,12 +334,13 @@ def test_the_continued_fuel_duty_freeze_has_one_metric(staged):
         == "ab2026_option__fuel_duty_continued_freeze"
     ]
     # RF derives its figure from the OBR's forecasts, so only the OBR's stays
-    assert {s.source for s in freeze} == {"obr_efo"}
-    assert {s.metric for s in freeze} == {Metric.REVENUE_CHANGE}
-    obr = [s for s in freeze if s.source == "obr_efo"]
-    assert [s.conditions["staged_metric"] for s in obr] == [
-        "decisions_effect_on_borrowing"
-    ]
+    [obr] = freeze
+    assert obr.source == "obr_efo"
+    assert obr.metric == Metric.DECISIONS_EFFECT_ON_BORROWING
+    assert "staged_metric" not in obr.conditions
+    assert obr.conditions["pe_expressibility"] == "not_expressible"
+    assert obr.conditions["pe_missing"] == I.AB25.MACRO_MISSING
+    assert obr.conditions["action_link"] == I.AB25.MACRO_LINK
 
 
 def test_ifs_keeps_the_one_off_payment_and_tallies_the_partial_year_support():
@@ -728,10 +731,23 @@ def _staged_unit(row):
 STORED_UNITS = {("uk_ifs_ab2026", "slide 4", "£80"): "gbp_per_household"}
 
 
+def _keeps_conditions(row, score):
+    """Every staged condition reaches the claim, as itself or, where the ingest
+    canonicalises its value, beside its verbatim text."""
+    for key, value in (row.get("conditions") or {}).items():
+        if value not in (
+            score.conditions.get(key),
+            score.conditions.get(f"{key}_verbatim"),
+        ):
+            if key != "program" or "program" not in score.conditions:
+                return False
+    return True
+
+
 def test_every_claim_preserves_its_staged_row(staged):
     """Read each family's claims file directly, find the row behind each
     claim by its printed place and printed value, and require the claim to
-    keep the producer's value, unit, statistic, time window and provenance.
+    keep the producer's value, unit, conditions and provenance.
     Sign rule: the ingest stores the value as staged, in the producer's own
     orientation, and signs.py reads the orientation at comparison."""
     index = {}
@@ -767,10 +783,7 @@ def test_every_claim_preserves_its_staged_row(staged):
             and r.get("quote") == s.publication.get("quote")
             and r.get("source_table") == s.publication.get("table")
             and r["attribution"] == s.publication.get("attribution")
-            and all(
-                (r.get("conditions") or {}).get(k) == s.conditions.get(k)
-                for k in ("statistic", "horizon", "component_horizon")
-            )
+            and _keeps_conditions(r, s)
             for r in found
         ), (fam, s.publication.get("locator"), s.value)
 
@@ -876,15 +889,74 @@ def test_a_reviewed_twin_on_another_key_raises(monkeypatch):
 
 
 def test_a_reviewed_twin_of_a_zero_cell_raises(monkeypatch):
+    """Row 11 shares row 108's key and takes its year, so only the magnitude
+    differs."""
     assert RAW["uk_hmt_tables"][108]["value"] == 0
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[11]["period"] = RAW["uk_hmt_tables"][108]["period"]
     _point_twin(monkeypatch, 11, 108)
     with pytest.raises(ValueError, match="no longer matches"):
-        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+        I._check_row_calls("uk_hmt_redbook", rows)
 
 
 def test_a_reviewed_twin_of_another_year_raises(monkeypatch):
     rows = copy.deepcopy(RAW["uk_hmt_redbook"])
     rows[11]["period"] += 1
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_ukraine_s_explanation_grants_another_row_no_year_exception(monkeypatch):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[11]["period"] += 1
+    monkeypatch.setitem(I.REVIEWED_TWINS, ("uk_hmt_redbook", 11), (109, I._UKRAINE))
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+@pytest.mark.parametrize("period", [2025, 2028, 2031])
+def test_a_ukraine_row_in_any_other_year_raises(period):
+    """We stage 2026, the announcement year, on these rows, and the table's cell
+    for 2026-27 has period 2027, the only other year that matches."""
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[263]["period"] = period
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_a_ukraine_row_keeps_its_table_cell_for_the_year_exception(monkeypatch):
+    """The year exception names table row 252, so another cell on the same key
+    and of the same magnitude in another year raises."""
+    table = copy.deepcopy(RAW["uk_hmt_tables"])
+    table.append({**table[252], "period": 2030})
+    monkeypatch.setattr(I, "_load", lambda family: table)
+    _point_twin(monkeypatch, 263, len(table) - 1)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+
+
+@pytest.mark.parametrize(
+    "raw",
+    ["in 2026-27, £2.6 billion", "£2.6bn", "2,600 million", "around £2.6 billion"],
+)
+def test_a_reviewed_twin_printed_in_another_form_raises(raw):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6]["value_raw"] = raw
+    with pytest.raises(ValueError, match="no printed amount"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_a_reviewed_twin_whose_value_leaves_its_print_raises():
+    """A row can't widen its own tolerance by storing another value."""
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6]["value"] = 2.675e9
+    with pytest.raises(ValueError, match="printed amount"):
+        I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_a_reviewed_twin_printed_as_zero_raises():
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6].update(value=0, value_raw="£0 million")
     with pytest.raises(ValueError, match="no longer matches"):
         I._check_row_calls("uk_hmt_redbook", rows)
 
@@ -921,21 +993,40 @@ def test_a_recosting_takes_no_registry_verdict():
     assert "pe_expressibility" not in cond
 
 
-def test_row_order_never_decides_a_printing_that_differs_only_in_its_url():
-    """The tie-breaker reads every primary publication field."""
+@pytest.mark.parametrize("attached", [False, True])
+@pytest.mark.parametrize(
+    "field",
+    ["access", "date", "locator", "primary_sha256", "publisher", "title", "url"],
+)
+def test_row_order_never_decides_a_printing_that_differs_in_one_field(field, attached):
+    """We choose the same primary printing after changing any harvested
+    publication field and reversing the rows."""
     i, row = T61[0]
+    assert field in row["publication"]
     a, b = copy.deepcopy(row), copy.deepcopy(row)
-    a["publication"]["url"] = "https://example.org/a"
-    b["publication"]["url"] = "https://example.org/b"
-    forward, _ = I.stage({"uk_hmt_tables": [(i, a), (i + 10_000, b)]})
-    backward, _ = I.stage({"uk_hmt_tables": [(i, b), (i + 10_000, a)]})
-    assert [s.publication["url"] for s in forward] == ["https://example.org/b"]
-    assert [s.publication["url"] for s in backward] == ["https://example.org/b"]
+    a["publication"][field] = "a"
+    b["publication"][field] = "b"
+    twin = copy.deepcopy(row)
+    twin["conditions"]["costing_leg_heading"] = "Exchequer impact (£m)"
+    twin["publication"]["locator"] = "costings"
+
+    def kept(first, second):
+        families = {"uk_hmt_tables": [(i, first), (i + 10_000, second)]}
+        if attached:
+            families["uk_hmt_costings"] = [(1, twin)]
+        [claim], _ = I.stage(families)
+        return claim.publication
+
+    forward, backward = kept(a, b), kept(b, a)
+    assert forward[field] == backward[field] == "b"
+    if attached:
+        assert forward["also_printed_in"] == backward["also_printed_in"]
+        assert len(forward["also_printed_in"]) == 1
 
 
 def test_a_printing_s_twins_never_move_the_tie_breaker():
-    """The ingest attaches a costings repetition to the printing it meets first,
-    so the tie-breaker leaves out ``also_printed_in``."""
+    """We omit ``also_printed_in`` from the tie-breaker because we attach a
+    costings repetition to the table printing we encounter last."""
     i, row = T61[0]
     a, b = copy.deepcopy(row), copy.deepcopy(row)
     a["publication"]["url"] = "https://example.org/a"

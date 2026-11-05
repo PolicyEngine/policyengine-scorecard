@@ -101,9 +101,6 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = additional spending",
             "positive = ame increase",
             "positive = pension spending increase",
-            # OBR paragraph 3.43's continued fuel duty freeze, which the
-            # AB2026 ingest keeps on revenue_change
-            "positive = borrowing increase",
         ),
         (
             "positive_gain_to_exchequer",

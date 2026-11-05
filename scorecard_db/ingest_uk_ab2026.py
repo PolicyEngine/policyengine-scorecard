@@ -42,13 +42,13 @@ The AB2026 ingest adds six steps:
    cells in the costings and 24 in red book Table 6.3 and its prose. We keep
    the Table 6.1 or 6.2 claim, list each repetition under
    ``publication.also_printed_in`` and tally it. We match a repetition by
-   key, staged metric, unit, year and value, and ``REVIEWED_TWINS`` lists nine
-   red book rows that repeat a cell with the opposite sign, a rounding or
-   another year.
-5. **Row calls.** We move two rows to another metric in ``ROW_METRICS``,
-   give one of them a per-household unit in ``ROW_UNITS``, and tally 22 rows
-   under six reasons in ``ROW_DROPS``. With each entry we record the staged
-   value we expect on that row.
+   key, staged metric, unit, year and value. We also record nine reviewed red
+   book printings in ``REVIEWED_TWINS``, where HM Treasury repeats a cell with
+   the opposite sign, a rounding or another year.
+5. **Row calls.** We move IFS row 46 to another metric in ``ROW_METRICS``,
+   give it a per-household unit in ``ROW_UNITS``, and tally 22 rows under six
+   reasons in ``ROW_DROPS``. With each entry we record the staged value we
+   expect on that row.
 6. **Lanes.** We add three lanes: official, microsimulation, and
    administrative data and other producers. ``advance_lanes`` moves a lane to
    ``computed`` once its claims have counterparts, which
@@ -64,6 +64,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 
@@ -182,13 +183,14 @@ DROPS_AB2026: dict[str, str] = {
     "restated_obr_forecast": (
         "Resolution Foundation computes the cost of continuing the fuel duty "
         "freeze from two OBR forecasts, the constant-duty-rate receipts less "
-        "the central receipts, and we score only the OBR's own figure, which "
-        "it prints for 2029-30."
+        "the central receipts. We keep only the OBR's own figure, which it "
+        "prints for 2029-30 as an effect on borrowing."
     ),
     "income_path_not_a_policy_effect": (
-        "Resolution Foundation gives the change in typical real household "
-        "incomes over a period in pounds, with no reform to compare against, "
-        "and we score income paths only as percentage growth."
+        "Resolution Foundation gives the change in real household incomes, per "
+        "person or for a typical household, over a period in pounds, with no "
+        "reform to compare against, and we score income paths only as "
+        "percentage growth."
     ),
     "earlier_estimate_restated": (
         "CenTax restates the revenue gain it estimated in 2024 from taxing "
@@ -201,8 +203,8 @@ DROPS_AB2026: dict[str, str] = {
         "or a change in the supply of homes, and we tally it."
     ),
     "mtr_no_registered_metric": (
-        "The producer gives a marginal tax rate, and we register no metric "
-        "for marginal rates; average_tax_rate records an average rate."
+        "The producer gives a marginal tax rate, and we register a metric only "
+        "for average rates, average_tax_rate."
     ),
     "single_row_unregistered_world": (
         "The OBR compares this figure with a world it describes once: its "
@@ -301,14 +303,14 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     # bill levels
     "typical_energy_bill": E,
     # IFS's support per household over October 2026 to June 2027, apart from
-    # the row ROW_METRICS adopts
+    # row 46, which we adopt through ROW_METRICS
     "average_household_support": "partial_year_household_support",
 }
 
 DISPOSITIONS: dict[str, Metric] = {**AB25.DISPOSITIONS, **DISPOSITIONS_AB2026}
 # AB2025's restatement reason says we stage the originator's rows in the same
-# harvest. In AB2026 we don't always: HM Treasury's costings restate HMRC's tax
-# gap (rows 233 and 234), and we stage no HMRC family.
+# harvest. In AB2026 we don't always: in its costings, HM Treasury restates
+# HMRC's tax gap (rows 233 and 234), and we stage no HMRC family.
 _RESTATED_AB2026 = (
     "The producer repeats another body's figure (the OBR's, HM Treasury's, "
     "HMRC's or another producer's), and we credit the estimate to that body "
@@ -330,14 +332,6 @@ assert set(_DROP_BY_NAME.values()) <= set(DROPS), "every drop key has a reason"
 # why). The ingest raises if the staged row doesn't match, so a re-staged
 # family can't move a call onto another row.
 ROW_METRICS: dict[tuple[str, int], tuple[str, str, Metric, str]] = {
-    ("uk_obr_tables", 2740): (
-        "decisions_effect_on_borrowing",
-        "£4.3 billion",
-        Metric.REVENUE_CHANGE,
-        "The Government didn't adopt a continued fuel duty freeze, so the OBR's "
-        "cost of one records no effect of the Budget's decisions, and we score "
-        "it on revenue_change.",
-    ),
     ("uk_ifs_ab2026", 46): (
         "average_household_support",
         "£80",
@@ -348,9 +342,9 @@ ROW_METRICS: dict[tuple[str, int], tuple[str, str, Metric, str]] = {
     ),
 }
 
-# (family, row) -> the unit the ingest stores in place of the staged one, on a
-# row ROW_METRICS moves. IFS stages row 46 in gbp, and models.py keeps averages
-# per household apart from totals a query could sum.
+# (family, row) -> the unit the ingest stores in place of the staged one, for a
+# row we reassign through ROW_METRICS. We stage IFS row 46 in gbp; we distinguish
+# per-household averages from totals in models.py.
 ROW_UNITS: dict[tuple[str, int], str] = {("uk_ifs_ab2026", 46): "gbp_per_household"}
 assert set(ROW_UNITS) <= set(ROW_METRICS)
 
@@ -362,10 +356,9 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
     ),
     ("uk_obr_tables", 2743): ("1.4 per cent", "single_row_unregistered_world"),
     ("uk_obr_tables", 2744): ("4.4 per cent", "single_row_unregistered_world"),
-    # RF's continued fuel duty freeze is the OBR's constant-duty-rate
-    # forecast less its central forecast (our notes to RF's rows 154 and
-    # 397-401, citing its footnote 27), so the OBR's row 2740 is the one
-    # estimate
+    # RF computes its continued fuel duty freeze as the OBR's constant-duty-
+    # rate forecast less its central forecast (our notes to RF's rows 154 and
+    # 397-401, citing its footnote 27), so we keep only the OBR's row 2740
     ("uk_rf_ab2026", 154): ("£4.3 billion", "restated_obr_forecast"),
     ("uk_rf_ab2026", 397): ("-2.3483484846542702", "restated_obr_forecast"),
     ("uk_rf_ab2026", 398): ("-3.7389555211291317", "restated_obr_forecast"),
@@ -434,27 +427,27 @@ _TWIN_FAMILIES = frozenset({"uk_hmt_costings", "uk_hmt_redbook"})
 # maps (family, row) to the uk_hmt_tables row it repeats, with the reading
 # that decides it. The ingest raises if the two rows' keys differ, if their
 # magnitudes differ by more than half the red book's last printed digit, or if
-# their years differ anywhere but Ukraine's entry.
+# their years differ anywhere but Ukraine's three rows (_ANNOUNCEMENT_YEARS).
 _HEP = (
     "HM Treasury prints the Household Energy Payment's 2026-27 cost in the red "
-    "book as £2.6 billion, a cost printed positive, and in Table 6.1 line 1 as "
-    "-2,625 (£ million). £2.6 billion rounds -2,625 once we normalise the sign."
+    "book as £2.6 billion, a positive cost, and in Table 6.1 line 1 as -2,625 "
+    "(£ million). £2.6 billion rounds -2,625 once we normalise the sign."
 )
 _SPR = (
     "HM Treasury prints Small Producer Relief's support in the red book as £10 "
-    "million a year, a cost printed positive, and in Table 6.1 line 19 as -10 "
-    "(£ million) for 2027-28, the year we stage on both rows."
+    "million a year, a positive cost, and in Table 6.1 line 19 as -10 (£ million) "
+    "for 2027-28, the year we stage on both rows."
 )
 _BOOKS = (
     "HM Treasury prints up to £5 million a year for books for young children "
-    "in the red book, a cost printed positive, and -5 (£ million) in Table 6.1 "
-    "line 9 for 2027-28, the year we stage on both rows. HM Treasury dates the "
-    "prose support's three years from 2027-28 and the table's from 2026-27; "
-    "the 2027-28 amount agrees."
+    "in the red book, a positive cost, and -5 (£ million) in Table 6.1 line 9 "
+    "for 2027-28, the year we stage on both rows. HM Treasury dates the prose "
+    "support's three years from 2027-28 and the table's from 2026-27; the "
+    "2027-28 amount agrees."
 )
 _UKRAINE = (
     "HM Treasury prints £500 million of military support for Ukraine's air "
-    'defences "this winter" in the red book, a cost printed positive, and -500 '
+    'defences "this winter" in the red book, a positive cost, and -500 '
     "(£ million) in Table 6.1 line 43 in 2026-27. HM Treasury names no fiscal "
     "year in the red book, so we stage the 2026 announcement year on the row "
     "and match the figure to the table's 2026-27 cell."
@@ -469,6 +462,11 @@ REVIEWED_TWINS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_hmt_redbook", 263): (252, _UKRAINE),
     ("uk_hmt_redbook", 271): (252, _UKRAINE),
     ("uk_hmt_redbook", 272): (252, _UKRAINE),
+}
+# (family, row) -> (the row's period, its uk_hmt_tables row, that row's period)
+# for the rows on which we stage an announcement year.
+_ANNOUNCEMENT_YEARS: dict[tuple[str, int], tuple[int, int, int]] = {
+    ("uk_hmt_redbook", i): (2026, 252, 2027) for i in (263, 271, 272)
 }
 
 
@@ -689,11 +687,23 @@ def _drop(acct: dict, fam: dict, reason_key: str) -> None:
     fam["drops"][reason_key] = fam["drops"].get(reason_key, 0) + 1
 
 
+_PRINTED_AMOUNT = re.compile(r"£(\d[\d,]*)(?:\.(\d+))? (million|billion)")
+_MULTIPLIERS = {"million": 1e6, "billion": 1e9}
+
+
 def _printed_unit(row: dict) -> float:
-    """The place value of the last digit a row prints: £100m for "£2.6 billion"."""
-    digits = re.search(r"\d[\d,]*(?:\.(\d+))?", row["value_raw"])
-    scale = abs(row["value"]) / float(digits[0].replace(",", ""))
-    return scale / 10 ** len(digits[1] or "")
+    """Return the place value of the last printed digit: £100m for "£2.6 billion".
+
+    We raise on any other form of print, and on a value the print doesn't state."""
+    printed = _PRINTED_AMOUNT.fullmatch(row["value_raw"])
+    if printed is None:
+        raise ValueError(f"no printed amount in {row['value_raw']!r}")
+    places = printed[2] or ""
+    multiplier = _MULTIPLIERS[printed[3]]
+    number = float(printed[1].replace(",", "") + "." + (places or "0"))
+    if not math.isclose(number * multiplier, abs(row["value"]), rel_tol=1e-9):
+        raise ValueError(f"{row['value']} doesn't match printed amount {printed[0]!r}")
+    return multiplier / 10 ** len(places)
 
 
 def _check_row_calls(family: str, rows: list[dict]) -> None:
@@ -711,15 +721,19 @@ def _check_row_calls(family: str, rows: list[dict]) -> None:
     reviewed = {i: v for (fam, i), v in REVIEWED_TWINS.items() if fam == family}
     if reviewed:
         table = _load("uk_hmt_tables")
-        for i, (t, reason) in reviewed.items():
+        for i, (t, _) in reviewed.items():
             r = rows[i]
             if _is_component(r) or _is_component(table[t]):
                 raise ValueError(f"REVIEWED_TWINS {family} row {i} is a component")
             a, b = abs(r["value"]), abs(table[t]["value"])
+            announced = _ANNOUNCEMENT_YEARS.get((family, i))
             if (
                 r.get("measure_key") != table[t].get("measure_key")
                 or abs(a - b) > _printed_unit(r) / 2
-                or (r["period"] != table[t]["period"] and reason != _UKRAINE)
+                or (
+                    r["period"] != table[t]["period"]
+                    and announced != (r["period"], t, table[t]["period"])
+                )
             ):
                 raise ValueError(f"REVIEWED_TWINS {family} row {i} no longer matches")
 
