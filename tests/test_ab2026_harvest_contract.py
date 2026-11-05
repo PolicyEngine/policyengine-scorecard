@@ -2791,7 +2791,7 @@ def test_a_run_of_whitespace_in_a_note_reads_as_one_space(note):
     in "x 2 and a half" and the sign in "sign from the wording", so the checker
     gave another reading of the same note."""
     spaces = [i for i, c in enumerate(note) if c == " "]
-    for at, run in product(spaces, ("  ", "   ", "\t", "\n", " \t ", "\u00a0")):
+    for at, run in product(spaces, ("  ", "   ", "\t", "\n", " \t ", *WHITESPACE)):
         stretched = _stretch(note, at, run)
         assert _factors(stretched) == _factors(note), stretched
         for raw, value in product(
