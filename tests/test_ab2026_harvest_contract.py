@@ -21,8 +21,6 @@ from hypothesis import strategies as st
 
 from pipeline.ab2026_harvest_contract import (
     OGL,
-    ONES,
-    TENS,
     duplicate_problems,
     enums,
     family_problems,
@@ -31,6 +29,7 @@ from pipeline.ab2026_harvest_contract import (
     reads_a_bar,
     registry_keys,
     row_problems,
+    type_problems,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -154,9 +153,9 @@ def test_a_staged_row_has_no_problems():
             },
             "is not ab2026",
         ),
-        ({"measure_key": ["ab2026__x"]}, "measure_key is not a string"),
+        ({"measure_key": ["ab2026__x"]}, "measure_key is not a string or null"),
         ({"publication": None}, "publication is not an object"),
-        ({"value_raw": None}, "value_raw is empty"),
+        ({"value_raw": None}, "value_raw is not a string"),
         # delta review D1-1: a printed £m cell is that many millions exactly
         ({"value": -2626312500}, "at a stated scale"),
         ({"value": -2625100000}, "at a stated scale"),
@@ -165,10 +164,10 @@ def test_a_staged_row_has_no_problems():
             {"conditions__component": " ", "conditions__row_type": "measure_total"},
             "a component row has row_type",
         ),
-        ({"conditions__component": 1}, "row is malformed"),
+        ({"conditions__component": 1}, "condition 'component' is not a string"),
         (
             {"measure_key": None, "conditions__proposed_measure_key": ["ab2026__x"]},
-            "row is malformed",
+            "condition 'proposed_measure_key' is not a string",
         ),
         # final review F2: £1 or £2 off a £m cell is no floating-point error
         ({"value": -2625000001}, "at a stated scale"),
@@ -177,6 +176,17 @@ def test_a_staged_row_has_no_problems():
         # final review F3: an integer too large for a float
         ({"value": 10**400}, "value is not finite"),
         ({"value": -(10**400)}, "value is not finite"),
+        # delta review R4: a field of a type the AB2025 row contract doesn't
+        # allow
+        ({"source_model": []}, "source_model is not a string"),
+        ({"reform_hint": []}, "reform_hint is not a string or null"),
+        ({"baseline_policy": []}, "baseline_policy is not a string or null"),
+        ({"source_table": []}, "source_table is not a string or null"),
+        ({"source_column": []}, "source_column is not a string or null"),
+        ({"attribution": ["own"]}, "attribution is not a string"),
+        ({"period": "2027"}, "period is not an integer"),
+        ({"period": True}, "period is not an integer"),
+        ({"publication__locator": 7}, "publication.locator is not a string"),
     ],
 )
 def test_each_rule_broken_on_a_valid_row_is_a_problem(changes, expected):
@@ -225,10 +235,14 @@ def test_a_worded_fraction_is_its_share():
     assert any("opposite sign" in p for p in problems(_share("a third", -0.3333, note)))
 
 
-def test_a_year_after_in_is_no_denominator():
+@pytest.mark.parametrize(
+    "raw", ["5 in 2027", "5 in 2026-27", "5 in 2026–27", "5 in 2026-2027"]
+)
+def test_a_year_after_in_is_no_denominator(raw):
     """A year after "in" prints a year: "5 in 2027" gives 5 (here £5m) and
-    2027, not the ratio 5/2027."""
-    assert problems(mutated(value_raw="5 in 2027", quote="5 in 2027", value=5e6)) == []
+    2027, not the ratio 5/2027, and "5 in 2026-27" gives a fiscal year with
+    any dash."""
+    assert problems(mutated(value_raw=raw, quote=raw, value=5e6)) == []
 
 
 def test_a_year_after_in_is_a_denominator_when_the_normalization_says_so():
@@ -302,7 +316,23 @@ def test_a_ratio_passes_only_at_its_share(n, extra, form, minus):
             ), (raw, wrong)
 
 
-SAY = {v: w for w, v in (ONES | TENS).items()}
+# Number words as a producer prints them, written out here apart from the
+# checker's own lists (delta review R1).
+SAY = dict(
+    enumerate(
+        "zero one two three four five six seven eight nine ten eleven twelve"
+        " thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split()
+    )
+) | {
+    20: "twenty",
+    30: "thirty",
+    40: "forty",
+    50: "fifty",
+    60: "sixty",
+    70: "seventy",
+    80: "eighty",
+    90: "ninety",
+}
 
 
 def _say(n, a=False, hyphen=True, joined=True):
@@ -392,22 +422,188 @@ def test_a_ratio_with_a_multiplier_or_another_joint_is_its_share(raw, share, wro
     ("raw", "value", "share"),
     [
         ("£5 in 10 years", 5, 0.5),
+        ("£ 5 in 10 years", 5, 0.5),
         ("-£5 in 10", -5, -0.5),
+        ("£-5 in 10", -5, -0.5),
         ("$3 in 4", 3, 0.75),
-        ("1 in 2 millionths", 1, 0.5),
-        ("1 in 2 million-strong", 2e6, 0.5),
-        ("1 in 2 thousand million", 2e6, 0.5),
+        ("COVID-19 in 10", 19, 1.9),
+        ("Q1 in 4", 4, 0.25),
     ],
 )
-def test_a_number_after_a_currency_sign_or_before_an_unread_multiplier_is_no_ratio(
-    raw, value, share
-):
-    """A number after a currency sign starts no ratio, and a ratio whose
-    multiplier won't read is none: each number counts at its scale, and the
-    ratio's share without its multiplier fails."""
+def test_a_number_after_a_currency_sign_or_in_a_name_starts_no_ratio(raw, value, share):
+    """A number after a currency sign, or in a name, starts no ratio: each
+    number counts at its scale, and the would-be share fails."""
     assert problems(_share(raw, value, "as printed")) == []
     found = problems(_share(raw, share, "as printed"))
     assert any("at a stated scale" in p for p in found), (raw, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "share", "wrongs"),
+    [
+        ("twenty-one in a hundred", 0.21, (0.01, 1, 21, 100)),
+        ("twenty one in a hundred", 0.21, (0.01, 21, 100)),
+        ("one in twenty-five", 0.04, (42, 0.2, 1, 25)),
+        ("a one-in-a-million chance", 1e-6, (1, 1e6)),
+        ("2025, 1 in 4", 0.25, (1, 4)),
+    ],
+)
+def test_a_compound_number_reads_whole(raw, share, wrongs):
+    """Delta review R1: the checker reads "twenty-one" as 21, never as its
+    last word, so "twenty-one in a hundred" passes at 0.21 and at nothing
+    else; and a comma ends a number, so "2025, 1 in 4" is 0.25."""
+    assert problems(_share(raw, share, "share as printed")) == []
+    for wrong in wrongs:
+        found = problems(_share(raw, wrong, "share as printed"))
+        assert any("at a stated scale" in p for p in found), (raw, wrong, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "share"),
+    [
+        ("1 in -4", -0.25),
+        ("-1 in -4", 0.25),
+        ("1 in −4", -0.25),
+        ("one in -four", -0.25),
+        ("-1-in-4", -0.25),
+    ],
+)
+def test_a_minus_on_either_number_signs_the_share(raw, share):
+    """Delta review R1: a minus after the spaces before M signs the share as
+    a minus before N does, so "1 in -4" passes at -0.25 and fails at 0.25."""
+    assert problems(_share(raw, share)) == []
+    flipped = problems(_share(raw, -share))
+    assert any("opposite sign" in p for p in flipped), (raw, flipped)
+
+
+@pytest.mark.parametrize("normalization", ["N IN M -> N/M", "n in m -> n/m", "N In M"])
+def test_the_generic_normalization_reads_in_any_case(normalization):
+    """Delta review R1: "N IN M" or "n in m" gives "1 in 2000" as the ratio
+    0.0005, as "N in M" does."""
+    assert problems(_share("1 in 2000", 0.0005, normalization)) == []
+    for wrong in (1, 2000):
+        found = problems(_share("1 in 2000", wrong, normalization))
+        assert any("at a stated scale" in p for p in found), (normalization, wrong)
+
+
+# Ratios the checker can't read whole (delta review R1). "and" after a
+# multiplier word joins what follows to the number, so the checker can't
+# split "one in a thousand and one in a million" into two ratios either.
+CANT_READ = [
+    "a thousand and one in a million",
+    "a thousand and 21 in 100",
+    "one in a thousand and one in a million",
+    "twenty eleven in a hundred",
+    "1 in 2 thousand million",
+    "1 in 2 millionths",
+    "1 in 2 thousands",
+    "1 in 2 million-strong",
+    "1 in 4-year-olds",
+    "1 in 4th",
+    "1 in 4–5",
+    "4-5 in 10",
+    "4–5 in 10",
+    "1 in - 4",
+    "1 - in 4",
+    "1in 4",
+    "1 in4",
+    "1 in-4",
+    "1-in 4",
+    "1 in 0",
+]
+
+
+@pytest.mark.parametrize("raw", CANT_READ)
+@pytest.mark.parametrize("value", [0.25, 0.5, 1, 4, 2e6, 1e-6])
+def test_a_ratio_the_checker_cant_read_is_a_problem(raw, value):
+    """Delta review R1: a ratio whose numbers or separators the checker can't
+    read gives a problem at any value. Before, the checker read part of a
+    number, or no ratio, and could pass a value the string doesn't print."""
+    found = problems(_share(raw, value, "as printed"))
+    assert any("which the checker can't read" in p for p in found), (raw, found)
+
+
+MULTIPLIER = st.sampled_from(
+    [("", 1), (" thousand", 1e3), (" million", 1e6), (" billion", 1e9)]
+    + [("bn", 1e9), ("m", 1e6), ("k", 1e3)]
+)
+
+
+def _operand(x, word, styles, multiplier):
+    """x in words or digits, with a multiplier; a short multiplier ("bn")
+    only after digits."""
+    text, factor = multiplier
+    if word and not text.startswith(" "):
+        text, factor = "", 1
+    return (_say(x, *styles) if word else str(x)) + text, factor
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    n=st.integers(1, 999),
+    m=st.integers(1, 999),
+    words=st.tuples(st.booleans(), st.booleans()),
+    styles=STYLES,
+    multipliers=st.tuples(MULTIPLIER, MULTIPLIER),
+    signs=st.tuples(st.sampled_from(["", "-", "−"]), st.sampled_from(["", "-", "−"])),
+    joint=st.sampled_from(["in", "IN", "in every", "In Every", "out of", "OUT OF"]),
+    hyphens=st.booleans(),
+)
+def test_any_ratio_reads_whole_and_signed(
+    n, m, words, styles, multipliers, signs, joint, hyphens
+):
+    """Delta review R1, for every ratio of numbers up to 999, in words or
+    digits, with a multiplier or none and a minus or none on each number,
+    joined all by spaces or all by hyphens: the signed share passes, and its
+    opposite, N, M and the share without its multipliers fail."""
+    top, f_top = _operand(n, words[0], styles, multipliers[0])
+    bottom, f_bottom = _operand(m, words[1], styles, multipliers[1])
+    sign_m = "" if hyphens else signs[1]
+    if hyphens:
+        raw = f"{signs[0]}{top}-{joint.replace(' ', '-')}-{bottom}"
+    else:
+        raw = f"{signs[0]}{top} {joint} {sign_m}{bottom}"
+    share = (n * f_top) / (m * f_bottom) * (-1 if signs[0] else 1)
+    share *= -1 if sign_m else 1
+    assert problems(_share(raw, share, "share as printed")) == [], raw
+    flipped = problems(_share(raw, -share, "share as printed"))
+    assert any("opposite sign" in p for p in flipped), (raw, flipped)
+    for bad in (n, m, n * f_top, m * f_bottom, n / m):
+        if not math.isclose(bad, abs(share), rel_tol=1e-3):
+            found = problems(_share(raw, bad, "share as printed"))
+            assert any(
+                "at a stated scale" in p or "opposite sign" in p for p in found
+            ), (raw, bad, found)
+
+
+@settings(max_examples=400, deadline=None)
+@given(
+    n=st.sampled_from(
+        ["21", "twenty-one", "twenty one", "five", "105", "one hundred and five"]
+    ),
+    m=st.sampled_from(
+        ["100", "a hundred", "twenty-five", "2 million", "a thousand", "4bn"]
+    ),
+    joint=st.sampled_from(["in", "in every", "out of"]),
+    spoiler=st.sampled_from(
+        ["one ", "3 ", "two million ", "a thousand and "]
+        + [" thousand thousand", " millionths", "-year-olds", " 7"]
+    ),
+    value=st.floats(-1e12, 1e12, allow_nan=False),
+)
+def test_a_ratio_whose_number_runs_on_is_a_problem_at_any_value(
+    n, m, joint, spoiler, value
+):
+    """Delta review R1, for ratios whose N or M runs on into more of a number
+    ("one 21 in 100", "1 in 4 7") or into a word ("1 in 2 millionths", "1 in
+    4-year-olds"): the checker reports each at any value, rather than read
+    part of it."""
+    if spoiler.endswith(" "):
+        raw = f"{spoiler}{n} {joint} {m}"
+    else:
+        raw = f"{n} {joint} {m}{spoiler}"
+    found = problems(_share(raw, value, "share as printed"))
+    assert any("which the checker can't read" in p for p in found), (raw, found)
 
 
 def test_a_ratio_s_multiplier_scales_only_the_ratio():
@@ -511,6 +707,18 @@ def test_any_number_in_words_reads_as_that_number(n, styles, off):
     assert any("at a stated scale" in p for p in found), (raw, n + off)
 
 
+@pytest.mark.parametrize(
+    "raw", ["a thousand and one", "twenty eleven", "one thousand two hundred"]
+)
+def test_a_number_in_words_the_checker_cant_read_is_a_problem(raw):
+    """Delta review R1: words alone that make no one number the checker
+    reads ("twenty eleven"), or one it doesn't ("one thousand two hundred"),
+    give a problem, rather than count their parts."""
+    for value in (1, 20, 1000, 1001, 1200):
+        found = problems(_share(raw, value, "printed in words"))
+        assert any("which the checker can't read" in p for p in found), (raw, found)
+
+
 @pytest.mark.parametrize("raw", ["two-child limit", "one-off", "four"])
 def test_number_words_in_a_compound_or_on_a_categorical_row_compare_nothing(raw):
     """A number word inside a hyphenated word ("two-child") prints no number,
@@ -557,6 +765,26 @@ def test_a_money_cell_passes_only_at_its_exact_value(cell, off, up):
     assert any(
         "at a stated scale" in p or "opposite sign" in p for p in problems(moved)
     )
+
+
+@pytest.mark.parametrize("sign", [1, -1])
+@pytest.mark.parametrize("toward_zero", [False, True])
+def test_a_printed_number_matches_to_four_units_in_the_last_place(sign, toward_zero):
+    """Delta review R3: a value one to four units in the last place from
+    £1.7bn, on either side and with either sign, passes, and one five units
+    off fails."""
+    raw = "-£1.7bn" if sign < 0 else "£1.7bn"
+    exact = (-1.7 if sign < 0 else 1.7) * 1e9
+    target = 0.0 if toward_zero else math.copysign(math.inf, exact)
+    value = exact
+    for units in range(1, 6):
+        value = math.nextafter(value, target)
+        row = mutated(value_raw=raw, quote=raw, value=value, normalization="£bn x 1e9")
+        found = problems(row)
+        if units <= 4:
+            assert found == [], (units, value, found)
+        else:
+            assert any("at a stated scale" in p for p in found), (units, value, found)
 
 
 def test_malformed_rows_are_reported_not_raised():
@@ -613,13 +841,31 @@ def test_rule_4_holds_whatever_the_title_case():
         ("Figures 1.A and 1.B data labels", False),
         ("Figure 1 below; paragraph 1.7", False),
         ("Table 2.C; config 1a", False),
+        # delta review R2: the first reference takes one of a closed list of
+        # forms, so a qualifier there, even "(not missing)", reads as a bar;
+        # and a negation right before a bar-reading phrase cancels it
+        ("Figure 1.A data label unavailable, decile 3", True),
+        ("Figure 1.A data label (not missing), decile 3", True),
+        ("paragraph 1.7 approximately; Figure 1.A", True),
+        ("Table 2.C and Figure 1.A", True),
+        ("paragraph 1.7; not a bar reading from Figure 1.A", False),
+        ("paragraph 1.7; isn't read off Figure 1.A", False),
+        ("paragraph 1.7; never a chart reading, Figure 1.A", False),
+        ("paragraph 1.7; a bar reading from Figure 1.A", True),
+        ("paragraph 1.7; read off Figure 1.A", True),
+        ("paragraph 1.7; not a bar reading but read off the chart, Figure 1.A", True),
+        ("paragraphs 1.7 and 1.8; Figure 1.A", False),
+        ("data labels on Figure 1.B", False),
+        ("Box 1.A; Figure 1.A", False),
+        ("  paragraph 1.7 ; Figure 1.A", False),
     ],
 )
 def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
     """README rule 4: a locator that places the number on Figure 1.A's or
-    1.B's bars marks a bar reading; one whose leading reference names the
+    1.B's bars marks a bar reading; one whose first reference names the
     paragraph, table or data label printing it doesn't (delta review D1:
-    red book row 357's 20% sits in paragraph 1.7; final review F4)."""
+    red book row 357's 20% sits in paragraph 1.7; final review F4; delta
+    review R2)."""
     row = mutated(
         publication__title="Budget 2026: Impact on households",
         publication__locator=locator,
@@ -646,8 +892,8 @@ def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
     ],
 )
 def test_rule_4_reads_a_negated_data_label_as_a_bar_reading(negated):
-    """Final review F4: a leading reference that negates its data label, in
-    any of these words, places the number on a bar."""
+    """Final review F4 and delta review R2: a first reference with any word
+    after its data label, a negation included, places the number on a bar."""
     assert reads_a_bar(f"Figure 1.A {negated}")
     assert not reads_a_bar("Figure 1.A data label")
 
@@ -656,11 +902,14 @@ def test_rule_4_reads_a_negated_data_label_as_a_bar_reading(negated):
 # that don't; and the parts of a locator that name Figure 1.A or 1.B.
 PRINTING = [
     "paragraph 1.7",
+    "paragraphs 1.7 and 1.8",
     "Table 2.C",
     "Box 1.A",
     "Figure 1.A data label",
     "Fig. 1B data labels",
     "data label",
+    "data label for decile 3",
+    "data labels for Figure 1.B",
 ]
 NOT_PRINTING = [
     "Figure 1.B",
@@ -670,14 +919,22 @@ NOT_PRINTING = [
     "no data labels",
     "data label missing",
     "Figure 1.A data label isn't shown",
+    "Figure 1.A data label unavailable",
+    "Figure 1.A data label (not missing)",
+    "paragraph 1.7 approximately",
+    "Table 2.C and Figure 1.A",
 ]
 NAMES_FIGURE = {
     "Figure 1.A data label",
     "Fig. 1B data labels",
+    "data labels for Figure 1.B",
     "Figure 1.B",
     "Figures 1.A and 1.B",
     "Figure 1.A, decile 3 bar",
     "Figure 1.A data label isn't shown",
+    "Figure 1.A data label unavailable",
+    "Figure 1.A data label (not missing)",
+    "Table 2.C and Figure 1.A",
     "discussion of Figure 1.A",
     "fig 1a",
 }
@@ -697,19 +954,24 @@ NAMES_FIGURE = {
                 "decile 3",
                 "data label",
                 "Table 2.C",
+                "not a bar reading",
+                "never read off the chart",
+                "isn't a chart reading",
             ]
         ),
         max_size=3,
     ),
+    affirm=st.booleans(),
 )
-def test_rule_4_follows_the_leading_reference(lead, rest):
-    """Final review F4: where a locator names Figure 1.A or 1.B, in any
-    spelling, only its leading reference, positively naming a paragraph,
-    table, box or data label, places the number where HM Treasury prints it;
-    anything later in the locator places nothing."""
-    locator = "; ".join([lead, *rest])
+def test_rule_4_follows_the_leading_reference(lead, rest, affirm):
+    """Final review F4 and delta review R2: where a locator names Figure 1.A
+    or 1.B, in any spelling, only a first reference in one of the forms
+    PRINTING lists places the number where HM Treasury prints it, and
+    anything later in the locator places nothing. A bar-reading phrase
+    anywhere marks a bar reading, unless a negation comes right before it."""
+    locator = "; ".join([lead, *rest, *(["a bar reading"] if affirm else [])])
     names_figure = any(part in NAMES_FIGURE for part in [lead, *rest])
-    assert reads_a_bar(locator) == (names_figure and lead not in PRINTING)
+    assert reads_a_bar(locator) == (affirm or (names_figure and lead not in PRINTING))
 
 
 def test_a_component_with_its_measure_or_a_proposed_key_is_valid():
@@ -884,7 +1146,7 @@ def test_a_family_missing_a_file_is_a_problem(tmp_path):
         (["not a row", None], "row is not an object"),
         (
             [mutated(measure_key=None, conditions__proposed_measure_key=["ab2026__x"])],
-            "row is malformed",
+            "condition 'proposed_measure_key' is not a string",
         ),
         (
             [mutated(publication__primary_sha256=["abc"])],
@@ -931,9 +1193,12 @@ def test_a_field_nested_too_deep_to_print_is_a_problem():
     deep = []
     for _ in range(100_000):
         deep = [deep]
-    found = problems(mutated(period=deep))
-    assert [p for p in found if p.startswith("row is malformed (RecursionError")]
+    assert problems(mutated(period=deep)) == ["period is not an integer"]
+    locator = mutated(publication__locator=deep)
+    assert problems(locator) == ["publication.locator is not a string"]
+    assert problems(mutated(invented=deep)) == ["unknown fields ['invented']"]
     nested = mutated(conditions__geography_note=deep)
+    assert problems(nested) == ["condition 'geography_note' is not a string"]
     assert duplicate_problems([nested, nested]) == []
 
 
@@ -974,16 +1239,106 @@ def _changed(changes):
     return row
 
 
+# The AB2025 row contract's types, from its README, written out here apart
+# from the checker's own lists (delta review R4): each field with the types
+# it allows.
+STRING_FIELDS = [
+    "source",
+    "source_model",
+    "value_raw",
+    "normalization",
+    "value_kind",
+    "time_basis",
+    "attribution",
+    "benchmark_class",
+    "quote",
+    "parse_confidence",
+    "status",
+]
+NULLABLE_FIELDS = [
+    "reform_hint",
+    "measure_key",
+    "baseline_policy",
+    "source_table",
+    "source_column",
+    "metric",
+    "proposed_metric",
+    "unit_concept",
+    "proposed_unit",
+    "proposed_baseline",
+    "note",
+    "local_artifact",
+]
+PUBLICATION_FIELDS = [
+    "title",
+    "url",
+    "date",
+    "publisher",
+    "primary_sha256",
+    "locator",
+    "access",
+]
+TYPED = (
+    [(f, (str,)) for f in STRING_FIELDS]
+    + [(f, (str, type(None))) for f in NULLABLE_FIELDS]
+    + [(f"publication__{f}", (str, type(None))) for f in PUBLICATION_FIELDS]
+    + [(f"conditions__{k}", (str,)) for k in BASE["conditions"]]
+    + [("period", (int,)), ("value", (int, float))]
+    + [("conditions", (dict,)), ("publication", (dict,))]
+)
+
+
+def _named(path):
+    """How a problem names a field: "quote", "publication.url" or "condition
+    'fy'"."""
+    if path.startswith("publication__"):
+        return "publication." + path.split("__")[1]
+    if path.startswith("conditions__"):
+        return f"condition {path.split('__')[1]!r}"
+    return path
+
+
+@pytest.mark.parametrize("field", NULLABLE_FIELDS)
+def test_a_nullable_field_takes_null_or_a_string(field):
+    """Delta review R4: null or a string passes in each field the contract
+    lets us leave empty."""
+    assert type_problems(mutated(**{field: None})) == []
+    assert type_problems(mutated(**{field: "x"})) == []
+
+
+@pytest.mark.parametrize("field", STRING_FIELDS)
+def test_a_string_field_takes_no_null(field):
+    """Delta review R4: null fails in each field that needs a string."""
+    assert type_problems(mutated(**{field: None})) == [f"{field} is not a string"]
+
+
+@settings(max_examples=500, deadline=None)
+@given(data=st.data(), typed=st.sampled_from(TYPED))
+def test_a_field_of_a_type_the_contract_doesnt_allow_is_a_problem(data, typed):
+    """Delta review R4, for every field the AB2025 row contract types: any
+    JSON value of another type gives a problem that names the field."""
+    path, allowed = typed
+    value = data.draw(
+        JSON.filter(lambda v: isinstance(v, bool) or not isinstance(v, allowed))
+    )
+    found = problems(_changed({path: value}))
+    assert any(p.startswith(f"{_named(path)} is not") for p in found), (
+        path,
+        value,
+        found,
+    )
+
+
 @settings(max_examples=400, deadline=None)
 @given(
     changes=st.dictionaries(
         st.sampled_from(FIELDS), JSON | st.just(...), min_size=1, max_size=4
     )
 )
-def test_any_malformed_row_gives_problems_never_an_exception(changes):
-    """Final review F3, for every input: row_problems, the pair check and the
-    proposed-key scan return strings for a row with any field changed to any
-    JSON value or deleted, alone and next to copies of itself and BASE."""
+def test_changing_or_deleting_fields_never_raises(changes):
+    """Final review F3, for every input: changing or deleting fields does not
+    make row validation, duplicate checking or proposed-key discovery raise
+    an exception, for a row alone or next to copies of itself and BASE."""
     row = _changed(changes)
     found = problems(row)
     assert isinstance(found, list) and all(isinstance(p, str) for p in found)
