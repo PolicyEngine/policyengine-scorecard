@@ -253,6 +253,59 @@ def test_partial_construction_warnings_remain_visible(inputs):
     assert "indirect macroeconomic effects" in markdown
 
 
+def test_a_run_recording_the_statement_labels_its_legs_in_every_row_field(inputs):
+    registry, staged, root = inputs
+    measure = registry["measures"][0]
+    legs = ["The engine omits a leg", "A second leg"]
+    measure.update(classification="partial", missing_legs=legs)
+    staged[0].pop("reason", None)
+    identity = {
+        "engine_version": "2.151.0",
+        "variant_id": "variant",
+        "statement_version": "authored_engine_label.v2",
+    }
+    unlabelled = build_comparison_rows(
+        registry,
+        staged,
+        artifact_root=root,
+        identity={k: v for k, v in identity.items() if k != "statement_version"},
+    )
+    assert unlabelled[0]["missing_legs"] == legs
+    assert unlabelled[0]["reason"] == "; ".join(legs)
+    rows = build_comparison_rows(
+        registry, staged, artifact_root=root, identity=identity
+    )
+    label = "Authored against policyengine-uk 2.89.2: "
+    assert rows[0]["missing_legs"] == [label + leg for leg in legs]
+    assert rows[0]["reason"] == label + "; ".join(legs)
+
+
+def test_a_run_recording_the_statement_labels_frozen_scope_reasons(inputs):
+    registry, staged, root = inputs
+    measure = registry["measures"][0]
+    measure["classification"] = "out_of_household_scope"
+    source = measure["source_rows"][0]
+    source["classification_reason"] = "A frozen scope reason"
+    identity = {
+        "engine_version": "2.151.0",
+        "variant_id": "variant",
+    }
+    sealed = build_comparison_rows(
+        registry, staged, artifact_root=root, identity=identity
+    )
+    assert sealed[0]["reason"] == "A frozen scope reason"
+    staged[0]["reason"] = (
+        "Authored against policyengine-uk 2.89.2: A frozen scope reason"
+    )
+    rows = build_comparison_rows(
+        registry,
+        staged,
+        artifact_root=root,
+        identity={**identity, "statement_version": "authored_engine_label.v2"},
+    )
+    assert rows[0]["reason"] == staged[0]["reason"]
+
+
 def test_gap_kind_split_preserves_row_scope_and_exact_amounts(inputs):
     registry, staged, root = inputs
     measure = registry["measures"][0]

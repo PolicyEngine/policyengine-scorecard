@@ -338,6 +338,43 @@ def test_saved_candidates_bind_source_and_measured_observations():
     }
 
 
+@pytest.mark.parametrize(
+    ("source", "income"),
+    [
+        ('person("taxed_income", period)', False),
+        ('person("net_income", period)', True),
+    ],
+)
+def test_the_annual_allowance_case_adds_income_only_where_the_override_goes_unread(
+    monkeypatch, source, income
+):
+    class Values:
+        def tolist(self):
+            return [0]
+
+    class Simulation:
+        def __init__(self, *, situation):
+            pass
+
+        def calculate(self, variable, year):
+            return Values()
+
+    monkeypatch.setattr(
+        diagnostics,
+        "_source",
+        lambda root, path, **options: {"engine_file": path, "source": source},
+    )
+    (row,) = diagnostics._additional_model_checks(
+        Path("unused"), Simulation, "annual_allowance_charge_single_marginal_rate"
+    )
+    worker = row["situation"]["people"]["worker"]
+    assert worker["taxed_income"] == {"2024": 30000}
+    assert ("employment_income" in worker) is income
+    if income:
+        # The personal allowance leaves the override's taxed income.
+        assert worker["employment_income"]["2024"] - 12570 == 30000
+
+
 def test_integrated_execution_receipt_binds_observations_and_metadata_additions():
     receipt = json.loads(
         (

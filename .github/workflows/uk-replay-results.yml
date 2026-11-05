@@ -15,15 +15,17 @@ name: UK replay results PR
 # code. It holds no dataset token.
 #
 # Two jobs, two runners. `build` assembles the commit and runs every check,
-# with PyPI packages and no write credential. `propose` runs on a fresh
-# runner, so nothing those packages did can reach it: with git and the
-# standard library alone it assembles the same commit from the same main and
-# replay-state history, refuses unless its tree is the one `build` verified
-# (`build`'s other outputs are its word, checked for shape; CI on the pull
-# request reruns the checks), decides again against main's tip from the
-# request it guarded, and only then mints a short-lived token for the
-# organisation's policyengine GitHub App, scoped to this repository, with
-# contents and pull-requests to push its own uk-replay-results/<variant>
+# with PyPI packages and no write credential: main's results checks, then
+# CI's own format check, suite and no-drift check, whose failure makes the
+# pull request a draft that names it rather than stopping the run. `propose`
+# runs on a fresh runner, so nothing those packages did can reach it: with
+# git and the standard library alone it assembles the same commit from the
+# same main and replay-state history, refuses unless its tree is the one
+# `build` verified (`build`'s other outputs are its word, checked for shape;
+# CI on the pull request reruns the checks), decides again against main's
+# tip from the request it guarded, and only then mints a short-lived token
+# for the organisation's policyengine GitHub App, scoped to this repository,
+# with contents and pull-requests to push its own uk-replay-results/<variant>
 # branch and open the pull request. A pull request opened with GITHUB_TOKEN
 # would start no pull_request run, so it would never carry checks; the
 # App's does. The token has no workflows permission: the commit touches
@@ -64,6 +66,7 @@ jobs:
       tree: ${{ steps.build.outputs.tree }}
       sealed: ${{ steps.build.outputs.sealed }}
       content_hash: ${{ steps.build.outputs.content_hash }}
+      preflight: ${{ steps.build.outputs.preflight }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -104,6 +107,7 @@ jobs:
           BUILT_STATE: ${{ needs.build.outputs.state }}
           BUILT_SEALED: ${{ needs.build.outputs.sealed }}
           BUILT_CONTENT_HASH: ${{ needs.build.outputs.content_hash }}
+          BUILT_PREFLIGHT: ${{ needs.build.outputs.preflight }}
         run: bash .github/scripts/uk_replay_results_pr.sh rebuild
       - name: Mint a repository-scoped token to push the branch and open the PR
         id: token
@@ -122,5 +126,6 @@ jobs:
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
           BUILT_COMMIT: ${{ steps.rebuild.outputs.commit }}
           BUILT_BRANCH: ${{ steps.rebuild.outputs.branch }}
+          BUILT_DRAFT: ${{ steps.rebuild.outputs.draft }}
           GH_TOKEN: ${{ steps.token.outputs.token }}
         run: bash .github/scripts/uk_replay_results_pr.sh propose

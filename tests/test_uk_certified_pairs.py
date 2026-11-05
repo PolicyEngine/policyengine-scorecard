@@ -68,8 +68,10 @@ def test_get_record_resolves_a_pair_a_variant_and_the_default():
     assert not pairs.is_pair(pairs.get_record(default))
     with pytest.raises(rv.VariantError, match="no certified pair"):
         pairs.get_record(PAIR + "x")
+    # An id without the prefix is a variant's: the pipeline may qualify this
+    # pair under its slug, which then resolves to that variant.
     with pytest.raises(rv.VariantError, match="no replay variant"):
-        pairs.get_record(PAIR.removeprefix(pairs.PREFIX))
+        pairs.get_record("pe0.0.0_uk0.0.0_no-such-data")
 
 
 @pytest.mark.parametrize(
