@@ -115,14 +115,14 @@ GEOGRAPHY = {
 # printed minus (review A H-2(3)).
 WORDED_SIGN = re.compile(r"sign from the wording|carried negative|-> -\d|→ negative")
 SCALES = (1, 1e3, 1e6, 1e9, 0.01, 100)
-WORD_SCALE = (
-    (re.compile(r"\b(bn|billion)\b|\dbn\b", re.I), 1e9),
-    (re.compile(r"\b(m|million|mn)\b|\dm\b", re.I), 1e6),
-    (re.compile(r"\b(k|thousand)\b|\dk\b", re.I), 1e3),
-    (re.compile(r"%|per ?cent|percentage point|ppts?\b|pp\b", re.I), 0.01),
-)
-NUMBER = re.compile(r"(?<![\w.])[-−–]?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
-# Number words: one to nineteen, and the tens
+# A percentage is stored as a share or in percent units.
+PERCENT = (0.01, 1.0)
+
+# README, "Row contract additions": the checker reads value_raw only when the
+# whole string, in lower case with its spaces collapsed, matches a form below.
+# It reports anything else, and we narrow value_raw to the number, which the
+# quote still contains. So no part of a number, and no number among other words,
+# passes as the row's value.
 ONES = {
     "one": 1,
     "two": 2,
@@ -154,58 +154,11 @@ TENS = {
     "eighty": 80,
     "ninety": 90,
 }
-# A multiplier after a number: a word ("2 million", "a thousand") or, after
-# digits, a short form ("2m", "4bn")
-LONG = {"hundred": 100, "thousand": 1e3, "million": 1e6, "billion": 1e9}
-SHORT = {"bn": 1e9, "mn": 1e6, "m": 1e6, "k": 1e3}
-MULTIPLIERS = LONG | SHORT
-STEM = re.compile(r"(?:hundred|thousand|million|billion)(?:th|ths|s)")
-# A string as tokens: digits, words, whitespace and single characters
-TOKEN = re.compile(
-    r"(?P<num>\d+(?:,\d+)*(?:\.\d+)?)|(?P<word>[^\W\d_]+)|(?P<space>\s+)|(?P<char>.)",
-    re.S,
-)
-CURRENCY = "£$€"
-DASHES = "-−–"
-YEAR = re.compile(r"(?:19|20)\d\d")
-GENERIC_RATIO = re.compile(r"\bN\s+in\s+M\b", re.I)
-ARROW = re.compile(r"\s*(?:->|→)")
-
-
-def _either(words):
-    """A regex alternation of words, the longest first."""
-    return "|".join(re.escape(w) for w in sorted(words, key=len, reverse=True))
-
-
-_SEP = r"(?:\s+|\s*-\s*)"
-# README rule 4. A locator that names Figure 1.A or 1.B ("Figure 1.A", "Fig.
-# 1A", "Figures 1.A and 1.B") says where HM Treasury prints the number only
-# if its first reference, up to its first comma or semicolon, takes one of
-# the forms PRINTED reads and nothing more: a paragraph, table or box by its
-# number, or a data label. The checker reads any other first reference as a
-# bar reading, "Figure 1.A data label unavailable" included (delta review
-# R2). A locator that says we read the number off a bar, chart or graph marks
-# a bar reading wherever it says so, unless a negation comes just before
-# ("not a bar reading", "isn't read off the chart").
-FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
-_FIG = r"fig(?:ure)?s?\.?\s*1\.?\s*[ab](?:\s+and\s+1\.?\s*[ab])?"
-_ID = r"\d+(?:\.[0-9a-z]+)*"
-PRINTED = re.compile(
-    rf"(?:paragraph|para|table|box)(?:s|es)?\.?\s+{_ID}(?:\s+(?:and|to)\s+{_ID})?"
-    rf"|(?:{_FIG}\s+)?data\s+labels?"
-    rf"(?:\s+(?:for|on)\s+(?:(?:decile|quintile)\s+\d+|{_FIG}))?",
-    re.I,
-)
-BAR_READING = re.compile(
-    r"\b(?:bar|chart|graph) readings?\b"
-    r"|\bread (?:off|from) (?:the |a )?(?:bars?|charts?|graphs?|figures?)\b",
-    re.I,
-)
-DENIED = re.compile(
-    r"(?:\b(?:no|not|never|without)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
-)
-# A worded fraction: "half", or a numerator and a denominator ("a third",
-# "three-fifths", "another quarter").
+COUNTS = ONES | TENS | {"a": 1, "an": 1, "zero": 0}
+# A multiplier after a number: a word, or after digits a short form
+LARGE = {"thousand": 1e3, "million": 1e6, "billion": 1e9, "trillion": 1e12}
+SHORT = {"bn": 1e9, "mn": 1e6, "m": 1e6, "k": 1e3, "tn": 1e12}
+MULTIPLIERS = LARGE | SHORT | {"hundred": 100}
 NUMERATORS = {"a": 1, "an": 1, "another": 1} | {
     w: v for w, v in ONES.items() if v <= 10
 }
@@ -216,6 +169,8 @@ DENOMINATORS = {
     "thirds": 3,
     "quarter": 4,
     "quarters": 4,
+    "fourth": 4,
+    "fourths": 4,
     "fifth": 5,
     "fifths": 5,
     "sixth": 6,
@@ -229,380 +184,234 @@ DENOMINATORS = {
     "tenth": 10,
     "tenths": 10,
 }
+QUALIFIERS = {
+    "about",
+    "almost",
+    "approx.",
+    "approximately",
+    "around",
+    "at least",
+    "at most",
+    "fewer than",
+    "just over",
+    "just under",
+    "less than",
+    "more than",
+    "nearly",
+    "over",
+    "roughly",
+    "some",
+    "under",
+    "up to",
+}
+# Words after the number that leave it as it is
+TAILS = {"a year", "of gdp"}
+# Words that print a zero
+ZERO = {"nil", "no change", "no impact", "no overall impact", "none", "nothing"}
+
+
+def _either(words):
+    """A regex alternation of words, the longest first."""
+    return "|".join(re.escape(w) for w in sorted(words, key=len, reverse=True))
+
+
+_SIGN = "[-+−–]"
+_DIGITS = (
+    r"(?:(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?|\.[0-9]+)(?:e[-+]?[0-9]+)?"
+)
+_LARGE = _either(LARGE)
+_UNITS = _either(w for w, n in ONES.items() if n < 10)
+_TEENS = _either(w for w, n in ONES.items() if n >= 10)
+_BELOW_100 = rf"(?:(?:{_either(TENS)})(?:[ -](?:{_UNITS}))?|{_TEENS}|{_UNITS})"
+_BELOW_1000 = (
+    rf"(?:(?:{_UNITS}|an?)[ -]hundred(?:(?:[ -]and)?[ -]{_BELOW_100})?|{_BELOW_100})"
+)
+# Number words with one multiplier or none: "twenty-five", "a hundred and
+# five", "two hundred thousand", "a million"
+_WORDS = rf"(?:zero|{_BELOW_1000}(?:[ -](?:{_LARGE}))?|an?[ -](?:{_LARGE}))"
+# After digits, one multiplier: "2.5bn", "2 m", "2 million", "2-million"
+_TIMES = rf"(?: ?(?:{_either(SHORT)})|[ -]?(?:hundred|{_LARGE}))"
+_PERCENT = r"(?: ?%| per ?cent| percentage points?| ?ppts?| ?pp)"
+# Digits with an optional sign and currency sign: "-£1.7bn", "£-1.7bn", "+434m"
+_FIGURE = (
+    rf"(?P<lead>(?:{_SIGN}[£$€]?|[£$€]{_SIGN}?)?)(?P<digits>{_DIGITS})"
+    rf"(?:(?P<times>{_TIMES})|(?P<percent>{_PERCENT}))?"
+)
+FIGURE = re.compile(_FIGURE)
+WORDED = re.compile(
+    rf"(?P<sign>{_SIGN})?(?P<words>{_WORDS})(?P<percent>{_PERCENT})?",
+)
+_PART = rf"(?:{_either(NUMERATORS)})[ -](?:{_either(DENOMINATORS)})"
+# A worded fraction, perhaps of a multiplier: "half", "three-fifths", "half a
+# million", "a quarter of a percentage point"
 FRACTION = re.compile(
-    rf"\b(?:({_either(NUMERATORS)}){_SEP})?({_either(DENOMINATORS)})(?!\w|-\w)", re.I
+    rf"(?P<sign>{_SIGN})?(?P<fraction>half|{_PART})"
+    rf"(?:(?: of)? an? (?:(?P<times>hundred|{_LARGE})"
+    rf"|(?P<percent>per ?cent|percentage point)))?"
+)
+# A whole number and a fraction: "two and a half million", "2 and a third"
+MIXED = re.compile(
+    rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_100}) and (?P<fraction>{_PART})"
+    rf"(?:[ -](?P<times>{_LARGE})|(?P<percent>{_PERCENT}))?"
+)
+_COUNT = rf"(?:{_DIGITS}{_TIMES}?|{_WORDS})"
+# Two numbers joined all by spaces or all by hyphens. A sign comes before N or,
+# with spaces, before M.
+RATIO = re.compile(
+    rf"(?P<sign_n>{_SIGN})?(?P<n>{_COUNT})"
+    r"(?: (?:in(?: every)?|out of(?: every)?) "
+    rf"(?P<sign_m>{_SIGN})?|-(?:in(?:-every)?|out-of(?:-every)?)-)"
+    rf"(?P<m>{_COUNT})"
+)
+_FIGURE_END = _FIGURE.replace("?P<lead>", "?:").replace("?P<digits>", "?:")
+_FIGURE_END = _FIGURE_END.replace("?P<times>", "?:").replace("?P<percent>", "?:")
+DASHED = re.compile(rf"(?P<a>{_FIGURE_END})(?:[-–—]| [-–—] )(?P<b>{_FIGURE_END})")
+WHOLE = re.compile(
+    rf"(?:(?:{_either(QUALIFIERS)}) )?(?:an? (?=[-+−–£$€.0-9]))?"
+    rf"(?P<body>.*?)(?: (?:{_either(TAILS)}))?"
 )
 
-# A run is the longest stretch of number tokens joined by single spaces or
-# dashes: digits with one multiplier or none ("2 million", "2.5bn"), or
-# number words ("twenty-five", "a hundred and five", "two hundred
-# thousand"). The checker reads a run whole or not at all, so it never takes
-# part of a number for the number (delta review R1: "twenty-one in a
-# hundred" is 0.21, and "4-5" is no one number).
-#
-# A ratio is a run N, "in", "in every" or "out of", and a run M, joined all
-# by spaces or all by hyphens ("1 in 4", "1-in-4", "one in every ten", "3
-# out of 10", "1 in 2 million"). Its share is N/M, negative when a minus
-# comes right before N, or after the spaces before M ("-1 in 4", "1 in -4"),
-# and N and M count for nothing on their own (delta review D1-1). The
-# checker reads no ratio after a currency sign ("£5 in 10 years") or in a
-# name ("COVID-19 in 10"). It reads a year after a bare "in" ("5 in 2027",
-# "5 in 2026-27") as a year, unless the normalization gives the ratio ("1 in
-# 2000 -> 0.0005", or "N in M -> N/M" in any case). It reports any other
-# ratio it can't read: a run it can't parse ("a thousand and one in a
-# million", "1 in 2 thousand million"), a multiplier's ordinal or plural
-# after M ("1 in 2 millionths"), an M joined to a word ("1 in 4-year-olds"),
-# or separators it can't place ("1 in - 4", "1 in-4").
+
+def _signed(lead, number):
+    """The number, negative if its lead holds a minus."""
+    return -number if lead and set(lead) & set("-−–") else number
 
 
-def _tokens(text):
-    """A string's tokens, as (kind, text, start)."""
-    return [(m.lastgroup, m.group(), m.start()) for m in TOKEN.finditer(text)]
+def _own(times, percent):
+    """The scales a number's own word gives it, or None."""
+    if percent:
+        return PERCENT
+    return (MULTIPLIERS[times.strip(" -")],) if times else None
 
 
-def _kind(tokens, i):
-    """The kind of token i, or None past either end."""
-    return tokens[i][0] if 0 <= i < len(tokens) else None
+def _in_words(words):
+    """The number and the multiplier that WORDED's words print."""
+    number, large = 0, 1
+    for w in re.split("[ -]", words):
+        if w in LARGE:
+            large = LARGE[w]
+        elif w == "hundred":
+            number *= 100
+        elif w != "and":
+            number += COUNTS[w]
+    return number, large
 
 
-def _word(tokens, i):
-    """The lower-case word at token i, or None."""
-    return tokens[i][1].lower() if _kind(tokens, i) == "word" else None
+def _part(text):
+    """The share that a worded fraction prints."""
+    if text == "half":
+        return 1 / 2
+    top, bottom = re.split("[ -]", text)
+    return NUMERATORS[top] / DENOMINATORS[bottom]
 
 
-def _is(tokens, i, chars):
-    """Whether token i is one of these characters."""
-    return _kind(tokens, i) == "char" and tokens[i][1] in chars
-
-
-def _number_at(tokens, i):
-    """Whether token i is digits or a number word below a hundred."""
-    w = _word(tokens, i)
-    return _kind(tokens, i) == "num" or w in ONES or w in TENS
-
-
-def _starts_run(tokens, i):
-    """Whether a number starts at token i: digits, a number word, or "a" or
-    "an" before a multiplier word ("a thousand", "a-million")."""
-    if _number_at(tokens, i):
-        return True
-    return (
-        _word(tokens, i) in ("a", "an")
-        and (_kind(tokens, i + 1) == "space" or _is(tokens, i + 1, "-"))
-        and _word(tokens, i + 2) in LONG
-    )
-
-
-def _continues(tokens, j, k):
-    """Whether token k carries on the run whose last token is j."""
-    w = _word(tokens, k)
-    if _number_at(tokens, k) or w in LONG:
-        return True
-    if w in SHORT:
-        return _kind(tokens, j) == "num"
-    # "and" after a multiplier word, before more of the number ("a hundred
-    # and five", and so "a thousand and 21", which the checker can't read)
-    return (
-        w == "and"
-        and _word(tokens, j) in LONG
-        and _kind(tokens, k + 1) == "space"
-        and _number_at(tokens, k + 2)
-    )
-
-
-def _run_end(tokens, i):
-    """The last token of the run that starts at token i."""
-    j = i
-    while True:
-        if _kind(tokens, j) == "num" and _word(tokens, j + 1) in MULTIPLIERS:
-            j += 1  # a multiplier written on to the digits ("2bn")
-        elif (
-            (_kind(tokens, j + 1) == "space" or _is(tokens, j + 1, DASHES))
-            and j + 2 < len(tokens)
-            and _continues(tokens, j, j + 2)
-        ):
-            j += 2
-        else:
-            return j
-
-
-def _small(parts, k):
-    """The number from one to ninety-nine that the words from k on start
-    with ("eleven", "twenty", "twenty-five"), as (number, next word), or
-    None."""
-    w = parts[k] if k < len(parts) else None
-    if w in TENS:
-        unit = parts[k + 1] if k + 1 < len(parts) else None
-        if unit in ONES and ONES[unit] < 10:
-            return TENS[w] + ONES[unit], k + 2
-        return TENS[w], k + 1
-    if w in ONES:
-        return ONES[w], k + 1
+def _one_number(text):
+    """One number, as (number, its own scales or None, its kind), or None. Its
+    kind says how value_problems compares it: "digits" and "words" exactly,
+    "rounded" and "share" within 0.1%, and "share" in percent units on a percent
+    row."""
+    m = FIGURE.fullmatch(text)
+    if m:
+        number = float(m["digits"].replace(",", ""))
+        if not math.isfinite(number):
+            return None
+        own = _own(m["times"], m["percent"])
+        return _signed(m["lead"], number), own, "digits"
+    m = WORDED.fullmatch(text)
+    if m:
+        number, large = _in_words(m["words"])
+        if m["percent"] and large != 1:
+            return None
+        own = _own(None, m["percent"]) or ((large,) if large != 1 else None)
+        return _signed(m["sign"], float(number)), own, "words"
+    m = FRACTION.fullmatch(text)
+    if m:
+        number = _signed(m["sign"], _part(m["fraction"]))
+        own = _own(m["times"], m["percent"])
+        return number, own, "rounded" if own else "share"
+    m = MIXED.fullmatch(text)
+    if m:
+        whole = m["whole"]
+        digits = whole[0] in "0123456789."
+        count = float(whole.replace(",", "")) if digits else _in_words(whole)[0]
+        if not math.isfinite(count):
+            return None
+        number = _signed(m["sign"], count + _part(m["fraction"]))
+        return number, _own(m["times"], m["percent"]), "rounded"
     return None
 
 
-def _run_value(tokens, i, j):
-    """The number the run from token i to token j prints, as (number,
-    multiplier), or None if it doesn't read as one number: digits with one
-    multiplier or none ("2.5bn", "2 million"), or words up to nine hundred
-    and ninety-nine with one multiplier or none ("twenty-five", "a hundred
-    and five", "two hundred thousand", "a million")."""
-    parts = [t[1].lower() for t in tokens[i : j + 1] if t[0] in ("num", "word")]
-    if tokens[i][0] == "num":
-        n = float(parts[0].replace(",", ""))
-        if not math.isfinite(n):
-            return None
-        if len(parts) == 1:
-            return n, 1
-        if len(parts) == 2 and parts[1] in MULTIPLIERS:
-            return n, MULTIPLIERS[parts[1]]
+def _count(text):
+    """A ratio's N or M at its multiplier, or None if it isn't finite."""
+    one = _one_number(text)
+    if one is None:
         return None
-    if parts[0] in ("a", "an"):
-        n, k = 1, 1
-    else:
-        head = _small(parts, 0)
-        if head is None:
+    number, own, _ = one
+    count = number * (own[0] if own else 1)
+    return count if math.isfinite(count) else None
+
+
+def _printed(text):
+    """What one number, ratio or range prints, as a list of _one_number's tuples,
+    or None."""
+    one = _one_number(text)
+    if one:
+        return [one]
+    m = RATIO.fullmatch(text)
+    if m:
+        top, bottom = _count(m["n"]), _count(m["m"])
+        if top is None or not bottom:
             return None
-        n, k = head
-    if k < len(parts) and parts[k] == "hundred":
-        n, k = n * 100, k + 1
-        if k < len(parts) and parts[k] == "and":
-            k += 1
-            if _small(parts, k) is None:
-                return None
-        rest = _small(parts, k)
-        if rest:
-            n, k = n + rest[0], rest[1]
-    if k + 1 == len(parts) and parts[k] in ("thousand", "million", "billion"):
-        return n, LONG[parts[k]]
-    if parts[0] in ("a", "an") and n == 1:
-        return None  # "a" needs a multiplier
-    return (n, 1) if k == len(parts) else None
-
-
-def _glued_left(tokens, i):
-    """Whether the token before i ties a run that starts at i into a name or
-    a number: "Q1", "COVID-19", ".5"."""
-    if _kind(tokens, i - 1) in ("num", "word") or _is(tokens, i - 1, "."):
-        return True
-    return _is(tokens, i - 1, DASHES) and _kind(tokens, i - 2) == "word"
-
-
-def _joined_right(tokens, j):
-    """The last token of a word or number joined to the run that ends at j
-    ("4th", "4-year", "two-child", "4–5"), or None."""
-    if _kind(tokens, j + 1) in ("num", "word"):
-        return j + 1
-    if _is(tokens, j + 1, DASHES) and _kind(tokens, j + 2) in ("num", "word"):
-        return j + 2
+        share = _signed(m["sign_n"], _signed(m["sign_m"], top / bottom))
+        return [(share, None, "share")]
+    m = DASHED.fullmatch(text) or re.fullmatch(r"(?P<a>.+) to (?P<b>.+)", text)
+    if m:
+        low, high = _one_number(m["a"]), _one_number(m["b"])
+        if not (low and high) or (low[1] and not high[1]):
+            return None
+        # The first number takes the second's word: "£4-5 million"
+        if high[1] and not low[1]:
+            kind = "rounded" if low[2] == "share" else low[2]
+            low = (low[0], high[1], kind)
+        # A range joins like with like, and runs upward in value or in size, so
+        # neither "4% to 2 million" nor "2025-26" is one
+        if (low[1] == PERCENT) != (high[1] == PERCENT):
+            return None
+        a, b = (number * (own[0] if own else 1) for number, own, _ in (low, high))
+        if a > b and abs(a) > abs(b):
+            return None
+        return [low, high]
     return None
 
 
-def _spoiler(tokens, j):
-    """The last token of what stops the checker reading a ratio's M, which
-    ends at token j: a word or number joined to it ("1 in 4-year-olds"), or
-    a multiplier's ordinal or plural after it ("1 in 2 millionths"); or
-    None."""
-    joined = _joined_right(tokens, j)
-    if joined is not None:
-        return joined
-    if _kind(tokens, j + 1) == "space" and STEM.fullmatch(_word(tokens, j + 2) or ""):
-        return j + 2
-    return None
-
-
-def _seps(tokens, p):
-    """The spaces and dashes from token p on, as (text, next token)."""
-    text = ""
-    while _kind(tokens, p) == "space" or _is(tokens, p, DASHES):
-        text += tokens[p][1]
-        p += 1
-    return text, p
-
-
-def _sep_kind(sep):
-    """A ratio separator's kind: "space" for whitespace, "hyphen" for one
-    hyphen, or None for anything else ("", " - ", "–")."""
-    if sep == "-":
-        return "hyphen"
-    return "space" if sep.isspace() else None
-
-
-def _joint(tokens, p):
-    """The ratio joint at token p, as (its words, the separators inside it,
-    the next token), or None."""
-    w = _word(tokens, p)
-    if w == "in":
-        sep, q = _seps(tokens, p + 1)
-        if _word(tokens, q) == "every":
-            return "in every", [sep], q + 1
-        return "in", [], p + 1
-    if w == "out":
-        sep, q = _seps(tokens, p + 1)
-        if _word(tokens, q) == "of":
-            return "out of", [sep], q + 1
-    return None
-
-
-def _sign(tokens, i):
-    """Whether a minus comes right before token i, after a space, a bracket
-    or the start of the string, rather than after a word or a number (a name
-    or a range)."""
-    return _is(tokens, i - 1, DASHES) and _kind(tokens, i - 2) not in ("num", "word")
-
-
-def _money(tokens, i):
-    """Whether a currency sign comes before token i, perhaps across a minus
-    or a space ("£5", "-£5", "£ 5")."""
-    k = i - 1
-    if _is(tokens, k, DASHES):
-        k -= 1
-    if _kind(tokens, k) == "space":
-        k -= 1
-    return _is(tokens, k, CURRENCY)
-
-
-def _year(tokens, k, m):
-    """Whether the run from token k to token m prints a year: "2027",
-    "2026-27" or "2026-2027"."""
-    if not (tokens[k][0] == "num" and YEAR.fullmatch(tokens[k][1])):
+def _restates(first, second):
+    """Whether a ratio or worded fraction and a percentage, in either order, agree
+    to the nearest percentage point: "one third (33%)", "25% (1 in 4)"."""
+    if len(first) != 1 or len(second) != 1:
         return False
-    return m == k or (
-        m == k + 2
-        and _is(tokens, k + 1, DASHES)
-        and re.fullmatch(r"\d\d|(?:19|20)\d\d", tokens[m][1]) is not None
+    if first[0][2] == "share":
+        share, percent = first[0], second[0]
+    else:
+        share, percent = second[0], first[0]
+    return (
+        share[2] == "share"
+        and percent[1] == PERCENT
+        and abs(100 * share[0] - percent[0]) <= 0.5 + 1e-9
     )
 
 
-def _gives_ratio(normalization, n, m):
-    """Whether a normalization gives "n in m" as a ratio: the generic "N in M"
-    or the printed ratio, followed by an arrow to the share."""
-    printed = (
-        rf"(?<![\w.]){re.escape(n)}(?:\s+|\s*-\s*)in(?:\s+|\s*-\s*){re.escape(m)}"
-        r"(?!\w|\.\d)"
-    )
-    return bool(
-        GENERIC_RATIO.search(normalization)
-        or re.search(printed + ARROW.pattern, normalization, re.I)
-    )
-
-
-def _ratios(text, normalization=""):
-    """The ratios a string prints, as ((start, end), share), and the text of
-    each ratio it prints that the checker can't read."""
-    tokens = _tokens(text)
-    found, unread = [], []
-    i = 0
-    while i < len(tokens):
-        if not _starts_run(tokens, i):
-            i += 1
-            continue
-        j = _run_end(tokens, i)
-        sep1, p = _seps(tokens, j + 1)
-        joint = _joint(tokens, p)
-        sep2, k = _seps(tokens, joint[2]) if joint else ("", p)
-        if not (joint and k < len(tokens) and _starts_run(tokens, k)):
-            i = j + 1
-            continue
-        words, inner = joint[0], joint[1]
-        m = _run_end(tokens, k)
-        n_text = text[tokens[i][2] : tokens[j][2] + len(tokens[j][1])]
-        m_text = text[tokens[k][2] : tokens[m][2] + len(tokens[m][1])]
-        if _money(tokens, i) or _glued_left(tokens, i):
-            i = j + 1
-            continue  # "£5 in 10 years", "COVID-19 in 10"
-        m_sign = re.fullmatch(r"\s+[-−–]", sep2) is not None
-        if (
-            words == "in"
-            and not m_sign
-            and _year(tokens, k, m)
-            and not _gives_ratio(normalization, n_text, m_text)
-        ):
-            i = j + 1
-            continue  # "5 in 2027"
-        n_sign = _sign(tokens, i)
-        start = tokens[i - 1][2] if n_sign else tokens[i][2]
-        end = tokens[m][2] + len(tokens[m][1])
-        # one kind of separator throughout, so a hyphen is never a sign
-        kinds = {_sep_kind(s) for s in (sep1, *inner, sep2[:-1] if m_sign else sep2)}
-        a, b = _run_value(tokens, i, j), _run_value(tokens, k, m)
-        spoiler = _spoiler(tokens, m)
-        share = None
-        if (
-            len(kinds) == 1
-            and None not in kinds
-            and spoiler is None
-            and a is not None
-            and b is not None
-            and b[0] * b[1]
-        ):
-            share = a[0] * a[1] / (b[0] * b[1])
-        if share is not None and math.isfinite(share):
-            found.append(((start, end), -share if n_sign != m_sign else share))
-        else:
-            last = tokens[m if spoiler is None else spoiler]
-            unread.append(text[start : last[2] + len(last[1])])
-        i = m + 1
-    return found, unread
-
-
-def _cut(text, spans):
-    """The string with each span cut out."""
-    for start, end in sorted(spans, reverse=True):
-        text = f"{text[:start]} {text[end:]}"
-    return text
-
-
-def _words_alone(text):
-    """The numbers a string prints in words, outside names and hyphenated
-    words ("two-child"), each without its multiplier word, which value_raw's
-    scale supplies; and the text of each one the checker can't read."""
-    tokens = _tokens(text)
-    out, unread = [], []
-    i = 0
-    while i < len(tokens):
-        if tokens[i][0] == "num" or not _starts_run(tokens, i):
-            i += 1
-            continue
-        j = _run_end(tokens, i)
-        if not (_glued_left(tokens, i) or _joined_right(tokens, j) is not None):
-            v = _run_value(tokens, i, j)
-            if v is None:
-                unread.append(text[tokens[i][2] : tokens[j][2] + len(tokens[j][1])])
-            else:
-                out.append(float(v[0]))
-        i = j + 1
-    return out, unread
-
-
-def _read(text, normalization="", words=False):
-    """What a string prints, as (exact, fractions, spans, unread). Exact
-    numbers are its digits, signed, outside its ratios. Fractions are its
-    ratios' shares ("1 in 4" -> 0.25) and its worded fractions ("a third"),
-    which a stored share may round (delta review D1-1). Spans are its ratios'
-    places, and unread lists each ratio or number in words that the checker
-    can't read. With words, a string that prints none of these gives its
-    number words ("four", "over a million")."""
-    ratios, unread = _ratios(text, normalization)
-    fractions = [share for _, share in ratios]
-    spans = [span for span, _ in ratios]
-    text = _cut(text, spans)
-    for m in FRACTION.finditer(text):
-        top, bottom = (g.lower() if g else g for g in m.groups())
-        if top or bottom == "half":
-            fractions.append(NUMERATORS[top or "a"] / DENOMINATORS[bottom])
-    text = re.sub(r"([-−–])\s*[£$€]", r"\1", text)  # "-£1.7bn"
-    exact = []
-    for m in NUMBER.findall(text):
-        t = m.replace(",", "").replace("−", "-").replace("–", "-")
-        try:
-            exact.append(float(t))
-        except ValueError:
-            pass
-    if words and not (exact or fractions):
-        exact, more = _words_alone(text)
-        unread += more
-    return exact, fractions, spans, unread
+def _read(raw):
+    """What value_raw prints, as a list of _one_number's tuples, or None if
+    it matches no form the checker reads."""
+    text = " ".join(raw.lower().split())
+    body = WHOLE.fullmatch(text)["body"]
+    if body in ZERO:
+        return [(0.0, (1,), "words")]
+    both = re.fullmatch(r"(.+) \((.+)\)", body)
+    if not both:
+        return _printed(body)
+    first, second = _printed(both[1]), _printed(both[2])
+    return first + second if first and second and _restates(first, second) else None
 
 
 def _factors(normalization):
@@ -620,20 +429,6 @@ def _factors(normalization):
         if f and math.isfinite(f):
             out.append(1 / f if op in "/÷" else f)
     return out
-
-
-def _scales(raw, normalization):
-    """README rule contract, review A H-2(2): the scale comes from value_raw's
-    word (bn, m, k, %), failing that from the normalization's stated factor,
-    failing that from a fixed set."""
-    for rx, scale in WORD_SCALE:
-        if rx.search(raw):
-            # a percentage is stored as a share or in percent units
-            return {scale, 1.0} if scale == 0.01 else {scale}
-    factors = _factors(normalization)
-    if factors:
-        return set(factors)
-    return set(SCALES)
 
 
 def _number(v):
@@ -673,44 +468,84 @@ def _rounded(a, b):
 
 def value_problems(r):
     """review A H-2: `value` is finite and is value_raw's number at its scale,
-    with value_raw's sign unless the normalization documents a worded sign.
-    Delta review D1-1: a printed number matches exactly, and only the share
-    of a printed ratio or worded fraction, the fraction itself, may round. A
-    `unit_concept: percent` row stores that share in percent units, 100 times
-    the fraction. A non-categorical row that prints its number only in words
-    gives those words. Delta review R1: a ratio, or a number in words, that
-    the checker can't read is a problem."""
+    with value_raw's sign unless the normalization documents a worded sign. A
+    number's own word sets its scale. Failing that, the normalization's factor
+    does, failing that a fixed set for digits and 1 for number words. Delta
+    review D1-1: a printed number matches exactly, and only a fraction or a
+    ratio's share may round. A `unit_concept: percent` row stores a share in
+    percent units, 100 times the fraction. A categorical row prints a label
+    with no digits. Any other row matches a form the checker reads."""
     v = r["value"]
     if isinstance(v, bool) or not isinstance(v, (int, float)):
         return ["value is not a number"]
     if not _number(v):
         return ["value is not finite"]
     raw = r["value_raw"] if isinstance(r["value_raw"], str) else ""
-    norm = r.get("normalization") or ""
-    exact, fractions, spans, unread = _read(
-        raw, norm, words=r["value_kind"] != "categorical"
-    )
-    if unread:
-        return [f"value_raw {raw!r} prints {unread[0]!r}, which the checker can't read"]
-    if not (exact or fractions):
-        return []  # nothing printed to compare (a categorical label)
-    # a ratio's multiplier ("1 in 2 million") scales the ratio, not the string
-    rest = _cut(raw, spans)
-    printed = [n * s for n in exact for s in _scales(rest, norm)]
+    if r["value_kind"] == "categorical":
+        if re.search(r"\d", raw):
+            return [f"categorical value_raw {raw!r} prints a number"]
+        return []
+    numbers = _read(raw)
+    if numbers is None:
+        return [
+            f"the checker can't read value_raw {raw!r} as one number; "
+            "narrow it to the number the row stores"
+        ]
+    factors = _factors(r.get("normalization") or "")
     per = 100 if r.get("unit_concept") == "percent" else 1
-    shares = [per * f for f in fractions]
+    exact, near = [], []
+    for number, own, kind in numbers:
+        if kind == "share":
+            near.append(per * number)
+        elif kind == "rounded":
+            near += [number * s for s in own or (1,)]
+        else:
+            fallback = SCALES if kind == "digits" else (1,)
+            exact += [number * s for s in own or factors or fallback]
     if not (
-        any(_same(abs(v), abs(p)) for p in printed)
-        or any(_rounded(abs(v), abs(f)) for f in shares)
+        any(_same(abs(v), abs(p)) for p in exact)
+        or any(_rounded(abs(v), abs(f)) for f in near)
     ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
     if (
-        WORDED_SIGN.search(norm)
-        or any(_same(v, p) for p in printed)
-        or any(_rounded(v, f) for f in shares)
+        WORDED_SIGN.search(r.get("normalization") or "")
+        or any(_same(v, p) for p in exact)
+        or any(_rounded(v, f) for f in near)
     ):
         return []
     return [f"value {v!r} has the opposite sign to value_raw {raw!r}"]
+
+
+# README rule 4. A locator that names Figure 1.A or 1.B ("Figure 1.A", "Fig.
+# 1A", "Figures 1.A and 1.B") says where HM Treasury prints the number only
+# if its first reference, up to its first comma or semicolon, takes one of
+# the forms PRINTED reads and nothing more: a paragraph, table or box by its
+# number, or a data label. The checker reads any other first reference as a
+# bar reading, "Figure 1.A data label unavailable" included. A locator that
+# says we read the number off a bar, chart or graph marks a bar reading
+# wherever it says so, unless a negation comes just before ("not a bar
+# reading", "isn't read off the chart"). The checker looks for these phrases
+# with hyphens and dashes as spaces and with runs of spaces collapsed.
+FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
+_FIG = r"fig(?:ure)?s?\.?\s*1\.?\s*[ab](?:\s+and\s+1\.?\s*[ab])?"
+_ID = r"\d+(?:\.[0-9a-z]+)*"
+PRINTED = re.compile(
+    rf"(?:paragraph|para|table|box)(?:s|es)?\.?\s+{_ID}"
+    rf"(?:(?:\s+(?:and|to)\s+|\s*[-–]\s*){_ID})?(?:\s+and\s+{_FIG})?"
+    rf"|(?:{_FIG}\s*:?\s+)?data\s+labels?"
+    rf"(?:\s+(?:(?:for|on)\s+)?(?:decile|quintile)\s+\d+|\s+(?:for|on)\s+{_FIG})?",
+    re.I,
+)
+_VISUAL = r"(?:the |a )?(?:bars?|charts?|graphs?|figures?)"
+BAR_READING = re.compile(
+    r"\b(?:bar|chart|graph)s? read(?:ing)?s?\b"
+    rf"|\bread(?:s|ing|ings)? (?:off|from) {_VISUAL}\b"
+    rf"|\bestimated from {_VISUAL}\b",
+    re.I,
+)
+DENIED = re.compile(
+    r"(?:\b(?:no|not|never|without)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
+)
 
 
 def _keys(path):
@@ -988,18 +823,21 @@ def _row_problems(r, keys, earlier, metrics, units):
             or reads_a_bar(pub.get("locator") or "")
         )
     ):
-        out.append("no HMT Impact on households bar readings (README rule 4)")
+        out.append(
+            "no HMT Impact on households bar readings: start the locator with "
+            "the paragraph, table, box or data label where HM Treasury prints "
+            "the number (README rule 4)"
+        )
     return out
 
 
 def reads_a_bar(locator):
     """README rule 4: whether a locator places the number on a bar of Figure
     1.A or 1.B, rather than naming where HM Treasury prints it."""
-    if any(
-        not DENIED.search(locator[: m.start()]) for m in BAR_READING.finditer(locator)
-    ):
+    plain = " ".join(re.sub(r"[-−–—‐‑]", " ", locator).split())
+    if any(not DENIED.search(plain[: m.start()]) for m in BAR_READING.finditer(plain)):
         return True
-    if not FIGURE_1.search(locator):
+    if not FIGURE_1.search(plain):
         return False
     lead = " ".join(re.split(r"[,;]", locator, maxsplit=1)[0].split())
     return not PRINTED.fullmatch(lead)

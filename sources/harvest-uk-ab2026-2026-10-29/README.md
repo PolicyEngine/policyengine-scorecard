@@ -18,7 +18,7 @@ No code reads this harvest yet; we add the ingest in tranche 2 of #230. In its a
 
 We follow the AB2025 harvest README's rules 1–10 and its row contract, with the AB2026 exceptions and additions below:
 
-1. **We set `fiscal_event` to the slug `autumn_budget_2026`** on every row, whatever name its publisher uses.
+1. **We set `fiscal_event` to the slug `autumn_budget_2026`** on every row, whatever each producer calls the Budget.
 2. **We take measure keys from `data/uk/ab2026_measures.json`.**
    - We give `ab2026__…` keys to announced measures: every HM Treasury Table 6.1 line, Table 6.2 line 4, and the `ab2026__package_…` packages.
    - We give `ab2026_option__…` keys to options a producer costed, and we haven't registered any yet. On a row for an unregistered option, or for a package whose scope matches no registered package, we set `measure_key: null`. We put its proposed key in `conditions.proposed_measure_key`, state the key's scope in the family's NOTES, and add the key to the registry before the ingest.
@@ -61,24 +61,28 @@ We follow the AB2025 harvest README's rules 1–10 and its row contract, with th
 
 `pipeline/ab2026_harvest_contract.py` checks the AB2025 row contract with these additions:
 
-- The checker accepts `value_kind: categorical` for a rating, such as the OBR's Table 3.3 uncertainty ratings.
-- It requires a finite number in `value` that matches `value_raw`'s number within four units in the last place. It takes the scale from `value_raw`'s word (bn, m, k, %) outside any ratio, failing that from the factor in `normalization`, failing that from 1, 10³, 10⁶, 10⁹, 0.01 or 100.
-- It reads a ratio ("1 in 4", "1-in-4", "one in every ten", "3 out of 10") as a share, accepts a `value` within 0.1% of that share, and won't match `value` to either of the ratio's numbers alone. It reads "-1 in 4" and "1 in -4" as −0.25, and "1 in 2 million" as 5e-7. It reads no ratio after a currency sign ("£5 in 10 years") or inside a name ("COVID-19 in 10"). It reads a year after a bare "in" ("£5 in 2027") as a year, not a denominator, unless we write the ratio in `normalization` ("1 in 2000 -> 0.0005", or "N in M" in any case).
-- In a ratio, it reads digits with one multiplier or none ("2.5bn", "2 million"), and number words up to nine hundred and ninety-nine with one multiplier or none ("twenty-one", "a hundred and five", "two hundred thousand"). It reports a ratio as a problem if it finds:
-  - a number it can't read that way ("a thousand and one in a million");
-  - a word joined to the second number ("1 in 4-year-olds", "1 in 4th"), or a multiplier's plural or ordinal after it ("1 in 2 millionths");
-  - separators other than all spaces or all hyphens ("1 in-4", "1 in - 4").
-- It reads worded fractions as shares too: "half" alone, or a numerator ("a", "an", "another", or one to ten) and a denominator from "half" to "tenth" ("a third", "three-fifths"). On a `unit_concept: percent` row, it requires 100 times a ratio's or a fraction's share ("1 in 4" as 25).
-- Unless the row has `value_kind: categorical`, it also reads number words in a `value_raw` with no other number ("four", "over a million"), outside hyphenated words ("two-child"). It reports words it can't read that way ("twenty eleven") as a problem.
+- The checker accepts `value_kind: categorical` for a rating with no digits, such as the OBR's Table 3.3 uncertainty ratings.
+- It requires a finite number in `value`. Unless the row has `value_kind: categorical`, it reads `value_raw` only if the whole string, in any case and spacing, matches one of the forms listed here. It reports any other string as a problem, and we narrow `value_raw` to the number, which `quote` still contains: "£5" from "£5 in 10 years", or "1 in 4" from "2025, 1 in 4". It reads:
+  - digits, with a sign or currency sign and one multiplier or percentage word: "-£1.7bn", "+434m", "2 million", "4%", "0.1 percentage points";
+  - number words up to nine hundred and ninety-nine, with a sign and one multiplier or percentage word: "four", "-four", "a hundred and five", "two hundred thousand", "a million", "four per cent";
+  - a worded fraction: "half" alone, or a numerator ("a", "an", "another", or one to ten) and a denominator from "half" to "tenth" ("a third", "three-fifths");
+  - a worded fraction of a multiplier or percentage: "half a million", "a quarter of a percentage point";
+  - a whole number and a fraction, with a multiplier or percentage word if printed: "two and a half", "one and a half million";
+  - a ratio of digits or number words with one multiplier or none, joined all by spaces or all by hyphens: "1 in 4", "1-in-4", "3 out of 10", "one out of every five", "1 in 2 million";
+  - a range: two figures joined by a dash, with no spaces or a space on each side ("£4-5 million", "4 – 5%"), or two numbers joined by "to" ("four to five", "4bn to 5bn");
+  - "nil", "none", "nothing", "no change", "no impact" or "no overall impact", as zero.
+- It also reads a qualifier before the number ("about", "up to" and the others in `QUALIFIERS`), "a" before digits ("less than a 0.1 percentage point"), and "a year" or "of GDP" after the number. It reads a ratio or worded fraction with its percentage in brackets, in either order, if the two agree to the nearest percentage point: "one third (33%)", "25% (1 in 4)". It matches `value` to either number there or in a range. It reports a range that joins a percentage to a multiplier ("4% to 2 million"), or whose first number exceeds its second in both value and size ("2025-26", "5 to 4").
+- It takes a number's scale from its own word (bn, million, %), and gives a range's first number the second's word. For digits with no word, it takes the factor in `normalization`, failing that 1, 10³, 10⁶, 10⁹, 0.01 or 100, and for number words with no word, that factor or 1. It reads a percentage as a share or in percent units, and requires `value` to match within four units in the last place.
+- It reads a ratio or a worded fraction on its own as a share, and accepts a `value` within 0.1% of that share, or of 100 times it on a `unit_concept: percent` row ("1 in 4" as 25). It won't match `value` to either of a ratio's numbers alone, and it reads "-1 in 4" and "1 in -4" as −0.25. It also allows 0.1% on a whole number with a fraction, and on a fraction of a multiplier or percentage.
 - It requires `value` to share `value_raw`'s sign unless we note in `normalization` that we took the sign from the wording.
-- It treats an HM Treasury Impact on households row as a bar reading (rule 4) if the row has `value_kind: approx_chart_reading`. It does the same if we call the number a bar, chart or graph reading in the locator, or say there that we read it off one. It ignores such a phrase right after "no", "not", "never", "without" or "n't" ("not a bar reading").
-- It also treats the row as a bar reading if we name Figure 1.A or 1.B in the locator, unless we say in its first reference where HM Treasury prints the number. It finds the figure in any of the spellings "Figure 1.A", "Fig. 1A" and "Figures 1.A and 1.B", and reads the first reference up to the first comma or semicolon. There it accepts only a paragraph, table or box by number ("paragraph 1.7", "Tables 2.B and 2.C"), or a data label ("Figure 1.A data label", "data label for decile 3"). It treats any other wording as a bar reading, so it rejects "Figure 1.A data label unavailable" and "Figure 1.A, decile 3 bar; see paragraph 1.7".
+- It treats an HM Treasury Impact on households row as a bar reading (rule 4) if the row has `value_kind: approx_chart_reading`. It does the same if we call the number a bar, chart or graph reading in the locator, or say there that we read it off or estimated it from one, in any spacing and with or without hyphens. It ignores such a phrase right after "no", "not", "never", "without" or "n't" ("not a bar reading").
+- It also treats the row as a bar reading if we name Figure 1.A or 1.B in the locator ("Fig. 1A", "Figures 1.A and 1.B"), unless we say in its first reference where HM Treasury prints the number. It reads that reference up to the first comma or semicolon. There we name a paragraph, table or box by number ("paragraph 1.7", "paragraphs 1.7–1.8", "Tables 2.B and 2.C", "Table 2.C and Figure 1.A"), or a data label ("Figure 1.A data label", "data label for decile 3"). It treats any other wording as a bar reading, including "Figure 1.A data label unavailable" and "Figure 1.A, decile 3 bar; see paragraph 1.7".
 - It reports a malformed row as a problem, never as an exception: a row that isn't an object, lacks a field, or has a field of the wrong type. It requires:
   - a string in `source`, `source_model`, `value_raw`, `normalization`, `quote`, `status`, `value_kind`, `time_basis`, `attribution`, `benchmark_class` and `parse_confidence`;
   - a string or null in the other text fields, such as `measure_key`, `reform_hint` and `source_table`, and in each `publication` field;
   - an integer in `period`, a number in `value`, and an object in `conditions` and `publication`, with a string in each condition.
 
-  It reports a line it can't parse as JSON, or a file it can't read, the same way. When it compares rows, it skips any value it can't compare, such as an integer too large for a float.
+  It also reports a line it can't parse as JSON, or a file it can't read, as a problem. When it compares rows, it skips any value it can't compare, such as an integer too large for a float.
 - It treats a row with `conditions.component` as a part of one measure (rule 9), and requires `row_type: measure_component`, or the OBR workbook's `measure_total` marker, and a non-blank component.
 - It allows at most two non-restated, non-categorical rows to share the AB2025 ingest's claim identity, and requires two that do to agree within 0.5%.
 - It requires a registered metric in `metric`, never in `proposed_metric`.
@@ -107,7 +111,7 @@ We pin 12 families and 5,952 rows (450 `restated`) in `COUNTS.json`.
 | `uk_tpa` | 305 | 10 | `tax_policy_associates` |
 | `uk_trussell_wpi` | 1 | 1 | `trussell_wpi` |
 
-Each family's `stage.py` writes its claims file, and we keep it on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the five reviews. We record each family's review changes in its NOTES.md, and keep only its three files here, as in AB2025.
+Each family's `stage.py` writes its claims file, and we keep it on branch `uk/ab2026-harvest-staging` under `harvest-staging/ab2026/lanes/<lane>/<family>/`, with the lane briefs and the review records. We record each family's review changes in its NOTES.md, and keep only its three files here, as in AB2025.
 
 We leave the **families with no rows** out, since AB2025 has no empty family, and keep their working files on the staging branch:
 
