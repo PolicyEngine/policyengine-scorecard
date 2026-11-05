@@ -336,6 +336,53 @@ def published(row: dict) -> bool:
 # The HM Treasury families whose rows can repeat a Table 6.1 or 6.2 cell.
 _TWIN_FAMILIES = frozenset({"uk_hmt_costings", "uk_hmt_redbook"})
 
+# Red book rows that repeat a Table 6.1 cell with another sign, a rounding or
+# another period, so the exact match in _twin_key can't find them. Each entry
+# maps (family, row) to the uk_hmt_tables row it repeats, with the reading
+# that decides it. The ingest raises if either row's key no longer matches.
+_HEP = (
+    "The red book prints the Household Energy Payment's 2026-27 cost as "
+    "£2.6 billion, a cost printed positive, and Table 6.1 line 1 prints it "
+    "as -2,625 (£ million); £2.6 billion rounds -2,625 once the sign is "
+    "normalised."
+)
+_SPR = (
+    "The red book prints Small Producer Relief's support as £10 million a "
+    "year, a cost printed positive, and Table 6.1 line 19 prints -10 (£ "
+    "million) for 2027-28, the year staged on both rows."
+)
+_BOOKS = (
+    "The red book prints up to £5 million a year for books for young "
+    "children, a cost printed positive, and Table 6.1 line 9 prints -5 (£ "
+    "million) for 2027-28, the year staged on both rows. The red book dates "
+    "the three years from 2027-28 and Table 6.1 from 2026-27; the 2027-28 "
+    "amount agrees."
+)
+_UKRAINE = (
+    "The red book prints £500 million of military support for Ukraine's air "
+    'defences "this winter", a cost printed positive, and Table 6.1 line 43 '
+    "prints -500 (£ million) in 2026-27. The red book names no fiscal year: "
+    "the row stages the 2026 announcement year, and the figure is Table 6.1's "
+    "2026-27 cell."
+)
+REVIEWED_TWINS: dict[tuple[str, int], tuple[int, str]] = {
+    ("uk_hmt_redbook", 6): (0, _HEP),
+    ("uk_hmt_redbook", 179): (0, _HEP),
+    ("uk_hmt_redbook", 11): (109, _SPR),
+    ("uk_hmt_redbook", 236): (109, _SPR),
+    ("uk_hmt_redbook", 220): (49, _BOOKS),
+    ("uk_hmt_redbook", 270): (49, _BOOKS),
+    ("uk_hmt_redbook", 263): (252, _UKRAINE),
+    ("uk_hmt_redbook", 271): (252, _UKRAINE),
+    ("uk_hmt_redbook", 272): (252, _UKRAINE),
+}
+
+
+def _is_component(row: dict) -> bool:
+    """A part of a measure (rule 9), which is never a twin of the whole."""
+    c = row.get("conditions") or {}
+    return bool(c.get("component")) or c.get("row_type") == "measure_component"
+
 
 def _registry() -> dict[str, dict]:
     reg = json.loads(REGISTRY_PATH.read_text())
@@ -511,12 +558,23 @@ def _twin_key(row: dict, name: str) -> tuple | None:
     """The identity of one HM Treasury figure across its documents: key,
     staged metric, unit, year and value. A part of a measure (rule 9) is
     never a twin of the whole."""
-    c = row.get("conditions") or {}
-    if row["source"] != "hm_treasury" or c.get("component"):
-        return None
-    if c.get("row_type") in ("measure_component",):
+    if row["source"] != "hm_treasury" or _is_component(row):
         return None
     return (row.get("measure_key"), name, unit_label(row), row["period"], row["value"])
+
+
+def _precision(s: ExternalScore) -> tuple:
+    """merge_republications keeps the higher of two printings: more printed
+    digits first, then the printing's provenance, so row order never decides
+    which printing a claim cites."""
+    pub = s.publication
+    return (
+        len(s.conditions.get("value_verbatim", "")),
+        json.dumps(
+            [pub.get("table"), pub.get("locator"), s.source_column, pub.get("quote")],
+            default=str,
+        ),
+    )
 
 
 def _drop(acct: dict, fam: dict, reason_key: str) -> None:
@@ -541,6 +599,15 @@ def _check_row_calls(family: str, rows: list[dict]) -> None:
     for (fam, i), (raw, _) in ROW_DROPS.items():
         if fam == family and rows[i]["value_raw"] != raw:
             raise ValueError(f"ROW_DROPS {fam} row {i} no longer matches")
+    reviewed = {i: t for (fam, i), (t, _) in REVIEWED_TWINS.items() if fam == family}
+    if reviewed:
+        table = _load("uk_hmt_tables")
+        for i, t in reviewed.items():
+            r = rows[i]
+            if _is_component(r) or _is_component(table[t]):
+                raise ValueError(f"REVIEWED_TWINS {family} row {i} is a component")
+            if r.get("measure_key") != table[t].get("measure_key"):
+                raise ValueError(f"REVIEWED_TWINS {family} row {i} no longer matches")
 
 
 def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
@@ -553,6 +620,7 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
     scores: list[ExternalScore] = []
     acct = {"read": 0, "ingested": 0, "dropped": 0, "by_family": {}, "drops": {}}
     canonical: dict[tuple, ExternalScore] = {}
+    table_claims: dict[int, ExternalScore] = {}
     for family, (lane, sources) in FAMILIES.items():
         if families is None:
             loaded = _load(family)
@@ -597,8 +665,12 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
             if (family, i) in ROW_METRICS:
                 metric = ROW_METRICS[(family, i)][2]
             twin = _twin_key(row, name)
-            if family in _TWIN_FAMILIES and twin in canonical:
+            kept = None
+            if family in _TWIN_FAMILIES and (family, i) in REVIEWED_TWINS:
+                kept = table_claims.get(REVIEWED_TWINS[(family, i)][0])
+            elif family in _TWIN_FAMILIES and twin in canonical:
                 kept = canonical[twin]
+            if kept is not None:
                 kept.publication.setdefault("also_printed_in", []).append(
                     {
                         "family": family,
@@ -610,8 +682,10 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
                 _drop(acct, fam, "hmt_figure_staged_twice")
                 continue
             score = _score(row, family, source, metric)
-            if family == "uk_hmt_tables" and twin is not None:
-                canonical[twin] = score
+            if family == "uk_hmt_tables":
+                table_claims[i] = score
+                if twin is not None:
+                    canonical[twin] = score
             scores.append(score)
             fam["ingested"] += 1
             acct["ingested"] += 1
@@ -623,9 +697,10 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
         kept = merge_republications(
             mine,
             source,
-            precision=lambda s: len(s.conditions.get("value_verbatim", "")),
+            precision=_precision,
             tolerance=lambda s: max(abs(s.value) * 0.005, 1e-9),
         )
+        kept_by_id = {k.claim_id(): k for k in kept}
         kept_ids = {id(k) for k in kept}
         for s in mine:
             if id(s) not in kept_ids:
@@ -633,7 +708,17 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
                 _drop(acct, fam, "republished_twin_merged")
                 acct["ingested"] -= 1
                 fam["ingested"] -= 1
+                # the merged-away claim's twin printings stay with its figure
+                twins = s.publication.get("also_printed_in")
+                if twins:
+                    keep = kept_by_id[s.claim_id()].publication
+                    keep.setdefault("also_printed_in", []).extend(twins)
         merged.extend(kept)
+    for s in merged:
+        if "also_printed_in" in s.publication:
+            s.publication["also_printed_in"].sort(
+                key=lambda t: json.dumps(t, sort_keys=True)
+            )
     acct["dropped"] = acct["read"] - acct["ingested"]
     for fam in acct["by_family"].values():
         if fam["read"] != fam["ingested"] + fam["dropped"]:  # pragma: no cover
