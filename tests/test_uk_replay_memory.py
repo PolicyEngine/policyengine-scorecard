@@ -541,7 +541,7 @@ if __name__ == "__main__":
     print(f"[pid {os.getpid()}] private household income 12345", flush=True)
     print(f"[pid {os.getpid()}] starting household income 12345", flush=True)
     print(
-        f"[pid {os.getpid()} year 2029] certified baseline extracted once in 1.0s 3141592653589793",
+        f"[pid {os.getpid()} year 2029] certified baseline extracted once in 1.0s PRIVATE_BASELINE_SUFFIX",
         file=sys.stderr,
         flush=True,
     )
@@ -560,7 +560,7 @@ def test_measured_run_samples_the_tree_and_keeps_only_aggregate_lines(tmp_path, 
         "private row",
         "private traceback",
         "household",
-        "3141592653589793",
+        "PRIVATE_BASELINE_SUFFIX",
     ):
         assert private not in printed.out + printed.err
         assert private not in json.dumps(result)
