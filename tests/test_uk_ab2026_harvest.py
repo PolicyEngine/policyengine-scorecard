@@ -308,7 +308,8 @@ def test_a_totals_lines_by_head_keep_revenue_change():
     Government decisions. Those rows keep revenue_change; every other row on
     that key gives the total, its direct or indirect effects or a part of
     them, and takes the borrowing metric or, for the current budget deficit,
-    proposes fiscal_balance_change."""
+    proposes fiscal_balance_change. Table 6.3's policy effects on financial
+    transactions propose public_sector_net_debt_change."""
     on_key = [
         r for fam in FAMILIES for r in rows(fam) if _key(r) == GOVERNMENT_DECISIONS
     ]
@@ -325,7 +326,8 @@ def test_a_totals_lines_by_head_keep_revenue_change():
         if r.get("metric") != "revenue_change":
             assert (
                 r.get("metric") == BORROWING
-                or r.get("proposed_metric") == "fiscal_balance_change"
+                or r.get("proposed_metric")
+                in ("fiscal_balance_change", "public_sector_net_debt_change")
             ), _label(r)
 
 

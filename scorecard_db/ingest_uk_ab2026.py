@@ -1,6 +1,6 @@
 """Ingest every Autumn Budget 2026 score (#230).
 
-We stage 5,952 rows in ``sources/harvest-uk-ab2026-2026-10-29/`` from 12
+We stage 5,959 rows in ``sources/harvest-uk-ab2026-2026-10-29/`` from 12
 families: HM Treasury's tables, costings and red book, the OBR's
 October 2026 EFO and policy workbook, Resolution Foundation, IFS, Tax Policy
 Associates, CenTax, IPPR, the devolved governments, Trussell and four smaller
@@ -183,8 +183,9 @@ DROPS_AB2026: dict[str, str] = {
     "restated_obr_forecast": (
         "Resolution Foundation computes the cost of continuing the fuel duty "
         "freeze from two OBR forecasts, the constant-duty-rate receipts less "
-        "the central receipts. We keep only the OBR's own figure, which it "
-        "prints for 2029-30 as an effect on borrowing."
+        "the central receipts. We keep the OBR's own figures: its effect on "
+        "borrowing in 2029-30 (paragraph 3.43) and its average cut in receipts "
+        "from 2027-28 to 2031-32 (paragraph 4.30)."
     ),
     "income_path_not_a_policy_effect": (
         "Resolution Foundation gives the change in real household incomes, per "

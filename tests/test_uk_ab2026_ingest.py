@@ -1,6 +1,6 @@
 """The Autumn Budget 2026 ingest (#230, tranche 2).
 
-Every one of the 5,952 staged rows becomes a claim or a tallied drop. These
+Every one of the 5,959 staged rows becomes a claim or a tallied drop. These
 tests pin the ingest's invariants:
 
 1. read = ingested + dropped, per family and in total, against COUNTS.json
@@ -87,7 +87,7 @@ def _rows(scores):
 def test_every_staged_row_is_ingested_or_tallied(staged):
     scores, acct = staged
     exp = I.expected()
-    assert acct["read"] == exp["read"] == COUNTS["_totals"]["rows"] == 5952
+    assert acct["read"] == exp["read"] == COUNTS["_totals"]["rows"] == 5959
     assert acct["ingested"] == len(scores) == exp["ingested"]
     assert acct["ingested"] + acct["dropped"] == acct["read"]
     assert set(acct["by_family"]) == {k for k in COUNTS if not k.startswith("_")}
@@ -103,6 +103,33 @@ def test_every_drop_states_a_reason(staged):
         assert entry["rows"] > 0, key
         assert len(entry["reason"]) > 80, key
     assert sum(e["rows"] for e in acct["drops"].values()) == acct["dropped"]
+
+
+def test_the_restated_fuel_freeze_reason_names_both_obr_figures():
+    assert I.DROPS_AB2026["restated_obr_forecast"] == (
+        "Resolution Foundation computes the cost of continuing the fuel duty "
+        "freeze from two OBR forecasts, the constant-duty-rate receipts less "
+        "the central receipts. We keep the OBR's own figures: its effect on "
+        "borrowing in 2029-30 (paragraph 3.43) and its average cut in receipts "
+        "from 2027-28 to 2031-32 (paragraph 4.30)."
+    )
+
+
+def test_the_new_obr_rows_become_one_claim_and_six_macro_drops():
+    numbered = {"uk_obr_tables": list(enumerate(RAW["uk_obr_tables"][2800:], 2800))}
+    scores, acct = I.stage(numbered)
+    assert (acct["read"], acct["ingested"], acct["dropped"]) == (7, 1, 6)
+    assert {key: value["rows"] for key, value in acct["drops"].items()} == {
+        "macro_fiscal_or_out_of_scope": 6
+    }
+    claim = scores[0]
+    assert claim.metric == Metric.REVENUE_CHANGE
+    assert claim.conditions["measure_key"] == "ab2026_option__fuel_duty_continued_freeze"
+    assert claim.value == 4_000_000_000
+    assert claim.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
+    old, old_acct = I.stage({"uk_obr_tables": [(2688, RAW["uk_obr_tables"][2688])]})
+    assert old == []
+    assert set(old_acct["drops"]) == set(acct["drops"])
 
 
 def test_restated_rows_are_tallied_not_carried(staged):
