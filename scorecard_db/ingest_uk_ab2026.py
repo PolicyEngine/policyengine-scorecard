@@ -286,7 +286,20 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
 }
 
 DISPOSITIONS: dict[str, Metric] = {**AB25.DISPOSITIONS, **DISPOSITIONS_AB2026}
-DROPS: dict[str, str] = {**AB25.DROPS, **DROPS_AB2026}
+# AB2025's restatement reason says the originator's rows sit in the same
+# harvest. In AB2026 some don't: the costings restate HMRC's tax gap
+# (rows 233 and 234), and the harvest stages no HMRC family.
+_RESTATED_AB2026 = (
+    "The producer repeats another body's figure (the OBR's, HM Treasury's, "
+    "HMRC's or another producer's), and we credit a figure only to the body "
+    "that estimated it, so the repetition is tallied, not scored. Where that "
+    "body's own figure is in this harvest, we score it under that body."
+)
+DROPS: dict[str, str] = {
+    **AB25.DROPS,
+    "restated_official_figure": _RESTATED_AB2026,
+    **DROPS_AB2026,
+}
 _DROP_BY_NAME: dict[str, str] = {**AB25._DROP_BY_NAME, **DROP_BY_NAME_AB2026}
 assert not (set(DISPOSITIONS_AB2026) & set(AB25._DROP_BY_NAME))
 assert not (set(DROP_BY_NAME_AB2026) & set(AB25.DISPOSITIONS))
