@@ -305,6 +305,85 @@ def test_every_reason_is_written_out():
     assert set(S.REASONS) == set(TALLY["reasons"])
 
 
+REASONS = {
+    "devolved_share_not_modelled": (
+        "HM Treasury and the OBR count the UK cost, including the funding the "
+        "government gives Scotland, Wales and Northern Ireland, and we estimate "
+        "the payment to households in England only."
+    ),
+    "england_only_average": (
+        "IFS averages the payment across households in England, and we publish an "
+        "average across all UK households, with no figure for England alone."
+    ),
+    "fuel_duty_base": (
+        "HM Treasury scores fuel duty on every litre of taxable fuel in the UK, "
+        "and we estimate the duty and VAT on the fuel households buy."
+    ),
+    "zero_both_sides": (
+        "We and the producer both estimate no change in this year, so we leave it "
+        "out of the comparison."
+    ),
+    "measure_ended": (
+        "The government ends the allowance on 5 April 2030, so we estimate no "
+        "change in this year, while HM Treasury and the OBR each count a change in "
+        "receipts."
+    ),
+    "exchequer_component": (
+        "The OBR estimates one part of the measure's effect on the public finances, "
+        "such as a tax head, spending line or block grant adjustment, and we "
+        "estimate the whole effect."
+    ),
+    "cumulative_real_terms": (
+        "Tax Policy Associates sums 2026-27 to 2031-32 in 2026-27 prices, and we "
+        "estimate each year in cash."
+    ),
+    "vigintile_ahc_breakdown": (
+        "Resolution Foundation groups households into twentieths of income after "
+        "housing costs, and we group them into tenths of income before housing "
+        "costs."
+    ),
+    "household_count": (
+        "HM Treasury counts households receiving support, and we publish no count "
+        "of households."
+    ),
+    "share_of_households": (
+        "The producer reports the share of households or properties eligible for, "
+        "receiving or missing the payment; we estimate the share of people whose "
+        "household income changes."
+    ),
+    "typical_bill": (
+        "The producer prices one typical household's energy bill, and we estimate "
+        "changes in household income, not bills."
+    ),
+    "worked_example": (
+        "The producer works through one example household's tax or income, and we "
+        "compare population totals here."
+    ),
+    "motorists_count": (
+        "HM Treasury counts motorists and businesses, and we count no drivers."
+    ),
+    "benefit_recipients_count": (
+        "HM Treasury counts carers who gain Carer's Allowance, and we count people "
+        "whose own taxes or earnings change by at least £1 in households with an "
+        "income decile."
+    ),
+    "taken_out_of_tax_count": (
+        "HM Treasury counts pensioners who stop paying income tax, and we count "
+        "people whose own income tax falls by at least £1 in households with an "
+        "income decile."
+    ),
+    "no_fiscal_year": (
+        "HM Treasury counts people by the end of the Parliament, rather than in one "
+        "fiscal year."
+    ),
+}
+
+
+def test_each_reason_reads_as_we_wrote_it():
+    """We pin each reason's words, not only the producers it names."""
+    assert S.REASONS == REASONS
+
+
 PRODUCER_NAMES = {
     "hm_treasury": "HM Treasury",
     "ifs": "IFS",
@@ -413,12 +492,22 @@ def test_an_exchequer_claim_of_another_shape_raises(field, value):
         S.classify(claim)
 
 
-@pytest.mark.parametrize("convention", [None, "", "the tables print no legend"])
-def test_an_exchequer_claim_without_a_readable_sign_raises(convention):
+@pytest.mark.parametrize(
+    "convention, reading",
+    [
+        (None, "unknown"),
+        ("", "unknown"),
+        ("the tables print no legend", "unknown"),
+        (signs.MAGNITUDE_CONVENTION, "magnitude"),
+    ],
+)
+def test_an_exchequer_claim_without_a_readable_sign_raises(convention, reading):
+    """The stager raises on a convention it can't read and on one that leaves
+    the direction to a label."""
     for row in EXCHEQUER_ROWS():
         claim = copy.deepcopy(BY_ID[row["external_claim_match"]["claim_id"]])
         claim["conditions"]["sign_convention"] = convention
-        with pytest.raises(S.Unmatched, match="sign unknown"):
+        with pytest.raises(S.Unmatched, match=f"sign {reading} "):
             S.classify(claim)
 
 
