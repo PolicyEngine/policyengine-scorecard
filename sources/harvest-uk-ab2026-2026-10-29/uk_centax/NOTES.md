@@ -103,7 +103,11 @@ We propose these, with CenTax's own words:
 - **"Around four times as many parents would be bunching"** (p. 25): CenTax gives this for its halved-unresponsiveness sensitivity, as a scenario ratio, not an estimate of an option's effect. We added this entry on 3 November, after review finding 6.
 
 - We staged each duplicate within one primary once:
-  - in "Taxes at the top": 62%, 88%, £19.7bn, £2.1bn, 98%, 1,100, 90% and £640m (Key findings, repeated on pp. 17-27); 37%, 34% and 30% (p. 9); 17%→12%, 33%→36% and 37%→33% (p. 13); 40.5%, 60%, 43.9%, 61.5%, 47%, 20% and 23% (Conclusion);
+  - in "Taxes at the top":
+    - Key findings, repeated on pp. 17-27: 62%, 88%, £19.7bn, £2.1bn, 98%, 1,100, 90% and £640m;
+    - p. 9: 37%, 34% and 30%;
+    - p. 13: 17%→12%, 33%→36% and 37%→33%;
+    - Conclusion: 40.5%, 60%, 43.9%, 61.5%, 47%, 20% and 23%;
   - in the Unicorn Relief PDF: CenTax's "almost £20 billion" restates the £19.7bn in the same footnote.
 - Under README rule 8 we left out these figures, which set an option's or a measure's design and estimate nothing:
   - the reaction page's "marginal tax rate of 33.3%", the Pension Tax Allowance's £1-for-£3 withdrawal rate restated as a percentage, which we keep in the 53% row's conditions;
