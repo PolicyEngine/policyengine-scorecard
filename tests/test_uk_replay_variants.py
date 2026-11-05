@@ -34,6 +34,8 @@ COMMITTED = (
     "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
     "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1",
     "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1",
+    "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+    "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
 )
 DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 
@@ -586,6 +588,7 @@ def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
     manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
     assert manifest["variant_id"] == CURRENT
     assert manifest["variant_identity_sha256"] == record()["identity_sha256"]
+    assert manifest["statement_version"] == "authored_engine_label.v2"
     assert manifest["supported_years"] == [2024]
     assert manifest["unsupported_years"] == [
         {"year": 2023, "reason": "before_data_year"}
