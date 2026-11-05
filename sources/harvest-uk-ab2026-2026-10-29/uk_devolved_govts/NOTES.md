@@ -37,7 +37,7 @@ By `measure_key`: **`ab2026__package_barnett_consequentials` 12, null 7**. We ke
 
 ## Package key
 
-We give `ab2026__package_barnett_consequentials` (12 rows here) the scope we give it in `uk_hmt_redbook`. It covers the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30. It excludes the technical reduction from lower employer pension contributions (red book paragraph 4.150). The key crosses Table 6.1's England spending lines, and HM Treasury prints no line of its own for it. HM Treasury prints the £1.3bn three-government figure (`uk_hmt_redbook` row 252), and we take it as the key's total and each government's figure as a component. So we mark every Welsh row here `row_type: measure_component`. The £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals take `component: "Welsh Government"`. The Resource and Capital cells take `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh Government, like HM Treasury, leaves employer-pension-contribution savings out of its figures. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
+We give `ab2026__package_barnett_consequentials` (12 rows here) the scope we give it in `uk_hmt_redbook`. It covers the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30. It excludes the technical reduction from lower employer pension contributions (red book paragraph 4.150). We scope the key across Table 6.1's England spending lines, and HM Treasury prints no line of its own for it. HM Treasury prints the £1.3bn three-government figure (`uk_hmt_redbook` row 252), and we take it as the key's total and each government's figure as a component. So we mark every Welsh row here `row_type: measure_component`. The £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals take `component: "Welsh Government"`. The Resource and Capital cells take `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh Government, like HM Treasury, leaves employer-pension-contribution savings out of its figures. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
 
 ## Welsh Government
 
@@ -78,7 +78,7 @@ The Welsh Government publishes these figures as its own settlement accounting an
   `period` to the end year and keep the printed year in `fy`. The Welsh
   Government gives the £448m headline as cumulative over the four displayed
   years. We record it at `period: 2030` and `fy: 2029-30` (the horizon's
-  final year) and state that horizon explicitly; the £448m doesn't measure
+  final year) and state that horizon; the £448m doesn't measure
   2029-30 alone.
 - Given the publication date, we read the resource real-terms reduction
   “next financial year” as 2027-28. The Welsh Government dates the capital
