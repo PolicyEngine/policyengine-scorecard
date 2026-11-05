@@ -753,3 +753,39 @@ def test_a_reviewed_twin_that_is_a_component_raises(monkeypatch):
     rows[6]["conditions"]["row_type"] = "measure_component"
     with pytest.raises(ValueError, match="REVIEWED_TWINS"):
         I._check_row_calls("uk_hmt_redbook", rows)
+
+
+def test_the_stage_checks_its_row_calls(monkeypatch):
+    monkeypatch.setitem(
+        I.ROW_DROPS, ("uk_obr_tables", 0), ("not this value", "no_registered_metric")
+    )
+    with pytest.raises(ValueError, match="no longer matches"):
+        I.stage()
+
+
+def test_a_recosting_takes_no_registry_verdict():
+    key = next(k for k, m in I.REGISTRY.items() if m["computability"] == "partial")
+    cond = {"recosting_of": "autumn_budget_2025"}
+    I._verdict_conditions({"measure_key": key}, cond, Metric.REVENUE_CHANGE)
+    assert cond["measure_key"] == key
+    assert "pe_expressibility" not in cond
+
+
+def test_a_merged_printing_keeps_its_twins():
+    """Two printings of one Table 6.1 claim merge; a costings repetition
+    attached to the printing the merge drops moves to the one it keeps."""
+    i, row = T61[0]
+    a, b = copy.deepcopy(row), copy.deepcopy(row)
+    a["publication"]["locator"] = "z"  # sorts above b, so the merge keeps a
+    b["publication"]["locator"] = "a"
+    twin = copy.deepcopy(row)
+    twin["conditions"]["costing_leg_heading"] = "Exchequer impact (£m)"
+    twin["publication"]["locator"] = "costings"
+    scores, acct = I.stage(
+        {"uk_hmt_tables": [(i, a), (i + 10_000, b)], "uk_hmt_costings": [(1, twin)]}
+    )
+    assert acct["drops"]["republished_twin_merged"]["rows"] == 1
+    assert acct["drops"]["hmt_figure_staged_twice"]["rows"] == 1
+    [kept] = scores
+    assert kept.publication["locator"] == "z"
+    assert [t["locator"] for t in kept.publication["also_printed_in"]] == ["costings"]
