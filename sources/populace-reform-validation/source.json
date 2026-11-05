@@ -5,7 +5,7 @@
   "url": "https://github.com/PolicyEngine/populace",
   "data_url": "vendored from calibration-diagnostics frontend/lib/populace/reform-overrides/ (the retired External checks tab)",
   "fetched": "2026-08-03",
-  "fetch_notes": "Each raw/<release_id>.json is the reform_validation.json artifact for one certified populace-us release, produced by populace's reform_validation_payload at the release's exact policyengine-us/-core pins (provenance in each file's _backfill_note). New releases arrive from the Modal-backed backfill (cal-diag #112 machinery, being re-homed here).",
+  "fetch_notes": "Each raw/<release_id>.json is the reform_validation.json artifact for one certified populace-us release, produced by populace's reform_validation_payload at the release's exact policyengine-us/-core pins (provenance in each file's _backfill_note, and a structured engine block on artifacts produced here). New releases arrive from the Modal-backed backfill re-homed from cal-diag #112 into tools/reform_validation/ (.github/workflows/reform-validation-backfill.yml): the sim runs on Modal, register_release.py lands the artifact, and scorecard_db.ingest_reform_validation rebuilds the DB slice.",
   "model": {
     "name": "external scorekeepers + admin actuals (mixed)",
     "open_source": true,
