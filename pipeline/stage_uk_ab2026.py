@@ -223,8 +223,9 @@ UNMODELLED_LINES = {
 }
 # We annotate none of these lines, since gov_balance counts them itself.
 RECEIPTS_HEADS = ("Receipts:", "Tax head (receipts)")
-# The OBR prints this once, as £0.1 billion a year on average from 2028-29
-# (paragraph 3.17), and we stage the claim on 2031-32.
+# In paragraph 3.17 the OBR prints this once, as £0.1 billion a year, beside a
+# yield of £0.4 billion a year on average from 2028-29, and we stage the claim on
+# 2031-32.
 BEHAVIOURAL = "behavioural erosion of yield"
 # The conventions our cost-or-gain and "cutting the yield" wordings assume.
 OBR_LOSS_NEGATIVE = (
@@ -599,8 +600,8 @@ def behavioural_annotation(key: str, fy: str) -> list[str]:
         raise Unmatched(f"{key}: {len(found)} OBR claims for {BEHAVIOURAL!r}")
     return [
         "The OBR expects more landlords to incorporate to save tax and more to "
-        f"underpay, cutting the yield by £{abs(found[0]) / 1e9:.1f} billion a year "
-        "on average from 2028-29, and we hold incomes fixed."
+        f"underpay, cutting the yield by £{abs(found[0]) / 1e9:.1f} billion a year, "
+        "and we hold incomes fixed."
     ]
 
 

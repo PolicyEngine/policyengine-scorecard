@@ -29,9 +29,13 @@ written reason. These tests pin its invariants:
 11. the expected file pins each paired claim's value, file, column and row, and
     the year from the claim matches the year from the cell;
 12. we reject claims with a different geography or unit, claims assigned to the
-    OBR costings lane, and a named OBR line under another sign convention.
+    OBR costings lane, exchequer claims without a readable sign, and a named OBR
+    line under another sign convention or none;
+13. we name in each reason the producers whose claims it covers, or write "the
+    producer" when it covers several, and we state the dashboard's £1 minimum and
+    income decile filter in the two count reasons.
 
-Hypothesis drives 5 and 6.
+Hypothesis drives 5, 6 and the OBR costings lane's rejection.
 """
 
 import copy
@@ -53,7 +57,7 @@ from hypothesis import strategies as st
 
 from pipeline import stage_uk_ab2026 as S
 from pipeline import uk_certified_pairs as pairs
-from scorecard_db import ScorecardDB, ingest_campaign, signs
+from scorecard_db import ScorecardDB, ingest_campaign, ingest_obr_costings, signs
 from scorecard_db import ingest_uk_ab2026 as I
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -301,6 +305,42 @@ def test_every_reason_is_written_out():
     assert set(S.REASONS) == set(TALLY["reasons"])
 
 
+PRODUCER_NAMES = {
+    "hm_treasury": "HM Treasury",
+    "ifs": "IFS",
+    "obr_efo": "the OBR",
+    "resolution_foundation": "Resolution Foundation",
+    "tax_policy_associates": "Tax Policy Associates",
+}
+
+
+def _names(reason, producer):
+    pattern = rf"\b{re.escape(PRODUCER_NAMES[producer])}\b"
+    return re.search(pattern, S.REASONS[reason], re.IGNORECASE) is not None
+
+
+def test_each_reason_names_the_producers_whose_claims_it_covers():
+    covers = {}
+    for claim in CLAIMS:
+        reason = S.classify(claim)[1]
+        if reason:
+            covers.setdefault(reason, set()).add(claim["source"])
+    assert set(covers) == set(S.REASONS)
+    for reason, sources in covers.items():
+        if "the producer" in S.REASONS[reason].lower():
+            assert len(sources) > 1, reason
+            continue
+        named = {p for p in PRODUCER_NAMES if _names(reason, p)}
+        assert named == sources, reason
+
+
+@pytest.mark.parametrize(
+    "reason", ["benefit_recipients_count", "taken_out_of_tax_count"]
+)
+def test_the_count_reasons_state_the_dashboards_minimum_and_filter(reason):
+    assert "by at least £1 in households with an income decile." in S.REASONS[reason]
+
+
 def _england_average():
     (claim,) = [
         c
@@ -336,40 +376,63 @@ def _paired_claim(metric):
     return copy.deepcopy(BY_ID[row["external_claim_match"]["claim_id"]])
 
 
-def test_a_gainer_claim_on_part_of_the_uk_raises():
+NOT_THE_UK = ["England", "Scotland", "Wales", "Northern Ireland", "Great Britain", None]
+
+
+@pytest.mark.parametrize("geography", NOT_THE_UK)
+def test_a_gainer_claim_on_part_of_the_uk_raises(geography):
     claim = _paired_claim("gainer_count")
-    claim["conditions"]["geography"] = "England"
+    claim["conditions"]["geography"] = geography
     with pytest.raises(S.Unmatched, match="gainer geography"):
         S.classify(claim)
 
 
-def test_a_gainer_claim_in_another_unit_raises():
+@pytest.mark.parametrize("unit", ["households", "gbp", "gbp_per_household", "percent"])
+def test_a_gainer_claim_in_another_unit_raises(unit):
     claim = _paired_claim("gainer_count")
-    claim["unit"] = "households"
+    claim["unit"] = unit
     with pytest.raises(S.Unmatched, match="gainers on"):
         S.classify(claim)
 
 
 @pytest.mark.parametrize(
-    "change",
+    "field, value",
     [
-        lambda c: c.update(unit="usd"),
-        lambda c: c["conditions"].update(geography="England"),
-        lambda c: c["conditions"].update(fy="2027"),
+        *(("unit", u) for u in ("usd", "eur", "gbp_per_household", "persons")),
+        *(("geography", g) for g in NOT_THE_UK),
+        *(("fy", y) for y in ("2027", "2027-2028", None)),
     ],
-    ids=["unit", "geography", "fiscal year"],
 )
-def test_an_exchequer_claim_of_another_shape_raises(change):
+def test_an_exchequer_claim_of_another_shape_raises(field, value):
     claim = _paired_claim("revenue_change")
-    change(claim)
+    if field == "unit":
+        claim["unit"] = value
+    else:
+        claim["conditions"][field] = value
     with pytest.raises(S.Unmatched, match="exchequer claim shape"):
         S.classify(claim)
 
 
-@pytest.mark.parametrize("metric", ["revenue_change", "gainer_count"])
-def test_a_claim_on_the_obr_costings_lane_raises(metric):
+@pytest.mark.parametrize("convention", [None, "", "the tables print no legend"])
+def test_an_exchequer_claim_without_a_readable_sign_raises(convention):
+    for row in EXCHEQUER_ROWS():
+        claim = copy.deepcopy(BY_ID[row["external_claim_match"]["claim_id"]])
+        claim["conditions"]["sign_convention"] = convention
+        with pytest.raises(S.Unmatched, match="sign unknown"):
+            S.classify(claim)
+
+
+@SETTINGS
+@given(
+    metric=st.sampled_from(["revenue_change", "gainer_count"]),
+    key=st.one_of(
+        st.sampled_from(sorted(ingest_obr_costings.measures())),
+        st.text(min_size=1, max_size=20),
+    ),
+)
+def test_a_claim_on_the_obr_costings_lane_raises(metric, key):
     claim = _paired_claim(metric)
-    claim["conditions"]["obr_measure_key"] = "a key"
+    claim["conditions"]["obr_measure_key"] = key
     with pytest.raises(S.Unmatched, match="OBR costings lane"):
         S.classify(claim)
 
@@ -441,6 +504,7 @@ TIMING = (
     "later year."
 )
 SIGN = "Both sides show a cost to the Exchequer as negative (PE's own orientation)."
+REVERSED = "We reverse our sign to match the claim's (PE oriented to it)."
 CHANGE = (
     "We estimate the change in government revenue less spending from the "
     "dashboard's budgetary impact table."
@@ -618,8 +682,7 @@ SCOPE = {
 }
 BEHAVIOURAL = (
     "The OBR expects more landlords to incorporate to save tax and more to underpay, "
-    "cutting the yield by £{} billion a year on average from 2028-29, and we hold "
-    "incomes fixed."
+    "cutting the yield by £{} billion a year, and we hold incomes fixed."
 )
 
 
@@ -656,22 +719,31 @@ def _with_convention(monkeypatch, component, convention):
     monkeypatch.setattr(S, "_COMPONENTS", None)
 
 
-def test_a_named_line_under_another_sign_convention_raises(monkeypatch):
-    _with_convention(
-        monkeypatch,
-        "Current AME: Scottish BGA (current)",
+@pytest.mark.parametrize(
+    "convention",
+    [
         "Note (verbatim): A positive sign implies an increase in borrowing.",
-    )
+        "Note (verbatim): This table uses the convention that a negative sign implies "
+        "a gain to the Exchequer",
+        None,
+    ],
+    ids=["borrowing", "gain", "none"],
+)
+def test_a_named_line_under_another_sign_convention_raises(monkeypatch, convention):
+    _with_convention(monkeypatch, "Current AME: Scottish BGA (current)", convention)
     with pytest.raises(S.Unmatched, match="another sign convention"):
         S.components()
 
 
-def test_the_behavioural_line_under_another_sign_convention_raises(monkeypatch):
-    _with_convention(
-        monkeypatch,
-        "behavioural erosion of yield",
-        "as worded: positive = increase in yield",
-    )
+@pytest.mark.parametrize(
+    "convention",
+    ["as worded: positive = increase in yield", None],
+    ids=["yield", "none"],
+)
+def test_the_behavioural_line_under_another_sign_convention_raises(
+    monkeypatch, convention
+):
+    _with_convention(monkeypatch, "behavioural erosion of yield", convention)
     with pytest.raises(S.Unmatched, match="another sign convention"):
         S.components()
 
@@ -873,6 +945,9 @@ def test_a_sign_flip_flips_the_relation_and_keeps_the_magnitude(i):
     other, _ = S.sign_relation(flipped)
     assert {relation, other} == {signs.SAME, signs.OPPOSITE}
     again = S.counterpart(flipped, "exchequer", MANIFEST)
+    oriented = {signs.SAME: SIGN, signs.OPPOSITE: REVERSED}
+    assert oriented[other] in again["annotations"]
+    assert oriented[relation] not in again["annotations"]
     assert again["pe_value"] == -row["pe_value"]
     assert abs(again["pe_value"]) == abs(row["pe_value"])
     # the comparison's relation: the claim's value and the counterpart, both
