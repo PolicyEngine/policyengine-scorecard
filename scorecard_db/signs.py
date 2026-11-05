@@ -32,6 +32,8 @@ lists, which classify the same strings for that stager.
 
 from __future__ import annotations
 
+import re
+
 SAME = "same"
 OPPOSITE = "opposite"
 MAGNITUDE = "magnitude"
@@ -95,13 +97,21 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "(positive = yield",
             "(positive = increase in yield)",
             "reduction in borrowing",
+            "reduces borrowing",
             "higher government revenue",
             "here we present higher taxes as positive numbers",
             "reduction in public spending",
             "reduction in welfare spending",
             "positive = saving to the exchequer",
+            # a cost saving is a yield, though "positive = cost" also matches
+            # the same words: the reading conflicts, so it is unknown
+            "cost saving",
             "positive = saving against the current budget rule",
             "positive = fiscal tightening",
+            # the OBR's Table 1.1 workbook legend
+            "a negative sign implies a loss to the exchequer",
+            # IFS's chart of the Budget's tax change at the forecast horizon
+            "positive = increase in net tax",
         ),
     ),
     "spending": (
@@ -114,9 +124,24 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
         ),
     ),
     "borrowing": (
-        (),
-        ("reduction in borrowing",),
-        ("increase in borrowing",),
+        # a printed total that adds rows under two conventions, or an
+        # average of absolute values, which has no direction
+        ("mixed:", "no directional sign"),
+        (
+            "reduction in borrowing",
+            "reduces borrowing",
+            "borrowing reduction",
+            "positive = yield",
+            "a negative sign implies a loss to the exchequer",
+            "positive = increase in net tax",
+            "positive = additional investment income",
+        ),
+        (
+            "increase in borrowing",
+            "borrowing increase",
+            "positive = increase in psnb",
+            "positive = cost",
+        ),
     ),
     "household_gain": (
         ("reduction in benefit entitlement from the two-child limit",),
@@ -186,6 +211,10 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
 }
 
 _ORIENTED_TO_CLAIM = ("PE oriented to it", "PE's own orientation")
+# A phrase's negative leg ("...; negative = loss to households") states the
+# same direction from the other side, so a deciding fragment found only
+# there says nothing about what a positive value means (review A H-4).
+_NEGATIVE_LEG = re.compile(r"\bnegative\s*(?:=|implies|means)[^;]*")
 MAGNITUDE_CONVENTION = "magnitude_with_direction_in_label"
 
 
@@ -213,10 +242,32 @@ def classify(row: dict) -> tuple[str, str]:
         unanswerable, opposite, same = _PHRASES[family]
         if any(p in text for p in unanswerable):
             return UNKNOWN, f"stated:{family}:not_this_quantity"
-        if any(p in text for p in opposite):
+        positive = _NEGATIVE_LEG.sub(" ", text)
+
+        def spans(phrases):
+            # a phrase that names the negative side itself ("a negative sign
+            # implies a loss ...") is read where it stands
+            out = []
+            for p in phrases:
+                where = text if "negative" in p else positive
+                i = where.find(p)
+                while i >= 0:
+                    out.append((i, i + len(p), where is text))
+                    i = where.find(p, i + 1)
+            return out
+
+        opp, sam = spans(opposite), spans(same)
+        # one stretch of text read both ways ("positive = cost saving ...")
+        if any(
+            a0 < b1 and b0 < a1 and wa == wb for a0, a1, wa in opp for b0, b1, wb in sam
+        ):
+            return UNKNOWN, f"stated:{family}:conflicting"
+        if opp:
             return OPPOSITE, f"stated:{family}:opposite"
-        if any(p in text for p in same):
+        if sam:
             return SAME, f"stated:{family}:same"
+        if any(p in text for p in opposite + same):
+            return UNKNOWN, f"stated:{family}:negative_leg"
         return UNKNOWN, f"stated:{family}:unrecognised"
     # US producers publish signed changes, after minus before, which is
     # PolicyEngine's reform-minus-baseline orientation; no US adapter

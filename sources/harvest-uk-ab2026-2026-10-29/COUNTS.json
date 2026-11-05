@@ -1,0 +1,108 @@
+{
+ "uk_centax": {
+  "rows": 112,
+  "primaries": 6,
+  "claims_sha256": "2529e86fc898493e4e045072f6aebff2c757470cd9d578acbce8ca0790ce348c",
+  "sources": [
+   "centax"
+  ]
+ },
+ "uk_devolved_govts": {
+  "rows": 19,
+  "primaries": 2,
+  "claims_sha256": "8f47eb3c1d0d67c76b19cdb02c09eb7211e2ad26e8957215b755009a64ba5dfa",
+  "sources": [
+   "scottish_government",
+   "welsh_government"
+  ]
+ },
+ "uk_hmt_costings": {
+  "rows": 597,
+  "primaries": 1,
+  "claims_sha256": "4769087faa0876ca168f1976ac16ce23129617cd7f1ae35c406f75761fc9ea32",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
+ "uk_hmt_redbook": {
+  "rows": 425,
+  "primaries": 6,
+  "claims_sha256": "04e5a88f9d20f8761049040460eef001880f471f74018e9d16c23e9b8c4a485d",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
+ "uk_hmt_tables": {
+  "rows": 768,
+  "primaries": 2,
+  "claims_sha256": "e44ba6ae818aa4f4c759ba135ea5a33a3dbbe0753f81e64759a8b0d25cc02819",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
+ "uk_ifs_ab2026": {
+  "rows": 144,
+  "primaries": 14,
+  "claims_sha256": "b76375ec9ccba03011181edcb47601e81f281636fda880f09688446bb582363d",
+  "sources": [
+   "ifs"
+  ]
+ },
+ "uk_ippr": {
+  "rows": 3,
+  "primaries": 3,
+  "claims_sha256": "dcabaf8fb3157e4fa6d18c410add5a430eadbdc02784dd9d7831b2cea1bc2ab9",
+  "sources": [
+   "ippr"
+  ]
+ },
+ "uk_obr_tables": {
+  "rows": 2800,
+  "primaries": 4,
+  "claims_sha256": "ceae9897d7c680f5c1be6e04a7dba3eb7114e1f542fcb5ae2236cd775d9fa199",
+  "sources": [
+   "obr_efo"
+  ]
+ },
+ "uk_rf_ab2026": {
+  "rows": 766,
+  "primaries": 8,
+  "claims_sha256": "e8f75767a7f871c0f2030aaf2d47348e35f6caa3418ab773e53b77205a682325",
+  "sources": [
+   "resolution_foundation"
+  ]
+ },
+ "uk_thinktank_misc": {
+  "rows": 12,
+  "primaries": 5,
+  "claims_sha256": "ba9ecc122125e3eefecc0c1433ef5cd9b24e91f59d3fd2c2e63e18a2b51c2069",
+  "sources": [
+   "citizens_advice",
+   "cps",
+   "institute_for_government",
+   "learning_and_work_institute"
+  ]
+ },
+ "uk_tpa": {
+  "rows": 305,
+  "primaries": 10,
+  "claims_sha256": "241f625fb725640835bde53dd5a2d1217ddd758f9df260abf778ac4bf96ba7cc",
+  "sources": [
+   "tax_policy_associates"
+  ]
+ },
+ "uk_trussell_wpi": {
+  "rows": 1,
+  "primaries": 1,
+  "claims_sha256": "e97bfd502e5dcf591f53a95c7acfef169be6a554f267b7e2c11006db9286ec79",
+  "sources": [
+   "trussell_wpi"
+  ]
+ },
+ "_totals": {
+  "rows": 5952,
+  "restated": 450,
+  "families": 12,
+  "pinned_on": "2026-10-29"
+ }
+}
