@@ -1,31 +1,31 @@
 # Smaller producers: Autumn Budget 2026
 
-**Working files.** `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_thinktank_misc/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_thinktank_misc/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane never committed its local primaries folder (`.ab2026-primaries/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
-Staged from five primary HTML responses published on 28 October 2026. Sources are `cps`, `institute_for_government`, `learning_and_work_institute` and `citizens_advice`; the manifested Age UK response contributes zero rows. There are **12 rows and 5 primaries**. `stage.py` embeds the readings and recreates the manifest and deterministic gzip using only Python's standard library.
+We staged this family from five primary HTML responses that their producers published on 28 October 2026. We use the sources `cps`, `institute_for_government`, `learning_and_work_institute` and `citizens_advice`; we manifested Age UK's response but staged zero rows from it. We stage **12 rows and 5 primaries**. We embedded the readings in `stage.py`, which recreates the manifest and deterministic gzip with only Python's standard library.
 
 ## Changes on 3 November 2026 (thinktanks-b review)
 
-- **Finding 1:** CPS's £3.1 billion PuFins row is context. It names no Budget decision, line or year and ties the figure to a CPS paper from before the Budget, so it carries no proposed key; `reform_hint` is null and `conditions.measure_type` names it. `ab2026__package_cps_public_financial_institutions` is withdrawn.
-- **Finding 5:** Trussell's row and primary moved to the AB2026 family `uk_trussell_wpi`, with source `trussell_wpi`, as AB2025 staged Trussell's Budget responses. This family now has 12 rows and 5 primaries.
-- **Finding 6:** IfG's count of one tax measure names the measure it counted in `conditions.subgroup`, not `component`, which rule 9 reserves for parts of a measure.
+- Finding 1: we made CPS's £3.1 billion PuFins row context. CPS names no Budget decision, line or year and ties the figure to a CPS paper from before the Budget, so we gave the row no proposed key. We set `reform_hint` to null, named the row's subject in `conditions.measure_type` and withdrew `ab2026__package_cps_public_financial_institutions`.
+- Finding 5: we moved Trussell's row and primary to the AB2026 family `uk_trussell_wpi`, with source `trussell_wpi`, as we staged Trussell's Budget responses in AB2025. This family now has 12 rows and 5 primaries.
+- Finding 6: for IfG's count of one tax measure, we now name the measure it counted in `conditions.subgroup`, not `component`, which we use only for parts of a measure (rule 9).
 
-No primary was re-opened on 3 November (the session's network policy refused every producer's site); every change relabels fields, and no printed value changed. The 29 October record below is updated for the new row set.
+We re-opened no primary on 3 November, because the session's network policy refused every producer's site. We only relabelled fields, changed no printed value and updated the 29 October record below for the new row set.
 
 ## Changes on 4 November 2026 (reviews A and B)
 
-Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's H-6(a) asked for its finding 2. The fixes sit in a block after the rows in `stage.py`, shared word for word with `uk_trussell_wpi`'s (judgement call 10). No primary was re-opened, and no value changed.
+Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's H-6(a) asked for its finding 2. We put the fixes in a block after the rows in `stage.py`, shared word for word with `uk_trussell_wpi`'s (judgement call 10). We re-opened no primary and changed no value.
 
-- **Finding 1:** IfG's "around 80%" (row 8) restates HM Treasury's paragraph 3.5, which `uk_hmt_redbook` row 191 stages: `restated`, `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)", and a rewritten note. Own 4, restated 8.
-- **Finding 2 and H-6(a):** rows 2, 8 and 10 carry the registered `fiscal_headroom`, `affected_share` and `affected_count` in `metric`, with `proposed_metric` null.
-- **Finding 3:** row 9's `measure_type` is "real household disposable income per person".
-- **H-6(d):** row 11 (Citizens Advice) carries `geography: "not stated"`.
+- Finding 1: in "around 80%" (row 8) IfG restates HM Treasury's paragraph 3.5, which we stage as `uk_hmt_redbook` row 191. We now mark the row `restated`, with `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)" and a rewritten note. Own 4, restated 8.
+- Finding 2 and H-6(a): we now record the registered `fiscal_headroom`, `affected_share` and `affected_count` in `metric` on rows 2, 8 and 10, with `proposed_metric` null.
+- Finding 3: we set row 9's `measure_type` to "real household disposable income per person".
+- H-6(d): we set `geography: "not stated"` on row 11 (Citizens Advice).
 
 ## Access recipe and primary hashes
 
-Every primary was fetched afresh on 29 October 2026 using `curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"`; every response was HTTP 200. The lane kept the HTML bytes, headers and text extracts in its local primaries folder. Hashes were checked using `shasum -a 256`. BeautifulSoup extracts were used to read the page's own body text; hashes refer to HTML, not extracts. There are no PDFs or spreadsheets in this family.
+We fetched every primary afresh on 29 October 2026 with `curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"`, and every server answered HTTP 200. The lane kept the HTML bytes, headers and text extracts in its local primaries folder and checked hashes with `shasum -a 256`. It read each page's own body text from BeautifulSoup extracts, but hashed the HTML, not the extracts. We staged no PDF or spreadsheet in this family.
 
-No assigned local copies or earlier document versions were supplied. There was no blocked fetch, fallback or observed replacement. Fetch-completion timestamps are recorded in each manifest note because HTML can change.
+Nobody supplied assigned local copies or earlier document versions, and we hit no blocked fetch, used no fallback and saw no replacement. Because HTML can change, we record the fetch-completion time in each manifest note.
 
 | Primary | Fetch completion (UTC) | Bytes | Rows | SHA256 |
 |---|---|---:|---:|---|
@@ -35,11 +35,11 @@ No assigned local copies or earlier document versions were supplied. There was n
 | [Learning and Work Institute response](https://learningandwork.org.uk/responding-to-autumn-budget-2026/) | 2026-10-29 15:22:31 | 122,809 | 1 | `c7fe077a0d9f4784aa4c91c906bcefa087cc9a4ece8b28026d24347c2a8b5dcf` |
 | [Citizens Advice response](https://www.citizensadvice.org.uk/about-us/media-centre/press-releases/citizens-advice-responds-to-chancellors-budget/) | 2026-10-29 15:23:24 | 22,671 | 1 | `6a10336a67fc058512a4ccd9d0e80a27470fee8ba5775690fb1fcba39db67385` |
 
-Citizens Advice's press index linked its dated response. The other four URLs were assigned. CPS prints “Date Added: Wednesday 28th October 2026”; IfG prints “28 OCT 2026”; LWI prints “28 October 2026”; Age UK prints publication on 28 October 2026 at 04:14 PM and last update that date.
+We followed Citizens Advice's press index to its dated response; the coordinator assigned the other four URLs in the lane's brief (`harvest-staging/ab2026/briefs/thinktanks-b.md` on the staging branch). CPS prints “Date Added: Wednesday 28th October 2026”, IfG prints “28 OCT 2026” and LWI prints “28 October 2026”. Age UK prints publication on 28 October 2026 at 04:14 PM and a last update that date.
 
 ## Coverage and conventions
 
-Reading order is CPS, IfG, Age UK, LWI, Citizens Advice, then top to bottom within each page. Only contiguous excerpts under 15 words are quoted. There are no chart readings or derived gaps, totals, ratios or annualisations.
+We read in the order CPS, IfG, Age UK, LWI, Citizens Advice, then top to bottom within each page, and quote only contiguous excerpts under 15 words. We read no charts and derived no gaps, totals, ratios or annualisations.
 
 | Source | Rows | Own | Restated |
 |---|---:|---:|---:|
@@ -53,56 +53,56 @@ Reading order is CPS, IfG, Age UK, LWI, Citizens Advice, then top to bottom with
 | Measure key | Rows | Scope |
 |---|---:|---|
 | `ab2026__household_energy_payment_100_bands_a_to_d` | 1 | IfG's share of households in England receiving the £100 council-tax rebate for bands A–D (restating HM Treasury's paragraph 3.5); Table 6.1 line 1 |
-| `null` | 11 | context and document-tally observations; none carries a proposed key |
+| `null` | 11 | context and document-tally observations; we proposed a key for none |
 
-The sole registered key is attached to the specific rebate's coverage, not to the entire cost-of-living package. IfG's exact identification of the £100 council-tax rebate for bands A–D identifies line 1; it gives no contrary scope. Its "around 80%" restates HM Treasury's paragraph 3.5 ("around 80% of households in England"), so the row is `restated`, `administrative_data`, geography England, as `uk_hmt_redbook` row 191 stages it (changed on 4 November, review B finding 1). Context forecasts, outturns and document counts, including CPS's PuFins assertion, have null measure keys and null reform hints.
+We attach the sole registered key to the specific rebate's coverage, not to the entire cost-of-living package. IfG names the £100 council-tax rebate for bands A–D, so we match it to line 1, and IfG gives no contrary scope. Its "around 80%" restates HM Treasury's paragraph 3.5 ("around 80% of households in England"). So we mark the row `restated`, `administrative_data`, geography England, as we stage `uk_hmt_redbook` row 191; we made that change on 4 November, after review B finding 1. We gave null measure keys and null reform hints to context forecasts, outturns and document counts, including CPS's PuFins assertion.
 
-- GBP values preserve printed signs and cash magnitudes. “Tops £3 trillion” is the printed strict lower bound of debt stock. The six-month £61 billion debt-interest total is not multiplied to a year. Fiscal headroom is positive headroom; PuFins' £3.1 billion is a positive debt increase. No sign is reversed.
-- Percentages remain percentages. “Almost 100” retains the printed upper threshold 100; no exact policy count is inferred. “Around 80%” retains the qualifier in conditions.
-- `point`, rather than `central`, records each single published observation/forecast: none is labelled a central scenario. Thresholds use `range_low` or `range_high`. The 2% real-income growth is `cumulative` over the printed comparison window, not a 2% annual rate.
-- Only IfG's fiscal-rule probabilities name a fiscal year: “2029/30” is normalised to `fy: 2029-30`, period 2030, `fiscal_year`. The income projection prints calendar 2030 and uses `annual` without `fy`. Other observations use the publication-year point-in-time anchor 2026 and preserve “last six months”, “this winter”, “each year”, “last 12 months”, or unspecified horizon explicitly. They do not claim a fiscal/calendar scoring year that the producer did not print. The PuFins annual-rate assertion has medium confidence because no scoring year or fiscal/calendar basis is supplied.
-- Real income remains real; all other price bases are left unspecified where the page does not identify one. No baseline proposal is needed for these current observations and explicitly named context comparisons.
-- CPS's own PuFins assertion uses `source_model: unstated` because it does not identify its calculation. Official debt/outturn context uses `administrative_data` and `administrative_fact`. CPS headroom and IfG fiscal probabilities/income forecasts are `restated`, `obr_efo_forecast`, `different_model`. The precise original release behind the unsourced CPS figures is not identified, so these originator assignments are explicit in rows.
-- IfG's two counts are its own `arithmetic`, `different_model` observations. Its rebate share restates HM Treasury (paragraph 3.5): `restated`, `administrative_data`, `conditions.originator` naming the paragraph (changed on 4 November). LWI's rounded NEET figure is treated as restated official labour-market context, `administrative_data`, `administrative_fact`; its response gives neither a quarter, age range nor a citation. Citizens Advice's unsourced bill forecast is treated as its own assertion with `source_model: unstated`, with missing method/geography acknowledged. Citizens Advice's estimate, CPS's PuFins assertion and IfG's rebate share have medium confidence; the other nine rows have high confidence.
+- We keep printed signs and cash magnitudes in GBP values and take “Tops £3 trillion” as the printed strict lower bound of debt stock; we don't multiply the six-month £61 billion debt-interest total to a year. We record fiscal headroom as positive headroom and PuFins' £3.1 billion as a positive debt increase, and we reversed no sign.
+- We keep percentages as percentages. For “Almost 100” we keep the printed upper threshold 100 and infer no exact policy count. For “Around 80%” we keep the qualifier in conditions.
+- We record each single published observation or forecast as `point`, not `central`, because no producer labels one a central scenario. We use `range_low` or `range_high` for thresholds. We record the 2% real-income growth as `cumulative` over the printed comparison window, not a 2% annual rate.
+- Only IfG names a fiscal year, for its fiscal-rule probabilities: we normalise “2029/30” to `fy: 2029-30`, period 2030, `fiscal_year`. IfG prints calendar 2030 for the income projection, so we use `annual` without `fy`. For the other observations we use the publication-year point-in-time anchor 2026 and keep “last six months”, “this winter”, “each year”, “last 12 months” or the unspecified horizon explicitly. We claim no fiscal or calendar scoring year that the producer did not print. We give the PuFins annual-rate assertion medium confidence, because CPS supplies no scoring year and no fiscal or calendar basis.
+- We keep real income real, and leave every other price basis unspecified where the producer names none. These current observations and explicitly named context comparisons need no baseline proposal.
+- CPS doesn't identify the calculation behind its own PuFins assertion, so we use `source_model: unstated`. We use `administrative_data` and `administrative_fact` for official debt and outturn context. We mark CPS's headroom and IfG's fiscal probabilities and income forecasts `restated`, `obr_efo_forecast`, `different_model`. We couldn't identify the original release behind CPS's unsourced figures, so we state these originator assignments in the rows.
+- We record IfG's two counts as its own `arithmetic`, `different_model` observations. In its rebate share IfG restates HM Treasury (paragraph 3.5), so since 4 November we mark it `restated`, `administrative_data`, and name the paragraph in `conditions.originator`. We treat LWI's rounded NEET figure as restated official labour-market context, `administrative_data`, `administrative_fact`; LWI gives no quarter, age range or citation. We treat Citizens Advice's unsourced bill forecast as its own assertion with `source_model: unstated`, and we record that it gives no method or geography. We give Citizens Advice's estimate, CPS's PuFins assertion and IfG's rebate share medium confidence, and the other nine rows high confidence.
 
 ## Proposed keys, metrics and units
 
-No measure key is proposed. CPS's PuFins row is context (see the 3 November changes above).
+We propose no measure key. We made CPS's PuFins row context (see the 3 November changes above).
 
-Registered metrics (since 4 November, review A's H-6(a) and review B's finding 2; `models.py` registers them, so they go in `metric`, not `proposed_metric`):
+Since 4 November, after review A's H-6(a) and review B's finding 2, we record these registered metrics in `metric`, not `proposed_metric`, because `models.py` registers them:
 
 - `fiscal_headroom` (1; GBP): CPS's current post-Budget buffer against the fiscal rule; target year unspecified.
 - `affected_share` (1; percent): IfG's share of households in England receiving the rebate, restating HM Treasury.
 - `affected_count` (1; persons): LWI's rounded current count of young people not in education, employment or training.
 
-Proposed metrics (counts and exact meaning):
+We propose these metrics (counts and exact meaning):
 
-- `public_debt_level` (1; GBP): CPS's current national-debt stock lower bound; no series definition is supplied.
+- `public_debt_level` (1; GBP): CPS's current national-debt stock lower bound; CPS supplies no series definition.
 - `debt_interest_cost` (1; GBP): CPS's total debt interest over the last six months, not the change caused by a measure.
 - `public_debt_change` (1; GBP): CPS's asserted annual debt increase through PuFins, a context row; period limitations above.
 - `measure_count` (2; proposed unit `measures`; AB2025 family precedent): IfG's approximate full scorecard count and exact count of tax measures costing/saving more than £1bn in the last forecast year.
 - `fiscal_rule_probability` (2; percent): current and last-budget OBR probabilities of a current-budget surplus in 2029/30, as reported by IfG.
 - `average_energy_bill_change` (1; GBP/month; AB2025 IFS/RF proposal spelling): Citizens Advice's forecast monthly household energy-bill increase, excluding any assertion that this is a Budget measure effect.
 
-Registered `real_income_growth` accounts for IfG's restated OBR 2% cumulative growth in real household disposable income per person (EFO para 1.2; `conditions.measure_type` says "per person" since 4 November, review B finding 3). Proposed unit `measures` is used only for the two counts. Other units are registered. There are no proposed baselines.
+We record IfG's restatement of the OBR's 2% cumulative growth in real household disposable income per person (EFO para 1.2) under the registered `real_income_growth`. Since 4 November, after review B finding 3, we write "per person" in `conditions.measure_type`. We use the proposed unit `measures` only for the two counts, and registered units for the rest. We propose no baselines.
 
-## Not staged and primary limitations
+## What we left out, and the primaries' limits
 
-- **Age UK: zero rows.** Its own response has no numeric Budget estimate. The exact “On Income Tax threshold.” subsection was read; it welcomes protecting low-income pensioners from cash tax demands but prints no number. Dates, contact numbers, navigation “Nearly 4,000 flu mortalities” and the unrelated £2 donation link are not Budget claims.
-- IfG's £100 rebate is a bare policy parameter; its 80% coverage is staged separately. The £1bn cutoff defines its count of one tax measure and is preserved in conditions rather than misrepresented as that measure's costing. Other dates and the 1991 council-tax valuation year are context labels, not model outcomes.
-- LWI mentions extra Mayoral apprenticeship funding and OBR employment effects but prints no amount or employment effect. Its “one million” NEET level is retained as context. Navigation cards and unrelated articles are not harvested.
-- Citizens Advice gives no source, exact winter dates, geography or method for £60/month (`geography: "not stated"` since 4 November, for the contract's closed geography list). Those are explicit limitations, not supplied from secondary material.
-- CPS does not link its “paper released last week”. It is outside the assigned 28–29 October post-Budget window, and no unseen figures from it are staged. The comparison between six-month debt interest and an annual defence budget prints no second amount or exact ratio, so none is derived.
-- No restated figure is silently removed: the seven official/OBR context rows and IfG's restatement of HM Treasury's 80% are staged with `restated` and an originator. No PolicyEngine restatement was identified.
-- No pages were unreached. No charts contain unstaged numeric labels in these primaries.
+- **Age UK: zero rows.** Age UK prints no numeric Budget estimate in its own response. We read the exact “On Income Tax threshold.” subsection; Age UK welcomes protecting low-income pensioners from cash tax demands there but prints no number. We didn't treat dates, contact numbers, the navigation's “Nearly 4,000 flu mortalities” or the unrelated £2 donation link as Budget claims.
+- IfG gives the £100 rebate as a bare policy parameter, and we stage its 80% coverage separately. IfG counts one tax measure above a £1bn cutoff, and we keep the cutoff in conditions, not as that measure's costing. We treat the other dates and the 1991 council-tax valuation year as context labels, not model outcomes.
+- LWI mentions extra Mayoral apprenticeship funding and OBR employment effects but prints no amount or employment effect. We keep its “one million” NEET level as context, and we harvested no navigation cards or unrelated articles.
+- Citizens Advice gives no source, exact winter dates, geography or method for £60/month. Since 4 November we set `geography: "not stated"`, to fit the contract's closed geography list. We record those gaps as explicit limitations and filled none of them from secondary material.
+- CPS does not link its “paper released last week”. That paper falls outside the assigned 28–29 October post-Budget window, and we staged no unseen figures from it. CPS compares six-month debt interest with an annual defence budget but prints no second amount or exact ratio, so we derived none.
+- We stage the seven official/OBR context rows and IfG's restatement of HM Treasury's 80% with `restated` and an originator. We found no PolicyEngine restatement.
+- We reached every page, and found no chart in these primaries with unstaged numeric labels.
 
-Potentially ambiguous source wording is retained: IfG describes the £100 rebate as reaching “around 80%” of households without naming the denominator's geography; HM Treasury's paragraph 3.5, which it restates, says households in England, so the row carries England (4 November). CPS's PuFins claim lacks components, annual dates and method, so it stays context; its £15 billion headroom lacks a target year. Age UK's Pension Tax Allowance paragraph contains no number despite the assignment's pointer. These gaps have not been repaired using other sources.
+IfG describes the £100 rebate as reaching “around 80%” of households without naming the denominator's geography. In paragraph 3.5, which IfG restates, HM Treasury says households in England, so since 4 November we record England on the row. CPS gives no components, annual dates or method for its PuFins claim, so we keep that row as context. CPS also gives no target year for its £15 billion headroom. Age UK prints no number in its Pension Tax Allowance paragraph despite the assignment's pointer. We repaired none of these gaps from other sources.
 
 ## Verification
 
-- **4 November:** the contract checker reports 12 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte.
-- **3 November:** the contract checker reports 12 rows, 0 problems; a re-run of `stage.py` reproduces `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte (COUNTS.json pins the gzip's sha256). The fixes relabel fields only, so the lane's checks below stand for the rows that remain.
-- **29 October (13 rows, including Trussell's, now in `uk_trussell_wpi`):**
+- On 4 November, the contract checker reported 12 rows, 0 problems, and when we re-ran `stage.py` it reproduced both files byte for byte.
+- On 3 November, the contract checker reported 12 rows, 0 problems, and when we re-ran `stage.py` it reproduced `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte (COUNTS.json pins the gzip's sha256). We only relabelled fields, so the lane's checks below stand for the rows that remain.
+- On 29 October, the lane checked 13 rows, including Trussell's, now in `uk_trussell_wpi`:
 
 
 Command:
@@ -112,9 +112,9 @@ PYTHONPATH=. uv run -q python pipeline/ab2026_harvest_contract.py sources/harves
 sources/harvest-uk-ab2026-2026-10-29/uk_thinktank_misc: 13 rows, 0 problems
 ```
 
-Re-ran `python3 sources/harvest-uk-ab2026-2026-10-29/uk_thinktank_misc/stage.py`; claims SHA256 before and after was **`d677dde1f96e629097696f5d17b575c8f1d34baaca42b96297cd46be773669ea`**. The gzip header has mtime zero and no original filename. Manifest byte counts and all six primary hashes were checked against saved HTML. All 13 quotes were verified as contiguous text in their pinned primary and under 15 words; each contains its `value_raw`.
+The lane re-ran `python3 sources/harvest-uk-ab2026-2026-10-29/uk_thinktank_misc/stage.py`, and the claims SHA256 before and after read **`d677dde1f96e629097696f5d17b575c8f1d34baaca42b96297cd46be773669ea`**. The stager writes the gzip header with mtime zero and no original filename. The lane checked manifest byte counts and all six primary hashes, Trussell's included, against the saved HTML. It verified that all 13 quotes appear as contiguous text in their pinned primary, run under 15 words and contain their `value_raw`.
 
-Random sample was `random.Random(230).sample(range(13), 10)`, using zero-based indexes and reporting one-based row numbers below. For each, the saved primary was reopened, its SHA256 checked, and the paragraph at the locator read to verify the number, sign, unit and period. The three remaining rows (CPS debt interest, IfG count of one, Trussell share) were also checked for quote/value correspondence and basis.
+The lane drew its random sample with `random.Random(230).sample(range(13), 10)`, using zero-based indexes, and reports one-based row numbers below. For each, it reopened the saved primary, checked its SHA256 and read the paragraph at the locator to verify the number, sign, unit and period. It also checked the three remaining rows (CPS debt interest, IfG count of one, Trussell share) for quote/value correspondence and basis.
 
 | Sample row | Primary and locator | Rechecked value, sign, unit and period |
 |---:|---|---|
@@ -129,4 +129,4 @@ Random sample was `random.Random(230).sample(range(13), 10)`, using zero-based i
 | 4 | CPS, Herring's PuFins paragraph | £3.1 billion positive debt increase each year → 3.1e9 GBP; no start/end year; 2026 statement anchor with annual horizon retained |
 | 11 | LWI, Evans's main quotation | “one million” young NEET people → 1e6 persons; current context at publication 2026; no quarter invented |
 
-Scope review found one non-null key: IfG's specifically identified bands A–D £100 rebate, Table 6.1 line 1. No broader support-package figure is attached to that key. (On 3 November the CPS row lost its proposed key; see above.) No git state-changing commands, commits or pushes were run.
+In its scope review the lane found one non-null key: IfG's specifically identified bands A–D £100 rebate, Table 6.1 line 1. We attach no broader support-package figure to that key, and on 3 November we removed the CPS row's proposed key (see above). The lane ran no git state-changing commands, commits or pushes.
