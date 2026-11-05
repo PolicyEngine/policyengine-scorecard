@@ -18,8 +18,11 @@ The scope rule:
   estimate on the fuel households buy).
 - We keep the comparison and annotate it when the producer prints the line
   our run leaves out. The annotation names that line and its amount for that
-  year, read from the OBR's component claims at stage time (Scotland's block
-  grant adjustment on Carer's Allowance and property income).
+  year, read from the OBR's component claims at stage time: every line of
+  the OBR's breakdown outside the receipts heads and the welfare line, such
+  as Scotland's block grant adjustment. HM Treasury's electricity costing
+  counts some charity, care home and business use, and calls the business
+  part small, so those rows keep their comparison with a note.
 - We tally a year when our run shows no change because the measure isn't in
   force, since the row then says nothing about the model: where both sides
   read zero, and the Pension Tax Allowance after it ends on 5 April 2030.
@@ -123,9 +126,9 @@ INCOME_TAX_REDUCTION_ONLY = frozenset({"ab2026__pension_tax_allowance"})
 
 REASONS: dict[str, str] = {
     "devolved_share_not_modelled": (
-        "HM Treasury and the OBR count the UK cost, including Scotland's, Wales's "
-        "and Northern Ireland's shares; our run pays households in England only "
-        "and leaves those shares out."
+        "HM Treasury and the OBR count the UK cost, including the funding the "
+        "government gives Scotland, Wales and Northern Ireland, and we estimate "
+        "the payment to households in England only."
     ),
     "fuel_duty_base": (
         "HM Treasury scores fuel duty on every litre of taxable fuel in the UK, "
@@ -136,8 +139,8 @@ REASONS: dict[str, str] = {
         "to compare."
     ),
     "measure_ended": (
-        "The allowance ends on 5 April 2030, so our run shows no change in this "
-        "year, while HM Treasury and the OBR count receipts in it."
+        "The government ends the allowance on 5 April 2030, so we estimate no "
+        "change in this year, while HM Treasury and the OBR count receipts in it."
     ),
     "exchequer_component": (
         "The claim gives one part of the measure's effect on the public finances "
@@ -198,6 +201,15 @@ MEASURE_ENDED = {PENSION_TAX_ALLOWANCE: frozenset({"2030-31", "2031-32"})}
 SCOTTISH_BGA = "Current AME: Scottish BGA (current)"
 SCOTTISH_SFE = "Current AME: Scottish self-financed expenditure"
 WELFARE = "Current AME: Welfare inside cap"
+ELECTRICITY = "ab2026__electricity_vat_zero_rate_to_july_2027"
+# The OBR's breakdown lines our run doesn't model, as a reader names them.
+# Receipts heads and the welfare line are what gov_balance itself counts.
+UNMODELLED_LINES = {
+    SCOTTISH_BGA: "Scottish block grant adjustment",
+    SCOTTISH_SFE: "Scottish self-financed expenditure",
+    "Current DEL: PSCE in RDEL": "departmental resource spending",
+    "Current AME: Other AME (current)": "other annually managed expenditure",
+}
 
 
 class Unmatched(ValueError):
@@ -491,34 +503,70 @@ def classify(claim: dict, manifest: dict | None = None) -> tuple[str, str | None
     raise Unmatched(f"{claim['claim_id']}: no rule for {metric!r}")
 
 
+def unmodelled_lines(key: str, fy: str) -> list[tuple[str, float]]:
+    """The nonzero lines of the OBR's breakdown for one measure and year that
+    our run doesn't model; any other line outside the receipts heads and the
+    welfare line raises, so a new kind of line needs a decision here."""
+    out = []
+    for (k, y, name), value in sorted(components().items()):
+        if k != key or y != fy or value == 0:
+            continue
+        if not name.startswith(("Current AME:", "Current DEL:", "Capital")):
+            continue  # receipts heads, and lines from the EFO's text
+        if name == WELFARE:
+            continue
+        if name not in UNMODELLED_LINES:
+            raise Unmatched(f"{key} {fy}: no reader name for {name!r}")
+        out.append((UNMODELLED_LINES[name], value))
+    return out
+
+
+def lines_annotation(key: str, fy: str) -> list[str]:
+    lines = unmodelled_lines(key, fy)
+    if not lines:
+        return []
+    parts = [f"{millions(v)} of {name}" for name, v in lines]
+    listed = (
+        parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
+    )
+    return [
+        f"The OBR's breakdown of this measure also shows {listed} in this year, "
+        "which our run doesn't model."
+    ]
+
+
 def scope_annotations(claim: dict) -> list[str]:
-    """What the producer's total counts that our run leaves out, with the
-    amount the OBR's breakdown prints for the claim's year."""
+    """What our run covers where the producer's differs, and every line of
+    the OBR's breakdown for the claim's year that our run doesn't model,
+    with the amount the OBR prints."""
     key, fy = claim["measure_key"], claim["conditions"]["fy"]
+    out = []
     if key == CARERS:
-        bga = component(key, fy, SCOTTISH_BGA)
-        return [
-            "We apply the taper in England and Wales, and the OBR's breakdown of "
-            "this measure shows a Scottish block grant adjustment of "
-            f"{millions(bga)} in this year."
-        ]
-    if key == PROPERTY:
-        bga = component(key, fy, SCOTTISH_BGA)
-        sfe = component(key, fy, SCOTTISH_SFE)
-        return [
+        out.append(
+            "We apply the taper in England and Wales and leave Northern Ireland's "
+            "Carer's Allowance at current law."
+        )
+    elif key == PROPERTY:
+        out.append(
             "We raise property income rates in England, Wales and Northern "
-            "Ireland, as the Budget does, and the OBR's breakdown of this measure "
-            f"shows a Scottish block grant adjustment of {millions(bga)} and "
-            f"Scottish self-financed expenditure of {millions(sfe)} in this year."
-        ]
-    if key == PENSION_TAX_ALLOWANCE:
+            "Ireland, and finance cost relief for landlords across the UK, as the "
+            "Budget does."
+        )
+    elif key == ELECTRICITY:
+        out.append(
+            "HM Treasury's costing counts household, charity, residential care and "
+            "a small amount of business consumption, and we estimate household "
+            "electricity only."
+        )
+    elif key == PENSION_TAX_ALLOWANCE:
         if component(key, fy, WELFARE) != 0:
             raise Unmatched(f"{key} {fy}: the OBR shows a welfare change")
-        return [
-            "Our figure nets off lower spending on means-tested benefits, and the "
-            "OBR's breakdown of this measure shows no such change."
-        ]
-    return []
+        out.append(
+            "We net off any change in means-tested benefits that follows from "
+            "lower income tax, and the OBR's breakdown shows no change in welfare "
+            "spending."
+        )
+    return out + lines_annotation(key, fy)
 
 
 def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
@@ -573,8 +621,11 @@ def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
         value = float(raw)
         annotations += [
             "We count people whose own income tax, National Insurance, student "
-            "loan repayment or earnings change by £1 a year or more; this allowance "
-            "changes only income tax, and only lowers it.",
+            "loan repayment or earnings change by £1 a year or more, in households "
+            "with a ranked income.",
+            "Under this allowance only income tax changes, and HM Treasury counts "
+            '"pensioners in total benefitting from a tax reduction" with no floor '
+            "it states.",
         ]
     else:  # pragma: no cover
         raise Unmatched(rule)
@@ -641,10 +692,13 @@ def stage(claim_rows: list[dict] | None = None, manifest: dict | None = None):
     return rows, tally, unanswered
 
 
-def pairing(rows: list[dict]) -> dict[str, dict]:
-    """Each computed row's claim id -> the file, column and row it reads."""
+def pairing(rows: list[dict], claim_rows: list[dict]) -> dict[str, dict]:
+    """Each computed row's claim id -> the claim's value and the file, column
+    and row it reads, so a change in either shows in the pin."""
+    value = {c["claim_id"]: c["value"] for c in claim_rows}
     return {
         r["external_claim_match"]["claim_id"]: {
+            "claim_value": value[r["external_claim_match"]["claim_id"]],
             "column": r["trace"]["column"],
             "file": r["trace"]["file"],
             "where": r["trace"]["where"],
@@ -653,7 +707,9 @@ def pairing(rows: list[dict]) -> dict[str, dict]:
     }
 
 
-def check(tally: dict, rows: list[dict] | None = None) -> None:
+def check(
+    tally: dict, rows: list[dict] | None = None, claim_rows: list[dict] | None = None
+) -> None:
     """The accounting closes per measure and in total, and matches the pin;
     with ``rows``, each claim reads the cell the pin names."""
     for bm in (tally, *tally["by_measure"].values()):
@@ -663,7 +719,7 @@ def check(tally: dict, rows: list[dict] | None = None) -> None:
     pinned = want.pop("pairing")
     if tally != want:
         raise ValueError(f"counterpart accounting drifted: {tally} != {want}")
-    if rows is not None and pairing(rows) != pinned:
+    if rows is not None and pairing(rows, claim_rows or claims()) != pinned:
         raise ValueError("counterpart pairing drifted from the pin")
 
 
@@ -680,8 +736,9 @@ def main(argv: list[str] | None = None) -> int:
     if argv[:1] != ["stage"]:
         print(__doc__)
         return 2
-    rows, tally, unanswered = stage()
-    check(tally, rows)
+    claim_rows = claims()
+    rows, tally, unanswered = stage(claim_rows)
+    check(tally, rows, claim_rows)
     STAGED_DIR.mkdir(parents=True, exist_ok=True)
     STAGED.write_text(dumps_jsonl(rows))
     TALLY.write_text(json.dumps(tally, indent=1, sort_keys=True) + "\n")

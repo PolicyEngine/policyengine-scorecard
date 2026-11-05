@@ -17,11 +17,12 @@ written reason. These tests pin its invariants:
 8. a database built with the AB2026 ingest and these results shows each
    comparison, and build_db.py calls none of it.
 9. each exchequer row carries the timing, baseline and sign annotations,
-   and each Carer's Allowance, property income and Pension Tax Allowance row
-   its scope annotation with the amounts the OBR's claims state;
+   and an annotation for every line of the OBR's breakdown for its measure
+   and year that our run doesn't model, with the amount the OBR prints;
 10. each measure whose receipt names part of the UK takes a tally or a scope
     annotation;
-11. the expected file pins each paired claim's file, column and row, and the
+11. the expected file pins each paired claim's value, file, column and row,
+    and the
     year from the claim matches the year from the cell.
 
 Hypothesis drives 5 and 6.
@@ -33,6 +34,7 @@ import hashlib
 import io
 import json
 import random
+import re
 import shutil
 import sqlite3
 from collections import Counter
@@ -303,42 +305,24 @@ TIMING = (
 SIGN = "Both sides show a cost to the Exchequer as negative (PE's own orientation)."
 
 
-def _scope(row):
+def _unmodelled(row):
+    """Every nonzero line of the OBR's breakdown for the row's measure and
+    year outside the receipts heads and the welfare line, read from the
+    claims, as the amount a reader should see."""
     claim = BY_ID[row["external_claim_match"]["claim_id"]]
     key, fy = claim["measure_key"], claim["conditions"]["fy"]
-    obr = {
-        c["conditions"]["component"]: c["value"]
+    return [
+        f"£{abs(c['value']) / 1e6:,.0f}m"
         for c in CLAIMS
         if c["source"] == "obr_efo"
         and c["measure_key"] == key
         and c["conditions"].get("fy") == fy
         and c["metric"] == "revenue_change"
-        and c["conditions"].get("component")
-    }
-
-    def m(name):
-        return f"£{abs(obr[name]) / 1e6:,.0f}m"
-
-    if key == S.CARERS:
-        return (
-            "We apply the taper in England and Wales, and the OBR's breakdown of "
-            "this measure shows a Scottish block grant adjustment of "
-            f"{m(S.SCOTTISH_BGA)} in this year."
-        )
-    if key == S.PROPERTY:
-        return (
-            "We raise property income rates in England, Wales and Northern "
-            "Ireland, as the Budget does, and the OBR's breakdown of this measure "
-            f"shows a Scottish block grant adjustment of {m(S.SCOTTISH_BGA)} and "
-            f"Scottish self-financed expenditure of {m(S.SCOTTISH_SFE)} in this year."
-        )
-    if key == S.PENSION_TAX_ALLOWANCE:
-        assert obr[S.WELFARE] == 0
-        return (
-            "Our figure nets off lower spending on means-tested benefits, and the "
-            "OBR's breakdown of this measure shows no such change."
-        )
-    return None
+        and c["conditions"].get("row_type") == "measure_component"
+        and c["conditions"].get("component", "").startswith(("Current", "Capital"))
+        and c["conditions"]["component"] != S.WELFARE
+        and c["value"] != 0
+    ]
 
 
 def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
@@ -360,42 +344,107 @@ def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
             n.startswith(f"We estimate fiscal year {claim['conditions']['fy']} ")
             for n in notes
         )
-        scope = _scope(row)
-        if scope is not None:
-            assert scope in notes, row["external_claim_match"]
+        amounts = _unmodelled(row)
+        lines = [
+            n
+            for n in notes
+            if n.startswith("The OBR's breakdown of this measure also shows")
+        ]
+        if amounts:
+            assert len(lines) == 1, row["external_claim_match"]
+            for amount in amounts:
+                assert amount in lines[0], (row["external_claim_match"], amount)
+            assert len(re.findall(r"£[\d,]+m", lines[0])) == len(amounts)
         else:
-            assert len(notes) == 5
-    keys = Counter(r["measure_key"] for r in EXCHEQUER_ROWS())
-    assert keys[S.CARERS] == 4 and keys[S.PROPERTY] == 10
-    assert keys[S.PENSION_TAX_ALLOWANCE] == 6
+            assert not lines, row["external_claim_match"]
+
+
+def test_carers_allowance_rows_name_northern_ireland():
+    for row in EXCHEQUER_ROWS():
+        if row["measure_key"] == S.CARERS:
+            assert any(
+                "leave Northern Ireland's Carer's Allowance at current law" in n
+                for n in row["annotations"]
+            )
+
+
+def test_electricity_rows_name_hm_treasurys_base():
+    rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.ELECTRICITY]
+    assert len(rows) == 4
+    for row in rows:
+        assert any(
+            "charity, residential care and a small amount of business" in n
+            for n in row["annotations"]
+        )
+
+
+def test_a_welfare_change_on_the_pension_tax_allowance_raises(monkeypatch):
+    row = next(
+        r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.PENSION_TAX_ALLOWANCE
+    )
+    claim = BY_ID[row["external_claim_match"]["claim_id"]]
+    fake = dict(S.components())
+    fake[(S.PENSION_TAX_ALLOWANCE, claim["conditions"]["fy"], S.WELFARE)] = -5e6
+    monkeypatch.setattr(S, "_COMPONENTS", fake)
+    with pytest.raises(S.Unmatched, match="welfare"):
+        S.scope_annotations(claim)
+
+
+def test_an_unnamed_breakdown_line_raises(monkeypatch):
+    row = EXCHEQUER_ROWS()[0]
+    claim = BY_ID[row["external_claim_match"]["claim_id"]]
+    fake = dict(S.components())
+    fake[
+        (claim["measure_key"], claim["conditions"]["fy"], "Current AME: Something new")
+    ] = 3e6
+    monkeypatch.setattr(S, "_COMPONENTS", fake)
+    with pytest.raises(S.Unmatched, match="no reader name"):
+        S.scope_annotations(claim)
 
 
 def test_the_gainer_row_carries_its_population():
     (row,) = [r for r in ROWS if r["metric"] == "gainer_count"]
     assert any(
         "National Insurance, student loan repayment or earnings" in n
+        and "ranked income" in n
         for n in row["annotations"]
     )
+    assert any("with no floor it states" in n for n in row["annotations"])
 
 
-SUB_UK = ("England", "Wales", "Scotland", "Northern Ireland")
+SUB_UK = (
+    "England",
+    "Wales",
+    "Scotland",
+    "Northern Ireland",
+    "Great Britain",
+    "GB",
+    "Scottish",
+    "Welsh",
+)
 
 
 def test_every_sub_uk_measure_takes_a_tally_or_a_scope_annotation():
+    named = 0
     for key in MEASURES:
         if not any(c["measure_key"] == key for c in CLAIMS):
             continue
         description = S.receipt(key, MANIFEST)["dashboard"]["description"]
-        if not any(place in description for place in SUB_UK):
+        if not any(re.search(rf"\b{p}\b", description) for p in SUB_UK):
             continue
+        named += 1
         tallied = TALLY["by_measure"][key]["reasons"].get(
             "devolved_share_not_modelled", 0
         )
         rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == key]
-        annotated = rows and all(_scope(r) in r["annotations"] for r in rows)
+        annotated = rows and all(
+            len(S.scope_annotations(BY_ID[r["external_claim_match"]["claim_id"]])) >= 1
+            and set(S.scope_annotations(BY_ID[r["external_claim_match"]["claim_id"]]))
+            <= set(r["annotations"])
+            for r in rows
+        )
         assert tallied or annotated, key
-        if rows:
-            assert _scope(rows[0]) is not None, key
+    assert named == 4  # Carer's Allowance, electricity, the payment, property
 
 
 # --- the pinned pairing -------------------------------------------------------
@@ -403,13 +452,18 @@ def test_every_sub_uk_measure_takes_a_tally_or_a_scope_annotation():
 
 def test_the_staging_pins_each_claims_file_column_and_row():
     pinned = json.loads(S.EXPECTED.read_text())["pairing"]
-    assert pinned == S.pairing(ROWS)
-    S.check(TALLY, ROWS)
+    assert pinned == S.pairing(ROWS, CLAIMS)
+    S.check(TALLY, ROWS, CLAIMS)
     shifted = copy.deepcopy(ROWS)
     year = shifted[0]["trace"]["where"]["year"]
     shifted[0]["trace"]["where"]["year"] = str(int(year) + 1)
     with pytest.raises(ValueError, match="pairing drifted"):
-        S.check(TALLY, shifted)
+        S.check(TALLY, shifted, CLAIMS)
+    moved = copy.deepcopy(CLAIMS)
+    paired = ROWS[0]["external_claim_match"]["claim_id"]
+    next(c for c in moved if c["claim_id"] == paired)["value"] += 1e6
+    with pytest.raises(ValueError, match="pairing drifted"):
+        S.check(TALLY, ROWS, moved)
 
 
 def test_the_cell_year_and_the_claim_year_agree():
