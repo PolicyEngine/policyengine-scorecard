@@ -475,7 +475,7 @@ IFS gives 21 own arithmetic calculations or scenario assumptions and 7 restated
 announced policy, target or reserve figures. The first lane assigned no exact
 registered AB2026 measure.
 
-The first lane's one proposed key here, for the £1.2bn a year of DIP funding, went with that row, which we dropped under the addendum as an allocation (see "Keys the addendum changed" above). With our rule 8 drops we also removed slide 4's and 8's targets, slide 5's financing and the two scenario inputs on slides 7 and 9, so the deck now gives 21 rows.
+The first lane's one proposed key here, for the £1.2bn a year of DIP funding, went with that row, which we dropped under the addendum as an allocation (see "Keys the addendum changed" above). With our rule 8 drops we also removed slide 4's and 8's targets, slide 5's financing and the two scenario inputs on slides 7 and 9, so we now stage 21 rows from the deck.
 
 For metrics the first lane reused `spending_pressure`, `forecast_spending_change`
 and `real_spending_growth` from AB2025, and used `real_spending_growth_revision`

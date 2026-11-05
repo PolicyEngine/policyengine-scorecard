@@ -40,7 +40,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - `python3 stage.py` rewrites the gzip.
   - `python3 stage.py --verify <path to the PDF>` writes nothing. It checks that the gzip on disk equals a fresh build and that the PDF has the pinned sha256. For every row it then checks the page we cite in its locator:
     - **table rows:** the heading, the six years, the six values in order and the row's value in its year's column. The row label must equal the page's label exactly, and any footnote must appear.
-    - **text rows:** the quote, verbatim, with `value_raw` inside it. `value` must equal `value_raw`'s number at the scale and sign the `normalization` names.
+    - **text rows:** the quote, verbatim, with `value_raw` inside it. `value` must equal `value_raw`'s number at the scale and sign we name in `normalization`.
     - **every keyed row:** the measure's title, on the note's first page.
   - All 597 rows pass. In an in-memory mutation test, the check caught each of: a wrong table value; swapped columns; a wrong or shortened label (p.82 without "[AME savings only]"); a text figure off by sign, scale or value; and a wrong title.
 - In a table row's `quote` we join the table's cells in reading order: heading | years | label and six values | footnote. On p.96 HM Treasury breaks its label across two lines as "Exchequ / er impact"; in the quote and `table_row` we write it "Exchequer impact".
@@ -201,7 +201,7 @@ How we settled each line:
   - HM Treasury prints lines 40-43 under Table 6.1's Spend head and prints no finer fiscal head, so nothing printed singles out one line. (HM Treasury doesn't print the workbook's hidden column D, "Fiscal Head check (hide)", and since review A's T-3 we no longer reason from it.)
   - But line 41's title, "Defence Investment Plan: Reallocate capital spending to fully fund the Defence Investment Plan", doesn't name the British Business Bank, and no figure ties the two.
   - So we give the row its own key and `document_position`, not line 41's key. From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). At ingest we score its six Exchequer rows (179–184) on this key alone and sum no row into a Table 6.1 line or total.
-- **pp.108-109.** In Table 6.1's footnote 2 HM Treasury writes: "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
+- **pp.108-109.** HM Treasury explains the exclusions in Table 6.1's footnote 2. It writes: "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
 
 We put a registry key on a `row_type: measure` row only when the key's title covers exactly the row's figure.
 

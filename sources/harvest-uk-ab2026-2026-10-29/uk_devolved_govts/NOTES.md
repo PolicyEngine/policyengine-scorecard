@@ -139,7 +139,7 @@ The lane fetched the [news release](https://www.gov.scot/news/uk-budget-delivers
 
 The Scottish Government attributes the figures to the UK Budget but doesn't separate the changes that newly announced decisions cause from the inherited funding path and inflation. It supplies no derivation, explicit comparison baseline or deflator year, so nobody can compare the five context rows directly with a cash-terms Barnett-consequentials table. The two component cash magnitudes agree with the printed total, and we recomputed none.
 
-The Scottish Government's page gives `2026-10-29T08:22:59Z` in its JSON-LD `dateModified`, and 28 October 2026 15:45 in its visible publication time and `dc.date.modified`. Nobody provided an earlier local copy, and the metadata don't show that the numbers changed. We pin the sole fetched version in the manifest, record both timestamps there and invent no second version.
+On its page the Scottish Government gives `2026-10-29T08:22:59Z` in JSON-LD `dateModified`, and 28 October 2026 15:45 in the visible publication time and `dc.date.modified`. Nobody provided an earlier local copy, and the metadata don't show that the numbers changed. We pin the sole fetched version in the manifest, record both timestamps there and invent no second version.
 
 ## Verification
 

@@ -361,7 +361,7 @@ The rework stopped before its report, so on 3 November we checked each instructi
 - **Rule 9 and the "Also fix" section.** We stage the 84% row as `unaffected_share`, as printed. We key no row to `ab2026__package_tax_gap_timely_payment`, and key line 45's items to line 45 as components. We name no measure without a Table 6.1 line as a package. No kept row has the scope of the coordinator's shared spellings (see "Keys we proposed").
 - **`component`.** Six rows still used `component` for a chart bar, and we moved them to `chart_bar`.
 - **Stale files.** We found no REPORT.md or spot-check files left in the family.
-- **Keys.** The coordinator harmonised keys across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the keys we proposed (above) give the final spellings.
+- **Keys.** The coordinator harmonised keys across families on 3 November. We record each rename in `stage.py`'s `KEY_MAP` and give the final spellings under "Keys we proposed" above.
 - **Checker:** 0 problems. **Determinism:** when we re-ran `stage.py` it reproduced the gzip and manifest byte for byte.
 - **Spot check: not repeated.** The brief asked for 15 random rows re-opened at their locators. The 3 November session's network policy refused gov.uk and assets.publishing.service.gov.uk (HTTP 403 at the proxy), so we fetched no primary and re-opened no row. The 30-row check above is the rework's own; nobody independent has checked this rework yet.
 
