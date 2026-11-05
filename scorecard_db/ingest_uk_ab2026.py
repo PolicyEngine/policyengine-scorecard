@@ -268,6 +268,9 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     "business_rates_bill_change": U,
     # sums over several years per driver or business
     "average_cumulative_gain": N,
+    # IFS's maximum gain per beneficiary, a statistic with no registered
+    # metric
+    "taxpayer_gain": N,
     # single-row quantities
     "housing_supply_change": N,
     "cash_receipts_change": N,
@@ -276,7 +279,6 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     "marginal_tax_amount": X,
     "marginal_take_home_pay": X,
     "net_weekly_income": X,
-    "taxpayer_gain": X,
     # bill levels
     "typical_energy_bill": E,
     # IFS's support per household over October 2026 to June 2027
@@ -334,6 +336,10 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
     ("uk_rf_ab2026", 90): ("£400", "income_path_not_a_policy_effect"),
     ("uk_rf_ab2026", 199): ("£600", "income_path_not_a_policy_effect"),
     ("uk_rf_ab2026", 202): ("£1,050", "income_path_not_a_policy_effect"),
+    # the red book's average gains per pub and per small business, outside
+    # the household model as business savings are
+    ("uk_hmt_redbook", 222): ("£3,000", "macro_fiscal_or_out_of_scope"),
+    ("uk_hmt_redbook", 233): ("£3,000", "macro_fiscal_or_out_of_scope"),
     # CenTax's percentage revenue changes
     ("uk_centax", 19): ("62%", "ratio_or_derived_quantity"),
     ("uk_centax", 20): ("88%", "earlier_estimate_restated"),
