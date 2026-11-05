@@ -50,7 +50,7 @@ Rows by measure key:
 
 | measure_key | rows | of which components (rule 9) |
 |---|---:|---:|
-| the 21 package keys below | 66 | 18 |
+| the 21 keys we proposed (below) | 66 | 18 |
 | `null`, context (no key) | 189 | 0 |
 | `ab2026__hmrc_tax_gap_package` | 73 | 67 |
 | `ab2026__pension_tax_allowance` | 12 | 0 |
@@ -134,10 +134,10 @@ We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British 
   - Exchequer costs: "positive = cost to the Exchequer (as printed; not re-signed)";
   - savings: "positive = saving to the Exchequer";
   - yields, including Table 6.3: "positive = yield to the Exchequer (reduces borrowing)";
-  - Table 1.3: "positive = increase in PSNB" (the opposite of Table 6.1's yield convention), except on its two memo lines, which give the change in the current budget deficit: "positive = increase in current budget deficit" (README rule 10, since 3 November);
+  - Table 1.3: "positive = increase in PSNB", the opposite of Table 6.1's yield convention. Its two memo lines give the change in the current budget deficit: "positive = increase in current budget deficit" (README rule 10, since 3 November);
   - Table 1.2: deficits and debt positive, surpluses negative, as printed;
-  - Chart 1.6's three bridge steps (rows 21, 22 and 24 at 4f424b9): "positive = reduction in current budget deficit (increase in stability rule headroom)", the reverse of Table 1.3's memo, as printed (Chart 1.6's "Effect of policy" +2.0 shows Table 1.3's policy memo −2.0 in 2029-30);
-  - Box 1.C: on each row we say what it measures and which way it runs ("positive = fall in borrowing (… as worded: fell by)", "as printed; positive = current budget deficit (% of GDP)" and so on; review A's RB-12);
+  - Chart 1.6's three bridge steps (rows 21, 22 and 24 at 4f424b9): "positive = reduction in current budget deficit (increase in stability rule headroom)". That reverses Table 1.3's memo, as printed: Chart 1.6's "Effect of policy" +2.0 shows Table 1.3's policy memo −2.0 in 2029-30;
+  - Box 1.C: on each row we say what it measures and which way it runs, for example "positive = fall in borrowing (… as worded: fell by)" and "as printed; positive = current budget deficit (% of GDP)" (review A's RB-12);
   - Barnett consequentials: "positive = increase in devolved government funding";
   - gains to a person or business: "positive = gain to the <payer> (…, as printed)", and row 185's CPI effect "positive = reduction in CPI inflation (as worded: reduce inflation by)" (RB-17).
 - **Periods.**
@@ -155,7 +155,7 @@ We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British 
   - the India agreement's UK, Scotland, Wales and Northern Ireland GDP effects (line 77). HM Treasury's UK figure covers the trade deal alone, without the Double Contributions Convention;
   - paragraph 3.22's six figures for line 14's real-terms freeze and SSB extension;
   - the British Business Bank's 40,000 jobs (line 29's capacity half, as in Policy Costings p.34);
-  - under package keys, the Tax and Spending parts of the OBR's policy effect, the three devolved Barnett consequentials and three parts of the regulatory administrative savings.
+  - under the keys we proposed, the Tax and Spending parts of the OBR's policy effect, the three devolved Barnett consequentials and three parts of the regulatory administrative savings.
 - **We use `component` for a part only.** Where our first staging used `component` for a Chapter 6 paragraph title on a whole-measure row, we now use `paragraph_heading`, and in the pension worked cases `quantity`. On 3 November we moved Chart 1.6's six headroom-bridge data labels, which the rework had left under `component`, to `chart_bar`.
 - **Attribution.** We mark OBR forecasts `restated` with source model `obr_efo_forecast`. We mark ONS, IMF, DWP, DBT and British Business Bank figures `restated` and name the original in their notes. We mark HM Treasury's own costings, counts and worked cases `own`.
 
@@ -186,7 +186,7 @@ We treat a spending figure as a measure's design unless the red book presents it
 | 37 Your First Home (Table 6.2 line 5) | £4.7 billion | -4,700 of financial transactions | dropped: a financial-transactions allocation |
 | 6.2 line 4 Sovereign AI | £60 million from 2027-28 | -45 a year | dropped |
 
-## Package keys (21)
+## Keys we proposed (21)
 
 We proposed each key below, and tranche 2 registered it and moved it into `measure_key`. We give each key the whole scope of its rows, as Table 6.1 lines or "no Table 6.1 line", with the red book's words.
 
@@ -195,7 +195,7 @@ We proposed each key below, and tranche 2 registered it and moved it into `measu
 - `ab2026__package_parliament_tax_gap_measures` (1 row): lines 45 and 46 plus the tax-gap measures of Autumn Budget 2024, Spring Statement 2025 and Budget 2025 (footnote 73). Paragraph 2.46: "the total due to be raised from measures to close the tax gap announced during this Parliament to over £12 billion in 2029-30".
 - `ab2026__package_property_and_savings_income_rates` (2 rows): exactly Table 6.1 lines 61 and 62. Paragraph 2.50: "84% of income tax payers will be unaffected by these changes"; "Around half of the revenue raised from this change is expected to come from the top 10% of households".
 - `ab2026__package_breathing_space_for_households` (1 row): paragraph 3.2's "Government action at this Budget to provide breathing space for households", which the OBR expects to reduce CPI inflation by 0.1 percentage points in 2027. The key crosses Table 6.1 lines, and the red book lists none for this figure.
-  - Three scopes are in play, and we keep the row on this key until tranche 2 settles them (the coordinator's call on review A's RB-17).
+  - The row fits three scopes, and we keep it on this key until we settle them in tranche 2 (the coordinator's call on review A's RB-17).
   - In Box 3.A HM Treasury's "breathing space for households" covers lines 1 and 2 (the Household Energy Payment and the VAT cut). In the OBR family we key the OBR's own CPI effect to lines 2 and 3 (`ab2026__package_fuel_duty_and_electricity_vat`). In Table 6.1 HM Treasury groups lines 1–11 under "Breathing space for families".
   - HM Treasury repeats the 0.1 percentage points in paragraph 1.38, which we don't stage.
 - `ab2026__energy_debt_circuit_breaker` (3 rows): no Table 6.1 line. Paragraph 3.8: "a new debt strategy to address this and act as a circuit breaker on energy debt … via reforms to prevent debt building up and a one-off targeted debt relief scheme for eligible households".
@@ -209,7 +209,7 @@ We proposed each key below, and tranche 2 registered it and moved it into `measu
 - `ab2026__package_defence_investment_plan` (1 row): the Defence Investment Plan published in June 2026, which no single line covers; HM Treasury puts its savings and funding in lines 40–42. Paragraph 5.34: "The Defence Investment Plan will create approximately 60,000 new jobs by 2029‑30 compared with 2023‑24." In the OBR family we stage the row on this key (paragraph 3.3's £1.8 billion a year) as the plan's RDEL funding part, a component (review A's K-2).
 - `ab2026__package_dwp_fraud_and_error_measures` (1 row): the "new measures" of paragraph 5.17, "expected to save an additional £1.4 billion over the forecast" (2026-27 to 2031-32). The red book doesn't list them.
   - HM Treasury makes paragraphs 6.19–6.22 line 47's own package (its footnote 4; Policy Costings pp.54–58, which we key as line 47 components in `uk_hmt_costings`).
-  - But the £1.4 billion reconciles with no printed basis for line 47. Table 6.1 prints +600m on line 47 over the forecast, and +940m with Table 6.2 line 9's +340m, and the costings sum to +570m. So we keep the figure off line 47's key (rule 3; review A's RB-8).
+  - But the £1.4 billion reconciles with no printed basis for line 47. HM Treasury prints +600m on Table 6.1 line 47 over the forecast, and +940m with Table 6.2 line 9's +340m, and the costings sum to +570m. So we keep the figure off line 47's key (rule 3; review A's RB-8).
 - `ab2026__package_welfare_fraud_and_error_savings_in_forecast` (1 row): this Budget's new fraud and error measures plus those already in the forecast. Paragraph 5.17: "bringing total savings from fraud and error to over £20 billion over the forecast". HM Treasury doesn't say which earlier measures count. We proposed the key as `ab2026__package_parliament_welfare_fraud_and_error_savings`; review A suggested dropping "parliament" from the name, and tranche 2 renamed it when it registered the key.
 - `ab2026__package_barnett_consequentials` (4 rows): the Barnett consequentials of "decisions confirmed at Budget", 2026-27 to 2029-30, excluding the technical reduction from lower employer pension contributions (paragraph 4.150).
   - The key crosses Table 6.1's England spending lines, and HM Treasury prints no line of its own for it.
@@ -232,7 +232,15 @@ No red-book figure covers exactly lines 1 and 2, or exactly lines 1, 2 and 3 (`a
 
 - **Proposed metrics:**
   - fiscal aggregates (restated): `government_borrowing`, `government_borrowing_change`, `government_debt`, `government_net_worth`, `fiscal_balance`, `fiscal_balance_change` (also Chart 1.6's three bridge steps, which change the stability rule's headroom, i.e. the 2029-30 current budget), `debt_interest_change`, `fiscal_consolidation_share`; `block_grant_effect` (AB2025 list);
-  - household and business effects: `household_tax_change` (AB2025 list; worked cases), `average_cumulative_gain` (multi-year savings), `aggregate_household_saving` (AB2025 spelling; consumer savings), `bill_change_percent` (business electricity bills), `gross_earnings_change` (AB2025 spelling), `business_cost_saving` (administrative savings to business; replaces `operating_cost_change`, which the enum defines as an official operating-cost line), `housing_supply_change` (the 20,000 additional homes), `jobs_created_or_supported` (the NWF's 100,000, the BBB's 40,000, Rolls-Royce's 3,300 and the DIP's 60,000; we don't use `affected_count`, which counts individuals affected, for jobs; review A's RB-9);
+  - household and business effects:
+    - `household_tax_change` (AB2025 list; worked cases);
+    - `average_cumulative_gain` (multi-year savings);
+    - `aggregate_household_saving` (AB2025 spelling; consumer savings);
+    - `bill_change_percent` (business electricity bills);
+    - `gross_earnings_change` (AB2025 spelling);
+    - `business_cost_saving` (administrative savings to business; replaces `operating_cost_change`, which the enum defines as an official operating-cost line);
+    - `housing_supply_change` (the 20,000 additional homes);
+    - `jobs_created_or_supported` (the NWF's 100,000, the BBB's 40,000, Rolls-Royce's 3,300 and the DIP's 60,000; we don't use `affected_count`, which counts individuals affected, for jobs; review A's RB-9);
   - shares with exact meanings: `unaffected_share` (the share printed as unaffected), `share_with_zero_liability` (half of RHL properties paying no rates), `share_in_non_gaining_deciles`, `share_in_net_recipient_deciles`, `income_mobility_share`, `share_in_top_half_of_expenditure` (Impact on households context).
 - **Proposed units:** `businesses` (15 rows), `dwellings` (1).
 - **Proposed baselines:** `hmt_no_budget_2026_modelled_policies` (paragraph 1.6, "a counterfactual in which the modelled policies were not introduced") and `hmt_no_policy_changes_from_ab2024_through_ab2026` (paragraph 1.8, "a counterfactual in which the modelled policies and spending settlements were not introduced"), one row each. We set `baseline_policy: null` on the other rows.
@@ -268,7 +276,12 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 - **Footnote 73's earlier-event yields** (£6.5 billion, over £1 billion, £2.4 billion): HM Treasury gives them for other fiscal events' measures, and we stage only this Budget's £2.3 billion and the £12 billion total.
 - **Background:** we don't stage macro forecasts that score no measure (GDP growth, inflation, employment, Table 1.1), departmental efficiency histories, Annex B budgets or Annex C charts.
 - **The abbreviated 29 October explainer:** HM Treasury gives no quantitative content in it.
-- **Other figures not staged (review A's RB-20(c)):** paragraph 5.17's Motability saving "over £1 billion over the next five years" (no Table 6.1 line); paragraph 3.7's £150 from Budget 2025 (an earlier event's measure); paragraph 4.36's reprioritisation savings (spending allocations); paragraph 4.42's National Wealth Fund and British Business Bank outcomes to date (effects before this Budget); and paragraph 6.9's £150 million (an allocation).
+- **Other figures not staged (review A's RB-20(c)):**
+  - paragraph 5.17's Motability saving "over £1 billion over the next five years" (no Table 6.1 line);
+  - paragraph 3.7's £150 from Budget 2025 (an earlier event's measure);
+  - paragraph 4.36's reprioritisation savings (spending allocations);
+  - paragraph 4.42's National Wealth Fund and British Business Bank outcomes to date (effects before this Budget);
+  - paragraph 6.9's £150 million (an allocation).
 - **Paragraph 1.38:** HM Treasury repeats the OBR's 0.1 percentage point CPI effect there; in row 185 we stage paragraph 3.2's.
 
 ## Judgement calls for the coordinator
@@ -285,10 +298,17 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 - **Spending figures that differ from Table 6.1:**
   - Social and Affordable Homes Programme: £1.5 billion (paras 5.4, 6.114) against line 35's -1,750 over 2027-28 to 2030-31.
   - Early years books: "£5 million a year for three years from 2027-28" (paras 3.20, 6.122) against line 9's -5 in 2026-27, 2027-28 and 2028-29. The amounts agree; the years don't.
-  - Local apprenticeship services £100 million (line 22: -120); Good Growth Funds £285 million in 2027-28 (line 20: -340); Strategic Authorities £150 million (line 25: -180); Union Learning Fund £15 million a year (line 73: -20 a year); Sovereign AI £60 million (Table 6.2 line 4: -45 a year).
+  - Local apprenticeship services £100 million (line 22: -120);
+  - Good Growth Funds £285 million in 2027-28 (line 20: -340);
+  - Strategic Authorities £150 million (line 25: -180);
+  - Union Learning Fund £15 million a year (line 73: -20 a year);
+  - Sovereign AI £60 million (Table 6.2 line 4: -45 a year).
   - DWP fraud and error: "an additional £1.4 billion over the forecast" (para 5.17) against line 47's +600m in total (+940m with Table 6.2 line 9; the Policy Costings' +570m).
 - **Regulatory savings target:** HM Treasury prints "£5.6 million" in paragraph 6.36 and "£5.6 billion" in paragraph 4.51. It gives different printed scopes to the executive summary's "almost £800 million per year" and paragraph 4.52's "up to … £640 million per annum", and we keep both.
-- **Repeated amounts that disagree (not staged after rule 8):** local AI partnerships £30 million (para 4.135) and £15 million (para 6.101); Leeds College of Building £28 million (para 4.71) and £15 million (para 6.53); business tariff suspensions on 269 goods (para 3.28), 350 goods (para 4.147) and 361 extensions plus 72 new suspensions (line 16's title).
+- **Repeated amounts that disagree (not staged after rule 8):**
+  - local AI partnerships £30 million (para 4.135) and £15 million (para 6.101);
+  - Leeds College of Building £28 million (para 4.71) and £15 million (para 6.53);
+  - business tariff suspensions on 269 goods (para 3.28), 350 goods (para 4.147) and 361 extensions plus 72 new suspensions (line 16's title).
 - **Pubs relief:** HM Treasury writes the extra relief as "20%" in the text and as "20ppts" in Table 6.1.
 - **Table 1.3:** HM Treasury labels the new forecast "November 2026 forecast" in an October Budget. In Chart 1.6 it prints 14.5 where the text says £15 billion. Its "Debt is lower at the end of the forecast" fits public sector net financial liabilities (83.2% to 81.7%), while public sector net debt goes from 95.5% to 95.6%.
 - **Paragraphs 6.225 and 6.226:** HM Treasury repeats the Machine Games Duty measure. In Annex A footnote 181 it points to A.17 for green gilts, which A.19 covers.
@@ -338,10 +358,10 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 The rework stopped before its report, so on 3 November we checked each instruction of `briefs/rework-hmt-redbook.md` (on the staging branch) against the rows:
 
 - **Removed metrics.** No `policy_parameter` row remained. Of the nine allocation and financing metrics, only `spending_to_tax_ratio` remained, on one row (paragraph 1.10's "over four times"). We kept it then as a distributional statement printed in Impact on households, which item 3 of the brief keeps, not the fiscal aggregate the drop list targets. See the judgement calls above.
-- **Rule 9 and the "Also fix" section.** We stage the 84% row as `unaffected_share`, as printed. We key no row to `ab2026__package_tax_gap_timely_payment`, and key line 45's items to line 45 as components. We name no measure without a Table 6.1 line as a package. No kept row has the scope of the coordinator's shared spellings (see "Package keys").
+- **Rule 9 and the "Also fix" section.** We stage the 84% row as `unaffected_share`, as printed. We key no row to `ab2026__package_tax_gap_timely_payment`, and key line 45's items to line 45 as components. We name no measure without a Table 6.1 line as a package. No kept row has the scope of the coordinator's shared spellings (see "Keys we proposed").
 - **`component`.** Six rows still used `component` for a chart bar, and we moved them to `chart_bar`.
 - **Stale files.** We found no REPORT.md or spot-check files left in the family.
-- **Keys.** The coordinator harmonised keys across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the package keys above give the final spellings.
+- **Keys.** The coordinator harmonised keys across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the keys we proposed (above) give the final spellings.
 - **Checker:** 0 problems. **Determinism:** when we re-ran `stage.py` it reproduced the gzip and manifest byte for byte.
 - **Spot check: not repeated.** The brief asked for 15 random rows re-opened at their locators. The 3 November session's network policy refused gov.uk and assets.publishing.service.gov.uk (HTTP 403 at the proxy), so we fetched no primary and re-opened no row. The 30-row check above is the rework's own; nobody independent has checked this rework yet.
 
