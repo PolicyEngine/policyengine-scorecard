@@ -21,6 +21,9 @@ from pipeline import uk_replay_variants as variants
 EVENT = "autumn_budget_2024"
 KEY = f"{EVENT}__capital_gains_main_rates_and_reliefs"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+SURCHARGE = f"{EVENT}__sdlt_additional_dwelling_surcharge_2pp"
+ENACTED_RATES = (0.05, 0.07, 0.1, 0.15, 0.17)
+ALLOWANCE = "spring_statement_2025__uc_standard_allowance_above_inflation"
 
 
 def selected_revision():
@@ -96,6 +99,270 @@ def test_staging_reads_recorded_revision_activation(tmp_path, monkeypatch, revis
             stage.stage_event(
                 registry, manifest, artifact_dir=tmp_path, registry_sha256="b" * 64
             )
+
+
+def surcharge_measure():
+    registry = json.loads(
+        (compute.ROOT / f"data/uk/events/{EVENT}_measures.json").read_bytes()
+    )
+    return next(m for m in registry["measures"] if m["measure_key"] == SURCHARGE)
+
+
+def surcharge_revision():
+    held = dict(zip(sorted(surcharge_measure()["pe_reform_delta"]), ENACTED_RATES))
+    return revisions.select_revision(
+        SURCHARGE, lambda path: {}, lambda path, date: held[path]
+    )
+
+
+@pytest.mark.parametrize("aggregate", [(1000.0, 1300.0), (1000.0, 1000.0)])
+def test_staging_scores_the_reversal_from_the_activation_year(
+    tmp_path, monkeypatch, aggregate
+):
+    """A moved 2025 row stages as computed; an unmoved one stays inert."""
+    measure = surcharge_measure()
+    registry = json.loads(
+        (compute.ROOT / f"data/uk/events/{EVENT}_measures.json").read_bytes()
+    )
+    registry["measures"] = [measure]
+    registry["calendar_years"] = [2024, 2025]
+    evidence = surcharge_revision()
+    world = revisions.apply_selected_revision(
+        SURCHARGE,
+        worlds.worlds_for(measure, {SURCHARGE: measure}, years=[2024, 2025]),
+        evidence,
+    )
+    variables = compute.variable_channels(measure)
+
+    def simulation(amount):
+        return {
+            "aggregates_gbp": {v: amount for v in variables},
+            "variable_metadata": {v: {} for v in variables},
+            "policyengine_bundle": {
+                "model_version": "test",
+                "certified_data_build_id": "test",
+            },
+            "dataset_sha256_before": "a" * 64,
+            "dataset_sha256_after": "a" * 64,
+        }
+
+    artifacts = {}
+    for year, (before, after) in {2024: (1.0, 1.0), 2025: aggregate}.items():
+        artifact = compute.build_artifact(
+            measure=measure,
+            world=world,
+            year=year,
+            baseline=simulation(before),
+            reform=simulation(after),
+            certified=simulation(after),
+            registry_sha256="b" * 64,
+            event=EVENT,
+        )
+        assert artifact["construction"] == "reversal_on_certified_world"
+        payload = compute.canonical_bytes(artifact)
+        name = f"surcharge_{year}.json"
+        (tmp_path / name).write_bytes(payload)
+        artifacts[name] = hashlib.sha256(payload).hexdigest()
+    manifest = {
+        "event": EVENT,
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": artifacts,
+        "construction_revisions": {SURCHARGE: evidence},
+    }
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
+    manifest["statement_version"] = "authored_engine_label.v2"
+    rows, tally = stage.stage_event(
+        registry, manifest, artifact_dir=tmp_path, registry_sha256="b" * 64
+    )
+    assert bool(tally.get("inert_measure_years")) is (aggregate[0] == aggregate[1])
+    label = f"Authored against policyengine-uk {revisions.AUTHORED_ENGINE}: "
+    assert rows[0]["partial_missing"] == [
+        label + leg for leg in measure["missing_legs"]
+    ]
+    assert {row["construction"] for row in rows} == {"reversal_on_certified_world"}
+
+
+LEGS = {"measure_key": "a_measure", "missing_legs": ["first leg", "second leg"]}
+
+
+def test_a_sealed_namespace_states_its_legs_as_it_always_did(tmp_path):
+    (tmp_path / "RUN_MANIFEST.json").write_text(json.dumps({"variant_id": "variant"}))
+    identity = compare.run_identity(tmp_path)
+    assert "statement_version" not in identity
+    assert revisions.stated_missing_legs(LEGS, identity) == ("", LEGS["missing_legs"])
+
+
+def test_a_run_recording_the_statement_labels_its_legs_as_authored_elsewhere(tmp_path):
+    (tmp_path / "RUN_MANIFEST.json").write_text(
+        json.dumps(
+            {
+                "variant_id": "variant",
+                "statement_version": "authored_engine_label.v2",
+            }
+        )
+    )
+    identity = compare.run_identity(tmp_path)
+    label, legs = revisions.stated_missing_legs(LEGS, identity)
+    assert label == f"Authored against policyengine-uk {compare.LEGACY_ENGINE}: "
+    assert revisions.AUTHORED_ENGINE == compare.LEGACY_ENGINE
+    assert legs == LEGS["missing_legs"]
+    assert revisions.stated_missing_legs({"measure_key": "a"}, identity) == ("", [])
+
+
+def test_staged_rows_and_the_export_state_the_legs_as_the_comparison_does(tmp_path):
+    from pipeline import export_uk_events_dashboard as export
+
+    run = {"statement_version": "authored_engine_label.v2"}
+    label, legs = revisions.stated_missing_legs(LEGS, run)
+    assert export.stated_legs(LEGS, run) == [label + leg for leg in legs]
+    assert export.stated_legs(LEGS, {}) == LEGS["missing_legs"]
+    assert export.stated_legs({"measure_key": "a", "missing_legs": None}, {}) == []
+
+
+def test_the_export_labels_frozen_reasons_as_the_comparison_does():
+    from pipeline import export_uk_events_dashboard as export
+
+    run = {"statement_version": "authored_engine_label.v2"}
+    measure = {
+        "pe_gap": "The engine lacks this",
+        "classification": "not_expressible",
+    }
+    assert export.measure_reason(measure, [], {}) == measure["pe_gap"]
+    assert (
+        export.measure_reason(measure, [], run)
+        == revisions.AUTHORED_LABEL + measure["pe_gap"]
+    )
+    scoped = {
+        "classification": "out_of_household_scope",
+        "source_rows": [
+            {
+                "classification": "out_of_household_scope",
+                "classification_reason": "Outside household scope",
+            }
+        ],
+    }
+    assert export.measure_reason(scoped, [], {}) == "Outside household scope"
+    assert export.measure_reason(scoped, [], run) == (
+        revisions.AUTHORED_LABEL + "Outside household scope"
+    )
+
+
+@pytest.mark.parametrize(
+    ("classification", "field"),
+    [("not_expressible", "pe_gap"), ("out_of_household_scope", "scope_reason")],
+)
+def test_staging_labels_a_frozen_reason_only_on_a_run_recording_the_statement(
+    tmp_path, monkeypatch, classification, field
+):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", lambda *a, **k: None)
+    measure = {
+        "measure_key": "a_measure",
+        "title": "A measure",
+        "classification": classification,
+        "computability": classification,
+        field: "A frozen reason",
+        "source_rows": [
+            {
+                "source_row_id": "a_row",
+                "fy": "2024-25",
+                "metric": "a metric",
+                "value_gbp": 1.0,
+                "tax_head": "Income tax",
+            }
+        ],
+    }
+    registry = {
+        "event_slug": EVENT,
+        "calendar_years": [2024],
+        "measures": [measure],
+    }
+    manifest = {
+        "event": EVENT,
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": {},
+    }
+
+    def staged_reason(run):
+        rows, _ = stage.stage_event(
+            registry, run, artifact_dir=tmp_path, registry_sha256="b" * 64
+        )
+        return rows[0]["reason"]
+
+    assert staged_reason(manifest) == "A frozen reason"
+    assert staged_reason(
+        {**manifest, "statement_version": "authored_engine_label.v2"}
+    ) == (revisions.AUTHORED_LABEL + "A frozen reason")
+
+
+def test_staged_notes_state_what_the_run_recorded():
+    sealed = stage.behaviour_note()
+    assert "PE is static" in sealed
+    assert stage.behaviour_note({"variant_id": "sealed"}) == sealed
+    static_engine = {"response_parameters": {"a": 0, "b": False}}
+    assert stage.behaviour_note(static_engine) == sealed
+    responsive = stage.behaviour_note({"response_parameters": {"a": 1.0}})
+    assert "static" not in responsive
+    assert "capital gains and labour supply response parameters" in responsive
+    variant = {
+        "identity": {
+            "dataset": {"path": "d.h5", "repo_id": "org/repo", "revision": "r"}
+        }
+    }
+    assert "later calibration" in stage.population_note(variant)
+    current = stage.population_note(
+        variant, {"statement_version": "authored_engine_label.v2"}
+    )
+    assert "later calibration" not in current
+    assert "d.h5, org/repo r" in current
+
+
+def test_the_variant_description_states_the_fiscal_year_windows_it_ran():
+    identity = {
+        "engine_version": "2.151.0",
+        "policyengine_version": "6.11.1",
+        "data_bundle": "bundle",
+        "data_years": [2024],
+    }
+    sealed = compare.variant_description(identity)
+    assert "whole fiscal years" not in sealed
+    current = compare.variant_description(
+        {**identity, "statement_version": "authored_engine_label.v2"}
+    )
+    assert "explicit 1 January windows" in current
+    assert "whole fiscal years" in current
+
+
+def test_a_selected_revision_restates_the_legs_for_its_engine():
+    frozen = next(
+        measure
+        for measure in json.loads(
+            (
+                compute.ROOT / "data/uk/events/spring_statement_2025_measures.json"
+            ).read_bytes()
+        )["measures"]
+        if measure["measure_key"] == ALLOWANCE
+    )
+    evidence = revisions.select_revision(
+        ALLOWANCE,
+        lambda path: {
+            "uprating": "gov.economic_assumptions.indices.uc_standard_allowance"
+        },
+    )
+    identity = {
+        "construction_revisions": {ALLOWANCE: evidence},
+        "statement_version": "authored_engine_label.v2",
+    }
+    label, legs = revisions.stated_missing_legs(frozen, identity)
+    assert label == ""
+    assert any("policyengine-uk#2239" in leg for leg in frozen["missing_legs"])
+    assert not any("policyengine-uk#2239" in leg or "unused" in leg for leg in legs)
+    note = compare.construction_note(frozen, identity=identity)
+    assert "standard_allowance_uplift" not in note
+    assert "policyengine-uk 2.89.2" in note
 
 
 def test_comparison_note_reports_the_revision_that_ran(tmp_path):

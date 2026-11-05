@@ -1,0 +1,4777 @@
+{
+ "corpus": {
+  "corpus_version": "uk-fiscal-event-replay/2",
+  "events": {
+   "autumn_budget_2024": {
+    "artifacts": 30,
+    "comparison_provenance_sha256": "9ab791bcb9223b7654146f9e9a39d8e6cb5e3c1a2ef5eac48c3423a13946e020",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+    "run_manifest_sha256": "b53da9bf1a6c39d59a24c5373b97cab57bc42c0d6fd0527b9da3ca7540461044",
+    "staging_manifest_sha256": "1fd490655bf0c50dce9c80097fb3dd05e96cb96fc3df5ef21623a665a18566c8",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   },
+   "autumn_budget_2025": {
+    "artifacts": 54,
+    "comparison_provenance_sha256": "40ec1286502394cab794c8039b2ab653dcc2a42941289fee300217d19b21871b",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+    "run_manifest_sha256": "73202530aba6d28d2ea35d32ea6f7198098861b1be75d576a9ffc2c1312176c2",
+    "staging_manifest_sha256": "c5ad176254d3dbf08e7a99988b94e21337873f20c205f9f569911d7e06165b51",
+    "supported_years": [
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   },
+   "autumn_statement_2023": {
+    "artifacts": 20,
+    "comparison_provenance_sha256": "3df4194364f8515047ca476f4b47345ab880b9785ef36f5cd7e336bf2ef0ca98",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+    "run_manifest_sha256": "f484ac710ec06b6e4ffeca30e1c49aaf6a7bb91921b5de63c6289cf0c5b447a2",
+    "staging_manifest_sha256": "1be5f3c6a1eba5df52b8d36e7c47c6f377b36399993d1996c2ca0a15a57d34a1",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2023": {
+    "artifacts": 8,
+    "comparison_provenance_sha256": "a460646a28db3cd9cddf32e85effbad5752edf28b31e0b2c9526723f54305b85",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+    "run_manifest_sha256": "adabd9aee1c3fd7e131f80e0c179c93a0b6d622fe458652025e06b7730fcb5eb",
+    "staging_manifest_sha256": "d9f833c212f59f2d64cbf32ccd8345ac5ec1402ad531f53ed095e6ccf91b6691",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2024": {
+    "artifacts": 15,
+    "comparison_provenance_sha256": "14bee27bc5141d9a804334c49049c44599c86eb68017bb09c8e36936287d3708",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+    "run_manifest_sha256": "b4b5f0d168141755bd88b4c7f747e10d4c1ad6e41d6103699f8991739edaae76",
+    "staging_manifest_sha256": "119e65551c9c0542c40770cb1839fae551611f2ba1c0b7f840616b1231593554",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_statement_2025": {
+    "artifacts": 12,
+    "comparison_provenance_sha256": "41889d9bf8327ed45977851414a33bff6ffe1596ec9728d4f39ce42f2e568a80",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+    "run_manifest_sha256": "7d674f608fa74782e5e02d4af4523dd59daa9b90c4af39895db0bdc87611f77d",
+    "staging_manifest_sha256": "5f0a5871a00944ae0d56439bc66830f0b95973dc7fa408b3a59c9d3a5ef98836",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   }
+  }
+ },
+ "diff": {
+  "base_events": {
+   "autumn_budget_2024": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "b18b8f3ce6bea817d1880dd9e5af8ea01c035106307947875575fe4342103b13",
+    "staging_manifest_sha256": "9a271557acc76c59e60f998e7f70872641a846b1498efdd7c91a372f5567ed7e",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": []
+   },
+   "autumn_budget_2025": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "c8e604e2747ac24bb2df031f2405a00cd529df8d2b0996642b5a2b122e7404ec",
+    "staging_manifest_sha256": "ab2cd354029d460bfde5ee0636e9712925e6c006b7ba3ebf71b68c78f7c295f7",
+    "supported_years": [
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030
+    ],
+    "unsupported_measure_years": []
+   },
+   "autumn_statement_2023": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "517f62bd46c4b5c852498ab9b641c5e9b59b85f3ad6778895ecbd01229a51012",
+    "staging_manifest_sha256": "728d680266cbfa4abbd83f25dba1b60329d4cf088cdee26cfaa8dafc67d4a588",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2023": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "da417dd54cbf30f65db067a122573e04f43fd4ce1796e1ab69f716209c9f7c8d",
+    "staging_manifest_sha256": "93cb879be9eb37d7ef3cfb94378fef5e05aaa8b2b599c057294dbd7f4078a109",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2024": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "0aa95a7bd84f887625336d4736e977a8afd7c1ee8c9ccdd8dbad076c13f196f7",
+    "staging_manifest_sha256": "459d11bb5178804bdf7defe24517e4d1b22030aecbdf4bff1570c1c5cff060ef",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_statement_2025": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "4c98c28fa872e00596c179c4d1bebdd038a0b78205a324e4feaf70ad643f0fdf",
+    "staging_manifest_sha256": "17591fcd0a3dff87932c57bd427ef201be583b4b4e8964d60356fc0c081732ab",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": []
+   }
+  },
+  "base_variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+  "diff_sha256": "a7f43f1f2096775780a0180b6e133c30bce6c9ef534ed2211868dcb9a1165c64",
+  "flag_counts": {
+   "construction": 28,
+   "coverage": 0,
+   "inertness": 0,
+   "mapping": 0,
+   "numerical": 350,
+   "structural": 20,
+   "support": 0
+  },
+  "flagged_rows": [
+   {
+    "base_gbp": 1550022671.5589142,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1134594783.8622055,
+    "key": "obr_pmd_nov2025:11682:73295721bdfdb9e8",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2024
+   },
+   {
+    "base_gbp": 1550022671.5589142,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 1134594783.8622055,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2024
+   },
+   {
+    "base_gbp": 1550022671.5589142,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1134594783.8622055,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2024
+   },
+   {
+    "base_gbp": 3770083169.6045036,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2722698142.785824,
+    "key": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2025
+   },
+   {
+    "base_gbp": 3770083169.6045036,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 2722698142.785824,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2025
+   },
+   {
+    "base_gbp": 3770083169.6045036,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2722698142.785824,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2025
+   },
+   {
+    "base_gbp": 3898620463.1196365,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2812737639.9696045,
+    "key": "obr_pmd_nov2025:11684:0d39628e9b763f67",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2026
+   },
+   {
+    "base_gbp": 3898620463.1196365,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 2812737639.9696045,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2026
+   },
+   {
+    "base_gbp": 3898620463.1196365,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2812737639.9696045,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2026
+   },
+   {
+    "base_gbp": 4045036316.7223587,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2917394940.4458046,
+    "key": "obr_pmd_nov2025:11685:440412b0fb8c6e2d",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2027
+   },
+   {
+    "base_gbp": 4045036316.7223587,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 2917394940.4458046,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2027
+   },
+   {
+    "base_gbp": 4045036316.7223587,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2917394940.4458046,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2027
+   },
+   {
+    "base_gbp": 4193359849.4749413,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3024514956.8083267,
+    "key": "obr_pmd_nov2025:11686:9ceb140875d859b8",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2028
+   },
+   {
+    "base_gbp": 4193359849.4749413,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 3024514956.8083267,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2028
+   },
+   {
+    "base_gbp": 4193359849.4749413,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3024514956.8083267,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2028
+   },
+   {
+    "base_gbp": 4342965205.519695,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3123024840.904125,
+    "key": "obr_pmd_nov2025:11687:f738e039412d9872",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2029
+   },
+   {
+    "base_gbp": 4342965205.519695,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 3123024840.904125,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2029
+   },
+   {
+    "base_gbp": 4342965205.519695,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3123024840.904125,
+    "key": "capital_gains_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+    "year": 2029
+   },
+   {
+    "base_gbp": -7386034119.304382,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7205942050.263733,
+    "key": "obr_pmd_nov2025:11665:72598886f546ef8c",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": 24149885129.753723,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 23715567496.11444,
+    "key": "obr_pmd_nov2025:11671:291070a94715062c",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": 16763851010.44934,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 16509625445.850706,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -7386034119.304382,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7205942050.263733,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1368032281.1923218,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1335573462.0984497,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": 25516770814.80533,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 25050171072.05298,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -7697074774.756592,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7513209393.134705,
+    "key": "obr_pmd_nov2025:11666:e4413c7487d85ddf",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": 24695668903.14012,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 24257821612.877132,
+    "key": "obr_pmd_nov2025:11672:0b55202125025854",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": 16998594128.38353,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 16744612219.742428,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -7697074774.756592,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7513209393.134705,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1380281513.4154587,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1346613217.257225,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": 26074735556.52948,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 25603426735.229736,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -7928312596.510254,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7746053905.06604,
+    "key": "obr_pmd_nov2025:11667:35345df3785dfdea",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": 25124401420.266373,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 24682904779.748142,
+    "key": "obr_pmd_nov2025:11673:94b8906a8929f113",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": 17196088823.75612,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 16936850874.6821,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -7928312596.510254,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7746053905.06604,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1385095609.1656494,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1350498747.164482,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": 26507226206.88098,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 26032391634.00824,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": 2270822.5510411263,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1011892.9043831825,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -8146583277.683411,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7981541252.621338,
+    "key": "obr_pmd_nov2025:11668:a076a7d6b3992e7c",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": 25525523587.382786,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 25080301103.92578,
+    "key": "obr_pmd_nov2025:11674:6dd4d473c559cbea",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": 17378940309.699375,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 17098759851.304443,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": -8146583277.683411,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -7981541252.621338,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1392020061.2333374,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1356963062.2605057,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": 26914969868.6698,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 26436279602.105316,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": 2573779.946322441,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 984564.080971241,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2028
+   },
+   {
+    "base_gbp": -8452569874.286377,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -8218171417.0164795,
+    "key": "obr_pmd_nov2025:11669:1cedd72c387ad84b",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": 26099396222.63046,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 25764196448.405834,
+    "key": "obr_pmd_nov2025:11675:286359ea5a53fc94",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": -8452569874.286377,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -8218171417.0164795,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": -1396854405.8379974,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1357649538.617981,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": 27494041977.34903,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 27120670062.915527,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": 2208651.119427681,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1175924.1082882881,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "year": 2029
+   },
+   {
+    "base_gbp": 0.0,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 0.0,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 1874276691.4866276,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 984052885.2885437,
+    "key": "obr_pmd_nov2025:11647:b269082735adb83b",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 1874276691.4866276,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 984052885.2885437,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 1874276691.4866276,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 984052885.2885437,
+    "key": "stamp_duty_land_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 1936335863.399849,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1011499259.4866886,
+    "key": "obr_pmd_nov2025:11648:48bd77ddd06dec27",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 1936335863.399849,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 1011499259.4866886,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 1936335863.399849,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1011499259.4866886,
+    "key": "stamp_duty_land_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 2006275201.0966282,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1044683838.1896744,
+    "key": "obr_pmd_nov2025:11649:910077d14a180f90",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 2006275201.0966282,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 1044683838.1896744,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 2006275201.0966282,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1044683838.1896744,
+    "key": "stamp_duty_land_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 2080201378.9827652,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1077181782.0985355,
+    "key": "obr_pmd_nov2025:11650:068acce8b0873200",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 2080201378.9827652,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 1077181782.0985355,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 2080201378.9827652,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1077181782.0985355,
+    "key": "stamp_duty_land_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 2151199276.5197487,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1110051367.7275906,
+    "key": "obr_pmd_nov2025:11651:9a7327566a66890c",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 2151199276.5197487,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical",
+     "structural",
+     "construction"
+    ],
+    "head_gbp": 1110051367.7275906,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 2151199276.5197487,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1110051367.7275906,
+    "key": "stamp_duty_land_tax",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 389528199.3039839,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 398952360.32681584,
+    "key": "obr_pmd_nov2025:22854:edbde987f66af165",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2025
+   },
+   {
+    "base_gbp": 389528199.3039839,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 398952360.32681584,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2025
+   },
+   {
+    "base_gbp": 389528199.3039839,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 398952360.32681584,
+    "key": "winter_fuel_allowance",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2025
+   },
+   {
+    "base_gbp": 386714376.2947836,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 391205439.67055917,
+    "key": "obr_pmd_nov2025:22856:c29981419df6c6f6",
+    "level": "source_row",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2027
+   },
+   {
+    "base_gbp": 386714376.2947836,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 391205439.67055917,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2027
+   },
+   {
+    "base_gbp": 386714376.2947836,
+    "event": "autumn_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 391205439.67055917,
+    "key": "winter_fuel_allowance",
+    "level": "head",
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2027
+   },
+   {
+    "base_gbp": 1084916555.9730835,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1036786802.9457397,
+    "key": "obr_pmd_nov2025:12307:90ac5224d0623421",
+    "level": "source_row",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 1084916555.9730835,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1036786802.9457397,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 1084916555.9730835,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1036786802.9457397,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 1120384024.1398315,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1069976381.887146,
+    "key": "obr_pmd_nov2025:12308:5c1e45be5eff2e8d",
+    "level": "source_row",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 1120384024.1398315,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1069976381.887146,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 1120384024.1398315,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1069976381.887146,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 1156191002.9865723,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1103696444.7578125,
+    "key": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+    "level": "source_row",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1156191002.9865723,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1103696444.7578125,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1156191002.9865723,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1103696444.7578125,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1191631654.8273926,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1136814179.9103394,
+    "key": "obr_pmd_nov2025:12310:28dedd8eb897f229",
+    "level": "source_row",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1191631654.8273926,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1136814179.9103394,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1191631654.8273926,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1136814179.9103394,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1229878296.137329,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1172436061.055664,
+    "key": "obr_pmd_nov2025:12311:9143a3313d158e51",
+    "level": "source_row",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1229878296.137329,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1172436061.055664,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1229878296.137329,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1172436061.055664,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__dividend_rates_plus_2pp",
+    "year": 2030
+   },
+   {
+    "base_gbp": -90732724.59204102,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -88643758.77825928,
+    "key": "obr_pmd_nov2025:12255:0fd29e509efbba1c",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 332150671.47394323,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 326674866.80841017,
+    "key": "obr_pmd_nov2025:12261:317b60a83974bf6d",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 241417946.88190222,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 238031108.0301509,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": -90732724.59204102,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -88643758.77825928,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 352473494.9515686,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 346456219.2671509,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": -195626397.5409546,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -191175849.63867188,
+    "key": "obr_pmd_nov2025:12256:5509231f1d1fc426",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 704059147.7843323,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 692514141.628614,
+    "key": "obr_pmd_nov2025:12262:370b9fb9250ec360",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 508432750.2433777,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 501338291.9899421,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": -195626397.5409546,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -191175849.63867188,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": -42754921.09816742,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -41479119.567863464,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 746736978.3234863,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 733960764.2319031,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": -308540728.58514404,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -299701343.0149536,
+    "key": "obr_pmd_nov2025:12257:95f2605d4a114c10",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1087328759.307764,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1069499617.9791269,
+    "key": "obr_pmd_nov2025:12263:b231bc602cc23fb2",
+    "level": "source_row",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 778788030.72262,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 769798274.9641733,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": -308540728.58514404,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -299701343.0149536,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": -65805571.11530304,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -63776630.703681946,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1153006200.9826355,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1133206624.0112305,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 321315937.7957275,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 208102701.30510443,
+    "key": "obr_pmd_nov2025:12375:297fca1f0cf23095",
+    "level": "source_row",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2028
+   },
+   {
+    "base_gbp": 321315937.7957275,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 208102701.30510443,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2028
+   },
+   {
+    "base_gbp": 321315937.7957275,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 208102701.30510443,
+    "key": "high_value_council_tax_surcharge",
+    "level": "head",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2028
+   },
+   {
+    "base_gbp": 329184007.7691322,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 213198516.44755194,
+    "key": "obr_pmd_nov2025:12376:d658edd74795036b",
+    "level": "source_row",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2029
+   },
+   {
+    "base_gbp": 329184007.7691322,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 213198516.44755194,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2029
+   },
+   {
+    "base_gbp": 329184007.7691322,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 213198516.44755194,
+    "key": "high_value_council_tax_surcharge",
+    "level": "head",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2029
+   },
+   {
+    "base_gbp": 337277917.3249649,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 218440598.0678346,
+    "key": "obr_pmd_nov2025:12377:ca5b9686e623d09c",
+    "level": "source_row",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2030
+   },
+   {
+    "base_gbp": 337277917.3249649,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 218440598.0678346,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2030
+   },
+   {
+    "base_gbp": 337277917.3249649,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 218440598.0678346,
+    "key": "high_value_council_tax_surcharge",
+    "level": "head",
+    "measure_key": "ab2025__high_value_council_tax_surcharge",
+    "year": 2030
+   },
+   {
+    "base_gbp": 3814153843.7734985,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3735926607.7990723,
+    "key": "obr_pmd_nov2025:12237:0c8c820d59cc8062",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": -56959878.002838135,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -58714624.55004883,
+    "key": "obr_pmd_nov2025:23918:cb97d1297e767678",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 3757193965.7706604,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3677211983.2490234,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 3814153843.7734985,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3735926607.7990723,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": -56959878.002838135,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -58714624.55004883,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2028
+   },
+   {
+    "base_gbp": 7797945576.723511,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 7715781394.424744,
+    "key": "obr_pmd_nov2025:12238:ed7d488b306dcf83",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": -115663441.58189392,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -117810209.99662781,
+    "key": "obr_pmd_nov2025:23919:d57980273e85240e",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 7682282135.141617,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 7597971184.428116,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 7797945576.723511,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 7715781394.424744,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": -115663441.58189392,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -117810209.99662781,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2029
+   },
+   {
+    "base_gbp": 12092469314.096436,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 11962867192.333069,
+    "key": "obr_pmd_nov2025:12239:11eea01fb370a818",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": -176877816.26739502,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -174406676.1335907,
+    "key": "obr_pmd_nov2025:23920:07fdfe7c4df486ae",
+    "level": "source_row",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 11915591497.82904,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 11788460516.199478,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 12092469314.096436,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 11962867192.333069,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": -176877816.26739502,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -174406676.1335907,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "year": 2030
+   },
+   {
+    "base_gbp": 450426188.93621826,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 394975579.2190552,
+    "key": "obr_pmd_nov2025:12284:4b5e915d45bc4a6b",
+    "level": "source_row",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2027
+   },
+   {
+    "base_gbp": 450426188.93621826,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 394975579.2190552,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2027
+   },
+   {
+    "base_gbp": 450426188.93621826,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 394975579.2190552,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2027
+   },
+   {
+    "base_gbp": 467224989.90667725,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 409467682.7702637,
+    "key": "obr_pmd_nov2025:12285:75dff87b1a3e5f53",
+    "level": "source_row",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2028
+   },
+   {
+    "base_gbp": 467224989.90667725,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 409467682.7702637,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2028
+   },
+   {
+    "base_gbp": 467224989.90667725,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 409467682.7702637,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2028
+   },
+   {
+    "base_gbp": 484365538.88830566,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 424522115.3671875,
+    "key": "obr_pmd_nov2025:12286:9fd0f4d9d9482bcc",
+    "level": "source_row",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2029
+   },
+   {
+    "base_gbp": 484365538.88830566,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 424522115.3671875,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2029
+   },
+   {
+    "base_gbp": 484365538.88830566,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 424522115.3671875,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2029
+   },
+   {
+    "base_gbp": 502100846.9569092,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 439996604.5279541,
+    "key": "obr_pmd_nov2025:12287:19f9ac9e5f5eff97",
+    "level": "source_row",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2030
+   },
+   {
+    "base_gbp": 502100846.9569092,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 439996604.5279541,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2030
+   },
+   {
+    "base_gbp": 502100846.9569092,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 439996604.5279541,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__property_income_separate_rates",
+    "year": 2030
+   },
+   {
+    "base_gbp": 166506041.01635742,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -729528954.5483398,
+    "key": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+    "level": "source_row",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1988002236.528627,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3565459385.664753,
+    "key": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+    "level": "source_row",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 2154508277.5449843,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2835930431.116413,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 166506041.01635742,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -729528954.5483398,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 265449936.22755432,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 464918654.4350128,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1723677752.4071655,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3100475061.1878967,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": -1125452.1060929298,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": 65670.0418434143,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2029
+   },
+   {
+    "base_gbp": 236516213.43377686,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -759406437.9031982,
+    "key": "obr_pmd_nov2025:12341:ce174c39c117892d",
+    "level": "source_row",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1982119275.3844867,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3699231595.1683984,
+    "key": "obr_pmd_nov2025:12347:687b6f32b91450d1",
+    "level": "source_row",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 2218635488.8182635,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 2939825157.2652,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 236516213.43377686,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -759406437.9031982,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 259144721.43657684,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 479356811.2832489,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 1723517572.795044,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 3219785996.2791443,
+    "key": "ni_class_1_employer",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": -543018.8471341133,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "structural"
+    ],
+    "head_gbp": 88787.6060051918,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "year": 2030
+   },
+   {
+    "base_gbp": 213703769.152771,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 268507430.1566162,
+    "key": "obr_pmd_nov2025:12332:c6b82f1f54c54340",
+    "level": "source_row",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2027
+   },
+   {
+    "base_gbp": 213703769.152771,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 268507430.1566162,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2027
+   },
+   {
+    "base_gbp": 213703769.152771,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 268507430.1566162,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2027
+   },
+   {
+    "base_gbp": 227967070.46850586,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 284761639.48413086,
+    "key": "obr_pmd_nov2025:12333:e7cb08bb9df37f81",
+    "level": "source_row",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2028
+   },
+   {
+    "base_gbp": 227967070.46850586,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 284761639.48413086,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2028
+   },
+   {
+    "base_gbp": 227967070.46850586,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 284761639.48413086,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2028
+   },
+   {
+    "base_gbp": 241997728.8062744,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 301554119.3952637,
+    "key": "obr_pmd_nov2025:12334:b5f43f5e38667473",
+    "level": "source_row",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2029
+   },
+   {
+    "base_gbp": 241997728.8062744,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 301554119.3952637,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2029
+   },
+   {
+    "base_gbp": 241997728.8062744,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 301554119.3952637,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2029
+   },
+   {
+    "base_gbp": 258099920.99438477,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 320660441.7234497,
+    "key": "obr_pmd_nov2025:12335:4ff6459d9e873238",
+    "level": "source_row",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2030
+   },
+   {
+    "base_gbp": 258099920.99438477,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 320660441.7234497,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2030
+   },
+   {
+    "base_gbp": 258099920.99438477,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 320660441.7234497,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "year": 2030
+   },
+   {
+    "base_gbp": -2316987292.6776886,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2242108618.39093,
+    "key": "obr_pmd_nov2025:23526:7a52217d035becaf",
+    "level": "source_row",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2026
+   },
+   {
+    "base_gbp": -2316987292.6776886,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2242108618.39093,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2026
+   },
+   {
+    "base_gbp": -2316987292.6776886,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2242108618.39093,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2026
+   },
+   {
+    "base_gbp": -2869724527.2568665,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2918625862.9556427,
+    "key": "obr_pmd_nov2025:23528:35553a766a3ad3d3",
+    "level": "source_row",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2028
+   },
+   {
+    "base_gbp": -2869724527.2568665,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2918625862.9556427,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2028
+   },
+   {
+    "base_gbp": -2869724527.2568665,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2918625862.9556427,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2028
+   },
+   {
+    "base_gbp": -3186984996.661316,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3323884184.1996,
+    "key": "obr_pmd_nov2025:23529:1e1a237caba88918",
+    "level": "source_row",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2029
+   },
+   {
+    "base_gbp": -3186984996.661316,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3323884184.1996,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2029
+   },
+   {
+    "base_gbp": -3186984996.661316,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3323884184.1996,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2029
+   },
+   {
+    "base_gbp": -3384703947.4553986,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3562636954.4205933,
+    "key": "obr_pmd_nov2025:23530:d1bc796d9f235c4f",
+    "level": "source_row",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2030
+   },
+   {
+    "base_gbp": -3384703947.4553986,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3562636954.4205933,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2030
+   },
+   {
+    "base_gbp": -3384703947.4553986,
+    "event": "autumn_budget_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3562636954.4205933,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+    "year": 2030
+   },
+   {
+    "base_gbp": -10655966986.783976,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10469229052.949451,
+    "key": "obr_pmd_nov2025:10549:7322b894d39fa3ec",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": 181449257.78486633,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 162980196.2035675,
+    "key": "obr_pmd_nov2025:21462:c775903b43caf723",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10474517728.99911,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10306248856.745884,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10662565302.045357,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10474809031.199783,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": 6598315.261380672,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5579978.250332832,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": 181449257.78486633,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 162980196.2035675,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2024
+   },
+   {
+    "base_gbp": -11327588183.676239,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11126686594.7434,
+    "key": "obr_pmd_nov2025:10550:68081ae97974ee1e",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": 198471503.0498047,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 174896544.0335083,
+    "key": "obr_pmd_nov2025:21463:fd9bc11d19465ecb",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11129116680.626434,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10951790050.709892,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11335446129.23867,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11132126640.181992,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": 7857945.562431812,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5440045.438591957,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": 198471503.0498047,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 174896544.0335083,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11769982772.015503,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11563990950.92023,
+    "key": "obr_pmd_nov2025:10551:67fe35e4947b995a",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": 218458322.35290527,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 201396924.7221222,
+    "key": "obr_pmd_nov2025:21464:190052623cdf04c0",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": -11551524449.662598,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11362594026.198109,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": -11779326412.563171,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11569436152.574059,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": 9343640.547667503,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5445201.653827667,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": 218458322.35290527,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 201396924.7221222,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2026
+   },
+   {
+    "base_gbp": -12120915823.883348,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11906414645.953455,
+    "key": "obr_pmd_nov2025:10552:16a41c96f88267ae",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": 227980899.8105011,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 214589554.27737427,
+    "key": "obr_pmd_nov2025:21465:6ea19652f3e3ea6b",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": -11892934924.072847,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11691825091.67608,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": -12131700905.449196,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11912170893.222649,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": 10785081.565847874,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5756247.269194126,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": 227980899.8105011,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 214589554.27737427,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2027
+   },
+   {
+    "base_gbp": -12417357156.64979,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -12198414589.475674,
+    "key": "obr_pmd_nov2025:10553:39c2cf71f48d4440",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": 237514512.7122345,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 223698204.33744812,
+    "key": "obr_pmd_nov2025:21466:43674024394e1bc0",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": -12179842643.937555,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11974716385.138226,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": -12428458679.443161,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -12205531015.952393,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": 11101522.7933712,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 7116426.476719379,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": 237514512.7122345,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 223698204.33744812,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2028
+   },
+   {
+    "base_gbp": -458763531.42470473,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -453270732.4855338,
+    "key": "obr_pmd_nov2025:10597:37b420855b7005a0",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2024
+   },
+   {
+    "base_gbp": -424454904.4831459,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -419583714.3979941,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2024
+   },
+   {
+    "base_gbp": -458763531.42470473,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -453270732.4855338,
+    "key": "ni_class_2",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2024
+   },
+   {
+    "base_gbp": -502679913.98631746,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -493412022.38896084,
+    "key": "obr_pmd_nov2025:10600:d0828a5bfb537ca4",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2027
+   },
+   {
+    "base_gbp": 33662511.16333008,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 34773919.19999695,
+    "key": "obr_pmd_nov2025:21501:53e1c92d4a4f4e96",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2027
+   },
+   {
+    "base_gbp": -469017402.8229874,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -458638103.1889639,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2027
+   },
+   {
+    "base_gbp": -502679913.98631746,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -493412022.38896084,
+    "key": "ni_class_2",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2027
+   },
+   {
+    "base_gbp": 33662511.16333008,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 34773919.19999695,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2027
+   },
+   {
+    "base_gbp": -521701908.8640266,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -507589289.1813735,
+    "key": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2028
+   },
+   {
+    "base_gbp": -487090380.1714149,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -472603788.00910175,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2028
+   },
+   {
+    "base_gbp": -521701908.8640266,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -507589289.1813735,
+    "key": "ni_class_2",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2028
+   },
+   {
+    "base_gbp": -347297834.3061094,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -343542653.45397997,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2026
+   },
+   {
+    "base_gbp": 16553747.360473633,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 17901745.816879272,
+    "key": "obr_pmd_nov2025:21483:8913a74a278eaeb2",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2027
+   },
+   {
+    "base_gbp": 16553747.360473633,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 17901745.816879272,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2027
+   },
+   {
+    "base_gbp": 17254254.7857666,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 18430894.713745117,
+    "key": "obr_pmd_nov2025:21484:a26658ab9b55efac",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2028
+   },
+   {
+    "base_gbp": -390507906.5582509,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -386034995.6125889,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2028
+   },
+   {
+    "base_gbp": 17254254.7857666,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 18430894.713745117,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1294594302.1817713,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1215009755.5550528,
+    "key": "obr_pmd_nov2025:21630:bf9643f47e057983",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1294594302.1817713,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1215009755.5550528,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2024
+   },
+   {
+    "base_gbp": -130941617.02919865,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -166449041.4573965,
+    "key": "housing_benefit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1163652685.1525726,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1048560714.0976562,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1430207101.491209,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1328568075.3840904,
+    "key": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1430207101.491209,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1328568075.3840904,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2025
+   },
+   {
+    "base_gbp": -145941522.9677105,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -178724995.14759445,
+    "key": "housing_benefit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1284265578.5234985,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1149843080.236496,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1468733419.975792,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1371396259.104597,
+    "key": "obr_pmd_nov2025:21632:353c5d3f922bfc89",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1468733419.975792,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1371396259.104597,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2026
+   },
+   {
+    "base_gbp": -149848668.1436386,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -183333142.30265617,
+    "key": "housing_benefit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1318884751.8321533,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1188063116.801941,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1534625288.8144665,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1433602219.7449112,
+    "key": "obr_pmd_nov2025:21633:5ce95c1559b8bc39",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1534625288.8144665,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1433602219.7449112,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2027
+   },
+   {
+    "base_gbp": -158118916.15482903,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -190795190.1632309,
+    "key": "housing_benefit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1376506372.6596375,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1242807029.5816803,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1575723012.332491,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1480214967.6505318,
+    "key": "obr_pmd_nov2025:21634:ff94f5b54b89d1ee",
+    "level": "source_row",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1575723012.332491,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1480214967.6505318,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2028
+   },
+   {
+    "base_gbp": -165298586.90826607,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -199039563.10237503,
+    "key": "housing_benefit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1410424425.4242249,
+    "event": "autumn_statement_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1281175404.5481567,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2028
+   },
+   {
+    "base_gbp": -2625620465.033203,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2526468399.0073853,
+    "key": "obr_pmd_nov2025:10233:f9cad5be5ec138c8",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -2625620465.033203,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2526468399.0073853,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -2625620465.033203,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2526468399.0073853,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2025
+   },
+   {
+    "base_gbp": -2925866139.35376,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2786694994.7681885,
+    "key": "obr_pmd_nov2025:10234:7fb22cdd33e49932",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -2925866139.35376,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2786694994.7681885,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -2925866139.35376,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -2786694994.7681885,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2026
+   },
+   {
+    "base_gbp": -3163762155.5874023,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3013869814.8032837,
+    "key": "obr_pmd_nov2025:10235:fbb8ccda250b78e9",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -3163762155.5874023,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3013869814.8032837,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -3163762155.5874023,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -3013869814.8032837,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2027
+   },
+   {
+    "base_gbp": -36508635.97085571,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -52070306.1539917,
+    "key": "obr_pmd_nov2025:20833:270c17d92e54dca4",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2024
+   },
+   {
+    "base_gbp": -36508635.97085571,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -52070306.1539917,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2024
+   },
+   {
+    "base_gbp": -36508635.97085571,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -52070306.1539917,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2024
+   },
+   {
+    "base_gbp": -37600843.23875427,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -53867006.09928894,
+    "key": "obr_pmd_nov2025:20834:e0b34fcdbf83f61a",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2025
+   },
+   {
+    "base_gbp": -37600843.23875427,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -53867006.09928894,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2025
+   },
+   {
+    "base_gbp": -37600843.23875427,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -53867006.09928894,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2025
+   },
+   {
+    "base_gbp": -38283643.177215576,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -55069454.6683197,
+    "key": "obr_pmd_nov2025:20835:1e730fccbdf4c015",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2026
+   },
+   {
+    "base_gbp": -38283643.177215576,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -55069454.6683197,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2026
+   },
+   {
+    "base_gbp": -38283643.177215576,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -55069454.6683197,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2026
+   },
+   {
+    "base_gbp": -40278799.0831604,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -61716403.736312866,
+    "key": "obr_pmd_nov2025:20836:76beca3818ed1fe1",
+    "level": "source_row",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2027
+   },
+   {
+    "base_gbp": -40278799.0831604,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -61716403.736312866,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2027
+   },
+   {
+    "base_gbp": -40278799.0831604,
+    "event": "spring_budget_2023",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -61716403.736312866,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2027
+   },
+   {
+    "base_gbp": -10655966986.783976,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10469229052.949451,
+    "key": "obr_pmd_nov2025:10957:34718787787f7089",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 181449257.78486633,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 162980196.2035675,
+    "key": "obr_pmd_nov2025:22170:45627d3976bd492a",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10474517728.99911,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10306248856.745884,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10662565302.045357,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10474809031.199783,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 6598315.261380672,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5579978.250332832,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 181449257.78486633,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 162980196.2035675,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": -11327588183.676239,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11126686594.7434,
+    "key": "obr_pmd_nov2025:10958:c7a912de7a1a9114",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 198471503.0498047,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 174896544.0335083,
+    "key": "obr_pmd_nov2025:22171:93d8943dfe121528",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11129116680.626434,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -10951790050.709892,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11335446129.23867,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11132126640.181992,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 7857945.562431812,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5440045.438591957,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": 198471503.0498047,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 174896544.0335083,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2025
+   },
+   {
+    "base_gbp": -11769982772.015503,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11563990950.92023,
+    "key": "obr_pmd_nov2025:10959:424db47edb88e339",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 218458322.35290527,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 201396924.7221222,
+    "key": "obr_pmd_nov2025:22172:8c021f0cf80fe71b",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": -11551524449.662598,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11362594026.198109,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": -11779326412.563171,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11569436152.574059,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 9343640.547667503,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5445201.653827667,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 218458322.35290527,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 201396924.7221222,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": -12120915823.883348,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11906414645.953455,
+    "key": "obr_pmd_nov2025:10960:fa02958b7f130d94",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 227980899.8105011,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 214589554.27737427,
+    "key": "obr_pmd_nov2025:22173:3beb0f8e7601b1e2",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": -11892934924.072847,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11691825091.67608,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": -12131700905.449196,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11912170893.222649,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 10785081.565847874,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 5756247.269194126,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 227980899.8105011,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 214589554.27737427,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": -12417357156.64979,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -12198414589.475674,
+    "key": "obr_pmd_nov2025:10961:cc058843879051af",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 237514512.7122345,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 223698204.33744812,
+    "key": "obr_pmd_nov2025:22174:b9088212717e5ab4",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": -12179842643.937555,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -11974716385.138226,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": -12428458679.443161,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -12205531015.952393,
+    "key": "ni_class_1_employee",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 11101522.7933712,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 7116426.476719379,
+    "key": "ni_class_4",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 237514512.7122345,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 223698204.33744812,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 25347827.19012451,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 26829795.248428345,
+    "key": "obr_pmd_nov2025:22188:9f98363a90ba075c",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 25347827.19012451,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 26829795.248428345,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2024
+   },
+   {
+    "base_gbp": 31470845.794052124,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 33199663.529327393,
+    "key": "obr_pmd_nov2025:22190:dc5ace295177c84b",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 31470845.794052124,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 33199663.529327393,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2026
+   },
+   {
+    "base_gbp": 33204816.91192627,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 36235217.53996277,
+    "key": "obr_pmd_nov2025:22191:6f3ee686a895fd60",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 33204816.91192627,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 36235217.53996277,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2027
+   },
+   {
+    "base_gbp": 34548589.33560181,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 37185559.45417786,
+    "key": "obr_pmd_nov2025:22192:79bd1761809b7468",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": -781828402.6646557,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -773691478.2061839,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": 34548589.33560181,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 37185559.45417786,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1117445677.928711,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -952358409.5223389,
+    "key": "obr_pmd_nov2025:10987:0f254c98c34bc660",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10325661.921541214,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": 0.0,
+    "key": "obr_pmd_nov2025:22206:49a0caec037600d2",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1127771339.8502522,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -952358409.5223389,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2024
+   },
+   {
+    "base_gbp": -10325661.921541214,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -0.0,
+    "key": "child_benefit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1117445677.928711,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -952358409.5223389,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2024
+   },
+   {
+    "base_gbp": -1314533031.901245,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1115715849.008728,
+    "key": "obr_pmd_nov2025:10988:6a33f7863750611c",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2025
+   },
+   {
+    "base_gbp": -7423072.925279617,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": 0.0,
+    "key": "obr_pmd_nov2025:22207:01b31afdbe23dae6",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1321956104.8265247,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1115715849.008728,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2025
+   },
+   {
+    "base_gbp": -7423072.925279617,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -0.0,
+    "key": "child_benefit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1314533031.901245,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1115715849.008728,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2025
+   },
+   {
+    "base_gbp": -1488243318.8774414,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1296908152.2020874,
+    "key": "obr_pmd_nov2025:10989:43638ad22300c9c3",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2026
+   },
+   {
+    "base_gbp": -6009699.645301819,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": 0.0,
+    "key": "obr_pmd_nov2025:22208:6c19f800730945b5",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1494253018.5227432,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1296908152.2020874,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2026
+   },
+   {
+    "base_gbp": -6009699.645301819,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -0.0,
+    "key": "child_benefit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1488243318.8774414,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1296908152.2020874,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2026
+   },
+   {
+    "base_gbp": -1603669091.414795,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1459784703.1831665,
+    "key": "obr_pmd_nov2025:10990:e86af1dbeb4da64e",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2027
+   },
+   {
+    "base_gbp": -6170656.333749771,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": 0.0,
+    "key": "obr_pmd_nov2025:22209:71f606ed0f936afe",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1609839747.7485447,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1459784703.1831665,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2027
+   },
+   {
+    "base_gbp": -6170656.333749771,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical",
+     "structural"
+    ],
+    "head_gbp": -0.0,
+    "key": "child_benefit",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1603669091.414795,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1459784703.1831665,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2027
+   },
+   {
+    "base_gbp": -1711124619.3675537,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1601797693.4697266,
+    "key": "obr_pmd_nov2025:10991:11a476b01436c0db",
+    "level": "source_row",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1711124619.3675537,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1601797693.4697266,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2028
+   },
+   {
+    "base_gbp": -1711124619.3675537,
+    "event": "spring_budget_2024",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1601797693.4697266,
+    "key": "income_tax",
+    "level": "head",
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2028
+   },
+   {
+    "base_gbp": 0.0,
+    "event": "spring_statement_2025",
+    "flags": [
+     "construction"
+    ],
+    "head_gbp": 0.0,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2024
+   },
+   {
+    "base_gbp": 0.0,
+    "event": "spring_statement_2025",
+    "flags": [
+     "construction"
+    ],
+    "head_gbp": 0.0,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2025
+   },
+   {
+    "base_gbp": 765698226.6292877,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 755248224.5852814,
+    "key": "obr_pmd_nov2025:23317:1b983354102bb14d",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2026
+   },
+   {
+    "base_gbp": 765698226.6292877,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 755248224.5852814,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2026
+   },
+   {
+    "base_gbp": 765698226.6292877,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 755248224.5852814,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2026
+   },
+   {
+    "base_gbp": 931448445.9245453,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 872062481.2873993,
+    "key": "obr_pmd_nov2025:23318:dcc529f309fec572",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2027
+   },
+   {
+    "base_gbp": 931448445.9245453,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 872062481.2873993,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2027
+   },
+   {
+    "base_gbp": 931448445.9245453,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 872062481.2873993,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2027
+   },
+   {
+    "base_gbp": 1172042090.9827728,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1186659902.7950897,
+    "key": "obr_pmd_nov2025:23319:c6ce8500db20415e",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1172042090.9827728,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 1186659902.7950897,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1172042090.9827728,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1186659902.7950897,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2028
+   },
+   {
+    "base_gbp": 1653224856.0520935,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1603061743.22464,
+    "key": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1653224856.0520935,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": 1603061743.22464,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2029
+   },
+   {
+    "base_gbp": 1653224856.0520935,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": 1603061743.22464,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2029
+   },
+   {
+    "base_gbp": 0.0,
+    "event": "spring_statement_2025",
+    "flags": [
+     "construction"
+    ],
+    "head_gbp": 0.0,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2024
+   },
+   {
+    "base_gbp": 0.0,
+    "event": "spring_statement_2025",
+    "flags": [
+     "construction"
+    ],
+    "head_gbp": 0.0,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2025
+   },
+   {
+    "base_gbp": -720963803.9728394,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -736190356.8208618,
+    "key": "obr_pmd_nov2025:23335:7e9f9d66b5194ff6",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2026
+   },
+   {
+    "base_gbp": -720963803.9728394,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -736190356.8208618,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2026
+   },
+   {
+    "base_gbp": -720963803.9728394,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -736190356.8208618,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2026
+   },
+   {
+    "base_gbp": -733386268.5007629,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1142718609.1285858,
+    "key": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2027
+   },
+   {
+    "base_gbp": -733386268.5007629,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -1142718609.1285858,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2027
+   },
+   {
+    "base_gbp": -733386268.5007629,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1142718609.1285858,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2027
+   },
+   {
+    "base_gbp": -750955826.0265961,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1425168452.2392883,
+    "key": "obr_pmd_nov2025:23337:31f0f1693e3bba3c",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2028
+   },
+   {
+    "base_gbp": -750955826.0265961,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -1425168452.2392883,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2028
+   },
+   {
+    "base_gbp": -750955826.0265961,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1425168452.2392883,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2028
+   },
+   {
+    "base_gbp": -767381292.1330109,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1672750151.8886414,
+    "key": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+    "level": "source_row",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2029
+   },
+   {
+    "base_gbp": -767381292.1330109,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical",
+     "construction"
+    ],
+    "head_gbp": -1672750151.8886414,
+    "key": "total",
+    "level": "measure_year",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2029
+   },
+   {
+    "base_gbp": -767381292.1330109,
+    "event": "spring_statement_2025",
+    "flags": [
+     "numerical"
+    ],
+    "head_gbp": -1672750151.8886414,
+    "key": "universal_credit",
+    "level": "head",
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2029
+   }
+  ]
+ },
+ "execution": {
+  "dataset_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+  "packaged_bundle_manifest_sha256": "ab60903b390e7a765ea6558ec5e2d8fa5aede06b6f735fbf4e4c96109ffd1617",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "1cbe7c39b44aec8372f3f8616721224caade0b631aaad6386688b0b57946d85c",
+    "version": "6.11.1",
+    "wheel_sha256": "9ada4083d27ee4f4ca637335371186e3b3fd1607e00980c03a14d293e385080b"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3",
+    "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+   },
+   "policyengine-uk": {
+    "record_sha256": "5107c6f7cbfb5ed2680237286612c4eeebea827c8da6a549a6155f025bfe160e",
+    "version": "2.151.0",
+    "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+   }
+  },
+  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "release_bundle": {
+   "bundle_id": "uk-6.11.1",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "compatibility_basis": "built_with_model_package",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.151.0",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "model_package": "policyengine-uk",
+   "model_version": "2.151.0",
+   "policyengine_version": "6.11.1"
+  },
+  "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed",
+  "runner": "github-actions Linux X64; 1 simulation worker: no measured two-worker peak for dataset b96a8cd625b6 with this candidate and workload"
+ },
+ "integrity": {
+  "failures": [],
+  "status": "complete"
+ },
+ "receipt_sha256": "50fe974087764a2343de78c8623a0f9b9c1ba0b260fd61f6aa7d5d5d4ad2ac16",
+ "rejection": null,
+ "request_id": "5d4c83c070a33443ccb41bf2f1998b134bc9c58b0bdc3f15802e8b1449e0c847",
+ "results": {
+  "manifest_sha256": "4aab3f1635ac8d1e8e03488ae5d7d92b94704d8c8a3801815cda17280c8dae23",
+  "path": "requests/5d4c83c070a33443ccb41bf2f1998b134bc9c58b0bdc3f15802e8b1449e0c847/results/",
+  "ref": "replay-state",
+  "repository": "PolicyEngine/policyengine-scorecard"
+ },
+ "schema": "policyengine.uk-replay-receipt/v1",
+ "status": "complete",
+ "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+ "variant_identity_sha256": "20f9f81d378be19a58d4e79422c0abbdcbad833d6e3ec16cc5003f4d4832be36"
+}

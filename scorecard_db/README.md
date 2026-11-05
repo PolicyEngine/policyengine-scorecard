@@ -41,9 +41,13 @@ old file first; nothing is lost, it is derived). Plain `pytest` also
 works from a fresh clone: a pytest configuration hook builds the database
 before collection when it is absent. Individual ingest modules (`ingest_urban`, `ingest_platform`,
 …) remain runnable one at a time against an existing database, in the
-dependency order documented in `build_db.py`. Built artifacts for every
-main commit are published to the `scorecard-artifacts` Supabase storage
-bucket as `<sha>.db.gz` and `latest.db.gz`.
+dependency order documented in `build_db.py`. Each main commit's CI run
+keeps the database it built and tested as its `scorecard-db-<sha>` artifact
+for 30 days, and `.github/workflows/publish-db.yml` then publishes it to the
+`scorecard-artifacts` Supabase storage bucket as `<sha>.db.gz` and
+`latest.db.gz`. Every publish since 6 October 2026 has failed (the storage
+host no longer resolves), which the workflow reports as a warning; the last
+upload that worked was on 28 September.
 
 ```python
 from scorecard_db import ScorecardDB

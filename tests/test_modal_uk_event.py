@@ -1268,6 +1268,7 @@ def test_the_remote_image_holds_everything_the_runner_imports_and_reads():
         str(variants.VARIANTS_PATH.relative_to(runner.ROOT)),
         str(variants.CERTIFIED_BUNDLE.relative_to(runner.ROOT)),
         str(revisions.REVISIONS_PATH.relative_to(runner.ROOT)),
+        str(revisions.ENACTED_REVISIONS_PATH.relative_to(runner.ROOT)),
         legacy["requirements"]["path"],
     }
     assert read <= allowed, sorted(read - allowed)

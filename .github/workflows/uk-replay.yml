@@ -6,7 +6,9 @@ name: UK replay qualification
 # and recording. Discovery reads wheel metadata without installing release
 # code; a separate write job validates its public requests before enqueueing.
 # This preserves the persistent queue even when a pending drain is cancelled.
-# One request runs per drain, with at most two simulation workers; the recorder
+# One request runs per drain, with one or two simulation workers: two only
+# where the request's dataset has a measured two-worker peak that fits in the
+# runner's memory (docs/uk_replay/evidence/replay_memory.json). The recorder
 # dispatches another drain while requests remain eligible. Stale runs retry
 # after seven hours, with three running attempts maximum.
 # The dataset token (the org secret PE_UK_PRIVATE_HF_READ_TOKEN, read-only)
@@ -216,11 +218,18 @@ jobs:
             --output input/dataset.h5 --result-file input/fetch-result.json
       - name: Hand a private copy to the unprivileged candidate account
         run: bash .github/scripts/uk_replay_sandbox.sh setup
+      # The qualifier logs free -m and the process tree's peak around each
+      # event; this is the runner's own view before and after the candidate.
+      - name: Log the runner's memory, swap, CPUs and disk
+        run: free -m; swapon --show || true; nproc; df -h / "$RUNNER_TEMP"
       - name: Run the candidate and preserve logs and outcome
         env:
           REQUEST_ID: ${{ needs.prepare.outputs.request_id }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_sandbox.sh run
+      - name: Log the runner's memory after the candidate
+        if: always()
+        run: free -m
       - name: Stop every candidate process and take its output back
         id: collect
         if: always()

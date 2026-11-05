@@ -1,0 +1,1341 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026-01-01.2026-12-31": 651.97,
+     "2027-01-01.2027-12-31": 666.96,
+     "2028-01-01.2028-12-31": 680.3,
+     "2029-01-01.2029-12-31": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026-01-01.2026-12-31": 516.46,
+     "2027-01-01.2027-12-31": 528.33,
+     "2028-01-01.2028-12-31": 538.9,
+     "2029-01-01.2029-12-31": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026-01-01.2026-12-31": 415.35,
+     "2027-01-01.2027-12-31": 424.9,
+     "2028-01-01.2028-12-31": 433.39,
+     "2029-01-01.2029-12-31": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026-01-01.2026-12-31": 329.03,
+     "2027-01-01.2027-12-31": 336.59,
+     "2028-01-01.2028-12-31": 343.32,
+     "2029-01-01.2029-12-31": 350.19
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "5be1092f9ec37b7c76e6dd2e31bde4f1c1f3fdae6b4d5d74420ec70e4dae8e09"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026-01-01.2026-12-31": 651.97,
+     "2027-01-01.2027-12-31": 666.96,
+     "2028-01-01.2028-12-31": 680.3,
+     "2029-01-01.2029-12-31": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026-01-01.2026-12-31": 516.46,
+     "2027-01-01.2027-12-31": 528.33,
+     "2028-01-01.2028-12-31": 538.9,
+     "2029-01-01.2029-12-31": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026-01-01.2026-12-31": 415.35,
+     "2027-01-01.2027-12-31": 424.9,
+     "2028-01-01.2028-12-31": 433.39,
+     "2029-01-01.2029-12-31": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026-01-01.2026-12-31": 329.03,
+     "2027-01-01.2027-12-31": 336.59,
+     "2028-01-01.2028-12-31": 343.32,
+     "2029-01-01.2029-12-31": 350.19
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "fbf5921b767912e48af378d4525a8238fa54a6bdf74dd7a9d4fdaf286eac02fe"
+  }
+ },
+ "cited_sources": [
+  {
+   "side": "base",
+   "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025"
+  },
+  {
+   "side": "head",
+   "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025"
+  }
+ ],
+ "event": "spring_statement_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.9.0",
+   "variant_id": "pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.132.6",
+   "policyengine_version": "6.11.0",
+   "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+  }
+ },
+ "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "counterfactual_derivation": {
+    "amounts_2025_26": {
+     "COUPLE_OLD": 628.1,
+     "COUPLE_YOUNG": 497.55,
+     "SINGLE_OLD": 400.14,
+     "SINGLE_YOUNG": 316.98
+    },
+    "cpi_source": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025",
+    "formula": "round(monthly_amount_2025_26 * 1.038 * benefit_CPI_April_year / benefit_CPI_April_2026, 2)",
+    "index_parameter": "gov.benefit_uprating_cpi",
+    "september_2025_cpi_growth": 0.038
+   },
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 617.6,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 489.23,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 393.45,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 311.68
+    },
+    "2025": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 628.1,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 497.55,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 400.14,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 316.98
+    },
+    "2026": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 666.97,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 528.34,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 424.9,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 338.58
+    },
+    "2027": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 682.3088316082925,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 540.4906488926418,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 434.67175817557535,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 346.36658951067614
+    },
+    "2028": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 695.9539315406156,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 551.299608963175,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 443.3645074165368,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 353.2933747260321
+    },
+    "2029": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 709.8723475869093,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 562.3250762763957,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 452.2313754586829,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 360.3589058667942
+    }
+   },
+   "fiscal_event": "Spring Statement 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "measure_type": "universal_credit",
+   "missing_legs": [
+    "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
+    "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.",
+    "policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD",
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG",
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD",
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.SINGLE_YOUNG|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.SINGLE_OLD|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.COUPLE_YOUNG|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.COUPLE_OLD",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Counterfactual uses the four 2025-26 monthly allowances times actual September2025 CPI growth of 3.8% for 2026, matching the CPI behind the legislated amount; later years use the certified benefit-CPI growth from that 2026 anchor. This removes the prior 3.4% versus 3.8% index mismatch. The certified 2027-29 above-inflation uplifts remain missing (policyengine-uk#2239); the counterfactual is a later-vintage path, not the March2025 forecast.",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026": 651.97,
+     "2027": 666.96,
+     "2028": 680.3,
+     "2029": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026": 516.46,
+     "2027": 528.33,
+     "2028": 538.9,
+     "2029": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026": 415.35,
+     "2027": 424.9,
+     "2028": 433.39,
+     "2029": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026": 329.03,
+     "2027": 336.59,
+     "2028": 343.32,
+     "2029": 350.19
+    }
+   },
+   "pe_gap": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+   "program": "universal_credit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23327:cea66d5bbe8519b9",
+     "source_row_number": 23327,
+     "source_row_sha256": "cea66d5bbe8519b9943aac250bbaf875bf93e04ee803e43065662af747757e9d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23328:9e2ff9fa4bd2cc0b",
+     "source_row_number": 23328,
+     "source_row_sha256": "9e2ff9fa4bd2cc0b66dd34c8f079e96e85b206c323c18cb8e7f6742b48275895",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23329:e052a44f1c2e1bfc",
+     "source_row_number": 23329,
+     "source_row_sha256": "e052a44f1c2e1bfc555275500e353970498a25a05a436d1fe44b2e2050c96b18",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -146000000.0,
+     "value_gbp_decimal": "-146000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23330:9881d3a86b7a4bbc",
+     "source_row_number": 23330,
+     "source_row_sha256": "9881d3a86b7a4bbc45fee7f92dab536289497a83c3626231a707a82014204000",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -205000000.0,
+     "value_gbp_decimal": "-205000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23331:f2f010bd76ffdb79",
+     "source_row_number": 23331,
+     "source_row_sha256": "f2f010bd76ffdb796cc80044f67dac998845b73d67899ac14f14a988a81c0aeb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -268000000.0,
+     "value_gbp_decimal": "-268000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
+     "source_row_number": 23332,
+     "source_row_sha256": "5c8171523fd97b4c89a208edc81f66f4ea36ec6d859c4c63bb69ef48073e01bb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -338000000.0,
+     "value_gbp_decimal": "-338000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23333:02e7e4599be46f65",
+     "source_row_number": 23333,
+     "source_row_sha256": "02e7e4599be46f659cb882b8e27cd3694d400088d35882d875c328ab0674a728",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23334:4a49d693d727a3b2",
+     "source_row_number": 23334,
+     "source_row_sha256": "4a49d693d727a3b2c772023ebc0794733229b37fd5f4d63d9a4aeaa6b93bab8e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23335:7e9f9d66b5194ff6",
+     "source_row_number": 23335,
+     "source_row_sha256": "7e9f9d66b5194ff61728b0975a67080384af07217974823779b66d268086b0b4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -667364500.0,
+     "value_gbp_decimal": "-667364500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+     "source_row_number": 23336,
+     "source_row_sha256": "5d8fea1a1f3c86d6bd7799698037fa803e4e90d79eb4855ac740f48b7b26992b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -938051000.0,
+     "value_gbp_decimal": "-938051000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23337:31f0f1693e3bba3c",
+     "source_row_number": 23337,
+     "source_row_sha256": "31f0f1693e3bba3c0e3eebfc3cc03704a8f4158cb662c0078e0d1524e800a8f0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -1224374000.0,
+     "value_gbp_decimal": "-1224374000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+     "source_row_number": 23338,
+     "source_row_sha256": "27e34c93a163b4f02a3c90eadeb28e20eef85cdb7621a7dc27a0f1bae7a487bb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -1546070500.0,
+     "value_gbp_decimal": "-1546070500.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23339:4a2ccb6ceb96c0f8",
+     "source_row_number": 23339,
+     "source_row_sha256": "4a2ccb6ceb96c0f88bcea029796b498c13923bd346e8a797751ba47b1d820cae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23340:de16c4a04ba87613",
+     "source_row_number": 23340,
+     "source_row_sha256": "de16c4a04ba87613853ddc537eddebeabcaadfc9265d9952eef1be94456c3a6d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23341:8eed9bf63783ccbd",
+     "source_row_number": 23341,
+     "source_row_sha256": "8eed9bf63783ccbd4cff9756372716446324026d71d1d8f6d07213f612cd06f1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23342:0fd5ad27ca12101a",
+     "source_row_number": 23342,
+     "source_row_sha256": "0fd5ad27ca12101a153b12882a75776c1a7825f5d5061b75818c548ec77c8eec",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23343:1625c8ea224af25e",
+     "source_row_number": 23343,
+     "source_row_sha256": "1625c8ea224af25e2e4d4632f3f20b89c84415aeacc702e5bdcac7d9f183f0c2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23344:786ad47c268163cb",
+     "source_row_number": 23344,
+     "source_row_sha256": "786ad47c268163cb17cbfe9248bd293ede620dfabf998ff52b3b4f488a40cb2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    }
+   ],
+   "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)",
+    "Welfare outside cap"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "counterfactual_derivation": {
+    "amounts_2025_26": {
+     "COUPLE_OLD": 628.1,
+     "COUPLE_YOUNG": 497.55,
+     "SINGLE_OLD": 400.14,
+     "SINGLE_YOUNG": 316.98
+    },
+    "cpi_source": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025",
+    "formula": "round(monthly_amount_2025_26 * 1.038 * benefit_CPI_April_year / benefit_CPI_April_2026, 2)",
+    "index_parameter": "gov.benefit_uprating_cpi",
+    "september_2025_cpi_growth": 0.038
+   },
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 617.6,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 489.23,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 393.45,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 311.68
+    },
+    "2025": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 628.1,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 497.55,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 400.14,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 316.98
+    },
+    "2026": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 666.97,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 528.34,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 424.9,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 338.58
+    },
+    "2027": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 682.3088316082925,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 540.4906488926418,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 434.67175817557535,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 346.36658951067614
+    },
+    "2028": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 695.9539315406156,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 551.299608963175,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 443.3645074165368,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 353.2933747260321
+    },
+    "2029": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 709.8723475869093,
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 562.3250762763957,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 452.2313754586829,
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 360.3589058667942
+    }
+   },
+   "fiscal_event": "Spring Statement 2025",
+   "head_variables": [
+    "universal_credit"
+   ],
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_head": "Welfare inside cap",
+     "pe_variables": [
+      "universal_credit"
+     ]
+    }
+   ],
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "measure_type": "universal_credit",
+   "missing_legs": [
+    "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
+    "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.",
+    "policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD",
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG",
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD",
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG"
+    ],
+    "pattern": "gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.SINGLE_YOUNG|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.SINGLE_OLD|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.COUPLE_YOUNG|gov\\.dwp\\.universal_credit\\.standard_allowance\\.amount\\.COUPLE_OLD",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Counterfactual uses the four 2025-26 monthly allowances times actual September2025 CPI growth of 3.8% for 2026, matching the CPI behind the legislated amount; later years use the certified benefit-CPI growth from that 2026 anchor. This removes the prior 3.4% versus 3.8% index mismatch. The certified 2027-29 above-inflation uplifts remain missing (policyengine-uk#2239); the counterfactual is a later-vintage path, not the March2025 forecast.",
+   "pe_baseline_modifier": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026": 651.97,
+     "2027": 666.96,
+     "2028": 680.3,
+     "2029": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026": 516.46,
+     "2027": 528.33,
+     "2028": 538.9,
+     "2029": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026": 415.35,
+     "2027": 424.9,
+     "2028": 433.39,
+     "2029": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026": 329.03,
+     "2027": 336.59,
+     "2028": 343.32,
+     "2029": 350.19
+    }
+   },
+   "pe_gap": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+   "program": "universal_credit",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23327:cea66d5bbe8519b9",
+     "source_row_number": 23327,
+     "source_row_sha256": "cea66d5bbe8519b9943aac250bbaf875bf93e04ee803e43065662af747757e9d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23328:9e2ff9fa4bd2cc0b",
+     "source_row_number": 23328,
+     "source_row_sha256": "9e2ff9fa4bd2cc0b66dd34c8f079e96e85b206c323c18cb8e7f6742b48275895",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23329:e052a44f1c2e1bfc",
+     "source_row_number": 23329,
+     "source_row_sha256": "e052a44f1c2e1bfc555275500e353970498a25a05a436d1fe44b2e2050c96b18",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -146000000.0,
+     "value_gbp_decimal": "-146000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23330:9881d3a86b7a4bbc",
+     "source_row_number": 23330,
+     "source_row_sha256": "9881d3a86b7a4bbc45fee7f92dab536289497a83c3626231a707a82014204000",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -205000000.0,
+     "value_gbp_decimal": "-205000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23331:f2f010bd76ffdb79",
+     "source_row_number": 23331,
+     "source_row_sha256": "f2f010bd76ffdb796cc80044f67dac998845b73d67899ac14f14a988a81c0aeb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -268000000.0,
+     "value_gbp_decimal": "-268000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
+     "source_row_number": 23332,
+     "source_row_sha256": "5c8171523fd97b4c89a208edc81f66f4ea36ec6d859c4c63bb69ef48073e01bb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -338000000.0,
+     "value_gbp_decimal": "-338000000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23333:02e7e4599be46f65",
+     "source_row_number": 23333,
+     "source_row_sha256": "02e7e4599be46f659cb882b8e27cd3694d400088d35882d875c328ab0674a728",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23334:4a49d693d727a3b2",
+     "source_row_number": 23334,
+     "source_row_sha256": "4a49d693d727a3b2c772023ebc0794733229b37fd5f4d63d9a4aeaa6b93bab8e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23335:7e9f9d66b5194ff6",
+     "source_row_number": 23335,
+     "source_row_sha256": "7e9f9d66b5194ff61728b0975a67080384af07217974823779b66d268086b0b4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -667364500.0,
+     "value_gbp_decimal": "-667364500.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+     "source_row_number": 23336,
+     "source_row_sha256": "5d8fea1a1f3c86d6bd7799698037fa803e4e90d79eb4855ac740f48b7b26992b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -938051000.0,
+     "value_gbp_decimal": "-938051000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23337:31f0f1693e3bba3c",
+     "source_row_number": 23337,
+     "source_row_sha256": "31f0f1693e3bba3c0e3eebfc3cc03704a8f4158cb662c0078e0d1524e800a8f0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -1224374000.0,
+     "value_gbp_decimal": "-1224374000.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+     "source_row_number": 23338,
+     "source_row_sha256": "27e34c93a163b4f02a3c90eadeb28e20eef85cdb7621a7dc27a0f1bae7a487bb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": -1546070500.0,
+     "value_gbp_decimal": "-1546070500.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:23339:4a2ccb6ceb96c0f8",
+     "source_row_number": 23339,
+     "source_row_sha256": "4a2ccb6ceb96c0f88bcea029796b498c13923bd346e8a797751ba47b1d820cae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23340:de16c4a04ba87613",
+     "source_row_number": 23340,
+     "source_row_sha256": "de16c4a04ba87613853ddc537eddebeabcaadfc9265d9952eef1be94456c3a6d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23341:8eed9bf63783ccbd",
+     "source_row_number": 23341,
+     "source_row_sha256": "8eed9bf63783ccbd4cff9756372716446324026d71d1d8f6d07213f612cd06f1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23342:0fd5ad27ca12101a",
+     "source_row_number": 23342,
+     "source_row_sha256": "0fd5ad27ca12101a153b12882a75776c1a7825f5d5061b75818c548ec77c8eec",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23343:1625c8ea224af25e",
+     "source_row_number": 23343,
+     "source_row_sha256": "1625c8ea224af25e2e4d4632f3f20b89c84415aeacc702e5bdcac7d9f183f0c2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23344:786ad47c268163cb",
+     "source_row_number": 23344,
+     "source_row_sha256": "786ad47c268163cb17cbfe9248bd293ede620dfabf998ff52b3b4f488a40cb2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    }
+   ],
+   "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)",
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+      "baseline_world": 693.91,
+      "current_law": 709.8723475869093,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 709.8723475869093,
+      "reform_world": 709.8723475869093
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+      "baseline_world": 549.68,
+      "current_law": 562.3250762763957,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 562.3250762763957,
+      "reform_world": 562.3250762763957
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+      "baseline_world": 442.06,
+      "current_law": 452.2313754586829,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 452.2313754586829,
+      "reform_world": 452.2313754586829
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+      "baseline_world": 350.19,
+      "current_law": 360.3589058667942,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 360.3589058667942,
+      "reform_world": 360.3589058667942
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+      "baseline_world": 693.91,
+      "current_law": 709.8723475869093,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 709.8723475869093,
+      "reform_world": 709.8723475869093
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+      "baseline_world": 549.68,
+      "current_law": 562.3250762763957,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 562.3250762763957,
+      "reform_world": 562.3250762763957
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+      "baseline_world": 442.06,
+      "current_law": 452.2313754586829,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 452.2313754586829,
+      "reform_world": 452.2313754586829
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+      "baseline_world": 350.19,
+      "current_law": 360.3589058667942,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 360.3589058667942,
+      "reform_world": 360.3589058667942
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -338000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": -753234184.9562225,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -1546070500.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_below_0.5",
+     "head": "same_sign_ratio_below_0.5"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -14147107.17678833,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7673812.921330109
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -767381292.1330109,
+   "key": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7673812.921330109,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23344:786ad47c268163cb",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": -753234184.9562225,
+   "context": {},
+   "delta_gbp": -14147107.17678833,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7673812.921330109
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -767381292.1330109,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7673812.921330109,
+   "year": 2029
+  },
+  {
+   "base_gbp": -753234184.9562225,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -14147107.17678833,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7673812.921330109
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -767381292.1330109,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7673812.921330109,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+  "head": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/spring_statement_2025_measures.json --measures spring_statement_2025__uc_standard_allowance_above_inflation --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.9.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 --registry data/uk/events/spring_statement_2025_measures.json --measures spring_statement_2025__uc_standard_allowance_above_inflation --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -338000000.0,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
+   "source_row_number": 23332,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": -753234184.9562225,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -767381292.1330109,
+   "obr_value_gbp": -1546070500.0,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+   "source_row_number": 23338,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23344:786ad47c268163cb",
+   "source_row_number": 23344,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -338000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
+   "source_row_number": 23332,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": -753234184.9562225,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": -767381292.1330109,
+   "obr_value_gbp": -1546070500.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+   "source_row_number": 23338,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23344:786ad47c268163cb",
+   "source_row_number": 23344,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+ "year": 2029
+}
