@@ -2,7 +2,7 @@
 
 We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_trussell_wpi/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes: fetch the primary from its `manifest.jsonl` URL and check its sha256.
 
-We use source `trussell_wpi`, as AB2025's `uk_trussell_wpi` does, and stage **1 row from 1 primary.** The thinktanks-b lane staged this row in `uk_thinktank_misc` on 29 October with source `trussell`. On 3 November, that family's review asked in finding 5 for AB2025's slug `trussell_wpi`, and the coordinator moved the row and its manifest line here, since AB2025 keeps Trussell's Budget responses in their own family. The row changed in no other way. We copied `uk_thinktank_misc`'s script into `stage.py` and filtered it to Trussell's row and primary.
+We use source `trussell_wpi`, as AB2025's `uk_trussell_wpi` does, and stage **1 row from 1 primary.** The thinktanks-b lane staged this row in `uk_thinktank_misc` on 29 October with source `trussell`. On 3 November, that family's review asked in finding 5 for AB2025's slug `trussell_wpi`, and the coordinator moved the row and its manifest line here, since AB2025 keeps Trussell's Budget responses in their own family. The coordinator changed nothing else in the row. We copied `uk_thinktank_misc`'s script into `stage.py` and filtered it to Trussell's row and primary.
 
 ## Access
 
