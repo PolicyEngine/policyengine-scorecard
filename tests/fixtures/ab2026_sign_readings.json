@@ -42,7 +42,7 @@
  {
   "metric": "cash_requirement_change",
   "sign_convention": "as worded: positive = increase in the financing requirement",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "cpi_inflation_effect",
@@ -152,7 +152,7 @@
  {
   "metric": "energy_bill_change",
   "sign_convention": "negative = reduction in the typical household's annual bill",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "energy_bill_change",
@@ -177,7 +177,7 @@
  {
   "metric": "gdp_level_effect",
   "sign_convention": "as worded: positive = real GDP increase",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "gdp_level_effect",
@@ -197,7 +197,7 @@
  {
   "metric": "real_income_growth",
   "sign_convention": "positive = decrease in real household disposable income per person",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "real_income_growth",
@@ -212,12 +212,12 @@
  {
   "metric": "real_income_growth",
   "sign_convention": "positive = higher real household disposable incomes",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "real_income_growth",
   "sign_convention": "positive = real income growth",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "revenue_change",
@@ -232,12 +232,12 @@
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = AME increase",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = additional spending",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
@@ -257,17 +257,17 @@
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = net cost",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = pension spending increase",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = reduction in receipts",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
@@ -277,12 +277,12 @@
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = reduction in resource spending",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = reduction in spending",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "revenue_change",
@@ -292,17 +292,17 @@
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = spending cost",
-  "relation": "unknown"
+  "relation": "opposite"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = spending reduction",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "revenue_change",
   "sign_convention": "as worded: positive = welfare spending reduction",
-  "relation": "unknown"
+  "relation": "same"
  },
  {
   "metric": "revenue_change",
