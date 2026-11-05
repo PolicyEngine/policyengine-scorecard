@@ -17,9 +17,9 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
     - one financial-transaction impact.
 - Primaries: 1 PDF.
 - Measure keys: 79 registry keys on 595 rows.
-  - We stage 416 rows that each cost a whole Table 6.1 line: `conditions.row_type: measure`, 68 keys.
-  - We stage 157 rows that each cost a printed part of one line: `row_type: measure_component`, 8 lines' keys.
-  - We key 22 rows, which cost measures with no Table 6.1 line or none we can identify, to 3 keys that we proposed and registered in tranche 2. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
+  - We stage HM Treasury's costing of a whole Table 6.1 line on each of 416 rows: `conditions.row_type: measure`, 68 keys.
+  - We stage HM Treasury's costing of a printed part of one line on each of 157 rows: `row_type: measure_component`, 8 lines' keys.
+  - We key 22 rows for measures with no Table 6.1 line, or none we can identify, to 3 keys that we proposed and registered in tranche 2. We mark 6 of them (p.108's receipts) `measure_component`, for 163 component rows in all.
   - We stage 2 rows (p.50's UK tax gap) as context: `measure_key: null` and no proposed key.
 
 ## Access recipe
@@ -73,12 +73,12 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
       - pp.20, 21, 22, 69 and 89: "the impact of behavioural responses";
       - p.93: "the behavioural response to the rebate scheme".
     - In others HM Treasury describes a response in other words:
-      - p.15 assumes 89% take-up;
-      - p.28 puts 25% of income into reserves;
-      - p.76 "includes an assumed timing effect";
-      - p.84 assumes the zone facilitates borrowing;
-      - p.88 says self-assessment "may affect how taxpayers interact with the tax system";
-      - p.99 adjusts "for expected utilisation of the cap".
+      - p.15: assumes 89% take-up;
+      - p.28: puts 25% of income into reserves;
+      - p.76: "includes an assumed timing effect";
+      - p.84: assumes the zone facilitates borrowing;
+      - p.88: says self-assessment "may affect how taxpayers interact with the tax system";
+      - p.99: adjusts "for expected utilisation of the cap".
 - `conditions.static_impact`: in three notes HM Treasury says the measure has no static impact, so the whole costing comes from behaviour.
   - p.19 (Cash ISAs) and p.43 (E-invoicing): "The costing has no static impact on taxpayer liabilities."
   - p.44 (Employment expenses): "The measure has no static impact on taxpayer liabilities."
@@ -191,7 +191,7 @@ How we settled each line:
   - HM Treasury prints the AME savings only in its table;
   - in its text HM Treasury costs the Youth Guarantee's expansion to 22- to 24-year-olds and never mentions the apprenticeship support the line also names.
 
-  Table 6.1 prints -290 and -375 where the note prints +25 and +35 (2027-28 and 2028-29).
+  HM Treasury prints -290 and -375 in Table 6.1 and +25 and +35 in the note (2027-28 and 2028-29).
 - **Line 85 (p.94, Erasmus+).** No Table 6.1 title names Erasmus+.
   - HM Treasury puts the note where line 85 falls: "Further Priorities: Fund key priorities, including pressures facing the NHS and delivery of the Violence against Women and Girls Strategy".
   - Line 85's 2029-30 to 2031-32 figures (-5, 0, -15) equal the note's.
@@ -217,7 +217,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - **Line 72 (p.82):** the AME component prints +0, +25, +35, +0, +0, +0 against Table 6.1's 0, -290, -375, 0, 0, 0.
   - **Line 45 (pp.43-52):** the ten components sum to 110, 290, 240, 2,140, 2,635, 3,360 against Table 6.1's 10, 100, 115, 1,980, 2,485, 3,160. Table 6.1 falls short by 100, 190, 125, 160, 150 and 200.
   - **Line 47 (pp.54-58):** the five components sum to -10, 10, 125, 65, 145, 235 against Table 6.1's 195, -125, 60, 75, 155, 240. The differences come to +205, -135, -65, +10, +10 and +5.
-  - **Line 85 (p.94):** equal from 2029-30 to 2031-32. Table 6.1 prints larger costs from 2026-27 to 2028-29: -355, -175, -140 against the note's -15, +70, +45.
+  - **Line 85 (p.94):** equal from 2029-30 to 2031-32. HM Treasury prints larger costs in Table 6.1 from 2026-27 to 2028-29: -355, -175, -140 against the note's -15, +70, +45.
 - **Table 6.2:** p.58's "+£130m estimated in 2029-30 in cash terms" equals Table 6.2 line 9 (DWP Fraud and Error) for 2029-30.
 - **Lines without a costing note:** HM Treasury gives 22 Table 6.1 lines no note: 1, 4, 9, 20, 22, 23, 24, 25, 31, 32, 34, 35, 40, 41, 42, 43, 63, 64, 67, 73, 74 and 81.
   - In the introduction HM Treasury limits the document to "tax and annually managed expenditure (AME) policy decisions".
@@ -241,7 +241,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - For line 47, the gap changes sign: +205 in 2026-27, -135 in 2027-28.
 - **Notes with no Table 6.1 title.** HM Treasury prints costing notes for BBB defence (p.41) and Erasmus+ (p.94), but no Table 6.1 title names them.
 - **Minor title and wording differences:**
-  - p.77's title says "from 25 June to 1 September", while Table 6.1 says "from 25 June 2026 to 1 September 2026".
+  - HM Treasury writes "from 25 June to 1 September" in p.77's title and "from 25 June 2026 to 1 September 2026" in Table 6.1.
   - p.16's title says "Weekly Earning Limit", while its text says "Weekly Earnings Limit" (Table 6.1 follows the title).
 
 ## Not staged, and why
@@ -259,7 +259,7 @@ We stage every Exchequer table and every estimate HM Treasury prints in the note
   - p.33's £1 billion reprofiled; p.35's £2bn Energy Wealth Fund; p.41's £450 million; p.42's £50 billion of capacity;
   - p.109's £700m of PWLB debt repaid;
   - HMRC's £70 million (p.49) and £485 million (p.50) and the staff numbers on pp.50 and 56.
-- **Numbers printed only in titles:** in AB2025 we kept these in `reform_hint`, and Table 6.1 prints the same titles.
+- **Numbers printed only in titles:** in AB2025 we kept these in `reform_hint`, and HM Treasury prints the same titles in Table 6.1.
 - **Baseline parameters:** p.91's RPI outturn and counterfactual maximum rate.
 - **p.58's "-£35m in 2029-30 in expenditure terms":** HM Treasury repeats that note's Exchequer table cell for 2029-30, so staging it would count it twice.
 - **p.94's "£0.6bn was allocated for the cost of Erasmus+ association for 2027-28":** the government made this allocation at Spring Forecast 2026, an earlier event, with a different scope from this note's student-loan and delivery costs.

@@ -124,7 +124,7 @@ The lane fetched the [news release](https://www.gov.scot/news/uk-budget-delivers
 - **Point or central.** The Scottish Government reports one estimate per figure, not a named central model scenario, so we use `value_kind: point`. We keep its “around” qualifier on the money amounts in `conditions.precision`.
 - **Attribution.** We mark all 5 as the Scottish Government's `own` estimates, because it reports its funding assessment without naming a separate original source. We use `arithmetic` to follow the AB2025 family's funding convention, without claiming access to an unpublished model. The Scottish Government reports no administrative outturn or count here.
 - **Baselines.** We set `baseline_policy: null` and propose no baseline. We stage these funding projections as context: the Scottish Government doesn't compare a reform with a specified alternative policy.
-- **Keys.** We give **5 rows `measure_key: null`**. We use no registered key and introduce **no proposed measure key**. The Scottish Government doesn't isolate a set of Table 6.1 decisions or show that its year-on-year real-terms funding assessment matches a registered package. We set `reform_hint: null` to record that the rows give context. We assert none of the 98 Table 6.1 lines as the exact scope of these figures.
+- **Keys.** We give **5 rows `measure_key: null`**. We use no registered key and introduce **no proposed measure key**. The Scottish Government doesn't isolate a set of Table 6.1 decisions or show that its year-on-year real-terms funding assessment matches a registered package. We set `reform_hint: null` to record that we stage the rows as context. We assert none of the 98 Table 6.1 lines as the exact scope of these figures.
 
 ### Scottish figures we left out
 

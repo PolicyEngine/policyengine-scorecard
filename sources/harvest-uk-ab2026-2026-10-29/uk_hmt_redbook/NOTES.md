@@ -41,7 +41,7 @@ We order rows by document: red book (printed page, then position), Impact on hou
 - **Red book (357 rows):**
   - 160 fiscal aggregates that HM Treasury restates from the OBR, ONS and IMF, with two shares of HM Treasury's own arithmetic (Box 1.C footnotes 54 and 56): Chapter 1 text, Chart 1.6's six data labels, Tables 1.2 and 1.3;
   - 84 cells of Table 6.3, in which HM Treasury breaks Table 6.1 line 45 into eleven items, with its subtotal, the line 46 memo and the subtotal including memo;
-  - 28 costs, yields and savings: Table 6.1 measures where the red book prints the line's own Exchequer impact, printed parts of those lines, and saving estimates with their own scopes;
+  - 28 costs, yields and savings: Table 6.1 measures where HM Treasury prints the line's own Exchequer impact, printed parts of those lines, and saving estimates with their own scopes;
   - 85 effects on people and businesses: counts affected; gains, losses and bill changes; GDP, earnings, price and jobs effects; Barnett consequentials.
 - **Impact on households (56 rows):** the distributional and context statements of paragraphs 1.7, 1.9, 1.10 (first bullet), 2.4, 2.5 and 2.10, and the 50 cells of Table 2.C.
 - **Pension Tax Allowance explainer (12 rows):** three pensioner counts and nine worked-case outcomes.
@@ -136,8 +136,8 @@ We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British 
   - yields, including Table 6.3: "positive = yield to the Exchequer (reduces borrowing)";
   - Table 1.3: "positive = increase in PSNB", the opposite of Table 6.1's yield convention. Its two memo lines give the change in the current budget deficit: "positive = increase in current budget deficit" (README rule 10, since 3 November);
   - Table 1.2: deficits and debt positive, surpluses negative, as printed;
-  - Chart 1.6's three bridge steps (rows 21, 22 and 24 at 4f424b9): "positive = reduction in current budget deficit (increase in stability rule headroom)". HM Treasury prints these steps with the opposite sign to Table 1.3's memo: Chart 1.6's "Effect of policy" +2.0 shows Table 1.3's policy memo −2.0 in 2029-30;
-  - Box 1.C: on each row we say what it measures and which way it runs (review A's RB-12), for example "positive = fall in borrowing (… as worded: fell by)" and "as printed; positive = current budget deficit (% of GDP)";
+  - Chart 1.6's three bridge steps (rows 21, 22 and 24 at 4f424b9): "positive = reduction in current budget deficit (increase in stability rule headroom)". HM Treasury prints these steps with the opposite sign to Table 1.3's memo, for example +2.0 for Chart 1.6's "Effect of policy" and −2.0 for the policy memo in 2029-30;
+  - Box 1.C: we state each figure's meaning and direction on its row (review A's RB-12), for example "positive = fall in borrowing (… as worded: fell by)" and "as printed; positive = current budget deficit (% of GDP)";
   - Barnett consequentials: "positive = increase in devolved government funding";
   - gains to a person or business: "positive = gain to the <payer> (…, as printed)", and row 185's CPI effect "positive = reduction in CPI inflation (as worded: reduce inflation by)" (RB-17).
 - **Periods.**
@@ -161,9 +161,9 @@ We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British 
 
 ### Which spending figures stay (rule 8 exception)
 
-We treat a spending figure as a measure's design unless the red book presents it as the measure's Exchequer impact. We keep the figure when it equals the printed Table 6.1 line (from `uk_hmt_tables`), within the red book's rounding. It may match as a total over the years the red book states or, for a per-year amount, as the line's per-year amount (review A's RB-20(b): the early-years books rows pass only the second form). We keep tax costs and yields, savings estimates and Table 6.3 regardless.
+We treat a spending figure as a measure's design unless HM Treasury presents it as the measure's Exchequer impact. We keep the figure when it equals the printed Table 6.1 line (from `uk_hmt_tables`), within the red book's rounding. It may match as a total over the years HM Treasury states or, for a per-year amount, as the line's per-year amount (review A's RB-20(b): the early-years books rows pass only the second form). We keep tax costs and yields, savings estimates and Table 6.3 regardless.
 
-| Table 6.1 line | Red book | Table 6.1 prints (£ million) | Rows |
+| Table 6.1 line | Red book | Table 6.1 (£ million) | Rows |
 |---|---|---|---|
 | 1 Household Energy Payment | £2.6 billion | -2,625 in 2026-27 | kept (2): the executive summary and para 2.48 (review A's RB-2 dropped Box 3.A's and para 3.5's repeats) |
 | 9 Early years books | £5 million a year | -5 a year (2026-27 to 2028-29) | kept (2): the per-year amount equals the line's; the years differ, see anomalies |
@@ -194,7 +194,7 @@ We proposed each key below, and in tranche 2 we registered it and moved it into 
 - `ab2026__package_hmrc_tax_gap_and_online_marketplace` (7 rows): exactly Table 6.1 lines 45 and 46. It covers Table 6.3's "Subtotal including memo" (six years) and footnote 73's "£2.3 billion from this Budget". In Table 6.3 HM Treasury prints +2,250m for lines 45 and 46 in 2029-30, against +1,980m for line 45 alone.
 - `ab2026__package_parliament_tax_gap_measures` (1 row): lines 45 and 46 plus the tax-gap measures of Autumn Budget 2024, Spring Statement 2025 and Budget 2025 (footnote 73). Paragraph 2.46: "the total due to be raised from measures to close the tax gap announced during this Parliament to over £12 billion in 2029-30".
 - `ab2026__package_property_and_savings_income_rates` (2 rows): exactly Table 6.1 lines 61 and 62. Paragraph 2.50: "84% of income tax payers will be unaffected by these changes"; "Around half of the revenue raised from this change is expected to come from the top 10% of households".
-- `ab2026__package_breathing_space_for_households` (1 row): paragraph 3.2's "Government action at this Budget to provide breathing space for households", which the OBR expects to reduce CPI inflation by 0.1 percentage points in 2027. We scope the key across Table 6.1 lines, though the red book lists none for this figure.
+- `ab2026__package_breathing_space_for_households` (1 row): paragraph 3.2's "Government action at this Budget to provide breathing space for households", which the OBR expects to reduce CPI inflation by 0.1 percentage points in 2027. We scope the key across Table 6.1 lines, though HM Treasury lists none for this figure.
   - The row fits three scopes, and we keep it on this key (the coordinator's call on review A's RB-17). In tranche 2 we register the key with a `partial` verdict and leave the three readings open (`KEY_DECISIONS.md`), and at ingest we drop the row as a restatement of the OBR's figure.
   - In Box 3.A HM Treasury's "breathing space for households" covers lines 1 and 2 (the Household Energy Payment and the VAT cut). In the OBR family we key the OBR's own CPI effect to lines 2 and 3 (`ab2026__package_fuel_duty_and_electricity_vat`). In Table 6.1 HM Treasury groups lines 1–11 under "Breathing space for families".
   - HM Treasury repeats the 0.1 percentage points in paragraph 1.38, which we don't stage.
@@ -286,7 +286,7 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 
 ## Judgement calls for the coordinator
 
-- **We dropped `spending_to_tax_ratio` (review A's RB-13).** In the 3 November finish we kept paragraph 1.10's "over four times" as a distributional statement. Review A read the rework brief's item 1 as a named removal list whose only exception is a Table 6.1 cost or yield. Neither primary prints another spending-to-tax ratio, so the list can only mean this row, and HM Treasury frames paragraph 1.10 as "context beyond the impact of recent government policy decisions". We dropped the row (category H). We keep the 60% row beside it, Table 2.C and the other Impact on households context rows as printed values.
+- **We dropped `spending_to_tax_ratio` (review A's RB-13).** In the 3 November finish we kept paragraph 1.10's "over four times" as a distributional statement. Review A read the rework brief's item 1 as a named removal list whose only exception is a Table 6.1 cost or yield. HM Treasury prints no other spending-to-tax ratio in either primary, so the list can only mean this row, and HM Treasury frames paragraph 1.10 as "context beyond the impact of recent government policy decisions". We dropped the row (category H). We keep the 60% row beside it, Table 2.C and the other Impact on households context rows as printed values.
 - **Mislabelled shares beyond the 84%.** We stage the 84% as `unaffected_share`, never 16%. BADR's "three-quarters … will still receive relief on their entire gain" gives the unaffected share too. "half of all RHL properties … will not pay business rates at all" includes properties already paying none (`share_with_zero_liability`). Impact on households' 20%, 60%, 59% and approximately 20% don't give affected shares (proposals above). The registry defines `share_no_change` as a household-income measure, so for the 84% of income tax payers we follow the brief's `unaffected_share`.
 - **Registered metrics replace AB2025-era proposals.** For the four "around £50 off the annual Ofgem price cap" rows and the three energy-debt "£30" rows we now use the registered `energy_bill_change` (unit `gbp_per_household`), which the enum mints for HM Treasury bill figures. For the India agreement's GDP effects we use `gdp_level_effect` in GBP (the AB2025 IPPR precedent).
 - **We dropped financial transactions and public sector net investment as financing and spending levels.** In Table 1.4 HM Treasury prints forecast levels of lending by programme, not Budget effects. The OBR produces public sector net investment as an aggregate, but the brief lists `public_investment_share` for removal.
@@ -310,7 +310,7 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
   - Leeds College of Building £28 million (para 4.71) and £15 million (para 6.53);
   - business tariff suspensions on 269 goods (para 3.28), 350 goods (para 4.147) and 361 extensions plus 72 new suspensions (line 16's title).
 - **Pubs relief:** HM Treasury writes the extra relief as "20%" in the text and as "20ppts" in Table 6.1.
-- **Table 1.3:** HM Treasury labels the new forecast "November 2026 forecast" in an October Budget. In Chart 1.6 it prints 14.5 where the text says £15 billion. Its "Debt is lower at the end of the forecast" fits public sector net financial liabilities (83.2% to 81.7%), while public sector net debt goes from 95.5% to 95.6%.
+- **Table 1.3:** HM Treasury labels the new forecast "November 2026 forecast" in an October Budget. In Chart 1.6 it prints 14.5 where it writes £15 billion in the text. Its "Debt is lower at the end of the forecast" fits public sector net financial liabilities (83.2% to 81.7%), while public sector net debt goes from 95.5% to 95.6%.
 - **Paragraphs 6.225 and 6.226:** HM Treasury repeats the Machine Games Duty measure. In Annex A footnote 181 it points to A.17 for green gilts, which A.19 covers.
 - **Pension Tax Allowance explainer:** in the FAQ HM Treasury prints "£13.319" for £13,319. It prints both £13,036.40 and the rounded £13,037, and "up to £94" beside Steph's £93.28. In the 28 October version's FAQ it repeats a question and prints "part-time wok". In the version it republished on 29 October (`83f8c894…`) it fixes both and still prints "£13.319".
 
@@ -399,10 +399,10 @@ Review A (issue comment 6635870934 on #231, at 4f424b9) approved this family wit
 - **RB-14:** we record the republished explainer as a 0-row primary (manifest line 6).
 - **RB-15:** we gave repeats one dating (rows 9, 10, 14, 196, 205, 248–251, 271, 273), and moved rows 0, 19, 215 and 244 to the multi-year convention.
 - **RB-16:** we set rows 143–166's `reform_hint` to "Total effect of policy decisions".
-- **RB-17:** we gave rows 185, 216, 226 and 237 conventions `signs.py` reads. Row 185 keeps its key, with the three scopes in its bullet, and we stage row 182 as 0.84 `share`.
+- **RB-17:** we gave rows 185, 216, 226 and 237 conventions `signs.py` reads. We keep row 185's key, with the three scopes in its bullet, and stage row 182 as 0.84 `share`.
 - **RB-18:**
   - We mark rows 33 and 37 as HM Treasury's own arithmetic.
-  - Rows 6, 7, 8, 10, 11, 12 and 14 take their repeats' source models. Row 5's and row 9's repeats already used `arithmetic`, and row 13 has no repeat and keeps its label.
+  - We give rows 6, 7, 8, 10, 11, 12 and 14 their repeats' source models. Row 5's and row 9's repeats already used `arithmetic`, and row 13 has no repeat, so we keep its label.
   - We stage row 222 as a worked example (`arithmetic`, with its subgroup), and row 183 as `decile_10`.
   - We dated row 184 2027-28, at medium confidence, `hmt_published_estimate_method_unspecified`. We removed `presentation` from row 168, and marked row 267 `hmt_published_estimate_method_unspecified`.
   - In row 194's note we give footnote 84's "fuel stressed" definition, which the coordinator read from the red book (19b337ac…).

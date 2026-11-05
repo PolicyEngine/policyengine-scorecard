@@ -53,7 +53,7 @@ HM Treasury attaches the two XLSX files to [Supporting documents for Budget 2026
 
 ## At ingest
 
-- We stage Table 6.2 on the proposed `financial_transaction_cash_impact`, and at ingest we put its 60 rows on the registered `cash_requirement_change`, the PSNCR metric. `uk_obr_tables` stages paragraph 3.20's £1.9bn rise in the Government's financing requirement from the National Wealth Fund and British Business Bank transactions (row 2684) on the same metric.
+- We stage Table 6.2 on the proposed `financial_transaction_cash_impact`, and at ingest we put its 60 rows on the registered `cash_requirement_change`, the PSNCR metric. In `uk_obr_tables` we stage paragraph 3.20's £1.9bn rise in the Government's financing requirement from the National Wealth Fund and British Business Bank transactions (row 2684) on the same metric.
 - In Table 6.3 of the red book, HM Treasury prints Table 6.1 lines 45 and 46 again, and we staged `uk_hmt_redbook` rows 339–350 from it. At ingest we drop those 12 rows as twins of this family's rows 264–275 and record each under the kept claim's `publication.also_printed_in`.
 
 ## Not staged
