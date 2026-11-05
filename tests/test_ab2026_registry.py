@@ -60,9 +60,11 @@ def test_every_table_61_line_is_registered_once_under_its_written_out_key():
 
 def test_table_62_maps_to_table_61_measures_except_sovereign_ai():
     """Table 6.2 lines are financial transactions of Table 6.1 measures; only
-    line 4 has no Table 6.1 line and so is a measure of its own."""
+    line 4 (Sovereign AI) and line 6 (the reprioritisation that funds line 5's
+    equity loan scheme, registered in tranche 2) have no Table 6.1 line, so
+    each is a measure of its own."""
     own = [m for m in REG["measures"] if "table_62_line" in m]
-    assert [m["table_62_line"] for m in own] == [4]
+    assert [m["table_62_line"] for m in own] == [4, 6]
     for line, slug in K.TABLE_62.items():
         assert K.PREFIX + slug in BY_KEY, (line, slug)
 

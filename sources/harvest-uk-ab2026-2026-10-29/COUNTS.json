@@ -2,7 +2,7 @@
  "uk_centax": {
   "rows": 112,
   "primaries": 6,
-  "claims_sha256": "2529e86fc898493e4e045072f6aebff2c757470cd9d578acbce8ca0790ce348c",
+  "claims_sha256": "eaf72518db419c0b21d736a1750da5594355e37fca2075a56b8fce24e79aa927",
   "sources": [
    "centax"
   ]
@@ -10,7 +10,7 @@
  "uk_devolved_govts": {
   "rows": 19,
   "primaries": 2,
-  "claims_sha256": "8f47eb3c1d0d67c76b19cdb02c09eb7211e2ad26e8957215b755009a64ba5dfa",
+  "claims_sha256": "8bd50e83718cee7b59a1c83fc590136b71119542b86cdd8eedf66aec94e6d0b5",
   "sources": [
    "scottish_government",
    "welsh_government"
@@ -19,7 +19,7 @@
  "uk_hmt_costings": {
   "rows": 597,
   "primaries": 1,
-  "claims_sha256": "4769087faa0876ca168f1976ac16ce23129617cd7f1ae35c406f75761fc9ea32",
+  "claims_sha256": "a70222abcd2c56a496f2aabbc4db339a018d87cb1261c352e0b4e20d1d224439",
   "sources": [
    "hm_treasury"
   ]
@@ -27,7 +27,7 @@
  "uk_hmt_redbook": {
   "rows": 425,
   "primaries": 6,
-  "claims_sha256": "04e5a88f9d20f8761049040460eef001880f471f74018e9d16c23e9b8c4a485d",
+  "claims_sha256": "9da61ba3c1d653c0833e59dd1d7f517c67d9ecd2d1d80d89676702e2169cae21",
   "sources": [
    "hm_treasury"
   ]
@@ -35,7 +35,7 @@
  "uk_hmt_tables": {
   "rows": 768,
   "primaries": 2,
-  "claims_sha256": "e44ba6ae818aa4f4c759ba135ea5a33a3dbbe0753f81e64759a8b0d25cc02819",
+  "claims_sha256": "220f98c5e5d55055bc47c971062ee1302ef88aa8cee43f26586eae126f3da83a",
   "sources": [
    "hm_treasury"
   ]
@@ -43,7 +43,7 @@
  "uk_ifs_ab2026": {
   "rows": 144,
   "primaries": 14,
-  "claims_sha256": "b76375ec9ccba03011181edcb47601e81f281636fda880f09688446bb582363d",
+  "claims_sha256": "c6a458ad4ea769aef0cf48459bec035ebd85d92c5ba73c450b6e3eef5dcda967",
   "sources": [
    "ifs"
   ]
@@ -51,7 +51,7 @@
  "uk_ippr": {
   "rows": 3,
   "primaries": 3,
-  "claims_sha256": "dcabaf8fb3157e4fa6d18c410add5a430eadbdc02784dd9d7831b2cea1bc2ab9",
+  "claims_sha256": "ffcaf34e1871e8feadd1adcbcba6a076b952482af8a9800bb935c3cd983c4877",
   "sources": [
    "ippr"
   ]
@@ -59,7 +59,7 @@
  "uk_obr_tables": {
   "rows": 2800,
   "primaries": 4,
-  "claims_sha256": "ceae9897d7c680f5c1be6e04a7dba3eb7114e1f542fcb5ae2236cd775d9fa199",
+  "claims_sha256": "886f3c915b58fe91775e33dcbecc81e369c445ba4e1820a7e61bfbafe243872b",
   "sources": [
    "obr_efo"
   ]
@@ -67,7 +67,7 @@
  "uk_rf_ab2026": {
   "rows": 766,
   "primaries": 8,
-  "claims_sha256": "e8f75767a7f871c0f2030aaf2d47348e35f6caa3418ab773e53b77205a682325",
+  "claims_sha256": "84f2ad7911917be492771e9662b7bed9ed2d0ce6855c336dd4e30ce290f4e60e",
   "sources": [
    "resolution_foundation"
   ]
@@ -86,7 +86,7 @@
  "uk_tpa": {
   "rows": 305,
   "primaries": 10,
-  "claims_sha256": "241f625fb725640835bde53dd5a2d1217ddd758f9df260abf778ac4bf96ba7cc",
+  "claims_sha256": "388617287bc82eb3253641e6531b2079783a6747acce6a4e6d4ad8d080461037",
   "sources": [
    "tax_policy_associates"
   ]
@@ -103,6 +103,6 @@
   "rows": 5952,
   "restated": 450,
   "families": 12,
-  "pinned_on": "2026-10-29"
+  "pinned_on": "2026-11-05"
  }
 }

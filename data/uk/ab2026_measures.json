@@ -28,7 +28,9 @@
   "executed_by_dashboard": "the measure ran on Budget day as a dashboard reform; pe_modifier names the module, function, arguments, the engine variables it replaces or reads, its parameter legs, and the published receipt (path, file sha256, reform sha256, run identity)",
   "delta_on_current_law": "pe_reform_delta applied to current law at the pin",
   "reversal_on_certified_world": "the measure is already in the engine's current law; a counterpart executes the pre-measure world as baseline (#56 convention)",
-  "package_of_registry_measures": "a composition of registry measures (`package_of`, a list of keys, as in AB2025); a PolicyEngine number covers the expressible legs, stated as constructed"
+  "package_of_registry_measures": "a composition of registry measures (`package_of`, a list of keys, as in AB2025); a PolicyEngine number covers the expressible legs, stated as constructed",
+  "receipts_of_registry_measures": "a producer's receipts allocation of registry measures (`receipts_of`, a list of keys): the OBR's Table 3.1 tax groups; a PolicyEngine run gives each leg's whole effect, so a counterpart is constructed, never like-for-like",
+  "producer_scope": "a package a producer defines in its own words (`package_of`, a string, as AB2025's totals are), with no exact list of registry measures"
  },
  "exogenous_levers_note": "The engine carries exogenous incidence levers that spread a £ amount supplied as an input: gov.contrib.policyengine.budget.consumer_incident_tax_change ('Tax increase incident on consumers'); gov.contrib.policyengine.budget.corporate_incident_tax_change ('Tax increase incident on owners of capital'); gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'); gov.contrib.policyengine.budget.nhs ('Increase in NHS spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'); gov.contrib.policyengine.budget.education ('Increase in education, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'); gov.contrib.policyengine.budget.high_income_incident_tax_change ('Tax rise for high income earners (functioning proportional to income over £100,000)'). Feeding a Table 6.1 figure through one restates HM Treasury's costing rather than estimating it, so no lever makes a line expressible here.",
  "action_link_rule": "Every not_expressible measure links to #230, which lists the upstream development items; the bus fare cap's partial verdict links to #106, the bus gap record.",
@@ -49,13 +51,13 @@
   "ab2026__ated_increase_and_sdlt_envelope_close": "not in Table 6.1 or 6.4"
  },
  "triage": {
-  "expressible": 11,
-  "partial": 4,
-  "not_expressible": 89,
+  "expressible": 17,
+  "partial": 46,
+  "not_expressible": 127,
   "executed_by_dashboard": 7,
-  "policyengine_uk_development_item": 13,
-  "out_of_model_scope": 76,
-  "announced": 104
+  "policyengine_uk_development_item": 21,
+  "out_of_model_scope": 106,
+  "announced": 177
  },
  "measures": [
   {
@@ -2300,6 +2302,1650 @@
     }
    },
    "note": "Run as one simulation of all seven measures (the combined run), not as a sum of the seven runs."
+  },
+  {
+   "measure_key": "ab2026__british_business_bank_defence_commitments_accelerated",
+   "title": "British Business Bank: accelerate £450m of commitments to defence-related and dual-use businesses",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__british_business_bank_defence_commitments_accelerated on 9 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: HM Treasury's policy costing with no identifiable Table 6.1 line; by Table 6.1's footnote 2 and £10m bar, probably inside line 41, so we never add it to Table 6.1's lines or totals.",
+   "program": "financial_transactions",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (British Business Bank commitments to defence-related businesses): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /british_business_bank|defence|dual_use/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__departmental_spending_growth_2031_32",
+   "title": "Departmental spending: grow day-to-day spending by 0.7% in real terms in 2031-32",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__departmental_spending_growth_2031_32 on 13 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's change to the 2031-32 pre-measures RDEL assumption (a £5.5bn reduction); no Table 6.1 line.",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (the 2031-32 departmental resource spending assumption), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /departmental|resource_spending|rdel/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__energy_debt_circuit_breaker",
+   "title": "Energy Debt Circuit Breaker: a debt strategy and a one-off targeted energy debt relief scheme",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__energy_debt_circuit_breaker on 3 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 3.8's debt strategy, which HM Treasury says saves all billpayers around £30; no Table 6.1 line.",
+   "program": "energy_bills",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "No energy debt and no component of household energy bills that recovers suppliers' bad debt: the engine holds consumption, not the bill's parts.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /energy_debt|bad_debt|standing_charge|unit_rate|supplier|levy/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: household energy bills split into standing charges, unit rates, levies and debt costs (gas_consumption and electricity_consumption are the nearest variables)",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230",
+   "nearest_variable_and_why_it_does_not_work": "gas_consumption and electricity_consumption hold a household's energy use, not the parts of its bill"
+  },
+  {
+   "measure_key": "ab2026__gas_standing_charge_moved_to_unit_rates",
+   "title": "Abolish the gas standing charge and recover it through unit rates",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__gas_standing_charge_moved_to_unit_rates on 34 staged rows (ifs, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The announced move of the typical household's gas standing charge onto unit rates, which costs the Exchequer nothing and has no Table 6.1 line (RF and IFS families).",
+   "program": "energy_bills",
+   "producers": [
+    "ifs",
+    "resolution_foundation"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "No gas standing charge or unit rate: the engine holds gas consumption, not the tariff that turns it into a bill, so it cannot move a fixed charge onto use.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /standing_charge|unit_rate|tariff|gas/. Parameters: 27 node(s) ['gov.dwp.ESA.income.capital.tariff_income.amount', 'gov.dwp.ESA.income.capital.tariff_income.step', 'gov.dwp.ESA.income.capital.tariff_income.threshold', 'gov.dwp.JSA.income.capital.tariff_income.amount', 'gov.dwp.JSA.income.capital.tariff_income.step', 'gov.dwp.JSA.income.capital.tariff_income.threshold']. Variables: 7 ['esa_income_tariff_income', 'gas_consumption', 'housing_benefit_tariff_income', 'income_support_tariff_income', 'jsa_income_tariff_income', 'natural_gas_kg']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: household energy bills split into standing charges, unit rates, levies and debt costs (gas_consumption and electricity_consumption are the nearest variables)",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230",
+   "nearest_variable_and_why_it_does_not_work": "gas_consumption holds use; no variable splits a gas bill into a standing charge and a unit rate"
+  },
+  {
+   "measure_key": "ab2026__gas_supplier_levy_funded_from_general_taxation",
+   "title": "Fund the Gas Supplier Levy from general taxation",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__gas_supplier_levy_funded_from_general_taxation on 1 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's footnote 12 figure for moving the levy off household bills; we found no Table 6.1 line.",
+   "program": "energy_bills",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "No levies or policy costs on household energy bills: the engine holds consumption, not the bill's parts, so it cannot take a levy off a bill.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /supplier|levy|policy_cost|standing_charge|gas/. Parameters: 1 node(s) ['gov.hmrc.fuel_duty.natural_gas']. Variables: 2 ['gas_consumption', 'natural_gas_kg']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: household energy bills split into standing charges, unit rates, levies and debt costs (gas_consumption and electricity_consumption are the nearest variables)",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230",
+   "nearest_variable_and_why_it_does_not_work": "gas_consumption holds use; no variable holds the levies a gas bill recovers"
+  },
+  {
+   "measure_key": "ab2026__minimum_wage_uprating_april_2027",
+   "title": "Raise the National Living Wage and National Minimum Wage rates from 1 April 2027",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__minimum_wage_uprating_april_2027 on 4 staged rows (hm_treasury, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The April 2027 minimum wage rates the Chancellor confirmed (red book paragraph 3.18), a regulation with no Table 6.1 line.",
+   "program": "minimum_wage",
+   "producers": [
+    "hm_treasury",
+    "resolution_foundation"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The engine carries the minimum wage rates (gov.hmrc.minimum_wage) but holds employment income as an input, so raising a rate raises no worker's pay. The minimum_wage variable feeds only Universal Credit's minimum income floor, the benefit cap's earnings exception and the childcare income tests.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /minimum_wage|living_wage/. Parameters: 11 node(s) ['gov.hmrc.minimum_wage.apprentice', 'gov.hmrc.minimum_wage.non_apprentice[0].threshold', 'gov.hmrc.minimum_wage.non_apprentice[0].amount', 'gov.hmrc.minimum_wage.non_apprentice[1].threshold', 'gov.hmrc.minimum_wage.non_apprentice[1].amount', 'gov.hmrc.minimum_wage.non_apprentice[2].threshold']. Variables: 2 ['minimum_wage', 'minimum_wage_category']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: employment income that responds to minimum wage rates (employment_income is an input)",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230",
+   "nearest_variable_and_why_it_does_not_work": "minimum_wage reads gov.hmrc.minimum_wage, and employment_income does not read minimum_wage"
+  },
+  {
+   "measure_key": "ab2026__mod_counter_fraud_strategy",
+   "title": "Ministry of Defence Counter Fraud Strategy",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__mod_counter_fraud_strategy on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 5.32's strategy, set to deliver £250 million of benefits; no Table 6.1 line.",
+   "program": "compliance_and_administration",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (counter-fraud work in defence procurement): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fraud|defence|procurement/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__private_landlord_register_fee_65",
+   "title": "Renters' Rights: a £65 fee for the 'Register your rental property' service from 15 December 2026",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__private_landlord_register_fee_65 on 25 staged rows (hm_treasury, obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: HM Treasury's costing of the fee (not on Table 6.1, footnote 2), offset by DEL spending and so fiscally neutral; the OBR stages its receipts, current DEL and total.",
+   "program": "regulation",
+   "producers": [
+    "hm_treasury",
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A fee for a public registration service, which HM Treasury offsets with departmental spending: the engine has no landlord register, and no tax or benefit rule for households changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /landlord|rental|register/. Parameters: 28 node(s) ['gov.economic_assumptions.yoy_growth.ons.private_rental_prices.UNITED_KINGDOM', 'gov.economic_assumptions.yoy_growth.ons.private_rental_prices.ENGLAND', 'gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WALES', 'gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SCOTLAND', 'gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTHERN_IRELAND', 'gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_EAST']. Variables: 2 ['property_rental_income', 'tax_free_childcare_on_shared_parental_leave']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__public_sector_pensions_2024_valuations",
+   "title": "Public sector pensions: net impact of the 2024 valuations",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__public_sector_pensions_2024_valuations on 27 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's departmental reductions, net public service pension payments and their net total from the 2024 valuations of the unfunded schemes; no Table 6.1 line.",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (employer contributions to the unfunded public service pension schemes), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /public_service_pension|employer_contribution|unfunded/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__pwlb_debt_relief_councils_severe_distress",
+   "title": "Public Works Loan Board debt relief for councils in severe financial distress",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__pwlb_debt_relief_councils_severe_distress on 18 staged rows (hm_treasury, obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: HM Treasury's costing (not on Table 6.1, footnote 2) and the OBR's capital AME and total.",
+   "program": "financial_transactions",
+   "producers": [
+    "hm_treasury",
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (debt relief on councils' Public Works Loan Board loans): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /pwlb|public_works|council_debt/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__regulatory_administrative_savings",
+   "title": "Regulatory administrative savings for business",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__regulatory_administrative_savings on 5 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The red book's chapter 6 decision (paragraph 6.36) and paragraph 4.52's estimated gross administrative savings for business, with its parts as components; no Table 6.1 line.",
+   "program": "regulation",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A regulatory change (administrative burdens of regulation on business) with no tax or benefit rule for households.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /regulat|administrative/. Parameters: 0 node(s) []. Variables: 1 ['housing_benefit_pension_age_regulations_apply']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__rolls_royce_gas_turbine_programme",
+   "title": "Co-investment in a 10-year £2.5 billion next-generation gas turbine programme",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__rolls_royce_gas_turbine_programme on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 4.80's programme for civil and defence aerospace, not yet contracted (paragraph 4.83); no Table 6.1 line named.",
+   "program": "financial_transactions",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (co-investment in aerospace gas turbine research): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /aerospace|turbine|research/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__scottish_air_passenger_duty_devolution",
+   "title": "Devolve Air Passenger Duty to the Scottish Government in April 2027",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__scottish_air_passenger_duty_devolution on 18 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's Scottish block grant adjustment, self-financed expenditure and total; no Table 6.1 line.",
+   "program": "indirect_tax",
+   "producers": [
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A transfer of a tax between the UK and Scottish governments, with a block grant adjustment: no tax or benefit rule for households changes, and the engine holds no air travel.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /air_passenger|aviation|flight/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__state_pension_triple_lock_adjustment",
+   "title": "Adjust the State Pension triple lock from April 2030 to hold the pension's value relative to earnings as reached in April 2029",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__state_pension_triple_lock_adjustment on 4 staged rows (hm_treasury, obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 5.23 and OBR paragraph 3.49: from April 2030, rises of the highest of 2.5%, inflation, or the rise that keeps the pension's April 2029 ratio to earnings; no Table 6.1 line, since its savings fall after the forecast.",
+   "program": "state_pension",
+   "producers": [
+    "hm_treasury",
+    "obr_efo"
+   ],
+   "computability": "expressible",
+   "construction": "delta_on_current_law",
+   "pe_reform_delta": {
+    "gov.dwp.state_pension.triple_lock.include_earnings": {
+     "2030": false,
+     "2031": false
+    },
+    "gov.dwp.state_pension.triple_lock.earnings_path_guarantee": {
+     "2030": true,
+     "2031": true
+    }
+   },
+   "delta_kind": "absolute_value_by_year",
+   "engine_baseline_2026": {
+    "gov.dwp.state_pension.triple_lock.include_earnings": true,
+    "gov.dwp.state_pension.triple_lock.earnings_path_guarantee": false
+   },
+   "note": "The engine's parameter documentation names this reading for the plan announced on 29 September 2026: include_earnings false and earnings_path_guarantee true from 2030. The guarantee anchors an earnings path at the pension's level in the year before it first applies, 2029-30. The engine rebuilds the uprating rates only through Scenario(parameter_changes=...): a reform dictionary changes the parameters but not the rates."
+  },
+  {
+   "measure_key": "ab2026__your_first_home_ft_reprioritisation",
+   "title": "Reprioritise financial transactions budgets to fund the new equity loan scheme",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__your_first_home_ft_reprioritisation on 6 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.2 line 6, with no Table 6.1 line; line 5 is the scheme itself and keeps ab2026__your_first_home_equity_loan.",
+   "table_62_line": 6,
+   "program": "financial_transactions",
+   "producers": [
+    "hm_treasury"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (financial transactions budgets reprioritised to an equity loan scheme): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /equity_loan|help_to_buy|financial_transaction/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_business_rates_rhl_sbrr_and_transitional_support",
+   "title": "Business rates: the SBRR thresholds, the real-terms freeze and the transitional support extension, together",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_business_rates_rhl_sbrr_and_transitional_support on 2 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 13 and 14, the three bullets of red book paragraph 3.22; the red book doesn't say whether line 12's pubs relief also counts, so we leave it out.",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__business_rates_sbrr_rhl_thresholds_raised",
+    "ab2026__business_rates_rhl_transitional_support"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 2 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_carbon_price_support_and_cfd_levies",
+   "title": "Abolish carbon price support and fund the LCCC to reduce CfD levies, together",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_carbon_price_support_and_cfd_levies on 2 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 70 and 71 (OBR family).",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__british_industrial_competitiveness_scheme",
+    "ab2026__carbon_price_support_removed"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 2 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_dividend_and_capital_gains_tax_changes",
+   "title": "OBR Table 3.1: changes to dividend and capital gains taxation",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_dividend_and_capital_gains_tax_changes on 6 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 26, 49 and 60, as the OBR family's NOTES gives them.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__founders_relief_cgt",
+    "ab2026__distributions_framework_modernised",
+    "ab2026__badr_lifetime_limit_500000"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 3 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 1 expressible legs: ['ab2026__badr_lifetime_limit_500000']",
+   "expressible_legs": [
+    "ab2026__badr_lifetime_limit_500000"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_hmrc_tax_gap_and_online_marketplace",
+   "title": "HMRC's tax gap measures and online marketplace liability, together",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_hmrc_tax_gap_and_online_marketplace on 7 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Exactly Table 6.1 lines 45 and 46: red book Table 6.3's subtotal including memo, and footnote 73.",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__hmrc_tax_gap_package",
+    "ab2026__online_marketplace_liability_uk_businesses"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 2 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_household_energy_payment_and_electricity_vat",
+   "title": "The Household Energy Payment and zero VAT on domestic electricity, together",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_household_energy_payment_and_electricity_vat on 5 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 1 and 2; RF's sums show its VAT figure covers the whole cut, as line 2 does.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__household_energy_payment_100_bands_a_to_d",
+    "ab2026__electricity_vat_zero_rate_to_july_2027"
+   ],
+   "pe_reform_delta": null,
+   "computability": "expressible",
+   "note": "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
+  },
+  {
+   "measure_key": "ab2026__package_property_and_savings_income_rates",
+   "title": "Property and savings income tax rates up 2ppts, together",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_property_and_savings_income_rates on 33 staged rows (hm_treasury, ifs, resolution_foundation, tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Exactly Table 6.1 lines 61 and 62 (red book, IFS, RF and TPA families).",
+   "program": "package",
+   "producers": [
+    "hm_treasury",
+    "ifs",
+    "resolution_foundation",
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ],
+   "pe_reform_delta": null,
+   "computability": "expressible",
+   "note": "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
+  },
+  {
+   "measure_key": "ab2026__package_hmt_distributional_budget_2026",
+   "title": "HM Treasury's Impact on households: the Budget 2026 policies it models",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_hmt_distributional_budget_2026 on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Impact on households paragraph 1.4: Table 6.1 lines 2, 3, 4, 5, 8, 11, 15, 26, 39, 49, 52, 59, 60, 61, 62, 72 and 95, and the private landlord registration fee, without line 1.",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred",
+    "ab2026__bus_fare_cap_2_england_outside_london_2027",
+    "ab2026__mileage_allowance_payments_55p",
+    "ab2026__uc_surplus_earnings_threshold_2500_extended",
+    "ab2026__cash_isa_limit_held_at_20000",
+    "ab2026__trading_allowance_3000",
+    "ab2026__founders_relief_cgt",
+    "ab2026__lifetime_isa_withdrawal_charge_20pc_above_cap",
+    "ab2026__distributions_framework_modernised",
+    "ab2026__pension_tax_allowance",
+    "ab2026__private_hire_operators_vat_full_fare",
+    "ab2026__badr_lifetime_limit_500000",
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp",
+    "ab2026__youth_guarantee_and_apprenticeships_spring_2026",
+    "ab2026__low_value_imports_customs_relief_removed",
+    "ab2026__private_landlord_register_fee_65"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "10 of 18 legs are not expressible and 1 partial (ab2026__bus_fare_cap_2_england_outside_london_2027) (see each leg's verdict); a PolicyEngine number covers only the 7 expressible legs: ['ab2026__electricity_vat_zero_rate_to_july_2027', 'ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred', 'ab2026__trading_allowance_3000', 'ab2026__pension_tax_allowance', 'ab2026__badr_lifetime_limit_500000', 'ab2026__property_income_rates_plus_2pp', 'ab2026__savings_income_rates_plus_2pp']",
+   "expressible_legs": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred",
+    "ab2026__trading_allowance_3000",
+    "ab2026__pension_tax_allowance",
+    "ab2026__badr_lifetime_limit_500000",
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_rf_ab26_permanent_personal_measures",
+   "title": "RF Figure 20's AB26 changes: permanent personal tax and benefit measures",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rf_ab26_permanent_personal_measures on 19 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 52, 56, 61 and 62 and the gas standing charge change (RF's workbook column K equals columns F, G, I and J).",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__pension_tax_allowance",
+    "ab2026__machine_games_duty_higher_stake_25pc",
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp",
+    "ab2026__gas_standing_charge_moved_to_unit_rates"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 5 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 3 expressible legs: ['ab2026__pension_tax_allowance', 'ab2026__property_income_rates_plus_2pp', 'ab2026__savings_income_rates_plus_2pp']",
+   "expressible_legs": [
+    "ab2026__pension_tax_allowance",
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_non_scorecard_decisions",
+   "title": "OBR: direct effect of non-scorecard decisions",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_non_scorecard_decisions on 12 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Exactly the departmental spending assumption change and the public pension valuations, which have no Table 6.1 lines.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__departmental_spending_growth_2031_32",
+    "ab2026__public_sector_pensions_2024_valuations"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 2 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_business_rates",
+   "title": "TPA: business rates",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_business_rates on 8 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 12, 13, 14, 57, 76 and 80 (TPA's three charts); on the by-tax bar, TPA's NOTES places line 76, zero in 2027-28, by assumption.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__business_rates_pubs_relief_35pc",
+    "ab2026__business_rates_sbrr_rhl_thresholds_raised",
+    "ab2026__business_rates_rhl_transitional_support",
+    "ab2026__business_rates_vape_shops_and_agcs_reliefs_removed",
+    "ab2026__leeds_city_fund",
+    "ab2026__business_rates_ev_charging_relief"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "6 of 6 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_cgt_founders_relief_and_badr",
+   "title": "TPA: CGT (Founders' Relief and BADR)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_cgt_founders_relief_and_badr on 1 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 26 and 60 (TPA's by-tax chart).",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__founders_relief_cgt",
+    "ab2026__badr_lifetime_limit_500000"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "1 of 2 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 1 expressible legs: ['ab2026__badr_lifetime_limit_500000']",
+   "expressible_legs": [
+    "ab2026__badr_lifetime_limit_500000"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tpa_energy_and_environment",
+   "title": "TPA: energy and environment",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_energy_and_environment on 6 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 17, 69, 71, 90 and 96 (TPA's by-year chart).",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__climate_change_levy_rates_2028",
+    "ab2026__electricity_generator_levy_55pc",
+    "ab2026__carbon_price_support_removed",
+    "ab2026__landfill_communities_fund_credit_cap",
+    "ab2026__ets_energy_from_waste_delay"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "5 of 5 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_fuel_duty_red_diesel_and_hgv_ved",
+   "title": "TPA: fuel duty cut, red diesel and HGV VED",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_fuel_duty_red_diesel_and_hgv_ved on 1 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 3, 18 and 65 (TPA's by-tax chart).",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred",
+    "ab2026__red_diesel_duty_cut",
+    "ab2026__hgv_ved_1_for_12_months"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "2 of 3 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 1 expressible legs: ['ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred']",
+   "expressible_legs": [
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_by_measure",
+   "title": "TPA: other (by-measure chart)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_by_measure on 1 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 11, 17, 18, 19, 28, 36, 50, 51, 53, 65, 66, 69, 71, 79, 88, 89, 90, 93, 94, 97 and 98.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__cash_isa_limit_held_at_20000",
+    "ab2026__climate_change_levy_rates_2028",
+    "ab2026__red_diesel_duty_cut",
+    "ab2026__alcohol_duty_small_producer_relief",
+    "ab2026__emi2_option_limit_120000",
+    "ab2026__vat_zero_rate_land_for_social_housing",
+    "ab2026__advance_corporation_tax_abolished",
+    "ab2026__vat_reverse_charge_overseas_services_restricted",
+    "ab2026__pension_death_benefits_two_year_rule_removed",
+    "ab2026__hgv_ved_1_for_12_months",
+    "ab2026__vat_5pc_family_days_out_summer_2026",
+    "ab2026__electricity_generator_levy_55pc",
+    "ab2026__carbon_price_support_removed",
+    "ab2026__securities_transfer_tax",
+    "ab2026__vat_zero_rate_donated_medicines",
+    "ab2026__vat_medical_deputies_staffing",
+    "ab2026__landfill_communities_fund_credit_cap",
+    "ab2026__hvcts_deferrals_discounts_exemptions",
+    "ab2026__benefits_in_kind_payrolling_delay",
+    "ab2026__gas_distribution_revenue_recognition_spread",
+    "ab2026__us_llc_double_taxation_relief"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "21 of 21 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_by_tax_2027_28",
+   "title": "TPA: other (by-tax chart, 2027-28)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_by_tax_2027_28 on 1 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 17, 19, 44, 56, 69, 71, 79, 90, 93, 96 and 98; TPA's NOTES places the lines that are zero in 2027-28 by assumption and leaves line 66 undetermined, so we leave line 66 out.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__climate_change_levy_rates_2028",
+    "ab2026__alcohol_duty_small_producer_relief",
+    "ab2026__uk_export_finance_defence_capacity",
+    "ab2026__machine_games_duty_higher_stake_25pc",
+    "ab2026__electricity_generator_levy_55pc",
+    "ab2026__carbon_price_support_removed",
+    "ab2026__securities_transfer_tax",
+    "ab2026__landfill_communities_fund_credit_cap",
+    "ab2026__hvcts_deferrals_discounts_exemptions",
+    "ab2026__ets_energy_from_waste_delay",
+    "ab2026__us_llc_double_taxation_relief"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "11 of 11 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_by_year",
+   "title": "TPA: other (by-year chart)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_by_year on 6 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 10, 16, 19, 26, 44, 56, 60, 77, 78, 79, 93, 95 and 98.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__food_and_heating_oil_tariff_suspensions",
+    "ab2026__business_tariff_suspensions",
+    "ab2026__alcohol_duty_small_producer_relief",
+    "ab2026__founders_relief_cgt",
+    "ab2026__uk_export_finance_defence_capacity",
+    "ab2026__machine_games_duty_higher_stake_25pc",
+    "ab2026__badr_lifetime_limit_500000",
+    "ab2026__uk_india_ceta_and_double_contributions_convention",
+    "ab2026__steel_tariff_and_quotas",
+    "ab2026__securities_transfer_tax",
+    "ab2026__hvcts_deferrals_discounts_exemptions",
+    "ab2026__low_value_imports_customs_relief_removed",
+    "ab2026__us_llc_double_taxation_relief"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "12 of 13 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 1 expressible legs: ['ab2026__badr_lifetime_limit_500000']",
+   "expressible_legs": [
+    "ab2026__badr_lifetime_limit_500000"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_corporate_tax",
+   "title": "TPA: other corporate tax",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_corporate_tax on 7 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 49, 50, 54, 68 and 97; on the by-tax bar, TPA's NOTES places lines 49 and 50, zero in 2027-28, by assumption.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__distributions_framework_modernised",
+    "ab2026__advance_corporation_tax_abolished",
+    "ab2026__foreign_sovereign_investments_taxation",
+    "ab2026__foreign_permanent_establishment_exemption_mandatory",
+    "ab2026__gas_distribution_revenue_recognition_spread"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "5 of 5 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_income_tax",
+   "title": "TPA: other income tax",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_income_tax on 7 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 5, 15, 28, 52, 53, 86 and 94; on the by-tax bar, TPA's NOTES places lines 15 and 86, zero in 2027-28, by assumption.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__mileage_allowance_payments_55p",
+    "ab2026__trading_allowance_3000",
+    "ab2026__emi2_option_limit_120000",
+    "ab2026__pension_tax_allowance",
+    "ab2026__pension_death_benefits_two_year_rule_removed",
+    "ab2026__company_car_tax_rates_2030_31",
+    "ab2026__benefits_in_kind_payrolling_delay"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "5 of 7 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 2 expressible legs: ['ab2026__trading_allowance_3000', 'ab2026__pension_tax_allowance']",
+   "expressible_legs": [
+    "ab2026__trading_allowance_3000",
+    "ab2026__pension_tax_allowance"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tpa_other_vat",
+   "title": "TPA: other VAT",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_other_vat on 7 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 36, 46, 51, 59, 88 and 89; TPA's NOTES says the by-tax bar may also hold line 66, zero in 2027-28, which we leave out.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__vat_zero_rate_land_for_social_housing",
+    "ab2026__online_marketplace_liability_uk_businesses",
+    "ab2026__vat_reverse_charge_overseas_services_restricted",
+    "ab2026__private_hire_operators_vat_full_fare",
+    "ab2026__vat_zero_rate_donated_medicines",
+    "ab2026__vat_medical_deputies_staffing"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "6 of 6 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_savings_property_income_and_cash_isa",
+   "title": "TPA: savings and property income tax",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_savings_property_income_and_cash_isa on 7 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 11, 61 and 62; the group includes line 11, the cash ISA limit, which TPA doesn't mention.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__cash_isa_limit_held_at_20000",
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "1 of 3 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 2 expressible legs: ['ab2026__property_income_rates_plus_2pp', 'ab2026__savings_income_rates_plus_2pp']",
+   "expressible_legs": [
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tpa_tariffs",
+   "title": "TPA: tariffs (including UK-India)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_tariffs on 2 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 10, 16, 77, 78 and 95; on the by-tax bar, TPA's NOTES places line 95, zero in 2027-28, by assumption.",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__food_and_heating_oil_tariff_suspensions",
+    "ab2026__business_tariff_suspensions",
+    "ab2026__uk_india_ceta_and_double_contributions_convention",
+    "ab2026__steel_tariff_and_quotas",
+    "ab2026__low_value_imports_customs_relief_removed"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "5 of 5 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 0 expressible legs: []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_tpa_temporary_vat_and_fuel_cuts",
+   "title": "TPA: temporary VAT and fuel cuts",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tpa_temporary_vat_and_fuel_cuts on 6 staged rows (tax_policy_associates); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 2, 3, 18, 65 and 66 (TPA's by-year chart).",
+   "program": "package",
+   "producers": [
+    "tax_policy_associates"
+   ],
+   "construction": "package_of_registry_measures",
+   "package_of": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred",
+    "ab2026__red_diesel_duty_cut",
+    "ab2026__hgv_ved_1_for_12_months",
+    "ab2026__vat_5pc_family_days_out_summer_2026"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "3 of 5 legs are not expressible (see each leg's verdict); a PolicyEngine number covers only the 2 expressible legs: ['ab2026__electricity_vat_zero_rate_to_july_2027', 'ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred']",
+   "expressible_legs": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_fuel_duty_and_electricity_vat",
+   "title": "OBR Table 3.1: fuel duty freeze and VAT off domestic energy bills (receipts)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_fuel_duty_and_electricity_vat on 11 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The receipts of Table 6.1 lines 2 and 3 only (Table 3.1's tax groups are receipts groupings, review B finding 3); line 1 doesn't count.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "receipts_of_registry_measures",
+   "receipts_of": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The producer allocates its figure to receipts, and a PolicyEngine run gives each leg's whole effect, not its receipts head, so a counterpart is constructed and never like-for-like; the expressible legs are ['ab2026__electricity_vat_zero_rate_to_july_2027', 'ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred']",
+   "expressible_legs": [
+    "ab2026__electricity_vat_zero_rate_to_july_2027",
+    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_property_and_savings_income_rates_receipts",
+   "title": "OBR Table 3.1: changes to savings and property income tax rates (receipts)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_property_and_savings_income_rates_receipts on 7 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The receipts of Table 6.1 lines 61 and 62, which differ from the lines' totals, so not ab2026__package_property_and_savings_income_rates.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "receipts_of_registry_measures",
+   "receipts_of": [
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The producer allocates its figure to receipts, and a PolicyEngine run gives each leg's whole effect, not its receipts head, so a counterpart is constructed and never like-for-like; the expressible legs are ['ab2026__property_income_rates_plus_2pp', 'ab2026__savings_income_rates_plus_2pp']",
+   "expressible_legs": [
+    "ab2026__property_income_rates_plus_2pp",
+    "ab2026__savings_income_rates_plus_2pp"
+   ]
+  },
+  {
+   "measure_key": "ab2026__package_tax_administration_compliance_and_debt_collection_receipts",
+   "title": "OBR Table 3.1: tax administration, compliance and debt collection measures (receipts)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tax_administration_compliance_and_debt_collection_receipts on 13 staged rows (obr_efo, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The receipts of Table 6.1 lines 45 and 46, equal in all six years, whose totals round differently (review B finding 3); RF restates the OBR's group.",
+   "program": "package",
+   "producers": [
+    "obr_efo",
+    "resolution_foundation"
+   ],
+   "construction": "receipts_of_registry_measures",
+   "receipts_of": [
+    "ab2026__hmrc_tax_gap_package",
+    "ab2026__online_marketplace_liability_uk_businesses"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The producer allocates its figure to receipts, and a PolicyEngine run gives each leg's whole effect, not its receipts head, so a counterpart is constructed and never like-for-like; the expressible legs are []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_temporary_business_rates_reliefs_receipts",
+   "title": "OBR: the package of temporary business rates measures (receipts)",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_temporary_business_rates_reliefs_receipts on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The receipts of Table 6.1 lines 12, 13 and 14: OBR paragraph 3.19's net cost of around £0.5 billion in 2028-29 matches their receipts, not their totals.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "receipts_of_registry_measures",
+   "receipts_of": [
+    "ab2026__business_rates_pubs_relief_35pc",
+    "ab2026__business_rates_sbrr_rhl_thresholds_raised",
+    "ab2026__business_rates_rhl_transitional_support"
+   ],
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The producer allocates its figure to receipts, and a PolicyEngine run gives each leg's whole effect, not its receipts head, so a counterpart is constructed and never like-for-like; the expressible legs are []",
+   "expressible_legs": []
+  },
+  {
+   "measure_key": "ab2026__package_barnett_consequentials",
+   "title": "Barnett consequentials of decisions confirmed at Budget for the devolved governments",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_barnett_consequentials on 16 staged rows (hm_treasury, welsh_government); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 4.150: the consequentials for the Scottish, Welsh and Northern Ireland governments, 2026-27 to 2029-30, without the technical reduction from lower employer pension contributions; each government's figure is a component, and the nation rides in conditions.geography.",
+   "program": "public_spending",
+   "producers": [
+    "hm_treasury",
+    "welsh_government"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 4.150: the consequentials for the Scottish, Welsh and Northern Ireland governments, 2026-27 to 2029-30, without the technical reduction from lower employer pension contributions; each government's figure is a component, and the nation rides in conditions.geography.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Block grant funding between the UK and devolved governments: no tax or benefit rule for households changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /barnett|block_grant|devolved/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_breathing_space_for_households",
+   "title": "Government action at this Budget to provide breathing space for households",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_breathing_space_for_households on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 3.2's action, whose CPI effect the OBR expects at 0.1 percentage points in 2027. The red book lists no lines for the figure, Box 3.A's breathing space covers lines 1 and 2, and Table 6.1's heading groups lines 1 to 11, so we keep HM Treasury's words.",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 3.2's action, whose CPI effect the OBR expects at 0.1 percentage points in 2027. The red book lists no lines for the figure, Box 3.A's breathing space covers lines 1 and 2, and Table 6.1's heading groups lines 1 to 11, so we keep HM Treasury's words.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: HM Treasury lists no Table 6.1 lines for the figure, and three readings (lines 1 and 2, lines 2 and 3, lines 1 to 11) are open. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_civil_service_transformation_programme",
+   "title": "OBR: the civil service transformation programme",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_civil_service_transformation_programme on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's programme to reduce resource spending; it names no lines, and lines 63 and 64 are probable but not established (review B finding 14).",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's programme to reduce resource spending; it names no lines, and lines 63 and 64 are probable but not established (review B finding 14).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (civil service running costs), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /civil_service|administration_budget/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_compliance_measures_announced",
+   "title": "OBR Box 3.1: the compliance measures announced in this Budget",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_compliance_measures_announced on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR doesn't list them; they are probably line 45's items and line 46, but the OBR doesn't say so.",
+   "program": "compliance_and_administration",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR doesn't list them; they are probably line 45's items and line 46, but the OBR doesn't say so.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (tax compliance measures): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /compliance|tax_gap/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_corporation_and_bank_tax_changes",
+   "title": "OBR Table 3.1: changes to corporation and bank taxation",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_corporation_and_bank_tax_changes on 7 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's group; paragraph 3.16 discusses lines 54, 55 and 58, and the OBR publishes no full decomposition.",
+   "program": "business_tax",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's group; paragraph 3.16 discusses lines 54, 55 and 58, and the OBR publishes no full decomposition.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A tax on businesses (corporation tax and the bank surcharge), out of the household model's scope: it changes what companies owe. The engine's corporate channel, gov.contrib.policyengine.budget.corporate_incident_tax_change ('Tax increase incident on owners of capital'), spreads a £ change supplied as an input, so it would restate the costing rather than estimate it. The name search records what the engine holds.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /corporation_tax|bank_surcharge|bank_levy/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_defence_investment_plan",
+   "title": "The Defence Investment Plan",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_defence_investment_plan on 2 staged rows (hm_treasury, obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The plan published in June 2026, which no single line covers; lines 40 to 42 carry its savings and funding, and the OBR's £1.8 billion a year is its RDEL part, a component.",
+   "program": "public_spending",
+   "producers": [
+    "hm_treasury",
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The plan published in June 2026, which no single line covers; lines 40 to 42 carry its savings and funding, and the OBR's £1.8 billion a year is its RDEL part, a component.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (defence), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /defence|military/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_dwp_fraud_and_error_measures",
+   "title": "DWP: this Budget's new fraud and error measures",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_dwp_fraud_and_error_measures on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 5.17's new measures, expected to save an additional £1.4 billion over the forecast; the red book doesn't list them, and the figure reconciles with no printed basis for line 47.",
+   "program": "compliance_and_administration",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 5.17's new measures, expected to save an additional £1.4 billion over the forecast; the red book doesn't list them, and the figure reconciles with no printed basis for line 47.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (benefit fraud and error prevention): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fraud|error|overpayment/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_fuel_duty_freezes_since_2010_11",
+   "title": "OBR: cumulative fuel duty freezes from 2010-11 to 2027-28 and the 5p cut",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_fuel_duty_freezes_since_2010_11 on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's cumulative cost against RPI uprating, which includes line 3 and every freeze since 2010-11; RF's ab2026_option__fuel_duty_rpi_uprating_since_2011 sees the same pair of paths from the other side (review A's K-6).",
+   "program": "fuel_duty",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's cumulative cost against RPI uprating, which includes line 3 and every freeze since 2010-11; RF's ab2026_option__fuel_duty_rpi_uprating_since_2011 sees the same pair of paths from the other side (review A's K-6).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A sum of the receipts that seventeen years of fuel duty decisions forgo against RPI uprating: the engine scores one world against another in a policy year, not a cumulative history of past decisions.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fuel_duty/. Parameters: 4 node(s) ['gov.hmrc.fuel_duty.lpg', 'gov.hmrc.fuel_duty.natural_gas', 'gov.hmrc.fuel_duty.petrol_and_diesel', 'gov.hmrc.fuel_duty.rural_fuel_duty_relief']. Variables: 2 ['fuel_duty', 'in_rural_fuel_duty_relief_area']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_government_decisions_since_march_2026",
+   "title": "The total effect of Government decisions since March 2026",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_government_decisions_since_march_2026 on 368 staged rows (hm_treasury, obr_efo, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's total effect of decisions on PSNB: Table 6.1 lines 1 to 98, the three fiscally neutral measures with no line (PWLB debt relief, Scottish APD devolution and the landlord registration fee) and the two non-scorecard decisions, with direct and indirect effects; the red book's Table 1.3 and RF restate it.",
+   "program": "package",
+   "producers": [
+    "hm_treasury",
+    "obr_efo",
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's total effect of decisions on PSNB: Table 6.1 lines 1 to 98, the three fiscally neutral measures with no line (PWLB debt relief, Scottish APD devolution and the landlord registration fee) and the two non-scorecard decisions, with direct and indirect effects; the red book's Table 1.3 and RF restate it.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: the OBR adds its indirect effects and two non-scorecard decisions to Table 6.1's lines. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_hmt_distributional_since_ab2024",
+   "title": "HM Treasury's Impact on households: modelled policies from Autumn Budget 2024 to Budget 2026",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_hmt_distributional_since_ab2024 on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Impact on households paragraph 1.8: the Budget 2026 policies above plus earlier events' measures, which aren't Table 6.1 lines.",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Impact on households paragraph 1.8: the Budget 2026 policies above plus earlier events' measures, which aren't Table 6.1 lines.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: HM Treasury adds earlier events' measures, which this registry doesn't hold. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_household_energy_vat_and_household_share_of_fuel_duty",
+   "title": "RF's cost-of-living package: lines 1 and 2 and the household share of the fuel duty cut",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_household_energy_vat_and_household_share_of_fuel_duty on 3 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 1 and 2 plus the share of line 3 that accrues directly to households (RF footnote 19), a two-year total; not lines 1 to 3 exactly (rule 3, review A's K-4).",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Table 6.1 lines 1 and 2 plus the share of line 3 that accrues directly to households (RF footnote 19), a two-year total; not lines 1 to 3 exactly (rule 3, review A's K-4).",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF counts only the household-incidence share of line 3, which no registry measure holds. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_ifs_announced_tax_changes",
+   "title": "IFS: the tax change Budget 2026 announced, at the forecast horizon",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_ifs_announced_tax_changes on 1 staged rows (ifs); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: IFS's estimate as a share of GDP; the chart lists no Table 6.1 line and names no OBR grouping.",
+   "program": "package",
+   "producers": [
+    "ifs"
+   ],
+   "construction": "producer_scope",
+   "package_of": "IFS's estimate as a share of GDP; the chart lists no Table 6.1 line and names no OBR grouping.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: IFS lists no Table 6.1 lines and names no OBR grouping. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_ifs_new_giveaways",
+   "title": "IFS: the Budget's new giveaways",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_ifs_new_giveaways on 2 staged rows (ifs); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: IFS's new giveaways that push up borrowing this year and next; IFS names no OBR line, and doesn't say they cover every decision since March.",
+   "program": "package",
+   "producers": [
+    "ifs"
+   ],
+   "construction": "producer_scope",
+   "package_of": "IFS's new giveaways that push up borrowing this year and next; IFS names no OBR line, and doesn't say they cover every decision since March.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: IFS names no lines and doesn't say which decisions its giveaways cover. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_national_wealth_fund_and_british_business_bank",
+   "title": "OBR: the National Wealth Fund and British Business Bank's additional investment",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_national_wealth_fund_and_british_business_bank on 5 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Table 6.1 lines 29 and 30 and their Table 6.2 financial transactions: OBR paragraph 3.20's financing requirement, net debt and borrowing effects, with gross debt and additional income as parts.",
+   "program": "financial_transactions",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Table 6.1 lines 29 and 30 and their Table 6.2 financial transactions: OBR paragraph 3.20's financing requirement, net debt and borrowing effects, with gross debt and additional income as parts.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (National Wealth Fund and British Business Bank investment): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /wealth_fund|british_business_bank/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_obr_other_ame_spending_decisions",
+   "title": "OBR Table 3.1: other AME spending decisions",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_obr_other_ame_spending_decisions on 6 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's residual AME group, without the pension valuations and net of line 1's council tax rebate; the OBR publishes no line decomposition.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's residual AME group, without the pension valuations and net of line 1's council tax rebate; the OBR publishes no line decomposition.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: the OBR publishes no Table 6.1 line decomposition of its group. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_obr_other_departmental_spending_changes",
+   "title": "OBR Table 3.1: other departmental spending changes",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_obr_other_departmental_spending_changes on 7 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Departmental spending changes without the pension valuations, including line 1's DEL funding, defence, capital spending and the £5.5bn 2031-32 RDEL reduction (review B finding 9).",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Departmental spending changes without the pension valuations, including line 1's DEL funding, defence, capital spending and the £5.5bn 2031-32 RDEL reduction (review B finding 9).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (departmental spending), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /departmental|resource_spending|capital_spending/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_obr_other_hmrc_compliance_and_debt",
+   "title": "OBR paragraph 3.13: other HMRC compliance and debt measures",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_obr_other_hmrc_compliance_and_debt on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Direct debt recovery, e-invoicing and debt collection agencies (parts of line 45) and online marketplace liability (line 46).",
+   "program": "compliance_and_administration",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Direct debt recovery, e-invoicing and debt collection agencies (parts of line 45) and online marketplace liability (line 46).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (HMRC debt collection and compliance): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /debt_collection|compliance|e_invoic/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_obr_other_tax_measures",
+   "title": "OBR Table 3.1: other tax measures",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_obr_other_tax_measures on 6 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's residual of Table 6.1's tax measures after its five named groups; the OBR enumerates no lines.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's residual of Table 6.1's tax measures after its five named groups; the OBR enumerates no lines.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: the OBR enumerates no lines for its residual group. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_parliament_fuel_duty_decisions",
+   "title": "The Government's fuel duty decisions across this Parliament",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_parliament_fuel_duty_decisions on 3 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 3.13: line 3 plus earlier events' fuel duty decisions, against the previous government's plans (footnote 98).",
+   "program": "package",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 3.13: line 3 plus earlier events' fuel duty decisions, against the previous government's plans (footnote 98).",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: HM Treasury adds earlier events' fuel duty decisions, which this registry doesn't hold. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_parliament_tax_gap_measures",
+   "title": "Measures to close the tax gap announced during this Parliament",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_parliament_tax_gap_measures on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 2.46: lines 45 and 46 plus the tax gap measures of Autumn Budget 2024, Spring Statement 2025 and Budget 2025 (footnote 73).",
+   "program": "compliance_and_administration",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 2.46: lines 45 and 46 plus the tax gap measures of Autumn Budget 2024, Spring Statement 2025 and Budget 2025 (footnote 73).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (tax gap measures): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /compliance|tax_gap/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_welfare_fraud_and_error_savings_in_forecast",
+   "title": "Total savings from welfare fraud and error measures over the forecast",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_parliament_welfare_fraud_and_error_savings on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Red book paragraph 5.17: this Budget's new fraud and error measures plus those already in the forecast; the red book doesn't say which earlier measures count.",
+   "program": "compliance_and_administration",
+   "producers": [
+    "hm_treasury"
+   ],
+   "proposed_as": "ab2026__package_parliament_welfare_fraud_and_error_savings",
+   "construction": "producer_scope",
+   "package_of": "Red book paragraph 5.17: this Budget's new fraud and error measures plus those already in the forecast; the red book doesn't say which earlier measures count.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "An enforcement, compliance or administrative change (benefit fraud and error prevention): the rules households face do not change.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fraud|error|overpayment/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_planned_capital_spending_reductions",
+   "title": "OBR: reductions in planned capital spending",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_planned_capital_spending_reductions on 1 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's changes to departmental capital spending; it enumerates no lines.",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's changes to departmental capital spending; it enumerates no lines.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (departmental capital spending), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /capital_spending|cdel|departmental/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_pubs_relief_35pc_total",
+   "title": "The whole 35% business rates relief for pubs, social clubs and live music venues in England",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_pubs_relief_35pc_total on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The 15% announced in January 2026 (red book paragraph 6.189, no AB2026 line) plus line 12's further 20ppt (review A's RB-3).",
+   "program": "business_rates",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The 15% announced in January 2026 (red book paragraph 6.189, no AB2026 line) plus line 12's further 20ppt (review A's RB-3).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A business rates measure (relief for pubs, social clubs and live music venues), out of the household model's scope. The engine carries business rates only as a household incidence, business_rates ('Total incidence from exposure to business rates via corporate shareholdings'), and its business rates parameters are revenue statistics (gov.hmrc.business_rates.statistics.revenue.*): it has no properties, reliefs or thresholds for the measure to change, so its £ change would have to be supplied as an input, restating the costing.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /business_rates|pub/. Parameters: 5 node(s) ['gov.contrib.policyengine.budget.other_public_spending', 'gov.hmrc.business_rates.statistics.revenue.ENGLAND', 'gov.hmrc.business_rates.statistics.revenue.NORTHERN_IRELAND', 'gov.hmrc.business_rates.statistics.revenue.SCOTLAND', 'gov.hmrc.business_rates.statistics.revenue.WALES']. Variables: 3 ['baseline_business_rates', 'business_rates', 'other_public_spending_budget_change']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_rdel_decisions_excluding_household_energy_payment",
+   "title": "RF: the Budget's RDEL decisions over the Spending Review period except the Household Energy Payment",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rdel_decisions_excluding_household_energy_payment on 3 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's fiscal aggregate of resource spending decisions, not a programme allocation.",
+   "program": "public_spending",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "RF's fiscal aggregate of resource spending decisions, not a programme allocation.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (departmental resource spending), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /departmental|resource_spending|rdel/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_regulation_tariff_and_sandbox_business_savings",
+   "title": "Business savings from regulation cuts, tariff suspensions and testing powers",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_regulation_tariff_and_sandbox_business_savings on 1 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The executive summary's savings for business, across line 16 (tariff suspensions) and measures with no Table 6.1 line.",
+   "program": "regulation",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The executive summary's savings for business, across line 16 (tariff suspensions) and measures with no Table 6.1 line.",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A regulatory change (regulation, tariff suspensions and technology testing powers) with no tax or benefit rule for households.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /regulat|tariff|customs/. Parameters: 26 node(s) ['gov.dwp.ESA.income.capital.tariff_income.amount', 'gov.dwp.ESA.income.capital.tariff_income.step', 'gov.dwp.ESA.income.capital.tariff_income.threshold', 'gov.dwp.JSA.income.capital.tariff_income.amount', 'gov.dwp.JSA.income.capital.tariff_income.step', 'gov.dwp.JSA.income.capital.tariff_income.threshold']. Variables: 6 ['esa_income_tariff_income', 'housing_benefit_pension_age_regulations_apply', 'housing_benefit_tariff_income', 'income_support_tariff_income', 'jsa_income_tariff_income', 'uc_tariff_income']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026__package_rf_absolute_policy_changes",
+   "title": "RF: every policy decision counted at its absolute value",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rf_absolute_policy_changes on 2 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's fiscal-event size measure; RF lists no lines.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "RF's fiscal-event size measure; RF lists no lines.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF lists no lines, and sums each decision's absolute value, which no package of signed legs gives. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_rf_energy_bill_support_announced_at_budget",
+   "title": "RF: the energy bill support announced at the Budget",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rf_energy_bill_support_announced_at_budget on 2 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's support of up to £116, which includes line 1's £100 Household Energy Payment; RF doesn't itemise the rest.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "RF's support of up to £116, which includes line 1's £100 Household Energy Payment; RF doesn't itemise the rest.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF doesn't itemise the support beyond line 1. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_rf_other_tax_measures",
+   "title": "RF Figure 10: other tax measures",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rf_other_tax_measures on 6 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's residual: the OBR's net direct effects less fuel duty, the bank surcharge, capital allowances, savings and property, and tax administration.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "RF's residual: the OBR's net direct effects less fuel duty, the bank surcharge, capital allowances, savings and property, and tax administration.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF defines a residual of the OBR's groups, not a list of lines. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_rf_parliament_permanent_tax_and_benefit_measures",
+   "title": "RF: permanent personal tax and benefit changes announced this Parliament",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_rf_parliament_permanent_tax_and_benefit_measures on 42 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26's part is lines 52, 56, 61 and 62 and the gas standing charge.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26's part is lines 52, 56, 61 and 62 and the gas standing charge.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF spans several events, whose measures this registry doesn't hold. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_spending_decisions_since_march_2026",
+   "title": "OBR: direct effect of spending measures since March 2026",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_spending_decisions_since_march_2026 on 13 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's expenditure-side effects of decisions since March, including the pension valuations and the 2031-32 RDEL assumption; not HM Treasury's spending total.",
+   "program": "package",
+   "producers": [
+    "obr_efo"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's expenditure-side effects of decisions since March, including the pension valuations and the 2031-32 RDEL assumption; not HM Treasury's spending total.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: the OBR includes non-scorecard decisions and publishes no line decomposition. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_tax_decisions_since_march_2026",
+   "title": "OBR: direct effect of tax measures since March 2026",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_tax_decisions_since_march_2026 on 20 staged rows (obr_efo, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's Table 3.1 line, a receipts grouping as the OBR classifies decisions, which differs from Table 6.1's tax total (−£1,749m against −£1,645m in 2026-27); RF restates it.",
+   "program": "package",
+   "producers": [
+    "obr_efo",
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "The OBR's Table 3.1 line, a receipts grouping as the OBR classifies decisions, which differs from Table 6.1's tax total (−£1,749m against −£1,645m in 2026-27); RF restates it.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: the OBR classifies decisions as tax measures by their receipts effects, not by Table 6.1's heads. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
+  },
+  {
+   "measure_key": "ab2026__package_total_financial_transactions",
+   "title": "Table 6.2: total cash impacts of financial transactions",
+   "reported_status": "announced",
+   "source_note": "Proposed in tranche 1 as ab2026__package_total_financial_transactions on 6 staged rows (hm_treasury); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Exactly Table 6.2 lines 1 to 9 (footnote 1: totals may not sum due to rounding).",
+   "program": "financial_transactions",
+   "producers": [
+    "hm_treasury"
+   ],
+   "construction": "producer_scope",
+   "package_of": "Exactly Table 6.2 lines 1 to 9 (footnote 1: totals may not sum due to rounding).",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Lending, guarantees, investment or a financial transaction (Table 6.2's financial transactions): no household tax or benefit rule changes.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /financial_transaction|loan|equity/. Parameters: 39 node(s) ['gov.dfe.maintenance_loans.full_time.maximum.living_with_parents', 'gov.dfe.maintenance_loans.full_time.maximum.away_outside_london', 'gov.dfe.maintenance_loans.full_time.maximum.away_in_london', 'gov.dfe.maintenance_loans.full_time.maximum_entitled_to_benefits.living_with_parents', 'gov.dfe.maintenance_loans.full_time.maximum_entitled_to_benefits.away_outside_london', 'gov.dfe.maintenance_loans.full_time.maximum_entitled_to_benefits.away_in_london']. Variables: 20 ['adult_dependants_grant_receives_postgraduate_loan', 'childcare_grant_receives_postgraduate_loan', 'has_student_loan', 'maintenance_loan', 'maintenance_loan_candidate_benunit_income', 'maintenance_loan_eligible']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__cgt_reform_package",
+   "title": "CenTax: structural reform of CGT, with rates equal to income tax rates",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__cgt_reform_package on 10 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's package: CGT rates equal to income tax rates, an investment allowance for the risk-free rate, no uplift at death, and rebasing on arrival with deemed disposal on departure; CenTax doesn't cost its fifth element, more generous loss relief.",
+   "program": "capital_gains_tax",
+   "producers": [
+    "centax"
+   ],
+   "computability": "partial",
+   "pe_reform_delta": null,
+   "missing": "Only the rate leg resolves: gov.hmrc.cgt.basic_rate, higher_rate and additional_rate. The engine has no investment allowance, no uplift at death (it holds no estates) and no rebasing on arrival or deemed disposal on departure, and CenTax costs the four elements together.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /cgt|capital_gains/. Parameters: 18 node(s) ['gov.economic_assumptions.yoy_growth.capital_gains', 'gov.economic_assumptions.indices.capital_gains', 'gov.hmrc.cgt.additional_rate', 'gov.hmrc.cgt.annual_exempt_amount', 'gov.hmrc.cgt.badr.lifetime_limit', 'gov.hmrc.cgt.badr.rate']. Variables: 13 ['capital_gains', 'capital_gains_badr', 'capital_gains_badr_behavioural_response', 'capital_gains_badr_elasticity', 'capital_gains_before_response', 'capital_gains_behavioural_response']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0."
+  },
+  {
+   "measure_key": "ab2026_option__childcare_100k_entitlement_taper",
+   "title": "CenTax: taper the withdrawal of free childcare above £100,000",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__childcare_100k_entitlement_taper on 3 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's taper of 8p, 18p or 28p per £1 over £100,000 (conditions.taper_rate).",
+   "program": "childcare",
+   "producers": [
+    "centax"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The engine withdraws the extended childcare entitlement in one step at gov.dfe.extended_childcare_entitlement.income.limit; it has no taper above the limit.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /childcare.*(income|limit|taper)|extended_childcare/. Parameters: 30 node(s) ['gov.dfe.childcare_grant.income_limit.one_child', 'gov.dfe.childcare_grant.income_limit.two_or_more_children', 'gov.dfe.extended_childcare_entitlement.disability_criteria', 'gov.dfe.extended_childcare_entitlement.exemption.income_limit_applies', 'gov.dfe.extended_childcare_entitlement.exemption.partner_exclusion_criteria', 'gov.dfe.extended_childcare_entitlement.hours[0].threshold']. Variables: 15 ['childcare_grant_household_income', 'extended_childcare_entitlement', 'extended_childcare_entitlement_eligible', 'extended_childcare_entitlement_limited_capability_or_specified_benefit', 'extended_childcare_entitlement_meets_income_requirements', 'extended_childcare_entitlement_per_child']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: an extended childcare income limit that tapers, or varies by hours and child age",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__childcare_100k_threshold_raised",
+   "title": "CenTax: raise the free childcare income limit from £100,000",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__childcare_100k_threshold_raised on 2 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's options to raise the limit to £125,000 or £150,000 (conditions.threshold).",
+   "program": "childcare",
+   "producers": [
+    "centax"
+   ],
+   "computability": "expressible",
+   "construction": "delta_on_current_law",
+   "pe_reform_delta": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": 125000
+   },
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": 100000
+   },
+   "note": "The delta gives the £125,000 variant; the £150,000 variant (conditions.threshold) sets the same parameter to 150000. Tax-Free Childcare keeps its own income test."
+  },
+  {
+   "measure_key": "ab2026_option__childcare_100k_threshold_removed",
+   "title": "CenTax: remove the £100,000 free childcare income limit",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__childcare_100k_threshold_removed on 3 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's option to make the free childcare entitlement in England available to parents with incomes over £100,000.",
+   "program": "childcare",
+   "producers": [
+    "centax"
+   ],
+   "computability": "expressible",
+   "construction": "delta_on_current_law",
+   "pe_reform_delta": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": null
+   },
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.dfe.extended_childcare_entitlement.income.limit": 100000
+   },
+   "note": "null records inf (the limit removed). Tax-Free Childcare keeps its own income test.",
+   "uncapped_sentinel": "inf (limit removed), recorded as null in JSON"
+  },
+  {
+   "measure_key": "ab2026_option__childcare_100k_threshold_removed_first_15_hours_under_3s",
+   "title": "CenTax: remove the income limit for the first 15 hours of childcare for under-3s",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__childcare_100k_threshold_removed_first_15_hours_under_3s on 1 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's narrower option, for the first 15 hours only and children under 3.",
+   "program": "childcare",
+   "producers": [
+    "centax"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The engine applies one income limit to the whole extended entitlement (gov.dfe.extended_childcare_entitlement.income.limit); it cannot lift it for the first 15 hours of one age group.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /childcare.*(income|limit|taper)|extended_childcare/. Parameters: 30 node(s) ['gov.dfe.childcare_grant.income_limit.one_child', 'gov.dfe.childcare_grant.income_limit.two_or_more_children', 'gov.dfe.extended_childcare_entitlement.disability_criteria', 'gov.dfe.extended_childcare_entitlement.exemption.income_limit_applies', 'gov.dfe.extended_childcare_entitlement.exemption.partner_exclusion_criteria', 'gov.dfe.extended_childcare_entitlement.hours[0].threshold']. Variables: 15 ['childcare_grant_household_income', 'extended_childcare_entitlement', 'extended_childcare_entitlement_eligible', 'extended_childcare_entitlement_limited_capability_or_specified_benefit', 'extended_childcare_entitlement_meets_income_requirements', 'extended_childcare_entitlement_per_child']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: an extended childcare income limit that tapers, or varies by hours and child age",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__fuel_duty_continued_freeze",
+   "title": "Keep fuel duty frozen until 2029-30 instead of the rise in July 2027",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__fuel_duty_continued_freeze on 7 staged rows (obr_efo, resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Rates held at 52.95p a litre to 2029-30 against the announced policy, which extends line 3: OBR paragraph 3.43's alternative and RF's series for the OBR's constant-duty-rate forecast.",
+   "program": "fuel_duty",
+   "producers": [
+    "obr_efo",
+    "resolution_foundation"
+   ],
+   "computability": "partial",
+   "pe_reform_delta": null,
+   "missing": "The rate leg resolves (gov.hmrc.fuel_duty.petrol_and_diesel), but the option's baseline is the announced path, Table 6.1 line 3, which the dashboard ran as a modifier with no parameter path. A counterpart needs line 3's modifier as its baseline and the frozen rate as its reform.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fuel_duty/. Parameters: 4 node(s) ['gov.hmrc.fuel_duty.lpg', 'gov.hmrc.fuel_duty.natural_gas', 'gov.hmrc.fuel_duty.petrol_and_diesel', 'gov.hmrc.fuel_duty.rural_fuel_duty_relief']. Variables: 2 ['fuel_duty', 'in_rural_fuel_duty_relief_area']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0."
+  },
+  {
+   "measure_key": "ab2026_option__fuel_duty_rpi_uprating_since_2011",
+   "title": "Fuel duty uprated by RPI since January 2011",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__fuel_duty_rpi_uprating_since_2011 on 2 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's revenue that the freezes forgo against RPI uprating since January 2011; it mirrors the OBR's ab2026__package_fuel_duty_freezes_since_2010_11 (review A's K-6).",
+   "program": "fuel_duty",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A counterfactual history of fuel duty rates since 2011: the engine scores one world against another in a policy year, not a path of past decisions.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /fuel_duty/. Parameters: 4 node(s) ['gov.hmrc.fuel_duty.lpg', 'gov.hmrc.fuel_duty.natural_gas', 'gov.hmrc.fuel_duty.petrol_and_diesel', 'gov.hmrc.fuel_duty.rural_fuel_duty_relief']. Variables: 2 ['fuel_duty', 'in_rural_fuel_duty_relief_area']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__health_foundation_social_care_reforms",
+   "title": "Health Foundation's illustrative social care reforms",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__health_foundation_social_care_reforms on 2 staged rows (obr_efo); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: OBR paragraph 3.41's citation of the Health Foundation's costs, from limited home-care reform to wider schemes, in 2035-36 (footnote 13); not a settled AB2026 policy.",
+   "program": "public_spending",
+   "producers": [
+    "obr_efo"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Public spending (adult social care), out of the household model's scope. The engine's spending channel, gov.contrib.policyengine.budget.other_public_spending ('Increase in non-NHS, non-education public spending, distributed by income decile as estimated by the ONS Effects of Taxes and Benefits dataset'), distributes a £ amount supplied as an input, so scoring this line through it would restate HM Treasury's figure, not estimate it.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /social_care|care_home|residential/. Parameters: 180 node(s) ['gov.dwp.housing_benefit.means_test.capital.working_age.residential_threshold', 'gov.hmrc.cgt.residential_property.additional_rate', 'gov.hmrc.cgt.residential_property.basic_rate', 'gov.hmrc.cgt.residential_property.higher_rate', 'gov.hmrc.stamp_duty.non_residential.purchase[0].threshold', 'gov.hmrc.stamp_duty.non_residential.purchase[0].rate']. Variables: 28 ['additional_residential_property_purchased', 'capital_gains_residential_property', 'cumulative_non_residential_rent', 'cumulative_residential_rent', 'housing_benefit_residential_capital_exception', 'lbtt_on_non_residential_property_rent']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__income_tax_5pc_share_devolved_to_mayors",
+   "title": "IPPR North: devolve 5% of income tax to mayors",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__income_tax_5pc_share_devolved_to_mayors on 1 staged rows (ippr); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: IPPR North's option beyond the Budget's commitment on income tax devolution; no Table 6.1 line sets a 5% share.",
+   "program": "income_tax",
+   "producers": [
+    "ippr"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "A share of a tax assigned between governments: no tax or benefit rule for households changes, and the engine holds no mayoral authorities.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /mayor|devolv|combined_authority/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "out_of_model_scope": true,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__lha_unfreeze_2027_28",
+   "title": "Unfreeze Local Housing Allowance in 2027-28",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__lha_unfreeze_2027_28 on 17 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF's option of unfreezing LHA in 2027-28 instead of prolonging the freeze; no Table 6.1 line.",
+   "program": "housing_benefit",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "computability": "expressible",
+   "construction": "delta_on_current_law",
+   "pe_reform_delta": {
+    "gov.dwp.LHA.freeze": {
+     "2027": false
+    }
+   },
+   "delta_kind": "absolute_value_by_year",
+   "engine_baseline_2026": {
+    "gov.dwp.LHA.freeze": true
+   },
+   "note": "While gov.dwp.LHA.freeze holds true, the engine freezes Great Britain's LHA rates at the level of the latest year in which it was false; false in 2027 resets them in 2027-28, and the freeze resumes after."
+  },
+  {
+   "measure_key": "ab2026_option__nics_on_investment_income",
+   "title": "CenTax: an equivalent of Class 1 NICs on investment income",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__nics_on_investment_income on 10 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's option for rental income, savings income outside ISAs and other non-dividend investment income (conditions.income_type).",
+   "program": "national_insurance",
+   "producers": [
+    "centax"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The engine charges National Insurance on employment and self-employment income only; it has no NICs base or rate for property, savings or other investment income.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /national_insurance|nics|investment_income|property_income|savings_interest/. Parameters: 41 node(s) ['gov.dwp.universal_credit.means_test.minimum_income_floor.self_employed_national_insurance', 'gov.hmrc.national_insurance.class_1.directors.full_year_category_a_2022_23.employee_scale[0].threshold', 'gov.hmrc.national_insurance.class_1.directors.full_year_category_a_2022_23.employee_scale[0].rate', 'gov.hmrc.national_insurance.class_1.directors.full_year_category_a_2022_23.employee_scale[1].threshold', 'gov.hmrc.national_insurance.class_1.directors.full_year_category_a_2022_23.employee_scale[1].rate', 'gov.hmrc.national_insurance.class_1.directors.full_year_category_a_2022_23.employee_scale[2].threshold']. Variables: 13 ['national_insurance', 'other_investment_income', 'property_income', 'property_income_after_finance_costs', 'property_income_tax', 'savings_interest_income']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: National Insurance on property, savings and other non-dividend investment income",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__nics_on_partnership_income",
+   "title": "CenTax: an equivalent of employer NICs on partnership profits",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__nics_on_partnership_income on 24 staged rows (centax); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: CenTax's top-up rates on partnership profits by income tax band, with a partnership allowance and an annual exempt amount per partner.",
+   "program": "national_insurance",
+   "producers": [
+    "centax"
+   ],
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The engine holds self-employment income without separating partnership profits, and has no employer-equivalent NICs charge on them.",
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /partnership|self_employment|class_4/. Parameters: 14 node(s) ['gov.dwp.ESA.income.self_employment_class_2.above_lower_profits_threshold', 'gov.dwp.ESA.income.self_employment_class_2.deducted', 'gov.hmrc.income_tax.bases.taxable_self_employment_income_deductions', 'gov.hmrc.national_insurance.class_4.annual_maximum.includes_class_2', 'gov.hmrc.national_insurance.class_4.contribution_scale[0].threshold', 'gov.hmrc.national_insurance.class_4.contribution_scale[0].rate']. Variables: 18 ['ni_class_4', 'ni_class_4_liable', 'ni_class_4_loss_relief', 'ni_class_4_losses_brought_forward', 'ni_class_4_losses_carried_forward', 'ni_class_4_main']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.151.0.",
+   "policyengine_uk_development_item": true,
+   "upstream_item": "policyengine-uk: partnership profits apart from other self-employment income, with an employer-equivalent NICs charge",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/230"
+  },
+  {
+   "measure_key": "ab2026_option__tax_decisions_with_continued_fuel_duty_freeze",
+   "title": "RF: the OBR's direct effect of tax measures with fuel duty kept frozen",
+   "reported_status": "option_costed_by_others",
+   "source_note": "Proposed in tranche 1 as ab2026_option__tax_decisions_with_continued_fuel_duty_freeze on 11 staged rows (resolution_foundation); registered in tranche 2 (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF Figure 10's net effect if fuel duty stayed frozen: the OBR's direct effect of tax measures plus the continued freeze's receipts effect.",
+   "program": "package",
+   "producers": [
+    "resolution_foundation"
+   ],
+   "construction": "producer_scope",
+   "package_of": "RF Figure 10's net effect if fuel duty stayed frozen: the OBR's direct effect of tax measures plus the continued freeze's receipts effect.",
+   "pe_reform_delta": null,
+   "computability": "partial",
+   "missing": "The scope is the producer's own words: RF adds an option the Government didn't adopt to the OBR's tax grouping, which lists no lines. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
   }
  ]
 }

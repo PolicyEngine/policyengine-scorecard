@@ -75,9 +75,11 @@ T61_FOOTNOTES = (
 )
 # Table 6.2 line 6 reprioritises existing financial transactions budgets to
 # fund line 5's new equity loan scheme. Its cells are not the scheme's, so it
-# takes its own proposed key (README rule 2), as Table 6.1 line 34's
-# reprioritisation does (review A T-1).
-T62_PROPOSED = {6: "ab2026__your_first_home_ft_reprioritisation"}
+# takes its own key, as Table 6.1 line 34's reprioritisation does (review A
+# T-1). Tranche 1 proposed it, and tranche 2 registered it with the table's
+# total (pipeline/ab2026_key_decisions.py).
+T62_OWN = {6: "ab2026__your_first_home_ft_reprioritisation"}
+T62_TOTAL = "ab2026__package_total_financial_transactions"
 # The workbook shades its five top-level section headings (B5, B27, B43, B58,
 # B82) with this fill, as the red book shades them (review A T-4).
 SECTION_FILL = "FFFFCCCC"
@@ -295,10 +297,7 @@ def stage_t62(wb, out, totals):
                     "table_line": str(line),
                     "row_type": "measure",
                 }
-                key = K.PREFIX + K.TABLE_62[line]
-                if line in T62_PROPOSED:
-                    cond["proposed_measure_key"] = T62_PROPOSED[line]
-                    key = None
+                key = T62_OWN.get(line, K.PREFIX + K.TABLE_62[line])
                 r = {
                     **base_row(
                         T61,
@@ -313,7 +312,7 @@ def stage_t62(wb, out, totals):
                     ),
                     "measure_key": key,
                 }
-                if key is None:
+                if line in T62_OWN:
                     r["note"] = (
                         "Table 6.2 line 6 reprioritises existing financial "
                         "transactions budgets to fund line 5's equity loan scheme; "
@@ -341,11 +340,10 @@ def stage_t62(wb, out, totals):
                                 "sign_convention": FT_SIGN,
                                 "table": "6.2",
                                 "row_type": "total",
-                                "proposed_measure_key": "ab2026__package_total_financial_transactions",
                             },
                             metric=FT,
                         ),
-                        "measure_key": None,
+                        "measure_key": T62_TOTAL,
                         "note": "Table footnote 1: totals may not sum due to rounding.",
                     }
                 )
