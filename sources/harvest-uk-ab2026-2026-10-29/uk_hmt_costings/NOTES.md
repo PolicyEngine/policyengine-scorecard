@@ -19,7 +19,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 - Measure keys: 79 registry keys on 595 rows.
   - 416 rows cost a whole Table 6.1 line: `conditions.row_type: measure`, 68 keys.
   - 157 rows cost a printed part of one line: `row_type: measure_component`, 8 lines' keys.
-  - 22 rows cost measures with no Table 6.1 line, or none we can identify, on 3 keys that we proposed and tranche 2 registered. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
+  - We key 22 rows, which cost measures with no Table 6.1 line or none we can identify, to 3 keys that we proposed and tranche 2 registered. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
   - We stage 2 rows (p.50's UK tax gap) as context: `measure_key: null` and no proposed key.
 
 ## Access recipe
@@ -57,7 +57,13 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - HM Treasury prints no behavioural adjustment in pounds in any note; AB2025's thresholds note printed £180m.
   - So we had no static, post-behavioural or behavioural-effect legs to stage. Several notes mention a static costing, and p.108 a "pre-behavioural costing", but HM Treasury prints no figure for any of them.
 - In `conditions.behavioural_adjustment` we classify the words of each note's costing section. We list each note by its first page.
-  - **"included (see note)" on 56 notes:** pp.12, 13, 14, 16, 18, 19, 23, 24, 25, 26, 27, 29, 30, 31, 36, 38, 39, 40, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 60, 62, 65, 66, 67, 68, 70, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 85, 86, 87, 90, 95, 100, 102, 103, 104, 107 and 108.
+  - **"included (see note)" on 56 notes:**
+    - pp.12, 13, 14, 16, 18, 19, 23, 24, 25 and 26;
+    - pp.27, 29, 30, 31, 36, 38, 39, 40, 43 and 44;
+    - pp.45, 46, 47, 48, 49, 51, 52, 53, 60 and 62;
+    - pp.65, 66, 67, 68, 70, 72, 73, 74, 75 and 77;
+    - pp.78, 79, 80, 81, 82, 85, 86, 87, 90 and 95;
+    - pp.100, 102, 103, 104, 107 and 108.
     - For p.90 we add HM Treasury's sentence: the Infected Blood costing keeps the scheme's cost model, whose "behavioural assumptions" the changes "do not materially alter".
   - **"none: '<the costing section's sentence>'" on 18 notes:** pp.17, 35, 37, 42, 50, 54, 55, 56, 58, 59, 61, 63, 64, 91, 94, 101, 106 and 109.
   - **"not stated (the note's costing section does not use the word 'behaviour' or 'behavioural')" on 22 notes:** pp.15, 20, 21, 22, 28, 33, 34, 41, 57, 69, 76, 83, 84, 88, 89, 92, 93, 96, 97, 98, 99 and 105.
@@ -170,7 +176,7 @@ HM Treasury orders its costing notes by Table 6.1 line. When we map each note to
 
 | key | rows | page | scope |
 |---|--:|---|---|
-| `ab2026__british_business_bank_defence_commitments_accelerated` | 9 | 41 | No identifiable Table 6.1 line (see below). "British Business Bank: Accelerate £450m of commitments to support defence-related and dual-use businesses" From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals. |
+| `ab2026__british_business_bank_defence_commitments_accelerated` | 9 | 41 | No identifiable Table 6.1 line (see below). "British Business Bank: Accelerate £450m of commitments to support defence-related and dual-use businesses" From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). In tranche 2 we must never add it to Table 6.1 lines or totals. |
 | `ab2026__private_landlord_register_fee_65` | 7 | 108 | Not on Table 6.1 (footnote 2). The six Exchequer rows give the fee's receipts, a component (`component: "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"`): p.108's note says "this is offset by increased DEL spending so is fiscally neutral", and the OBR stages the measure's total as 0 (review A, C-1). The seventh row gives the 4.9 million tax base. "Renters' Rights: Roll out a £65 fee for the 'Register your rental property' service for private landlords and private properties in England from 15 December 2026" |
 | `ab2026__pwlb_debt_relief_councils_severe_distress` | 6 | 109 | Not on Table 6.1 (footnote 2). "Public Works Loan Board (PWLB) Debt Relief for Councils in Severe Financial Distress" |
 
@@ -193,7 +199,7 @@ How we settled each line:
 - **p.41.** By position, the note falls within lines 40-43, the national-security block.
   - HM Treasury prints lines 40-43 under Table 6.1's Spend head and prints no finer fiscal head, so nothing printed singles out one line. (HM Treasury doesn't print the workbook's hidden column D, "Fiscal Head check (hide)", and since review A's T-3 we no longer reason from it.)
   - But line 41's title, "Defence Investment Plan: Reallocate capital spending to fully fund the Defence Investment Plan", doesn't name the British Business Bank, and no figure ties the two.
-  - So we give the row its own key and `document_position`, not line 41's key. From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals.
+  - So we give the row its own key and `document_position`, not line 41's key. From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). In tranche 2 we must never add it to Table 6.1 lines or totals.
 - **pp.108-109.** Table 6.1's footnote 2 reads "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
 
 We put a registry key on a `row_type: measure` row only when the key's title covers exactly the row's figure.
