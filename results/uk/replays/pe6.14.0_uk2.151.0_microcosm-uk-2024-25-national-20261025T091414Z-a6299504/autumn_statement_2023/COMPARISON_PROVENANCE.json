@@ -1,0 +1,65 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_statement_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4252d40f62d463204860c26abaf1d41006e5a108d9e77df5138395d52659af87",
+  "COMPARISON.json": "879764236d6b9200c09648cd037092c897bf836f09573956e1a1198f9721f10e",
+  "COMPARISON.md": "cc89f3634d900308a451b715dbf7135f3d853501ba31d6ad2e79362e4e3cc25b"
+ },
+ "registry_path": "data/uk/events/autumn_statement_2023_measures.json",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "replay_grid": {
+  "computed_measure_years": 20,
+  "full_event_complete": false,
+  "full_event_grid_size": 24,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 20,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "year": 2023
+   },
+   {
+    "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_statement_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "dd3ecc267717c21e144df1619a261dcaf90ef0bdcba4e0c92be5ac525a9ae9d9",
+ "source_rows": 1116,
+ "staged_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_statement_2023/STAGED.jsonl",
+ "staged_sha256": "8e31f82581398cfa8f10a32fa6cc0f50008bb84e6fcaf885179a8332db45803b",
+ "staging_manifest_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_statement_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "8113ef3c8fe40753aef7a7edfc29ca937a0979ebba4399ad2f3db6ee6022077e"
+}
