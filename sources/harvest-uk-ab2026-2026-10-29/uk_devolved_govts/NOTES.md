@@ -1,26 +1,26 @@
 # uk_devolved_govts — devolved governments, Autumn Budget 2026
 
-**Working files.** `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_devolved_govts/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_devolved_govts/stage.py`. This branch adds only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane never committed its local primaries folder (`.ab2026-primaries/`), and we commit no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
-**19 rows from two primaries.** Rows 0–13 (0-based) are the Welsh Government's (source `welsh_government`); rows 14–18 are the Scottish Government's (source `scottish_government`). The Scottish rows were staged in `uk_fai_sfc` on 29 October. On 3 November the thinktanks-b review's finding 7 moved them here, so that both devolved governments sit in one family; `uk_fai_sfc` is left with no rows and is not carried (see the harvest README). Conventions follow the AB2025 `uk_fai_sfc` block-grant rows (`source_model: arithmetic`).
+We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Welsh Government (source `welsh_government`), and rows 14–18 from the Scottish Government (source `scottish_government`). The lane staged the Scottish rows in `uk_fai_sfc` on 29 October. On 3 November, after finding 7 of the thinktanks-b review, we moved them here so that one family holds both devolved governments; we left `uk_fai_sfc` with no rows and don't commit it (see the harvest README). We follow the conventions of the AB2025 `uk_fai_sfc` block-grant rows (`source_model: arithmetic`).
 
 ## Changes on 3 November 2026 (thinktanks-b review)
 
-- **Finding 2:** the Welsh Table 1 Resource and Capital cells (rows 1–7) carry `conditions.row_type: "measure_component"` with their `component`; the four Total cells and the £448m headline (rows 0 and 8–11) carried `row_type: "total"` and no `component` (superseded on 4 November, above: all twelve are now parts of the three-government package). An ingest can no longer add parts to their total.
-- **Finding 3:** the Welsh package key names its scope, not the nation: `ab2026__package_barnett_consequentials`, shared with HM Treasury's figures for the same scope in `uk_hmt_redbook`. Nation is `conditions.geography`.
-- **Finding 4:** the seven real-terms settlement rows (Welsh rows 12–13, Scottish rows 14–18) use `proposed_metric: devolved_funding_real_terms_change`. AB2025's `block_grant_effect` means a policy's effect on the grant, positive for an increase; these rows are a year-on-year real-terms change in the whole settlement, positive for a reduction.
-- **Finding 7:** the Scottish Government's rows moved here (above). Both slugs are now in the harvest README's slug table.
-- **`component` on context rows:** the seven real-terms rows named their budget (Resource, Capital and so on) in `component`, which rule 9 reserves for parts of a measure. They now use `budget`, by the reasoning of the review's finding 6.
-- **Attribution (coordinator check under finding 3):** the Welsh rows stay `own`. The page cites no source, and the coordinator's settled calls do not change this; HM Treasury's own consequentials are staged as HM Treasury's in `uk_hmt_redbook`.
+- Finding 2: we gave the Welsh Table 1 Resource and Capital cells (rows 1–7) `conditions.row_type: "measure_component"` with their `component`. We gave the four Total cells and the £448m headline (rows 0 and 8–11) `row_type: "total"` and no `component`; on 4 November we superseded that, and all twelve now form parts of the three-government package (see the 4 November changes). An ingest can no longer add parts to their total.
+- Finding 3: we named the Welsh package key for its scope, not the nation: `ab2026__package_barnett_consequentials`, which we share with HM Treasury's figures for the same scope in `uk_hmt_redbook`. We record the nation in `conditions.geography`.
+- Finding 4: we gave the seven real-terms settlement rows (Welsh rows 12–13, Scottish rows 14–18) `proposed_metric: devolved_funding_real_terms_change`. In AB2025 we used `block_grant_effect` for a policy's effect on the grant, positive for an increase. These rows instead give a year-on-year real-terms change in the whole settlement, positive for a reduction.
+- Finding 7: we moved the Scottish Government's rows here (above), and the harvest README's slug table now lists both slugs.
+- `component` on context rows: on the seven real-terms rows we had named their budget (Resource, Capital and so on) in `component`, which rule 9 reserves for parts of a measure. Following the reasoning of the review's finding 6, we now name it in `budget`.
+- Attribution, which the coordinator checked under finding 3: we keep the Welsh rows `own`. The Welsh Government cites no source, and the coordinator's settled calls do not change this; we stage HM Treasury's own consequentials as HM Treasury's in `uk_hmt_redbook`.
 
-No primary was re-opened on 3 November: the session's network policy refused gov.wales and gov.scot. Every change relabels fields; no printed value changed.
+We re-opened no primary on 3 November, because the session's network policy refused gov.wales and gov.scot. Every change relabels fields, and we changed no printed value.
 
 ## Changes on 4 November 2026 (review B)
 
-Review B (PR #231, issue comment 6635498758) approved this family with fixes; the coordinator's brief (section 3.3) settled the Barnett key with review A's K-7(b). The fixes sit in `review_fixes()` in `stage.py`. No primary was re-opened, and no value changed.
+Review B (PR #231, issue comment 6635498758) approved this family with fixes, and the coordinator's brief (section 3.3) settled the Barnett key with review A's K-7(b). We put the fixes in `review_fixes()` in `stage.py`, re-opened no primary and changed no value.
 
-- **Finding 1 (Barnett):** the shared key takes the red book's scope. HM Treasury's £1.3bn (red book row 252) is the total, and each government is a part (rule 9: "a part can be ... a nation"). So rows 0 and 8–11 are `measure_component` with `component: "Welsh Government"`; rows 1–7 name `"Welsh Government: Resource"` or `"Welsh Government: Capital"`; row 0 has `fy: 2029-30`. The proposed-key scope below is the red book's.
-- **Finding 2:** row 13's locator says "third sentence", and its note no longer repeats row 12's "next financial year" sentence. Rows 14–18's `source_column` is null, as on rows 12–13: the labels were ours, not printed. The Scottish manifest note no longer names the old `uk_fai_sfc` folder. The sentence on the Welsh package mapping being "unresolved" is corrected.
+- Finding 1 (Barnett): we give the shared key the red book's scope. HM Treasury's £1.3bn (red book row 252) gives the total, and each government forms a part (rule 9: "a part can be ... a nation"). So we mark rows 0 and 8–11 `measure_component` with `component: "Welsh Government"`, name rows 1–7 `"Welsh Government: Resource"` or `"Welsh Government: Capital"`, and give row 0 `fy: 2029-30`. In the section on the proposed key below, we give it the red book's scope.
+- Finding 2: we changed row 13's locator to "third sentence", and its note no longer repeats row 12's "next financial year" sentence. We set rows 14–18's `source_column` to null, as on rows 12–13, because we wrote those labels and the producer didn't print them. We removed the old `uk_fai_sfc` folder's name from the Scottish manifest note. We corrected the sentence that called the Welsh package mapping "unresolved".
 
 ## Coverage
 
@@ -33,114 +33,121 @@ Review B (PR #231, issue comment 6635498758) approved this family with fixes; th
 | | Paragraphs after Table 1 | 2 | 0.5% resource and almost 10% capital real-terms reductions (context) |
 | Scottish Government news release | Opening paragraph and paragraph 2 | 5 | £650 million; 1.3% and £550 million (resource); 1.5% and £100 million (capital), all 2027-28 real-terms reductions (context) |
 
-By `measure_key`: **null 19**. Twelve rows carry the proposed key `ab2026__package_barnett_consequentials`, all `measure_component` (Wales is a part of the three-government package); the seven real-terms rows are context with no proposed key. By metric: `block_grant_effect` 12, `devolved_funding_real_terms_change` 7. By unit: `gbp` 15, `percent` 4. Attribution: `own` 19; benchmark `different_model` 19.
+By `measure_key`: **null 19**. We give twelve rows the proposed key `ab2026__package_barnett_consequentials`, all `measure_component`, since Wales forms a part of the three-government package. We stage the seven real-terms rows as context with no proposed key. By metric: `block_grant_effect` 12, `devolved_funding_real_terms_change` 7. By unit: `gbp` 15, `percent` 4. Attribution: `own` 19; benchmark `different_model` 19.
 
 ## Proposed measure key
 
-`ab2026__package_barnett_consequentials` (12 rows here): the scope `uk_hmt_redbook` gives it, the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30, excluding the technical reduction from lower employer pension contributions (red book paragraph 4.150). It crosses Table 6.1's England spending lines and has no line of its own. HM Treasury's £1.3bn three-government figure (`uk_hmt_redbook` row 252) is the key's total, and each government's figure is a component. So every Welsh row here is `row_type: measure_component`: the £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals carry `component: "Welsh Government"`, and the Resource and Capital cells `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh rows exclude employer-pension-contribution savings, as HM Treasury's do. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
+`ab2026__package_barnett_consequentials` (12 rows here) takes the scope we give it in `uk_hmt_redbook`. It covers the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30. It excludes the technical reduction from lower employer pension contributions (red book paragraph 4.150). The key crosses Table 6.1's England spending lines, and HM Treasury prints no line of its own for it. HM Treasury's £1.3bn three-government figure (`uk_hmt_redbook` row 252) gives the key's total, and each government's figure a component. So we mark every Welsh row here `row_type: measure_component`. The £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals take `component: "Welsh Government"`. The Resource and Capital cells take `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh Government leaves employer-pension-contribution savings out of its rows, as HM Treasury does. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
 
 ## Welsh Government
 
 ### Access
 
-The [written statement](https://www.gov.wales/written-statement-welsh-government-response-uk-autumn-budget-2026)
-was first published and last updated on 28 October 2026. It was fetched fresh
-with `curl -sSL` and the exact requested User-Agent:
+The Welsh Government first published and last updated the
+[written statement](https://www.gov.wales/written-statement-welsh-government-response-uk-autumn-budget-2026)
+on 28 October 2026. The lane fetched it fresh with `curl -sSL` and the exact
+requested User-Agent:
 
 ```text
 Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15
 ```
 
-HTTP 200; response Date 2026-10-29T15:22:18Z. The lane saved the unaltered
-HTML and response headers in its local primaries folder. BeautifulSoup read the page's paragraphs and actual HTML
-table cells, not chart geometry. `shasum -a 256` gives:
+The server answered HTTP 200, with response Date 2026-10-29T15:22:18Z. The
+lane saved the unaltered HTML and response headers in its local primaries
+folder. It read the page's paragraphs and actual HTML table cells with
+BeautifulSoup, not chart geometry. `shasum -a 256` gives:
 
 ```text
 87490552c36d8ffd5787db18127704e467d93599e5708627adb6da7dcfe17c7c
 ```
 
-The fetched primary is 26,908 bytes. No local copy was provided, no fallback
-was used, and there is no earlier assigned version against which to establish
-a change. No requested Welsh page was blocked or unreached.
+The fetched primary runs to 26,908 bytes. Nobody provided a local copy, we
+used no fallback, and we have no earlier assigned version against which to
+establish a change. We reached every requested Welsh page.
 
 ### Attribution
 
-These are the Welsh Government's own published settlement accounting and real-terms comparisons. The statement does not credit another producer for these calculations, so no HM Treasury attribution is inferred. They are prospective funding changes rather than administrative outturns or counts. The source does not name a formal model; `arithmetic` describes the settlement accounting.
+The Welsh Government publishes these figures as its own settlement accounting and real-terms comparisons. The statement credits no other producer for these calculations, so we infer no HM Treasury attribution. The Welsh Government reports prospective funding changes, not administrative outturns or counts. It names no formal model, so we use `arithmetic` for the settlement accounting.
 
 ### Welsh numeric and period conventions
 
-- GBP values are the printed £m cells or headline multiplied by one million.
-  Signed table values are retained: positive means an increase in Welsh
-  funding. No totals or differences are derived.
-- Table columns are fiscal years; `period` is the end year and `fy` retains
-  the printed year. The £448m headline is cumulative over the four displayed
-  years, `period: 2030` and `fy: 2029-30` (the horizon's final year), with
-  that horizon stated explicitly; it is not an annual 2029-30 amount.
-- Resource real-terms reduction “next financial year” is 2027-28 given the
-  publication date. Capital reduction is explicitly by 2029-30. Percentage
-  values retain the printed magnitude; conditions say positive means a
-  reduction. “Almost 10%” is preserved in `value_raw`, the upper endpoint
-  10 is marked `range_high`, and the qualifier is retained.
-- The monetary table has no real-terms basis stated; no deflation is
-  applied. The percentage context rows retain real terms with no invented
-  price year. All rows concern Wales.
-- `value_kind: point` means a single published figure, not a separately
-  identified central-model scenario. No row uses `central`.
-- Every quote is an exact page fragment or table cell, contains `value_raw`
-  and is fewer than 15 words. Tables are read by row and then column.
+- We multiply the printed £m cells or headline by one million to get GBP
+  values. We keep signed table values, with positive for an increase in
+  Welsh funding, and derive no totals or differences.
+- The Welsh Government heads the table columns with fiscal years. We set
+  `period` to the end year, and keep the printed year in `fy`. The Welsh
+  Government gives the £448m headline as cumulative over the four displayed
+  years. We record it at `period: 2030` and `fy: 2029-30` (the horizon's
+  final year) and state that horizon explicitly; it doesn't give an annual
+  2029-30 amount.
+- Given the publication date, we read the resource real-terms reduction
+  “next financial year” as 2027-28. The Welsh Government dates the capital
+  reduction explicitly by 2029-30. We keep the printed magnitude of the
+  percentages, with conditions saying positive means a reduction. We keep
+  “Almost 10%” in `value_raw`, mark the upper endpoint 10 `range_high` and
+  keep the qualifier.
+- The Welsh Government states no real-terms basis for the monetary table,
+  and we apply no deflation. We keep the percentage context rows in real
+  terms and invent no price year. Every row concerns Wales.
+- We use `value_kind: point` for a single published figure, not a separately
+  identified central-model scenario, and use `central` on no row.
+- We quote an exact page fragment or table cell in every row, containing
+  `value_raw` and fewer than 15 words. We read tables by row and then column.
 
-### Welsh rows not staged
+### Welsh figures we left out
 
-- Resource 2029-30 is `N/A`, not a number and not zero.
-- OBR GDP growth of 1.2% in 2026 and 1.0% in 2027 is restated macro context,
-  outside this assignment's devolved-consequentials scope; no own Welsh
-  estimate of a Budget measure is asserted.
-- The £100 council-tax-band A-D payment is a Welsh implementation
-  announcement and policy parameter, with no implementation date, reach,
-  aggregate cost or estimated household gain printed. It is not attached
-  to the England-only Treasury line 1 key and is not fabricated into an
-  impact row.
-- The £14 billion rail commitment and £302m already allocated over the
-  spending review are existing commitments, not newly estimated effects of
-  AB2026; the statement supplies no isolation of a Budget measure's effect.
-- Dates, council tax band letters, and rounding caveats are not estimates.
-  There are no charts needing bar readings. No inaccessible Welsh page or
-  unavailable local copy is being used as evidence.
+- The Welsh Government prints Resource 2029-30 as `N/A`, not a number and not zero.
+- The Welsh Government restates OBR GDP growth of 1.2% in 2026 and 1.0% in
+  2027 as macro context. That falls outside this assignment's
+  devolved-consequentials scope, and the Welsh Government asserts no own
+  estimate of a Budget measure there.
+- The Welsh Government announces how it will implement the £100
+  council-tax-band A-D payment, a policy parameter, but prints no
+  implementation date, reach, aggregate cost or estimated household gain. We
+  didn't attach it to the England-only Treasury line 1 key or fabricate an
+  impact row from it.
+- The Welsh Government describes the £14 billion rail commitment and £302m
+  already allocated over the spending review as existing commitments, not
+  newly estimated effects of AB2026, and it doesn't isolate a Budget
+  measure's effect.
+- We don't count dates, council tax band letters or rounding caveats as
+  estimates. The Welsh Government prints no charts that need bar readings.
+  We use no inaccessible Welsh page or unavailable local copy as evidence.
 
 ## Scottish Government
 
-The [news release](https://www.gov.scot/news/uk-budget-delivers-real-cut-to-scotlands-funding/) ("UK Budget delivers real cut to Scotland's funding", 28 October 2026) was fetched fresh on 2026-10-29 with the same User-Agent; HTTP 200, 27,662 bytes, sha256 `f3d0183e470f711b6821e4956e108c5d17210a392e6a6e471eccf297c807a6ac`.
+The lane fetched the [news release](https://www.gov.scot/news/uk-budget-delivers-real-cut-to-scotlands-funding/) ("UK Budget delivers real cut to Scotland's funding", 28 October 2026) fresh on 2026-10-29 with the same User-Agent: HTTP 200, 27,662 bytes, sha256 `f3d0183e470f711b6821e4956e108c5d17210a392e6a6e471eccf297c807a6ac`.
 
-- **Sign:** the primary prints unsigned magnitudes and describes reductions. Values retain those positive magnitudes, with `conditions.sign_convention: "positive = magnitude of reduction in Scottish Government funding"`. No minus sign is invented. The three million-pound amounts are multiplied by 1e6; the percentages remain percentages.
-- **Period:** all rows use fiscal-year end year `2028`, `time_basis: fiscal_year`, and `conditions.fy: "2027-28"`.
-- **Prices and comparison:** all rows say real terms, with an unspecified price base year. The primary does not explicitly name its comparison baseline. `conditions.price_basis` and `comparison_basis` preserve those limits. No cash-basis conversion is made.
-- **Point/central:** the page gives one reported estimate per figure, not a named central model scenario, so `value_kind: point`. The money amounts retain the producer's “around” qualifier in `conditions.precision`.
-- **Attribution:** all 5 are Scottish Government `own` estimates because the article reports its funding assessment without naming a separate original source. `arithmetic` follows the AB2025 family's funding convention and does not assert access to an unpublished model. None is an administrative outturn or count.
-- **Baselines:** `baseline_policy: null`; no proposed baseline. These are context funding projections, not a comparison of a reform against a specified alternative policy.
-- **Keys:** **`measure_key: null` — 5 rows**. No registered key is used, and **no proposed measure key** is introduced. The article does not isolate a set of Table 6.1 decisions or establish that its year-on-year real-terms funding assessment matches a registered package. `reform_hint: null` records that it is context. None of the 98 Table 6.1 lines is asserted to be the exact scope of these figures.
+- **Sign.** The Scottish Government prints unsigned magnitudes and describes reductions. We keep those positive magnitudes, with `conditions.sign_convention: "positive = magnitude of reduction in Scottish Government funding"`, and invent no minus sign. We multiply the three million-pound amounts by 1e6 and keep the percentages as percentages.
+- **Period.** On all rows we use fiscal-year end year `2028`, `time_basis: fiscal_year` and `conditions.fy: "2027-28"`.
+- **Prices and comparison.** The Scottish Government gives every figure in real terms, with an unspecified price base year, and doesn't explicitly name its comparison baseline. We record those limits in `conditions.price_basis` and `comparison_basis`, and make no cash-basis conversion.
+- **Point or central.** The Scottish Government reports one estimate per figure, not a named central model scenario, so we use `value_kind: point`. We keep its “around” qualifier on the money amounts in `conditions.precision`.
+- **Attribution.** We mark all 5 as the Scottish Government's `own` estimates, because it reports its funding assessment without naming a separate original source. We use `arithmetic` to follow the AB2025 family's funding convention, without claiming access to an unpublished model. The Scottish Government reports no administrative outturn or count here.
+- **Baselines.** We set `baseline_policy: null` and propose no baseline. The Scottish Government projects funding as context; it doesn't compare a reform against a specified alternative policy.
+- **Keys.** We give **5 rows `measure_key: null`**. We use no registered key and introduce **no proposed measure key**. The Scottish Government doesn't isolate a set of Table 6.1 decisions or show that its year-on-year real-terms funding assessment matches a registered package. We set `reform_hint: null` to record that the rows give context. We assert none of the 98 Table 6.1 lines as the exact scope of these figures.
 
-### Scottish rows not staged
+### Scottish figures we left out
 
-- Every FAI figure: the primary refused the required fresh fetch, and no local fallback was supplied. The family therefore has no read primary evidence for FAI's quantitative or qualitative claims.
-- SFC: no qualifying publication dated 28–29 October was found. Its earlier forecasts and funding commentary are not recast as post-Budget figures.
-- The Scottish Government's £100 household energy-support commitment: it is a payment-policy parameter, not a separate quantified aggregate or model estimate. The article does not specify Scottish eligibility, rollout timing or a fully defined Scottish implementation; the registered Table 6.1 line 1 describes England's council-tax rebate. No England measure key is attached to Scotland's unspecified implementation.
-- The £300 energy-bill reduction refers to an earlier political promise, not an AB2026 estimate or a newly costed option.
-- The repeated £650 million in the minister's quotation and repeated £100 commitment are not staged twice.
-- Dates, earlier political reference years and qualitative references to welfare policies do not form numerical claims. No chart-only numbers, macro forecasts or third-party restatements were used.
+- Every FAI figure: FAI's site refused the required fresh fetch, and nobody supplied a local fallback. So we read no primary evidence for FAI's quantitative or qualitative claims.
+- SFC: we found no qualifying publication dated 28–29 October, and we don't recast its earlier forecasts and funding commentary as post-Budget figures.
+- The Scottish Government's £100 household energy-support commitment: the Scottish Government sets a payment-policy parameter, not a separate quantified aggregate or model estimate. It specifies no Scottish eligibility, rollout timing or fully defined Scottish implementation, and the registered Table 6.1 line 1 describes England's council-tax rebate. We attach no England measure key to Scotland's unspecified implementation.
+- The Scottish Government's £300 energy-bill reduction refers to an earlier political promise, not an AB2026 estimate or a newly costed option.
+- We don't stage the minister's repeated £650 million or the repeated £100 commitment twice.
+- We don't treat dates, earlier political reference years or qualitative references to welfare policies as numerical claims. We used no chart-only numbers, macro forecasts or third-party restatements.
 
 ### Scottish Government primary issues
 
-The response labels the figures as a consequence of the UK Budget but does not distinguish changes caused by newly announced decisions from the inherited funding path and inflation. It supplies no derivation, explicit comparison baseline or deflator year. Consequently the five context rows cannot be compared directly with a cash-terms Barnett-consequentials table. The two component cash magnitudes are consistent with the printed total; none was recomputed.
+The Scottish Government attributes the figures to the UK Budget but doesn't separate changes from newly announced decisions from the inherited funding path and inflation. It supplies no derivation, explicit comparison baseline or deflator year. So nobody can compare the five context rows directly with a cash-terms Barnett-consequentials table. The two component cash magnitudes agree with the printed total, and we recomputed none.
 
-The HTML's JSON-LD `dateModified` is `2026-10-29T08:22:59Z`, while the visible publication time and `dc.date.modified` show 28 October 2026 15:45. No earlier local copy was provided, and the metadata do not establish that the numerical content changed. The manifest pins the sole fetched version and records both timestamps; there is no invented second version.
+The page's JSON-LD `dateModified` reads `2026-10-29T08:22:59Z`, while the visible publication time and `dc.date.modified` show 28 October 2026 15:45. Nobody provided an earlier local copy, and the metadata don't show that the numbers changed. We pin the sole fetched version in the manifest, record both timestamps there and invent no second version.
 
 ## Verification
 
-- **4 November:** the contract checker reports 19 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte.
-- **3 November:** the contract checker reports 19 rows, 0 problems; a re-run of `stage.py` reproduces `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte (COUNTS.json pins the gzip's sha256). The fixes relabel fields only, so no spot check was repeated; the lanes' checks below stand.
-- **Welsh rows (29 October).** Ten rows selected with `random.Random(2302026).sample(range(14), 10)`
-were checked against the saved, hash-verified HTML, reselecting the table
-row/column or paragraph. Row numbers below are one-based. Every check
+- On 4 November, the contract checker reported 19 rows, 0 problems, and when we re-ran `stage.py` it reproduced both files byte for byte.
+- On 3 November, the contract checker reported 19 rows, 0 problems, and when we re-ran `stage.py` it reproduced `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte (COUNTS.json pins the gzip's sha256). Our fixes relabel fields only, so we repeated no spot check, and the lanes' checks below stand.
+- Welsh rows, 29 October: the lane selected ten rows with `random.Random(2302026).sample(range(14), 10)`
+and checked them against the saved, hash-verified HTML, reselecting the table
+row/column or paragraph. We give one-based row numbers below. Every check
 confirmed the number, sign/magnitude convention, unit and end-year period.
 
 | Row | Reopened locator | Printed value | Normalized value and period |
@@ -156,12 +163,12 @@ confirmed the number, sign/magnitude convention, unit and end-year period.
 | 13 | First paragraph after table/rounding footnote, last sentence | 0.5% | 0.5 percent reduction; 2028 |
 | 14 | Second paragraph after table, second sentence | almost 10% | Upper endpoint 10 percent reduction; 2030 |
 
-The headline and all remaining numeric cells were also read directly when
-transcribing. Every row's quote contains its raw value. Scope review found
-no assigned registry key. Since 3 November the Welsh package rows carry the
-shared proposed key `ab2026__package_barnett_consequentials` (scope above),
-and the context rows carry no proposal.
-- **Scottish rows (29 October, in `uk_fai_sfc`).** Because the family contains fewer than 10 rows, all 5 were checked. A reproducibly shuffled order (`random.Random(20261029)`) gave rows **3, 2, 1, 4, 5** (now rows 17, 16, 15, 18, 19 of this family, one-based). The saved primary was re-opened at every locator; its hash was also checked against each row's publication hash.
+The lane also read the headline and all remaining numeric cells directly
+when transcribing, and every row's quote contains its raw value. Its scope
+review found no assigned registry key. Since 3 November we give the Welsh
+package rows the shared proposed key `ab2026__package_barnett_consequentials`
+(scope above), and the context rows no proposal.
+- Scottish rows, 29 October, in `uk_fai_sfc`: the family then held fewer than 10 rows, so the lane checked all 5. It shuffled them reproducibly (`random.Random(20261029)`) into rows **3, 2, 1, 4, 5** (now rows 17, 16, 15, 18, 19 of this family, one-based). It re-opened the saved primary at every locator and checked its hash against each row's publication hash.
 
 | Row | Primary locator | Verbatim figure | Checked normalization | Sign and period |
 | ---: | --- | --- | --- | --- |
