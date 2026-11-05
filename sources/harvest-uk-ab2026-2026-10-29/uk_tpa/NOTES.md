@@ -192,8 +192,8 @@ We use the registered metrics `revenue_change`, `caseload` and, for the totals o
 In its review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch), the thinktanks-a reviewer approved this family with fixes. We put each in an explicit block at the end of `stage.py`'s rows. We re-opened no primary, because the session's network policy refused taxpolicy.org.uk, and changed no printed value.
 
 - Finding 1, the coordinator's call: we dropped row 16, "£93", as the allowance's design under rule 8, and set `conditions.tax_removed: "£93 (as printed)"` on row 17 (53%). The 306 rows became 305.
-- Finding 2: we made no change, since we had already set `conditions.derived_from` on the group, deflated and %-of-GDP rows, and tranche 2 separates them from model estimates on that field.
-- Finding 3: we made no change. We stage the 2027-28 total tax policy decisions on rows 3, 26, 27, 147, 169 and 237 (0-based before the drop) and the six-year total on rows 4, 28 and 265; tranche 2 should deduplicate them.
+- Finding 2: we made no change, since we had already set `conditions.derived_from` on the group, deflated and %-of-GDP rows. At ingest we copy the field onto each of the 155 claims these 186 rows become, and drop the other 31 (30 as out of scope, 1 as a ratio). No code in #247 reads the field, so separating these claims from model estimates stays open.
+- Finding 3: we made no change. We stage the 2027-28 total tax policy decisions on rows 3, 26, 27, 147, 169 and 237 (0-based before the drop) and the six-year total on rows 4, 28 and 265. At ingest we drop the restated rows 3, 27, 147 and 237, and score rows 26 and 169 (2027-28) and 4, 28 and 265 (six years) on `decisions_effect_on_borrowing`. The ingest merges none of these five, so their duplication stays open.
 - Finding 4: we now say, in the quote convention above, that we re-serialise JSON elements.
 - Finding 5 (optional, applied): on row 1 ("About two-fifths") we use `proposed_metric: revenue_share_by_fiscal_event`, not the registered `revenue_share`.
 - Finding 6: we added the registry caveat to the two by-tax scopes in the group-key table.
