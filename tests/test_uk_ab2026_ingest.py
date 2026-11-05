@@ -124,7 +124,9 @@ def test_the_new_obr_rows_become_one_claim_and_six_macro_drops():
     }
     claim = scores[0]
     assert claim.metric == Metric.REVENUE_CHANGE
-    assert claim.conditions["measure_key"] == "ab2026_option__fuel_duty_continued_freeze"
+    assert (
+        claim.conditions["measure_key"] == "ab2026_option__fuel_duty_continued_freeze"
+    )
     assert claim.value == 4_000_000_000
     assert claim.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
     old, old_acct = I.stage({"uk_obr_tables": [(2688, RAW["uk_obr_tables"][2688])]})
@@ -773,7 +775,6 @@ INGEST_CONDITIONS = {
     "pe_expressibility",
     "pe_missing",
     "reform_hint",
-    "scoring_method",
     "staged_metric",
     "value_verbatim",
 }
@@ -802,7 +803,15 @@ def _keeps_conditions(row, score):
         for key in staged
         if key == "program" or key in I.AB25._CANONICALISED
     }
-    return set(score.conditions) <= set(staged) | verbatim | INGEST_CONDITIONS
+    allowed = set(staged) | verbatim | INGEST_CONDITIONS
+    if "scoring_method" in score.conditions and "scoring_method" not in staged:
+        if (
+            row.get("proposed_metric") != "exchequer_impact_static"
+            or score.conditions["scoring_method"] != "static"
+        ):
+            return False
+        allowed.add("scoring_method")
+    return set(score.conditions) <= allowed
 
 
 _CHILDCARE = "free childcare entitlement (claimed and received some)"
@@ -858,6 +867,14 @@ _CHILDCARE = "free childcare entitlement (claimed and received some)"
         (
             {"source": "centax", "conditions": {"basis": "forecast"}},
             {"basis": "forecast", "geography_verbatim": "England"},
+        ),
+        (
+            {
+                "source": "centax",
+                "proposed_metric": "exchequer_impact_static",
+                "conditions": {},
+            },
+            {"scoring_method": "post_behavioural"},
         ),
     ],
 )
@@ -923,9 +940,18 @@ def test_a_registered_program_keeps_its_text_beside_a_new_name(
     assert score.conditions.get("program_verbatim") == verbatim
 
 
-def test_a_static_exchequer_row_gains_its_scoring_method():
+def test_a_centax_row_cannot_gain_an_unstaged_scoring_method():
+    row = RAW["uk_centax"][100]
+    assert "scoring_method" not in (row.get("conditions") or {})
+    score = I._score(row, "uk_centax", row["source"], Metric.AFFECTED_SHARE)
+    score.conditions["scoring_method"] = "static"
+    assert not _keeps_conditions(row, score)
+
+
+@pytest.mark.parametrize("method", [None, "post_behavioural"])
+def test_a_static_exchequer_row_gains_its_scoring_method(method):
     """We staged no row under `exchequer_impact_static`, so we set it on an
-    HM Treasury costings row with no scoring method."""
+    HM Treasury costings row and preserve any staged scoring method."""
     row = copy.deepcopy(
         next(
             r
@@ -934,8 +960,10 @@ def test_a_static_exchequer_row_gains_its_scoring_method():
         )
     )
     row["proposed_metric"] = "exchequer_impact_static"
+    if method is not None:
+        row.setdefault("conditions", {})["scoring_method"] = method
     score = I._score(row, "uk_hmt_costings", row["source"], Metric.REVENUE_CHANGE)
-    assert score.conditions["scoring_method"] == "static"
+    assert score.conditions["scoring_method"] == (method or "static")
     assert _keeps_conditions(row, score)
 
 
@@ -1199,7 +1227,14 @@ def test_a_reviewed_twin_outside_the_printed_rounding_raises(monkeypatch):
         I._check_row_calls("uk_hmt_redbook", rows)
 
 
-@given(st.integers(1, 99_999), st.integers(0, 3), st.booleans())
+def test_a_four_place_decimal_prints_a_hundred_thousand_pound_unit():
+    assert (
+        I._printed_unit({"value": 1_234_500_000, "value_raw": "£1.2345 billion"})
+        == 100_000
+    )
+
+
+@given(st.integers(1, 99_999), st.integers(0, 6), st.booleans())
 def test_the_printed_unit_follows_the_last_printed_digit(digits, places, billions):
     number = digits / 10**places
     word, scale = ("billion", 1e9) if billions else ("million", 1e6)
