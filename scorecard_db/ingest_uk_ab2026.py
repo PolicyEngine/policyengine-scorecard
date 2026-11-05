@@ -576,7 +576,7 @@ def _score(row: dict, family: str, source: str, metric: Metric) -> ExternalScore
         elif key == "program":
             if value in known(source, "program"):
                 cond["program"] = canon(source, "program", value)
-            else:
+            if cond.get("program") != value:
                 cond["program_verbatim"] = value
         else:
             cond[key] = value
@@ -682,14 +682,15 @@ def _drop(acct: dict, fam: dict, reason_key: str) -> None:
     fam["drops"][reason_key] = fam["drops"].get(reason_key, 0) + 1
 
 
-_PRINTED_AMOUNT = re.compile(r"£(\d[\d,]*)(?:\.(\d+))? (million|billion)")
+_PRINTED_AMOUNT = re.compile(r"£(\d+|\d{1,3}(?:,\d{3})+)(?:\.(\d+))? (million|billion)")
 _MULTIPLIERS = {"million": 1e6, "billion": 1e9}
 
 
 def _printed_unit(row: dict) -> float:
     """Return the place value of the last printed digit: £100m for "£2.6 billion".
 
-    We raise on any other form of print, and on a value the print doesn't state."""
+    We raise if someone uses another printed form or stores a value that differs
+    from the printed amount."""
     printed = _PRINTED_AMOUNT.fullmatch(row["value_raw"])
     if printed is None:
         raise ValueError(f"no printed amount in {row['value_raw']!r}")
