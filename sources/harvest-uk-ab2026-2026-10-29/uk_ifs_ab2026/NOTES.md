@@ -635,9 +635,9 @@ fiscal-year condition, and proposed no baseline.
   discounts; the 2029 revaluation; April 2028 income-tax revenue devolution.
   IFS prints no quantified spending or revenue amount on the devolution slide.
 - IFS prints “28 October 2026” on the title slide, though the coordinator
-  assigned the 29 October briefing, and in the PDF metadata IFS records creation
-  and modification on 29 October. We follow the printed cover for the publication
-  date (2026-10-28).
+  assigned it as the 29 October briefing deck, and in the PDF metadata IFS records
+  creation and modification on 29 October. We follow the printed cover for the
+  publication date (2026-10-28).
 - We keep IFS's £1.1bn combined savings/property yield verbatim. In Table 6.1
   HM Treasury gives lines 61 and 62 final-year amounts of £455m and £590m, totalling
   £1.045bn. Different rounding or aggregation could explain IFS's displayed
