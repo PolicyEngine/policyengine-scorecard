@@ -76,7 +76,7 @@ Under "Not staged" below we list the 36 design rows we removed under rule 8 and 
 - **Text.** We stage every number RF prints that estimates, forecasts or counts the effect of the Budget's measures or of the Budget as a whole. That covers costs and yields, households affected, gains and losses, bill changes, distributional and poverty effects, and the public finances after the Budget.
   - We also stage, as `measure_key: null` context, the living-standards and poverty projections and the energy-bill context that the cost-of-living measures address.
   - Where RF prints a number twice with the same meaning in one document, we stage one row, at the occurrence that states its period or scope most completely. For example, RF dates the £2,192 cap level Q1 2027 on p.16 and calls it "next year" on p.5, so the row cites p.16.
-  - Where different documents state the same figure, we stage each (the AB2025 precedent; we leave the dedupe to the ingest).
+  - Where different documents state the same figure, we stage each (the AB2025 precedent). At ingest we merge rows 26, 27, 60, 132 and 201 into the claim of another printing of the same RF figure.
 - **Workbook.** We stage the chart data behind the figures that give RF's own estimates.
   - F7 (energy bill and support by year).
   - F8 (temporary AB26 policies by vigintile).
