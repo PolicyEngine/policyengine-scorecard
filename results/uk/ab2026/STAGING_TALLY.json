@@ -2,29 +2,32 @@
  "by_measure": {
   "ab2026__carers_allowance_earnings_taper": {
    "claims": 25,
-   "computed": 12,
+   "computed": 4,
    "reasons": {
     "benefit_recipients_count": 1,
-    "exchequer_component": 12
+    "exchequer_component": 12,
+    "zero_both_sides": 8
    }
   },
   "ab2026__electricity_vat_zero_rate_to_july_2027": {
    "claims": 75,
-   "computed": 12,
+   "computed": 4,
    "reasons": {
     "cumulative_real_terms": 1,
     "exchequer_component": 14,
     "household_count": 1,
     "spending_decile_breakdown": 1,
     "typical_bill": 8,
-    "vigintile_ahc_breakdown": 38
+    "vigintile_ahc_breakdown": 38,
+    "zero_both_sides": 8
    }
   },
   "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred": {
    "claims": 29,
-   "computed": 6,
+   "computed": 0,
    "reasons": {
     "cumulative_real_terms": 1,
+    "fuel_duty_base": 6,
     "motorists_count": 2,
     "spending_decile_breakdown": 1,
     "vigintile_ahc_breakdown": 19
@@ -48,40 +51,46 @@
   },
   "ab2026__pension_tax_allowance": {
    "claims": 89,
-   "computed": 13,
+   "computed": 7,
    "reasons": {
     "cumulative_real_terms": 1,
     "exchequer_component": 48,
+    "measure_ended": 4,
     "no_fiscal_year": 1,
     "taken_out_of_tax_count": 1,
     "vigintile_ahc_breakdown": 19,
-    "worked_example": 6
+    "worked_example": 6,
+    "zero_both_sides": 2
    }
   },
   "ab2026__property_income_rates_plus_2pp": {
    "claims": 49,
-   "computed": 12,
+   "computed": 10,
    "reasons": {
-    "exchequer_component": 37
+    "exchequer_component": 37,
+    "zero_both_sides": 2
    }
   },
   "ab2026__trading_allowance_3000": {
    "claims": 43,
-   "computed": 12,
+   "computed": 10,
    "reasons": {
     "cumulative_real_terms": 1,
-    "exchequer_component": 30
+    "exchequer_component": 30,
+    "zero_both_sides": 2
    }
   }
  },
  "claims": 372,
- "computed": 67,
+ "computed": 35,
  "reasons": {
   "benefit_recipients_count": 1,
   "cumulative_real_terms": 4,
   "devolved_share_not_modelled": 26,
   "exchequer_component": 141,
+  "fuel_duty_base": 6,
   "household_count": 3,
+  "measure_ended": 4,
   "motorists_count": 2,
   "no_fiscal_year": 1,
   "share_of_households": 14,
@@ -89,6 +98,7 @@
   "taken_out_of_tax_count": 1,
   "typical_bill": 8,
   "vigintile_ahc_breakdown": 95,
-  "worked_example": 6
+  "worked_example": 6,
+  "zero_both_sides": 22
  }
 }

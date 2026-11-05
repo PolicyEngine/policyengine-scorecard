@@ -222,7 +222,200 @@ def test_the_accounting_closes_per_measure_and_in_total():
 
 def test_every_reason_is_written_out():
     for reason in TALLY["reasons"]:
-        assert len(S.REASONS[reason]) > 80, reason
+        text = S.REASONS[reason]
+        assert len(text) > 60 and text[0].isupper() and text.endswith("."), reason
+    assert set(S.REASONS) == set(TALLY["reasons"])
+
+
+def _exchequer_claims(key):
+    return [
+        c
+        for c in CLAIMS
+        if c["measure_key"] == key
+        and c["metric"] == "revenue_change"
+        and S.classify(c)[1] not in ("exchequer_component", "cumulative_real_terms")
+    ]
+
+
+def test_every_fuel_duty_exchequer_row_is_tallied_for_its_base():
+    rows = _exchequer_claims(S.FUEL_DUTY)
+    assert len(rows) == 6
+    assert {c["source"] for c in rows} == {"hm_treasury"}
+    assert {S.classify(c) for c in rows} == {(None, "fuel_duty_base")}
+
+
+def test_the_pension_tax_allowance_after_it_ends_is_tallied():
+    ended = [
+        c
+        for c in _exchequer_claims(S.PENSION_TAX_ALLOWANCE)
+        if c["conditions"]["fy"] in ("2030-31", "2031-32")
+    ]
+    assert len(ended) == 4
+    for c in ended:
+        assert c["value"] != 0
+        path, column, where = S.exchequer_cell(c)
+        assert float(S.cell(path, column, where)) == 0
+        assert S.classify(c) == (None, "measure_ended")
+
+
+def test_a_nonzero_claim_against_our_zero_on_another_measure_raises():
+    zero = next(
+        c
+        for c in UNANSWERED
+        if c["reason"] == "zero_both_sides" and c["measure_key"] == S.PROPERTY
+    )
+    claim = copy.deepcopy(BY_ID[zero["claim_id"]])
+    claim["value"] = 50_000_000.0
+    with pytest.raises(S.Unmatched, match="reads zero"):
+        S.classify(claim)
+
+
+def test_zero_rows_read_zero_in_the_claim_and_the_cell():
+    zeros = [u for u in UNANSWERED if u["reason"] == "zero_both_sides"]
+    assert zeros
+    for u in zeros:
+        claim = BY_ID[u["claim_id"]]
+        assert claim["value"] == 0
+        path, column, where = S.exchequer_cell(claim)
+        assert float(S.cell(path, column, where)) == 0
+    for row in EXCHEQUER_ROWS():
+        assert row["pe_value"] != 0
+
+
+def EXCHEQUER_ROWS():
+    return [r for r in ROWS if r["metric"] == "revenue_change"]
+
+
+# --- reader-facing annotations ---------------------------------------------------
+
+TIMING = (
+    "We count each year's tax liabilities and benefit payments, while HM "
+    "Treasury and the OBR count tax when it reaches the Exchequer, often in a "
+    "later year."
+)
+SIGN = "Both sides show a cost to the Exchequer as negative (PE's own orientation)."
+
+
+def _scope(row):
+    claim = BY_ID[row["external_claim_match"]["claim_id"]]
+    key, fy = claim["measure_key"], claim["conditions"]["fy"]
+    obr = {
+        c["conditions"]["component"]: c["value"]
+        for c in CLAIMS
+        if c["source"] == "obr_efo"
+        and c["measure_key"] == key
+        and c["conditions"].get("fy") == fy
+        and c["metric"] == "revenue_change"
+        and c["conditions"].get("component")
+    }
+
+    def m(name):
+        return f"£{abs(obr[name]) / 1e6:,.0f}m"
+
+    if key == S.CARERS:
+        return (
+            "We apply the taper in England and Wales, and the OBR's breakdown of "
+            "this measure shows a Scottish block grant adjustment of "
+            f"{m(S.SCOTTISH_BGA)} in this year."
+        )
+    if key == S.PROPERTY:
+        return (
+            "We raise property income rates in England, Wales and Northern "
+            "Ireland, as the Budget does, and the OBR's breakdown of this measure "
+            f"shows a Scottish block grant adjustment of {m(S.SCOTTISH_BGA)} and "
+            f"Scottish self-financed expenditure of {m(S.SCOTTISH_SFE)} in this year."
+        )
+    if key == S.PENSION_TAX_ALLOWANCE:
+        assert obr[S.WELFARE] == 0
+        return (
+            "Our figure nets off lower spending on means-tested benefits, and the "
+            "OBR's breakdown of this measure shows no such change."
+        )
+    return None
+
+
+def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
+    for row in EXCHEQUER_ROWS():
+        claim = BY_ID[row["external_claim_match"]["claim_id"]]
+        notes = row["annotations"]
+        assert TIMING in notes
+        assert SIGN in notes
+        theirs = (
+            "the OBR measures it from its forecast before the Budget's measures"
+            if claim["source"] == "obr_efo"
+            else "HM Treasury's table names no baseline"
+        )
+        assert (
+            "We measure the change from current law in policyengine-uk 2.151.0, "
+            f"and {theirs}."
+        ) in notes
+        assert any(
+            n.startswith(f"We estimate fiscal year {claim['conditions']['fy']} ")
+            for n in notes
+        )
+        scope = _scope(row)
+        if scope is not None:
+            assert scope in notes, row["external_claim_match"]
+        else:
+            assert len(notes) == 5
+    keys = Counter(r["measure_key"] for r in EXCHEQUER_ROWS())
+    assert keys[S.CARERS] == 4 and keys[S.PROPERTY] == 10
+    assert keys[S.PENSION_TAX_ALLOWANCE] == 6
+
+
+def test_the_gainer_row_carries_its_population():
+    (row,) = [r for r in ROWS if r["metric"] == "gainer_count"]
+    assert any(
+        "National Insurance, student loan repayment or earnings" in n
+        for n in row["annotations"]
+    )
+
+
+SUB_UK = ("England", "Wales", "Scotland", "Northern Ireland")
+
+
+def test_every_sub_uk_measure_takes_a_tally_or_a_scope_annotation():
+    for key in MEASURES:
+        if not any(c["measure_key"] == key for c in CLAIMS):
+            continue
+        description = S.receipt(key, MANIFEST)["dashboard"]["description"]
+        if not any(place in description for place in SUB_UK):
+            continue
+        tallied = TALLY["by_measure"][key]["reasons"].get(
+            "devolved_share_not_modelled", 0
+        )
+        rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == key]
+        annotated = rows and all(_scope(r) in r["annotations"] for r in rows)
+        assert tallied or annotated, key
+        if rows:
+            assert _scope(rows[0]) is not None, key
+
+
+# --- the pinned pairing -------------------------------------------------------
+
+
+def test_the_staging_pins_each_claims_file_column_and_row():
+    pinned = json.loads(S.EXPECTED.read_text())["pairing"]
+    assert pinned == S.pairing(ROWS)
+    S.check(TALLY, ROWS)
+    shifted = copy.deepcopy(ROWS)
+    year = shifted[0]["trace"]["where"]["year"]
+    shifted[0]["trace"]["where"]["year"] = str(int(year) + 1)
+    with pytest.raises(ValueError, match="pairing drifted"):
+        S.check(TALLY, shifted)
+
+
+def test_the_cell_year_and_the_claim_year_agree():
+    for row in ROWS:
+        claim = BY_ID[row["external_claim_match"]["claim_id"]]
+        start, end = claim["conditions"]["fy"].split("-")
+        from_claim = int(start)
+        assert int(end) == (from_claim + 1) % 100
+        rec = S.receipt(claim["measure_key"], MANIFEST)
+        label = rec["execution_receipt"]["fiscal_year"]
+        assert label["year_label"] == "start_year"
+        from_cell = int(row["trace"]["where"]["year"])
+        assert from_cell == from_claim
 
 
 def test_a_claim_no_rule_names_raises():

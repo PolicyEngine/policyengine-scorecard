@@ -6,8 +6,23 @@ dashboard (PolicyEngine/uk-autumn-budget-dashboard-2026). The registry
 the dashboard commit 1eca3182, on policyengine 6.11.1 and policyengine-uk
 2.151.0. This module runs no microsimulation: it reads the published
 artifacts we vendor under ``results/uk/ab2026/``, and pairs each AB2026
-claim on a ``pe_modifier`` measure with one cell of one artifact, where the
-claim and the cell measure the same thing.
+claim on a ``pe_modifier`` measure with one cell of one artifact, or tallies
+it with a written reason.
+
+The scope rule:
+
+- We tally a claim with a written reason when the producer's figure covers a
+  base or population our run leaves out and no line of the producer's lets a
+  reader size the gap (the Household Energy Payment outside England; fuel
+  duty, which HM Treasury scores on every litre of taxable fuel and we
+  estimate on the fuel households buy).
+- We keep the comparison and annotate it when the producer prints the line
+  our run leaves out. The annotation names that line and its amount for that
+  year, read from the OBR's component claims at stage time (Scotland's block
+  grant adjustment on Carer's Allowance and property income).
+- We tally a year when our run shows no change because the measure isn't in
+  force, since the row then says nothing about the model: where both sides
+  read zero, and the Pension Tax Allowance after it ends on 5 April 2030.
 
 Two subcommands:
 
@@ -38,7 +53,8 @@ as its baseline (receipt execution_receipt.baseline.kind), statically.
 
 Pairing rules, in the order ``classify`` applies them:
 
-    revenue_change, whole measure, UK, one fiscal year, a sign signs.py reads
+    revenue_change, whole measure, UK, one fiscal year, a sign signs.py reads,
+    not fuel duty, and not a year with no change on our side
         -> budgetary_impact.value × 1e9, oriented to the claim's sign
     gainer_count, persons, on a measure whose only lever is income tax
         -> age_impact people_directly_affected, age_band "all"
@@ -88,9 +104,6 @@ PAIR_ID = (
 # too, since the manifest and the pair record check against them.
 USED_FILES: dict[str, tuple[str, ...]] = {
     "ab2026__electricity_vat_zero_rate_to_july_2027": ("budgetary_impact.csv",),
-    "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred": (
-        "budgetary_impact.csv",
-    ),
     "ab2026__carers_allowance_earnings_taper": ("budgetary_impact.csv",),
     "ab2026__trading_allowance_3000": ("budgetary_impact.csv",),
     "ab2026__pension_tax_allowance": ("budgetary_impact.csv", "age_impact.csv"),
@@ -110,73 +123,81 @@ INCOME_TAX_REDUCTION_ONLY = frozenset({"ab2026__pension_tax_allowance"})
 
 REASONS: dict[str, str] = {
     "devolved_share_not_modelled": (
-        "the claim counts the UK cost, with the Barnett shares for Scotland, Wales "
-        "and Northern Ireland; the dashboard's run pays England's households only, "
-        "and its receipt says it doesn't model those shares"
+        "HM Treasury and the OBR count the UK cost, including Scotland's, Wales's "
+        "and Northern Ireland's shares; our run pays households in England only "
+        "and leaves those shares out."
+    ),
+    "fuel_duty_base": (
+        "HM Treasury scores fuel duty on every litre of taxable fuel in the UK, "
+        "and we estimate the duty and VAT on the fuel households buy."
+    ),
+    "zero_both_sides": (
+        "The claim and our run both show zero for this year, so we have nothing "
+        "to compare."
+    ),
+    "measure_ended": (
+        "The allowance ends on 5 April 2030, so our run shows no change in this "
+        "year, while HM Treasury and the OBR count receipts in it."
     ),
     "exchequer_component": (
-        "the claim gives one part of the measure's exchequer effect (a receipts "
-        "head, a spending line or a block grant adjustment); the dashboard "
-        "publishes only the whole effect on gov_balance"
+        "The claim gives one part of the measure's effect on the public finances "
+        "(a tax head, a spending line or a block grant adjustment), and we "
+        "estimate only the whole effect."
     ),
     "cumulative_real_terms": (
-        "the claim sums fiscal years 2026-27 to 2031-32 in 2026-27 prices, "
-        "deflated by the OBR's CPI forecast; the dashboard publishes each year in "
-        "cash and states no deflator"
-    ),
-    "sign_not_this_quantity": (
-        "signs.py reads the claim's convention as a behavioural erosion of the "
-        "yield, not the measure's exchequer effect, and the dashboard's static run "
-        "has no behavioural part to set against it"
+        "The claim sums 2026-27 to 2031-32 in 2026-27 prices, and we estimate "
+        "each year in cash."
     ),
     "vigintile_ahc_breakdown": (
-        "the claim breaks households down by equivalised income vigintile after "
-        "housing costs over two years; the dashboard publishes each year's change "
-        "by household_income_decile, with no housing-cost basis"
+        "The claim splits households into twentieths of income after housing "
+        "costs, and we split them into tenths of income before housing costs."
     ),
     "spending_decile_breakdown": (
-        "the claim breaks households in England down by spending decile over "
-        "October 2026 to June 2027; the dashboard publishes UK fiscal years by "
-        "household_income_decile"
+        "The claim splits households in England by spending, and we split UK "
+        "households by income in each fiscal year."
     ),
     "household_count": (
-        "the claim counts households the measure reaches; the dashboard's artifacts "
-        "publish no count of households, only a share of people and counts of people"
+        "The claim counts households the measure reaches, and we publish no "
+        "count of households."
     ),
     "share_of_households": (
-        "the claim gives a share of households eligible for or reached by the "
-        "measure; the dashboard publishes the share of people whose household "
-        "income moves, a different population and test"
+        "The claim gives the share of households eligible for or reached by the "
+        "measure; we estimate the share of people whose household income changes."
     ),
     "typical_bill": (
-        "the claim prices one typical household's energy bill; the dashboard's "
-        "artifacts publish no bill, only changes in household net income"
+        "The claim prices one typical household's energy bill, and we estimate "
+        "changes in household income, not bills."
     ),
     "worked_example": (
-        "the claim works through one example household's tax or income; the "
-        "dashboard's population artifacts publish aggregates, and no example "
-        "household matches the claim's"
+        "The claim works through one example household's tax or income, and we "
+        "compare population totals here."
     ),
     "motorists_count": (
-        "the claim counts motorists and businesses the measure reaches; the "
-        "dashboard counts no drivers, and a price change makes no one directly "
-        "affected in its age table"
+        "The claim counts motorists and businesses, and we count no drivers."
     ),
     "benefit_recipients_count": (
-        "the claim counts carers who gain Carer's Allowance; the dashboard's age "
-        "table counts only people whose own taxes or earnings move, not benefit "
-        "recipients"
+        "The claim counts carers who gain Carer's Allowance, and we count only "
+        "people whose own taxes or earnings change."
     ),
     "taken_out_of_tax_count": (
-        "the claim counts pensioners the allowance takes out of income tax "
-        "altogether; the dashboard counts everyone whose income tax moves, and "
-        "publishes no count of people who stop paying it"
+        "The claim counts pensioners who stop paying income tax, and we count "
+        "everyone whose income tax changes."
     ),
     "no_fiscal_year": (
-        "the claim names no single fiscal year (a count by the end of the "
-        "Parliament), so no one year of the dashboard's run answers it"
+        "The claim counts people by the end of the Parliament, not in one fiscal year."
     ),
 }
+
+FUEL_DUTY = "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
+CARERS = "ab2026__carers_allowance_earnings_taper"
+PROPERTY = "ab2026__property_income_rates_plus_2pp"
+PENSION_TAX_ALLOWANCE = "ab2026__pension_tax_allowance"
+# HM Treasury's costing: the allowance runs "from 6 April 2027 until 5 April
+# 2030", so our run reads zero after it, where both producers count receipts.
+MEASURE_ENDED = {PENSION_TAX_ALLOWANCE: frozenset({"2030-31", "2031-32"})}
+SCOTTISH_BGA = "Current AME: Scottish BGA (current)"
+SCOTTISH_SFE = "Current AME: Scottish self-financed expenditure"
+WELFARE = "Current AME: Welfare inside cap"
 
 
 class Unmatched(ValueError):
@@ -339,6 +360,40 @@ def claims(scores=None) -> list[dict]:
     return out
 
 
+_COMPONENTS: dict | None = None
+
+
+def components() -> dict[tuple[str, str, str], float]:
+    """The OBR's component claims, (measure, fy, component) -> £, from the
+    full harvest, so a scope annotation reads its amount from a claim."""
+    global _COMPONENTS
+    if _COMPONENTS is None:
+        _COMPONENTS = {
+            (
+                c["measure_key"],
+                c["conditions"].get("fy"),
+                c["conditions"]["component"],
+            ): c["value"]
+            for c in claims()
+            if c["source"] == "obr_efo"
+            and c["metric"] == "revenue_change"
+            and c["conditions"].get("component")
+            and c["conditions"].get("row_type") != "measure_total"
+        }
+    return _COMPONENTS
+
+
+def component(key: str, fy: str, name: str) -> float:
+    try:
+        return components()[(key, fy, name)]
+    except KeyError:
+        raise Unmatched(f"{key} {fy}: no OBR claim for {name!r}") from None
+
+
+def millions(value: float) -> str:
+    return f"£{abs(value) / 1e6:,.0f}m"
+
+
 def fy_start(cond: dict) -> int | None:
     m = re.fullmatch(r"(\d{4})-(\d{2})", cond.get("fy") or "")
     return int(m.group(1)) if m else None
@@ -357,7 +412,18 @@ def sign_relation(claim: dict) -> tuple[str, str]:
     )
 
 
-def classify(claim: dict) -> tuple[str, str | None]:
+def exchequer_cell(claim: dict, manifest: dict | None = None):
+    """(file, column, row) of the budgetary impact cell for the claim's year."""
+    manifest = manifest or load_manifest()
+    folder = manifest["measures"][claim["measure_key"]]["receipt"].rsplit("/", 1)[0]
+    return (
+        f"{folder}/budgetary_impact.csv",
+        "value",
+        {"year": str(fy_start(claim["conditions"]))},
+    )
+
+
+def classify(claim: dict, manifest: dict | None = None) -> tuple[str, str | None]:
     """(rule, None) for a claim a column answers, else (None, reason key)."""
     cond = claim["conditions"]
     key = claim["measure_key"]
@@ -372,12 +438,22 @@ def classify(claim: dict) -> tuple[str, str | None]:
         if cond.get("component") and cond.get("row_type") != "measure_total":
             return None, "exchequer_component"
         relation, basis = sign_relation(claim)
-        if basis.endswith(":not_this_quantity"):
-            return None, "sign_not_this_quantity"
         if relation not in (signs.SAME, signs.OPPOSITE):
             raise Unmatched(f"{claim['claim_id']}: sign {relation} ({basis})")
         if unit != "gbp" or cond.get("geography") != "UK" or fy_start(cond) is None:
             raise Unmatched(f"{claim['claim_id']}: exchequer claim shape")
+        if key == FUEL_DUTY:
+            return None, "fuel_duty_base"
+        path, column, where = exchequer_cell(claim, manifest)
+        ours = float(cell(path, column, where, manifest))
+        if ours == 0 and claim["value"] == 0:
+            return None, "zero_both_sides"
+        if ours == 0:
+            if cond["fy"] in MEASURE_ENDED.get(key, ()):
+                return None, "measure_ended"
+            raise Unmatched(
+                f"{claim['claim_id']}: our run reads zero against {claim['value']}"
+            )
         return "exchequer", None
     if metric == "gainer_count":
         if fy_start(cond) is None:
@@ -415,6 +491,36 @@ def classify(claim: dict) -> tuple[str, str | None]:
     raise Unmatched(f"{claim['claim_id']}: no rule for {metric!r}")
 
 
+def scope_annotations(claim: dict) -> list[str]:
+    """What the producer's total counts that our run leaves out, with the
+    amount the OBR's breakdown prints for the claim's year."""
+    key, fy = claim["measure_key"], claim["conditions"]["fy"]
+    if key == CARERS:
+        bga = component(key, fy, SCOTTISH_BGA)
+        return [
+            "We apply the taper in England and Wales, and the OBR's breakdown of "
+            "this measure shows a Scottish block grant adjustment of "
+            f"{millions(bga)} in this year."
+        ]
+    if key == PROPERTY:
+        bga = component(key, fy, SCOTTISH_BGA)
+        sfe = component(key, fy, SCOTTISH_SFE)
+        return [
+            "We raise property income rates in England, Wales and Northern "
+            "Ireland, as the Budget does, and the OBR's breakdown of this measure "
+            f"shows a Scottish block grant adjustment of {millions(bga)} and "
+            f"Scottish self-financed expenditure of {millions(sfe)} in this year."
+        ]
+    if key == PENSION_TAX_ALLOWANCE:
+        if component(key, fy, WELFARE) != 0:
+            raise Unmatched(f"{key} {fy}: the OBR shows a welfare change")
+        return [
+            "Our figure nets off lower spending on means-tested benefits, and the "
+            "OBR's breakdown of this measure shows no such change."
+        ]
+    return []
+
+
 def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
     """The staged row for a claim ``classify`` pairs with ``rule``: the
     value, the cell it comes from, and what differs between the two."""
@@ -425,31 +531,38 @@ def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
     rec = receipt(key, manifest)
     folder = manifest["measures"][key]["receipt"].rsplit("/", 1)[0]
     reg = modifier_measures()[key]
-    world = cond.get("baseline_policy") or "current_law"
+    if claim["source"] == "obr_efo":
+        theirs = "the OBR measures it from its forecast before the Budget's measures"
+    else:
+        theirs = "HM Treasury's table names no baseline"
     annotations = [
-        f"PolicyEngine's Budget-day run on the dashboard: its year {year} is FY "
-        f"{cond['fy']} (the receipt labels a fiscal year by its start); static, "
-        "with no behavioural response",
-        "executed baseline: current law at policyengine-uk 2.151.0, the "
-        f"dashboard's configured baseline; the claim is scored against {world}",
+        f"We estimate fiscal year {cond['fy']} from PolicyEngine's static "
+        "Budget-day run on the Autumn Budget dashboard, with no behavioural "
+        "response.",
+        "We measure the change from current law in policyengine-uk 2.151.0, and "
+        f"{theirs}.",
     ]
     if rule == "exchequer":
-        path = f"{folder}/budgetary_impact.csv"
-        column, where = "value", {"year": str(year)}
+        path, column, where = exchequer_cell(claim, manifest)
         raw = cell(path, column, where, manifest)
         relation, basis = sign_relation(claim)
         sign = 1 if relation == signs.SAME else -1
         value = sign * float(raw) * 1e9
-        orient = "PE's own orientation" if sign == 1 else "PE oriented to it"
+        orient = (
+            "Both sides show a cost to the Exchequer as negative (PE's own "
+            "orientation)."
+            if sign == 1
+            else "We reverse our sign to match the claim's (PE oriented to it)."
+        )
         annotations += [
-            "PE static exchequer effect = Δgov_balance from the dashboard's "
-            "budgetary_impact.csv (£bn × 1e9)",
-            "timing: the dashboard counts the year's simulated tax liabilities and "
-            "payments; the producer scores when receipts reach the Exchequer, "
-            "which can fall in a later year",
-            f"claim sign: signs.py reads the claim's convention as {relation} "
-            f"({basis}); {orient}",
+            "We estimate the change in government revenue less spending from the "
+            "dashboard's budgetary impact table.",
+            "We count each year's tax liabilities and benefit payments, while HM "
+            "Treasury and the OBR count tax when it reaches the Exchequer, often "
+            "in a later year.",
+            orient,
         ]
+        annotations += scope_annotations(claim)
     elif rule == "income_tax_gainers":
         path = f"{folder}/age_impact.csv"
         column, where = (
@@ -459,9 +572,9 @@ def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
         raw = cell(path, column, where, manifest)
         value = float(raw)
         annotations += [
-            "people whose own income tax, National Insurance, student loan "
-            "repayment or earnings move by £1 a year or more (the dashboard's age "
-            "table); the measure moves only income tax, and only down",
+            "We count people whose own income tax, National Insurance, student "
+            "loan repayment or earnings change by £1 a year or more; this allowance "
+            "changes only income tax, and only lowers it.",
         ]
     else:  # pragma: no cover
         raise Unmatched(rule)
@@ -503,7 +616,7 @@ def stage(claim_rows: list[dict] | None = None, manifest: dict | None = None):
         bm = tally["by_measure"][c["measure_key"]]
         bm["claims"] += 1
         tally["claims"] += 1
-        rule, reason = classify(c)
+        rule, reason = classify(c, manifest)
         if rule:
             rows.append(counterpart(c, rule, manifest))
             bm["computed"] += 1
@@ -528,14 +641,30 @@ def stage(claim_rows: list[dict] | None = None, manifest: dict | None = None):
     return rows, tally, unanswered
 
 
-def check(tally: dict) -> None:
-    """The accounting closes per measure and in total, and matches the pin."""
+def pairing(rows: list[dict]) -> dict[str, dict]:
+    """Each computed row's claim id -> the file, column and row it reads."""
+    return {
+        r["external_claim_match"]["claim_id"]: {
+            "column": r["trace"]["column"],
+            "file": r["trace"]["file"],
+            "where": r["trace"]["where"],
+        }
+        for r in sorted(rows, key=lambda r: r["external_claim_match"]["claim_id"])
+    }
+
+
+def check(tally: dict, rows: list[dict] | None = None) -> None:
+    """The accounting closes per measure and in total, and matches the pin;
+    with ``rows``, each claim reads the cell the pin names."""
     for bm in (tally, *tally["by_measure"].values()):
         if bm["claims"] != bm["computed"] + sum(bm["reasons"].values()):
             raise ValueError("the counterpart accounting doesn't close")
     want = json.loads(EXPECTED.read_text())
+    pinned = want.pop("pairing")
     if tally != want:
         raise ValueError(f"counterpart accounting drifted: {tally} != {want}")
+    if rows is not None and pairing(rows) != pinned:
+        raise ValueError("counterpart pairing drifted from the pin")
 
 
 def dumps_jsonl(rows: list[dict]) -> str:
@@ -552,7 +681,7 @@ def main(argv: list[str] | None = None) -> int:
         print(__doc__)
         return 2
     rows, tally, unanswered = stage()
-    check(tally)
+    check(tally, rows)
     STAGED_DIR.mkdir(parents=True, exist_ok=True)
     STAGED.write_text(dumps_jsonl(rows))
     TALLY.write_text(json.dumps(tally, indent=1, sort_keys=True) + "\n")

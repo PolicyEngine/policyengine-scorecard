@@ -2,29 +2,32 @@
  "by_measure": {
   "ab2026__carers_allowance_earnings_taper": {
    "claims": 25,
-   "computed": 12,
+   "computed": 4,
    "reasons": {
     "benefit_recipients_count": 1,
-    "exchequer_component": 12
+    "exchequer_component": 12,
+    "zero_both_sides": 8
    }
   },
   "ab2026__electricity_vat_zero_rate_to_july_2027": {
    "claims": 75,
-   "computed": 12,
+   "computed": 4,
    "reasons": {
     "cumulative_real_terms": 1,
     "exchequer_component": 14,
     "household_count": 1,
     "spending_decile_breakdown": 1,
     "typical_bill": 8,
-    "vigintile_ahc_breakdown": 38
+    "vigintile_ahc_breakdown": 38,
+    "zero_both_sides": 8
    }
   },
   "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred": {
    "claims": 29,
-   "computed": 6,
+   "computed": 0,
    "reasons": {
     "cumulative_real_terms": 1,
+    "fuel_duty_base": 6,
     "motorists_count": 2,
     "spending_decile_breakdown": 1,
     "vigintile_ahc_breakdown": 19
@@ -48,40 +51,294 @@
   },
   "ab2026__pension_tax_allowance": {
    "claims": 89,
-   "computed": 13,
+   "computed": 7,
    "reasons": {
     "cumulative_real_terms": 1,
     "exchequer_component": 48,
+    "measure_ended": 4,
     "no_fiscal_year": 1,
     "taken_out_of_tax_count": 1,
     "vigintile_ahc_breakdown": 19,
-    "worked_example": 6
+    "worked_example": 6,
+    "zero_both_sides": 2
    }
   },
   "ab2026__property_income_rates_plus_2pp": {
    "claims": 49,
-   "computed": 12,
+   "computed": 10,
    "reasons": {
-    "exchequer_component": 37
+    "exchequer_component": 37,
+    "zero_both_sides": 2
    }
   },
   "ab2026__trading_allowance_3000": {
    "claims": 43,
-   "computed": 12,
+   "computed": 10,
    "reasons": {
     "cumulative_real_terms": 1,
-    "exchequer_component": 30
+    "exchequer_component": 30,
+    "zero_both_sides": 2
    }
   }
  },
  "claims": 372,
- "computed": 67,
+ "computed": 35,
+ "pairing": {
+  "046a69003c7b96e95efe": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "13f066fbb6102ee60fc7": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "196cc587ae0d8cf2c3ab": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "20977f4093d0fc528f76": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "2e1e5df64f718bcc208d": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "3555ce58701cfe0cc069": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "39a1a35fec0790104c62": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "3ce05db5b9fa58d6e3d7": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "443d09eaf699205595fd": {
+   "column": "value",
+   "file": "results/uk/ab2026/carers_allowance_earnings_taper/9458905cefca3e88/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "47636138692f8cd65d35": {
+   "column": "value",
+   "file": "results/uk/ab2026/carers_allowance_earnings_taper/9458905cefca3e88/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "57f707ffa04d21e426aa": {
+   "column": "value",
+   "file": "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "61c56d4d7dc5d94a67f0": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "661e4669cd9099fb119f": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "6e242504a2477d73a697": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "6f9c087fc7a08648bcf0": {
+   "column": "value",
+   "file": "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "71d760bf809033107d97": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "7743e5e9131ab54bf0ea": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "89176f4252c3564971a3": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "8bbd8c6a918b3e5f2153": {
+   "column": "value",
+   "file": "results/uk/ab2026/carers_allowance_earnings_taper/9458905cefca3e88/budgetary_impact.csv",
+   "where": {
+    "year": "2030"
+   }
+  },
+  "8f12dc057ec717d1179a": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "9a740290cc310feb93e9": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "a018f1983bf1228788ac": {
+   "column": "value",
+   "file": "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/budgetary_impact.csv",
+   "where": {
+    "year": "2026"
+   }
+  },
+  "a63802e56e9da7cd4433": {
+   "column": "people_directly_affected",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/age_impact.csv",
+   "where": {
+    "age_band": "all",
+    "year": "2027"
+   }
+  },
+  "a86d488c74ea583c749f": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "ab565ceb8fcca4ecd96b": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "b6ec288f53f3ad2a2952": {
+   "column": "value",
+   "file": "results/uk/ab2026/state_pension_income_tax_protection/1bfeed3c27a3c9b9/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "b77bd6b7203eb94115d4": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "b98aecf4165d990ff34c": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2028"
+   }
+  },
+  "c3c444d97011a7a9bf6b": {
+   "column": "value",
+   "file": "results/uk/ab2026/carers_allowance_earnings_taper/9458905cefca3e88/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "d071d141f7e6c100b4fc": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "e1a36ea0f7a62c73caeb": {
+   "column": "value",
+   "file": "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv",
+   "where": {
+    "year": "2031"
+   }
+  },
+  "e3b285e51d324339247c": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2027"
+   }
+  },
+  "e6851a5e3b77d34ce695": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "e7357d749f14e3a4a6dc": {
+   "column": "value",
+   "file": "results/uk/ab2026/trading_allowance_raise/eddde823a65b7be4/budgetary_impact.csv",
+   "where": {
+    "year": "2029"
+   }
+  },
+  "f78d6d17d8a4fefd1606": {
+   "column": "value",
+   "file": "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/budgetary_impact.csv",
+   "where": {
+    "year": "2026"
+   }
+  }
+ },
  "reasons": {
   "benefit_recipients_count": 1,
   "cumulative_real_terms": 4,
   "devolved_share_not_modelled": 26,
   "exchequer_component": 141,
+  "fuel_duty_base": 6,
   "household_count": 3,
+  "measure_ended": 4,
   "motorists_count": 2,
   "no_fiscal_year": 1,
   "share_of_households": 14,
@@ -89,6 +346,7 @@
   "taken_out_of_tax_count": 1,
   "typical_bill": 8,
   "vigintile_ahc_breakdown": 95,
-  "worked_example": 6
+  "worked_example": 6,
+  "zero_both_sides": 22
  }
 }

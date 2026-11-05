@@ -5,7 +5,6 @@
   "results/uk/ab2026/combined--f91fe847275730cb/4faed20984703c7d/receipt.json": "a00d0614eeed1c5cfaa63353d08a604a433bf881329bfd2d7b60c1681c243e67",
   "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/budgetary_impact.csv": "851ca1f4437a621646d53581b966cca50d34fe4a53d634cb3c80385e278afa13",
   "results/uk/ab2026/domestic_electricity_zero_vat/2d9c65726915303e/receipt.json": "e464b000c2af360654462efd05180d0fed272728911dc7292d932b99117246ca",
-  "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/budgetary_impact.csv": "8387246ce038f14fd2d74fd56e4dbf517bf7709d236aa3bc1f3693dddc2f0d2e",
   "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/receipt.json": "2f547d91b455b7e84cf8495cbfd0475ca626d7f1b4a95605de869cf61d52a30f",
   "results/uk/ab2026/household_energy_payment_2026/101a07dc7238a10e/receipt.json": "0fb0414b45435799fb50afa9d79c2c7af8998de2ee406d8da6c1561bd46298d4",
   "results/uk/ab2026/property_income_rates_up/7bf77b35e33233e0/budgetary_impact.csv": "5c2abf677accb05d3616c2038823aa1a8f22897ce6dd19700a8e0444eb6ba4ec",
@@ -44,11 +43,6 @@
    "sha256": "e464b000c2af360654462efd05180d0fed272728911dc7292d932b99117246ca",
    "source_commit": "1eca3182d6983b6375f401a3565ac56c25fa401e",
    "source_path": "public/data/artifacts/domestic_electricity_zero_vat/2d9c65726915303e/receipt.json"
-  },
-  "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/budgetary_impact.csv": {
-   "sha256": "8387246ce038f14fd2d74fd56e4dbf517bf7709d236aa3bc1f3693dddc2f0d2e",
-   "source_commit": "1eca3182d6983b6375f401a3565ac56c25fa401e",
-   "source_path": "public/data/artifacts/fuel_duty_rise_deferral/e077f8d4b70440c8/budgetary_impact.csv"
   },
   "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/receipt.json": {
    "sha256": "2f547d91b455b7e84cf8495cbfd0475ca626d7f1b4a95605de869cf61d52a30f",
@@ -118,7 +112,6 @@
   "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred": {
    "dashboard_key": "fuel_duty_rise_deferral",
    "files": [
-    "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/budgetary_impact.csv",
     "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/receipt.json"
    ],
    "receipt": "results/uk/ab2026/fuel_duty_rise_deferral/e077f8d4b70440c8/receipt.json",

@@ -126,8 +126,7 @@
     "source": "Every Budget-day receipt records dashboard.dataset_years and execution_receipt.supported_years as 2024 to 2032; the receiver's probe measured the same years for this pair (#242)."
    },
    "executor": [
-    "local",
-    "modal"
+    "local"
    ],
    "identity": {
     "dataset": {
@@ -179,7 +178,7 @@
     "requirements_sha256": "54b99224f37ccda0c44ceb52b0cf8a3e100ba1e41941bf0f703d1698a25735ed"
    },
    "identity_sha256": "20f9f81d378be19a58d4e79422c0abbdcbad833d6e3ec16cc5003f4d4832be36",
-   "note": "policyengine.py 6.11.1 with the pair its bundle certifies: policyengine-uk 2.151.0 and the Microcosm UK 2024-25 national cut of 25 October 2026. The UK Autumn Budget dashboard's Budget-day runs, whose artifacts give AB2026's counterparts (#230), record this pair in their receipts; they ran on Modal under Python 3.13.3 and the dashboard's own lock, which this record doesn't bind. The identity equals the replay variant #242 qualified, so its digest matches that variant's. No event replay runs on it here.",
+   "note": "policyengine.py 6.11.1 with the pair its bundle certifies: policyengine-uk 2.151.0 and the Microcosm UK 2024-25 national cut of 25 October 2026. The UK Autumn Budget dashboard's Budget-day runs, whose artifacts give AB2026's counterparts (#230), record this pair in their receipts; the dashboard ran them on Modal, in the image its src/uk_budget_data/modal_generate.py builds at 1eca3182 from its .python-version (3.13; the receipts record 3.13.3) and its uv.lock (sha256 92a05b09a14a53948063cdbbce99b65cf72ee76374b06c943e3ff578d274327e). This record binds neither, so it lists the local executor only. The identity equals the replay variant #242 qualified, so its digest matches that variant's. No event replay runs on it here.",
    "pair_id": "pair-pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
    "requirements": {
     "path": "docs/uk_replay/requirements/pairs/pair-pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504.txt",
