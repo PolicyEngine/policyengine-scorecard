@@ -12,6 +12,7 @@ import io
 import json
 import math
 import shutil
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -19,10 +20,14 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from pipeline.ab2026_harvest_contract import (
+    NUMBER_WORDS,
     OGL,
+    duplicate_problems,
     enums,
     family_problems,
+    proposed_keys,
     read_rows,
+    reads_a_bar,
     registry_keys,
     row_problems,
 )
@@ -164,6 +169,13 @@ def test_a_staged_row_has_no_problems():
             {"measure_key": None, "conditions__proposed_measure_key": ["ab2026__x"]},
             "row is malformed",
         ),
+        # final review F2: £1 or £2 off a £m cell is no floating-point error
+        ({"value": -2625000001}, "at a stated scale"),
+        ({"value": -2625000002}, "at a stated scale"),
+        ({"value": -2624999999.5}, "at a stated scale"),
+        # final review F3: an integer too large for a float
+        ({"value": 10**400}, "value is not finite"),
+        ({"value": -(10**400)}, "value is not finite"),
     ],
 )
 def test_each_rule_broken_on_a_valid_row_is_a_problem(changes, expected):
@@ -218,26 +230,114 @@ def test_a_year_after_in_is_no_denominator():
     assert problems(mutated(value_raw="5 in 2027", quote="5 in 2027", value=5e6)) == []
 
 
+def test_a_year_after_in_is_a_denominator_when_the_normalization_says_so():
+    """Final review F1: "1 in 2000" stored as the share 0.0005 passes only
+    when its normalization gives the ratio, as "1 in 2,000" always does."""
+    stated = "1 in 2000 -> 0.0005"
+    assert problems(_share("1 in 2000", 0.0005)) == []
+    assert problems(_share("1 in 2000", 0.0005, stated)) == []
+    assert problems(_share("1 in 2,000", 0.0005, "share as printed")) == []
+    found = problems(_share("1 in 2000", 0.0005, "£ million x 1,000,000"))
+    assert any("at a stated scale" in p for p in found), found
+    for wrong in (1, 2000):
+        found = problems(_share("1 in 2000", wrong, stated))
+        assert any("at a stated scale" in p for p in found), (wrong, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "share", "normalization"),
+    [
+        ("1 IN 4", 0.25, "N in M -> N/M"),
+        ("1 In 4", 0.25, "N in M -> N/M"),
+        ("1-in-4", 0.25, "N in M -> N/M"),
+        ("-1 in 4", -0.25, "N in M -> N/M"),
+        ("−1 in 4", -0.25, "N in M -> N/M"),
+        ("one in ten", 0.1, "one in ten -> 0.1"),
+        ("fewer than one in ten", 0.1, "one in ten -> 0.1"),
+        ("about three in ten", 0.3, "three in ten -> 0.3"),
+        ("Eight in Ten", 0.8, "eight in ten -> 0.8"),
+        ("one in four", 0.25, "one in four -> 0.25"),
+        ("one in a hundred", 0.01, "one in a hundred -> 0.01"),
+        ("1 in 2000", 0.0005, "1 in 2000 -> 0.0005"),
+    ],
+)
+def test_a_ratio_in_any_form_is_its_signed_share(raw, share, normalization):
+    """Final review F1: "in" in any case or hyphenated, a minus on N, and
+    number words (CenTax's "one in ten", rows 16, 93 and 95). The share
+    passes; the share with the other sign, N, M and N/M as a percentage
+    don't. Before F1, a worded ratio printed no number, so any value passed."""
+    assert problems(_share(raw, share, normalization)) == []
+    flipped = problems(_share(raw, -share, normalization))
+    assert any("opposite sign" in p for p in flipped), flipped
+    for wrong in (1, 3, 4, 8, 10, 100, 2000, 100 * share, 0.5):
+        if not math.isclose(abs(wrong), abs(share), rel_tol=1e-3):
+            found = problems(_share(raw, wrong, normalization))
+            assert any(
+                "at a stated scale" in p or "opposite sign" in p for p in found
+            ), (raw, wrong, found)
+
+
 @settings(max_examples=200, deadline=None)
-@given(n=st.integers(1, 50), extra=st.integers(1, 1000))
-def test_a_ratio_passes_only_at_its_share(n, extra):
-    """Delta review D1-1, for every "N in M": N/M passes, and N, M, N% and M%
-    fail unless they round to N/M."""
+@given(
+    n=st.integers(1, 50),
+    extra=st.integers(1, 1000),
+    form=st.sampled_from(["{n} in {m:,}", "{n} IN {m:,}", "{n}-in-{m}", "{n} In {m}"]),
+    minus=st.sampled_from(["", "-", "−"]),
+)
+def test_a_ratio_passes_only_at_its_share(n, extra, form, minus):
+    """Delta review D1-1 and final review F1, for every "N in M" in any case
+    and with any minus: N/M, signed as N is, passes, and N, M, N% and M% fail
+    unless they round to N/M."""
     m = n + extra
-    raw = f"{n} in {m:,}"
-    assert problems(_share(raw, n / m)) == []
+    raw = minus + form.format(n=n, m=m)
+    share = (-1 if minus else 1) * n / m
+    assert problems(_share(raw, share)) == []
+    assert any("opposite sign" in p for p in problems(_share(raw, -share)))
     for wrong in (n, m, n / 100, m / 100, 100 * n / m):
         if not math.isclose(wrong, n / m, rel_tol=1e-3):
             found = problems(_share(raw, wrong))
-            assert any("at a stated scale" in p for p in found), (raw, wrong)
+            assert any(
+                "at a stated scale" in p or "opposite sign" in p for p in found
+            ), (raw, wrong)
 
 
 @settings(max_examples=200, deadline=None)
-@given(cell=st.integers(-9999, 9999), off=st.integers(1_000, 10**8), up=st.booleans())
+@given(
+    n=st.sampled_from(sorted(NUMBER_WORDS)),
+    m=st.sampled_from(sorted(NUMBER_WORDS)),
+    wrong=st.floats(0.001, 1000),
+)
+def test_a_worded_ratio_passes_only_at_its_share(n, m, wrong):
+    """Final review F1: number words give a ratio as numerals do."""
+    share = NUMBER_WORDS[n] / NUMBER_WORDS[m]
+    raw = f"{n} in {m}"
+    note = f"{raw} -> {share}"
+    assert problems(_share(raw, share, note)) == []
+    if not math.isclose(wrong, share, rel_tol=1e-3):
+        found = problems(_share(raw, wrong, note))
+        assert any("at a stated scale" in p for p in found), (raw, wrong)
+
+
+@settings(max_examples=300, deadline=None)
+@given(tenths=st.integers(-99_999, 99_999), how=st.integers(0, 2))
+def test_a_printed_percentage_is_its_share_to_floating_point_error(tenths, how):
+    """Final review F2: a share computed from a printed percentage in any
+    usual way passes, and any value 1e-12 or more away fails."""
+    raw = f"{tenths / 10}%"
+    share = (tenths / 10 / 100, tenths / 1000, float(raw[:-1]) * 0.01)[how]
+    note = "per cent / 100 -> share"
+    assert problems(_share(raw, share, note)) == []
+    moved = share + (1e-12 if share >= 0 else -1e-12)
+    assert any("at a stated scale" in p for p in problems(_share(raw, moved, note)))
+
+
+@settings(max_examples=200, deadline=None)
+@given(cell=st.integers(-9999, 9999), off=st.integers(1, 10**8), up=st.booleans())
 def test_a_money_cell_passes_only_at_its_exact_value(cell, off, up):
-    """Delta review D1-1: a cell printed in £ million is that many millions,
-    to floating-point error. £1,000 off any cell under £10bn fails: the 0.1%
-    rounding allowance covers a share of a printed fraction, nothing else."""
+    """Delta review D1-1 and final review F2: a cell printed in £ million is
+    that many millions, to floating-point error (four units in the last
+    place). £1 off any cell under £10bn fails: the 0.1% rounding allowance
+    covers a share of a printed fraction, nothing else."""
     raw = str(cell)
     quote = f"Line 1 | 2026-27: {raw}"
     exact = mutated(value_raw=raw, quote=quote, value=cell * 1e6)
@@ -276,20 +376,79 @@ def test_rule_4_holds_whatever_the_title_case():
         ("Figure 1.A, decile 3 bar", True),
         ("p.5, Figure 1.B, top bar", True),
         ("paragraph 1.7, p.8; discussion of Figure 1.A", False),
+        ("paragraph 1.7; discussion of Figure 1.A", False),
         ("Figure 1.A data label, decile 3", False),
         ("Table 2.C, decile 3", False),
+        ("Table 2.C, p.16, decile 1, column 1 adult", False),
+        ("paragraph 2.4, p.14; source Table 2.B, p.13", False),
+        # final review F4: a secondary or negated reference names nothing
+        ("Figure 1.A, decile 3 bar; no data labels", True),
+        ("Figure 1.A, decile 3 bar; see paragraph 1.7", True),
+        ("Figure 1.A decile 3 bar, paragraph 1.7", True),
+        ("Figure 1.A decile 3 bar beside paragraph 1.7", True),
+        ("Figure 1.A (no data labels), decile 3", True),
+        ("no data label; paragraph 1.7, Figure 1.A", True),
+        ("paragraph 1.7; bar reading from Figure 1.A", True),
+        ("Figure 1.B; data label", True),
+        ("data label for decile 3, Figure 1.A", False),
     ],
 )
 def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
     """README rule 4: a locator that places the number on Figure 1.A's or
-    1.B's bars marks a bar reading; one that names the paragraph, table or
-    data label printing it doesn't (delta review D1: red book row 357's 20%
-    sits in paragraph 1.7)."""
+    1.B's bars marks a bar reading; one whose leading reference names the
+    paragraph, table or data label printing it doesn't (delta review D1:
+    red book row 357's 20% sits in paragraph 1.7; final review F4)."""
     row = mutated(
         publication__title="Budget 2026: Impact on households",
         publication__locator=locator,
     )
     assert any("rule 4" in p for p in problems(row)) == bar_reading
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    lead=st.sampled_from(
+        [
+            "paragraph 1.7",
+            "Table 2.C",
+            "Box 1.A",
+            "Figure 1.A data label",
+            "data label",
+            "Figure 1.B",
+            "Figure 1.A, decile 3 bar",
+            "p.8",
+            "no data labels",
+        ]
+    ),
+    rest=st.lists(
+        st.sampled_from(
+            [
+                "p.8",
+                "see paragraph 1.7",
+                "no data labels",
+                "discussion of Figure 1.A",
+                "decile 3",
+                "data label",
+                "Table 2.C",
+            ]
+        ),
+        max_size=3,
+    ),
+)
+def test_rule_4_follows_the_leading_reference(lead, rest):
+    """Final review F4: where a locator names Figure 1.A or 1.B, only its
+    leading reference, positively naming a paragraph, table, box or data
+    label, places the number where HM Treasury prints it; anything later in
+    the locator places nothing."""
+    locator = "; ".join([lead, *rest])
+    printed = lead in (
+        "paragraph 1.7",
+        "Table 2.C",
+        "Box 1.A",
+        "Figure 1.A data label",
+        "data label",
+    )
+    assert reads_a_bar(locator) == ("Figure 1." in locator and not printed)
 
 
 def test_a_component_with_its_measure_or_a_proposed_key_is_valid():
@@ -458,13 +617,132 @@ def test_a_family_missing_a_file_is_a_problem(tmp_path):
             [mutated(publication__primary_sha256=["abc"])],
             "primary_sha256 is not in manifest.jsonl",
         ),
+        # final review F3: a copy of the base row without its value, and one
+        # whose value is an integer too large for a float, pair with it
+        ([{k: v for k, v in BASE.items() if k != "value"}], "missing fields"),
+        ([{**BASE, "value": 10**400}], "value is not finite"),
     ],
 )
 def test_a_family_reports_malformed_rows_without_raising(tmp_path, extra, expected):
-    """Delta review D1-3: family_problems reports a malformed row as
-    row_problems does. The pair check, the proposed-key scope check and the
-    manifest lookup skip a value, key or hash they can't compare."""
+    """Delta review D1-3 and final review F3: family_problems reports a
+    malformed row as row_problems does. The pair check, the proposed-key
+    scope check and the manifest lookup skip a value, key or hash they can't
+    compare."""
     fam = _family(tmp_path)
     _write(fam, read_rows(fam) + extra)
     found = family_problems(fam)
     assert any(expected in p for p in found), found[:5]
+
+
+def test_a_family_reports_unreadable_lines_and_files(tmp_path):
+    """Final review F3: a line that isn't JSON, or a file that can't be read,
+    is a problem, never an exception."""
+    fam = _family(tmp_path)
+    gz = fam / "claims_staged.jsonl.gz"
+    text = gzip.decompress(gz.read_bytes()).decode()
+    gz.write_bytes(gzip.compress((text + "{not json\n").encode(), mtime=0))
+    (fam / "manifest.jsonl").write_text((fam / "manifest.jsonl").read_text() + "[1,\n")
+    found = family_problems(fam)
+    assert [p for p in found if p.startswith("row 768")] == ["row 768: is not JSON"]
+    assert [p for p in found if p.startswith("manifest")] == [
+        "manifest line 2: is not JSON"
+    ]
+    gz.write_bytes(b"not gzip")
+    found = family_problems(fam)
+    assert "claims_staged.jsonl.gz cannot be read (BadGzipFile)" in found, found[:5]
+
+
+def test_a_field_nested_too_deep_to_print_is_a_problem():
+    """Final review F3: a field nested too deep to print, or to encode as a
+    claim identity, is a problem, never an exception."""
+    deep = []
+    for _ in range(100_000):
+        deep = [deep]
+    found = problems(mutated(period=deep))
+    assert [p for p in found if p.startswith("row is malformed (RecursionError")]
+    nested = mutated(conditions__geography_note=deep)
+    assert duplicate_problems([nested, nested]) == []
+
+
+# Any JSON value, with the integers JSON allows but a float can't hold.
+JSON = st.recursive(
+    st.none()
+    | st.booleans()
+    | st.integers()
+    | st.floats()
+    | st.text(max_size=12)
+    | st.sampled_from([10**400, -(10**400), "1 in 4", "-2,625", ""]),
+    lambda inner: (
+        st.lists(inner, max_size=3)
+        | st.dictionaries(st.text(max_size=8), inner, max_size=3)
+    ),
+    max_leaves=8,
+)
+FIELDS = sorted(
+    [*BASE]
+    + [f"conditions__{k}" for k in BASE["conditions"]]
+    + [f"publication__{k}" for k in BASE["publication"]]
+)
+
+
+def _changed(changes):
+    """BASE with each field set to a value, or deleted (...), nested fields
+    first, so a later change to their parent can't strand them."""
+    row = copy.deepcopy(BASE)
+    for path in sorted(changes, key=lambda p: -p.count("__")):
+        *parents, leaf = path.split("__")
+        target = row
+        for p in parents:
+            target = target[p]
+        if changes[path] is ...:
+            target.pop(leaf, None)
+        else:
+            target[leaf] = changes[path]
+    return row
+
+
+@settings(max_examples=400, deadline=None)
+@given(
+    changes=st.dictionaries(
+        st.sampled_from(FIELDS), JSON | st.just(...), min_size=1, max_size=4
+    )
+)
+def test_any_malformed_row_gives_problems_never_an_exception(changes):
+    """Final review F3, for every input: row_problems, the pair check and the
+    proposed-key scan return strings for a row with any field changed to any
+    JSON value or deleted, alone and next to copies of itself and BASE."""
+    row = _changed(changes)
+    found = problems(row)
+    assert isinstance(found, list) and all(isinstance(p, str) for p in found)
+    pairs = duplicate_problems([BASE, row]) + duplicate_problems([row, row])
+    assert all(isinstance(p, str) for p in pairs)
+    assert isinstance(proposed_keys([row, BASE]), set)
+
+
+@settings(max_examples=200, deadline=None)
+@given(row=JSON)
+def test_any_json_value_as_a_row_gives_problems_never_an_exception(row):
+    found = problems(row)
+    assert found and all(isinstance(p, str) for p in found)
+    assert all(isinstance(p, str) for p in duplicate_problems([row, row, BASE]))
+    assert isinstance(proposed_keys([row]), set)
+
+
+@settings(max_examples=60, deadline=None)
+@given(lines=st.lists(JSON.map(json.dumps) | st.text(max_size=30), max_size=4))
+def test_any_family_file_gives_problems_never_an_exception(lines):
+    """Final review F3: family_problems reads any line, JSON or not."""
+    with tempfile.TemporaryDirectory() as d:
+        fam = Path(d) / "uk_fuzz"
+        fam.mkdir()
+        (fam / "NOTES.md").write_text("Fuzzed family.\n")
+        shutil.copy(FAMILY / "manifest.jsonl", fam / "manifest.jsonl")
+        body = "".join(
+            line.replace("\n", " ").replace("\r", " ") + "\n"
+            for line in [json.dumps(BASE), *lines]
+        )
+        (fam / "claims_staged.jsonl.gz").write_bytes(
+            gzip.compress(body.encode(), mtime=0)
+        )
+        found = family_problems(fam)
+    assert all(isinstance(p, str) for p in found)

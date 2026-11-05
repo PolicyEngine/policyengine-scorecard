@@ -13,6 +13,7 @@ import json
 import math
 import re
 import sys
+import zlib
 from collections import defaultdict
 from pathlib import Path
 
@@ -64,6 +65,18 @@ VALUE_KIND = {
 }
 TIME_BASIS = {"fiscal_year", "annual", "point_in_time"}
 CONFIDENCE = {"high", "medium", "low"}
+# What a malformed row raises when the checks reach it: a field of the wrong
+# type, a missing field, an integer with too many digits to print, or nesting
+# too deep to print or encode. The checker reports these as problems (review A
+# H-6(h); delta review D1-3; final review F3). _number turns away an integer
+# too large for a float before any arithmetic, so no check overflows.
+MALFORMED = (
+    TypeError,
+    AttributeError,
+    KeyError,
+    ValueError,
+    RecursionError,
+)
 # README rule 6: HM Treasury and OBR material is under the Open Government
 # Licence and quoted whole; every other producer's quote stays under 15 words.
 OGL = {"hm_treasury", "obr_efo"}
@@ -109,16 +122,72 @@ WORD_SCALE = (
 )
 NUMBER = re.compile(r"(?<![\w.])[-−–]?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
 # "N in M" prints a ratio: the share N/M, never N or M on its own (delta
-# review D1-1). A year after "in" ("£5 in 2027") is no denominator.
+# review D1-1). "In" may take any case or hyphens ("1 IN 4", "1-in-4"), a
+# minus on N carries to the share, and N and M may be number words ("one in
+# ten"). A year after "in" ("£5 in 2027") is no denominator unless the
+# normalization gives the ratio ("1 in 2000 -> 0.0005", "N in M -> N/M")
+# (final review F1).
+NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+    "thirty": 30,
+    "forty": 40,
+    "fifty": 50,
+    "sixty": 60,
+    "seventy": 70,
+    "eighty": 80,
+    "ninety": 90,
+    "a hundred": 100,
+    "one hundred": 100,
+    "a thousand": 1000,
+    "one thousand": 1000,
+}
+_OPERAND = r"\d[\d,]*(?:\.\d+)?|" + "|".join(
+    re.escape(w).replace(r"\ ", " ").replace(" ", r"\s+")
+    for w in sorted(NUMBER_WORDS, key=len, reverse=True)
+)
 RATIO = re.compile(
-    r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s+in\s+(\d[\d,]*(?:\.\d+)?)(?!\w|\.\d)"
+    rf"(?<![\w.])([-−–])?({_OPERAND})(?:\s+|\s*-\s*)in(?:\s+|\s*-\s*)({_OPERAND})"
+    r"(?!\w|\.\d|-\w)",
+    re.I,
 )
 YEAR = re.compile(r"(?:19|20)\d\d")
-# A locator that names Figure 1.A or 1.B places a bar reading there, unless it
-# also names the paragraph, table, box or data label that prints the number
-# (README rule 4; delta review D1).
+GENERIC_RATIO = re.compile(r"\bN\s+in\s+M\b")
+ARROW = re.compile(r"\s*(?:->|→)")
+# README rule 4: a locator's leading reference, up to its first comma or
+# semicolon, says where HM Treasury prints the number: a data label when it
+# names Figure 1.A or 1.B, else a paragraph, table, box or data label. A
+# locator that names Figure 1.A or 1.B anywhere needs such a reference, free
+# of any negation ("no data labels"), and one that calls the number a bar or
+# chart reading reads a bar whatever else it names (delta review D1; final
+# review F4).
 FIGURE_1 = re.compile(r"\bfigure 1\.[ab]\b", re.I)
-PRINTED_AT = re.compile(r"\b(?:paragraph|para|table|box|data label)s?\b", re.I)
+PRINTED_AT = re.compile(r"\b(?:paragraph|para|table|box)s?\b", re.I)
+DATA_LABEL = re.compile(r"\bdata labels?\b", re.I)
+NEGATION = re.compile(r"\b(?:no|not|none|without|unlabell?ed)\b", re.I)
+BAR_READING = re.compile(
+    r"\b(?:bar|chart|graph) readings?\b"
+    r"|\bread (?:off|from) (?:the |a )?(?:bars?|charts?|graphs?|figures?)\b",
+    re.I,
+)
 WORDS = {
     "half": 0.5,
     "a half": 0.5,
@@ -136,26 +205,49 @@ WORDS = {
 }
 
 
-def _ratios(text):
-    """The ratios a string prints, as ((start, end), N/M)."""
+def _operand(text):
+    """A ratio's number, from digits or number words ("1,000", "a hundred")."""
+    word = re.sub(r"\s+", " ", text.lower())
+    if word in NUMBER_WORDS:
+        return float(NUMBER_WORDS[word])
+    return float(text.replace(",", ""))
+
+
+def _gives_ratio(normalization, n, m):
+    """Whether a normalization gives "n in m" as a ratio: the generic "N in M"
+    or the printed ratio, followed by an arrow to the share."""
+    printed = (
+        rf"(?<![\w.]){re.escape(n)}(?:\s+|\s*-\s*)in(?:\s+|\s*-\s*){re.escape(m)}"
+        r"(?!\w|\.\d)"
+    )
+    return bool(
+        GENERIC_RATIO.search(normalization)
+        or re.search(printed + ARROW.pattern, normalization, re.I)
+    )
+
+
+def _ratios(text, normalization=""):
+    """The ratios a string prints, as ((start, end), N/M), the share signed
+    as N is."""
     out = []
     for m in RATIO.finditer(text):
-        if YEAR.fullmatch(m.group(2)):
-            continue
-        b = float(m.group(2).replace(",", ""))
-        if b:
-            out.append((m.span(), float(m.group(1).replace(",", "")) / b))
+        sign, n, d = m.groups()
+        if YEAR.fullmatch(d) and not _gives_ratio(normalization, n, d):
+            continue  # "£5 in 2027"
+        a, b = _operand(n), _operand(d)
+        if b and math.isfinite(a) and math.isfinite(b):
+            out.append((m.span(), (-a if sign else a) / b))
     return out
 
 
-def _numbers(text):
+def _numbers(text, normalization=""):
     """The numbers a string prints, as (exact, fractions). Exact numbers are
     its signed digits. Fractions are its ratios ("1 in 4" -> 0.25), whose two
     numbers count for nothing on their own, and its worded fractions ("a
     third"), which a stored share may round (delta review D1-1)."""
     text = re.sub(r"([-−–])\s*[£$€]", r"\1", text)  # "-£1.7bn"
     fractions = []
-    for (start, end), share in reversed(_ratios(text)):
+    for (start, end), share in reversed(_ratios(text, normalization)):
         fractions.append(share)
         text = f"{text[:start]} {text[end:]}"
     exact = []
@@ -182,7 +274,7 @@ def _factors(normalization):
             f = float(num.replace(",", ""))
         except ValueError:
             continue
-        if f:
+        if f and math.isfinite(f):
             out.append(1 / f if op in "/÷" else f)
     return out
 
@@ -202,17 +294,32 @@ def _scales(raw, normalization):
 
 
 def _number(v):
-    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+    """A finite number. A bool isn't one, and neither is an integer too large
+    for a float (final review F3)."""
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        return False
+    try:
+        return math.isfinite(v)
+    except OverflowError:
+        return False
+
+
+# Floating-point error: a printed number at its scale and the stored value
+# differ by at most four units in the last place (final review F2). Every
+# staged row matches within one.
+ULPS = 4
 
 
 def _same(a, b):
     """A printed number at its scale, equal up to floating-point error."""
-    return math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12)
+    if not (math.isfinite(a) and math.isfinite(b)):
+        return False
+    return abs(a - b) <= ULPS * math.ulp(max(abs(a), abs(b)))
 
 
 def _rounded(a, b):
     """A stored share of a printed fraction, rounded ("a third" -> 0.3333)."""
-    return math.isclose(a, b, rel_tol=1e-3)
+    return math.isfinite(b) and math.isclose(a, b, rel_tol=1e-3)
 
 
 def value_problems(r):
@@ -221,19 +328,19 @@ def value_problems(r):
     Delta review D1-1: a printed number matches exactly, and only the share
     of a printed ratio or worded fraction, the fraction itself, may round."""
     v = r["value"]
-    if not isinstance(v, (int, float)) or isinstance(v, bool):
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
         return ["value is not a number"]
-    if not math.isfinite(v):
+    if not _number(v):
         return ["value is not finite"]
     raw = r["value_raw"] if isinstance(r["value_raw"], str) else ""
-    exact, fractions = _numbers(raw)
+    norm = r.get("normalization") or ""
+    exact, fractions = _numbers(raw, norm)
     if not (exact or fractions):
         return []  # nothing printed to compare (a categorical label)
-    norm = r.get("normalization") or ""
     printed = [n * s for n in exact for s in _scales(raw, norm)]
     if not (
         any(_same(abs(v), abs(p)) for p in printed)
-        or any(_rounded(abs(v), f) for f in fractions)
+        or any(_rounded(abs(v), abs(f)) for f in fractions)
     ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
     if (
@@ -277,6 +384,35 @@ def read_manifest(family_dir):
     return [json.loads(line) for line in text.splitlines() if line.strip()]
 
 
+# A line of a JSON-lines file that isn't JSON keeps its place as UNREADABLE.
+UNREADABLE = object()
+
+
+def _json_lines(path, label):
+    """A JSON-lines file's values, one per non-blank line, and a problem for
+    each line that isn't JSON or for a file that can't be read, never an
+    exception (final review F3). read_rows and read_manifest raise instead,
+    for the generators and tests that read checked families."""
+    try:
+        if path.suffix == ".gz":
+            with gzip.open(path, "rt", encoding="utf-8") as fh:
+                text = fh.read()
+        else:
+            text = path.read_text(encoding="utf-8")
+    except (OSError, EOFError, ValueError, zlib.error) as e:
+        return [], [f"{path.name} cannot be read ({type(e).__name__})"]
+    values, out = [], []
+    for line in text.split("\n"):  # as read_rows splits a file's lines
+        if not line.strip():
+            continue
+        try:
+            values.append(json.loads(line))
+        except (ValueError, RecursionError):
+            out.append(f"{label} {len(values)}: is not JSON")
+            values.append(UNREADABLE)
+    return values, out
+
+
 def proposed_keys(rows):
     """The proposed measure keys a family's rows name (README rule 2). A
     malformed row names none; row_problems reports it (delta review D1-3)."""
@@ -297,7 +433,7 @@ def row_problems(r, keys, earlier, metrics, units):
         return ["row is not an object"]
     try:
         return _row_problems(r, keys, earlier, metrics, units)
-    except (TypeError, AttributeError, KeyError, ValueError) as e:
+    except MALFORMED as e:
         return [f"row is malformed ({type(e).__name__}: {e})"]
 
 
@@ -414,17 +550,31 @@ def _row_problems(r, keys, earlier, metrics, units):
         or r["source_model"] != "policyengine_uk"
     ):
         out.append("same_assumptions rows are PolicyEngine-computed")
-    locator = pub.get("locator") or ""
     if (
         r["source"] == "hm_treasury"
         and "impact on households" in (pub.get("title") or "").lower()
         and (
             r["value_kind"] == "approx_chart_reading"
-            or (FIGURE_1.search(locator) and not PRINTED_AT.search(locator))
+            or reads_a_bar(pub.get("locator") or "")
         )
     ):
         out.append("no HMT Impact on households bar readings (README rule 4)")
     return out
+
+
+def reads_a_bar(locator):
+    """README rule 4: whether a locator places the number on a bar of Figure
+    1.A or 1.B, rather than naming where HM Treasury prints it."""
+    if BAR_READING.search(locator):
+        return True
+    if not FIGURE_1.search(locator):
+        return False
+    lead = re.split(r"[,;]", locator, maxsplit=1)[0]
+    if NEGATION.search(lead):
+        return True
+    if FIGURE_1.search(lead):
+        return not DATA_LABEL.search(lead)
+    return not (PRINTED_AT.search(lead) or DATA_LABEL.search(lead))
 
 
 def family_problems(family_dir):
@@ -437,10 +587,16 @@ def family_problems(family_dir):
     ]
     if missing:
         return [f"{family_dir.name}: missing {missing}"]
-    out = []
-    manifest = read_manifest(family_dir)
+    manifest, out = _json_lines(family_dir / "manifest.jsonl", "manifest line")
+    rows, unread = _json_lines(family_dir / "claims_staged.jsonl.gz", "row")
+    out += unread
+    try:
+        notes = (family_dir / "NOTES.md").read_text(encoding="utf-8")
+    except (OSError, ValueError) as e:
+        notes = ""
+        out.append(f"NOTES.md cannot be read ({type(e).__name__})")
     entries = [m for m in manifest if isinstance(m, dict)]
-    if len(entries) < len(manifest):
+    if len(entries) < len([m for m in manifest if m is not UNREADABLE]):
         out.append("manifest has a line that is not an object")
     shas = [m["sha256"] for m in entries if isinstance(m.get("sha256"), str)]
     for m in entries:
@@ -452,8 +608,9 @@ def family_problems(family_dir):
         out.append("manifest lists a primary twice")
     keys, earlier = registry_keys()
     metrics, units = enums()
-    rows = read_rows(family_dir)
     for i, r in enumerate(rows):
+        if r is UNREADABLE:
+            continue  # reported by _json_lines
         for p in row_problems(r, keys, earlier, metrics, units):
             out.append(f"row {i}: {p}")
         pub = r.get("publication") if isinstance(r, dict) else None
@@ -461,7 +618,6 @@ def family_problems(family_dir):
         if not (isinstance(sha, str) and sha in shas):
             out.append(f"row {i}: primary_sha256 is not in manifest.jsonl")
     out += duplicate_problems(rows)
-    notes = (family_dir / "NOTES.md").read_text()
     for pk in sorted(proposed_keys(rows)):
         if not re.search(rf"(?<![a-z0-9_]){re.escape(pk)}(?![a-z0-9_])", notes):
             out.append(f"NOTES.md does not give the scope of {pk}")
@@ -502,16 +658,16 @@ def duplicate_problems(rows):
             if r["attribution"] == "restated" or r["value_kind"] == "categorical":
                 continue
             groups[claim_identity(r)].append(i)
-        except (TypeError, KeyError, AttributeError):
+        except MALFORMED:
             continue  # reported by row_problems
     out = []
     for idx in groups.values():
         if len(idx) > 2:
             out.append(f"rows {idx} share one claim identity (more than 2)")
         elif len(idx) == 2:
-            a, b = (rows[i]["value"] for i in idx)
+            a, b = (rows[i].get("value") for i in idx)
             if not (_number(a) and _number(b)):
-                continue  # row_problems reports the value (delta review D1-3)
+                continue  # row_problems reports the value (D1-3, final review F3)
             if not math.isclose(a, b, rel_tol=0.005, abs_tol=1e-9):
                 out.append(
                     f"rows {idx} share one claim identity but differ by over 0.5%"
@@ -523,7 +679,8 @@ def main(argv):
     bad = 0
     for d in argv:
         problems = family_problems(d)
-        rows = len(read_rows(d)) if (Path(d) / "claims_staged.jsonl.gz").exists() else 0
+        gz = Path(d) / "claims_staged.jsonl.gz"
+        rows = len(_json_lines(gz, "row")[0]) if gz.exists() else 0
         print(f"{d}: {rows} rows, {len(problems)} problems")
         for p in problems[:200]:
             print("  " + p)
