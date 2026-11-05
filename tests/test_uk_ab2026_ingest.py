@@ -623,3 +623,52 @@ def test_ab2025_ingest_matches_main(tmp_path):
     ours = _ab2025_dump(ROOT, tmp_path / "ours.json")
     for table in ("claims", "results", "diagnoses", "lanes"):
         assert ours[table] == theirs[table], table
+
+
+# --- value preservation ---------------------------------------------------------
+
+
+def _staged_unit(row):
+    unit = row.get("unit_concept") or row.get("proposed_unit")
+    denominator = str((row.get("conditions") or {}).get("denominator", ""))
+    if unit == "percent" and denominator.strip().lower() == "gdp":
+        return "percent_of_gdp"
+    return {"dwellings": "properties"}.get(unit, unit)
+
+
+def test_every_claim_preserves_its_staged_row(staged):
+    """Read each family's claims file directly, find the row behind each
+    claim by its printed place and printed value, and require the claim to
+    keep the producer's value, unit, statistic, time window and provenance.
+    Sign rule: the ingest stores the value as staged, in the producer's own
+    orientation, and signs.py reads the orientation at comparison."""
+    index = {}
+    for fam, rows in RAW.items():
+        for r in rows:
+            loc = (r.get("publication") or {}).get("locator")
+            index.setdefault(
+                (fam, loc, r.get("source_column") or "", str(r["value_raw"])), []
+            ).append(r)
+    scores, _ = staged
+    for s in scores:
+        fam = s.publication["family"]
+        found = index.get(
+            (
+                fam,
+                s.publication.get("locator"),
+                s.source_column,
+                s.conditions["value_verbatim"],
+            )
+        )
+        assert found, (fam, s.publication.get("locator"))
+        assert any(
+            float(r["value"]) == s.value
+            and _staged_unit(r) == s.unit_concept.value
+            and (r.get("value_kind") or s.unit_concept.value) == s.value_kind
+            and int(r["period"]) == s.period
+            and r["time_basis"] == s.time_basis.value
+            and r.get("quote") == s.publication.get("quote")
+            and r.get("source_table") == s.publication.get("table")
+            and r["attribution"] == s.publication.get("attribution")
+            for r in found
+        ), (fam, s.publication.get("locator"), s.value)
