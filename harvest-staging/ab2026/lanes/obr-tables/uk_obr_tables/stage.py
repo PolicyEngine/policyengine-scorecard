@@ -6,6 +6,7 @@ No network, primary files, openpyxl, or repository imports are needed to rerun.
 Cell columns: template, period, fy, value, value_raw, source_column (null=fy),
 publication locator, quote (null=value_raw). Primaries are hashed, not vendored.
 """
+
 import copy
 import gzip
 import io
@@ -13,7 +14,7 @@ import json
 import re
 from pathlib import Path
 
-COMMON = json.loads(r'''
+COMMON = json.loads(r"""
 {
  "attribution": "own",
  "baseline_policy": null,
@@ -24,9 +25,9 @@ COMMON = json.loads(r'''
  "time_basis": "fiscal_year",
  "value_kind": "point"
 }
-''')
+""")
 
-PRIMARIES = json.loads(r'''
+PRIMARIES = json.loads(r"""
 [
  {
   "access": "local copy",
@@ -53,9 +54,9 @@ PRIMARIES = json.loads(r'''
   "url": "https://obr.uk/docs/sodugn2q20l901oy19v1cz5e/efo-october-2026-detailed-forecast-tables-zipfile.zip"
  }
 ]
-''')
+""")
 
-TEMPLATES = json.loads(r'''[
+TEMPLATES = json.loads(r"""[
 {"conditions": {"basis": "forecast", "category": "PSCE in RDEL", "component": "Current DEL: PSCE in RDEL", "fiscal_head": "Current DEL", "geography": "UK", "row_type": "measure_component", "scoring_method": "final", "sheet_section": "Scorecard measures", "sign_convention": "Note (verbatim): This table uses the convention that a negative sign implies a loss to the Exchequer (and is therefore an increase in PSNB).", "table_61_line": "1", "table_row": "Household Energy Payment: £100 council tax rebate for bands A-D from January 2027"}, "measure_key": "ab2026__household_energy_payment_100_bands_a_to_d", "metric": "revenue_change", "normalization": "£ million displayed in cell × 1,000,000; sign as printed", "note": "ZIP member: efo-october-2026-detailed-forecast-tables-policy.xlsx. The numeric cell is quoted whole using its displayed integer £ million format; the workbook's stored extra decimal precision is not staged. Fiscal-head/category component of the named measure; not an additional separate policy.", "primary": 0, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Household Energy Payment: £100 council tax rebate for bands A-D from January 2027", "source_model": "hmt_costing_obr_certified", "source_table": "Table 1.1: Breakdown of policy decisions since March 2026 (£ million)", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "component": "Total", "fiscal_head": "Total", "geography": "UK", "row_type": "measure_total", "scoring_method": "final", "sheet_section": "Scorecard measures", "sign_convention": "Note (verbatim): This table uses the convention that a negative sign implies a loss to the Exchequer (and is therefore an increase in PSNB).", "table_61_line": "1", "table_row": "Household Energy Payment: £100 council tax rebate for bands A-D from January 2027"}, "measure_key": "ab2026__household_energy_payment_100_bands_a_to_d", "metric": "revenue_change", "normalization": "£ million displayed in cell × 1,000,000; sign as printed", "note": "ZIP member: efo-october-2026-detailed-forecast-tables-policy.xlsx. The numeric cell is quoted whole using its displayed integer £ million format; the workbook's stored extra decimal precision is not staged.", "primary": 0, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Household Energy Payment: £100 council tax rebate for bands A-D from January 2027", "source_model": "hmt_costing_obr_certified", "source_table": "Table 1.1: Breakdown of policy decisions since March 2026 (£ million)", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "category": "Other AME (current)", "component": "Current AME: Other AME (current)", "fiscal_head": "Current AME", "geography": "UK", "row_type": "measure_component", "scoring_method": "final", "sheet_section": "Scorecard measures", "sign_convention": "Note (verbatim): This table uses the convention that a negative sign implies a loss to the Exchequer (and is therefore an increase in PSNB).", "table_61_line": "2", "table_row": "Support for Energy Bills: Cut VAT on domestic electricity from 5% to 0% from 1 October 2026 to 1 July 2027"}, "measure_key": "ab2026__electricity_vat_zero_rate_to_july_2027", "metric": "revenue_change", "normalization": "£ million displayed in cell × 1,000,000; sign as printed", "note": "ZIP member: efo-october-2026-detailed-forecast-tables-policy.xlsx. The numeric cell is quoted whole using its displayed integer £ million format; the workbook's stored extra decimal precision is not staged. Fiscal-head/category component of the named measure; not an additional separate policy.", "primary": 0, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Support for Energy Bills: Cut VAT on domestic electricity from 5% to 0% from 1 October 2026 to 1 July 2027", "source_model": "hmt_costing_obr_certified", "source_table": "Table 1.1: Breakdown of policy decisions since March 2026 (£ million)", "unit_concept": "gbp"},
@@ -559,9 +560,9 @@ TEMPLATES = json.loads(r'''[
 {"conditions": {"basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": "ab2026__foreign_sovereign_investments_taxation", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Restricting sovereign wealth and overseas public pension funds’ immunity from direct taxes", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.16", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "geography": "UK", "proposed_measure_key": "ab2026__package_obr_savings_and_property_income_tax_rates", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": null, "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Further 2 percentage point increases in savings and property income tax rates", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
 {"conditions": {"aggregation": "annual average from 2028-29", "basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": "ab2026__savings_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Additional 2 percentage point increase in all rates of saving income tax", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
-{"conditions": {"aggregation": "annual average from 2028-29 (same costing paragraph)", "basis": "forecast", "behaviour": "additional use of tax advantaged assets including ISAs", "component": "behavioural erosion of yield", "geography": "UK", "scoring_method": "behavioural", "sign_convention": "as worded: positive = reduction in yield"}, "measure_key": "ab2026__savings_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Additional 2 percentage point increase in savings income tax rates", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
+{"conditions": {"aggregation": "annual", "basis": "forecast", "behaviour": "additional use of tax advantaged assets including ISAs", "component": "behavioural erosion of yield", "geography": "UK", "scoring_method": "behavioural", "sign_convention": "as worded: positive = reduction in yield"}, "measure_key": "ab2026__savings_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Additional 2 percentage point increase in savings income tax rates", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
 {"conditions": {"aggregation": "annual average from 2028-29", "basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": "ab2026__property_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Further 2 percentage point increase in all rates of property income tax", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
-{"conditions": {"aggregation": "annual average from 2028-29 (same costing paragraph)", "basis": "forecast", "behaviour": "additional tax-motivated incorporation and higher non-compliance", "component": "behavioural erosion of yield", "geography": "UK", "scoring_method": "behavioural", "sign_convention": "as worded: positive = reduction in yield"}, "measure_key": "ab2026__property_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Further 2 percentage point increase in all rates of property income tax", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
+{"conditions": {"aggregation": "annual", "basis": "forecast", "behaviour": "additional tax-motivated incorporation and higher non-compliance", "component": "behavioural erosion of yield", "geography": "UK", "scoring_method": "behavioural", "sign_convention": "as worded: positive = reduction in yield"}, "measure_key": "ab2026__property_income_rates_plus_2pp", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Further 2 percentage point increase in all rates of property income tax", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.17", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": "ab2026__distributions_framework_modernised", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Changes to the taxation framework for distributions from companies to individuals", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.18", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = yield / reduction in borrowing"}, "measure_key": "ab2026__badr_lifetime_limit_500000", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "Reduction to BADR lifetime limit from £1 million to £500,000", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.18", "unit_concept": "gbp"},
 {"conditions": {"basis": "forecast", "geography": "UK", "sign_convention": "as worded: positive = reduction in receipts"}, "measure_key": "ab2026__founders_relief_cgt", "metric": "revenue_change", "normalization": "GBP billion × 1e9 -> GBP", "note": "", "primary": 1, "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters", "reform_hint": "10 per cent CGT rate for qualifying founders of high-growth or innovative companies", "source_model": "hmt_costing_obr_certified", "source_table": "para 3.18", "unit_concept": "gbp"},
@@ -634,9 +635,9 @@ TEMPLATES = json.loads(r'''[
 {"conditions": {"basis": "forecast", "geography": "UK", "sign_convention": "positive = public sector net borrowing", "table_row": "Net borrowing"}, "measure_key": null, "metric": null, "normalization": "GBP bn x 1e9 -> GBP", "note": "Printed display precision (number format #,##0.0), rather than hidden decimal precision. Public-sector scope from the table; not the general-government net borrowing in Table 6.3. Extracted unchanged from the detailed-tables ZIP listed in PROVENANCE.md.", "primary": 2, "proposed_metric": "public_sector_net_borrowing", "reform_hint": null, "source_model": "obr_efo_forecast", "source_table": "6.5 Components of net borrowing", "unit_concept": "gbp", "value_kind": "central"},
 {"attribution": "restated", "benchmark_class": "administrative_fact", "conditions": {"basis": "outturn", "debt_definition": "public sector net debt ex Bank of England", "gdp_denominator": "non-seasonally adjusted GDP centred end-March", "geography": "UK", "period_detail": "position at end-March", "sign_convention": "positive = debt liabilities net of liquid financial assets", "table_row": "Public sector net debt ex BoE (a-c=d)"}, "measure_key": null, "metric": null, "normalization": "as printed (per cent of nominal GDP)", "note": "Printed display precision (number format 0.0), rather than hidden decimal precision. Table footnote 1: Non-seasonally adjusted GDP centred end-March. Extracted unchanged from the detailed-tables ZIP listed in PROVENANCE.md. Outturn figures are ONS administrative statistics reproduced by OBR (source: ONS, OBR).", "primary": 2, "proposed_metric": "psnd_share_of_gdp", "proposed_unit": "percent_of_gdp", "reform_hint": null, "source_model": "administrative_data", "source_table": "6.13 Composition of public sector net debt", "unit_concept": null},
 {"conditions": {"basis": "forecast", "debt_definition": "public sector net debt ex Bank of England", "gdp_denominator": "non-seasonally adjusted GDP centred end-March", "geography": "UK", "period_detail": "position at end-March", "sign_convention": "positive = debt liabilities net of liquid financial assets", "table_row": "Public sector net debt ex BoE (a-c=d)"}, "measure_key": null, "metric": null, "normalization": "as printed (per cent of nominal GDP)", "note": "Printed display precision (number format 0.0), rather than hidden decimal precision. Table footnote 1: Non-seasonally adjusted GDP centred end-March. Extracted unchanged from the detailed-tables ZIP listed in PROVENANCE.md.", "primary": 2, "proposed_metric": "psnd_share_of_gdp", "proposed_unit": "percent_of_gdp", "reform_hint": null, "source_model": "obr_efo_forecast", "source_table": "6.13 Composition of public sector net debt", "unit_concept": null, "value_kind": "central"}
-]''')
+]""")
 
-CELLS = json.loads(r'''[
+CELLS = json.loads(r"""[
 [0, 2027, "2026-27", -2627000000, "-2627", null, "sheet '1.1'; Table 1.1; measure 1; Current DEL / PSCE in RDEL; 2026-27; cell I10", null],
 [0, 2028, "2027-28", 0, "0", null, "sheet '1.1'; Table 1.1; measure 1; Current DEL / PSCE in RDEL; 2027-28; cell J10", null],
 [0, 2029, "2028-29", 0, "0", null, "sheet '1.1'; Table 1.1; measure 1; Current DEL / PSCE in RDEL; 2028-29; cell K10", null],
@@ -3528,20 +3529,25 @@ CELLS = json.loads(r'''[
 [577, 2030, "2029-30", 94.3, "94.3", null, "Sheet '6.13', Public sector net debt ex BoE (a-c=d), 2029-30, cell G23", null],
 [577, 2031, "2030-31", 94.2, "94.2", null, "Sheet '6.13', Public sector net debt ex BoE (a-c=d), 2030-31, cell H23", null],
 [577, 2032, "2031-32", 94.0, "94.0", null, "Sheet '6.13', Public sector net debt ex BoE (a-c=d), 2031-32, cell I23", null]
-]''')
+]""")
+
 
 def rows():
     """Yield claims in document, page/table, then cell/position order."""
     for template, period, fy, value, raw, column, locator, quote in CELLS:
         row = copy.deepcopy(COMMON)
         row.update(copy.deepcopy(TEMPLATES[template]))
-        row['publication'] = dict(PRIMARIES[row.pop('primary')], locator=locator)
-        row['conditions']['fiscal_event'] = 'autumn_budget_2026'
+        row["publication"] = dict(PRIMARIES[row.pop("primary")], locator=locator)
+        row["conditions"]["fiscal_event"] = "autumn_budget_2026"
         if fy is not None:
-            row['conditions']['fy'] = fy
-        row.update(period=period, value=value, value_raw=raw,
-                   source_column=fy if column is None else column,
-                   quote=raw if quote is None else quote)
+            row["conditions"]["fy"] = fy
+        row.update(
+            period=period,
+            value=value,
+            value_raw=raw,
+            source_column=fy if column is None else column,
+            quote=raw if quote is None else quote,
+        )
         yield row
 
 
@@ -3557,6 +3563,7 @@ def rows():
 
 T61 = "ab2026__hmrc_tax_gap_package"
 
+
 def review_fixes(R):
     def at(i, raw):
         assert R[i]["value_raw"] == raw, (i, R[i]["value_raw"], raw)
@@ -3568,8 +3575,11 @@ def review_fixes(R):
         r["conditions"].pop("proposed_measure_key", None)
         if component:
             r["conditions"]["component"] = component
-            if row_type and r.get("metric") != "costing_uncertainty_rating" \
-                    and r.get("proposed_metric") != "costing_uncertainty_rating":
+            if (
+                row_type
+                and r.get("metric") != "costing_uncertainty_rating"
+                and r.get("proposed_metric") != "costing_uncertainty_rating"
+            ):
                 r["conditions"]["row_type"] = row_type
         return r
 
@@ -3580,26 +3590,57 @@ def review_fixes(R):
     drop |= {2689, 2690, 2691, 2695, 2696, 2697}
     drop |= set(range(2699, 2746))
     drop |= {2776, 2778, 2782, 2783, 2771}  # 2771: the review's "probable"; applied
-    at(2689, "2,000"); at(2695, "5,500"); at(2697, "23 per cent")
-    at(2699, "2,715"); at(2745, R[2745]["value_raw"]); at(2776, "£40 billion")
-    at(2778, "£7 billion"); at(2782, "£0.7 billion"); at(2783, "£1 billion"); at(2771, "£1.9 billion")
+    at(2689, "2,000")
+    at(2695, "5,500")
+    at(2697, "23 per cent")
+    at(2699, "2,715")
+    at(2745, R[2745]["value_raw"])
+    at(2776, "£40 billion")
+    at(2778, "£7 billion")
+    at(2782, "£0.7 billion")
+    at(2783, "£1 billion")
+    at(2771, "£1.9 billion")
     # ...the staffing figures move into their yield rows' conditions.
     at(2688, "£0.5 billion")["conditions"]["staffing"] = (
         "2,000 verification assurance officers, 200 staff on fraud and error from those living "
-        "abroad and 150 on capital-related fraud and error in pension credit (para 3.12)")
+        "abroad and 150 on capital-related fraud and error in pension credit (para 3.12)"
+    )
     at(2694, "£0.4 billion")["conditions"]["staffing"] = (
         "accelerates the previously announced 5,500 HMRC compliance officers and funds an additional "
-        "670 staff by the end of 2029-30, a 23 per cent increase on March 2024 (para 3.13)")
+        "670 staff by the end of 2029-30, a 23 per cent increase on March 2024 (para 3.13)"
+    )
 
     # Finding 5 (the coordinator's call): text that repeats a staged table
     # cell or earlier text, and Table 3.1's "Spending measures" and "Tax
     # measures" rows that repeat its "Direct effect" rows. The table cells
     # are the staged rows, as in the AB2025 OBR family.
-    drop |= {2520, 2521, 2522, 2523, 2524, 2527, 2528, 2534, 2536, 2537, 2678, 2679, 2680,
-             2692, 2746, 2751, 2759, 2760, 2761}
+    drop |= {
+        2520,
+        2521,
+        2522,
+        2523,
+        2524,
+        2527,
+        2528,
+        2534,
+        2536,
+        2537,
+        2678,
+        2679,
+        2680,
+        2692,
+        2746,
+        2751,
+        2759,
+        2760,
+        2761,
+    }
     drop |= {2681, 2682, 2683, 2687, 2693, 2747}
     drop |= set(range(2574, 2580)) | set(range(2604, 2610))
-    at(2520, "£7.6 billion"); at(2747, "£1 billion"); at(2574, "5.8"); at(2609, "-7.5")
+    at(2520, "£7.6 billion")
+    at(2747, "£1 billion")
+    at(2574, "5.8")
+    at(2609, "-7.5")
 
     # Finding 2 (rule 9): parts of one Table 6.1 measure take its key.
     for i in range(2797, 2803):
@@ -3610,36 +3651,72 @@ def review_fixes(R):
         key(i, R[i]["value_raw"], T61, "Timely payment for self assessment")
     key(2694, "£0.4 billion", T61, "Changes to HMRC's compliance workforce")
     for i in range(2809, 2815):
-        key(i, R[i]["value_raw"], "ab2026__dwp_fraud_and_error_prevention",
-            "Verification assurance officers (Table 3.3, Spend head)")
-    key(2833, "0.13 per cent", "ab2026__uk_india_ceta_and_double_contributions_convention",
-        "India-UK FTA (CETA) GDP effect")
+        key(
+            i,
+            R[i]["value_raw"],
+            "ab2026__dwp_fraud_and_error_prevention",
+            "Verification assurance officers (Table 3.3, Spend head)",
+        )
+    key(
+        2833,
+        "0.13 per cent",
+        "ab2026__uk_india_ceta_and_double_contributions_convention",
+        "India-UK FTA (CETA) GDP effect",
+    )
     for i in range(2815, 2821):
-        key(i, R[i]["value_raw"], "ab2026__emi2_option_limit_120000",
-            "Tax head (Table 3.3; OBR title: Company Share Option Plan scheme reform)")
+        key(
+            i,
+            R[i]["value_raw"],
+            "ab2026__emi2_option_limit_120000",
+            "Tax head (Table 3.3; OBR title: Company Share Option Plan scheme reform)",
+        )
     r = key(2777, "£0.2 billion", "ab2026__uk_export_finance_defence_capacity")
-    r["period"], r["conditions"]["fy"], r["source_column"] = 2031, "2030-31", "2030-31"  # line 44 is 0 in 2031-32
-    for i, raw in ((2779, "£0.1 billion"), (2780, "£0.1 billion"), (2781, "£0.2 billion")):
+    r["period"], r["conditions"]["fy"], r["source_column"] = (
+        2031,
+        "2030-31",
+        "2030-31",
+    )  # line 44 is 0 in 2031-32
+    for i, raw in (
+        (2779, "£0.1 billion"),
+        (2780, "£0.1 billion"),
+        (2781, "£0.2 billion"),
+    ):
         key(i, raw, "ab2026__growth_guarantee_scheme_expansion")
-    key(2540, "£1 billion", "ab2026__writing_down_allowance_12pc_and_fya_50pc")  # date note kept
+    key(
+        2540, "£1 billion", "ab2026__writing_down_allowance_12pc_and_fya_50pc"
+    )  # date note kept
 
     # Finding 3: keyed parts that carried no row type.
-    for i in list(range(2785, 2790)) + list(range(2791, 2796)) + list(range(2803, 2808)):
+    for i in (
+        list(range(2785, 2790)) + list(range(2791, 2796)) + list(range(2803, 2808))
+    ):
         c = R[i]["conditions"]
-        c["row_type"], c["component"] = "measure_component", "Tax head (receipts), Table 3.3"
-    for i, raw in ((2749, "£190 million"), (2753, "£0.2 billion"), (2755, "£0.1 billion")):
+        c["row_type"], c["component"] = (
+            "measure_component",
+            "Tax head (receipts), Table 3.3",
+        )
+    for i, raw in (
+        (2749, "£190 million"),
+        (2753, "£0.2 billion"),
+        (2755, "£0.1 billion"),
+    ):
         at(i, raw)["conditions"]["row_type"] = "measure_component"
     at(2749, "£190 million")["value_kind"] = "cumulative"  # as its sibling row 2748
     c = at(2688, "£0.5 billion")["conditions"]
-    c["row_type"], c["component"] = "measure_component", "welfare spending (AME), para 3.12"
+    c["row_type"], c["component"] = (
+        "measure_component",
+        "welfare spending (AME), para 3.12",
+    )
 
     # Finding 4: sign conventions an ingest reads.
     for i in range(2514, 2520):
         R[i]["conditions"]["sign_convention"] = (
-            "positive = increase in PSNB (matches EFO Table 3.1; contradicts the workbook legend)")
+            "positive = increase in PSNB (matches EFO Table 3.1; contradicts the workbook legend)"
+        )
     for i in range(2490, 2496):
         R[i]["conditions"]["sign_convention"] = (
-            "mixed: row 551 (negative = loss to Exchequer) plus row 555 (positive = increase in PSNB)")
+            "mixed: row 551 (negative = loss to Exchequer) plus row 555 (positive = increase in PSNB)"
+        )
 
     # Finding 6 (the coordinator's calls).
     r = at(2774, "£0.6 billion")
@@ -3648,27 +3725,42 @@ def review_fixes(R):
     r = at(2828, "£0.4 billion")
     r["measure_key"] = "ab2025__salary_sacrifice_pension_nics_cap_2000"
     r["conditions"]["recosting_of"] = "autumn_budget_2025"
-    r["note"] = ("Recosting of the Budget 2025 salary-sacrifice measure, keyed to its AB2025 key with "
-                 "conditions.recosting_of (README rule 2's recosting exception).")
+    r["note"] = (
+        "Recosting of the Budget 2025 salary-sacrifice measure, keyed to its AB2025 key with "
+        "conditions.recosting_of (README rule 2's recosting exception)."
+    )
 
     # Finding 10: Box 3.1's estimate, from the review's quotation (verify-obr.md
     # finding 10); the PDF could not be re-opened in this session.
     box = copy.deepcopy(R[2698])
     box.update(
-        value=0.3333, value_raw="a third", value_kind="point", metric=None,
-        proposed_metric="tax_gap_share_of_compliance_yield", unit_concept="share",
-        normalization="'a third' -> 0.3333 share", period=2026, time_basis="point_in_time",
-        reform_hint="Compliance measures announced in this Budget", source_column=None,
-        source_table="Box 3.1", parse_confidence="medium",
+        value=0.3333,
+        value_raw="a third",
+        value_kind="point",
+        metric=None,
+        proposed_metric="tax_gap_share_of_compliance_yield",
+        unit_concept="share",
+        normalization="'a third' -> 0.3333 share",
+        period=2026,
+        time_basis="point_in_time",
+        reform_hint="Compliance measures announced in this Budget",
+        source_column=None,
+        source_table="Box 3.1",
+        parse_confidence="medium",
         quote="Of the compliance measures announced in this Budget, a third of the yield is expected to reduce the tax gap",
-        note=("Added on 3 November from the OBR review's quotation of Box 3.1 (printed p.66); the PDF "
-              "was not re-opened, so the sentence may continue beyond the quoted words. The OBR gives "
-              "no year, so the period is the publication-year anchor."),
+        note=(
+            "Added on 3 November from the OBR review's quotation of Box 3.1 (printed p.66); the PDF "
+            "was not re-opened, so the sentence may continue beyond the quoted words. The OBR gives "
+            "no year, so the period is the publication-year anchor."
+        ),
     )
     box["publication"] = dict(box["publication"], locator="Box 3.1 (p.66)")
     box["conditions"] = {
-        "basis": "forecast", "fiscal_event": "autumn_budget_2026", "geography": "UK",
-        "horizon": "not stated", "proposed_measure_key": "ab2026__package_compliance_measures_announced",
+        "basis": "forecast",
+        "fiscal_event": "autumn_budget_2026",
+        "geography": "UK",
+        "horizon": "not stated",
+        "proposed_measure_key": "ab2026__package_compliance_measures_announced",
         "statistic": "share of the compliance measures' yield expected to reduce the tax gap",
     }
 
@@ -3731,7 +3823,6 @@ KEY_MAP = {
 }
 
 
-
 # ===========================================================================
 # README rule 10 (PR #231): IFS review of d5e323dc, finding 3, and the delta
 # review of 8b7b23db, finding 1
@@ -3760,8 +3851,14 @@ RULE10_BORROWING = {
     ("Table 3.1", "Direct effect of tax measures"): 6,
     ("Table 3.1", "Indirect effects of Government decisions"): 6,
     ("Table 3.1", "Direct effects of Government decisions"): 6,
-    ("Table 3.1", "Memo: direct effect of decisions on HM Treasury's October 2026 Budget policy decisions table"): 6,
-    ("Table 3.1", "Memo: direct effect of decisions not on HM Treasury's October 2026 Budget policy decisions table"): 6,
+    (
+        "Table 3.1",
+        "Memo: direct effect of decisions on HM Treasury's October 2026 Budget policy decisions table",
+    ): 6,
+    (
+        "Table 3.1",
+        "Memo: direct effect of decisions not on HM Treasury's October 2026 Budget policy decisions table",
+    ): 6,
     # the policy workbook's Table 1.1, the same effects in £ million; its
     # total of receipts measures keeps revenue_change
     (WB11, "Total effects of expenditure measures (£ millions)"): 6,
@@ -3774,9 +3871,15 @@ RULE10_BORROWING = {
     # indirect effects
     ("para 3.3", "Policies that affect public spending"): 1,
     ("para 3.4", "Changes to tax policy"): 1,
-    ("para 3.5", "Reduction in estimated departmental underspends due to spending policy"): 1,
+    (
+        "para 3.5",
+        "Reduction in estimated departmental underspends due to spending policy",
+    ): 1,
 }
-RULE10_CURRENT_BUDGET = ("Table 3.1", "Memo: total effect of Government decisions on current budget deficit")
+RULE10_CURRENT_BUDGET = (
+    "Table 3.1",
+    "Memo: total effect of Government decisions on current budget deficit",
+)
 
 
 def rule10(R):
@@ -3794,9 +3897,13 @@ def rule10(R):
             r["metric"] = None
             r["proposed_metric"] = "fiscal_balance_change"
             r["proposed_unit"] = None
-            r["conditions"]["sign_convention"] += " (On this memo line: an increase in the current budget deficit.)"
+            r["conditions"]["sign_convention"] += (
+                " (On this memo line: an increase in the current budget deficit.)"
+            )
             current += 1
-    assert seen == RULE10_BORROWING, {k: v for k, v in seen.items() if v != RULE10_BORROWING[k]}
+    assert seen == RULE10_BORROWING, {
+        k: v for k, v in seen.items() if v != RULE10_BORROWING[k]
+    }
     assert current == 6, current
     return R
 
@@ -3818,22 +3925,20 @@ NWF = "ab2026__package_national_wealth_fund_and_british_business_bank"
 
 KEY_MAP_NOV4 = {
     # finding 3: receipts-only groupings, as F9's property and savings key
-    "ab2026__package_tax_administration_compliance_and_debt_collection":
-        "ab2026__package_tax_administration_compliance_and_debt_collection_receipts",
-    "ab2026__package_temporary_business_rates_reliefs":
-        "ab2026__package_temporary_business_rates_reliefs_receipts",
+    "ab2026__package_tax_administration_compliance_and_debt_collection": "ab2026__package_tax_administration_compliance_and_debt_collection_receipts",
+    "ab2026__package_temporary_business_rates_reliefs": "ab2026__package_temporary_business_rates_reliefs_receipts",
     # finding 15: the OBR's own residual groups keep "obr" (rule 2)
     "ab2026__package_other_tax_measures": "ab2026__package_obr_other_tax_measures",
     "ab2026__package_other_ame_spending_decisions": "ab2026__package_obr_other_ame_spending_decisions",
     "ab2026__package_other_hmrc_compliance_and_debt": "ab2026__package_obr_other_hmrc_compliance_and_debt",
-    "ab2026__package_other_departmental_spending_changes":
-        "ab2026__package_obr_other_departmental_spending_changes",
+    "ab2026__package_other_departmental_spending_changes": "ab2026__package_obr_other_departmental_spending_changes",
 }
 
 # finding 16: run-together words in the lane's templates and notes
 _RUN_TOGETHER = re.compile(
     r"\b(Table|in|footnote|line|lines|simulation|April|January|Report|Foundation|"
-    r"outturn|paragraph|Trade|Figures)(\d)")
+    r"outturn|paragraph|Trade|Figures)(\d)"
+)
 
 
 def _space(x):
@@ -3861,7 +3966,10 @@ def review_fixes_nov4(R):
         c["row_type"] = "measure_total"
         c.pop("component", None)
         if pk:
-            assert c.get("proposed_measure_key") == TOTAL, (i, c.get("proposed_measure_key"))
+            assert c.get("proposed_measure_key") == TOTAL, (
+                i,
+                c.get("proposed_measure_key"),
+            )
             c["proposed_measure_key"] = pk
         return R[i]
 
@@ -3907,40 +4015,61 @@ def review_fixes_nov4(R):
         part(i, "Direct effects of Government decisions")
     for i in range(2642, 2648):
         R[i]["source_model"] = "obr_efo_forecast"  # the memo includes indirect effects
-    part(at(2520, "£12 billion") and 2520, "Direct effect of policy measures (para 3.2)")
-    part(at(2533, "£1 billion") and 2533,
-         "Indirect effects of Government decisions: reduction in estimated departmental "
-         "underspends (para 3.5)")
+    part(
+        at(2520, "£12 billion") and 2520, "Direct effect of policy measures (para 3.2)"
+    )
+    part(
+        at(2533, "£1 billion") and 2533,
+        "Indirect effects of Government decisions: reduction in estimated departmental "
+        "underspends (para 3.5)",
+    )
     # Finding 6: paragraph 3.4's tax line is Table 3.1's, on the tax key.
     r = whole(at(2527, "£6 billion") and 2527, TAX)
 
     # --- K-2 (section 3.3): the DIP's RDEL part, with finding 13's interval.
-    r = part(at(2522, "£1.8 billion") and 2522,
-             "Funding for the DIP: increase in departmental resource spending (RDEL)")
-    r["conditions"]["sign_convention"] = "positive = cost to the Exchequer (higher RDEL spending)"
+    r = part(
+        at(2522, "£1.8 billion") and 2522,
+        "Funding for the DIP: increase in departmental resource spending (RDEL)",
+    )
+    r["conditions"]["sign_convention"] = (
+        "positive = cost to the Exchequer (higher RDEL spending)"
+    )
     r["conditions"]["aggregation"] = "annual average (interval not stated)"
     # Finding 13: the printed average runs from 2027-28.
-    at(2529, "£2.2 billion")["conditions"]["aggregation"] = "annual average 2027-28 to 2031-32"
+    at(2529, "£2.2 billion")["conditions"]["aggregation"] = (
+        "annual average 2027-28 to 2031-32"
+    )
 
     # --- Finding 3 and K-5: receipts-only prose and groups.
-    part(at(2668, "£0.4 billion") and 2668,
-         "Tax head (receipts), annual average 2028-29 to 2031-32 (para 3.17)")
+    part(
+        at(2668, "£0.4 billion") and 2668,
+        "Tax head (receipts), annual average 2028-29 to 2031-32 (para 3.17)",
+    )
     for i in (2678, 2679):
         part(at(i, R[i]["value_raw"]) and i, "Receipts: VAT")
     # nit: line 46's only head is VAT receipts, so Table 3.3's rows are its
     # whole costing.
     for i in range(2709, 2714):
-        assert R[i]["measure_key"] == "ab2026__online_marketplace_liability_uk_businesses", i
+        assert (
+            R[i]["measure_key"] == "ab2026__online_marketplace_liability_uk_businesses"
+        ), i
         R[i]["conditions"].pop("row_type")
         R[i]["conditions"].pop("component")
 
     # --- Findings 1 and 7: the carbon price package.
     r = at(2673, "£0.4 billion")
-    r["reform_hint"] = ("Abolition of carbon price support from April 2028 and funding LCCC "
-                        "to reduce CfD levies")
-    r["note"] = ("This 28 October version dated CPS abolition April 2027; the OBR's 30 October "
-                 "correction changes it to April 2028, matching HMT Table 6.1 line 71.")
-    part(2673, "receipts of lines 70 and 71 (excluding the backdated AME support, footnote 9)")
+    r["reform_hint"] = (
+        "Abolition of carbon price support from April 2028 and funding LCCC "
+        "to reduce CfD levies"
+    )
+    r["note"] = (
+        "This 28 October version dated CPS abolition April 2027; the OBR's 30 October "
+        "correction changes it to April 2028, matching HMT Table 6.1 line 71."
+    )
+    part(
+        2673,
+        "receipts of lines 70 and 71 (excluding the backdated AME support, footnote 9)",
+    )
     r = at(2676, "£0.8 billion")
     r["measure_key"] = "ab2026__british_industrial_competitiveness_scheme"
     r["conditions"].pop("proposed_measure_key")
@@ -3948,48 +4077,70 @@ def review_fixes_nov4(R):
 
     # --- Finding 8 and H-1: more parts.
     part(at(2684, "£0.6 billion") and 2684, "additional income (para 3.20)")
-    part(at(2682, "£3.9 billion") and 2682,
-         "gross debt from the new financial assets, before the borrowing reduction")
-    part(at(2656, "£17 billion") and 2656, "Current AME: net public service pension payments")
-    part(at(2657, "£16 billion") and 2657, "Current DEL: departmental resource spending reduction")
-    r = part(at(2681, "£0.5 billion") and 2681,
-             "net AME flowing to local authorities (para 3.19, footnote 10)")
+    part(
+        at(2682, "£3.9 billion") and 2682,
+        "gross debt from the new financial assets, before the borrowing reduction",
+    )
+    part(
+        at(2656, "£17 billion") and 2656,
+        "Current AME: net public service pension payments",
+    )
+    part(
+        at(2657, "£16 billion") and 2657,
+        "Current DEL: departmental resource spending reduction",
+    )
+    r = part(
+        at(2681, "£0.5 billion") and 2681,
+        "net AME flowing to local authorities (para 3.19, footnote 10)",
+    )
     r["metric"] = "revenue_change"
     r["conditions"]["sign_convention"] = (
-        "as worded: positive = increase in net business rates revenues flowing to local government")
-    for i, lab in ((2708, "Direct recovery of debt"), (2720, "Verification assurance officers"),
-                   (2726, "Company Share Option Plan scheme reform"), (2732, "E-invoicing mandation")):
+        "as worded: positive = increase in net business rates revenues flowing to local government"
+    )
+    for i, lab in (
+        (2708, "Direct recovery of debt"),
+        (2720, "Verification assurance officers"),
+        (2726, "Company Share Option Plan scheme reform"),
+        (2732, "E-invoicing mandation"),
+    ):
         assert R[i]["reform_hint"] == lab and R[i]["value_kind"] == "categorical", i
         part(i, lab)
 
     # --- Finding 10 (the coordinator's reading of the 28 October PDF).
     r = at(2662, "a third")
-    r["quote"] = ("Of the compliance measures announced in this Budget, a third of the yield is "
-                  "expected to reduce the tax gap, with the residual reflecting either debt "
-                  "acceleration or payments.")
+    r["quote"] = (
+        "Of the compliance measures announced in this Budget, a third of the yield is "
+        "expected to reduce the tax gap, with the residual reflecting either debt "
+        "acceleration or payments."
+    )
     r["note"] = "The OBR gives no year, so the period is the publication-year anchor."
 
     # --- Finding 16: stale notes.
     for i in (2687, 2688, 2689):
         at(i, R[i]["value_raw"])["note"] = (
             "Keyed to line 75: the OBR's £7bn (guarantee capacity) and HM Treasury's £6.5bn "
-            "(lending supported) are different quantities of one measure (review F2).")
+            "(lending supported) are different quantities of one measure (review F2)."
+        )
 
     # --- H-6(b) (the coordinator's call): a revision is not a level.
     r = at(2734, "£0.4 billion")
     assert r["measure_key"] == "ab2025__salary_sacrifice_pension_nics_cap_2000"
     r["measure_key"] = None
     del r["conditions"]["recosting_of"]
-    r["note"] = ("The OBR's +£0.4bn revision (para 3.28) to its Autumn Budget 2025 costing of "
-                 "`ab2025__salary_sacrifice_pension_nics_cap_2000`. It is a revision, not a "
-                 "level, so it doesn't share a key with Table 6.4's recosted level "
-                 "(uk_hmt_tables row 742).")
+    r["note"] = (
+        "The OBR's +£0.4bn revision (para 3.28) to its Autumn Budget 2025 costing of "
+        "`ab2025__salary_sacrifice_pension_nics_cap_2000`. It is a revision, not a "
+        "level, so it doesn't share a key with Table 6.4's recosted level "
+        "(uk_hmt_tables row 742)."
+    )
 
     # --- K-7(d): conventions signs.py reads for benefit_cost_change.
     at(2740, "1.4 per cent")["conditions"]["sign_convention"] = (
-        "positive = saving (state pension payments lower than under the current triple lock)")
+        "positive = saving (state pension payments lower than under the current triple lock)"
+    )
     at(2741, "4.4 per cent")["conditions"]["sign_convention"] = (
-        "positive = increase in state pension payments relative to earnings uprating")
+        "positive = increase in state pension payments relative to earnings uprating"
+    )
 
     # --- Findings 3 and 15: key names.
     for r in R:
@@ -4006,27 +4157,45 @@ def review_fixes_nov4(R):
     # --- Finding 11: Box 3.1's two counts (the coordinator's call), read in
     # the 28 October PDF (physical p.69, printed p.66); the 30 October
     # correction prints the sentence unchanged.
-    box_sentence = ("Of the 15 measures expected to reduce the tax gap announced this Budget, "
-                    "four target the small business tax gap.")
+    box_sentence = (
+        "Of the 15 measures expected to reduce the tax gap announced this Budget, "
+        "four target the small business tax gap."
+    )
     counts = []
     for raw, value, measure_type in (
-            ("15", 15, "measures announced this Budget expected to reduce the tax gap"),
-            ("four", 4, "of those, measures that target the small business tax gap")):
+        ("15", 15, "measures announced this Budget expected to reduce the tax gap"),
+        ("four", 4, "of those, measures that target the small business tax gap"),
+    ):
         n = copy.deepcopy(R[2662])
         n.update(
-            value=value, value_raw=raw, value_kind="point", metric=None,
-            proposed_metric="measure_count", unit_concept=None, proposed_unit="measures",
-            normalization=f"printed '{raw}' -> {value} measures", period=2026,
-            time_basis="point_in_time", reform_hint=None, source_column=None,
-            source_table="Box 3.1", parse_confidence="high", quote=box_sentence,
-            source_model="arithmetic", benchmark_class="different_model",
-            note=("The OBR's count of this Budget's measures: a context count, not an effect of "
-                  "any measure, staged as the uk_thinktank_misc and uk_ifs_ab2026 families "
-                  "stage measure counts. The 28 October PDF prints it at physical p.69 "
-                  "(printed p.66); the 30 October correction prints it unchanged."))
+            value=value,
+            value_raw=raw,
+            value_kind="point",
+            metric=None,
+            proposed_metric="measure_count",
+            unit_concept=None,
+            proposed_unit="measures",
+            normalization=f"printed '{raw}' -> {value} measures",
+            period=2026,
+            time_basis="point_in_time",
+            reform_hint=None,
+            source_column=None,
+            source_table="Box 3.1",
+            parse_confidence="high",
+            quote=box_sentence,
+            source_model="arithmetic",
+            benchmark_class="different_model",
+            note=(
+                "The OBR's count of this Budget's measures: a context count, not an effect of "
+                "any measure, staged as the uk_thinktank_misc and uk_ifs_ab2026 families "
+                "stage measure counts. The 28 October PDF prints it at physical p.69 "
+                "(printed p.66); the 30 October correction prints it unchanged."
+            ),
+        )
         n.pop("proposed_baseline", None)
         n["conditions"] = {
-            "fiscal_event": "autumn_budget_2026", "geography": "UK",
+            "fiscal_event": "autumn_budget_2026",
+            "geography": "UK",
             "horizon": "measures announced at Budget 2026 (Box 3.1)",
             "measure_type": measure_type,
         }
@@ -4038,18 +4207,26 @@ def review_fixes_nov4(R):
     # financing requirement is a fiscal-aggregate estimate, not design.
     raw_rows = list(rows())
     old = raw_rows[2771]
-    assert old["value_raw"] == "£1.9 billion" and old["metric"] == "cash_requirement_change"
+    assert (
+        old["value_raw"] == "£1.9 billion"
+        and old["metric"] == "cash_requirement_change"
+    )
     fin = copy.deepcopy(old)
     fin["conditions"] = {
-        "aggregation": "annual average across forecast", "basis": "forecast",
+        "aggregation": "annual average across forecast",
+        "basis": "forecast",
         "fiscal_event": "autumn_budget_2026",
         "fiscal_measure": "Government's financing requirement (OBR's words; not stated as PSNCR)",
-        "fy": "2031-32", "geography": "UK", "proposed_measure_key": NWF,
+        "fy": "2031-32",
+        "geography": "UK",
+        "proposed_measure_key": NWF,
         "sign_convention": "as worded: positive = increase in the financing requirement",
     }
-    fin["note"] = ("Restored on 4 November (review B, OBR finding 5): the financing requirement "
-                   "is a fiscal aggregate, which rule 8 keeps; the DMO's remit is what it "
-                   "excludes. The sentence's debt half is the £3.9 billion row.")
+    fin["note"] = (
+        "Restored on 4 November (review B, OBR finding 5): the financing requirement "
+        "is a fiscal aggregate, which rule 8 keeps; the DMO's remit is what it "
+        "excludes. The sentence's debt half is the £3.9 billion row."
+    )
     assert fin["quote"] == R[2682]["quote"]
 
     out = []
@@ -4062,20 +4239,123 @@ def review_fixes_nov4(R):
     return out
 
 
+# Paragraph 4.30's receipts average for the continued fuel duty freeze and Table
+# 6.3's policy line, which the 4 November pass listed as not staged. We add them
+# last, so every earlier row keeps its number.
+def added_rows():
+    def row(**fields):
+        locator = fields.pop("locator")
+        return {
+            "attribution": "own",
+            "baseline_policy": None,
+            "benchmark_class": "different_model",
+            "normalization": "GBP billion × 1e9 -> GBP",
+            "parse_confidence": "high",
+            "proposed_baseline": "OBR pre-measures Autumn Budget 2026 policy parameters",
+            "publication": {
+                "access": "local copy",
+                "date": "2026-10-28",
+                "locator": locator,
+                "primary_sha256": "9e0e9c340e35e603066f3124a614fcd68feadb3d5d10d1f76fb536e150e6225e",
+                "publisher": "Office for Budget Responsibility",
+                "title": "Economic and fiscal outlook – October 2026",
+                "url": "https://obr.uk/efo/economic-and-fiscal-outlook-october-2026/",
+            },
+            "source": "obr_efo",
+            "source_model": "obr_efo_forecast",
+            "status": "ok",
+            "time_basis": "fiscal_year",
+            "unit_concept": "gbp",
+            "value_kind": "point",
+            **fields,
+        }
+
+    out = [
+        row(
+            conditions={
+                "aggregation": "annual average 2027-28 to 2031-32",
+                "basis": "forecast",
+                "fiscal_event": "autumn_budget_2026",
+                "fy": "2031-32",
+                "geography": "UK",
+                "sign_convention": "as worded: positive = reduction in receipts",
+            },
+            locator="para 4.30 (p.96)",
+            measure_key="ab2026_option__fuel_duty_continued_freeze",
+            metric="revenue_change",
+            note="We key this to the option because RF's series for the OBR's constant-duty-rate forecast averages £3.98 billion across these five years. The OBR holds the rate throughout the forecast period here, and until 2029-30 in paragraph 3.43.",
+            period=2032,
+            quote="If the duty rate were to again remain unchanged at its current level throughout the forecast period it would reduce receipts, on average, by £4 billion a year between 2027-28 and 2031-32.",
+            reform_hint="Duty rate unchanged at its current level throughout the forecast period",
+            source_column="2031-32",
+            source_table="para 4.30",
+            value=4000000000,
+            value_raw="£4 billion",
+        )
+    ]
+    label = "Effects of policy on financial transactions"
+    for fy, period, raw, value in (
+        ("2026-27", 2027, "-0.1", -100000000),
+        ("2027-28", 2028, "0.8", 800000000),
+        ("2028-29", 2029, "2.1", 2100000000),
+        ("2029-30", 2030, "-12.4", -12400000000),
+        ("2030-31", 2031, "3.9", 3900000000),
+        ("2031-32", 2032, "4.0", 4000000000),
+    ):
+        out.append(
+            row(
+                conditions={
+                    "basis": "forecast",
+                    "fiscal_event": "autumn_budget_2026",
+                    "fy": fy,
+                    "geography": "UK",
+                    "row_type": "measure_total",
+                    "scoring_method": "final",
+                    "sign_convention": "as worded: positive = net debt increase",
+                    "table_row": label,
+                },
+                locator=f"Table 6.3 (p.141), {label}, {fy}",
+                measure_key="ab2026__package_government_decisions_since_march_2026",
+                metric=None,
+                note="OBR cells in £ billion; no rounding correction. In footnote 3 the OBR says the line contains the direct effects of policy measures on debt, beyond those in PSNB. In paragraph 6.13 it attributes a £17 billion fall in debt in 2029-30 to timely payment for self assessment, so we key the line to its whole package.",
+                period=period,
+                proposed_metric="public_sector_net_debt_change",
+                quote=raw,
+                reform_hint=label,
+                source_column=fy,
+                source_table="Table 6.3",
+                value=value,
+                value_raw=raw,
+            )
+        )
+    return out
+
+
 def build():
-    return review_fixes_nov4(rule10(review_fixes(list(rows()))))
+    reviewed = review_fixes_nov4(rule10(review_fixes(list(rows()))))
+    # Tranche 2 registered these proposed keys on main without changing scope.
+    # Reproduce those mappings here before copying this family's output.
+    for row in reviewed:
+        key = row["conditions"].pop("proposed_measure_key", None)
+        if key is not None:
+            row["measure_key"] = key
+    return reviewed + added_rows()
 
 
 def main():
     R = build()
     buf = io.BytesIO()
-    with gzip.GzipFile(fileobj=buf, mode='wb', mtime=0, filename='') as gz:
+    with gzip.GzipFile(fileobj=buf, mode="wb", mtime=0, filename="") as gz:
         for row in R:
-            gz.write((json.dumps(row, sort_keys=True, ensure_ascii=False) + '\n').encode('utf-8'))
-    target = Path(__file__).with_name('claims_staged.jsonl.gz')
+            gz.write(
+                (json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n").encode(
+                    "utf-8"
+                )
+            )
+    target = Path(__file__).with_name("claims_staged.jsonl.gz")
     target.write_bytes(buf.getvalue())
-    print(f'{len(R)} rows -> {target.name}')
+    print(f"{len(R)} rows -> {target.name}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
