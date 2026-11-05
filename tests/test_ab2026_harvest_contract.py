@@ -1582,6 +1582,7 @@ def test_a_bare_number_takes_each_whole_factor_the_normalization_states(
         "£m,x 1e6",
         "£m=x 1e6",
         "->x 1e6",
+        "£m→x 1e6",
         "(£m)x 1e6",
         "[£m]x 1e6",
         "£m;x one million",
@@ -1591,6 +1592,7 @@ def test_a_bare_number_takes_each_whole_factor_the_normalization_states(
         "£m,/100",
         "£m=/100",
         "->/100",
+        "£m→/100",
         "(£m)/100",
         "[£m]/100",
         "£m/100",
@@ -2055,6 +2057,21 @@ def test_rule_4_holds_whatever_the_title_case():
         ("paragraph 1.7; not taken from HM Treasury’s Figure 1.A", False),
         ("paragraph 1.7; not read from (HMT) Figure 1.A", False),
         ("paragraph 1.7; not read from [HMT] Figure 1.A", False),
+        ('paragraph 1.7; not read from ("the Figure 1.A")', False),
+        ("paragraph 1.7; not read from ( the Figure 1.A", False),
+        # A word before the figure may end a double quote or several brackets.
+        ('paragraph 1.7; read off the "Impact on households" Figure 1.A', True),
+        ("paragraph 1.7; read off the “Impact on households” Figure 1.A", True),
+        ("paragraph 1.7; read from ((HMT)) Figure 1.A", True),
+        ('paragraph 1.7; read from "HMT" Figure 1.A', True),
+        ("paragraph 1.7; read from (“HMT”) Figure 1.A", True),
+        # Up to four words stand between "from" and the figure.
+        ("paragraph 1.7; read from a b c d Figure 1.A", True),
+        ("paragraph 1.7; read from a b c d e Figure 1.A", False),
+        ('paragraph 1.7; not read off the "Impact on households" Figure 1.A', False),
+        ('paragraph 1.7; not read from "HMT" Figure 1.A', False),
+        ("paragraph 1.7; not read from (“HMT”) Figure 1.A", False),
+        ("paragraph 1.7; not read from ((HMT)) Figure 1.A", False),
         # a comma ends the words before a figure
         ("paragraph 1.7; figures from Table 2.C, Figure 1.A data label", False),
         ("paragraph 1.7; not read from [Figure 1.A]", False),
@@ -2614,6 +2631,8 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "/",
         "÷",
         "times",
+        "times by",
+        "times  by",
         "multiplied by",
         "multiply by",
         "multiplying by",
@@ -2624,6 +2643,10 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "scale by",
         "scaling by",
         "x by",
+        "× by",
+        "* by",
+        "/ by",
+        "÷ by",
     ],
 )
 @pytest.mark.parametrize(
@@ -2672,6 +2695,11 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "billion",
         "trillion",
         "zero",
+        "half",
+        "a half",
+        "a quarter",
+        "another half",
+        "three-quarters",
     ],
 )
 def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand):
@@ -2697,13 +2725,22 @@ def test_a_long_run_of_quotes_stays_quick_to_read():
     """If a quote could both open a word and stand as a bracket, the reading's time
     would grow with about the fifth power of the locator's length."""
     started = time.monotonic()
-    assert not reads_a_bar("paragraph 1.7; read from " + "' " * 120)
+    for run in ("' ", '"a" ', 'a" ', "“a” ", "(a)) "):
+        assert not reads_a_bar("paragraph 1.7; read from " + run * 120), run
     assert time.monotonic() - started < 2
 
 
 @pytest.mark.parametrize(
     ("raw", "value"),
-    [("4m", 4e6), ("1 in 4", 0.25), ("a half", 0.5), ("nil", 0), ("4%", 0.04)],
+    [
+        ("4m", 4e6),
+        ("1 in 4", 0.25),
+        ("a half", 0.5),
+        ("nil", 0),
+        ("4%", 0.04),
+        ("two and a half", 2.5),
+        ("half a million", 5e5),
+    ],
 )
 def test_an_unread_factor_is_a_problem_whatever_the_number_owns(raw, value):
     """Sol's review of 4707e917: the checker reports a factor it can't read before it
