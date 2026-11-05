@@ -51,10 +51,10 @@ HM Treasury attaches the two XLSX files to [Supporting documents for Budget 2026
 - **geography.** We set "UK" on every row, since HM Treasury reports Exchequer impacts. HM Treasury gives a measure's own scope (for example England only for the Household Energy Payment) in its title, which we copy verbatim into `reform_hint`, and we record it in the registry.
 - **quote.** We quote the line's title and the cell, as HM Treasury prints them (Open Government Licence).
 
-## For tranche 2
+## At ingest
 
-- Table 6.2's proposed `financial_transaction_cash_impact` and the registered `cash_requirement_change` both measure the cash effect of the same transactions, one as a cash impact and one as the financing requirement. `uk_obr_tables` uses the registered metric for paragraph 3.20's £1.9bn rise in the Government's financing requirement from the National Wealth Fund and British Business Bank transactions, and we settle the metric at ingest.
-- In Table 6.3 of the red book, HM Treasury prints Table 6.1 lines 45 and 46 again, and we staged `uk_hmt_redbook` rows from it; in tranche 2 we dedupe identical HM Treasury figures across the two families.
+- We stage Table 6.2 on the proposed `financial_transaction_cash_impact`, and at ingest we put its 60 rows on the registered `cash_requirement_change`, the PSNCR metric. `uk_obr_tables` stages paragraph 3.20's £1.9bn rise in the Government's financing requirement from the National Wealth Fund and British Business Bank transactions (row 2684) on the same metric.
+- In Table 6.3 of the red book, HM Treasury prints Table 6.1 lines 45 and 46 again, and we staged `uk_hmt_redbook` rows 339–350 from it. At ingest we drop those 12 rows as twins of this family's rows 264–275 and record each under the kept claim's `publication.also_printed_in`.
 
 ## Not staged
 
