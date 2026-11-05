@@ -672,3 +672,61 @@ def test_every_claim_preserves_its_staged_row(staged):
             and r["attribution"] == s.publication.get("attribution")
             for r in found
         ), (fam, s.publication.get("locator"), s.value)
+
+
+# --- guards the mutation runs found untested ----------------------------------
+
+
+def test_each_ab2026_disposition_lands_on_its_metric(staged):
+    """One staged row per DISPOSITIONS_AB2026 entry, by quote."""
+    scores, _ = staged
+    pins = {
+        "financial_transaction_cash_impact": Metric.CASH_REQUIREMENT_CHANGE,
+        "unaffected_share": Metric.SHARE_NO_CHANGE,
+    }
+    assert set(pins) == set(I.DISPOSITIONS_AB2026)
+    for name, metric in pins.items():
+        got = {s.metric for s in scores if s.conditions.get("staged_metric") == name}
+        assert got == {metric}, name
+
+
+def test_ingest_checks_the_accounting_before_writing(tmp_path, monkeypatch):
+    db_path = tmp_path / "t.db"
+    ScorecardDB(db_path).close()
+    monkeypatch.setattr(I, "expected", lambda: {"read": -1})
+    with pytest.raises(ValueError, match="accounting drifted"):
+        I.ingest(db_path, tmp_path / "lanes.json")
+    conn = sqlite3.connect(db_path)
+    assert conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0] == 0
+
+
+def test_verdict_rows_refuses_a_claim_the_registry_contradicts(tmp_path):
+    db_path = tmp_path / "t.db"
+    ScorecardDB(db_path).close()
+    feed = tmp_path / "lanes.json"
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    I.ingest(db_path, feed)
+    key = next(
+        k
+        for k, m in I.REGISTRY.items()
+        if m["computability"] == "partial"
+        and k
+        in {
+            s.conditions.get("measure_key")
+            for s in BASE[0]
+            if s.metric not in I.AB25.MACRO_METRICS
+        }
+    )
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "UPDATE external_scores SET conditions = json_set(conditions,"
+        " '$.pe_expressibility', 'not_expressible')"
+        " WHERE json_extract(conditions, '$.measure_key') = ?",
+        (key,),
+    )
+    conn.commit()
+    conn.close()
+    db = ScorecardDB(db_path)
+    with pytest.raises(ValueError, match="in the registry"):
+        I.verdict_rows(db)
+    db.close()
