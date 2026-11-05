@@ -354,9 +354,8 @@ def test_table_6_2_and_the_obr_financing_requirement_share_one_metric(staged):
     assert [s.metric for s in obr] == [Metric.CASH_REQUIREMENT_CHANGE]
 
 
-def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
-    """The OBR states the option's effect on public sector net borrowing, so we
-    retain that metric and apply #55's macro verdict."""
+def test_the_fuel_freeze_keeps_the_obrs_borrowing_and_receipts_figures(staged):
+    """Keep both OBR quantities and apply #55's macro verdict to borrowing."""
     scores, _ = staged
     freeze = [
         s
@@ -364,10 +363,18 @@ def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
         if s.conditions.get("measure_key")
         == "ab2026_option__fuel_duty_continued_freeze"
     ]
-    # RF derives its figure from the OBR's forecasts, so only the OBR's stays
-    [obr] = freeze
-    assert obr.source == "obr_efo"
-    assert obr.metric == Metric.DECISIONS_EFFECT_ON_BORROWING
+    # RF derives its figures from the OBR's forecasts; keep both OBR estimates.
+    assert len(freeze) == 2
+    assert {s.source for s in freeze} == {"obr_efo"}
+    by_metric = {s.metric: s for s in freeze}
+    assert set(by_metric) == {
+        Metric.DECISIONS_EFFECT_ON_BORROWING,
+        Metric.REVENUE_CHANGE,
+    }
+    receipts = by_metric[Metric.REVENUE_CHANGE]
+    assert (receipts.value, receipts.period) == (4_000_000_000, 2032)
+    assert receipts.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
+    obr = by_metric[Metric.DECISIONS_EFFECT_ON_BORROWING]
     assert "staged_metric" not in obr.conditions
     assert obr.conditions["pe_expressibility"] == "not_expressible"
     assert obr.conditions["pe_missing"] == I.AB25.MACRO_MISSING
