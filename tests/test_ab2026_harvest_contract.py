@@ -13,6 +13,7 @@ import json
 import math
 import shutil
 import tempfile
+from itertools import product
 from pathlib import Path
 
 import pytest
@@ -217,6 +218,15 @@ def _share(raw, value, normalization="N in M -> N/M"):
     return mutated(value_raw=raw, quote=raw, value=value, normalization=normalization)
 
 
+def _cant_read(raw, normalization="as printed"):
+    """The checker reports raw as unreadable at every value we try."""
+    values = (0, 0.25, 0.5, 1, 4, 5, 19, 25, 2e6, 1e-6, -1, -0.25)
+    return all(
+        any("can't read" in p for p in problems(_share(raw, v, normalization)))
+        for v in values
+    )
+
+
 @pytest.mark.parametrize("wrong", [0.01, 0.04, 1, 4, 25])
 def test_a_ratio_is_its_share_not_its_numbers(wrong):
     """Delta review D1-1: IFS's "1 in 4" (its row 38) is the share 0.25.
@@ -235,27 +245,29 @@ def test_a_worded_fraction_is_its_share():
     assert any("opposite sign" in p for p in problems(_share("a third", -0.3333, note)))
 
 
+@pytest.mark.parametrize("raw", ["5 in 2026-27", "5 in 2026–27", "5 in 2026-2027"])
+def test_a_fiscal_year_after_in_is_a_problem(raw):
+    """The checker gives years no special case: it can't read "5 in 2026-27",
+    and we narrow value_raw to the number the row stores."""
+    assert _cant_read(raw)
+
+
 @pytest.mark.parametrize(
-    "raw", ["5 in 2027", "5 in 2026-27", "5 in 2026–27", "5 in 2026-2027"]
+    "normalization",
+    [
+        "as printed",
+        "N in M -> N/M",
+        "1 in 2000 -> 0.0005",
+        "£ million x 1,000,000",
+        "/ 100",
+    ],
 )
-def test_a_year_after_in_is_no_denominator(raw):
-    """A year after "in" prints a year: "5 in 2027" gives 5 (here £5m) and
-    2027, not the ratio 5/2027, and "5 in 2026-27" gives a fiscal year with
-    any dash."""
-    assert problems(mutated(value_raw=raw, quote=raw, value=5e6)) == []
-
-
-def test_a_year_after_in_is_a_denominator_when_the_normalization_says_so():
-    """Final review F1: "1 in 2000" stored as the share 0.0005 passes only
-    when its normalization gives the ratio, as "1 in 2,000" always does."""
-    stated = "1 in 2000 -> 0.0005"
-    assert problems(_share("1 in 2000", 0.0005)) == []
-    assert problems(_share("1 in 2000", 0.0005, stated)) == []
-    assert problems(_share("1 in 2,000", 0.0005, "share as printed")) == []
-    found = problems(_share("1 in 2000", 0.0005, "£ million x 1,000,000"))
-    assert any("at a stated scale" in p for p in found), found
-    for wrong in (1, 2000):
-        found = problems(_share("1 in 2000", wrong, stated))
+def test_a_ratio_reads_the_same_under_any_normalization(normalization):
+    """A ratio's share takes no factor from the normalization: "1 in 2000"
+    passes at 0.0005 and fails at 1, at 2000 and at the share at that factor."""
+    assert problems(_share("1 in 2000", 0.0005, normalization)) == []
+    for wrong in (1, 2000, 500, 0.05):
+        found = problems(_share("1 in 2000", wrong, normalization))
         assert any("at a stated scale" in p for p in found), (wrong, found)
 
 
@@ -352,6 +364,16 @@ def _say(n, a=False, hyphen=True, joined=True):
 
 
 STYLES = st.tuples(st.booleans(), st.booleans(), st.booleans())
+JOINTS = [
+    "in",
+    "IN",
+    "in every",
+    "In Every",
+    "out of",
+    "OUT OF",
+    "out of every",
+    "Out Of Every",
+]
 
 
 @settings(max_examples=300, deadline=None)
@@ -359,7 +381,7 @@ STYLES = st.tuples(st.booleans(), st.booleans(), st.booleans())
     n=st.integers(1, 999),
     m=st.integers(1, 999),
     styles=STYLES,
-    joint=st.sampled_from(["in", "IN", "in every", "In Every", "out of", "OUT OF"]),
+    joint=st.sampled_from(JOINTS),
     multiplier=st.sampled_from(
         [("", 1), (" thousand", 1e3), (" million", 1e6), (" billion", 1e9)]
     ),
@@ -369,8 +391,9 @@ def test_a_worded_ratio_passes_only_at_its_share(
     n, m, styles, joint, multiplier, wrong
 ):
     """Final review F1: number words up to the hundreds give a ratio as
-    numerals do, after "in", "in every" or "out of" and with a multiplier on
-    M. The share passes, and so does nothing else, N and M included."""
+    numerals do, after "in", "in every", "out of" or "out of every" and with
+    a multiplier on M. The share passes, and so does nothing else, N and M
+    included."""
     word, factor = multiplier
     raw = f"{_say(n, *styles)} {joint} {_say(m, *styles)}{word}"
     share = n / (m * factor)
@@ -404,13 +427,20 @@ def test_a_worded_ratio_passes_only_at_its_share(
         ("1 in every 2000", 0.0005, (1, 2000)),
         ("1 out of 2000", 0.0005, (1, 2000)),
         ("1 in 2000 million", 5e-10, (0.0005, 2000, 2e9)),
+        ("one out of every five", 0.2, (1, 5)),
+        ("1 out of every 4", 0.25, (1, 4, 25)),
+        ("1-out-of-every-4", 0.25, (1, 4)),
+        (".5 in 4", 0.125, (0.5, 4)),
+        ("1e3 in 4", 250, (1000, 4)),
+        ("1 in .5", 2, (1, 0.5)),
+        ("1 in +4", 0.25, (1, 4)),
+        ("+1 in 4", 0.25, (1, 4)),
     ],
 )
 def test_a_ratio_with_a_multiplier_or_another_joint_is_its_share(raw, share, wrongs):
     """A multiplier on M scales M, so "1 in 2 million" is 5e-7, never 0.5.
-    Number words run to the hundreds, and "in every" and "out of" print a
-    ratio as "in" does. A year after "in every" or "out of", or before a
-    multiplier, is a denominator. The share passes; N, M, and the share
+    Number words run to the hundreds, and "in every", "out of" and "out of
+    every" print a ratio as "in" does. The share passes; N, M, and the share
     without the multiplier don't."""
     assert problems(_share(raw, share, "share as printed")) == []
     for wrong in wrongs:
@@ -419,23 +449,23 @@ def test_a_ratio_with_a_multiplier_or_another_joint_is_its_share(raw, share, wro
 
 
 @pytest.mark.parametrize(
-    ("raw", "value", "share"),
+    "raw",
     [
-        ("£5 in 10 years", 5, 0.5),
-        ("£ 5 in 10 years", 5, 0.5),
-        ("-£5 in 10", -5, -0.5),
-        ("£-5 in 10", -5, -0.5),
-        ("$3 in 4", 3, 0.75),
-        ("COVID-19 in 10", 19, 1.9),
-        ("Q1 in 4", 4, 0.25),
+        "£5 in 10 years",
+        "£ 5 in 10 years",
+        "£5 in 10",
+        "-£5 in 10",
+        "£-5 in 10",
+        "$3 in 4",
+        "COVID-19 in 10",
+        "Q1 in 4",
+        "£5 in 2027",
     ],
 )
-def test_a_number_after_a_currency_sign_or_in_a_name_starts_no_ratio(raw, value, share):
-    """A number after a currency sign, or in a name, starts no ratio: each
-    number counts at its scale, and the would-be share fails."""
-    assert problems(_share(raw, value, "as printed")) == []
-    found = problems(_share(raw, share, "as printed"))
-    assert any("at a stated scale" in p for p in found), (raw, found)
+def test_a_ratio_with_a_currency_sign_or_in_a_name_is_a_problem(raw):
+    """A ratio takes no currency sign, and "COVID-19 in 10" names something,
+    so the checker reads neither the numbers nor a share at any value."""
+    assert _cant_read(raw)
 
 
 @pytest.mark.parametrize(
@@ -444,14 +474,12 @@ def test_a_number_after_a_currency_sign_or_in_a_name_starts_no_ratio(raw, value,
         ("twenty-one in a hundred", 0.21, (0.01, 1, 21, 100)),
         ("twenty one in a hundred", 0.21, (0.01, 21, 100)),
         ("one in twenty-five", 0.04, (42, 0.2, 1, 25)),
-        ("a one-in-a-million chance", 1e-6, (1, 1e6)),
-        ("2025, 1 in 4", 0.25, (1, 4)),
     ],
 )
 def test_a_compound_number_reads_whole(raw, share, wrongs):
     """Delta review R1: the checker reads "twenty-one" as 21, never as its
     last word, so "twenty-one in a hundred" passes at 0.21 and at nothing
-    else; and a comma ends a number, so "2025, 1 in 4" is 0.25."""
+    else."""
     assert problems(_share(raw, share, "share as printed")) == []
     for wrong in wrongs:
         found = problems(_share(raw, wrong, "share as printed"))
@@ -476,20 +504,70 @@ def test_a_minus_on_either_number_signs_the_share(raw, share):
     assert any("opposite sign" in p for p in flipped), (raw, flipped)
 
 
-@pytest.mark.parametrize("normalization", ["N IN M -> N/M", "n in m -> n/m", "N In M"])
-def test_the_generic_normalization_reads_in_any_case(normalization):
-    """Delta review R1: "N IN M" or "n in m" gives "1 in 2000" as the ratio
-    0.0005, as "N in M" does."""
-    assert problems(_share("1 in 2000", 0.0005, normalization)) == []
-    for wrong in (1, 2000):
-        found = problems(_share("1 in 2000", wrong, normalization))
-        assert any("at a stated scale" in p for p in found), (normalization, wrong)
-
-
-# Ratios the checker can't read whole (delta review R1). "and" after a
-# multiplier word joins what follows to the number, so the checker can't
-# split "one in a thousand and one in a million" into two ratios either.
+# Strings that print no one number the checker can read. Each would give a
+# wrong value or none if the checker read part of it.
 CANT_READ = [
+    # operands (delta review D1)
+    "one in zero",
+    "1 in 0",
+    "1 in 1e999",
+    "1e999 in 4",
+    "1 in 1e308bn",
+    "1e999",
+    "1e999 and a half",
+    "four million per cent",
+    "zero million",
+    "hundred",
+    "million",
+    # ranges on either side of a ratio (delta review D2)
+    "4 - 5 in 10",
+    "4—5 in 10",
+    "1 in 4 - 5",
+    "1 in 4—5",
+    "1 in 4 to 5",
+    "1 to 4 in 5",
+    # numbers in words we don't list (delta reviews D3 and D4)
+    "twenty-one fifths",
+    "four million; five thousand",
+    "one thousandth",
+    "a millionth",
+    "- four",
+    # a ratio with more after it (cloud review A1, A3)
+    "2 million in 5 years",
+    "5bn in 10 years",
+    "200,000 in five years",
+    "one in a hundred and one in ten",
+    "2025, 1 in 4",
+    "a one-in-a-million chance",
+    # separators (cloud review A5)
+    "1 in-every 4",
+    "1-in every-4",
+    "1 out-of 4",
+    "one in four m",
+    # commas, signs and characters that print no number
+    "1,2",
+    "1,23",
+    "1234,567",
+    "12,34,567",
+    "4.",
+    "--4",
+    "٣",
+    "４",
+    "4\u200b",
+    "",
+    "   ",
+    # ranges the checker can't place
+    "4 -5",
+    "4- 5",
+    "four-five",
+    "4% to 5",
+    "4bn-5",
+    "1 to 2 to 3",
+    # brackets
+    "(25%)",
+    "4 (five",
+    "4 (five) (six)",
+    "one third (about 33%)",
     "a thousand and one in a million",
     "a thousand and 21 in 100",
     "one in a thousand and one in a million",
@@ -510,17 +588,53 @@ CANT_READ = [
     "1 in-4",
     "1-in 4",
     "1 in 0",
+    # numerators and denominators past the list
+    "eleven fifths",
+    "twelve thirds",
+    "one eleventh",
+    # a range that runs downward in value and in size
+    "2025-26",
+    "5-4",
+    "5 to 4",
+    "4bn-5m",
+    "1.5bn to 200m",
+    "a half to a third",
+    # a range with a word on its first number alone
+    "4k to 5000",
+    "1m-2000000",
+    # a range that joins a percentage to a multiplier
+    "4% to 2 million",
+    "2 million to 4%",
+    "4%-5bn",
+    "0.1 percentage points to 2.5bn",
+    # brackets that don't restate a share as a percentage
+    "4 (five)",
+    "4 (2025)",
+    "£5bn (2027)",
+    "one third (50%)",
+    "1 in 4 (26%)",
+    "25% (1 in 3)",
+    "-1 in 4 (25%)",
+    "half a million (50%)",
+    "a third (33)",
+    "a third (1 in 3)",
+    "25% (25%)",
+    "25% (0.25)",
+    "0% (0%)",
+    "1 in 4 (25-26%)",
+    "25-26% (1 in 4)",
+    "3 (1 in 2 million)",
 ]
 
 
 @pytest.mark.parametrize("raw", CANT_READ)
-@pytest.mark.parametrize("value", [0.25, 0.5, 1, 4, 2e6, 1e-6])
-def test_a_ratio_the_checker_cant_read_is_a_problem(raw, value):
-    """Delta review R1: a ratio whose numbers or separators the checker can't
-    read gives a problem at any value. Before, the checker read part of a
-    number, or no ratio, and could pass a value the string doesn't print."""
-    found = problems(_share(raw, value, "as printed"))
-    assert any("which the checker can't read" in p for p in found), (raw, found)
+def test_a_string_the_checker_cant_read_is_a_problem(raw):
+    """Delta reviews R1 and D1 to D4, and cloud review A1 to A5: a string that
+    prints no one number in a form the checker knows gives a problem at any
+    value, and the problem says so and asks us to narrow value_raw."""
+    assert _cant_read(raw), raw
+    found = problems(_share(raw, 1, "as printed"))
+    assert any("narrow it to the number" in p for p in found), found
 
 
 MULTIPLIER = st.sampled_from(
@@ -546,16 +660,17 @@ def _operand(x, word, styles, multiplier):
     styles=STYLES,
     multipliers=st.tuples(MULTIPLIER, MULTIPLIER),
     signs=st.tuples(st.sampled_from(["", "-", "−"]), st.sampled_from(["", "-", "−"])),
-    joint=st.sampled_from(["in", "IN", "in every", "In Every", "out of", "OUT OF"]),
+    joint=st.sampled_from(JOINTS),
     hyphens=st.booleans(),
 )
 def test_any_ratio_reads_whole_and_signed(
     n, m, words, styles, multipliers, signs, joint, hyphens
 ):
     """Delta review R1, for every ratio of numbers up to 999, in words or
-    digits, with a multiplier or none and a minus or none on each number,
-    joined all by spaces or all by hyphens: the signed share passes, and its
-    opposite, N, M and the share without its multipliers fail."""
+    digits, with a multiplier or none on each number, a minus or none on N,
+    and a minus or none on M when spaces join the ratio, joined all by spaces
+    or all by hyphens: the signed share passes, and its opposite, N, M and the
+    share without its multipliers fail."""
     top, f_top = _operand(n, words[0], styles, multipliers[0])
     bottom, f_bottom = _operand(m, words[1], styles, multipliers[1])
     sign_m = "" if hyphens else signs[1]
@@ -603,16 +718,7 @@ def test_a_ratio_whose_number_runs_on_is_a_problem_at_any_value(
     else:
         raw = f"{n} {joint} {m}{spoiler}"
     found = problems(_share(raw, value, "share as printed"))
-    assert any("which the checker can't read" in p for p in found), (raw, found)
-
-
-def test_a_ratio_s_multiplier_scales_only_the_ratio():
-    """ "million" in "1 in 2 million" scales M, not the string's other
-    numbers: at the stated factor of 1, the 3 in "3 (1 in 2 million)" is 3."""
-    note = "count as printed x 1"
-    assert problems(_share("3 (1 in 2 million)", 3, note)) == []
-    found = problems(_share("3 (1 in 2 million)", 3e6, note))
-    assert any("at a stated scale" in p for p in found), found
+    assert any("can't read" in p for p in found), (raw, found)
 
 
 @pytest.mark.parametrize(
@@ -643,11 +749,93 @@ def test_a_worded_fraction_in_any_form_is_its_share(raw, share, wrongs):
         assert any("at a stated scale" in p for p in found), (raw, wrong, found)
 
 
-@pytest.mark.parametrize("raw", ["a third-party", "the third year", "per quarter"])
-def test_an_ordinal_or_a_compound_is_no_fraction(raw):
+# Each numerator and denominator the README lists, written out here apart from
+# the checker's tables.
+NUMERATOR_WORDS = {
+    "a": 1,
+    "an": 1,
+    "another": 1,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+}
+DENOMINATOR_WORDS = {
+    "half": 2,
+    "halves": 2,
+    "third": 3,
+    "thirds": 3,
+    "quarter": 4,
+    "quarters": 4,
+    "fourth": 4,
+    "fourths": 4,
+    "fifth": 5,
+    "fifths": 5,
+    "sixth": 6,
+    "sixths": 6,
+    "seventh": 7,
+    "sevenths": 7,
+    "eighth": 8,
+    "eighths": 8,
+    "ninth": 9,
+    "ninths": 9,
+    "tenth": 10,
+    "tenths": 10,
+}
+
+
+def test_every_worded_fraction_reads_as_its_share():
+    """Every numerator over every denominator, with a space or a hyphen, passes
+    at its share and fails at twice that."""
+    for top, n in NUMERATOR_WORDS.items():
+        for bottom, m in DENOMINATOR_WORDS.items():
+            for joint in " -":
+                raw = f"{top}{joint}{bottom}"
+                assert problems(_share(raw, n / m, "as printed")) == [], raw
+                found = problems(_share(raw, 2 * n / m, "as printed"))
+                assert any("at a stated scale" in p for p in found), (raw, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "near", "far"),
+    [
+        ("a third", 0.3331, 0.331),
+        ("two-thirds", 0.667, 0.663),
+        ("1 in 3", 0.3331, 0.331),
+        ("half a million", 500_400, 503_000),
+        ("a third of a million", 333_100, 331_000),
+        ("two and a half", 2.502, 2.51),
+    ],
+)
+def test_a_rounded_number_passes_within_a_tenth_of_a_percent(raw, near, far):
+    """A stored value may differ from a share, a fraction of a multiplier or a
+    whole number with a fraction by 0.1%, and no further."""
+    assert problems(_share(raw, near, "as printed")) == [], (raw, near)
+    found = problems(_share(raw, far, "as printed"))
+    assert any("at a stated scale" in p for p in found), (raw, far, found)
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "a third-party",
+        "the third year",
+        "per quarter",
+        "third",
+        "quarter",
+        "2 and half",
+    ],
+)
+def test_an_ordinal_or_a_compound_is_a_problem(raw):
     """ "third" in "a third-party" or "the third year", and "quarter" without
-    a numerator, print no fraction, so the row compares nothing."""
-    assert problems(_share(raw, 7, "as printed")) == []
+    a numerator, print no fraction the checker can read."""
+    assert _cant_read(raw)
 
 
 @pytest.mark.parametrize(
@@ -672,6 +860,21 @@ def test_a_percent_row_stores_its_share_in_percent_units(raw, share):
     for value, unit in ((share, "percent"), (100 * share, "share")):
         found = problems(row(value, unit))
         assert any("at a stated scale" in p for p in found), (raw, value, unit)
+
+
+def test_a_percent_row_scales_only_a_share():
+    """A percent row stores a share in percent units. "Two and a half" prints a
+    number, so it stays 2.5 there."""
+    row = mutated(
+        value_raw="two and a half",
+        quote="two and a half",
+        value=2.5,
+        normalization="as printed",
+        unit_concept="percent",
+    )
+    assert problems(row) == []
+    row["value"] = 250
+    assert any("at a stated scale" in p for p in problems(row))
 
 
 @pytest.mark.parametrize(
@@ -716,23 +919,368 @@ def test_a_number_in_words_the_checker_cant_read_is_a_problem(raw):
     give a problem, rather than count their parts."""
     for value in (1, 20, 1000, 1001, 1200):
         found = problems(_share(raw, value, "printed in words"))
-        assert any("which the checker can't read" in p for p in found), (raw, found)
+        assert any("can't read" in p for p in found), (raw, found)
 
 
-@pytest.mark.parametrize("raw", ["two-child limit", "one-off", "four"])
-def test_number_words_in_a_compound_or_on_a_categorical_row_compare_nothing(raw):
-    """A number word inside a hyphenated word ("two-child") prints no number,
-    and a categorical row's words are its label, never its value."""
-    if raw != "four":
-        assert problems(_share(raw, 7, "as printed")) == []
-    label = mutated(
+@pytest.mark.parametrize("raw", ["two-child limit", "one-off"])
+def test_a_number_word_inside_a_compound_is_a_problem(raw):
+    """A number word inside a hyphenated word ("two-child") prints no number."""
+    assert _cant_read(raw)
+
+
+def _label(raw, value):
+    return mutated(
         value_raw=raw,
         quote=raw,
-        value=7,
+        value=value,
         normalization="rating as printed",
         value_kind="categorical",
     )
-    assert problems(label) == []
+
+
+@pytest.mark.parametrize("raw", ["High", "four", "two-child limit", "one-off"])
+def test_a_categorical_row_prints_a_label_and_compares_nothing(raw):
+    """A categorical row's words name its label, whatever its value."""
+    assert problems(_label(raw, 7)) == []
+
+
+@pytest.mark.parametrize("raw", ["Tier 2", "3", "1 in 4", "٣"])
+def test_a_categorical_row_that_prints_a_digit_is_a_problem(raw):
+    """A number on a categorical row would compare nothing, so the checker
+    takes no digits there."""
+    found = problems(_label(raw, 7))
+    assert any("prints a number" in p for p in found), (raw, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "passes", "fails"),
+    [
+        # a minus on a number in words
+        ("-four", (-4,), (4,)),
+        ("−four", (-4,), (4,)),
+        ("+four", (4,), (-4,)),
+        ("-three-fifths", (-0.6,), (0.6,)),
+        ("-half", (-0.5,), (0.5,)),
+        ("-1 in 4", (-0.25,), (0.25,)),
+        # a whole number and a fraction
+        ("two and a half", (2.5,), (0.5, 2, 250)),
+        ("2 and a third", (7 / 3, 2.3333), (1 / 3, 2)),
+        ("-two and a half", (-2.5,), (2.5,)),
+        ("one and a half million", (1.5e6,), (0.5, 1.5, 5e5)),
+        ("two and a half per cent", (0.025, 2.5), (0.5, 2)),
+        ("twenty-one and a half", (21.5,), (0.5, 1)),
+        # a fraction of a multiplier
+        ("half a million", (5e5,), (0.5, 1e6)),
+        ("half a hundred", (50,), (0.5, 100)),
+        ("a quarter of a million", (2.5e5,), (0.25, 1e6)),
+        ("three quarters of a billion", (7.5e8,), (0.75, 1e9)),
+        ("half a percentage point", (0.005, 0.5), (1, 2)),
+        ("a third of a million", (333_333,), (1 / 3, 1e6)),
+        # a range: the first number takes the second's word
+        ("£4-5 million", (4e6, 5e6), (4, 5, 4e3)),
+        ("4-5%", (0.04, 0.05, 4, 5), (40,)),
+        ("4–5bn", (4e9, 5e9), (4, 5)),
+        ("4 to 5bn", (4e9, 5e9), (4, 5)),
+        ("4m to 5bn", (4e6, 5e9), (4e9, 5e6)),
+        ("4 - 5%", (0.04, 0.05), (45,)),
+        ("4—5%", (0.04, 0.05), (45,)),
+        ("four to five", (4, 5), (45, 0.8)),
+        ("four to five million", (4e6, 5e6), (4, 5)),
+        ("a third to a half", (1 / 3, 0.5), (0.1,)),
+        ("a third to half a million", (333_333, 5e5), (1 / 3, 0.5)),
+        ("-4 to -5", (-4, -5), (4, 5)),
+        ("-5 to -4", (-5, -4), (5, 4)),
+        ("200m to 1.5bn", (2e8, 1.5e9), (200, 1.5)),
+        # a second number in brackets restates the first
+        ("one third (33%)", (1 / 3, 0.33, 33), (0.5, 3)),
+        ("1 in 4 (25%)", (0.25, 25), (1, 4)),
+        ("25% (1 in 4)", (0.25, 25), (1, 4)),
+        ("half (50%)", (0.5, 50), (2,)),
+        ("-1 in 4 (-25%)", (-0.25, -25), (0.25, 25)),
+        ("1 in 8 (13%)", (0.125, 0.13, 13), (1, 8)),
+        ("1 in 8 (12%)", (0.125, 0.12, 12), (1, 8)),
+        # words that print a zero
+        ("nil", (0,), (1,)),
+        ("nothing", (0,), (1,)),
+        ("none", (0,), (1,)),
+        ("no change", (0,), (1,)),
+        ("no impact", (0,), (1,)),
+        ("no overall impact", (0,), (1,)),
+        ("zero", (0,), (1,)),
+        ("zero in five", (0,), (5, 0.2)),
+        # words around a number
+        ("about £2bn a year", (2e9,), (2,)),
+        ("4 per cent of GDP", (0.04, 4), (40,)),
+        ("less than a 0.1 percentage point", (0.001, 0.1), (1,)),
+        ("over a million", (1e6,), (1,)),
+        # each spelling of a percentage and of a short multiplier
+        ("4 %", (0.04, 4), (40,)),
+        ("4 percent", (0.04, 4), (40,)),
+        ("4 ppts", (0.04, 4), (40,)),
+        ("+4ppt", (0.04, 4), (40,)),
+        ("4pp", (0.04, 4), (40,)),
+        ("2 m", (2e6,), (2,)),
+        ("2mn", (2e6,), (2,)),
+        ("2k", (2e3,), (2,)),
+        ("2tn", (2e12,), (2,)),
+        ("£3 trillion", (3e12,), (3,)),
+        ("2-million", (2e6,), (2,)),
+        ("2 hundred", (200,), (2,)),
+        # signs and currency in any order
+        ("-£1.7bn", (-1.7e9,), (1.7e9,)),
+        ("£-1.7bn", (-1.7e9,), (1.7e9,)),
+        ("+$2m", (2e6,), (-2e6,)),
+        ("£5", (5,), (6,)),
+        ("$5", (5,), (6,)),
+        ("€5", (5,), (6,)),
+        ("-$5", (-5,), (5,)),
+        ("-€2m", (-2e6,), (2e6,)),
+        ("$-5", (-5,), (5,)),
+        ("€-2m", (-2e6,), (2e6,)),
+        ("−2", (-2,), (2,)),
+        ("–2", (-2,), (2,)),
+        ("1E-05", (1e-5,), (1,)),
+        ("1,234.5", (1234.5,), (1.2345,)),
+    ],
+)
+def test_each_form_reads_at_its_values_and_no_others(raw, passes, fails):
+    """The README's closed list of forms. Each string passes at every value
+    it prints and at no other."""
+    for value in passes:
+        assert problems(_share(raw, value, "as printed")) == [], (raw, value)
+    for value in fails:
+        found = problems(_share(raw, value, "as printed"))
+        assert any("at a stated scale" in p or "opposite sign" in p for p in found), (
+            raw,
+            value,
+            found,
+        )
+
+
+def test_every_number_up_to_999_reads_in_every_style():
+    """Exhaustively: each number from 0 to 999, however _say prints it, passes
+    at itself and fails at itself plus one, alone and as a ratio's N and M."""
+    for n in range(1000):
+        for raw in {_say(n, *style) for style in product([False, True], repeat=3)}:
+            assert problems(_share(raw, n, "printed in words")) == [], raw
+            found = problems(_share(raw, n + 1, "printed in words"))
+            assert any("at a stated scale" in p for p in found), raw
+            ratio = f"{raw} in a thousand"
+            assert problems(_share(ratio, n / 1000, "as printed")) == [], raw
+            if n:
+                ratio = f"one in {raw}"
+                assert problems(_share(ratio, 1 / n, "as printed")) == [], raw
+
+
+# Numbers in every form the README lists, each with its value and with no sign,
+# written out here apart from the checker's tables.
+READABLE = [
+    ("5", 5),
+    ("1,234", 1234),
+    ("2.5", 2.5),
+    (".5", 0.5),
+    ("£5", 5),
+    ("2m", 2e6),
+    ("2.5bn", 2.5e9),
+    ("£2 billion", 2e9),
+    ("4%", 0.04),
+    ("4 per cent", 0.04),
+    ("0.1 percentage points", 0.001),
+    ("four", 4),
+    ("twenty-five", 25),
+    ("a hundred and five", 105),
+    ("one million", 1e6),
+    ("a million", 1e6),
+    ("half", 0.5),
+    ("a third", 1 / 3),
+    ("three-fifths", 0.6),
+    ("half a million", 5e5),
+    ("two and a half", 2.5),
+    ("1 in 4", 0.25),
+    ("one-in-eight", 0.125),
+    ("3 out of 10", 0.3),
+    ("one in every five", 0.2),
+]
+SPOILED = st.sampled_from(READABLE).map(lambda pair: pair[0])
+AFTER = [
+    " years",
+    " people",
+    " or more",
+    "th",
+    "-year-olds",
+    ", 2025",
+    "; 2025",
+    ".",
+    "/yr",
+    " per household",
+    " banana",
+    " in",
+    " and",
+    " (",
+    ")",
+    "%%",
+]
+BEFORE = ["the ", "year ", "£5 ", "and ", "Q", "x", "COVID-", "(", "), ", "per ", "9 "]
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    number=SPOILED,
+    before=st.sampled_from(["", *BEFORE]),
+    after=st.sampled_from(["", *AFTER]),
+    value=st.floats(-1e12, 1e12, allow_nan=False),
+)
+def test_a_readable_number_with_more_around_it_is_a_problem_at_any_value(
+    number, before, after, value
+):
+    """Any number in a listed form, with words or characters around it that
+    the README doesn't list, gives a problem at any value, so the checker
+    never reads part of a string."""
+    if before or after:
+        found = problems(_share(f"{before}{number}{after}", value, "as printed"))
+        assert any("can't read" in p for p in found), (before, number, after, found)
+
+
+@settings(max_examples=300, deadline=None)
+@given(number=SPOILED, value=st.floats(-1e12, 1e12, allow_nan=False))
+def test_a_word_inside_a_readable_number_is_a_problem_at_any_value(number, value):
+    """A word at any space inside a number in a listed form gives a problem."""
+    for i, ch in enumerate(number):
+        if ch == " ":
+            spoiled = f"{number[:i]} banana{number[i:]}"
+            found = problems(_share(spoiled, value, "as printed"))
+            assert any("can't read" in p for p in found), (spoiled, found)
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    pair=st.sampled_from(READABLE),
+    qualifier=st.sampled_from(
+        ["about", "almost", "Approx.", "approximately", "around", "at least"]
+        + ["at most", "fewer than", "just over", "just under", "less than"]
+        + ["more than", "nearly", "over", "roughly", "some", "under", "up to"]
+    ),
+    tail=st.sampled_from(["", " a year", " of GDP"]),
+    case=st.sampled_from([str, str.upper, str.title]),
+    gap=st.sampled_from([" ", "  ", "\u00a0", "\t"]),
+    off=st.sampled_from([1.5, 2, 0.5, 7]),
+)
+def test_a_number_reads_the_same_with_any_qualifier_case_or_spacing(
+    pair, qualifier, tail, case, gap, off
+):
+    """A qualifier before a number, "a year" or "of GDP" after it, its case and
+    its spacing change nothing: it passes at its value and fails elsewhere."""
+    number, value = pair
+    raw = case(f"{qualifier} {number}{tail}").replace(" ", gap)
+    assert problems(_share(raw, value, "as printed")) == [], raw
+    found = problems(_share(raw, value * off, "as printed"))
+    assert any("at a stated scale" in p for p in found), (raw, found)
+
+
+@settings(max_examples=300, deadline=None)
+@given(pair=st.sampled_from(READABLE), minus=st.sampled_from(["-", "−", "–"]))
+def test_a_minus_flips_a_number_in_any_form(pair, minus):
+    """A minus before a number gives its opposite: the negative passes, the
+    positive doesn't, and the unsigned number mirrors both."""
+    number, value = pair
+    raw = minus + number
+    assert problems(_share(raw, -value, "as printed")) == [], raw
+    flipped = problems(_share(raw, value, "as printed"))
+    assert any("opposite sign" in p for p in flipped), (raw, flipped)
+    assert problems(_share(number, value, "as printed")) == [], number
+    mirror = problems(_share(number, -value, "as printed"))
+    assert any("opposite sign" in p for p in mirror), (number, mirror)
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    n=st.integers(1, 9999),
+    word=st.sampled_from(
+        [
+            (" thousand", 1e3),
+            (" million", 1e6),
+            (" billion", 1e9),
+            (" trillion", 1e12),
+            ("k", 1e3),
+            ("m", 1e6),
+            ("mn", 1e6),
+            ("bn", 1e9),
+            ("tn", 1e12),
+        ]
+    ),
+    other=st.sampled_from([1, 1e3, 1e6, 1e9, 1e12, 0.01, 100]),
+    normalization=st.sampled_from(["as printed", "£ x 1,000,000", "/ 100"]),
+)
+def test_a_number_s_own_multiplier_sets_its_scale_under_any_normalization(
+    n, word, other, normalization
+):
+    """A multiplier scales its own number, and no normalization or fixed scale
+    overrides it."""
+    text, factor = word
+    raw = f"{n}{text}"
+    assert problems(_share(raw, n * factor, normalization)) == [], raw
+    if other != factor:
+        found = problems(_share(raw, n * other, normalization))
+        assert any("at a stated scale" in p for p in found), (raw, other, found)
+
+
+@settings(max_examples=200, deadline=None)
+@given(n=st.integers(1, 9999))
+def test_digits_alone_take_the_normalization_s_factor_failing_that_a_fixed_set(n):
+    """Digits with no word of their own take the normalization's factor and
+    nothing else. Failing that, they take 1, a thousand, a million, a billion,
+    0.01 or 100."""
+    raw = str(n)
+    for scale in (1, 1e3, 1e6, 1e9, 0.01, 100):
+        assert problems(_share(raw, n * scale, "as printed")) == [], (raw, scale)
+    assert any(
+        "at a stated scale" in p for p in problems(_share(raw, n * 7, "as printed"))
+    )
+    stated = "£ million x 1,000,000"
+    assert problems(_share(raw, n * 1e6, stated)) == []
+    for scale in (1, 1e3, 1e9, 0.01, 100):
+        found = problems(_share(raw, n * scale, stated))
+        assert any("at a stated scale" in p for p in found), (raw, scale, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "value", "wrong"),
+    [("four", 4, 40), ("twenty-five", 25, 250), ("a hundred and five", 105, 1050)],
+)
+def test_words_alone_take_the_normalization_s_factor_failing_that_one(
+    raw, value, wrong
+):
+    """Number words with no word of their own take the normalization's factor,
+    failing that 1, and never the fixed set digits fall back on."""
+    assert problems(_share(raw, value, "as printed")) == []
+    for bad in (wrong, value * 1e3, value * 1e6, value * 0.01, value * 100):
+        found = problems(_share(raw, bad, "as printed"))
+        assert any("at a stated scale" in p for p in found), (raw, bad, found)
+    assert problems(_share(raw, value * 1e6, "measures x 1,000,000")) == []
+    found = problems(_share(raw, value, "measures x 1,000,000"))
+    assert any("at a stated scale" in p for p in found), (raw, found)
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    text=st.lists(
+        st.sampled_from(
+            ["1", "4", "2.5", "1,000", "1e3", "1e999", ".5", "£", "$", "-", "−", "–"]
+            + ["—", "+", "%", "(", ")", "in", "every", "out", "of", "to", "and", "a"]
+            + ["an", "half", "third", "quarters", "one", "four", "twenty", "hundred"]
+            + ["thousand", "million", "bn", "m", "k", "per", "cent", "percentage"]
+            + ["point", "about", "over", "year", "gdp", "nil", "no", "change", ","]
+            + [" ", "  ", "\u00a0", "\u200b", "٣", "th", "s"]
+        ),
+        max_size=8,
+    ).map("".join),
+    value=st.floats(-1e12, 1e12, allow_nan=False),
+)
+def test_any_string_of_number_parts_gives_a_verdict_never_an_exception(text, value):
+    """The checker reads any arrangement of these parts whole or reports it,
+    and never raises."""
+    found = problems(_share(text, value, "as printed"))
+    assert isinstance(found, list) and all(isinstance(p, str) for p in found)
 
 
 @settings(max_examples=300, deadline=None)
@@ -804,7 +1352,10 @@ def test_rule_4_holds_whatever_the_title_case():
         publication__title="Budget 2026: IMPACT ON HOUSEHOLDS",
         value_kind="approx_chart_reading",
     )
-    assert any("rule 4" in p for p in problems(row))
+    found = [p for p in problems(row) if "rule 4" in p]
+    assert found
+    # the problem says what the locator should start with (cloud review A6)
+    assert all("paragraph, table, box or data label" in p for p in found)
 
 
 @pytest.mark.parametrize(
@@ -847,7 +1398,6 @@ def test_rule_4_holds_whatever_the_title_case():
         ("Figure 1.A data label unavailable, decile 3", True),
         ("Figure 1.A data label (not missing), decile 3", True),
         ("paragraph 1.7 approximately; Figure 1.A", True),
-        ("Table 2.C and Figure 1.A", True),
         ("paragraph 1.7; not a bar reading from Figure 1.A", False),
         ("paragraph 1.7; isn't read off Figure 1.A", False),
         ("paragraph 1.7; never a chart reading, Figure 1.A", False),
@@ -858,6 +1408,32 @@ def test_rule_4_holds_whatever_the_title_case():
         ("data labels on Figure 1.B", False),
         ("Box 1.A; Figure 1.A", False),
         ("  paragraph 1.7 ; Figure 1.A", False),
+        # delta review D5: any spacing, hyphen or case in a bar-reading phrase
+        ("paragraph 1.7; bar-reading from Figure 1.A", True),
+        ("paragraph 1.7; BAR  READING from Figure 1.A", True),
+        ("paragraph 1.7; read  off the chart from Figure 1.A", True),
+        ("paragraph 1.7; chart–reading of Figure 1.A", True),
+        ("paragraph 1.7; bars read by eye, Figure 1.A", True),
+        ("paragraph 1.7; reading from the chart, Figure 1.A", True),
+        ("paragraph 1.7; estimated from the figure", True),
+        ("paragraph 1.7; estimated from Figure 1.A", True),
+        ("paragraph 1.7; not a bar-reading from Figure 1.A", False),
+        # a word between the negation and the phrase, or a comma, ends the
+        # negation (delta review D5)
+        ("paragraph 1.7; not only a bar reading", True),
+        ("paragraph 1.7; no, a bar reading", True),
+        # the figure with a hyphen or a dash in its name
+        ("Figure 1-A, decile 3 bar", True),
+        ("Figure 1–B, decile 3 bar", True),
+        # cloud review A6: forms that name where HM Treasury prints the number
+        ("Table 2.C and Figure 1.A", False),
+        ("paragraph 1.7 and Figure 1.A", False),
+        ("paragraphs 1.7–1.8; Figure 1.A", False),
+        ("paragraphs 1.7-1.8; Figure 1.A", False),
+        ("paragraphs 1.7 to 1.8; Figure 1.A", False),
+        ("Figure 1.A: data label for decile 3", False),
+        ("Figure 1.A data label decile 3", False),
+        ("Figure 1.A, data label decile 3", True),
     ],
 )
 def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
@@ -904,6 +1480,7 @@ PRINTING = [
     "paragraph 1.7",
     "paragraphs 1.7 and 1.8",
     "Table 2.C",
+    "Table 2.C and Figure 1.A",
     "Box 1.A",
     "Figure 1.A data label",
     "Fig. 1B data labels",
@@ -922,7 +1499,6 @@ NOT_PRINTING = [
     "Figure 1.A data label unavailable",
     "Figure 1.A data label (not missing)",
     "paragraph 1.7 approximately",
-    "Table 2.C and Figure 1.A",
 ]
 NAMES_FIGURE = {
     "Figure 1.A data label",
