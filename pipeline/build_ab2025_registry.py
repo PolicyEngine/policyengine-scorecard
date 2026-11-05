@@ -108,10 +108,7 @@ def r10(x):
 def ns(pattern):
     rx = re.compile(pattern, re.I)
     ph = [p for p in P if rx.search(p) and not p.startswith("baseline.")]
-    # The parameter tree loads in sorted order, but policyengine-core adds
-    # variables in glob order, which differs by filesystem: sort them, as
-    # build_ab2026_registry.py does (#231's R1).
-    vh = sorted(v for v in V if rx.search(v))
+    vh = [v for v in V if rx.search(v)]
     return (
         f"Searched BOTH the parameter tree and the VARIABLE list for /{pattern}/. "
         f"Parameters: {len(ph)} node(s) {ph[:6]}. Variables: {len(vh)} {vh[:6]}. "
