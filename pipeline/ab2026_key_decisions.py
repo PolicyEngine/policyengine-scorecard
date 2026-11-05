@@ -1,6 +1,6 @@
-"""What tranche 2 of #230 did with each proposed AB2026 measure key.
+"""The decision on each AB2026 measure key a family proposed (#230).
 
-In tranche 1, a staged row whose scope matched no registered measure carried
+A staged row whose scope matched no registered measure carried
 `measure_key: null` and a proposed key in `conditions.proposed_measure_key`
 (harvest README rule 2). This module records, for each of the 86 proposed
 keys, whether we register it in `data/uk/ab2026_measures.json` or fold it into
@@ -38,15 +38,14 @@ PREFIX = "ab2026__"
 
 # The registered key for a proposed key we rename as we register it.
 RENAMED = {
-    # Review A's RB-8: the red book's paragraph 5.17 counts this Budget's
+    # The red book's paragraph 5.17 counts this Budget's
     # fraud and error measures with those already in the forecast, and
     # names no Parliament, so the key's name no longer says "parliament".
     "ab2026__package_parliament_welfare_fraud_and_error_savings": "ab2026__package_welfare_fraud_and_error_savings_in_forecast",
 }
 
-# Proposed keys we fold into a registered key: none. We checked each
-# package's scope against the registered packages and against every other
-# proposed key, and no two scopes match line for line (KEY_DECISIONS.md).
+# Proposed keys we fold into a registered key: none (rule 3;
+# test_no_two_registered_packages_share_a_list_of_legs).
 FOLDED: dict[str, tuple[str, str]] = {}
 
 
@@ -554,7 +553,7 @@ DECISIONS = {
     "ab2026__package_fuel_duty_and_electricity_vat": _d(
         "package",
         "OBR Table 3.1: fuel duty freeze and VAT off domestic energy bills (receipts)",
-        "The receipts of Table 6.1 lines 2 and 3 only (Table 3.1's tax groups are receipts groupings, review B finding 3); line 1 doesn't count.",
+        "The receipts of Table 6.1 lines 2 and 3 only (Table 3.1's tax groups are receipts groupings); line 1 doesn't count.",
         ("receipts",),
         "package",
         (OBR,),
@@ -574,7 +573,7 @@ DECISIONS = {
     "ab2026__package_tax_administration_compliance_and_debt_collection_receipts": _d(
         "package",
         "OBR Table 3.1: tax administration, compliance and debt collection measures (receipts)",
-        "The receipts of Table 6.1 lines 45 and 46, equal in all six years, whose totals round differently (review B finding 3); RF restates the OBR's group.",
+        "The receipts of Table 6.1 lines 45 and 46, equal in all six years, whose totals round differently; RF restates the OBR's group.",
         ("receipts",),
         "package",
         (OBR, RF),
@@ -595,7 +594,7 @@ DECISIONS = {
     "ab2026__package_barnett_consequentials": _d(
         "package",
         "Barnett consequentials of decisions confirmed at Budget for the devolved governments",
-        "Red book paragraph 4.150: the consequentials for the Scottish, Welsh and Northern Ireland governments, 2026-27 to 2029-30, without the technical reduction from lower employer pension contributions; each government's figure is a component, and the nation rides in conditions.geography.",
+        "Red book paragraph 4.150: the consequentials for the Scottish, Welsh and Northern Ireland governments, 2026-27 to 2029-30, without the technical reduction from lower employer pension contributions; each government's figure is a component, and conditions.geography names the nation.",
         (
             "scope_why",
             "Block grant funding between the UK and devolved governments: no tax or benefit rule for households changes.",
@@ -620,7 +619,7 @@ DECISIONS = {
     "ab2026__package_civil_service_transformation_programme": _d(
         "package",
         "OBR: the civil service transformation programme",
-        "The OBR's programme to reduce resource spending; it names no lines, and lines 63 and 64 are probable but not established (review B finding 14).",
+        "The OBR's programme to reduce resource spending; it names no lines, and lines 63 and 64 are probable but not established.",
         (
             "scope",
             "SPEND",
@@ -662,7 +661,7 @@ DECISIONS = {
     "ab2026__package_defence_investment_plan": _d(
         "package",
         "The Defence Investment Plan",
-        "The plan published in June 2026, which no single line covers; lines 40 to 42 carry its savings and funding, and the OBR's £1.8 billion a year is its RDEL part, a component.",
+        "The plan published in June 2026, which no single line covers; Table 6.1 prints its savings and funding on lines 40 to 42, and the OBR's £1.8 billion a year, its RDEL part, is a component.",
         (
             "scope",
             "SPEND",
@@ -690,7 +689,7 @@ DECISIONS = {
     "ab2026__package_fuel_duty_freezes_since_2010_11": _d(
         "package",
         "OBR: cumulative fuel duty freezes from 2010-11 to 2027-28 and the 5p cut",
-        "The OBR's cumulative cost against RPI uprating, which includes line 3 and every freeze since 2010-11; RF's ab2026_option__fuel_duty_rpi_uprating_since_2011 sees the same pair of paths from the other side (review A's K-6).",
+        "The OBR's cumulative cost against RPI uprating, which includes line 3 and every freeze since 2010-11; RF's ab2026_option__fuel_duty_rpi_uprating_since_2011 sees the same pair of paths from the other side.",
         (
             "scope_why",
             "A sum of the receipts that seventeen years of fuel duty decisions forgo against RPI uprating: the engine scores one world against another in a policy year, not a cumulative history of past decisions.",
@@ -727,7 +726,7 @@ DECISIONS = {
     "ab2026__package_household_energy_vat_and_household_share_of_fuel_duty": _d(
         "package",
         "RF's cost-of-living package: lines 1 and 2 and the household share of the fuel duty cut",
-        "Table 6.1 lines 1 and 2 plus the share of line 3 that accrues directly to households (RF footnote 19), a two-year total; not lines 1 to 3 exactly (rule 3, review A's K-4).",
+        "Table 6.1 lines 1 and 2 plus the share of line 3 that accrues directly to households (RF footnote 19), a two-year total; not lines 1 to 3 exactly (rule 3).",
         (
             "words",
             "RF counts only the household-incidence share of line 3, which no registry measure holds",
@@ -789,7 +788,7 @@ DECISIONS = {
     "ab2026__package_obr_other_departmental_spending_changes": _d(
         "package",
         "OBR Table 3.1: other departmental spending changes",
-        "Departmental spending changes without the pension valuations, including line 1's DEL funding, defence, capital spending and the £5.5bn 2031-32 RDEL reduction (review B finding 9).",
+        "Departmental spending changes without the pension valuations, including line 1's DEL funding, defence, capital spending and the £5.5bn 2031-32 RDEL reduction.",
         (
             "scope",
             "SPEND",
@@ -883,7 +882,7 @@ DECISIONS = {
     "ab2026__package_pubs_relief_35pc_total": _d(
         "package",
         "The whole 35% business rates relief for pubs, social clubs and live music venues in England",
-        "The 15% announced in January 2026 (red book paragraph 6.189, no AB2026 line) plus line 12's further 20ppt (review A's RB-3).",
+        "The 15% announced in January 2026 (red book paragraph 6.189, no AB2026 line) plus line 12's further 20ppt.",
         (
             "scope",
             "RATES",
@@ -1099,7 +1098,7 @@ DECISIONS = {
     "ab2026_option__fuel_duty_rpi_uprating_since_2011": _d(
         "option",
         "Fuel duty uprated by RPI since January 2011",
-        "RF's revenue that the freezes forgo against RPI uprating since January 2011; it mirrors the OBR's ab2026__package_fuel_duty_freezes_since_2010_11 (review A's K-6).",
+        "RF's revenue that the freezes forgo against RPI uprating since January 2011; it mirrors the OBR's ab2026__package_fuel_duty_freezes_since_2010_11.",
         (
             "scope_why",
             "A counterfactual history of fuel duty rates since 2011: the engine scores one world against another in a policy year, not a path of past decisions.",
@@ -1200,7 +1199,7 @@ assert set(RENAMED) <= set(DECISIONS)
 
 
 def registered_key(proposed):
-    """The key a row with this proposed key carries once tranche 2 lands."""
+    """The registered key that rows with this proposed key carry."""
     if proposed in FOLDED:
         return FOLDED[proposed][0]
     return RENAMED.get(proposed, proposed)

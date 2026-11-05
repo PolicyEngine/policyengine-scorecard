@@ -120,7 +120,7 @@ UPSTREAM = {
     "student_loan_interest_cap": "policyengine-uk: a cap on Plan 2 and postgraduate (Plan 3) student loan interest",
     "bik": "policyengine-uk: company cars and their benefit-in-kind appropriate percentages",
     "hvcts_reliefs": "policyengine-uk: deferrals, discounts and exemptions within the high value council tax surcharge",
-    # Tranche 2 (pipeline/ab2026_key_decisions.py): measures and options with
+    # pipeline/ab2026_key_decisions.py: measures and options with
     # no Table 6.1 line
     "energy_bills": "policyengine-uk: household energy bills split into standing charges, unit rates, levies and debt costs (gas_consumption and electricity_consumption are the nearest variables)",
     "earnings": "policyengine-uk: employment income that responds to minimum wage rates (employment_income is an input)",
@@ -187,6 +187,32 @@ def scope(why, pattern, link=None):
         "out_of_model_scope": True,
         "action_link": link or ISSUE,
     }
+
+
+def no_expressible_leg(legs):
+    """The verdict of a package or receipts group whose every leg is
+    not_expressible: its gap is each leg's gap, so `why`, `name_search`,
+    the triage flag and the upstream items come from the legs."""
+    assert legs and all(m["computability"] == "not_expressible" for m in legs)
+    out = {
+        "computability": "not_expressible",
+        "pe_reform_delta": None,
+        "why": f"None of the {len(legs)} legs is expressible. "
+        + " ".join(f"{m['measure_key']}: {m['why']}" for m in legs),
+        "name_search": "Each leg's search. "
+        + " ".join(f"{m['measure_key']}: {m['name_search']}" for m in legs),
+    }
+    upstream = list(
+        dict.fromkeys(m["upstream_item"] for m in legs if m.get("upstream_item"))
+    )
+    if upstream:
+        out["policyengine_uk_development_item"] = True
+        out["upstream_item"] = "; ".join(upstream)
+    else:
+        out["out_of_model_scope"] = True
+    links = {m["action_link"] for m in legs}
+    out["action_link"] = links.pop() if len(links) == 1 else ISSUE
+    return out
 
 
 def baseline(*paths):
@@ -1042,6 +1068,8 @@ for slug, spec in K.PACKAGES.items():
             m["note"] = (
                 "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
             )
+    elif all(c == "not_expressible" for c in comp):
+        m.update(no_expressible_leg([BY_LINE[l] for l in lines]))
     else:
         m["computability"] = "partial"
         not_expr = [l for l, c in zip(lines, comp) if c == "not_expressible"]
@@ -1062,8 +1090,9 @@ for slug, spec in K.PACKAGES.items():
 
 
 # ---------------------------------------------------------------------------
-# Tranche 2: the keys tranche 1 proposed (pipeline/ab2026_key_decisions.py,
-# KEY_DECISIONS.md), appended so tranche 1's entries keep their order
+# The keys the families proposed (pipeline/ab2026_key_decisions.py,
+# KEY_DECISIONS.md), appended after the Table 6.1 entries so those keep
+# their order
 # ---------------------------------------------------------------------------
 
 TEMPLATES = {
@@ -1081,10 +1110,16 @@ def _legs_of(d):
     return [K.key(x) if isinstance(x, int) else x for x in d.get("legs") or []]
 
 
+def _names(producers):
+    names = [f"`{p}`" for p in producers]
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
 def _producer_note(proposed, d):
     return (
-        f"Proposed in tranche 1 as {proposed} on {d['rows']} staged rows "
-        f"({', '.join(d['producers'])}); registered in tranche 2 (KEY_DECISIONS.md). "
+        f"{_names(d['producers'])} {'scores' if len(d['producers']) == 1 else 'score'} "
+        f"it on {d['rows']} staged rows of the Autumn Budget 2026 harvest "
+        "(KEY_DECISIONS.md). "
         f"Scope, from the families' NOTES.md: {d['scope']}"
     )
 
@@ -1144,6 +1179,9 @@ def _package_verdict(d):
                 "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
             )
             return out
+        if all(c == "not_expressible" for c in comp):
+            out.update(no_expressible_leg([BY_KEY[k] for k in legs]))
+            return out
         expressible = [k for k, c in zip(legs, comp) if c == "expressible"]
         not_expr = sum(c == "not_expressible" for c in comp)
         partial = [k for k, c in zip(legs, comp) if c == "partial"]
@@ -1158,6 +1196,12 @@ def _package_verdict(d):
         return out
     if kind == "receipts":
         legs = [K.key(x) for x in d["receipts_of"]]
+        if all(BY_KEY[k]["computability"] == "not_expressible" for k in legs):
+            return {
+                "construction": "receipts_of_registry_measures",
+                "receipts_of": legs,
+                **no_expressible_leg([BY_KEY[k] for k in legs]),
+            }
         expressible = [k for k in legs if BY_KEY[k]["computability"] == "expressible"]
         return {
             "construction": "receipts_of_registry_measures",

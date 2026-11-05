@@ -194,40 +194,84 @@ def test_claim_ids_are_unique(staged):
 
 
 def test_each_hm_treasury_figure_is_counted_once(staged):
-    """The costings repeat 408 Table 6.1 cells and the red book 15; the
+    """The costings repeat 408 Table 6.1 cells and the red book 24; the
     ingest keeps each Table 6.1 claim and records its twins on it."""
     scores, acct = staged
-    assert acct["drops"]["hmt_figure_staged_twice"]["rows"] == 423
+    assert acct["drops"]["hmt_figure_staged_twice"]["rows"] == 432
     assert (
         acct["by_family"]["uk_hmt_costings"]["drops"]["hmt_figure_staged_twice"] == 408
     )
-    assert acct["by_family"]["uk_hmt_redbook"]["drops"]["hmt_figure_staged_twice"] == 15
+    assert acct["by_family"]["uk_hmt_redbook"]["drops"]["hmt_figure_staged_twice"] == 24
     printed = [s for s in scores if "also_printed_in" in s.publication]
-    assert sum(len(s.publication["also_printed_in"]) for s in printed) == 423
+    assert sum(len(s.publication["also_printed_in"]) for s in printed) == 432
     for s in printed:
         assert s.publication["family"] == "uk_hmt_tables"
         assert {
             t["family"] for t in s.publication["also_printed_in"]
         } <= I._TWIN_FAMILIES
-
-    def figure(s):
-        return (
-            s.conditions.get("measure_key"),
-            s.conditions.get("staged_metric", s.metric.value),
-            s.unit_concept.value,
-            s.period,
-            s.value,
-        )
-
-    tables = {figure(s) for s in scores if s.publication["family"] == "uk_hmt_tables"}
-    left = [
-        figure(s)
+    by_locator = {
+        s.publication.get("locator"): s
         for s in scores
-        if s.publication["family"] in I._TWIN_FAMILIES
-        and not s.conditions.get("component")
-        and s.conditions.get("row_type") != "measure_component"
+        if s.publication["family"] == "uk_hmt_tables"
+    }
+    for (fam, i), (t, reason) in I.REVIEWED_TWINS.items():
+        assert len(reason) > 80
+        kept = by_locator[RAW["uk_hmt_tables"][t]["publication"]["locator"]]
+        assert RAW[fam][i]["publication"]["locator"] in {
+            p["locator"] for p in kept.publication["also_printed_in"]
+        }, (fam, i)
+
+
+# A costings or red book claim within 5% of a Table 6.1 or 6.2 claim on the
+# same key and metric, once both read in PolicyEngine's orientation, that the
+# reviewed twin table doesn't hold: (family, locator, period) -> why it stays
+# a claim. A horizon difference (a multi-year total against one year) never
+# comes within 5%, so none needs listing here.
+NOT_TWINS: dict[tuple[str, str, int], str] = {}
+
+
+def _pe_signed(s):
+    relation, _ = signs.classify(
+        {"metric": s.metric.value, "conditions": s.conditions, "country": "UK"}
+    )
+    return signs.external_value_pe_sign(s.value, relation)
+
+
+def test_no_costings_or_red_book_claim_repeats_a_table_figure(staged):
+    """A scan independent of _twin_key: it reads signs through signs.classify,
+    allows rounding to 5% and ignores the period, so a repetition with
+    another sign, rounding or year shows up unless the reviewed twin table
+    drops it or NOT_TWINS gives a reason."""
+    scores, _ = staged
+    tables = [
+        s
+        for s in scores
+        if s.publication["family"] == "uk_hmt_tables"
+        and s.conditions.get("table") in ("6.1", "6.2")
     ]
-    assert not [f for f in left if f in tables]
+    hits = set()
+    for s in scores:
+        if (
+            s.publication["family"] not in I._TWIN_FAMILIES
+            or s.conditions.get("component")
+            or s.conditions.get("row_type") == "measure_component"
+        ):
+            continue
+        v = _pe_signed(s)
+        if not v:
+            continue
+        for t in tables:
+            if t.metric != s.metric or t.conditions.get(
+                "measure_key"
+            ) != s.conditions.get("measure_key"):
+                continue
+            w = _pe_signed(t)
+            if w and abs(v - w) <= 0.05 * abs(w):
+                hits.add(
+                    (s.publication["family"], s.publication.get("locator"), s.period)
+                )
+    assert hits <= set(NOT_TWINS), sorted(hits - set(NOT_TWINS))
+    assert all(len(why) > 40 for why in NOT_TWINS.values())
 
 
 # --- the metric calls ----------------------------------------------------------
@@ -380,13 +424,14 @@ def test_row_order_never_changes_the_claims_or_the_tally(seed):
         rng.shuffle(numbered[fam])
     scores, acct = I.stage(numbered)
     base_scores, base_acct = BASE
-    assert sorted(s.claim_id() for s in scores) == sorted(
-        s.claim_id() for s in base_scores
-    )
+    # whole serialized claims, publication and twin printings included, so a
+    # row order can't change which printing a claim cites
+    assert _rows(scores) == BASE_ROWS
     assert I.summarise(acct) == I.summarise(base_acct)
 
 
 BASE = I.stage()
+BASE_ROWS = _rows(BASE[0])
 
 
 @settings(max_examples=40, deadline=None, suppress_health_check=[HealthCheck.too_slow])
@@ -562,11 +607,15 @@ def _main_ref():
     return None
 
 
-@pytest.mark.skipif(_main_ref() is None, reason="no main ref in this checkout")
 def test_ab2025_ingest_matches_main(tmp_path):
     """AB2025's claims, pe_gap results, diagnoses and lanes come out byte
     for byte as on main, and so do tranche 3's staging, attached
-    counterparts and advanced lanes."""
+    counterparts and advanced lanes. CI fetches origin/main, so there a
+    missing ref fails; a local checkout without one skips."""
+    if _main_ref() is None:
+        if os.environ.get("GITHUB_ACTIONS"):
+            pytest.fail("CI must fetch origin/main for the AB2025 differential")
+        pytest.skip("no main ref in this checkout")
     main = tmp_path / "main"
     main.mkdir()
     archive = subprocess.run(

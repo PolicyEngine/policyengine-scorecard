@@ -47,7 +47,8 @@ def test_each_registered_key_carries_its_kind_and_producers():
         assert m["producers"] == list(d["producers"]), pk
         want = "option_costed_by_others" if d["kind"] == "option" else "announced"
         assert m["reported_status"] == want, pk
-        assert pk in m["source_note"], pk
+        assert m.get("proposed_as", m["measure_key"]) == pk, pk
+        assert d["scope"] in m["source_note"], pk
 
 
 def test_a_package_of_legs_names_exactly_its_lines():

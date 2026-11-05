@@ -34,10 +34,10 @@
    }
   },
   "ab2026__household_energy_payment_100_bands_a_to_d": {
-   "claims": 62,
+   "claims": 60,
    "computed": 0,
    "reasons": {
-    "devolved_share_not_modelled": 26,
+    "devolved_share_not_modelled": 24,
     "household_count": 2,
     "share_of_households": 14,
     "spending_decile_breakdown": 1,
@@ -81,12 +81,12 @@
    }
   }
  },
- "claims": 372,
+ "claims": 370,
  "computed": 35,
  "reasons": {
   "benefit_recipients_count": 1,
   "cumulative_real_terms": 4,
-  "devolved_share_not_modelled": 26,
+  "devolved_share_not_modelled": 24,
   "exchequer_component": 141,
   "fuel_duty_base": 6,
   "household_count": 3,

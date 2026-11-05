@@ -76,8 +76,7 @@ T61_FOOTNOTES = (
 # Table 6.2 line 6 reprioritises existing financial transactions budgets to
 # fund line 5's new equity loan scheme. Its cells are not the scheme's, so it
 # takes its own key, as Table 6.1 line 34's reprioritisation does (review A
-# T-1). Tranche 1 proposed it, and tranche 2 registered it with the table's
-# total (pipeline/ab2026_key_decisions.py).
+# T-1). The registry holds both keys (pipeline/ab2026_key_decisions.py).
 T62_OWN = {6: "ab2026__your_first_home_ft_reprioritisation"}
 T62_TOTAL = "ab2026__package_total_financial_transactions"
 # The workbook shades its five top-level section headings (B5, B27, B43, B58,
