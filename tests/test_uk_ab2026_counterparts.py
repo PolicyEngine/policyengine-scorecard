@@ -5,27 +5,31 @@ measure with one cell of the dashboard's Budget-day artifacts, or tallies a
 written reason. These tests pin its invariants:
 
 1. every vendored file's bytes hash to MANIFEST.json, each CSV to its
-   receipt, and each receipt to the registry, at the pinned commit;
+   receipt, and each receipt to the registry, at the pinned commit, and
+   ``vendor`` writes the committed manifest and files;
 2. the 6.11.1 pair record states what every receipt states about the run;
-3. every counterpart traces to one file, column and row, and re-deriving it
-   from the CSV gives the same value byte for byte;
+3. every counterpart traces to one file, column and row, and we rederive it
+   from its CSV cell and the producer's sign convention, byte for byte;
 4. the accounting closes per measure and in total, against the pin;
 5. a sign flip in a claim flips the sign relation and the counterpart's
    sign, and leaves its magnitude alone;
 6. two runs give the same output, and so does any order of the claims;
 7. no claim gets two computed answers;
 8. a database built with the AB2026 ingest and these results shows each
-   comparison, and build_db.py calls none of it.
-9. each exchequer row has the timing, baseline and sign annotations,
-   its measure's scope sentence in full, and one sentence naming every
-   nonzero line of the OBR's breakdown for its measure and year except the
-   receipts heads, the welfare line and the behavioural line, each with its
-   amount, its direction and the test's own name for it;
+   comparison, and build_db.py calls none of it;
+9. each row carries exactly the annotations its producer, measure and year
+   call for. On an exchequer row, those run from the fiscal year, baseline,
+   change, timing and sign sentences to its measure's scope sentences, the
+   behavioural sentence on property rows from 2028-29, and one sentence naming
+   every nonzero line of the OBR's breakdown for its measure and year except
+   the receipts heads, the welfare line and the behavioural line, each with
+   its amount, its direction and the test's own name for it;
 10. each measure whose receipt names part of the UK takes a tally or a scope
     annotation;
-11. the expected file pins each paired claim's value, file, column and row,
-    and the
-    year from the claim matches the year from the cell.
+11. the expected file pins each paired claim's value, file, column and row, and
+    the year from the claim matches the year from the cell;
+12. we reject claims with a different geography or unit, claims assigned to the
+    OBR costings lane, and a named OBR line under another sign convention.
 
 Hypothesis drives 5 and 6.
 """
@@ -41,6 +45,7 @@ import shutil
 import sqlite3
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from hypothesis import HealthCheck, given, settings
@@ -123,6 +128,54 @@ def test_a_changed_byte_is_refused(tmp_path, monkeypatch):
         S.read_file(path, MANIFEST)
 
 
+def _vendor_from_committed_bytes(tmp_path, monkeypatch, change=None):
+    """Point ``vendor`` at a scratch root, and answer each ``git show`` with the
+    committed copy of that file, changed by ``change`` if it names the file."""
+
+    def show(cmd, **_):
+        assert cmd[:2] == ["git", "show"]
+        commit, path = cmd[2].split(":", 1)
+        assert commit == MANIFEST["source"]["commit"]
+        data = (ROOT / S.local_path(path)).read_bytes()
+        return SimpleNamespace(stdout=change(path, data) if change else data)
+
+    monkeypatch.setattr(S, "ROOT", tmp_path)
+    monkeypatch.setattr(S, "ARTIFACTS", tmp_path / "results" / "uk" / "ab2026")
+    monkeypatch.setattr(
+        S, "MANIFEST", tmp_path / "results" / "uk" / "ab2026" / "MANIFEST.json"
+    )
+    monkeypatch.setattr(S.subprocess, "run", show)
+    return tmp_path / "checkout"
+
+
+def test_vendor_writes_the_committed_manifest_and_files(tmp_path, monkeypatch):
+    committed = (ROOT / "results" / "uk" / "ab2026" / "MANIFEST.json").read_bytes()
+    checkout = _vendor_from_committed_bytes(tmp_path, monkeypatch)
+    assert S.vendor(checkout) == MANIFEST
+    assert S.MANIFEST.read_bytes() == committed
+    for path in MANIFEST["artifacts"]:
+        assert (tmp_path / path).read_bytes() == (ROOT / path).read_bytes(), path
+
+
+@pytest.mark.parametrize(
+    ("suffix", "message"),
+    [
+        ("receipt.json", "bytes differ from the registry"),
+        ("budgetary_impact.csv", "differs from its receipt"),
+        ("age_impact.csv", "differs from its receipt"),
+    ],
+)
+def test_vendor_refuses_a_file_whose_bytes_changed(
+    tmp_path, monkeypatch, suffix, message
+):
+    def change(path, data):
+        return data + b"\n" if path.endswith(suffix) else data
+
+    checkout = _vendor_from_committed_bytes(tmp_path, monkeypatch, change)
+    with pytest.raises(ValueError, match=message):
+        S.vendor(checkout)
+
+
 # --- 2. the pair record --------------------------------------------------------
 
 
@@ -172,8 +225,18 @@ def test_the_pair_record_states_what_every_receipt_states():
 # --- 3. traces -----------------------------------------------------------------
 
 
+# The sign conventions on the paired rows. Each shows a cost to the Exchequer as
+# negative, as the dashboard's budgetary impact column does.
+COST_IS_NEGATIVE = (
+    "Note (verbatim): This table uses the convention that a negative sign implies "
+    "a loss to the Exchequer",
+    "positive = yield to the Exchequer",
+)
+
+
 def _rederive(row: dict) -> float:
-    """The counterpart from the CSV alone, read without the stager."""
+    """We rederive the counterpart from its CSV cell and the producer's sign
+    convention."""
     trace = row["trace"]
     text = (ROOT / trace["file"]).read_text()
     hits = [
@@ -187,8 +250,8 @@ def _rederive(row: dict) -> float:
     claim = BY_ID[row["external_claim_match"]["claim_id"]]
     if trace["column"] == "value":
         assert trace["file"].endswith("/budgetary_impact.csv")
-        relation, _ = S.sign_relation(claim)
-        return (1 if relation == signs.SAME else -1) * float(raw) * 1e9
+        assert claim["conditions"]["sign_convention"].startswith(COST_IS_NEGATIVE)
+        return float(raw) * 1e9
     assert trace["column"] == "people_directly_affected"
     assert trace["where"]["age_band"] == "all"
     return float(raw)
@@ -236,6 +299,79 @@ def test_every_reason_is_written_out():
         text = S.REASONS[reason]
         assert len(text) > 60 and text[0].isupper() and text.endswith("."), reason
     assert set(S.REASONS) == set(TALLY["reasons"])
+
+
+def _england_average():
+    (claim,) = [
+        c
+        for c in CLAIMS
+        if c["metric"] == "average_household_income_change"
+        and c["conditions"].get("geography") == "England"
+    ]
+    return copy.deepcopy(claim)
+
+
+def test_the_england_only_average_is_tallied():
+    claim = _england_average()
+    assert claim["source"] == "ifs"
+    assert claim["measure_key"] == next(iter(S.DEVOLVED_SHARE_NOT_MODELLED))
+    assert claim["unit"] == "gbp_per_household"
+    assert S.classify(claim) == (None, "england_only_average")
+    assert TALLY["reasons"]["england_only_average"] == 1
+
+
+def test_a_spending_decile_average_on_another_measure_or_area_raises():
+    moved = _england_average()
+    moved["measure_key"] = S.TRADING
+    with pytest.raises(S.Unmatched, match="income axis"):
+        S.classify(moved)
+    uk = _england_average()
+    uk["conditions"]["geography"] = "UK"
+    with pytest.raises(S.Unmatched, match="income axis"):
+        S.classify(uk)
+
+
+def _paired_claim(metric):
+    row = next(r for r in ROWS if r["metric"] == metric)
+    return copy.deepcopy(BY_ID[row["external_claim_match"]["claim_id"]])
+
+
+def test_a_gainer_claim_on_part_of_the_uk_raises():
+    claim = _paired_claim("gainer_count")
+    claim["conditions"]["geography"] = "England"
+    with pytest.raises(S.Unmatched, match="gainer geography"):
+        S.classify(claim)
+
+
+def test_a_gainer_claim_in_another_unit_raises():
+    claim = _paired_claim("gainer_count")
+    claim["unit"] = "households"
+    with pytest.raises(S.Unmatched, match="gainers on"):
+        S.classify(claim)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda c: c.update(unit="usd"),
+        lambda c: c["conditions"].update(geography="England"),
+        lambda c: c["conditions"].update(fy="2027"),
+    ],
+    ids=["unit", "geography", "fiscal year"],
+)
+def test_an_exchequer_claim_of_another_shape_raises(change):
+    claim = _paired_claim("revenue_change")
+    change(claim)
+    with pytest.raises(S.Unmatched, match="exchequer claim shape"):
+        S.classify(claim)
+
+
+@pytest.mark.parametrize("metric", ["revenue_change", "gainer_count"])
+def test_a_claim_on_the_obr_costings_lane_raises(metric):
+    claim = _paired_claim(metric)
+    claim["conditions"]["obr_measure_key"] = "a key"
+    with pytest.raises(S.Unmatched, match="OBR costings lane"):
+        S.classify(claim)
 
 
 def _exchequer_claims(key):
@@ -305,6 +441,10 @@ TIMING = (
     "later year."
 )
 SIGN = "Both sides show a cost to the Exchequer as negative (PE's own orientation)."
+CHANGE = (
+    "We estimate the change in government revenue less spending from the "
+    "dashboard's budgetary impact table."
+)
 
 
 # The test's own reading of the OBR's breakdown: which lines gov_balance
@@ -368,31 +508,44 @@ def _expected_breakdown(claim):
     return f"The OBR also counts {listed} in this year, and {tail}."
 
 
-def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
-    for row in EXCHEQUER_ROWS():
+def _opening(claim):
+    """The two sentences every row opens with."""
+    theirs = (
+        "the OBR measures it from its forecast before the Budget's measures"
+        if claim["source"] == "obr_efo"
+        else "HM Treasury names no baseline in its table"
+    )
+    return [
+        f"We estimate fiscal year {claim['conditions']['fy']} from PolicyEngine's "
+        "static Budget-day run on the Autumn Budget dashboard, with no behavioural "
+        "response.",
+        "We measure the change from current law in policyengine-uk 2.151.0, and "
+        f"{theirs}.",
+    ]
+
+
+def _erosion():
+    (line,) = [
+        c
+        for c in CLAIMS
+        if c["measure_key"] == S.PROPERTY
+        and c["conditions"].get("component") == "behavioural erosion of yield"
+    ]
+    return line
+
+
+def test_every_exchequer_row_carries_exactly_its_annotations():
+    rows = EXCHEQUER_ROWS()
+    assert len(rows) == 34
+    for row in rows:
         claim = BY_ID[row["external_claim_match"]["claim_id"]]
-        notes = row["annotations"]
-        assert TIMING in notes
-        assert SIGN in notes
-        theirs = (
-            "the OBR measures it from its forecast before the Budget's measures"
-            if claim["source"] == "obr_efo"
-            else "HM Treasury names no baseline in its table"
-        )
-        assert (
-            "We measure the change from current law in policyengine-uk 2.151.0, "
-            f"and {theirs}."
-        ) in notes
-        assert any(
-            n.startswith(f"We estimate fiscal year {claim['conditions']['fy']} ")
-            for n in notes
-        )
-        want = _expected_breakdown(claim)
-        lines = [n for n in notes if n.startswith("The OBR also counts")]
-        if want is None:
-            assert not lines, row["external_claim_match"]
-        else:
-            assert lines == [want], (row["external_claim_match"], lines, want)
+        key = claim["measure_key"]
+        want = [*_opening(claim), CHANGE, TIMING, SIGN, *SCOPE[key]]
+        if key == S.PROPERTY and int(claim["conditions"]["fy"][:4]) >= 2028:
+            want.append(BEHAVIOURAL.format(f"{_erosion()['value'] / 1e9:.1f}"))
+        if (lines := _expected_breakdown(claim)) is not None:
+            want.append(lines)
+        assert row["annotations"] == want, row["external_claim_match"]
 
 
 def test_the_article_follows_the_spoken_amount():
@@ -436,59 +589,91 @@ def test_a_lines_sign_chooses_cost_or_gain():
 SCOPE = {
     "ab2026__carers_allowance_earnings_taper": (
         "We apply the taper in England and Wales and leave Northern Ireland's "
-        "Carer's Allowance at current law."
+        "Carer's Allowance at current law.",
+        "We count the extra allowance in full against Universal Credit but omit the "
+        "PAYE deduction from earnings that DWP would apply, so we can show some "
+        "carers losing overall.",
     ),
     "ab2026__property_income_rates_plus_2pp": (
         "We raise property income tax rates in England, Wales and Northern Ireland, "
         "and finance cost relief for landlords across the UK, as the government "
-        "does from 6 April 2027."
+        "does from 6 April 2027.",
     ),
     "ab2026__electricity_vat_zero_rate_to_july_2027": (
         "HM Treasury costs the zero rate on household, charity, residential care "
         "and a small amount of business electricity, and we estimate it on "
-        "household electricity only."
+        "household electricity only.",
     ),
     "ab2026__pension_tax_allowance": (
         "We net off any change in means-tested benefits that follows from lower "
         "income tax, and the OBR counts no change in welfare spending on this "
-        "measure."
+        "measure.",
     ),
     "ab2026__trading_allowance_3000": (
         "We have no gross trading receipts in our data, so we relieve profits up "
         "to £3,000 in full and give no relief above it. As a result, we may "
-        "overstate the cost for some people and understate it for others."
+        "overstate the Exchequer's cost for some traders and understate it for "
+        "others.",
     ),
 }
 BEHAVIOURAL = (
-    "The OBR expects more tax-motivated incorporation and higher non-compliance "
-    "to cut the yield by £{} billion a year, and we hold incomes fixed."
+    "The OBR expects more landlords to incorporate to save tax and more to underpay, "
+    "cutting the yield by £{} billion a year on average from 2028-29, and we hold "
+    "incomes fixed."
 )
 
 
-def test_each_measure_carries_its_scope_sentence_in_full():
-    for row in EXCHEQUER_ROWS():
-        assert SCOPE[row["measure_key"]] in row["annotations"], row["measure_key"]
+def test_the_carers_allowance_receipt_states_the_universal_credit_limit():
+    description = S.receipt(S.CARERS, MANIFEST)["dashboard"]["description"]
+    assert "deducts none of the PAYE on it from earnings, as DWP would" in description
+    assert "such a carer can lose overall" in description
 
 
 def test_property_rows_from_2028_29_carry_the_behavioural_line():
-    (erosion,) = [
-        c
-        for c in CLAIMS
-        if c["measure_key"] == S.PROPERTY
-        and c["conditions"].get("component") == "behavioural erosion of yield"
-    ]
-    want = BEHAVIOURAL.format(f"{erosion['value'] / 1e9:.1f}")
+    want = BEHAVIOURAL.format(f"{_erosion()['value'] / 1e9:.1f}")
     rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.PROPERTY]
     assert len(rows) == 10
     for row in rows:
         late = int(row["trace"]["where"]["year"]) >= 2028
         assert (want in row["annotations"]) == late, row["trace"]
     assert all(
-        "incorporation" not in n
+        "incorporate" not in n
         for r in EXCHEQUER_ROWS()
         if r["measure_key"] != S.PROPERTY
         for n in r["annotations"]
     )
+
+
+def _with_convention(monkeypatch, component, convention):
+    moved = copy.deepcopy(CLAIMS)
+    line = next(
+        c
+        for c in moved
+        if c["source"] == "obr_efo" and c["conditions"].get("component") == component
+    )
+    line["conditions"]["sign_convention"] = convention
+    monkeypatch.setattr(S, "claims", lambda: moved)
+    monkeypatch.setattr(S, "_COMPONENTS", None)
+
+
+def test_a_named_line_under_another_sign_convention_raises(monkeypatch):
+    _with_convention(
+        monkeypatch,
+        "Current AME: Scottish BGA (current)",
+        "Note (verbatim): A positive sign implies an increase in borrowing.",
+    )
+    with pytest.raises(S.Unmatched, match="another sign convention"):
+        S.components()
+
+
+def test_the_behavioural_line_under_another_sign_convention_raises(monkeypatch):
+    _with_convention(
+        monkeypatch,
+        "behavioural erosion of yield",
+        "as worded: positive = increase in yield",
+    )
+    with pytest.raises(S.Unmatched, match="another sign convention"):
+        S.components()
 
 
 def test_two_claims_on_one_named_line_raise(monkeypatch):
@@ -534,7 +719,7 @@ def test_electricity_rows_name_hm_treasurys_base():
     rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.ELECTRICITY]
     assert len(rows) == 4
     for row in rows:
-        assert SCOPE[S.ELECTRICITY] in row["annotations"]
+        assert set(SCOPE[S.ELECTRICITY]) <= set(row["annotations"])
 
 
 def test_a_welfare_change_on_the_pension_tax_allowance_raises(monkeypatch):
@@ -574,16 +759,15 @@ def test_an_unnamed_breakdown_line_raises(monkeypatch, name):
 
 def test_the_gainer_row_carries_its_population():
     (row,) = [r for r in ROWS if r["metric"] == "gainer_count"]
-    assert (
+    assert row["annotations"] == [
+        *_opening(BY_ID[row["external_claim_match"]["claim_id"]]),
         "We count people whose own income tax, National Insurance, student loan "
         "repayment or earnings change by £1 a year or more, leaving out households "
-        "we place in no income decile."
-    ) in row["annotations"]
-    assert (
+        "we place in no income decile.",
         "Of the four, the government changes only income tax through this "
         'allowance. HM Treasury counts "pensioners in total benefitting from a tax '
-        'reduction" and states no minimum.'
-    ) in row["annotations"]
+        'reduction" and states no minimum.',
+    ]
 
 
 SUB_UK = (

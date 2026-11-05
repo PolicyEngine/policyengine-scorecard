@@ -1,35 +1,36 @@
 """Stage PolicyEngine counterparts for Autumn Budget 2026 claims (#230, tranche 3).
 
 PolicyEngine published its Budget-day estimates through the UK Autumn Budget
-dashboard (PolicyEngine/uk-autumn-budget-dashboard-2026). The registry
-(data/uk/ab2026_measures.json) pins each run as a ``pe_modifier`` receipt at
-the dashboard commit 1eca3182, on policyengine 6.11.1 and policyengine-uk
-2.151.0. This module runs no microsimulation: it reads the published
-artifacts we vendor under ``results/uk/ab2026/``, and pairs each AB2026
-claim on a ``pe_modifier`` measure with one cell of one artifact, or tallies
-it with a written reason.
+dashboard (PolicyEngine/uk-autumn-budget-dashboard-2026). We pin each run in
+the registry (data/uk/ab2026_measures.json) as a ``pe_modifier`` receipt at the
+dashboard commit 1eca3182, on policyengine 6.11.1 and policyengine-uk 2.151.0.
+This module runs no microsimulation: it reads the published artifacts we vendor
+under ``results/uk/ab2026/``, and pairs each AB2026 claim on a ``pe_modifier``
+measure with one cell of one artifact, or tallies it with a written reason.
 
 The scope rule:
 
-- We tally a claim with a written reason when the producer's figure covers a
-  base or population our run leaves out and no line of the producer's lets a
-  reader size the gap (the Household Energy Payment outside England; fuel
-  duty, which HM Treasury scores on every litre of taxable fuel and we
-  estimate on the fuel households buy).
-- We keep the comparison and annotate it when the producer prints the line
-  our run leaves out. The annotation names that line and its amount for that
-  year, read from the OBR's component claims at stage time. It covers every
-  nonzero line of the OBR's breakdown, such as Scotland's block grant
-  adjustment, except the receipts heads ("Receipts:" and "Tax head
-  (receipts)") and the welfare line, which gov_balance itself counts. The
-  OBR's behavioural erosion of the property income yield takes its own
-  sentence, and any other line without a reader name or a rule raises.
-  HM Treasury costs
-  electricity used by charities, care homes and a small amount of business
-  as well as households, so those rows keep their comparison and say so.
-- We tally a year when our run shows no change because the measure isn't in
-  force, since the row then says nothing about the model: where both sides
-  read zero, and the Pension Tax Allowance after it ends on 5 April 2030.
+- We tally a claim when the producer includes a base or population we leave
+  out and prints no line that sizes the gap. For example, we tally the
+  Household Energy Payment's UK cost because we estimate payments in England
+  only. We also tally fuel duty, which HM Treasury scores on every taxable
+  litre while we estimate households' fuel.
+- We keep the comparison and annotate it when the producer prints the line our
+  run leaves out. We name that line and its amount for that year, read from the
+  OBR's component claims at stage time. We cover every nonzero line of the
+  OBR's breakdown, such as Scotland's block grant adjustment, except the
+  receipts heads ("Receipts:" and "Tax head (receipts)") and the welfare line,
+  which gov_balance itself counts. The stager writes the OBR's behavioural
+  erosion of the property income yield as its own sentence, and raises on any
+  other line without a reader name or a rule.
+- We keep the four electricity VAT rows with annotations naming household,
+  charity, residential care and business consumption in HM Treasury's base and
+  household electricity in ours. HM Treasury calls the business share small but
+  gives no separate amount for the charity or care shares.
+- We tally years in which we estimate no change before the government starts a
+  measure or after it ends the measure. We exclude years when both sides read
+  zero, and Pension Tax Allowance years after the government ends it on 5 April
+  2030.
 
 Two subcommands:
 
@@ -53,10 +54,9 @@ What a dashboard column measures, read from the dashboard's code at the pin
                                        employment income moves by £1 a year or
                                        more (AgeImpactCalculator)
 
-Each receipt labels a year by its fiscal year's start
-(execution_receipt.fiscal_year.year_label = start_year), so the dashboard's
-2027 is FY 2027-28. Every run executes current law at policyengine-uk 2.151.0
-as its baseline (receipt execution_receipt.baseline.kind), statically.
+The dashboard labels fiscal year 2027-28 as 2027, using its start year in every
+receipt. We estimate from current law in policyengine-uk 2.151.0, with no
+behavioural response.
 
 Pairing rules, in the order ``classify`` applies them:
 
@@ -66,9 +66,9 @@ Pairing rules, in the order ``classify`` applies them:
     gainer_count, persons, on a measure whose only lever is income tax
         -> age_impact people_directly_affected, age_band "all"
 
-Every other claim on a ``pe_modifier`` measure takes one reason from
-``REASONS``. A claim shape no rule names raises, so a re-staged harvest
-can't slip past the accounting.
+We give every other claim on a ``pe_modifier`` measure one reason from
+``REASONS``. The stager raises on a claim shape no rule names, so a re-staged
+harvest can't slip past the accounting.
 
     PYTHONPATH=. python pipeline/stage_uk_ab2026.py vendor <dashboard checkout>
     PYTHONPATH=. python pipeline/stage_uk_ab2026.py stage
@@ -117,9 +117,9 @@ USED_FILES: dict[str, tuple[str, ...]] = {
     "ab2026__property_income_rates_plus_2pp": ("budgetary_impact.csv",),
 }
 
-# The measure whose receipt says its run leaves part of the measure's cost
-# out: "Scotland, Wales and Northern Ireland receive a share of the funding
-# instead, which is not modelled."
+# Our run pays the Household Energy Payment in England only. Its receipt reads:
+# "Scotland, Wales and Northern Ireland receive a share of the funding instead,
+# which is not modelled."
 DEVOLVED_SHARE_NOT_MODELLED = frozenset(
     {"ab2026__household_energy_payment_100_bands_a_to_d"}
 )
@@ -134,61 +134,70 @@ REASONS: dict[str, str] = {
         "government gives Scotland, Wales and Northern Ireland, and we estimate "
         "the payment to households in England only."
     ),
+    "england_only_average": (
+        "IFS averages the payment across households in England, and we publish an "
+        "average across all UK households, with no figure for England alone."
+    ),
     "fuel_duty_base": (
         "HM Treasury scores fuel duty on every litre of taxable fuel in the UK, "
         "and we estimate the duty and VAT on the fuel households buy."
     ),
     "zero_both_sides": (
-        "The claim and our run both show zero for this year, so we have nothing "
-        "to compare."
+        "We and the producer both estimate no change in this year, so we leave it "
+        "out of the comparison."
     ),
     "measure_ended": (
         "The government ends the allowance on 5 April 2030, so we estimate no "
-        "change in this year, while HM Treasury and the OBR count a change in "
-        "receipts in it."
+        "change in this year, while HM Treasury and the OBR each count a change in "
+        "receipts."
     ),
     "exchequer_component": (
-        "The claim gives one part of the measure's effect on the public finances "
-        "(a tax head, a spending line or a block grant adjustment), and we "
-        "estimate only the whole effect."
+        "The OBR estimates one part of the measure's effect on the public finances, "
+        "such as a tax head, spending line or block grant adjustment, and we "
+        "estimate the whole effect."
     ),
     "cumulative_real_terms": (
-        "The claim sums 2026-27 to 2031-32 in 2026-27 prices, and we estimate "
-        "each year in cash."
+        "Tax Policy Associates sums 2026-27 to 2031-32 in 2026-27 prices, and we "
+        "estimate each year in cash."
     ),
     "vigintile_ahc_breakdown": (
-        "The claim splits households into twentieths of income after housing "
-        "costs, and we split them into tenths of income before housing costs."
+        "Resolution Foundation groups households into twentieths of income after "
+        "housing costs, and we group them into tenths of income before housing "
+        "costs."
     ),
     "household_count": (
-        "The claim counts households the measure reaches, and we publish no "
-        "count of households."
+        "HM Treasury counts households receiving support, and we publish no count "
+        "of households."
     ),
     "share_of_households": (
-        "The claim gives the share of households eligible for or reached by the "
-        "measure; we estimate the share of people whose household income changes."
+        "The producer reports the share of households or properties eligible for, "
+        "receiving or missing the payment; we estimate the share of people whose "
+        "household income changes."
     ),
     "typical_bill": (
-        "The claim prices one typical household's energy bill, and we estimate "
+        "The producer prices one typical household's energy bill, and we estimate "
         "changes in household income, not bills."
     ),
     "worked_example": (
-        "The claim works through one example household's tax or income, and we "
+        "The producer works through one example household's tax or income, and we "
         "compare population totals here."
     ),
     "motorists_count": (
-        "The claim counts motorists and businesses, and we count no drivers."
+        "HM Treasury counts motorists and businesses, and we count no drivers."
     ),
     "benefit_recipients_count": (
-        "The claim counts carers who gain Carer's Allowance, and we count only "
-        "people whose own taxes or earnings change."
+        "HM Treasury counts carers who gain Carer's Allowance, and we count people "
+        "whose own taxes or earnings change by at least £1 in households with an "
+        "income decile."
     ),
     "taken_out_of_tax_count": (
-        "The claim counts pensioners who stop paying income tax, and we count "
-        "everyone whose income tax changes."
+        "HM Treasury counts pensioners who stop paying income tax, and we count "
+        "people whose own income tax falls by at least £1 in households with an "
+        "income decile."
     ),
     "no_fiscal_year": (
-        "The claim counts people by the end of the Parliament, not in one fiscal year."
+        "HM Treasury counts people by the end of the Parliament, rather than in one "
+        "fiscal year."
     ),
 }
 
@@ -197,7 +206,8 @@ CARERS = "ab2026__carers_allowance_earnings_taper"
 PROPERTY = "ab2026__property_income_rates_plus_2pp"
 PENSION_TAX_ALLOWANCE = "ab2026__pension_tax_allowance"
 # HM Treasury says the allowance runs "from 6 April 2027 until 5 April 2030",
-# so our run reads zero after it, while both producers count a change in receipts.
+# so we estimate no change after it, while both producers count a change in
+# receipts.
 MEASURE_ENDED = {PENSION_TAX_ALLOWANCE: frozenset({"2030-31", "2031-32"})}
 SCOTTISH_BGA = "Current AME: Scottish BGA (current)"
 SCOTTISH_SFE = "Current AME: Scottish self-financed expenditure"
@@ -211,11 +221,17 @@ UNMODELLED_LINES = {
     "Current DEL: PSCE in RDEL": "departmental resource spending",
     "Current AME: Other AME (current)": "other annually managed expenditure",
 }
-# No annotation reads these lines, since gov_balance counts them itself.
+# We annotate none of these lines, since gov_balance counts them itself.
 RECEIPTS_HEADS = ("Receipts:", "Tax head (receipts)")
 # The OBR prints this once, as £0.1 billion a year on average from 2028-29
-# (paragraph 3.17), and the harvest stages the claim on 2031-32.
+# (paragraph 3.17), and we stage the claim on 2031-32.
 BEHAVIOURAL = "behavioural erosion of yield"
+# The conventions our cost-or-gain and "cutting the yield" wordings assume.
+OBR_LOSS_NEGATIVE = (
+    "Note (verbatim): This table uses the convention that a negative sign implies "
+    "a loss to the Exchequer"
+)
+BEHAVIOURAL_CONVENTION = "as worded: positive = reduction in yield"
 BEHAVIOURAL_YEARS = {PROPERTY: frozenset({"2028-29", "2029-30", "2030-31", "2031-32"})}
 TRADING = "ab2026__trading_allowance_3000"
 
@@ -385,9 +401,9 @@ _COMPONENTS: dict | None = None
 
 def components() -> dict[tuple[str, str, str], float]:
     """The OBR's component claims, (measure, fy, component) -> £, from the
-    full harvest, so a scope annotation reads its amount from a claim. Two
-    claims on one key raise, except on the receipts heads, which no
-    annotation reads."""
+    full harvest, so a scope annotation reads its amount from a claim. We raise
+    on two claims on one key and on a named line under another sign convention,
+    except on the receipts heads, which no annotation reads."""
     global _COMPONENTS
     if _COMPONENTS is None:
         out: dict[tuple[str, str, str], float] = {}
@@ -401,8 +417,14 @@ def components() -> dict[tuple[str, str, str], float]:
             ):
                 continue
             k = (c["measure_key"], cond.get("fy"), cond["component"])
-            if k in out and not k[2].startswith(RECEIPTS_HEADS):
-                raise Unmatched(f"{k}: two OBR claims share this line")
+            if not k[2].startswith(RECEIPTS_HEADS):
+                if k in out:
+                    raise Unmatched(f"{k}: two OBR claims share this line")
+                want = (
+                    BEHAVIOURAL_CONVENTION if k[2] == BEHAVIOURAL else OBR_LOSS_NEGATIVE
+                )
+                if not (cond.get("sign_convention") or "").startswith(want):
+                    raise Unmatched(f"{k}: another sign convention")
             out.setdefault(k, c["value"])
         _COMPONENTS = out
     return _COMPONENTS
@@ -453,7 +475,7 @@ def classify(claim: dict, manifest: dict | None = None) -> tuple[str, str | None
     cond = claim["conditions"]
     key = claim["measure_key"]
     metric, unit = claim["metric"], claim["unit"]
-    if cond.get("obr_measure_key"):  # pragma: no cover - none in this harvest
+    if cond.get("obr_measure_key"):
         raise Unmatched(f"{claim['claim_id']}: the OBR costings lane owns it")
     if metric == "revenue_change":
         if key in DEVOLVED_SHARE_NOT_MODELLED:
@@ -492,6 +514,8 @@ def classify(claim: dict, manifest: dict | None = None) -> tuple[str, str | None
         axis = (cond.get("income_axis") or "").lower()
         if "vigintile" in axis:
             return None, "vigintile_ahc_breakdown"
+        if key in DEVOLVED_SHARE_NOT_MODELLED and cond.get("geography") == "England":
+            return None, "england_only_average"
         raise Unmatched(f"{claim['claim_id']}: income axis {axis!r}")
     if metric == "affected_count":
         if unit == "households":
@@ -574,9 +598,9 @@ def behavioural_annotation(key: str, fy: str) -> list[str]:
     if len(found) != 1:
         raise Unmatched(f"{key}: {len(found)} OBR claims for {BEHAVIOURAL!r}")
     return [
-        "The OBR expects more tax-motivated incorporation and higher "
-        f"non-compliance to cut the yield by £{abs(found[0]) / 1e9:.1f} billion a "
-        "year, and we hold incomes fixed."
+        "The OBR expects more landlords to incorporate to save tax and more to "
+        f"underpay, cutting the yield by £{abs(found[0]) / 1e9:.1f} billion a year "
+        "on average from 2028-29, and we hold incomes fixed."
     ]
 
 
@@ -590,6 +614,11 @@ def scope_annotations(claim: dict) -> list[str]:
         out.append(
             "We apply the taper in England and Wales and leave Northern Ireland's "
             "Carer's Allowance at current law."
+        )
+        out.append(
+            "We count the extra allowance in full against Universal Credit but omit "
+            "the PAYE deduction from earnings that DWP would apply, so we can show "
+            "some carers losing overall."
         )
     elif key == PROPERTY:
         out.append(
@@ -615,7 +644,8 @@ def scope_annotations(claim: dict) -> list[str]:
         out.append(
             "We have no gross trading receipts in our data, so we relieve profits "
             "up to £3,000 in full and give no relief above it. As a result, we may "
-            "overstate the cost for some people and understate it for others."
+            "overstate the Exchequer's cost for some traders and understate it for "
+            "others."
         )
     return out + behavioural_annotation(key, fy) + lines_annotation(key, fy)
 
