@@ -548,16 +548,10 @@ def _main_ref():
     return None
 
 
-def _variables(annotation):
-    """The variable count and list a name search prints."""
-    return annotation.split("Variables:", 1)[1] if "Variables:" in annotation else None
-
-
 @pytest.mark.skipif(_main_ref() is None, reason="no main ref in this checkout")
 def test_ab2025_ingest_matches_main(tmp_path):
-    """AB2025's claims, lanes and diagnoses come out byte for byte as on
-    main. Its pe_gap annotations differ only where we sorted the registry's
-    name searches: the same count of variables, listed in order."""
+    """AB2025's claims, pe_gap results, diagnoses and lanes come out byte
+    for byte as on main."""
     main = tmp_path / "main"
     main.mkdir()
     archive = subprocess.run(
@@ -579,17 +573,5 @@ def test_ab2025_ingest_matches_main(tmp_path):
     subprocess.run(["tar", "-x", "-C", str(main)], input=archive, check=True)
     theirs = _ab2025_dump(main, tmp_path / "main.json")
     ours = _ab2025_dump(ROOT, tmp_path / "ours.json")
-    for table in ("claims", "diagnoses", "lanes"):
+    for table in ("claims", "results", "diagnoses", "lanes"):
         assert ours[table] == theirs[table], table
-    assert len(ours["results"]) == len(theirs["results"])
-    for a, b in zip(ours["results"], theirs["results"]):
-        if a == b:
-            continue
-        a, b = json.loads(a), json.loads(b)
-        assert a[:4] == b[:4]
-        notes_a, notes_b = json.loads(a[4]), json.loads(b[4])
-        assert len(notes_a) == len(notes_b)
-        for x, y in zip(notes_a, notes_b):
-            if x != y:
-                vx, vy = _variables(x), _variables(y)
-                assert vx and vy and vx.split("[")[0] == vy.split("[")[0], (x, y)
