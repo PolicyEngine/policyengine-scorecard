@@ -324,10 +324,9 @@ def test_a_totals_lines_by_head_keep_revenue_change():
         assert not re.search(r"\b(total|effects? of)\b", _label(r), re.I), _label(r)
     for r in on_key:
         if r.get("metric") != "revenue_change":
-            assert (
-                r.get("metric") == BORROWING
-                or r.get("proposed_metric")
-                in ("fiscal_balance_change", "public_sector_net_debt_change")
+            assert r.get("metric") == BORROWING or r.get("proposed_metric") in (
+                "fiscal_balance_change",
+                "public_sector_net_debt_change",
             ), _label(r)
 
 
@@ -335,6 +334,28 @@ def test_the_fuel_freeze_totals_keep_revenue_change():
     freeze = [r for r in rows("uk_rf_ab2026") if _key(r) == FREEZE_TOTALS]
     assert len(freeze) == 11
     assert {r["metric"] for r in freeze} == {"revenue_change"}
+
+
+def test_the_fuel_freeze_receipts_series_rounds_to_the_obr_average():
+    """RF's constant-duty-rate path and OBR paragraph 4.30 describe the same
+    option: their five annual receipts cuts average £3.98bn, which rounds to
+    the OBR's £4bn a year over 2027-28 to 2031-32."""
+    key = "ab2026_option__fuel_duty_continued_freeze"
+    rf = rows("uk_rf_ab2026")[397:402]
+    assert [r["conditions"]["fy"] for r in rf] == [
+        f"{year}-{(year + 1) % 100:02d}" for year in range(2027, 2032)
+    ]
+    assert {_key(r) for r in rf} == {key}
+    obr = [
+        r
+        for r in rows("uk_obr_tables")
+        if _key(r) == key and r["source_table"] == "para 4.30"
+    ]
+    assert len(obr) == 1
+    assert obr[0]["conditions"]["aggregation"] == "annual average 2027-28 to 2031-32"
+    assert {r["metric"] for r in rf + obr} == {"revenue_change"}
+    average = sum(abs(r["value"]) for r in rf) / len(rf)
+    assert round(average / 1e9) * 1e9 == obr[0]["value"] == 4e9
 
 
 def test_receipts_totals_and_tax_change_estimates_keep_revenue_change():
