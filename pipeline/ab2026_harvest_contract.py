@@ -121,13 +121,18 @@ WORD_SCALE = (
     (re.compile(r"%|per ?cent|percentage point|ppts?\b|pp\b", re.I), 0.01),
 )
 NUMBER = re.compile(r"(?<![\w.])[-−–]?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
-# "N in M" prints a ratio: the share N/M, never N or M on its own (delta
-# review D1-1). "In" may take any case or hyphens ("1 IN 4", "1-in-4"), a
-# minus on N carries to the share, and N and M may be number words ("one in
-# ten"). A year after "in" ("£5 in 2027") is no denominator unless the
+# "N in M", "N in every M" and "N out of M" print a ratio: the share N/M,
+# never N or M on its own (delta review D1-1). The words may take any case or
+# hyphens ("1 IN 4", "1-in-4"), a minus on N carries to the share, and N and M
+# may be number words up to the hundreds ("one in ten", "one in twenty-five").
+# A multiplier on M scales it ("1 in 2 million" is 5e-7, "one in a thousand"
+# 0.001), and a ratio whose multiplier won't read ("1 in 2 millionths") is no
+# ratio. A number after a currency sign ("£5 in 10 years") starts no ratio,
+# and a year after a bare "in" ("£5 in 2027") is no denominator unless the
 # normalization gives the ratio ("1 in 2000 -> 0.0005", "N in M -> N/M")
 # (final review F1).
-NUMBER_WORDS = {
+# Number words: one to nineteen, and the tens
+ONES = {
     "one": 1,
     "two": 2,
     "three": 3,
@@ -147,6 +152,8 @@ NUMBER_WORDS = {
     "seventeen": 17,
     "eighteen": 18,
     "nineteen": 19,
+}
+TENS = {
     "twenty": 20,
     "thirty": 30,
     "forty": 40,
@@ -155,20 +162,43 @@ NUMBER_WORDS = {
     "seventy": 70,
     "eighty": 80,
     "ninety": 90,
-    "a hundred": 100,
-    "one hundred": 100,
-    "a thousand": 1000,
-    "one thousand": 1000,
 }
-_OPERAND = r"\d[\d,]*(?:\.\d+)?|" + "|".join(
-    re.escape(w).replace(r"\ ", " ").replace(" ", r"\s+")
-    for w in sorted(NUMBER_WORDS, key=len, reverse=True)
+MULTIPLIERS = {
+    "hundred": 100,
+    "thousand": 1e3,
+    "k": 1e3,
+    "million": 1e6,
+    "mn": 1e6,
+    "m": 1e6,
+    "billion": 1e9,
+    "bn": 1e9,
+}
+
+
+def _either(words):
+    """A regex alternation of words, the longest first."""
+    return "|".join(re.escape(w) for w in sorted(words, key=len, reverse=True))
+
+
+_SEP = r"(?:\s+|\s*-\s*)"
+_SMALL = (
+    rf"(?:(?:{_either(TENS)}){_SEP}(?:{_either(w for w in ONES if ONES[w] < 10)})"
+    rf"|{_either(TENS)}|{_either(ONES)})"
 )
+# A number in words, up to the hundreds ("twenty-five", "a hundred and five")
+WORDED = rf"(?:(?:a|{_SMALL})\s+hundred(?:\s+(?:and\s+)?{_SMALL})?|{_SMALL})"
+# "a" counts as one before a thousand, million or billion ("over a million")
+_A = r"a(?=\s+(?:thousand|million|billion)\b)"
+_NUMERAL = r"\d[\d,]*(?:\.\d+)?"
 RATIO = re.compile(
-    rf"(?<![\w.])([-−–])?({_OPERAND})(?:\s+|\s*-\s*)in(?:\s+|\s*-\s*)({_OPERAND})"
+    rf"(?<![\w.£$€])([-−–])?({_NUMERAL}|{WORDED}){_SEP}"
+    rf"(in(?:{_SEP}every)?|out{_SEP}of){_SEP}({_NUMERAL}|{WORDED}|{_A})"
+    rf"(?:\s*({_either(MULTIPLIERS)})\b)?(?!\s*(?:hundred|thousand|million|billion))"
     r"(?!\w|\.\d|-\w)",
     re.I,
 )
+# A number printed only in words, outside a hyphenated word ("two-child")
+WORDS_ALONE = re.compile(rf"(?<![\w-])(?:{WORDED}|{_A})(?![\w-])", re.I)
 YEAR = re.compile(r"(?:19|20)\d\d")
 GENERIC_RATIO = re.compile(r"\bN\s+in\s+M\b")
 ARROW = re.compile(r"\s*(?:->|→)")
@@ -193,29 +223,48 @@ BAR_READING = re.compile(
     r"|\bread (?:off|from) (?:the |a )?(?:bars?|charts?|graphs?|figures?)\b",
     re.I,
 )
-WORDS = {
-    "half": 0.5,
-    "a half": 0.5,
-    "one half": 0.5,
-    "a third": 1 / 3,
-    "one third": 1 / 3,
-    "two thirds": 2 / 3,
-    "two-thirds": 2 / 3,
-    "a quarter": 0.25,
-    "one quarter": 0.25,
-    "three quarters": 0.75,
-    "three-quarters": 0.75,
-    "two-fifths": 0.4,
-    "two fifths": 0.4,
+# A worded fraction: "half", or a numerator and a denominator ("a third",
+# "three-fifths", "another quarter").
+NUMERATORS = {"a": 1, "an": 1, "another": 1} | {
+    w: v for w, v in ONES.items() if v <= 10
 }
+DENOMINATORS = {
+    "half": 2,
+    "halves": 2,
+    "third": 3,
+    "thirds": 3,
+    "quarter": 4,
+    "quarters": 4,
+    "fifth": 5,
+    "fifths": 5,
+    "sixth": 6,
+    "sixths": 6,
+    "seventh": 7,
+    "sevenths": 7,
+    "eighth": 8,
+    "eighths": 8,
+    "ninth": 9,
+    "ninths": 9,
+    "tenth": 10,
+    "tenths": 10,
+}
+FRACTION = re.compile(
+    rf"\b(?:({_either(NUMERATORS)}){_SEP})?({_either(DENOMINATORS)})(?!\w|-\w)", re.I
+)
 
 
-def _operand(text):
-    """A ratio's number, from digits or number words ("1,000", "a hundred")."""
-    word = re.sub(r"\s+", " ", text.lower())
-    if word in NUMBER_WORDS:
-        return float(NUMBER_WORDS[word])
-    return float(text.replace(",", ""))
+def _worded(text):
+    """A number in words ("twenty-five", "a hundred and five"), "a" as one."""
+    n = 0
+    for w in re.split(r"[\s-]+", text.lower()):
+        n = n * 100 if w == "hundred" else n + ({"a": 1} | ONES | TENS).get(w, 0)
+    return n
+
+
+def _operand(text, multiplier=None):
+    """A ratio's number, from digits or number words, times its multiplier."""
+    n = float(text.replace(",", "")) if text[0].isdigit() else float(_worded(text))
+    return n * MULTIPLIERS.get((multiplier or "").lower(), 1)
 
 
 def _gives_ratio(normalization, n, m):
@@ -236,25 +285,38 @@ def _ratios(text, normalization=""):
     as N is."""
     out = []
     for m in RATIO.finditer(text):
-        sign, n, d = m.groups()
-        if YEAR.fullmatch(d) and not _gives_ratio(normalization, n, d):
+        sign, n, joint, d, multiplier = m.groups()
+        bare = joint.lower() == "in" and not multiplier
+        if bare and YEAR.fullmatch(d) and not _gives_ratio(normalization, n, d):
             continue  # "£5 in 2027"
-        a, b = _operand(n), _operand(d)
+        a, b = _operand(n), _operand(d, multiplier)
         if b and math.isfinite(a) and math.isfinite(b):
             out.append((m.span(), (-a if sign else a) / b))
     return out
 
 
-def _numbers(text, normalization=""):
+def _cut(text, spans):
+    """The string with each span cut out."""
+    for start, end in sorted(spans, reverse=True):
+        text = f"{text[:start]} {text[end:]}"
+    return text
+
+
+def _numbers(text, normalization="", words=False):
     """The numbers a string prints, as (exact, fractions). Exact numbers are
     its signed digits. Fractions are its ratios ("1 in 4" -> 0.25), whose two
     numbers count for nothing on their own, and its worded fractions ("a
-    third"), which a stored share may round (delta review D1-1)."""
+    third"), which a stored share may round (delta review D1-1). With words,
+    a string that prints none of these gives its number words ("four", "over
+    a million") as exact numbers."""
+    ratios = _ratios(text, normalization)
+    fractions = [share for _, share in ratios]
+    text = _cut(text, [span for span, _ in ratios])
+    for m in FRACTION.finditer(text):
+        top, bottom = (g.lower() if g else g for g in m.groups())
+        if top or bottom == "half":
+            fractions.append(NUMERATORS[top or "a"] / DENOMINATORS[bottom])
     text = re.sub(r"([-−–])\s*[£$€]", r"\1", text)  # "-£1.7bn"
-    fractions = []
-    for (start, end), share in reversed(_ratios(text, normalization)):
-        fractions.append(share)
-        text = f"{text[:start]} {text[end:]}"
     exact = []
     for m in NUMBER.findall(text):
         t = m.replace(",", "").replace("−", "-").replace("–", "-")
@@ -262,8 +324,8 @@ def _numbers(text, normalization=""):
             exact.append(float(t))
         except ValueError:
             pass
-    low = text.lower()
-    fractions += [v for w, v in WORDS.items() if re.search(rf"\b{w}\b", low)]
+    if words and not (exact or fractions):
+        exact = [float(_worded(m)) for m in WORDS_ALONE.findall(text)]
     return exact, fractions
 
 
@@ -337,7 +399,10 @@ def value_problems(r):
     """review A H-2: `value` is finite and is value_raw's number at its scale,
     with value_raw's sign unless the normalization documents a worded sign.
     Delta review D1-1: a printed number matches exactly, and only the share
-    of a printed ratio or worded fraction, the fraction itself, may round."""
+    of a printed ratio or worded fraction, the fraction itself, may round. A
+    `unit_concept: percent` row stores that share in percent units, 100 times
+    the fraction. A non-categorical row that prints its number only in words
+    gives those words."""
     v = r["value"]
     if isinstance(v, bool) or not isinstance(v, (int, float)):
         return ["value is not a number"]
@@ -345,19 +410,23 @@ def value_problems(r):
         return ["value is not finite"]
     raw = r["value_raw"] if isinstance(r["value_raw"], str) else ""
     norm = r.get("normalization") or ""
-    exact, fractions = _numbers(raw, norm)
+    exact, fractions = _numbers(raw, norm, words=r["value_kind"] != "categorical")
     if not (exact or fractions):
         return []  # nothing printed to compare (a categorical label)
-    printed = [n * s for n in exact for s in _scales(raw, norm)]
+    # a ratio's multiplier ("1 in 2 million") scales the ratio, not the string
+    rest = _cut(raw, [span for span, _ in _ratios(raw, norm)])
+    printed = [n * s for n in exact for s in _scales(rest, norm)]
+    per = 100 if r.get("unit_concept") == "percent" else 1
+    shares = [per * f for f in fractions]
     if not (
         any(_same(abs(v), abs(p)) for p in printed)
-        or any(_rounded(abs(v), abs(f)) for f in fractions)
+        or any(_rounded(abs(v), abs(f)) for f in shares)
     ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
     if (
         WORDED_SIGN.search(norm)
         or any(_same(v, p) for p in printed)
-        or any(_rounded(v, f) for f in fractions)
+        or any(_rounded(v, f) for f in shares)
     ):
         return []
     return [f"value {v!r} has the opposite sign to value_raw {raw!r}"]

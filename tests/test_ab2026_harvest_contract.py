@@ -20,8 +20,9 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from pipeline.ab2026_harvest_contract import (
-    NUMBER_WORDS,
     OGL,
+    ONES,
+    TENS,
     duplicate_problems,
     enums,
     family_problems,
@@ -301,21 +302,229 @@ def test_a_ratio_passes_only_at_its_share(n, extra, form, minus):
             ), (raw, wrong)
 
 
-@settings(max_examples=200, deadline=None)
+SAY = {v: w for w, v in (ONES | TENS).items()}
+
+
+def _say(n, a=False, hyphen=True, joined=True):
+    """n, from 1 to 999, in words as a producer might print it: "a" or "one"
+    hundred, "twenty-five" or "twenty five", "and" after the hundreds or not."""
+    if n >= 100:
+        head, rest = divmod(n, 100)
+        out = ("a" if a and head == 1 else SAY[head]) + " hundred"
+        if rest:
+            out += " and " if joined else " "
+            out += _say(rest, a, hyphen, joined)
+        return out
+    if n in SAY:
+        return SAY[n]
+    tens, unit = divmod(n, 10)
+    return SAY[10 * tens] + ("-" if hyphen else " ") + SAY[unit]
+
+
+STYLES = st.tuples(st.booleans(), st.booleans(), st.booleans())
+
+
+@settings(max_examples=300, deadline=None)
 @given(
-    n=st.sampled_from(sorted(NUMBER_WORDS)),
-    m=st.sampled_from(sorted(NUMBER_WORDS)),
+    n=st.integers(1, 999),
+    m=st.integers(1, 999),
+    styles=STYLES,
+    joint=st.sampled_from(["in", "IN", "in every", "In Every", "out of", "OUT OF"]),
+    multiplier=st.sampled_from(
+        [("", 1), (" thousand", 1e3), (" million", 1e6), (" billion", 1e9)]
+    ),
     wrong=st.floats(0.001, 1000),
 )
-def test_a_worded_ratio_passes_only_at_its_share(n, m, wrong):
-    """Final review F1: number words give a ratio as numerals do."""
-    share = NUMBER_WORDS[n] / NUMBER_WORDS[m]
-    raw = f"{n} in {m}"
-    note = f"{raw} -> {share}"
-    assert problems(_share(raw, share, note)) == []
-    if not math.isclose(wrong, share, rel_tol=1e-3):
-        found = problems(_share(raw, wrong, note))
-        assert any("at a stated scale" in p for p in found), (raw, wrong)
+def test_a_worded_ratio_passes_only_at_its_share(
+    n, m, styles, joint, multiplier, wrong
+):
+    """Final review F1: number words up to the hundreds give a ratio as
+    numerals do, after "in", "in every" or "out of" and with a multiplier on
+    M. The share passes, and so does nothing else, N and M included."""
+    word, factor = multiplier
+    raw = f"{_say(n, *styles)} {joint} {_say(m, *styles)}{word}"
+    share = n / (m * factor)
+    assert problems(_share(raw, share, "share as printed")) == [], raw
+    for bad in (wrong, n, m, m * factor, n / m):
+        if not math.isclose(bad, share, rel_tol=1e-3):
+            found = problems(_share(raw, bad, "share as printed"))
+            assert any("at a stated scale" in p for p in found), (raw, bad)
+
+
+@pytest.mark.parametrize(
+    ("raw", "share", "wrongs"),
+    [
+        ("1 in 2 million", 5e-7, (0.5, 1, 2, 2e6)),
+        ("1 in 2m", 5e-7, (0.5, 2, 2e6)),
+        ("1 in 2.5 million", 4e-7, (0.4, 2.5, 2.5e6)),
+        ("1 in 4bn", 2.5e-10, (0.25, 4, 4e9)),
+        ("one in a million", 1e-6, (1, 1e6)),
+        ("one in a thousand", 1e-3, (1, 1e3)),
+        ("one in ten thousand", 1e-4, (0.1, 10, 1e4)),
+        ("one in two hundred", 5e-3, (0.5, 2, 200)),
+        ("1 in 2 hundred", 5e-3, (0.5, 2, 200)),
+        ("one in a hundred thousand", 1e-5, (0.01, 100, 1e5)),
+        ("one in twenty-five", 0.04, (0.05, 0.2, 1, 25)),
+        ("one in a hundred and twenty", 1 / 120, (0.01, 0.05, 120)),
+        ("3 out of 10", 0.3, (3, 10, 30)),
+        ("3-out-of-10", 0.3, (3, 10)),
+        ("three out of ten", 0.3, (3, 10)),
+        ("1 in every 4", 0.25, (1, 4, 25)),
+        ("one in every five", 0.2, (1, 5)),
+        ("1 in every 2000", 0.0005, (1, 2000)),
+        ("1 out of 2000", 0.0005, (1, 2000)),
+        ("1 in 2000 million", 5e-10, (0.0005, 2000, 2e9)),
+    ],
+)
+def test_a_ratio_with_a_multiplier_or_another_joint_is_its_share(raw, share, wrongs):
+    """A multiplier on M scales M, so "1 in 2 million" is 5e-7, never 0.5.
+    Number words run to the hundreds, and "in every" and "out of" print a
+    ratio as "in" does. A year after "in every" or "out of", or before a
+    multiplier, is a denominator. The share passes; N, M, and the share
+    without the multiplier don't."""
+    assert problems(_share(raw, share, "share as printed")) == []
+    for wrong in wrongs:
+        found = problems(_share(raw, wrong, "share as printed"))
+        assert any("at a stated scale" in p for p in found), (raw, wrong, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "value", "share"),
+    [
+        ("£5 in 10 years", 5, 0.5),
+        ("-£5 in 10", -5, -0.5),
+        ("$3 in 4", 3, 0.75),
+        ("1 in 2 millionths", 1, 0.5),
+        ("1 in 2 million-strong", 2e6, 0.5),
+        ("1 in 2 thousand million", 2e6, 0.5),
+    ],
+)
+def test_a_number_after_a_currency_sign_or_before_an_unread_multiplier_is_no_ratio(
+    raw, value, share
+):
+    """A number after a currency sign starts no ratio, and a ratio whose
+    multiplier won't read is none: each number counts at its scale, and the
+    ratio's share without its multiplier fails."""
+    assert problems(_share(raw, value, "as printed")) == []
+    found = problems(_share(raw, share, "as printed"))
+    assert any("at a stated scale" in p for p in found), (raw, found)
+
+
+def test_a_ratio_s_multiplier_scales_only_the_ratio():
+    """ "million" in "1 in 2 million" scales M, not the string's other
+    numbers: at the stated factor of 1, the 3 in "3 (1 in 2 million)" is 3."""
+    note = "count as printed x 1"
+    assert problems(_share("3 (1 in 2 million)", 3, note)) == []
+    found = problems(_share("3 (1 in 2 million)", 3e6, note))
+    assert any("at a stated scale" in p for p in found), found
+
+
+@pytest.mark.parametrize(
+    ("raw", "share", "wrongs"),
+    [
+        ("a fifth", 0.2, (5, 0.5, 20)),
+        ("less than a fifth", 0.2, (5, 20)),
+        ("about three-fifths", 0.6, (3, 5, 0.35, 60)),
+        ("three fifths", 0.6, (3, 5)),
+        ("another quarter", 0.25, (4, 0.75, 25)),
+        ("around one-tenth", 0.1, (1, 10)),
+        ("seven eighths", 0.875, (7, 8, 0.78)),
+        ("an eighth", 0.125, (8, 0.18)),
+        ("two-thirds", 2 / 3, (2, 3, 0.23)),
+        ("three quarters", 0.75, (3, 4, 0.34)),
+        ("half", 0.5, (2, 50)),
+        ("a half", 0.5, (2,)),
+    ],
+)
+def test_a_worded_fraction_in_any_form_is_its_share(raw, share, wrongs):
+    """A worded fraction is a numerator ("a", "an", "another", or one to
+    ten) and a denominator from a half to a tenth, with a space or a hyphen
+    between them, or "half" alone. The share passes; its two numbers, and 100
+    times the share on a row not in percent units, don't."""
+    assert problems(_share(raw, share, "share as printed")) == []
+    for wrong in wrongs:
+        found = problems(_share(raw, wrong, "share as printed"))
+        assert any("at a stated scale" in p for p in found), (raw, wrong, found)
+
+
+@pytest.mark.parametrize("raw", ["a third-party", "the third year", "per quarter"])
+def test_an_ordinal_or_a_compound_is_no_fraction(raw):
+    """ "third" in "a third-party" or "the third year", and "quarter" without
+    a numerator, print no fraction, so the row compares nothing."""
+    assert problems(_share(raw, 7, "as printed")) == []
+
+
+@pytest.mark.parametrize(
+    ("raw", "share"), [("around one-tenth", 0.1), ("1 in 4", 0.25), ("a third", 1 / 3)]
+)
+def test_a_percent_row_stores_its_share_in_percent_units(raw, share):
+    """Resolution Foundation's "around one-tenth" (row 114) is 10 on its
+    `unit_concept: percent` row. A percent row stores 100 times the share,
+    and every other row the share itself."""
+
+    def row(value, unit):
+        return mutated(
+            value_raw=raw,
+            quote=raw,
+            value=value,
+            normalization="as printed",
+            unit_concept=unit,
+        )
+
+    assert problems(row(100 * share, "percent")) == []
+    assert problems(row(share, "share")) == []
+    for value, unit in ((share, "percent"), (100 * share, "share")):
+        found = problems(row(value, unit))
+        assert any("at a stated scale" in p for p in found), (raw, value, unit)
+
+
+@pytest.mark.parametrize(
+    ("raw", "value", "wrongs"),
+    [
+        ("four", 4, (5, 40)),
+        ("one", 1, (2,)),
+        ("twenty-five", 25, (20, 5)),
+        ("a hundred and five", 105, (100, 5)),
+        ("one million", 1e6, (1, 2e6)),
+        ("over a million", 1e6, (1, 1e3)),
+        ("a hundred thousand", 1e5, (100, 1e3)),
+    ],
+)
+def test_a_number_printed_only_in_words_is_that_number(raw, value, wrongs):
+    """A row that prints its number only in words (OBR's "four", row 2664)
+    gives those words, at value_raw's scale ("over a million" is 1e6). Before,
+    it compared nothing and passed whatever its value."""
+    assert problems(_share(raw, value, "printed in words")) == []
+    for wrong in wrongs:
+        found = problems(_share(raw, wrong, "printed in words"))
+        assert any("at a stated scale" in p for p in found), (raw, wrong, found)
+
+
+@settings(max_examples=300, deadline=None)
+@given(n=st.integers(1, 999), styles=STYLES, off=st.integers(1, 50))
+def test_any_number_in_words_reads_as_that_number(n, styles, off):
+    """Every number from one to nine hundred and ninety-nine, in any of the
+    ways _say prints it, reads back as itself, and n + off doesn't."""
+    raw = _say(n, *styles)
+    assert problems(_share(raw, n, "printed in words")) == [], raw
+    found = problems(_share(raw, n + off, "printed in words"))
+    assert any("at a stated scale" in p for p in found), (raw, n + off)
+
+
+@pytest.mark.parametrize("raw", ["two-child limit", "one-off", "four"])
+def test_number_words_in_a_compound_or_on_a_categorical_row_compare_nothing(raw):
+    """A number word inside a hyphenated word ("two-child") prints no number,
+    and a categorical row's words are its label, never its value."""
+    if raw != "four":
+        assert problems(_share(raw, 7, "as printed")) == []
+    label = mutated(
+        value_raw=raw,
+        quote=raw,
+        value=7,
+        normalization="rating as printed",
+        value_kind="categorical",
+    )
+    assert problems(label) == []
 
 
 @settings(max_examples=300, deadline=None)
