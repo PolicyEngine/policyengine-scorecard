@@ -10,37 +10,34 @@
    }
   },
   "ab2026__electricity_vat_zero_rate_to_july_2027": {
-   "claims": 75,
+   "claims": 74,
    "computed": 4,
    "reasons": {
     "cumulative_real_terms": 1,
     "exchequer_component": 14,
     "household_count": 1,
-    "spending_decile_breakdown": 1,
     "typical_bill": 8,
     "vigintile_ahc_breakdown": 38,
     "zero_both_sides": 8
    }
   },
   "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred": {
-   "claims": 29,
+   "claims": 28,
    "computed": 0,
    "reasons": {
     "cumulative_real_terms": 1,
     "fuel_duty_base": 6,
     "motorists_count": 2,
-    "spending_decile_breakdown": 1,
     "vigintile_ahc_breakdown": 19
    }
   },
   "ab2026__household_energy_payment_100_bands_a_to_d": {
-   "claims": 60,
+   "claims": 59,
    "computed": 0,
    "reasons": {
     "devolved_share_not_modelled": 24,
     "household_count": 2,
     "share_of_households": 14,
-    "spending_decile_breakdown": 1,
     "vigintile_ahc_breakdown": 19
    }
   },
@@ -81,7 +78,7 @@
    }
   }
  },
- "claims": 370,
+ "claims": 367,
  "computed": 35,
  "reasons": {
   "benefit_recipients_count": 1,
@@ -94,7 +91,6 @@
   "motorists_count": 2,
   "no_fiscal_year": 1,
   "share_of_households": 14,
-  "spending_decile_breakdown": 3,
   "taken_out_of_tax_count": 1,
   "typical_bill": 8,
   "vigintile_ahc_breakdown": 95,

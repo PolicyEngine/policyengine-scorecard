@@ -17,8 +17,10 @@ written reason. These tests pin its invariants:
 8. a database built with the AB2026 ingest and these results shows each
    comparison, and build_db.py calls none of it.
 9. each exchequer row carries the timing, baseline and sign annotations,
-   and an annotation for every line of the OBR's breakdown for its measure
-   and year that our run doesn't model, with the amount the OBR prints;
+   its measure's scope sentence in full, and one sentence naming every
+   nonzero line of the OBR's breakdown for its measure and year except the
+   receipts heads, the welfare line and the behavioural line, each with its
+   amount, its direction and the test's own name for it;
 10. each measure whose receipt names part of the UK takes a tally or a scope
     annotation;
 11. the expected file pins each paired claim's value, file, column and row,
@@ -305,24 +307,65 @@ TIMING = (
 SIGN = "Both sides show a cost to the Exchequer as negative (PE's own orientation)."
 
 
-def _unmodelled(row):
-    """Every nonzero line of the OBR's breakdown for the row's measure and
-    year outside the receipts heads and the welfare line, read from the
-    claims, as the amount a reader should see."""
-    claim = BY_ID[row["external_claim_match"]["claim_id"]]
+# The test's own reading of the OBR's breakdown: which lines gov_balance
+# counts, which take their own sentence, and what a reader calls the rest.
+SKIP_PREFIXES = ("Receipts:", "Tax head (receipts)")
+SKIP_LINES = ("Current AME: Welfare inside cap", "behavioural erosion of yield")
+READER_NAME = {
+    "Current AME: Scottish BGA (current)": "the Scottish block grant adjustment",
+    "Current AME: Scottish self-financed expenditure": (
+        "Scottish self-financed expenditure"
+    ),
+    "Current DEL: PSCE in RDEL": "departmental resource spending",
+    "Current AME: Other AME (current)": "other annually managed expenditure",
+}
+VOWEL_SOUND = {8, 11, 18, *range(80, 90), *range(800, 900)}
+
+
+def _breakdown(claim):
+    """(article, £m, cost or gain, reader name) for every nonzero line of the
+    OBR's breakdown on the claim's measure and year that our run doesn't
+    model, read from the claims."""
     key, fy = claim["measure_key"], claim["conditions"]["fy"]
-    return [
-        f"£{abs(c['value']) / 1e6:,.0f}m"
-        for c in CLAIMS
-        if c["source"] == "obr_efo"
-        and c["measure_key"] == key
-        and c["conditions"].get("fy") == fy
-        and c["metric"] == "revenue_change"
-        and c["conditions"].get("row_type") == "measure_component"
-        and c["conditions"].get("component", "").startswith(("Current", "Capital"))
-        and c["conditions"]["component"] != S.WELFARE
-        and c["value"] != 0
-    ]
+    out = []
+    for c in sorted(
+        (
+            c
+            for c in CLAIMS
+            if c["source"] == "obr_efo"
+            and c["measure_key"] == key
+            and c["conditions"].get("fy") == fy
+            and c["metric"] == "revenue_change"
+            and c["conditions"].get("row_type") == "measure_component"
+            and c["value"] != 0
+        ),
+        key=lambda c: c["conditions"]["component"],
+    ):
+        name = c["conditions"]["component"]
+        if name.startswith(SKIP_PREFIXES) or name in SKIP_LINES:
+            continue
+        m = round(abs(c["value"]) / 1e6)
+        out.append(
+            (
+                "an" if m in VOWEL_SOUND else "a",
+                m,
+                "cost" if c["value"] < 0 else "gain",
+                READER_NAME[name],
+            )
+        )
+    return out
+
+
+def _expected_breakdown(claim):
+    lines = _breakdown(claim)
+    if not lines:
+        return None
+    parts = [f"{a} £{m:,}m {kind} from {name}" for a, m, kind, name in lines]
+    if len(parts) == 1:
+        return f"The OBR also counts {parts[0]} in this year, which we don't model."
+    tail = "we model neither" if len(parts) == 2 else "we model none of them"
+    listed = ", ".join(parts[:-1]) + " and " + parts[-1]
+    return f"The OBR also counts {listed} in this year, and {tail}."
 
 
 def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
@@ -344,19 +387,138 @@ def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
             n.startswith(f"We estimate fiscal year {claim['conditions']['fy']} ")
             for n in notes
         )
-        amounts = _unmodelled(row)
-        lines = [
-            n
-            for n in notes
-            if n.startswith("The OBR's breakdown of this measure also shows")
-        ]
-        if amounts:
-            assert len(lines) == 1, row["external_claim_match"]
-            for amount in amounts:
-                assert amount in lines[0], (row["external_claim_match"], amount)
-            assert len(re.findall(r"£[\d,]+m", lines[0])) == len(amounts)
-        else:
+        want = _expected_breakdown(claim)
+        lines = [n for n in notes if n.startswith("The OBR also counts")]
+        if want is None:
             assert not lines, row["external_claim_match"]
+        else:
+            assert lines == [want], (row["external_claim_match"], lines, want)
+
+
+def test_the_article_follows_the_spoken_amount():
+    for m, a in [
+        (1, "a"),
+        (5, "a"),
+        (8, "an"),
+        (10, "a"),
+        (11, "an"),
+        (18, "an"),
+        (21, "a"),
+        (80, "an"),
+        (89, "an"),
+        (90, "a"),
+        (100, "a"),
+        (110, "a"),
+        (180, "a"),
+        (800, "an"),
+        (11000, "an"),
+    ]:
+        assert S.article(m) == a, m
+
+
+def test_a_lines_sign_chooses_cost_or_gain():
+    assert S.cost_or_gain("x", -8e6) == "an £8m cost from x"
+    assert S.cost_or_gain("x", 7e6) == "a £7m gain from x"
+    (row,) = [
+        r
+        for r in EXCHEQUER_ROWS()
+        if r["measure_key"] == S.TRADING
+        and r["source"] == "obr_efo"
+        and r["trace"]["where"]["year"] == "2027"
+    ]
+    assert (
+        "The OBR also counts an £8m cost from the Scottish block grant adjustment "
+        "and a £7m gain from Scottish self-financed expenditure in this year, and we "
+        "model neither."
+    ) in row["annotations"]
+
+
+SCOPE = {
+    "ab2026__carers_allowance_earnings_taper": (
+        "We apply the taper in England and Wales and leave Northern Ireland's "
+        "Carer's Allowance at current law."
+    ),
+    "ab2026__property_income_rates_plus_2pp": (
+        "We raise property income tax rates in England, Wales and Northern Ireland, "
+        "and finance cost relief for landlords across the UK, as the government "
+        "does from 6 April 2027."
+    ),
+    "ab2026__electricity_vat_zero_rate_to_july_2027": (
+        "HM Treasury costs the zero rate on household, charity, residential care "
+        "and a small amount of business electricity, and we estimate it on "
+        "household electricity only."
+    ),
+    "ab2026__pension_tax_allowance": (
+        "We net off any change in means-tested benefits that follows from lower "
+        "income tax, and the OBR counts no change in welfare spending on this "
+        "measure."
+    ),
+    "ab2026__trading_allowance_3000": (
+        "We have no gross trading receipts in our data, so we relieve profits up "
+        "to £3,000 in full and give no relief above it. As a result, we may "
+        "overstate the cost for some people and understate it for others."
+    ),
+}
+BEHAVIOURAL = (
+    "The OBR expects more tax-motivated incorporation and higher non-compliance "
+    "to cut the yield by £{} billion a year, and we hold incomes fixed."
+)
+
+
+def test_each_measure_carries_its_scope_sentence_in_full():
+    for row in EXCHEQUER_ROWS():
+        assert SCOPE[row["measure_key"]] in row["annotations"], row["measure_key"]
+
+
+def test_property_rows_from_2028_29_carry_the_behavioural_line():
+    (erosion,) = [
+        c
+        for c in CLAIMS
+        if c["measure_key"] == S.PROPERTY
+        and c["conditions"].get("component") == "behavioural erosion of yield"
+    ]
+    want = BEHAVIOURAL.format(f"{erosion['value'] / 1e9:.1f}")
+    rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.PROPERTY]
+    assert len(rows) == 10
+    for row in rows:
+        late = int(row["trace"]["where"]["year"]) >= 2028
+        assert (want in row["annotations"]) == late, row["trace"]
+    assert all(
+        "incorporation" not in n
+        for r in EXCHEQUER_ROWS()
+        if r["measure_key"] != S.PROPERTY
+        for n in r["annotations"]
+    )
+
+
+def test_two_claims_on_one_named_line_raise(monkeypatch):
+    line = next(
+        c
+        for c in CLAIMS
+        if c["source"] == "obr_efo"
+        and c["conditions"].get("component") == "Current AME: Scottish BGA (current)"
+    )
+    twin = copy.deepcopy(line)
+    twin["claim_id"] = "twin"
+    monkeypatch.setattr(S, "claims", lambda: [*CLAIMS, twin])
+    monkeypatch.setattr(S, "_COMPONENTS", None)
+    with pytest.raises(S.Unmatched, match="two OBR claims"):
+        S.components()
+
+
+def test_two_claims_on_a_receipts_head_pass(monkeypatch):
+    line = next(
+        c
+        for c in CLAIMS
+        if c["source"] == "obr_efo"
+        and c["conditions"].get("component", "").startswith("Receipts:")
+    )
+    twin = copy.deepcopy(line)
+    twin["claim_id"] = "twin"
+    twin["value"] = -line["value"]
+    monkeypatch.setattr(S, "claims", lambda: [*CLAIMS, twin])
+    monkeypatch.setattr(S, "_COMPONENTS", None)
+    S.components()
 
 
 def test_carers_allowance_rows_name_northern_ireland():
@@ -372,10 +534,7 @@ def test_electricity_rows_name_hm_treasurys_base():
     rows = [r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.ELECTRICITY]
     assert len(rows) == 4
     for row in rows:
-        assert any(
-            "charity, residential care and a small amount of business" in n
-            for n in row["annotations"]
-        )
+        assert SCOPE[S.ELECTRICITY] in row["annotations"]
 
 
 def test_a_welfare_change_on_the_pension_tax_allowance_raises(monkeypatch):
@@ -390,13 +549,14 @@ def test_a_welfare_change_on_the_pension_tax_allowance_raises(monkeypatch):
         S.scope_annotations(claim)
 
 
-def test_an_unnamed_breakdown_line_raises(monkeypatch):
+@pytest.mark.parametrize(
+    "name", ["Current AME: Something new", "Capital DEL: something", "a new line"]
+)
+def test_an_unnamed_breakdown_line_raises(monkeypatch, name):
     row = EXCHEQUER_ROWS()[0]
     claim = BY_ID[row["external_claim_match"]["claim_id"]]
     fake = dict(S.components())
-    fake[
-        (claim["measure_key"], claim["conditions"]["fy"], "Current AME: Something new")
-    ] = 3e6
+    fake[(claim["measure_key"], claim["conditions"]["fy"], name)] = 3e6
     monkeypatch.setattr(S, "_COMPONENTS", fake)
     with pytest.raises(S.Unmatched, match="no reader name"):
         S.scope_annotations(claim)
@@ -404,12 +564,16 @@ def test_an_unnamed_breakdown_line_raises(monkeypatch):
 
 def test_the_gainer_row_carries_its_population():
     (row,) = [r for r in ROWS if r["metric"] == "gainer_count"]
-    assert any(
-        "National Insurance, student loan repayment or earnings" in n
-        and "ranked income" in n
-        for n in row["annotations"]
-    )
-    assert any("with no floor it states" in n for n in row["annotations"])
+    assert (
+        "We count people whose own income tax, National Insurance, student loan "
+        "repayment or earnings change by £1 a year or more, leaving out households "
+        "we place in no income decile."
+    ) in row["annotations"]
+    assert (
+        "Of the four, the government changes only income tax through this "
+        'allowance. HM Treasury counts "pensioners in total benefitting from a tax '
+        'reduction" and states no minimum.'
+    ) in row["annotations"]
 
 
 SUB_UK = (
