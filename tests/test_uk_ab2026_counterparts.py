@@ -549,6 +549,16 @@ def test_a_welfare_change_on_the_pension_tax_allowance_raises(monkeypatch):
         S.scope_annotations(claim)
 
 
+def test_a_behavioural_line_on_another_measure_raises(monkeypatch):
+    row = next(r for r in EXCHEQUER_ROWS() if r["measure_key"] == S.TRADING)
+    claim = BY_ID[row["external_claim_match"]["claim_id"]]
+    fake = dict(S.components())
+    fake[(S.TRADING, claim["conditions"]["fy"], "behavioural erosion of yield")] = 5e7
+    monkeypatch.setattr(S, "_COMPONENTS", fake)
+    with pytest.raises(S.Unmatched, match="no reader name"):
+        S.scope_annotations(claim)
+
+
 @pytest.mark.parametrize(
     "name", ["Current AME: Something new", "Capital DEL: something", "a new line"]
 )
