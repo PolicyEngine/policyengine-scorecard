@@ -11,7 +11,8 @@ tests pin the ingest's invariants:
 4. each claim's sign reads as signs.py reads it, pinned for every staged
    (metric, convention) pair and every pair the ingest's metric calls make;
 5. the same claims from the same rows, run after run and in any row order;
-6. AB2025's ingest gives the same output here as on origin/main.
+6. AB2025's ingest and counterparts give the same output here as on
+   origin/main.
 
 Hypothesis checks the accounting on samples of the harvest, the order
 independence, the twin rule and the share-of-GDP rule.
@@ -632,12 +633,25 @@ A.ingest(db, feed); A.ingest_verdicts(db)
 conn = sqlite3.connect(db)
 def dump(sql):
     return sorted(json.dumps(list(r), default=str) for r in conn.execute(sql))
-out.write_text(json.dumps({
+tables = {
     "claims": dump("SELECT claim_id, source, metric, period, value, conditions, publication, baseline_key FROM external_scores"),
     "results": dump("SELECT claim_id, status, engine_version, pe_construction, annotations FROM pe_results"),
     "diagnoses": dump("SELECT * FROM diagnoses"),
     "lanes": dump("SELECT lane, stage, detail FROM lanes"),
-}))
+}
+# AB2025's tranche 3: the stager's output over these claims, its
+# counterparts attached as build_db attaches them, and the lanes after
+from scorecard_db import ingest_campaign
+from pipeline import stage_uk_ab2025 as T
+rows, tally, unanswered = T.stage(db)
+tables["staging"] = [json.dumps(r, sort_keys=True) for r in rows]
+tables["staging_tally"] = json.dumps(tally, sort_keys=True)
+tables["staging_unanswered"] = [json.dumps(r, sort_keys=True) for r in unanswered]
+ingest_campaign.ingest(db, A.STAGED_COUNTERPARTS)
+A.advance_lanes(db, feed)
+tables["counterparts"] = dump("SELECT claim_id, computed_value, status, baseline_key, annotations FROM pe_results WHERE status != 'pe_gap'")
+tables["lanes_after"] = dump("SELECT lane, stage, detail FROM lanes")
+out.write_text(json.dumps(tables))
 """
 
 
@@ -667,8 +681,9 @@ def _main_ref():
 
 def test_ab2025_ingest_matches_main(tmp_path):
     """AB2025's claims, pe_gap results, diagnoses and lanes come out byte
-    for byte as on main. CI fetches origin/main, so there a missing ref
-    fails; a local checkout without one skips."""
+    for byte as on main, and so do tranche 3's staging, attached
+    counterparts and advanced lanes. CI fetches origin/main, so there a
+    missing ref fails; a local checkout without one skips."""
     if _main_ref() is None:
         if os.environ.get("GITHUB_ACTIONS"):
             pytest.fail("CI must fetch origin/main for the AB2025 differential")
@@ -686,6 +701,9 @@ def test_ab2025_ingest_matches_main(tmp_path):
             "data/uk",
             "data/lanes.json",
             "sources/harvest-uk-ab2025-2026-09-24",
+            "pipeline",
+            "results/uk/ab2025",
+            "results/uk/staged_ab2025",
         ],
         cwd=ROOT,
         capture_output=True,
@@ -694,7 +712,8 @@ def test_ab2025_ingest_matches_main(tmp_path):
     subprocess.run(["tar", "-x", "-C", str(main)], input=archive, check=True)
     theirs = _ab2025_dump(main, tmp_path / "main.json")
     ours = _ab2025_dump(ROOT, tmp_path / "ours.json")
-    for table in ("claims", "results", "diagnoses", "lanes"):
+    assert set(ours) == set(theirs)
+    for table in ours:
         assert ours[table] == theirs[table], table
 
 

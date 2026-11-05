@@ -50,8 +50,10 @@ The AB2026 ingest adds six steps:
    reasons in ``ROW_DROPS``. With each entry we record the staged value we
    expect on that row.
 6. **Lanes.** We add three lanes: official, microsimulation, and
-   administrative data and other producers. This module ingests no
-   PolicyEngine counterparts and calls no ``advance_lanes``.
+   administrative data and other producers. ``advance_lanes`` moves a lane to
+   ``computed`` once its claims have counterparts, which
+   ``pipeline/stage_uk_ab2026.py`` stages from the dashboard's Budget-day
+   artifacts (tranche 3) under ``STAGED_COUNTERPARTS``.
 
 Usage:
     PYTHONPATH=. python -m scorecard_db.ingest_uk_ab2026 data/scorecard.db
@@ -82,6 +84,9 @@ HARVEST = REPO / "sources" / "harvest-uk-ab2026-2026-10-29"
 REGISTRY_PATH = REPO / "data" / "uk" / "ab2026_measures.json"
 
 REGISTRY_MARK = "uk_ab2026"
+# The counterparts pipeline/stage_uk_ab2026.py stages, which
+# ingest_campaign attaches claim_id-direct (tranche 3).
+STAGED_COUNTERPARTS = REPO / "results" / "uk" / "staged_ab2026"
 FISCAL_EVENT = "autumn_budget_2026"
 # The UK family's shared top-level feed literal (sync_lane_feed's contract:
 # every caller in a build passes the same one).
@@ -932,6 +937,48 @@ def ingest(db_path: Path, feed_path: Path | None = None) -> dict:
         "dropped": acct["dropped"],
         "drops": {k: v["rows"] for k, v in sorted(acct["drops"].items())},
     }
+
+
+def advance_lanes(db_path: Path, feed_path: Path | None = None) -> dict:
+    """Move each AB2026 lane whose claims now have a PolicyEngine
+    counterpart (a comparable or constructed result) from ``ingested`` to
+    ``computed``, naming how many claims have one, as AB2025's does. A lane
+    with no counterpart keeps its stage, and pe_gap verdicts don't count."""
+    from .ingest_harvest import sync_lane_feed
+
+    db = ScorecardDB(db_path)
+    out: dict = {}
+    with db.conn:
+        for lane in LANES:
+            fams = [f for f, (l, _) in FAMILIES.items() if l == lane]
+            marks = ",".join("?" * len(fams))
+            row = db.conn.execute(
+                "SELECT stage, detail FROM lanes WHERE lane = ?", (lane,)
+            ).fetchone()
+            if row is None:
+                continue
+            answered, claims = db.conn.execute(
+                "SELECT COUNT(DISTINCT r.claim_id), COUNT(DISTINCT s.claim_id)"
+                " FROM external_scores s LEFT JOIN pe_results r ON r.claim_id = s.claim_id"
+                " AND r.status IN ('comparable', 'constructed')"
+                " WHERE json_extract(s.publication, '$.registry') = ?"
+                f" AND json_extract(s.publication, '$.family') IN ({marks})",
+                (REGISTRY_MARK, *fams),
+            ).fetchone()
+            out[lane] = {"claims": claims, "answered": answered}
+            if not answered:
+                continue
+            base = row["detail"].split(" — ")[0]
+            detail = (
+                f"{base} — {answered} claims with a PolicyEngine counterpart from "
+                "the dashboard's Budget-day runs"
+            )
+            db.conn.execute(LANE_SQL, (lane, "computed", detail, LANE_UPDATED))
+    sync_lane_feed(
+        db, feed_path or REPO / "data" / "lanes.json", FEED_UPDATED, lanes=LANES
+    )
+    db.close()
+    return out
 
 
 # --- pe_gap verdicts ----------------------------------------------------------
