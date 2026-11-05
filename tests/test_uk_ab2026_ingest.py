@@ -772,6 +772,10 @@ _CHILDCARE = "free childcare entitlement (claimed and received some)"
             {"source": "centax", "conditions": {"geography": "England"}},
             {"geography": "UK", "geography_verbatim": "England"},
         ),
+        (
+            {"source": "obr", "conditions": {"geography": "NI"}},
+            {"geography": "Northern Ireland"},
+        ),
     ],
 )
 def test_preservation_rejects_a_lost_condition(row, stored):
@@ -799,6 +803,10 @@ def test_preservation_rejects_a_lost_condition(row, stored):
         (
             {"source": "centax", "conditions": {"geography": "England"}},
             {"geography": "England"},
+        ),
+        (
+            {"source": "obr", "conditions": {"geography": "NI"}},
+            {"geography": "Northern Ireland", "geography_verbatim": "NI"},
         ),
     ],
 )
