@@ -730,3 +730,26 @@ def test_verdict_rows_refuses_a_claim_the_registry_contradicts(tmp_path):
     with pytest.raises(ValueError, match="in the registry"):
         I.verdict_rows(db)
     db.close()
+
+
+@pytest.mark.parametrize(
+    "mark", [{"component": "rate rise"}, {"row_type": "measure_component"}]
+)
+def test_a_part_of_a_measure_is_never_a_twin_of_the_whole(mark):
+    """Rule 9: a component that equals its line's cell stays a claim."""
+    i, row = T61[0]
+    part = copy.deepcopy(row)
+    part["conditions"].update(mark)
+    part["conditions"]["costing_leg_heading"] = "Exchequer impact (£m)"
+    scores, acct = I.stage(
+        {"uk_hmt_tables": [(i, row)], "uk_hmt_costings": [(99_999, part)]}
+    )
+    assert "hmt_figure_staged_twice" not in acct["drops"]
+    assert len(scores) == 2
+
+
+def test_a_reviewed_twin_that_is_a_component_raises(monkeypatch):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6]["conditions"]["row_type"] = "measure_component"
+    with pytest.raises(ValueError, match="REVIEWED_TWINS"):
+        I._check_row_calls("uk_hmt_redbook", rows)

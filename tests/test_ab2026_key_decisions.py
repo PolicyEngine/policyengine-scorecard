@@ -99,3 +99,47 @@ def test_no_staged_row_names_a_key_outside_the_registry():
             if k is None or r["conditions"].get("recosting_of") in earlier:
                 continue
             assert k in REG, (fam, k)
+
+
+def _scope_lines(scope):
+    """The Table 6.1 lines a scope names first, from the NOTES wording."""
+    import re
+
+    m = re.search(r"Table 6\.1 lines ((?:\d+(?:, | and )?)+)", scope)
+    return [int(x) for x in re.findall(r"\d+", m.group(1))] if m else []
+
+
+def test_a_package_of_legs_takes_the_lines_its_scope_names():
+    """The legs table and the registry come from one authored list; the
+    scope's own words give the lines independently."""
+    for pk, d in D.DECISIONS.items():
+        if d["verdict"][0] != "legs":
+            continue
+        lines = [x for x in d["legs"] if isinstance(x, int)]
+        assert lines == _scope_lines(d["scope"]), pk
+        reg_lines = [
+            REG[k]["table_61_line"]
+            for k in REG[D.registered_key(pk)]["package_of"]
+            if "table_61_line" in REG[k]
+        ]
+        assert reg_lines == lines, pk
+
+
+def test_a_producer_scope_is_its_producers_words_once():
+    """A producer scope keeps its words as a string, never a list a reader
+    could take for keys, and no two entries share the words."""
+    seen = {}
+    for k, m in REG.items():
+        if m.get("construction") != "producer_scope":
+            continue
+        assert isinstance(m["package_of"], str) and m["package_of"].strip(), k
+        assert m["package_of"] not in seen, (k, seen.get(m["package_of"]))
+        seen[m["package_of"]] = k
+
+
+def test_every_list_of_legs_names_registered_keys():
+    for k, m in REG.items():
+        for field in ("package_of", "receipts_of"):
+            legs = m.get(field)
+            if isinstance(legs, list):
+                assert legs and set(legs) <= set(REG), (k, field)
