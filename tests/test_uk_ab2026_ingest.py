@@ -29,6 +29,7 @@ import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from hypothesis import HealthCheck, given, settings
@@ -37,6 +38,7 @@ from hypothesis import strategies as st
 from scorecard_db import ScorecardDB, signs
 from scorecard_db import ingest_uk_ab2026 as I
 from scorecard_db.models import Metric
+from scorecard_db.uk_aliases import canon, known
 
 ROOT = Path(__file__).resolve().parent.parent
 COUNTS = json.loads((I.HARVEST / "COUNTS.json").read_text())
@@ -324,8 +326,8 @@ def test_table_6_2_and_the_obr_financing_requirement_share_one_metric(staged):
 
 
 def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
-    """The OBR states the option's effect on public sector net borrowing, so
-    its claim keeps that metric and takes the macro verdict (rule 10, #55)."""
+    """The OBR states the option's effect on public sector net borrowing, so we
+    retain that metric and apply #55's macro verdict."""
     scores, _ = staged
     freeze = [
         s
@@ -732,16 +734,125 @@ STORED_UNITS = {("uk_ifs_ab2026", "slide 4", "£80"): "gbp_per_household"}
 
 
 def _keeps_conditions(row, score):
-    """Every staged condition reaches the claim, as itself or, where the ingest
-    canonicalises its value, beside its verbatim text."""
+    """Require each staged condition on the claim as staged. For a condition the
+    ingest canonicalises, require the registered name and the staged text beside
+    any name that differs. For a program we haven't registered, require the staged
+    text alone."""
     for key, value in (row.get("conditions") or {}).items():
-        if value not in (
-            score.conditions.get(key),
-            score.conditions.get(f"{key}_verbatim"),
-        ):
-            if key != "program" or "program" not in score.conditions:
-                return False
+        stored = score.conditions.get(key)
+        verbatim = score.conditions.get(f"{key}_verbatim")
+        if key == "program" and value not in known(row["source"], key):
+            kept = stored is None and verbatim == value
+        elif key == "program" or key in I.AB25._CANONICALISED:
+            name = canon(row["source"], key, value)
+            kept = stored == name and verbatim == (None if name == value else value)
+        else:
+            kept = stored == value
+        if not kept:
+            return False
     return True
+
+
+_CHILDCARE = "free childcare entitlement (claimed and received some)"
+
+
+@pytest.mark.parametrize(
+    "row, stored",
+    [
+        (
+            {"source": "centax", "conditions": {"program": _CHILDCARE}},
+            {"program": "winter_fuel_payment"},
+        ),
+        (
+            {"source": "centax", "conditions": {"program": _CHILDCARE}},
+            {"program": "winter_fuel_payment", "program_verbatim": _CHILDCARE},
+        ),
+        (
+            {"source": "centax", "conditions": {"program": _CHILDCARE}},
+            {},
+        ),
+        (
+            {"source": "ukmod", "conditions": {"program": "winter_fuel_allowance"}},
+            {"program": "winter_fuel_payment"},
+        ),
+        (
+            {"source": "ukmod", "conditions": {"program": "winter_fuel_allowance"}},
+            {"program": "fuel", "program_verbatim": "winter_fuel_allowance"},
+        ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "outturn", "basis_verbatim": "forecast"},
+        ),
+        (
+            {"source": "centax", "conditions": {"housing_costs": "BHC"}},
+            {"housing_costs": "AHC", "housing_costs_verbatim": "BHC"},
+        ),
+        (
+            {"source": "centax", "conditions": {"geography": "England"}},
+            {"geography": "UK", "geography_verbatim": "England"},
+        ),
+        (
+            {"source": "obr", "conditions": {"geography": "NI"}},
+            {"geography": "Northern Ireland"},
+        ),
+    ],
+)
+def test_preservation_rejects_a_lost_condition(row, stored):
+    assert not _keeps_conditions(row, SimpleNamespace(conditions=stored))
+
+
+@pytest.mark.parametrize(
+    "row, stored",
+    [
+        (
+            {"source": "centax", "conditions": {"program": _CHILDCARE}},
+            {"program_verbatim": _CHILDCARE},
+        ),
+        (
+            {"source": "ukmod", "conditions": {"program": "winter_fuel_allowance"}},
+            {
+                "program": "winter_fuel_payment",
+                "program_verbatim": "winter_fuel_allowance",
+            },
+        ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "forecast"},
+        ),
+        (
+            {"source": "centax", "conditions": {"geography": "England"}},
+            {"geography": "England"},
+        ),
+        (
+            {"source": "obr", "conditions": {"geography": "NI"}},
+            {"geography": "Northern Ireland", "geography_verbatim": "NI"},
+        ),
+    ],
+)
+def test_preservation_accepts_what_the_ingest_keeps(row, stored):
+    assert _keeps_conditions(row, SimpleNamespace(conditions=stored))
+
+
+@pytest.mark.parametrize(
+    "name, verbatim",
+    [("childcare", _CHILDCARE), (_CHILDCARE, None)],
+)
+def test_a_registered_program_keeps_its_text_beside_a_new_name(
+    monkeypatch, name, verbatim
+):
+    """No staged program takes this path, so we register CenTax row 100's text."""
+    registered = canon
+
+    def canonical(source, axis, value):
+        return name if axis == "program" else registered(source, axis, value)
+
+    monkeypatch.setattr(I, "known", lambda source, axis: {_CHILDCARE})
+    monkeypatch.setattr(I, "canon", canonical)
+    row = RAW["uk_centax"][100]
+    assert row["conditions"]["program"] == _CHILDCARE
+    score = I._score(row, "uk_centax", row["source"], Metric.AFFECTED_SHARE)
+    assert score.conditions["program"] == name
+    assert score.conditions.get("program_verbatim") == verbatim
 
 
 def test_every_claim_preserves_its_staged_row(staged):
@@ -889,8 +1000,8 @@ def test_a_reviewed_twin_on_another_key_raises(monkeypatch):
 
 
 def test_a_reviewed_twin_of_a_zero_cell_raises(monkeypatch):
-    """Row 11 shares row 108's key and takes its year, so only the magnitude
-    differs."""
+    """We give red book row 11 table row 108's year; their keys already match,
+    so only the ingest's magnitude check can raise."""
     assert RAW["uk_hmt_tables"][108]["value"] == 0
     rows = copy.deepcopy(RAW["uk_hmt_redbook"])
     rows[11]["period"] = RAW["uk_hmt_tables"][108]["period"]
@@ -925,10 +1036,10 @@ def test_a_ukraine_row_in_any_other_year_raises(period):
 
 
 def test_a_ukraine_row_keeps_its_table_cell_for_the_year_exception(monkeypatch):
-    """The year exception names table row 252, so another cell on the same key
-    and of the same magnitude in another year raises."""
+    """We grant the year exception for table row 252 alone and reject another
+    row with the same key, magnitude and year."""
     table = copy.deepcopy(RAW["uk_hmt_tables"])
-    table.append({**table[252], "period": 2030})
+    table.append(copy.deepcopy(table[252]))
     monkeypatch.setattr(I, "_load", lambda family: table)
     _point_twin(monkeypatch, 263, len(table) - 1)
     with pytest.raises(ValueError, match="no longer matches"):
@@ -937,7 +1048,17 @@ def test_a_ukraine_row_keeps_its_table_cell_for_the_year_exception(monkeypatch):
 
 @pytest.mark.parametrize(
     "raw",
-    ["in 2026-27, £2.6 billion", "£2.6bn", "2,600 million", "around £2.6 billion"],
+    [
+        "in 2026-27, £2.6 billion",
+        "£2.6bn",
+        "2,600 million",
+        "around £2.6 billion",
+        "£2, million",
+        "£2,6 billion",
+        "£26,00 million",
+        "£2600, million",
+        "£1,2345 million",
+    ],
 )
 def test_a_reviewed_twin_printed_in_another_form_raises(raw):
     rows = copy.deepcopy(RAW["uk_hmt_redbook"])
@@ -947,7 +1068,8 @@ def test_a_reviewed_twin_printed_in_another_form_raises(raw):
 
 
 def test_a_reviewed_twin_whose_value_leaves_its_print_raises():
-    """A row can't widen its own tolerance by storing another value."""
+    """We cannot widen the ingest's tolerance by storing a value that differs
+    from the printed amount."""
     rows = copy.deepcopy(RAW["uk_hmt_redbook"])
     rows[6]["value"] = 2.675e9
     with pytest.raises(ValueError, match="printed amount"):
