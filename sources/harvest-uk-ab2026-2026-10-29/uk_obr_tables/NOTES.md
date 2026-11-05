@@ -213,7 +213,7 @@ We propose these units: `percent_of_gdp` (28 rows, nominal GDP denominator, incl
 
 Beyond `revenue_change`, we use these registered metrics: `decisions_effect_on_borrowing` (91 rows, README rule 10), `fiscal_headroom` (13), `cpi_inflation_effect` (6), `benefit_cost_change` (2, paragraph 3.51's simulations), `cash_requirement_change` (1, paragraph 3.20's financing requirement) and `gdp_level_effect` (1).
 
-**For tranche 2.** In `uk_hmt_tables` we stage HM Treasury's Table 6.2 cash impacts of the same NWF and BBB financial transactions on the proposed `financial_transaction_cash_impact`. Here we stage paragraph 3.20's £1.9bn on the registered `cash_requirement_change`. Both measure the cash effect of the same transactions, one as a cash impact and one as the financing requirement; the ingest settles the metric.
+**At ingest.** In `uk_hmt_tables` we stage HM Treasury's Table 6.2 cash impacts of the same NWF and BBB financial transactions on the proposed `financial_transaction_cash_impact`, and here we stage paragraph 3.20's £1.9bn (row 2684) on the registered `cash_requirement_change`. At ingest we put Table 6.2's 60 rows on `cash_requirement_change` too, so both producers' figures share one metric.
 
 We leave every `baseline_policy` null, and give effect estimates the explicit unregistered baseline proposals below. We propose no baseline for rating, funding-level and aggregate context rows.
 
@@ -240,7 +240,7 @@ We leave every `baseline_policy` null, and give effect estimates the explicit un
   - Tables 4.2 (p.87, indirect effects on receipts), 5.2 (p.108, indirect effects on spending) and 5.8 (p.128, "Effects of Government decisions" on debt interest, −0.9 / 1.2 / 1.0 / 0.7 / 0.4 / 0.3). They form parts of the decisions' total effect, which we stage whole in rows 2490–2495 and 2534–2539 (4f424b9 order).
   - Tables 4.3 to 4.7's indirect rows by tax and their PAYE / self-assessment split, including Table 4.4's self-assessment income tax by measure (e.g. "Timely payment for self assessment" 3.5 / 6.5 in 2029-30 / 2030-31). They split, by tax or by cash timing, lines we already stage.
   - Paragraph 4.30: a continued fuel duty freeze "would reduce receipts, on average, by £4 billion a year between 2027-28 and 2031-32". The OBR gives here the receipts average of the option whose effect on borrowing we stage in row 2737.
-  - Table 6.3 (p.141, "Effects of policy on financial transactions", −0.1 / 0.8 / 2.1 / −12.4 / 3.9 / 4.0): the OBR's whole-package effect on financial transactions. Tranche 2 can stage it beside HM Treasury's Table 6.2 total, which we stage in `uk_hmt_tables`.
+  - Table 6.3 (p.141, "Effects of policy on financial transactions", −0.1 / 0.8 / 2.1 / −12.4 / 3.9 / 4.0): the OBR's whole-package effect on financial transactions. We don't stage it yet. We stage HM Treasury's Table 6.2 total in `uk_hmt_tables`.
   - Paragraph 7.20's decomposition of the changes in the fiscal-target margins.
 - In Annex A the OBR gives no policy-costing narrative beyond introduction A.1. Its current receipts, spending and economy forecast Tables A.1–A.8/A.11–A.12 fall outside the policy family's scope. The aggregate lane owns the headline fiscal aggregates in A.9.
 - The OBR prints no numeric Pension Tax Allowance or Carer’s Allowance taper claim in chapter 3 or Annex A. A whole-PDF search finds no PTA phrase, and Carer’s Allowance appears only in a generic welfare footnote, not a taper costing. We cover these measures with workbook rows.
