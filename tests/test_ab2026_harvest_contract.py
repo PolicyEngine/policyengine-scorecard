@@ -391,6 +391,19 @@ def test_rule_4_holds_whatever_the_title_case():
         ("paragraph 1.7; bar reading from Figure 1.A", True),
         ("Figure 1.B; data label", True),
         ("data label for decile 3, Figure 1.A", False),
+        # the figure in other spellings, and negations in other words
+        ("Figures 1.A and 1.B, decile 3 bars", True),
+        ("Fig. 1.A, decile 3 bar", True),
+        ("Figure 1A, decile 3 bar", True),
+        ("fig 1b; top bar", True),
+        ("Figure 1.A data label missing, decile 3", True),
+        ("Figure 1.A data label isn't printed", True),
+        ("Figure 1.A data label absent", True),
+        ("Figure 1.B lacks a data label", True),
+        ("Fig. 1A data label, decile 3", False),
+        ("Figures 1.A and 1.B data labels", False),
+        ("Figure 1 below; paragraph 1.7", False),
+        ("Table 2.C; config 1a", False),
     ],
 )
 def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
@@ -405,21 +418,65 @@ def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
     assert any("rule 4" in p for p in problems(row)) == bar_reading
 
 
+@pytest.mark.parametrize(
+    "negated",
+    [
+        "no data labels",
+        "not a data label",
+        "none of its data labels",
+        "never a data label",
+        "without data labels",
+        "data label missing",
+        "data label absent",
+        "lacks a data label",
+        "lacking data labels",
+        "unlabelled data label",
+        "data label: unlabeled bars",
+        "data label isn't printed",
+        "data label isn’t printed",
+    ],
+)
+def test_rule_4_reads_a_negated_data_label_as_a_bar_reading(negated):
+    """Final review F4: a leading reference that negates its data label, in
+    any of these words, places the number on a bar."""
+    assert reads_a_bar(f"Figure 1.A {negated}")
+    assert not reads_a_bar("Figure 1.A data label")
+
+
+# Leading references that say where HM Treasury prints a number, and ones
+# that don't; and the parts of a locator that name Figure 1.A or 1.B.
+PRINTING = [
+    "paragraph 1.7",
+    "Table 2.C",
+    "Box 1.A",
+    "Figure 1.A data label",
+    "Fig. 1B data labels",
+    "data label",
+]
+NOT_PRINTING = [
+    "Figure 1.B",
+    "Figures 1.A and 1.B",
+    "Figure 1.A, decile 3 bar",
+    "p.8",
+    "no data labels",
+    "data label missing",
+    "Figure 1.A data label isn't shown",
+]
+NAMES_FIGURE = {
+    "Figure 1.A data label",
+    "Fig. 1B data labels",
+    "Figure 1.B",
+    "Figures 1.A and 1.B",
+    "Figure 1.A, decile 3 bar",
+    "Figure 1.A data label isn't shown",
+    "discussion of Figure 1.A",
+    "fig 1a",
+}
+
+
 @settings(max_examples=300, deadline=None)
 @given(
-    lead=st.sampled_from(
-        [
-            "paragraph 1.7",
-            "Table 2.C",
-            "Box 1.A",
-            "Figure 1.A data label",
-            "data label",
-            "Figure 1.B",
-            "Figure 1.A, decile 3 bar",
-            "p.8",
-            "no data labels",
-        ]
-    ),
+    lead=st.sampled_from(PRINTING + NOT_PRINTING),
     rest=st.lists(
         st.sampled_from(
             [
@@ -427,6 +484,7 @@ def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
                 "see paragraph 1.7",
                 "no data labels",
                 "discussion of Figure 1.A",
+                "fig 1a",
                 "decile 3",
                 "data label",
                 "Table 2.C",
@@ -436,19 +494,13 @@ def test_rule_4_reads_where_the_locator_places_the_number(locator, bar_reading):
     ),
 )
 def test_rule_4_follows_the_leading_reference(lead, rest):
-    """Final review F4: where a locator names Figure 1.A or 1.B, only its
-    leading reference, positively naming a paragraph, table, box or data
-    label, places the number where HM Treasury prints it; anything later in
-    the locator places nothing."""
+    """Final review F4: where a locator names Figure 1.A or 1.B, in any
+    spelling, only its leading reference, positively naming a paragraph,
+    table, box or data label, places the number where HM Treasury prints it;
+    anything later in the locator places nothing."""
     locator = "; ".join([lead, *rest])
-    printed = lead in (
-        "paragraph 1.7",
-        "Table 2.C",
-        "Box 1.A",
-        "Figure 1.A data label",
-        "data label",
-    )
-    assert reads_a_bar(locator) == ("Figure 1." in locator and not printed)
+    names_figure = any(part in NAMES_FIGURE for part in [lead, *rest])
+    assert reads_a_bar(locator) == (names_figure and lead not in PRINTING)
 
 
 def test_a_component_with_its_measure_or_a_proposed_key_is_valid():
@@ -583,6 +635,18 @@ def _rewrite_manifest(fam, edit):
     [
         (lambda m: [{**m[0], "sha256": "abc"}, *m[1:]], "sha256 is not a sha256"),
         (lambda m: [{**m[0], "retrieved": ""}, *m[1:]], "needs url, title"),
+        # a field that isn't text, and a problem that names its line when the
+        # url isn't text
+        (lambda m: [{**m[0], "title": 5}, *m[1:]], "needs url, title"),
+        (lambda m: [{**m[0], "retrieved": "  "}, *m[1:]], "needs url, title"),
+        (
+            lambda m: [{**m[0], "url": ["x"]}, *m[1:]],
+            "manifest line 0: needs url, title and retrieved as text",
+        ),
+        (
+            lambda m: [*m[:1], {**m[1], "url": 7, "sha256": "abc"}, *m[2:]],
+            "manifest line 1: sha256 is not a sha256",
+        ),
         (lambda m: [*m, m[0]], "lists a primary twice"),
         (lambda m: m[1:], "primary_sha256 is not in manifest.jsonl"),
         (lambda m: [*m, "not an object"], "a line that is not an object"),

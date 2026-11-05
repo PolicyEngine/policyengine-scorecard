@@ -175,14 +175,19 @@ ARROW = re.compile(r"\s*(?:->|→)")
 # README rule 4: a locator's leading reference, up to its first comma or
 # semicolon, says where HM Treasury prints the number: a data label when it
 # names Figure 1.A or 1.B, else a paragraph, table, box or data label. A
-# locator that names Figure 1.A or 1.B anywhere needs such a reference, free
-# of any negation ("no data labels"), and one that calls the number a bar or
-# chart reading reads a bar whatever else it names (delta review D1; final
-# review F4).
-FIGURE_1 = re.compile(r"\bfigure 1\.[ab]\b", re.I)
+# locator that names Figure 1.A or 1.B anywhere, in any of the spellings
+# "Figure 1.A", "Fig. 1A" or "Figures 1.A and 1.B", needs such a reference,
+# free of any negation ("no data labels", "data label missing", "isn't
+# labelled"), and one that calls the number a bar or chart reading reads a
+# bar whatever else it names (delta review D1; final review F4).
+FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
 PRINTED_AT = re.compile(r"\b(?:paragraph|para|table|box)s?\b", re.I)
 DATA_LABEL = re.compile(r"\bdata labels?\b", re.I)
-NEGATION = re.compile(r"\b(?:no|not|none|without|unlabell?ed)\b", re.I)
+NEGATION = re.compile(
+    r"\b(?:no|not|none|never|without|missing|absent|lacks?|lacking|unlabell?ed)\b"
+    r"|n['’]t\b",
+    re.I,
+)
 BAR_READING = re.compile(
     r"\b(?:bar|chart|graph) readings?\b"
     r"|\bread (?:off|from) (?:the |a )?(?:bars?|charts?|graphs?|figures?)\b",
@@ -304,9 +309,15 @@ def _number(v):
         return False
 
 
+def _text(v):
+    """A string with more than whitespace in it."""
+    return isinstance(v, str) and bool(v.strip())
+
+
 # Floating-point error: a printed number at its scale and the stored value
-# differ by at most four units in the last place (final review F2). Every
-# staged row matches within one.
+# differ by at most four units in the last place (final review F2). Each
+# staged value that matches a printed number, rather than a ratio or worded
+# fraction, differs from it by at most one.
 ULPS = 4
 
 
@@ -599,11 +610,16 @@ def family_problems(family_dir):
     if len(entries) < len([m for m in manifest if m is not UNREADABLE]):
         out.append("manifest has a line that is not an object")
     shas = [m["sha256"] for m in entries if isinstance(m.get("sha256"), str)]
-    for m in entries:
+    for j, m in enumerate(manifest):
+        if not isinstance(m, dict):
+            continue  # reported above, or by _json_lines
+        # a problem names the line by its url, or by its place when the url
+        # isn't text
+        name = m["url"] if _text(m.get("url")) else f"line {j}"
         if not (isinstance(m.get("sha256"), str) and SHA256.fullmatch(m["sha256"])):
-            out.append(f"manifest {m.get('url')}: sha256 is not a sha256")
-        if not (m.get("url") and m.get("title") and m.get("retrieved")):
-            out.append(f"manifest {m.get('url')}: needs url, title and retrieved")
+            out.append(f"manifest {name}: sha256 is not a sha256")
+        if not all(_text(m.get(f)) for f in ("url", "title", "retrieved")):
+            out.append(f"manifest {name}: needs url, title and retrieved as text")
     if len(set(shas)) != len(shas):
         out.append("manifest lists a primary twice")
     keys, earlier = registry_keys()
