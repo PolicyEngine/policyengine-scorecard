@@ -1,0 +1,29 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "093f93b7b0a48a10a1b3e3fad10d5ea89d3b894f424ba6f8e850e4cb8cf4b717",
+  "COMPARISON.json": "9f05550f06ed5601c18dc2f7e04124fccafae85aeaaa130f7d1c92ecad79129b",
+  "COMPARISON.md": "88f2481590055c346442aa98b03378949d4513ff2e06b7e674ba301ceed4ba65"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "replay_grid": {
+  "computed_measure_years": 30,
+  "full_event_complete": true,
+  "full_event_grid_size": 30,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [],
+  "supported_grid_size": 30,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "16321bcbf02d10c7030370ae7cb03f6f5738ae340fceee1ab9da28a9ed959940",
+ "source_rows": 1134,
+ "staged_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2024/STAGED.jsonl",
+ "staged_sha256": "febd8078eca6832dbc92deababa82a137f720ede7db87da29d1f8bf2910b601e",
+ "staging_manifest_path": "results/uk/replays/pe6.14.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "8f334b12fb71d0e4997bcc188bb4f0c26445e3722918808098d96558ec9e3449"
+}

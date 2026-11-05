@@ -1,0 +1,157 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.6057673120003528,
+    "end_rss_bytes": 7816810496,
+    "peak_rss_bytes": 7816810496,
+    "rss_after_gc_bytes": 5651771392,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 311496704,
+    "wall_seconds": 34.77463518000013
+   },
+   "seconds": 35.383455870000034,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "seconds": 56.43501272600042,
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "seconds": 56.26449357999991,
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "seconds": 48.47526788000005,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.9239477559999614,
+    "end_rss_bytes": 9518227456,
+    "peak_rss_bytes": 9518276608,
+    "rss_after_gc_bytes": 9505480704,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 9504456704,
+    "wall_seconds": 31.427428387999953
+   },
+   "seconds": 32.35487340000009,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "seconds": 55.07688638699983,
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "seconds": 55.32774901999983,
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "seconds": 48.968259123999815,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.022645250000096,
+    "end_rss_bytes": 10533249024,
+    "peak_rss_bytes": 10533298176,
+    "rss_after_gc_bytes": 10530152448,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 10528210944,
+    "wall_seconds": 31.829530504000104
+   },
+   "seconds": 32.855862365999656,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "seconds": 55.57739688799984,
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "seconds": 55.66086984200001,
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "seconds": 50.397593631999825,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.0460222649999196,
+    "end_rss_bytes": 12107300864,
+    "peak_rss_bytes": 12108320768,
+    "rss_after_gc_bytes": 12107300864,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 12108316672,
+    "wall_seconds": 32.72426620999977
+   },
+   "seconds": 33.77471482600049,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "seconds": 56.50118050299989,
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "seconds": 57.009860879999906,
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "seconds": 51.371925147000184,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 1.0728223539999817,
+    "end_rss_bytes": 12147654656,
+    "peak_rss_bytes": 12148707328,
+    "rss_after_gc_bytes": 12146606080,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 12148703232,
+    "wall_seconds": 29.710056416000043
+   },
+   "seconds": 30.786646734999522,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "seconds": 53.604664768000475,
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "seconds": 54.002088224000545,
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "seconds": 49.17467879800006,
+   "year": 2028
+  }
+ ],
+ "wall_seconds": 976.5803183129997,
+ "workers": 1
+}
