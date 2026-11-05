@@ -108,7 +108,9 @@ def r10(x):
 def ns(pattern):
     rx = re.compile(pattern, re.I)
     ph = [p for p in P if rx.search(p) and not p.startswith("baseline.")]
-    vh = [v for v in V if rx.search(v)]
+    # policyengine-core adds variables in glob order, which differs by
+    # filesystem, so we sort them.
+    vh = sorted(v for v in V if rx.search(v))
     return (
         f"Searched BOTH the parameter tree and the VARIABLE list for /{pattern}/. "
         f"Parameters: {len(ph)} node(s) {ph[:6]}. Variables: {len(vh)} {vh[:6]}. "
