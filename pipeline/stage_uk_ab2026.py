@@ -18,12 +18,13 @@ The scope rule:
   estimate on the fuel households buy).
 - We keep the comparison and annotate it when the producer prints the line
   our run leaves out. The annotation names that line and its amount for that
-  year, read from the OBR's component claims at stage time: every nonzero
-  line of the OBR's breakdown except the receipts heads ("Receipts:" and
-  "Tax head (receipts)") and the welfare line, which gov_balance itself
-  counts, such as Scotland's block grant adjustment. The OBR's behavioural
-  erosion of the property income yield takes its own sentence, and any
-  other line without a reader name or a rule raises. HM Treasury costs
+  year, read from the OBR's component claims at stage time. It covers every
+  nonzero line of the OBR's breakdown, such as Scotland's block grant
+  adjustment, except the receipts heads ("Receipts:" and "Tax head
+  (receipts)") and the welfare line, which gov_balance itself counts. The
+  OBR's behavioural erosion of the property income yield takes its own
+  sentence, and any other line without a reader name or a rule raises.
+  HM Treasury costs
   electricity used by charities, care homes and a small amount of business
   as well as households, so those rows keep their comparison and say so.
 - We tally a year when our run shows no change because the measure isn't in
@@ -106,7 +107,7 @@ PAIR_ID = (
     "pair-pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
 )
 
-# The files a computed pairing reads, per measure. Every receipt is vendored
+# The files a computed pairing reads, per measure. We vendor every receipt
 # too, since the manifest and the pair record check against them.
 USED_FILES: dict[str, tuple[str, ...]] = {
     "ab2026__electricity_vat_zero_rate_to_july_2027": ("budgetary_impact.csv",),
@@ -195,25 +196,25 @@ FUEL_DUTY = "ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred"
 CARERS = "ab2026__carers_allowance_earnings_taper"
 PROPERTY = "ab2026__property_income_rates_plus_2pp"
 PENSION_TAX_ALLOWANCE = "ab2026__pension_tax_allowance"
-# HM Treasury's costing: the allowance runs "from 6 April 2027 until 5 April
-# 2030", so our run reads zero after it, where both producers count receipts.
+# HM Treasury says the allowance runs "from 6 April 2027 until 5 April 2030",
+# so our run reads zero after it, while both producers count a change in receipts.
 MEASURE_ENDED = {PENSION_TAX_ALLOWANCE: frozenset({"2030-31", "2031-32"})}
 SCOTTISH_BGA = "Current AME: Scottish BGA (current)"
 SCOTTISH_SFE = "Current AME: Scottish self-financed expenditure"
 WELFARE = "Current AME: Welfare inside cap"
 ELECTRICITY = "ab2026__electricity_vat_zero_rate_to_july_2027"
 # The OBR's breakdown lines our run doesn't model, as a reader names them.
-# Receipts heads and the welfare line are what gov_balance itself counts.
+# gov_balance itself counts the receipts heads and the welfare line.
 UNMODELLED_LINES = {
     SCOTTISH_BGA: "the Scottish block grant adjustment",
     SCOTTISH_SFE: "Scottish self-financed expenditure",
     "Current DEL: PSCE in RDEL": "departmental resource spending",
     "Current AME: Other AME (current)": "other annually managed expenditure",
 }
-# Lines no annotation reads: gov_balance counts them itself.
+# No annotation reads these lines, since gov_balance counts them itself.
 RECEIPTS_HEADS = ("Receipts:", "Tax head (receipts)")
 # The OBR prints this once, as £0.1 billion a year on average from 2028-29
-# (paragraph 3.17); the claim sits on 2031-32.
+# (paragraph 3.17), and the harvest stages the claim on 2031-32.
 BEHAVIOURAL = "behavioural erosion of yield"
 BEHAVIOURAL_YEARS = {PROPERTY: frozenset({"2028-29", "2029-30", "2030-31", "2031-32"})}
 TRADING = "ab2026__trading_allowance_3000"
@@ -632,7 +633,7 @@ def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
     if claim["source"] == "obr_efo":
         theirs = "the OBR measures it from its forecast before the Budget's measures"
     else:
-        theirs = "HM Treasury's table names no baseline"
+        theirs = "HM Treasury names no baseline in its table"
     annotations = [
         f"We estimate fiscal year {cond['fy']} from PolicyEngine's static "
         "Budget-day run on the Autumn Budget dashboard, with no behavioural "

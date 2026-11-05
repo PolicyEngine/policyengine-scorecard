@@ -16,7 +16,7 @@ written reason. These tests pin its invariants:
 7. no claim gets two computed answers;
 8. a database built with the AB2026 ingest and these results shows each
    comparison, and build_db.py calls none of it.
-9. each exchequer row carries the timing, baseline and sign annotations,
+9. each exchequer row has the timing, baseline and sign annotations,
    its measure's scope sentence in full, and one sentence naming every
    nonzero line of the OBR's breakdown for its measure and year except the
    receipts heads, the welfare line and the behavioural line, each with its
@@ -377,7 +377,7 @@ def test_every_exchequer_row_carries_timing_baseline_sign_and_scope():
         theirs = (
             "the OBR measures it from its forecast before the Budget's measures"
             if claim["source"] == "obr_efo"
-            else "HM Treasury's table names no baseline"
+            else "HM Treasury names no baseline in its table"
         )
         assert (
             "We measure the change from current law in policyengine-uk 2.151.0, "

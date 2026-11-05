@@ -45,7 +45,7 @@ AB2026 differs in six ways:
    and the staged value it expects.
 6. **Lanes.** Three lanes: official, microsimulation, and administrative data
    and other producers. ``advance_lanes`` moves a lane to ``computed`` once
-   its claims carry counterparts, which ``pipeline/stage_uk_ab2026.py``
+   its claims have counterparts, which ``pipeline/stage_uk_ab2026.py``
    stages from the dashboard's Budget-day artifacts (tranche 3) under
    ``STAGED_COUNTERPARTS``.
 
@@ -875,7 +875,7 @@ def ingest(db_path: Path, feed_path: Path | None = None) -> dict:
 
 
 def advance_lanes(db_path: Path, feed_path: Path | None = None) -> dict:
-    """Move each AB2026 lane whose claims now carry a PolicyEngine
+    """Move each AB2026 lane whose claims now have a PolicyEngine
     counterpart (a comparable or constructed result) from ``ingested`` to
     ``computed``, naming how many claims have one, as AB2025's does. A lane
     with no counterpart keeps its stage, and pe_gap verdicts don't count."""
