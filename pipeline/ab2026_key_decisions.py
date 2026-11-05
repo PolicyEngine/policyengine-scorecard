@@ -712,7 +712,7 @@ DECISIONS = {
         ),
         "package",
         (HMT, OBR, RF),
-        368,
+        374,
     ),
     "ab2026__package_hmt_distributional_since_ab2024": _d(
         "package",
@@ -1096,7 +1096,7 @@ DECISIONS = {
         ),
         "fuel_duty",
         (OBR, RF),
-        7,
+        8,
     ),
     "ab2026_option__fuel_duty_rpi_uprating_since_2011": _d(
         "option",

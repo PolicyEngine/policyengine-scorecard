@@ -3362,7 +3362,7 @@
    "measure_key": "ab2026__package_government_decisions_since_march_2026",
    "title": "The total effect of Government decisions since March 2026",
    "reported_status": "announced",
-   "source_note": "`hm_treasury`, `obr_efo` and `resolution_foundation` score it on 368 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's total effect of decisions on PSNB: Table 6.1 lines 1 to 98, the three fiscally neutral measures with no line (PWLB debt relief, Scottish APD devolution and the landlord registration fee) and the two non-scorecard decisions, with direct and indirect effects; the red book's Table 1.3 and RF restate it.",
+   "source_note": "`hm_treasury`, `obr_efo` and `resolution_foundation` score it on 374 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: The OBR's total effect of decisions on PSNB: Table 6.1 lines 1 to 98, the three fiscally neutral measures with no line (PWLB debt relief, Scottish APD devolution and the landlord registration fee) and the two non-scorecard decisions, with direct and indirect effects; the red book's Table 1.3 and RF restate it.",
    "program": "package",
    "producers": [
     "hm_treasury",
@@ -3845,7 +3845,7 @@
    "measure_key": "ab2026_option__fuel_duty_continued_freeze",
    "title": "Keep fuel duty frozen until 2029-30 instead of the rise in July 2027",
    "reported_status": "option_costed_by_others",
-   "source_note": "`obr_efo` and `resolution_foundation` score it on 7 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Rates held at 52.95p a litre to 2029-30 against the announced policy, which extends line 3: OBR paragraph 3.43's alternative and RF's series for the OBR's constant-duty-rate forecast.",
+   "source_note": "`obr_efo` and `resolution_foundation` score it on 8 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Rates held at 52.95p a litre to 2029-30 against the announced policy, which extends line 3: OBR paragraph 3.43's alternative and RF's series for the OBR's constant-duty-rate forecast.",
    "program": "fuel_duty",
    "producers": [
     "obr_efo",
