@@ -1,6 +1,6 @@
 # uk_hmt_redbook: Autumn Budget 2026 red book, Impact on households and Pension Tax Allowance explainer
 
-We keep `stage.py`, which writes this family's two data files, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-redbook/uk_hmt_redbook/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane kept its local primaries in `.ab2026-primaries/uk_hmt_redbook/` and never committed them, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes this family's two data files, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-redbook/uk_hmt_redbook/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane kept its local primaries in `.ab2026-primaries/uk_hmt_redbook/` and never committed them, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
 We use source `hm_treasury`. We stage **425 rows from 3 cited primaries (6 hashed versions), on 50 measure keys, 21 of which we proposed and registered in tranche 2.** We embedded every row and manifest line in `stage.py` as data. `python3 stage.py` rewrites `claims_staged.jsonl.gz` and `manifest.jsonl` byte for byte with the standard library alone. We vendor no primary bytes.
 
@@ -129,7 +129,7 @@ We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British 
 
 ## Conventions
 
-- **Values as printed.** We copy the printed string to `value_raw` and scale it to the unit in `value` (£ million × 1e6, £ billion × 1e9; percent stays percent; words such as "three-quarters" become fractions with unit `share`). We keep the printed qualifier on bounds: "over" and "more than" give `range_low`, "up to" gives `range_high`, and "around" gives `point`.
+- **Values as printed.** We copy the printed string to `value_raw` and scale it to the unit in `value` (£ million × 1e6, £ billion × 1e9; percent stays percent; words such as "three-quarters" become fractions with unit `share`). We keep the printed qualifier on bounds: we map "over" and "more than" to `range_low`, "up to" to `range_high`, and "around" to `point`.
 - **Sign.** We never re-sign values. In `conditions.sign_convention` we state each row's direction in the phrasing `scorecard_db/signs.py` reads:
   - Exchequer costs: "positive = cost to the Exchequer (as printed; not re-signed)";
   - savings: "positive = saving to the Exchequer";
@@ -238,16 +238,16 @@ No red-book figure covers exactly lines 1 and 2, or exactly lines 1, 2 and 3 (`a
     - `aggregate_household_saving` (AB2025 spelling; consumer savings);
     - `bill_change_percent` (business electricity bills);
     - `gross_earnings_change` (AB2025 spelling);
-    - `business_cost_saving` (administrative savings to business; replaces `operating_cost_change`, which the enum defines as an official operating-cost line);
+    - `business_cost_saving` (administrative savings to business; replaces `operating_cost_change`, which we define in the enum as an official operating-cost line);
     - `housing_supply_change` (the 20,000 additional homes);
-    - `jobs_created_or_supported` (the NWF's 100,000, the BBB's 40,000, Rolls-Royce's 3,300 and the DIP's 60,000; we don't use `affected_count`, which counts individuals affected, for jobs; review A's RB-9);
+    - `jobs_created_or_supported` (the NWF's 100,000, the BBB's 40,000, Rolls-Royce's 3,300 and the DIP's 60,000; we keep `affected_count` for individuals affected, not jobs; review A's RB-9);
   - shares with exact meanings: `unaffected_share` (the share printed as unaffected), `share_with_zero_liability` (half of RHL properties paying no rates), `share_in_non_gaining_deciles`, `share_in_net_recipient_deciles`, `income_mobility_share`, `share_in_top_half_of_expenditure` (Impact on households context).
 - **Proposed units:** `businesses` (15 rows), `dwellings` (1).
 - **Proposed baselines:** `hmt_no_budget_2026_modelled_policies` (paragraph 1.6, "a counterfactual in which the modelled policies were not introduced") and `hmt_no_policy_changes_from_ab2024_through_ab2026` (paragraph 1.8, "a counterfactual in which the modelled policies and spending settlements were not introduced"), one row each. We set `baseline_policy: null` on the other rows.
 
 ## Not staged (rules 8 and 9)
 
-In the rework we dropped 1,267 of the first staging's 1,699 rows, and with review A's fixes we dropped 7 more (4 November), so we don't stage 1,274 rows. We retired the first staging's proposed keys that named only dropped rows. We can't check how many there were, because neither branch's history includes the first staging, so we give no number.
+In the rework we dropped 1,267 of the first staging's 1,699 rows, and with review A's fixes we dropped 7 more (4 November), so we don't stage 1,274 rows. We retired the first staging's proposed keys that we had used only on dropped rows. We can't check how many there were, because neither branch's history includes the first staging, so we give no number.
 
 | Category | Rows | Examples (locator) |
 |---|---:|---|
@@ -258,7 +258,7 @@ In the rework we dropped 1,267 of the first staging's 1,699 rows, and with revie
 | E. Programme inputs, scope counts and targets | 25 | "670" HMRC compliance officers to recruit (paras 2.42, 6.151); tariffs on "over 100" food products (para 3.17); "around 10,000" homes the Social and Affordable Homes Programme funds (para 6.114); the 25% administrative-burden target worth "£5.6 billion" (para 4.51); "over 90% of England's population will have a devolution agreement in place" (para 4.68), a coverage count that includes existing agreements (review A's RB-7, dropped 4 November). |
 | F. Effects of policies outside this Budget | 3 | "more than 100" businesses using the Global Talent funder pathway since Budget 2025 (para 4.112); "over £5 billion" of services exports from the Switzerland and South Korea deals (para 4.124); "over £2 billion of net progress secured" against the administrative-burden target (para 4.51), progress before this Budget (in footnote 137 HM Treasury cites a July 2026 annex, and in para 4.52 it counts this Budget's £640 million separately; RB-7). |
 | G. Repeats beyond two of one claim | 4 | The Household Energy Payment's "£2.6 billion" in para 3.5 and Box 3.A, and "up to 20 million households" in para 3.3 and Box 3.A. Kept: the £2.6 billion of the executive summary and para 2.48, and the 20 million of the executive summary and paras 2.48 and 3.5 (review A's RB-2; see Review A fixes). |
-| H. The rework brief's drop list | 1 | Impact on households para 1.10's "over four times as much in public spending than they pay in tax" (`spending_to_tax_ratio`, which the brief's item 1 names for removal; RB-13). Row 365's 60% beside it stays as a printed value. |
+| H. The rework brief's drop list | 1 | Impact on households para 1.10's "over four times as much in public spending than they pay in tax" (`spending_to_tax_ratio`, which the coordinator named for removal in the brief's item 1; RB-13). Row 359's 60% beside it stays as a printed value. |
 
 Under rule 9 we moved 74 kept rows from proposed keys to a Table 6.1 line's key:
 - the 66 Table 6.3 item cells and the 160,000 employees (from proposed keys such as `ab2026__package_tax_gap_timely_payment`; now line 45 components);
@@ -287,9 +287,9 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 ## Judgement calls for the coordinator
 
 - **We dropped `spending_to_tax_ratio` (review A's RB-13).** In the 3 November finish we kept paragraph 1.10's "over four times" as a distributional statement. Review A read the rework brief's item 1 as a named removal list whose only exception is a Table 6.1 cost or yield. HM Treasury prints no other spending-to-tax ratio in either primary, so we read the removal list as applying only to this row. In paragraph 1.10 HM Treasury writes "context beyond the impact of recent government policy decisions". We dropped the row (category H). We keep the 60% row beside it, Table 2.C and the other Impact on households context rows as printed values.
-- **Mislabelled shares beyond the 84%.** We stage the 84% as `unaffected_share`, never 16%. BADR's "three-quarters … will still receive relief on their entire gain" gives the unaffected share too. "half of all RHL properties … will not pay business rates at all" includes properties already paying none (`share_with_zero_liability`). Impact on households' 20%, 60%, 59% and approximately 20% don't give affected shares (proposals above). The registry defines `share_no_change` as a household-income measure, so for the 84% of income tax payers we follow the brief's `unaffected_share`.
+- **Mislabelled shares beyond the 84%.** We stage the 84% as `unaffected_share`, never 16%. In BADR's "three-quarters … will still receive relief on their entire gain" HM Treasury gives the unaffected share too. In "half of all RHL properties … will not pay business rates at all" it counts properties already paying none (`share_with_zero_liability`). We don't read Impact on households' 20%, 60%, 59% and approximately 20% as affected shares (proposals above). We define `share_no_change` in the registry as a household-income measure, so for the 84% of income tax payers we follow the brief's `unaffected_share`.
 - **Registered metrics replace AB2025-era proposals.** For the four "around £50 off the annual Ofgem price cap" rows and the three energy-debt "£30" rows we now use the registered `energy_bill_change` (unit `gbp_per_household`), which the enum mints for HM Treasury bill figures. For the India agreement's GDP effects we use `gdp_level_effect` in GBP (the AB2025 IPPR precedent).
-- **We dropped financial transactions and public sector net investment as financing and spending levels.** In Table 1.4 HM Treasury prints forecast levels of lending by programme, not Budget effects. The OBR produces public sector net investment as an aggregate, but the brief lists `public_investment_share` for removal.
+- **We dropped financial transactions and public sector net investment as financing and spending levels.** In Table 1.4 HM Treasury prints forecast levels of lending by programme, not Budget effects. The OBR produces public sector net investment as an aggregate, but the coordinator listed `public_investment_share` for removal in the brief.
 - **We keep jobs and induced homes, and drop delivery targets.** We stage the estimated jobs (NWF 100,000; BBB 40,000; Rolls-Royce 3,300; DIP 60,000; proposed `jobs_created_or_supported` since review A) and Your First Home's "estimated 20,000 new homes" as estimated effects. We treat the 10,000 homes the Social and Affordable Homes Programme funds (in line 35's title), robotic procedures rising to 500,000, 2,000 learners and the infrastructure pipeline's 650,000 workforce requirement as delivery targets of allocations.
 - **We now mark the BBB's 40,000 jobs `restated`.** In footnote 135 HM Treasury cites the British Business Bank's press release. We mark the NWF's 100,000 `restated` too (in footnote 134 HM Treasury cites the National Wealth Fund's own statement).
 
@@ -377,7 +377,7 @@ The OBR prints the same figures in its Table 3.1 "Total effect of Government dec
 
 ## README rule 10, 3 November 2026
 
-We had already put Table 1.3's total effect of policy decisions and its tax and spending parts (18 rows) on `decisions_effect_on_borrowing`, and proposed `fiscal_balance_change` for its two memo lines on the current budget deficit (11 rows). The memo rows' sign convention named PSNB, so `stage.py` now states which way the current budget deficit moves on rows 138–142 (underlying forecast differences) and 161–166 (policy decisions). We changed no value or sign. The contract checker reports 432 rows, 0 problems, and when we re-run `stage.py` it reproduces the gzip byte for byte.
+We had already put Table 1.3's total effect of policy decisions and its tax and spending parts (18 rows) on `decisions_effect_on_borrowing`, and proposed `fiscal_balance_change` for its two memo lines on the current budget deficit (11 rows). In the memo rows' sign convention we had named PSNB, so in `stage.py` we now state which way the current budget deficit moves on rows 138–142 (underlying forecast differences) and 161–166 (policy decisions). We changed no value or sign. The contract checker reports 432 rows, 0 problems, and when we re-run `stage.py` it reproduces the gzip byte for byte.
 
 ## Review A fixes, 4 November 2026
 

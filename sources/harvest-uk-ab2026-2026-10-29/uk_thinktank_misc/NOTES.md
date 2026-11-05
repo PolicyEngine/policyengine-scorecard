@@ -1,6 +1,6 @@
 # Smaller producers: Autumn Budget 2026
 
-We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_thinktank_misc/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane never committed its local primaries folder (`.ab2026-primaries/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_thinktank_misc/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane never committed its local primaries folder (`.ab2026-primaries/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
 We staged this family from five primary HTML responses that their producers published on 28 October 2026. We use the sources `cps`, `institute_for_government`, `learning_and_work_institute` and `citizens_advice`; we manifested Age UK's response but staged zero rows from it. We stage **12 rows and 5 primaries**. We embedded the readings in `stage.py`, which recreates the manifest and deterministic gzip with only Python's standard library.
 
@@ -53,7 +53,7 @@ We read in the order CPS, IfG, Age UK, LWI, Citizens Advice, then top to bottom 
 | Measure key | Rows | Scope |
 |---|---:|---|
 | `ab2026__household_energy_payment_100_bands_a_to_d` | 1 | IfG's share of households in England receiving the £100 council-tax rebate for bands A–D (restating HM Treasury's paragraph 3.5); Table 6.1 line 1 |
-| `null` | 11 | context and document-tally observations; none carries a proposed key |
+| `null` | 11 | context and document-tally observations; we proposed a key for none |
 
 We attach the sole registered key to the specific rebate's coverage, not to the entire cost-of-living package. IfG names the £100 council-tax rebate for bands A–D, so we match it to line 1, and IfG gives no contrary scope. Its "around 80%" restates HM Treasury's paragraph 3.5 ("around 80% of households in England"). So we mark the row `restated`, `administrative_data`, geography England, as we stage `uk_hmt_redbook` row 191; we made that change on 4 November, after review B finding 1. We gave null measure keys and null reform hints to context forecasts, outturns and document counts, including CPS's PuFins assertion.
 
@@ -63,7 +63,7 @@ We attach the sole registered key to the specific rebate's coverage, not to the 
 - Only IfG names a fiscal year, for its fiscal-rule probabilities: we normalise “2029/30” to `fy: 2029-30`, period 2030, `fiscal_year`. IfG prints calendar 2030 for the income projection, so we use `annual` without `fy`. For the other observations we use the publication-year point-in-time anchor 2026 and keep “last six months”, “this winter”, “each year”, “last 12 months” or the unspecified horizon explicitly. We claim no fiscal or calendar scoring year that the producer did not print. We give the PuFins annual-rate assertion medium confidence, because CPS supplies no scoring year and no fiscal or calendar basis.
 - We keep real income real, and leave every other price basis unspecified where the producer names none. These current observations and explicitly named context comparisons need no baseline proposal.
 - CPS doesn't identify the calculation behind its own PuFins assertion, so we use `source_model: unstated`. We use `administrative_data` and `administrative_fact` for official debt and outturn context. We mark CPS's headroom and IfG's fiscal probabilities and income forecasts `restated`, `obr_efo_forecast`, `different_model`. We couldn't identify the original release behind CPS's unsourced figures, so we state these originator assignments in the rows.
-- We record IfG's two counts as its own `arithmetic`, `different_model` observations. Its rebate share restates HM Treasury (paragraph 3.5), so since 4 November we mark it `restated`, `administrative_data`, with `conditions.originator` naming the paragraph. We treat LWI's rounded NEET figure as restated official labour-market context, `administrative_data`, `administrative_fact`; LWI gives no quarter, age range or citation. We treat Citizens Advice's unsourced bill forecast as its own assertion with `source_model: unstated`, and we record that it gives no method or geography. We give Citizens Advice's estimate, CPS's PuFins assertion and IfG's rebate share medium confidence, and the other nine rows high confidence.
+- We record IfG's two counts as its own `arithmetic`, `different_model` observations. In its rebate share IfG restates HM Treasury (paragraph 3.5), so since 4 November we mark it `restated`, `administrative_data`, and name the paragraph in `conditions.originator`. We treat LWI's rounded NEET figure as restated official labour-market context, `administrative_data`, `administrative_fact`; LWI gives no quarter, age range or citation. We treat Citizens Advice's unsourced bill forecast as its own assertion with `source_model: unstated`, and we record that it gives no method or geography. We give Citizens Advice's estimate, CPS's PuFins assertion and IfG's rebate share medium confidence, and the other nine rows high confidence.
 
 ## Proposed keys, metrics and units
 
@@ -84,7 +84,7 @@ We propose these metrics (counts and exact meaning):
 - `fiscal_rule_probability` (2; percent): current and last-budget OBR probabilities of a current-budget surplus in 2029/30, as reported by IfG.
 - `average_energy_bill_change` (1; GBP/month; AB2025 IFS/RF proposal spelling): Citizens Advice's forecast monthly household energy-bill increase, excluding any assertion that this is a Budget measure effect.
 
-We record IfG's restatement of the OBR's 2% cumulative growth in real household disposable income per person (EFO para 1.2) under the registered `real_income_growth`. Since 4 November, after review B finding 3, `conditions.measure_type` says "per person". We use the proposed unit `measures` only for the two counts, and registered units for the rest. We propose no baselines.
+We record IfG's restatement of the OBR's 2% cumulative growth in real household disposable income per person (EFO para 1.2) under the registered `real_income_growth`. Since 4 November, after review B finding 3, we write "per person" in `conditions.measure_type`. We use the proposed unit `measures` only for the two counts, and registered units for the rest. We propose no baselines.
 
 ## What we left out, and the primaries' limits
 
@@ -96,7 +96,7 @@ We record IfG's restatement of the OBR's 2% cumulative growth in real household 
 - We stage the seven official/OBR context rows and IfG's restatement of HM Treasury's 80% with `restated` and an originator. We found no PolicyEngine restatement.
 - We reached every page, and found no chart in these primaries with unstaged numeric labels.
 
-IfG describes the £100 rebate as reaching “around 80%” of households without naming the denominator's geography. HM Treasury's paragraph 3.5, which IfG restates, says households in England, so since 4 November we record England on the row. CPS gives no components, annual dates or method for its PuFins claim, so we keep that row as context. CPS also gives no target year for its £15 billion headroom. Age UK prints no number in its Pension Tax Allowance paragraph despite the assignment's pointer. We repaired none of these gaps from other sources.
+IfG describes the £100 rebate as reaching “around 80%” of households without naming the denominator's geography. In paragraph 3.5, which IfG restates, HM Treasury says households in England, so since 4 November we record England on the row. CPS gives no components, annual dates or method for its PuFins claim, so we keep that row as context. CPS also gives no target year for its £15 billion headroom. Age UK prints no number in its Pension Tax Allowance paragraph despite the assignment's pointer. We repaired none of these gaps from other sources.
 
 ## Verification
 

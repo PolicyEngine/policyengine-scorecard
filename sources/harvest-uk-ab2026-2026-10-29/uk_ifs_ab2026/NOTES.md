@@ -1,6 +1,6 @@
 # uk_ifs_ab2026 — Institute for Fiscal Studies, Autumn Budget 2026
 
-We keep `stage.py`, which writes `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/ifs/uk_ifs_ab2026/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch. We embedded every row in `stage.py`, so it rebuilds the gzip with no network and no primary file. The harvest keeps its local primaries in `.ab2026-primaries/uk_ifs_ab2026/`, which we never commit, so the repository holds no primary bytes. Fetch each deck from its `manifest.jsonl` URL, and each Flourish embed from the embed URL in its manifest note, and check its sha256. For the two browser-text primaries we took each page's `<main>` text as saved on 29 October. ifs.org.uk refuses curl and embeds per-request tokens in its HTML, so only the saved texts match those two hashes.
+We keep `stage.py`, which writes `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/ifs/uk_ifs_ab2026/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch. We embedded every row in `stage.py`, so it rebuilds the gzip with no network and no primary file. We keep the local primaries in `.ab2026-primaries/uk_ifs_ab2026/` and never commit them. Fetch each deck from its `manifest.jsonl` URL, and each Flourish embed from the embed URL in its manifest note, and check its sha256. For the two browser-text primaries we took each page's `<main>` text as saved on 29 October. ifs.org.uk refuses curl and embeds per-request tokens in its HTML, so only the saved texts match those two hashes.
 
 We stage **144 rows from 13 primaries**, with `source: ifs`. We list 14 primaries in the manifest: four current briefing decks, the superseded TW_0 deck (no rows), two IFS pages we read as browser text, and the public data of seven Flourish visualisations.
 - The first lane staged 106 rows from the decks on 29 October.
@@ -14,7 +14,7 @@ Review A (PR #231, issue comment 6635870934) asked for three changes to this fam
 
 - H-6(a): we now record the registered metric in `metric` on rows 39 and 40 (`cpi_inflation_rate`) and 47 and 48 (`affected_share`), with `proposed_metric` null.
 - K-7(a): we keep row 78 (£1.1bn, lines 61 and 62) at 2031-32 ("Biggest revenue-raisers in 2031–32") and add `conditions.discrepancy`: "IFS prints £1.1bn for 2031-32, where Table 6.1 gives lines 61 and 62 a combined £1,045m."
-- K-7(e): row 42 (£5bn). On slide 3 IFS gives it as the cost of the three measures "over next nine months", and HM Treasury's Table 6.1 line 2 costs the whole VAT cut from 1 October 2026. So the re-key to lines 1–3 stands (£5,040m over 2026-27 and 2027-28), and we say so in the row's note. We mark it `cumulative`, with the time basis of RF's two-year totals: period 2028 (the final fiscal year), `fiscal_year`, no `fy`, and `conditions.horizon` naming both years.
+- K-7(e): row 42 (£5bn). On slide 3 IFS gives it as the cost of the three measures "over next nine months", and HM Treasury's Table 6.1 line 2 costs the whole VAT cut from 1 October 2026. So the re-key to lines 1–3 stands (£5,040m over 2026-27 and 2027-28), and we say so in the row's note. We mark it `cumulative`, with the time basis of RF's two-year totals: period 2028 (the final fiscal year), `fiscal_year` and no `fy`, and we name both years in `conditions.horizon`.
 
 ## Coverage
 
@@ -80,7 +80,7 @@ We proposed four keys for seven rows, and in tranche 2 we registered them and mo
 | 55–57 | proposed `ab2026__package_ifs_gas_standing_charge_reallocation` | proposed `ab2026__gas_standing_charge_moved_to_unit_rates` | We give a measure with no Table 6.1 line `ab2026__<slug>`; the RF family's spelling. |
 | 61 (£1.2bn per year) | proposed `ab2026__package_ifs_defence_investment_plan_funding` | dropped | See below. |
 
-**Defence Investment Plan funding.** The addendum asked whether IFS's "£1.2bn per year gap in Defence Investment Plan funding" gives an estimate (keep, as context) or not. In its own note the first lane calls it the government's DIP funding announcement, restated: the Budget "filled" the gap. That makes it a spending allocation, which we exclude under rule 8, so we dropped it rather than keep it as context. It comes close to, but doesn't equal, Table 6.1 line 41 (capital reallocation to fully fund the DIP: +1,100, +1,135, +1,180 in 2029-30 to 2031-32), so we don't key it there either.
+**Defence Investment Plan funding.** The coordinator asked in the addendum whether IFS estimates the "£1.2bn per year gap in Defence Investment Plan funding" (keep, as context) or not. In its own note the first lane calls it the government's DIP funding announcement, restated: the Budget "filled" the gap. That makes it a spending allocation, which we exclude under rule 8, so we dropped it rather than keep it as context. It comes close to, but doesn't equal, Table 6.1 line 41 (capital reallocation to fully fund the DIP: +1,100, +1,135, +1,180 in 2029-30 to 2031-32), so we don't key it there either.
 
 
 ## Rows from addendum sections 1 and 2
@@ -100,12 +100,12 @@ The opening remarks (rows 92 to 97; we saved the whole speech on line 6 of the t
 - 98: proposed metric `measure_count` in proposed unit `measures`, `measure_key` null, no proposed key. Miller counts the Budget's measures, and we stage the count as we stage such counts in the AB2025 and AB2026 uk_thinktank_misc families (`own`, `different_model`). HM Treasury numbers Table 6.1's lines 1 to 98 (`data/uk/ab2026_measures.json`).
 - £17 billion: proposed metric `spending_pressure`, IFS's estimate of the top-up that avoiding real-terms cuts could need. IFS prints its year as "2030-21", a typo, most likely for 2030–31. We keep "2030-21" in the quote and `conditions.horizon`, set no `fy`, use 2026 as a publication-year marker and give the row medium confidence.
 - £11 billion: `spending_pressure` for defence plans, on top of the £17 billion. IFS prints no year on the page; on Boileau slide 4 it prints £11 billion more defence spending in 2030–31 (row 55). We give the row medium confidence and a 2026 marker.
-- 25% and 40%: proposed metric `reserve_allocated_share`, the shares of the capital and day-to-day reserves already spent, restated `administrative_fact`. IFS names a source neither in the remarks nor on Boileau slide 11, which prints the same two shares. So in all four rows we infer the restated attribution and give medium confidence.
+- 25% and 40%: proposed metric `reserve_allocated_share`, the shares of the capital and day-to-day reserves already spent, restated `administrative_fact`. IFS names a source neither in the remarks nor on Boileau slide 11, where it prints the same two shares. So in all four rows we infer the restated attribution and give medium confidence.
 - 80%: `affected_share` 0.8 of households, for the £100 payment through council tax bands A-D, keyed to `ab2026__household_energy_payment_100_bands_a_to_d`.
 
 ### The seven visualisations (46 rows)
 
-In `.ab2026-primaries/uk_ifs_ab2026/browser/data-items.json` we list the seven data items in the collection's key charts, each with its Flourish id and lead sentence. We read each chart's data cells from its public embed (see "Access recipe and primary inventory"). Following the addendum, we stage the October 2026 forecast values, and the March 2026 values where a chart compares the two. We mark them restated OBR figures unless IFS computed them, and mark IFS's own calculations `own`. We leave outturns unstaged unless a lead states one as its finding.
+In `.ab2026-primaries/uk_ifs_ab2026/browser/data-items.json` we list the seven data items in the collection's key charts, each with its Flourish id and lead sentence. We read each chart's data cells from its public embed (see "Access recipe and primary inventory"). Following the addendum, we stage the October 2026 forecast values, and the March 2026 values where a chart compares the two. We mark them restated OBR figures unless IFS computed them, and mark IFS's own calculations `own`. We leave outturns unstaged unless IFS states one as the finding in a lead sentence.
 
 | Flourish id | Rows | Metric and unit | What we stage | Attribution |
 |---|--:|---|---|---|
@@ -117,15 +117,15 @@ In `.ab2026-primaries/uk_ifs_ab2026/browser/data-items.json` we list the seven d
 | 30726047 | 1 | `revenue_change`, `percent` | Budget 2026's tax change at the forecast horizon, 0.2% of GDP, with `ab2026__package_ifs_announced_tax_changes` above | `own`: the footer credits IFS calculations |
 | 30727239 | 15 | `taxpayer_count`, `persons` | the three forecast series (the freeze at the March and October 2026 forecasts, and CPI uprating at the October forecast), 2026-27 to 2030-31 | `restated` OBR: the footer cites the OBR EFO, October 2026 |
 
-We key only the tax-change row. The other 45 give forecast levels or IFS indicators, not the effect of one measure, so we give them `measure_key` null and no proposed key.
+We key only the tax-change row. In the other 45 IFS gives forecast levels or its own indicators, not the effect of one measure, so we give them `measure_key` null and no proposed key.
 
 ### Conventions for these rows
 
 - **Quotes and locators.** We quote each Flourish row as "row, series: value", and name the visualisation, the data row and the series in its locator. We take `value_raw` as the cell the embed serves, at full precision, whatever the chart displays.
 - **Units.**
   - IFS titles the deficit chart's y-axis "£ billion", so we scale its cells by 1e9 to GBP.
-  - IFS gives the taxpayer chart's cells in thousands: the lead's 10.8 million equals the 2030-31 October freeze cell, 10800, and the chart's number format sets a constant of 1000. We scale them by 1,000 to persons.
-  - IFS gives the headroom cells as fractions of GDP, which we stage as served in unit `share`; the chart's number format sets a constant of 100, one decimal place and a % suffix.
+  - IFS gives the taxpayer chart's cells in thousands: the lead's 10.8 million equals the 2030-31 October freeze cell, 10800, and in the chart's number format IFS sets a constant of 1000. We scale them by 1,000 to persons.
+  - IFS gives the headroom cells as fractions of GDP, which we stage as served in unit `share`; in the chart's number format IFS sets a constant of 100, one decimal place and a % suffix.
   - We keep index levels in the proposed unit `index`, not the registered `index_0_1`.
   - IFS gives the parliament and tax-change cells as percentages: it adds a % suffix in the number format and writes "% of GDP" in the tax column's name.
 - **Periods.**
@@ -152,7 +152,7 @@ Under the addendum we dropped 19 of the first lane's 106 rows, all under rule 8:
 | Financing and allocations | 2 | ~£1bn a year of NWF and BBB financing for defence (Boileau 5); the £1.2bn a year of DIP funding (Boileau 4) |
 | The base a measure moves | 2 | the £108 average gas standing charge and its 13% share of a typical gas bill (Wernham 8), as we dropped the red book's £108 |
 
-We keep each dropped parameter that names a measure in the kept rows' `reform_hint`. We keep the 25% capital and 40% day-to-day reserve shares (Boileau 11), because the addendum lists them as estimates. We keep the bond spread and debt-ownership context rows (Stockton 7) as context, since they aren't design.
+We keep the measure name of each dropped parameter in the kept rows' `reform_hint`. We keep the 25% capital and 40% day-to-day reserve shares (Boileau 11), because the coordinator lists them as estimates in the addendum. We keep the bond spread and debt-ownership context rows (Stockton 7) as context, since they aren't design.
 
 ### Figures on the two pages (11)
 
@@ -174,7 +174,7 @@ We don't count the pages' other numbers as figures to stage:
 - "2030-21", which we keep in row 93;
 - the name of the "10 year plan"; the G7; the count of "two big problems"; and "one-off".
 
-Miller's "almost halved" prints no number, and we turn it into none.
+Miller prints no number with "almost halved", and we turn it into none.
 
 ### Data cells in the seven visualisations (256 of 302)
 
@@ -189,13 +189,13 @@ Miller's "almost halved" prints no number, and we turn it into none.
 | 30727239 | 58 | 15 | 43 | the Current plans series, 1990-91 to 2025-26 (36); the two freeze series' 2025-26 cells (2), each 8510, the Current plans value for that year; and the CPI-uprating series for 2021-22 to 2025-26 (5), a counterfactual path for the years before the forecast years, whose 2021-22 cell equals Current plans' 4950 |
 | **Total** | **302** | **46** | **256** | |
 
-Outside the data cells, IFS draws a reference line on the headroom chart labelled with the 2010s average headroom, 0.9% of GDP: a historical average, which we don't stage. The lead sentences in `data-items.json` belong to no manifested primary. Each estimate a lead states repeats a staged cell (0.4% a year in row 127, around 0.2% of GDP in row 128, 10.8 million in row 142), and its other numbers give dates. IFS defines index bases in the axis titles, and apart from the labelled 0.9% line, adds no estimate in any tick or guide. We read no value off an image, a bar, a line or a tick.
+Outside the data cells, IFS draws a reference line on the headroom chart labelled with the 2010s average headroom, 0.9% of GDP: a historical average, which we don't stage. The lead sentences in `data-items.json` belong to no manifested primary. Where IFS states an estimate in a lead, it repeats a staged cell (0.4% a year in row 127, around 0.2% of GDP in row 128, 10.8 million in row 142), and it uses other numbers only for dates. IFS defines index bases in the axis titles, and apart from the labelled 0.9% line, adds no estimate in any tick or guide. We read no value off an image, a bar, a line or a tick.
 
 ## Unreached
 
-We couldn't fetch two of the sources the addendum names, and two others gave us nothing to stage:
+We couldn't fetch two of the sources the coordinator named in the addendum, and we found nothing to stage in two others:
 
-- **The seven IFS data-item pages.** ifs.org.uk refuses curl, and the addendum rules out any other route. So in each manifest line we name the data item's URL and hash the chart's public Flourish embed instead. We don't use the "Download data" link that IFS names in each chart's footer template.
+- **The seven IFS data-item pages.** ifs.org.uk refuses curl, and the coordinator rules out any other route in the addendum. So in each manifest line we name the data item's URL and hash the chart's public Flourish embed instead. We don't use the "Download data" link that IFS names in each chart's footer template.
 - **The explainer and the fiscal devolution comment.** In the browser read of 29 October we found only an embedded video in the first and only design parameters in the second, so we gave neither a manifest line or rows.
 - **The briefing event page** (https://ifs.org.uk/events/autumn-budget-2026-ifs-analysis). IFS's server refused the first lane's curl with a Cloudflare challenge (see below), and we hold it in no primary.
 
@@ -239,7 +239,7 @@ numerical claim.
 
 ### Browser text (the initial response and the opening remarks)
 
-On 29 October, between 16:56Z and 16:58Z, we read the two pages in the Claude desktop app's built-in browser, as an ordinary page visit with no challenge solved. We fetched each page's HTML in-page with `fetch(location.href)` and hashed it. Two fetches of the initial response gave the same length, 257,037 bytes, with different hashes, because IFS embeds per-request tokens in the HTML. So we take the text of each page's `<main>` element as the primary, and record the HTML's byte count and one fetch's hash in each manifest note. IFS dates both pages 28 October 2026; the remarks give Helen Miller's opening remarks at the 29 October briefing.
+On 29 October, between 16:56Z and 16:58Z, we read the two pages in the Claude desktop app's built-in browser, as an ordinary page visit with no challenge solved. We fetched each page's HTML in-page with `fetch(location.href)` and hashed it. Two fetches of the initial response gave the same length, 257,037 bytes, with different hashes, because IFS embeds per-request tokens in the HTML. So we take the text of each page's `<main>` element as the primary, and record the HTML's byte count and one fetch's hash in each manifest note. IFS dates both pages 28 October 2026; on one it gives Helen Miller's opening remarks at the 29 October briefing.
 
 ### Flourish public data (the seven visualisations)
 
@@ -322,7 +322,7 @@ We list every proposed metric in the 144 rows.
 | `taxpayer_gain` | 1 | gbp | Adam slide 3: the maximum Founders' Relief gain, £1.4m |
 | `ten_year_bond_spread_other_g7` | 1 | percentage_points | Stockton slide 7: 134bp |
 
-We propose the units `index` (16 rows, the two index charts) and `measures` (the measure count), and propose no baseline on any row. The first lane's rows proposed `affected_share` and `cpi_inflation_rate`, which the Metric registry lists. Since 4 November (review A's H-6(a)) we record them in `metric` on those four rows (Wernham slides 2 and 5), and use the registered `affected_share` in the new rows too. In the new rows we also use the registered metrics `taxpayer_count` (15), `fiscal_headroom` (4), `decisions_effect_on_borrowing` (2), `real_income_growth` (1) and `revenue_change` (1).
+We propose the units `index` (16 rows, the two index charts) and `measures` (the measure count), and propose no baseline on any row. The first lane proposed the registered metrics `affected_share` and `cpi_inflation_rate`. Since 4 November (review A's H-6(a)) we record them in `metric` on those four rows (Wernham slides 2 and 5), and use the registered `affected_share` in the new rows too. In the new rows we also use the registered metrics `taxpayer_count` (15), `fiscal_headroom` (4), `decisions_effect_on_borrowing` (2), `real_income_growth` (1) and `revenue_change` (1).
 
 ## Family conventions
 
@@ -396,7 +396,7 @@ Access and version evidence:
   - On TW_0 p4 IFS already includes the 80%/91% eligibility annotations, which TW_1 p4 omits.
   - On TW_0 p5 the eligibility annotations overlap the VAT/fuel commentary. On TW_1 p5 IFS moves eligibility to the lower chart and the VAT/fuel commentary to the upper chart.
   - IFS removed TW_0 p6, another copy of the unannotated support chart. TW_0 p7–18 correspond to TW_1 p6–17.
-  - IFS changed no printed numerical claim. In all staged rows we cite TW_1. We stage zero rows from TW_0, but we manifest it as the changed primary rule 7 requires.
+  - IFS changed no printed numerical claim. In all staged rows we cite TW_1. We stage zero rows from TW_0, but we manifest it as a changed primary under rule 7.
 
 The first lane gave 14 of its rows a null measure_key, 4 `ab2026__household_energy_payment_100_bands_a_to_d`, 2 `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` and 1 `ab2026__bus_fare_cap_2_england_outside_london_2027`. Of the null rows, it staged 6 as unscored context and gave 8 its proposed measure keys. It staged all 21 rows from TW_1 (TW_1=21, TW_0=0).
 
@@ -443,7 +443,7 @@ Potential contradictions and limits:
 - IFS gives the positive 1% magnitude explicitly as a decrease.
 - The lane detected no numerical difference between TW_0 and TW_1.
 
-The lane drew a deterministic random sample, seed 230, of 10 of the 21 rows, and reopened each directly from the TW_1 PDF text. It also checked labels and direction against rendered pp4, 5, 7, 8 and 14. The one-based component rows 1, 6, 7, 8, 10, 11, 14, 15, 18 and 19 gave:
+The lane drew a deterministic random sample, seed 230, of 10 of the 21 rows, and reopened each directly from the TW_1 PDF text. It also checked labels and direction against rendered pp4, 5, 7, 8 and 14. From the one-based component rows 1, 6, 7, 8, 10, 11, 14, 15, 18 and 19 it read:
 - p2 3.8% CPI in Q1 2027;
 - p3 0% VAT October 2026–June 2027;
 - p3 £5bn positive Exchequer cost across nine months;
@@ -580,7 +580,7 @@ Since 3 November we put the £7bn net tax rise, Table 6.1's total of tax policy 
 
 ### Proposed measure scopes
 
-We superseded these on 3 November (see "Keys the addendum changed" above). We stage the self-assessment timing and the compliance-staff and debt-collection figures as line 45 components, matched to Table 6.3's items by value, and the savings and property income figure on `ab2026__package_property_and_savings_income_rates`. Under rule 8 we dropped this deck's six parameter rows (the Founders' Relief rate, comparator and limit, the RHL rateable values and the 0% VAT rate), so it now gives 12 rows.
+We superseded these on 3 November (see "Keys the addendum changed" above). We stage the self-assessment timing and the compliance-staff and debt-collection figures as line 45 components, matched to Table 6.3's items by value, and the savings and property income figure on `ab2026__package_property_and_savings_income_rates`. Under rule 8 we dropped this deck's six parameter rows (the Founders' Relief rate, comparator and limit, the RHL rateable values and the 0% VAT rate), so we now stage 12 rows from this deck.
 
 ### Conventions and metric proposals
 
@@ -638,8 +638,8 @@ fiscal-year condition, and proposed no baseline.
   describes the 29 October briefing and the PDF metadata show creation and
   modification on 29 October. We follow the printed cover for the publication
   date (2026-10-28).
-- We keep IFS's £1.1bn combined savings/property yield verbatim. Table 6.1
-  gives lines 61 and 62 final-year amounts of £455m and £590m, totalling
+- We keep IFS's £1.1bn combined savings/property yield verbatim. In Table 6.1
+  HM Treasury gives lines 61 and 62 final-year amounts of £455m and £590m, totalling
   £1.045bn. Different rounding or aggregation could explain IFS's displayed
   £1.1bn; we stage no correction or derivation.
 - IFS's £1bn HMRC compliance/debt-collection figure covers less than line 45's

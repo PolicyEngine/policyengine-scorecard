@@ -8,7 +8,7 @@ In this family we stage IPPR's three responses to the Budget on 28 October 2026,
 
 IPPR lists nothing on 29 October. We use the source slug `ippr`, as in the AB2025 `uk_ippr` family.
 
-We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_ippr/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane never committed its local primaries folder (`.ab2026-primaries/uk_ippr/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_ippr/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane never committed its local primaries folder (`.ab2026-primaries/uk_ippr/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
 We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its page's text; it reports 0 problems.
 
@@ -17,7 +17,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 
 ## Access recipe
 
-- We fetched the media-office listing (https://www.ippr.org/media-office, pages 1 and 2) on 2026-10-29 to find the responses. IPPR's `/news-and-media` returns 404, and its `/articles` lists no Budget piece.
+- We fetched the media-office listing (https://www.ippr.org/media-office, pages 1 and 2) on 2026-10-29 to find the responses. IPPR's `/news-and-media` returns 404, and IPPR lists no Budget piece on its `/articles`.
 - We fetched all three releases directly (`curl -sSL`, browser User-Agent, HTTP 200): "Unfinished business" at 16:17Z and the North and Scotland releases at 16:35Z.
 - We read each page's JSON-LD `dateModified` as a render time, not an edit. On 29 October IPPR's server gave each page a `dateModified` that day (16:04Z, 16:21Z, 16:34Z), after its 28 October `datePublished`. Review B's fetches on 4 November show 14:39–14:46Z that day with byte-identical length. Two fetches of the same page 30 minutes apart differ only in that field and Cloudflare's email tokens. So IPPR's server stamps the field when it serves the page, and we found no sign of an edit after publication. We hashed the copies from the fetches above and took nothing from a local copy.
 

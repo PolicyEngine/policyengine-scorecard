@@ -1,6 +1,6 @@
 # uk_hmt_costings: HM Treasury, Budget 2026: Policy Costings (PU 3699)
 
-We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-costings/uk_hmt_costings/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes: fetch the costings PDF from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-costings/uk_hmt_costings/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository: fetch the costings PDF from its `manifest.jsonl` URL and check its sha256.
 
 We staged this family on 2026-10-29 and follow README rules 1 to 10. Those include rule 8 ("stage estimates, not design"), rule 9 ("a component of one measure keeps that measure's key") and rule 10 (below, under Conventions). We wrote the rows into `stage.py` (on the staging branch; see the paragraph above) as data, and it rewrites `claims_staged.jsonl.gz` byte for byte.
 
@@ -110,13 +110,13 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 - **Year of a parameter.** HM Treasury gives no year for p.15's take-up, p.28's reserves share or p.67's two parameters. As in the AB2025 family, we set `fy` to the measure's first year and say so in the row's `note`.
 - **Present-tense counts.** HM Treasury prints no year for p.15's "There are an estimated" or p.108's "The current estimate". We give them `period: 2026` and `time_basis: point_in_time`, with `basis: outturn`.
 - **Metric choices that could go either way:**
-  - p.15's population counts the people a new benefit would cover, so we use the registered `eligible_count`.
-  - p.108's 4.9 million counts the base the fee falls on, so we use `tax_base`, as we did for AB2025's 165,000 HVCTS properties.
-  - p.84's £20 million gives the council's estimated response to the measure ("Additional business rates income is assumed to facilitate borrowing", and "none is assumed without the zone"). So we stage it as a `behavioural_parameter` in pounds, not a financing remit, as we staged costing assumptions in the AB2025 uk_obr_tables family (its £1,849 row).
+  - On p.15 HM Treasury counts the people a new benefit would cover, so we use the registered `eligible_count`.
+  - On p.108 HM Treasury counts the base the fee falls on (4.9 million), so we use `tax_base`, as we did for AB2025's 165,000 HVCTS properties.
+  - On p.84 HM Treasury gives £20 million as the council's estimated response to the measure ("Additional business rates income is assumed to facilitate borrowing", and "none is assumed without the zone"). So we stage it as a `behavioural_parameter` in pounds, not a financing remit, as we staged costing assumptions in the AB2025 uk_obr_tables family (its £1,849 row).
 - **PSND and PSNFL figures.**
   - HM Treasury sums them over "the period to 2031-32", so we give them `value_kind: cumulative`, `period: 2032`, `conditions.horizon` and no `fy`.
   - HM Treasury prints them unsigned, with words. We give all seven one convention, matching the Exchequer rows: positive = lower PSND or PSNFL (an improvement); negative = higher (a cost).
-  - In `normalization` and `sign_convention` we quote the words each sign comes from: "net cost", "a cost of" and "add an additional cost of" give negative; "benefit" and "the value of the portfolio increases by" give positive.
+  - In `normalization` and `sign_convention` we quote the words each sign comes from. We read "net cost", "a cost of" and "add an additional cost of" as negative, and "benefit" and "the value of the portfolio increases by" as positive.
   - HM Treasury gives the £68m (p.34) and the £86m (p.41) as fair-value movements: increments to PSNFL beyond PSND, not PSNFL totals. We propose `psnfl_fair_value_impact` for them.
   - p.41's figures agree: -32 + 86 = +54.
   - HM Treasury prints no PSNFL total on p.34, so we stage none.
@@ -154,7 +154,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 
 HM Treasury orders its costing notes by Table 6.1 line. When we map each note to its line, we get a non-decreasing sequence from line 2 to line 98, with the two Table 6.1 exclusions (pp.108-109) at the end. We settle each note's line from that ordering, the titles and Table 6.1's footnotes.
 
-- **Whole lines (68 keys, 416 rows, `row_type: measure`).** We use these for every note that gives the only costing for its Table 6.1 line and costs all of it.
+- **Whole lines (68 keys, 416 rows, `row_type: measure`).** We use these for every note in which HM Treasury gives the only costing for its Table 6.1 line and costs all of it.
   - For 64 notes the title equals the line's title exactly.
   - Four differ only by Table 6.1's parenthetical or the year: p.35 (line 30), p.38 (line 37), p.42 (line 44) and p.77 (line 66).
 - **Components (8 lines, 25 notes, 157 rows, `row_type: measure_component`).** Under README rule 9, we key a note that costs a printed part of one Table 6.1 line to that line.
@@ -214,7 +214,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - **Line 77 (pp.85+86):** the components sum to -170 in 2026-27 against Table 6.1's -175. The other years match.
   - **Line 84 (pp.92+93):** the components sum to -4, -3, -3 in 2027-28 to 2029-30 against Table 6.1's -5, -5, -5.
   - Each of these three gaps comes to £5m or less, and HM Treasury prints every Table 6.1 cell as a multiple of £5m. That fits HM Treasury rounding each Table 6.1 line from unrounded components, but HM Treasury says so in neither document.
-  - **Line 72 (p.82):** the AME component prints +0, +25, +35, +0, +0, +0 against Table 6.1's 0, -290, -375, 0, 0, 0.
+  - **Line 72 (p.82):** HM Treasury prints +0, +25, +35, +0, +0, +0 for the AME component against Table 6.1's 0, -290, -375, 0, 0, 0.
   - **Line 45 (pp.43-52):** the ten components sum to 110, 290, 240, 2,140, 2,635, 3,360 against Table 6.1's 10, 100, 115, 1,980, 2,485, 3,160. Table 6.1 falls short by 100, 190, 125, 160, 150 and 200.
   - **Line 47 (pp.54-58):** the five components sum to -10, 10, 125, 65, 145, 235 against Table 6.1's 195, -125, 60, 75, 155, 240. The differences come to +205, -135, -65, +10, +10 and +5.
   - **Line 85 (p.94):** equal from 2029-30 to 2031-32. HM Treasury prints larger costs in Table 6.1 from 2026-27 to 2028-29: -355, -175, -140 against the note's -15, +70, +45.
@@ -376,7 +376,7 @@ D marks design, C a contingent liability, S a spending allocation, input or meas
 - Registered values we use beyond `revenue_change` and `gbp`:
   - `eligible_count` with `persons`;
   - `percent`;
-  - `properties`, a unit the registry has listed since the AB2025 harvest proposed it.
+  - `properties`, a unit we have listed in the registry since we proposed it in the AB2025 harvest.
 - `proposed_baseline`: none.
 
 ## Attribution

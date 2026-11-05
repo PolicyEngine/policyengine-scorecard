@@ -7,7 +7,7 @@ In this family we stage three CenTax publications:
 
 We use the source slug `centax`, as in the AB2025 `uk_centax` family, and `source_model` `hmrc_administrative_microdata` for CenTax's estimates and descriptive statistics.
 
-We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_centax/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane never committed its local primaries folder (`.ab2026-primaries/uk_centax/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_centax/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane never committed its local primaries folder (`.ab2026-primaries/uk_centax/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
 We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its primary's text (HTML text, or `pdftotext -layout`, whitespace-normalised); it reports 0 problems.
 
@@ -78,7 +78,7 @@ Under README rule 9 we key the £1.6bn timely-payment figure to `ab2026__hmrc_ta
   - We mark CenTax's model estimates `own` / `different_model`.
   - We mark descriptive HMRC statistics `own` / `administrative_fact`, as in AB2025.
   - We mark the OBR's £32bn and £16bn CGT forecasts `restated`.
-  - CenTax repeats the OBR's printed figure for the £1.6bn timely-payment average, so we mark it `restated`, with `source_model: obr_efo_forecast` and `conditions.originator` naming EFO paras 3.4 and 3.13 (review B, finding 1).
+  - CenTax repeats the OBR's printed figure for the £1.6bn timely-payment average, so we mark it `restated`, with `source_model: obr_efo_forecast`, and name EFO paras 3.4 and 3.13 in `conditions.originator` (review B, finding 1).
   - CenTax restates Table 6.1 line 49 for the £800m for the distributions framework (4 November version), so we mark it `restated`, `hmt_costing_obr_certified`.
   - We mark CenTax's 53% marginal rate `own`, with `source_model: arithmetic`.
   - CenTax makes the "over half of CGT payers" claim (4 November version) on its own account, about its own CGT package. We mark it `own`, `share_with_tax_cut`, value 0.5, `range_low`, medium confidence; CenTax prints no year, so we stage it with the package's 2030 costing.
@@ -96,7 +96,7 @@ We propose these, with CenTax's own words:
 - **`behavioural_response_share` (share):** "fewer than one in ten employees with eligible children responded to the cliff-edge".
 - **`workforce_exit_share` and `female_share` (share):** "3% of lower paid partners … leaving the workforce, with 90% of those partners being women".
 - **`partner_not_in_work_share` (share):** "the share of parents whose partner is not in work is about 6%".
-- **`parents_bunching` (count):** "from 1,100 in 2022 to 11,980 by 2030" (rows 26–27; the name #207's `data/externals/centax-childcare-100k.json` gives these counts. The repository's childcare ingester drops them as "a behavioural-model count of parents" with no registered metric; review B, finding 3).
+- **`parents_bunching` (count):** "from 1,100 in 2022 to 11,980 by 2030" (rows 26–27; we gave these counts this name in #207's `data/externals/centax-childcare-100k.json`. The repository's childcare ingester drops them as "a behavioural-model count of parents" with no registered metric; review B, finding 3).
 
 ## Not staged, and why
 

@@ -1,6 +1,6 @@
 # uk_devolved_govts — devolved governments, Autumn Budget 2026
 
-We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_devolved_govts/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane never committed its local primaries folder (`.ab2026-primaries/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_devolved_govts/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and no primary bytes to the repository. The lane never committed its local primaries folder (`.ab2026-primaries/`), so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
 We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Welsh Government (source `welsh_government`), and rows 14–18 from the Scottish Government (source `scottish_government`). The lane staged the Scottish rows in `uk_fai_sfc` on 29 October. On 3 November, after finding 7 of the thinktanks-b review, we moved them here so that both devolved governments share one family; we left `uk_fai_sfc` with no rows and don't commit it (see the harvest README). We follow the conventions of the AB2025 `uk_fai_sfc` block-grant rows (`source_model: arithmetic`).
 
@@ -8,7 +8,7 @@ We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Wel
 
 - Finding 2: we gave the Welsh Table 1 Resource and Capital cells (rows 1–7) `conditions.row_type: "measure_component"` with their `component`. We gave the four Total cells and the £448m headline (rows 0 and 8–11) `row_type: "total"` and no `component`. On 4 November we superseded that, and all twelve now form parts of the three-government package (see "Changes on 4 November 2026", finding 1). An ingest can no longer add parts to their total.
 - Finding 3: we named the Welsh package key for its scope, not the nation: `ab2026__package_barnett_consequentials`, which we share with HM Treasury's figures for the same scope in `uk_hmt_redbook`. We record the nation in `conditions.geography`.
-- Finding 4: we gave the seven real-terms settlement rows (Welsh rows 12–13, Scottish rows 14–18) `proposed_metric: devolved_funding_real_terms_change`. In AB2025 we used `block_grant_effect` for a policy's effect on the grant, positive for an increase. These rows instead give a year-on-year real-terms change in the whole settlement, positive for a reduction.
+- Finding 4: we gave the seven real-terms settlement rows (Welsh rows 12–13, Scottish rows 14–18) `proposed_metric: devolved_funding_real_terms_change`. In AB2025 we used `block_grant_effect` for a policy's effect on the grant, positive for an increase. In these rows the two governments instead give a year-on-year real-terms change in the whole settlement, which we store as positive for a reduction.
 - Finding 7: we moved the Scottish Government's rows here (above), and we now list both slugs in the harvest README's slug table.
 - `component` on context rows: on the seven real-terms rows we had named their budget (Resource, Capital and so on) in `component`, which we use only for parts of a measure (rule 9). Following the reasoning of the review's finding 6, we now name it in `budget`.
 - Attribution, which the coordinator checked under finding 3: we keep the Welsh rows `own`. The Welsh Government cites no source, and the coordinator's settled calls do not change this; we stage HM Treasury's own consequentials as HM Treasury's in `uk_hmt_redbook`.
@@ -37,7 +37,7 @@ By `measure_key`: **`ab2026__package_barnett_consequentials` 12, null 7**. We ke
 
 ## Package key
 
-We give `ab2026__package_barnett_consequentials` (12 rows here) the scope we give it in `uk_hmt_redbook`. It covers the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30. It excludes the technical reduction from lower employer pension contributions (red book paragraph 4.150). We scope the key across Table 6.1's England spending lines, and HM Treasury prints no line of its own for it. HM Treasury prints the £1.3bn three-government figure (`uk_hmt_redbook` row 252), and we take it as the key's total and each government's figure as a component. So we mark every Welsh row here `row_type: measure_component`. The £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals take `component: "Welsh Government"`. The Resource and Capital cells take `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh Government, like HM Treasury, leaves employer-pension-contribution savings out of its figures. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
+We give `ab2026__package_barnett_consequentials` (12 rows here) the scope we give it in `uk_hmt_redbook`. It covers the Barnett consequentials of "decisions confirmed at Budget" for the Scottish, Welsh and Northern Ireland governments together, 2026-27 to 2029-30. It excludes the technical reduction from lower employer pension contributions (red book paragraph 4.150). We scope the key across Table 6.1's England spending lines, and HM Treasury prints no line of its own for it. HM Treasury prints the £1.3bn three-government figure (`uk_hmt_redbook` row 252), and we take it as the key's total and each government's figure as a component. So we mark every Welsh row here `row_type: measure_component`. We give the £448m ("an additional £448m of funding over the current spending review period", `fy` 2029-30, cumulative) and the four Table 1 Totals `component: "Welsh Government"`, and the Resource and Capital cells `"Welsh Government: Resource"` and `"Welsh Government: Capital"`. The Welsh Government, like HM Treasury, leaves employer-pension-contribution savings out of its figures. Compare the Welsh £448m with HM Treasury's £450m for Wales (red book row 254), component with component; never add either to the £1.3bn.
 
 ## Welsh Government
 
@@ -67,7 +67,7 @@ establish a change. We reached every requested Welsh page.
 
 ### Attribution
 
-The Welsh Government publishes these figures as its own settlement accounting and real-terms comparisons. The statement credits no other producer for these calculations, so we infer no HM Treasury attribution. The Welsh Government reports prospective funding changes, not administrative outturns or counts. It names no formal model, so we use `arithmetic` for the settlement accounting.
+The Welsh Government publishes these figures as its own settlement accounting and real-terms comparisons. In the statement the Welsh Government credits no other producer for these calculations, so we infer no HM Treasury attribution. The Welsh Government reports prospective funding changes, not administrative outturns or counts. It names no formal model, so we use `arithmetic` for the settlement accounting.
 
 ### Welsh numeric and period conventions
 
@@ -83,7 +83,7 @@ The Welsh Government publishes these figures as its own settlement accounting an
 - Given the publication date, we read the resource real-terms reduction
   “next financial year” as 2027-28. The Welsh Government dates the capital
   reduction explicitly by 2029-30. We keep the printed magnitude of the
-  percentages, with conditions saying positive means a reduction. We keep
+  percentages and state in the conditions that positive means a reduction. We keep
   “Almost 10%” in `value_raw`, mark the upper endpoint 10 `range_high` and
   keep the qualifier.
 - The Welsh Government states no real-terms basis for the monetary table,
