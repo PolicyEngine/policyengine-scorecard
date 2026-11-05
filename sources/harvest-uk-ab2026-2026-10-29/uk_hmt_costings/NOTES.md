@@ -1,6 +1,6 @@
 # uk_hmt_costings: HM Treasury, Budget 2026: Policy Costings (PU 3699)
 
-We keep `stage.py`, the file these notes mean wherever they say `stage.py`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-costings/uk_hmt_costings/stage.py`. This branch adds only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`, and commits no primary bytes: fetch the costings PDF from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py` on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-costings/uk_hmt_costings/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes: fetch the costings PDF from its `manifest.jsonl` URL and check its sha256.
 
 We staged this family on 2026-10-29 and follow README rules 1 to 10. Those include rule 8 ("stage estimates, not design"), rule 9 ("a component of one measure keeps that measure's key") and rule 10 (below, under Conventions). We wrote the rows into `stage.py` (on the staging branch; see the paragraph above) as data, and it rewrites `claims_staged.jsonl.gz` byte for byte.
 
@@ -16,10 +16,10 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
     - one tax base;
     - one financial-transaction impact.
 - Primaries: 1 PDF.
-- Measure keys: 76 registry keys on 573 rows.
+- Measure keys: 79 registry keys on 595 rows.
   - 416 rows cost a whole Table 6.1 line: `conditions.row_type: measure`, 68 keys.
   - 157 rows cost a printed part of one line: `row_type: measure_component`, 8 lines' keys.
-  - We give 22 rows `measure_key: null` and one of 3 proposed keys, for measures with no Table 6.1 line or none we can identify. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
+  - 22 rows cost measures with no Table 6.1 line, or none we can identify, on 3 keys that we proposed and tranche 2 registered. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
   - We stage 2 rows (p.50's UK tax gap) as context: `measure_key: null` and no proposed key.
 
 ## Access recipe
@@ -91,14 +91,14 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 | 28 | "25% of the additional income above the baseline is placed into MSAs’ reserves" | `behavioural_parameter`, percent | 2027-28 | `ab2026__business_rates_retention_mayoral_authorities` |
 | 33 | "public sector net debt (PSND) (approx. £386m) and public sector net financial liabilities (PSNFL) (approx. £375m)" | `psnd_impact` -386m, `psnfl_impact` -375m | to 2031-32, cumulative | line 29, component p.33 |
 | 34 | "a cost of approximately £775m" (PSND); "add an additional cost of £68m" (PSNFL fair value) | `psnd_impact` -775m, `psnfl_fair_value_impact` -68m | to 2031-32, cumulative | line 29, component p.34 |
-| 41 | "a cost of approximately £32m" (PSND); "the value of the portfolio increases by approximately £86m (total PSNFL benefit of £54m)" | `psnd_impact` -32m, `psnfl_fair_value_impact` +86m, `psnfl_impact` +54m | to 2031-32, cumulative | proposed, p.41 |
+| 41 | "a cost of approximately £32m" (PSND); "the value of the portfolio increases by approximately £86m (total PSNFL benefit of £54m)" | `psnd_impact` -32m, `psnfl_fair_value_impact` +86m, `psnfl_impact` +54m | to 2031-32, cumulative | `ab2026__british_business_bank_defence_commitments_accelerated` |
 | 50 | "6.4% of total theoretical tax liabilities, or £59.2 billion in absolute terms" | `tax_gap`, percent and gbp | 2024-25, outturn | context (`measure_key: null`) |
 | 58 | "an impact of +£130m estimated in 2029-30 in cash terms" | `financial_transaction_cash_impact` | 2029-30 | line 47, component p.58 |
 | 67 | "An elasticity of -0.95 is used, with 25% of the reduction in stakes then assumed to substitute to Remote Gaming Duty" | `behavioural_parameter`, elasticity and percent | 2027-28 | line 56, component p.67 |
 | 84 | "£20 million of additional capital borrowing annually from 2028-29 to 2031-32" | `behavioural_parameter`, gbp, one row per year | 2028-29 to 2031-32 | `ab2026__leeds_city_fund` |
-| 108 | "approximately 4.9 million eligible properties are in scope" | `tax_base`, properties | 2026, point in time | proposed, p.108 |
+| 108 | "approximately 4.9 million eligible properties are in scope" | `tax_base`, properties | 2026, point in time | `ab2026__private_landlord_register_fee_65`, its tax base |
 
-- **Labels.** We name each text row's quantity in `conditions.statistic`, or in `conditions.parameter` for a behavioural parameter. Rule 9 reserves `conditions.component` for the part of the measure.
+- **Labels.** We name each text row's quantity in `conditions.statistic`, or in `conditions.parameter` for a behavioural parameter. Under rule 9 we use `conditions.component` only for the part of the measure.
 - **Per-year rows.** In p.84's sentence HM Treasury gives one figure for each of four named years, so we stage one row per year, each quoting the whole sentence. We sum and split nothing.
 - **Year of a parameter.** HM Treasury gives no year for p.15's take-up, p.28's reserves share or p.67's two parameters. As in the AB2025 family, we set `fy` to the measure's first year and say so in the row's `note`.
 - **Present-tense counts.** HM Treasury prints no year for p.15's "There are an estimated" or p.108's "The current estimate". We give them `period: 2026` and `time_basis: point_in_time`, with `basis: outturn`.
@@ -115,7 +115,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - HM Treasury prints no PSNFL total on p.34, so we stage none.
 - **The tax gap.**
   - On p.50 HM Treasury prints HMRC's tax gap for 2024 to 2025 in its tax base section, as the base's starting point: "The tax base for this costing is the total tax gap less the additional tax revenues accounted for by previously announced Closing the Tax Gap (CTG) initiatives."
-  - Rule 8 counts a tax base as an estimate, but we treat the total tax gap as a context figure, not a part of the measure. So we give the two rows `measure_key: null` (AB2025 rule 3).
+  - Under rule 8 we count a tax base as an estimate, but we treat the total tax gap as a context figure, not a part of the measure. So we give the two rows `measure_key: null` (AB2025 rule 3).
   - HM Treasury repeats an official HMRC statistic here, so we mark the rows `attribution: restated`, `benchmark_class: administrative_fact`, `source_model: administrative_data` and `basis: outturn`, with the uk_rf_ab2025 proposal spelling `tax_gap`.
   - HM Treasury doesn't cite the HMRC publication.
 
@@ -126,9 +126,9 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
     - on p.38 it says its figures "represent net income from developer fees" and prints +50m to +95m from 2027-28, after -15m in 2026-27;
     - it prints the Bank Surcharge rise as + and the VAT cut on domestic electricity as -;
     - it prints the same values with the same signs in Table 6.1.
-  - We did NOT re-sign values.
+  - We didn't re-sign any value.
   - We give text rows their own `sign_convention`: as printed for p.58's "+£130m", and for the PSND and PSNFL rows as described above.
-- **Rule 10 (borrowing metric).** On pp.34, 35 and 41 HM Treasury says its tables' figures "impact public sector net borrowing (PSNB)". It gives them as single measures' Exchequer impacts, framed as in Table 6.1 (red book para 6.1). README rule 10 keeps single measures on `revenue_change` unless the producer states the Budget's effect on borrowing. So we keep `revenue_change` on rows 134–145 and 179–184; p.35 equals line 30. We give no row in this family `decisions_effect_on_borrowing`.
+- **Rule 10 (borrowing metric).** On pp.34, 35 and 41 HM Treasury says its tables' figures "impact public sector net borrowing (PSNB)". It gives them as single measures' Exchequer impacts, framed as in Table 6.1 (red book para 6.1). Under README rule 10 we keep single measures on `revenue_change` unless the producer states the Budget's effect on borrowing. So we keep `revenue_change` on rows 134–145 and 179–184; p.35 equals line 30. We give no row in this family `decisions_effect_on_borrowing`.
 - **period.** We use the FY end year (2026-27 → 2027) and put the label in `conditions.fy`.
 - **geography.** We set "UK" on every row, because HM Treasury reports Exchequer impacts. Where the note or its title says where the measure applies, we name the territory in `conditions.measure_scope`:
   - England: pp.20, 21, 22, 36, 69, 96, 102 and 108.
@@ -166,11 +166,11 @@ HM Treasury orders its costing notes by Table 6.1 line. When we map each note to
 | 84 | `ab2026__waste_crime_landfill_tax_clearances` | p.92 six priority site clearances; p.93 local authority pilot |
 | 85 | `ab2026__further_priorities_nhs_and_vawg` | p.94 Erasmus+ (by position; see below) |
 
-- **Proposed keys (3 keys, 22 rows; `row_type: measure`, except p.108's six receipts rows, which we mark `measure_component`).** Rule 9 keeps proposed keys "for scopes that cross Table 6.1 lines, or have none". The registry adds them before ingest, and in the table we give each key's scope in the producer's own words.
+- **Keys with no Table 6.1 line.** We use 3 keys on 22 rows, all `row_type: measure` except p.108's six receipts rows, which we mark `measure_component`. Under rule 9 we proposed keys only "for scopes that cross Table 6.1 lines, or have none", and tranche 2 registered these three. In the table we give each key's scope in the producer's own words.
 
-| proposed key | rows | page | scope |
+| key | rows | page | scope |
 |---|--:|---|---|
-| `ab2026__british_business_bank_defence_commitments_accelerated` | 9 | 41 | No identifiable Table 6.1 line (see below). "British Business Bank: Accelerate £450m of commitments to support defence-related and dual-use businesses" By Table 6.1's footnote 2 and its £10m bar, HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals. |
+| `ab2026__british_business_bank_defence_commitments_accelerated` | 9 | 41 | No identifiable Table 6.1 line (see below). "British Business Bank: Accelerate £450m of commitments to support defence-related and dual-use businesses" From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals. |
 | `ab2026__private_landlord_register_fee_65` | 7 | 108 | Not on Table 6.1 (footnote 2). The six Exchequer rows give the fee's receipts, a component (`component: "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"`): p.108's note says "this is offset by increased DEL spending so is fiscally neutral", and the OBR stages the measure's total as 0 (review A, C-1). The seventh row gives the 4.9 million tax base. "Renters' Rights: Roll out a £65 fee for the 'Register your rental property' service for private landlords and private properties in England from 15 December 2026" |
 | `ab2026__pwlb_debt_relief_councils_severe_distress` | 6 | 109 | Not on Table 6.1 (footnote 2). "Public Works Loan Board (PWLB) Debt Relief for Councils in Severe Financial Distress" |
 
@@ -193,20 +193,20 @@ How we settled each line:
 - **p.41.** By position, the note falls within lines 40-43, the national-security block.
   - HM Treasury prints lines 40-43 under Table 6.1's Spend head and prints no finer fiscal head, so nothing printed singles out one line. (HM Treasury doesn't print the workbook's hidden column D, "Fiscal Head check (hide)", and since review A's T-3 we no longer reason from it.)
   - But line 41's title, "Defence Investment Plan: Reallocate capital spending to fully fund the Defence Investment Plan", doesn't name the British Business Bank, and no figure ties the two.
-  - So we give the row a proposed key and `document_position`, not line 41's key. By Table 6.1's footnote 2 and its £10m bar, HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals.
+  - So we give the row its own key and `document_position`, not line 41's key. From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). Tranche 2 must never add it to Table 6.1 lines or totals.
 - **pp.108-109.** Table 6.1's footnote 2 reads "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
 
-On no `row_type: measure` row do we use a registry key whose title covers more or less than the row's figure.
+We put a registry key on a `row_type: measure` row only when the key's title covers exactly the row's figure.
 
 ## Cross-check against Table 6.1 (uk_hmt_tables)
 
 - **All 68 whole-line keys** equal Table 6.1 in all six years.
 - **Component lines.** We compared Table 6.1 with the components' sum, 2026-27 to 2031-32, for this check only; we never stage the sums, and we report the gaps without fixing them.
   - **Line 29 (pp.33+34):** equal.
-  - **Line 56 (pp.67+68):** the components sum to 140 in 2031-32 against Table 6.1's 145. The other years are equal.
-  - **Line 77 (pp.85+86):** the components sum to -170 in 2026-27 against Table 6.1's -175. The other years are equal.
+  - **Line 56 (pp.67+68):** the components sum to 140 in 2031-32 against Table 6.1's 145. The other years match.
+  - **Line 77 (pp.85+86):** the components sum to -170 in 2026-27 against Table 6.1's -175. The other years match.
   - **Line 84 (pp.92+93):** the components sum to -4, -3, -3 in 2027-28 to 2029-30 against Table 6.1's -5, -5, -5.
-  - Each of these three gaps comes to £5m or less, and HM Treasury prints every Table 6.1 cell as a multiple of £5m. That fits HM Treasury rounding each line from unrounded components, but neither document says so.
+  - Each of these three gaps comes to £5m or less, and HM Treasury prints every Table 6.1 cell as a multiple of £5m. That fits HM Treasury rounding each Table 6.1 line from unrounded components, but neither document says so.
   - **Line 72 (p.82):** the AME component prints +0, +25, +35, +0, +0, +0 against Table 6.1's 0, -290, -375, 0, 0, 0.
   - **Line 45 (pp.43-52):** the ten components sum to 110, 290, 240, 2,140, 2,635, 3,360 against Table 6.1's 10, 100, 115, 1,980, 2,485, 3,160. Table 6.1 falls short by 100, 190, 125, 160, 150 and 200.
   - **Line 47 (pp.54-58):** the five components sum to -10, 10, 125, 65, 145, 235 against Table 6.1's 195, -125, 60, 75, 155, 240. The differences come to +205, -135, -65, +10, +10 and +5.
@@ -261,7 +261,7 @@ We stage every Exchequer table and every estimate HM Treasury prints in the note
   - More Timely Payment, Distributions, Foreign Sovereign Investments, Founders' Relief and BADR.
   - We'll treat those publications as new primaries when they appear.
 - **References, not quantities:** scheme, form and statute numbers such as EMI2, Plan 2 and Plan 3, form P87, Class 1 and 1A, Group 7 of Schedule 9 to the VAT Act 1994, FRS 102 and the Five-Year Strategic Plan.
-- **Uncertainty ratings:** HM Treasury prints none. We keep each note's "Areas of uncertainty" text in the row's `note`. On p.101 HM Treasury says "there is no uncertainty over the figures involved". The OBR's ratings belong in uk_obr_tables.
+- **Uncertainty ratings:** HM Treasury prints none, so we keep each note's "Areas of uncertainty" text in the row's `note`. On p.101 HM Treasury says "there is no uncertainty over the figures involved". The OBR's ratings belong in uk_obr_tables.
 - **Charts:** HM Treasury prints none.
 - **Unreached pages:** none.
 
@@ -364,7 +364,7 @@ D marks design, C a contingent liability, S a spending allocation, input or meas
     - `psnfl_impact` (2): its impact on net financial liabilities;
     - `psnfl_fair_value_impact` (2): the fair-value part of the PSNFL impact beyond PSND.
 
-    We modelled them on the existing `psnd_share_of_gdp` and `psnfl_share_of_gdp`.
+    We define them as we define the existing `psnd_share_of_gdp` and `psnfl_share_of_gdp`.
 - `proposed_unit`: `elasticity` (1).
 - Registered values we use beyond `revenue_change` and `gbp`:
   - `eligible_count` with `persons`;
@@ -391,14 +391,14 @@ D marks design, C a contingent liability, S a spending allocation, input or meas
   - not stated (the note's costing section does not use the word 'behaviour' or 'behavioural');
   - 13 distinct "none: '<sentence>'".
 - `horizon`: the period to 2031-32 (cumulative)
-- We also use: `table_61_line`, `proposed_measure_key`, `document_position`, `fiscally_neutral`, `static_impact`, `table_footnote`, `statistic` (12 labels) and `parameter` (5 labels).
+- We also use: `table_61_line`, `document_position`, `fiscally_neutral`, `static_impact`, `table_footnote`, `statistic` (12 labels) and `parameter` (5 labels).
 
 ## Review fixes, 3 November 2026
 
-The costings reviewer (`harvest-staging/ab2026/reviews/verify-costings.md` on the staging branch) approved this family with fixes. We put them in an explicit block before `build()` in `stage.py`. We re-opened no primary, because the session's network policy refused gov.uk, and changed no printed value.
+In its review (`harvest-staging/ab2026/reviews/verify-costings.md` on the staging branch), the costings reviewer approved this family with fixes. We put them in an explicit block before `build()` in `stage.py`. We re-opened no primary, because the session's network policy refused gov.uk, and changed no printed value.
 
-- Finding 1: we made p.50's UK tax gap rows (6.4% and £59.2bn) context, with `measure_key` and `reform_hint` null and no `row_type`, `component` or `table_61_line`. We keep them `restated`, `administrative_fact`, `administrative_data`, fy 2024-25. Registry keys now cover 573 rows, and components 157.
-- Finding 2: we keep p.41's proposed key, and state the double-counting caveat in its `mapping_note`, the p.41 bullet and the proposed-key table.
+- Finding 1: we made p.50's UK tax gap rows (6.4% and £59.2bn) context, with `measure_key` and `reform_hint` null and no `row_type`, `component` or `table_61_line`. We keep them `restated`, `administrative_fact`, `administrative_data`, fy 2024-25. Registry keys then covered 573 rows, and components 157.
+- Finding 2: we kept p.41's proposed key, and stated the double-counting caveat in its `mapping_note`, the p.41 bullet and the table of keys with no Table 6.1 line.
 - Finding 3: in the line 45 and 47 component mapping notes we now say that their notes don't sum to the line, and give Table 6.1's differences.
 - Finding 4: we took no action. The coordinator found that the lane's copies of `pipeline/ab2026_harvest_contract.py` and the harvest README match #231's head byte for byte, so we moved only this family directory.
 - Finding 5: we made no change; the reviewer accepted p.84's £20m and p.58's +£130m as staged.
