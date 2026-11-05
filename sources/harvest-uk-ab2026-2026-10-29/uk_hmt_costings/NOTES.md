@@ -26,19 +26,19 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 
 - We fetched https://assets.publishing.service.gov.uk/media/6ae1883fe4367e5c8b0467df/AB26_Policy_Costing.pdf with `curl -sSL` and a browser User-Agent on 2026-10-29 at 16:14 UTC.
   - The server answered HTTP 200, `application/pdf`, 745,488 bytes, sha256 `f716efada8a4d0726ce12b0f97d3f0dac671c31b2d005ecf300a48ff309638bf`.
-  - The site showed no bot mitigation, so we needed no fallback.
+  - We met no bot mitigation on the site, so we needed no fallback.
   - The bytes equal the harvest's local copy downloaded on 28 October. HM Treasury hasn't changed the primary since Budget day, so README rule 7 doesn't apply.
 - We read it with `pdftotext -layout`.
   - HM Treasury prints 122 pages: the introduction on p.10, costing notes on pp.12-109 and Annex A on pp.110-121.
   - Two notes run onto a second page: EMI2 (pp.31-32, table on p.32) and Writing-down Allowances (pp.70-71, table on p.70).
-  - In this file we cite each note by its first page. A row's locator cites the page that prints the figure.
+  - In this file we cite each note by its first page. In each row's locator we cite the page where HM Treasury prints the figure.
 - To get the data in `stage.py`, we split the text into notes at each "Measure description" heading with a scratch parser, which we didn't vendor, and read each note's sections.
   - HM Treasury prints exactly one "Exchequer impact (£m)" table in every note: one row of six signed values for 2026-27 to 2031-32.
   - We reviewed the parse against the page text. All 96 titles match the document's contents list.
   - We join a line-end hyphen in prose without a space, except a suspended one: p.82's "18- to 24-year-old".
 - To re-check:
   - `python3 stage.py` rewrites the gzip.
-  - `python3 stage.py --verify <path to the PDF>` writes nothing. It checks that the gzip on disk equals a fresh build and that the PDF has the pinned sha256. For every row it then checks the page its locator cites:
+  - `python3 stage.py --verify <path to the PDF>` writes nothing. It checks that the gzip on disk equals a fresh build and that the PDF has the pinned sha256. For every row it then checks the page we cite in its locator:
     - **table rows:** the heading, the six years, the six values in order and the row's value in its year's column. The row label must equal the page's label exactly, and any footnote must appear.
     - **text rows:** the quote, verbatim, with `value_raw` inside it. `value` must equal `value_raw`'s number at the scale and sign the `normalization` names.
     - **every keyed row:** the measure's title, on the note's first page.
@@ -54,8 +54,8 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - with `value` = `value_raw` (£m, with the sign and trailing "m" as printed) × 1e6.
 - We mark every table `scoring_method: final`.
   - HM Treasury prints no separate static and post-behavioural tables in any AB2026 note; in AB2025, 8 notes did.
-  - HM Treasury prints no behavioural adjustment in pounds in any note; AB2025's thresholds note printed £180m.
-  - So we had no static, post-behavioural or behavioural-effect legs to stage. Several notes mention a static costing, and p.108 a "pre-behavioural costing", but HM Treasury prints no figure for any of them.
+  - HM Treasury prints no behavioural adjustment in pounds in any note; in AB2025's thresholds note it printed £180m.
+  - So we had no static, post-behavioural or behavioural-effect legs to stage. HM Treasury mentions a static costing in several notes and a "pre-behavioural costing" on p.108, but prints no figure for any of them.
 - In `conditions.behavioural_adjustment` we classify the words of each note's costing section. We list each note by its first page.
   - **"included (see note)" on 56 notes:**
     - pp.12, 13, 14, 16, 18, 19, 23, 24, 25 and 26;
@@ -65,7 +65,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
     - pp.78, 79, 80, 81, 82, 85, 86, 87, 90 and 95;
     - pp.100, 102, 103, 104, 107 and 108.
 
-    For p.90 we add HM Treasury's sentence: the Infected Blood costing keeps the scheme's cost model, whose "behavioural assumptions" the changes "do not materially alter".
+    For p.90 we add HM Treasury's sentence: it keeps the scheme's cost model for the Infected Blood costing, and says the changes "do not materially alter" the model's "behavioural assumptions".
   - **"none: '<the costing section's sentence>'" on 18 notes:** pp.17, 35, 37, 42, 50, 54, 55, 56, 58, 59, 61, 63, 64, 91, 94, 101, 106 and 109.
   - **"not stated (the note's costing section does not use the word 'behaviour' or 'behavioural')" on 22 notes:** pp.15, 20, 21, 22, 28, 33, 34, 41, 57, 69, 76, 83, 84, 88, 89, 92, 93, 96, 97, 98, 99 and 105.
     - We assign this class by the words alone and read only the costing section; in AB2025 we used only the first two classes.
@@ -137,7 +137,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - We give text rows their own `sign_convention`: as printed for p.58's "+£130m", and for the PSND and PSNFL rows as described above.
 - **Rule 10 (borrowing metric).** On pp.34, 35 and 41 HM Treasury says its tables' figures "impact public sector net borrowing (PSNB)". It gives them as single measures' Exchequer impacts, framed as in Table 6.1 (red book para 6.1). Under README rule 10 we keep single measures on `revenue_change` unless the producer states the Budget's effect on borrowing. So we keep `revenue_change` on rows 134–145 and 179–184; p.35 equals line 30. We give no row in this family `decisions_effect_on_borrowing`.
 - **period.** We use the FY end year (2026-27 → 2027) and put the label in `conditions.fy`.
-- **geography.** We set "UK" on every row, because HM Treasury reports Exchequer impacts. Where the note or its title says where the measure applies, we name the territory in `conditions.measure_scope`:
+- **geography.** We set "UK" on every row, because HM Treasury reports Exchequer impacts. Where HM Treasury says in the note or its title where the measure applies, we name the territory in `conditions.measure_scope`:
   - England: pp.20, 21, 22, 36, 69, 96, 102 and 108.
   - Great Britain: pp.15 and 59.
   - England and Northern Ireland: p.99.
@@ -178,21 +178,21 @@ HM Treasury orders its costing notes by Table 6.1 line. When we map each note to
 | key | rows | page | scope |
 |---|--:|---|---|
 | `ab2026__british_business_bank_defence_commitments_accelerated` | 9 | 41 | No identifiable Table 6.1 line (see below). "British Business Bank: Accelerate £450m of commitments to support defence-related and dual-use businesses" From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). At ingest we score its six Exchequer rows (179–184) on this key alone and sum no row into a Table 6.1 line or total. |
-| `ab2026__private_landlord_register_fee_65` | 7 | 108 | Not on Table 6.1 (footnote 2). We stage the fee's receipts, a component (`component: "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"`), on the six Exchequer rows: p.108's note says "this is offset by increased DEL spending so is fiscally neutral", and the OBR stages the measure's total as 0 (review A, C-1). We stage the 4.9 million tax base on the seventh. "Renters' Rights: Roll out a £65 fee for the 'Register your rental property' service for private landlords and private properties in England from 15 December 2026" |
+| `ab2026__private_landlord_register_fee_65` | 7 | 108 | Not on Table 6.1 (footnote 2). We stage the fee's receipts, a component (`component: "Receipts (fee income; offset by increased DEL spending, fiscally neutral)"`), on the six Exchequer rows. On p.108 HM Treasury says "this is offset by increased DEL spending so is fiscally neutral", and we stage the OBR's total for the measure as 0 (review A, C-1). We stage the 4.9 million tax base on the seventh. "Renters' Rights: Roll out a £65 fee for the 'Register your rental property' service for private landlords and private properties in England from 15 December 2026" |
 | `ab2026__pwlb_debt_relief_councils_severe_distress` | 6 | 109 | Not on Table 6.1 (footnote 2). "Public Works Loan Board (PWLB) Debt Relief for Councils in Severe Financial Distress" |
 
 How we settled each line:
 
-- **Lines 45 and 47.** On both lines Table 6.1's footnote 4 reads "Full costings for the measures in this package are set out in the Budget 2026 Policy Costings document."
+- **Lines 45 and 47.** On both lines HM Treasury writes in Table 6.1's footnote 4: "Full costings for the measures in this package are set out in the Budget 2026 Policy Costings document."
   - HM Treasury puts the ten notes on pp.43-52 between line 44's note (p.42) and line 46's (p.53).
   - It puts the five notes on pp.54-58 between line 46's and line 48's (p.59).
-- **Lines 29, 56, 77 and 84.** The line's title names both notes' measures.
+- **Lines 29, 56, 77 and 84.** In the line's title HM Treasury names both notes' measures.
 - **Line 72 (p.82).** The note's title equals the line's, but its figure covers one fiscal head of the line:
   - HM Treasury prints the AME savings only in its table;
-  - in its text HM Treasury costs the Youth Guarantee's expansion to 22- to 24-year-olds and never mentions the apprenticeship support the line also names.
+  - in its text HM Treasury costs the Youth Guarantee's expansion to 22- to 24-year-olds and never mentions the apprenticeship support it also names on the line.
 
   HM Treasury prints -290 and -375 in Table 6.1 and +25 and +35 in the note (2027-28 and 2028-29).
-- **Line 85 (p.94, Erasmus+).** No Table 6.1 title names Erasmus+.
+- **Line 85 (p.94, Erasmus+).** HM Treasury names Erasmus+ in no Table 6.1 title.
   - HM Treasury puts the note where line 85 falls: "Further Priorities: Fund key priorities, including pressures facing the NHS and delivery of the Violence against Women and Girls Strategy".
   - Line 85's 2029-30 to 2031-32 figures (-5, 0, -15) equal the note's.
   - In Table 6.1's footnote 2 HM Treasury leaves out only two measures, neither of them Erasmus+, and the note's figures exceed the footnote's £10m bar in four of the six years.
@@ -201,7 +201,7 @@ How we settled each line:
   - HM Treasury prints lines 40-43 under Table 6.1's Spend head and prints no finer fiscal head, so nothing printed singles out one line. (HM Treasury doesn't print the workbook's hidden column D, "Fiscal Head check (hide)", and since review A's T-3 we no longer reason from it.)
   - But line 41's title, "Defence Investment Plan: Reallocate capital spending to fully fund the Defence Investment Plan", doesn't name the British Business Bank, and no figure ties the two.
   - So we give the row its own key and `document_position`, not line 41's key. From Table 6.1's footnote 2 and its £10m bar, we judge that HM Treasury very probably counts this costing inside a Table 6.1 line, most plausibly line 41 (the notes for lines 29 and 44 fully account for those lines). At ingest we score its six Exchequer rows (179–184) on this key alone and sum no row into a Table 6.1 line or total.
-- **pp.108-109.** Table 6.1's footnote 2 reads "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
+- **pp.108-109.** In Table 6.1's footnote 2 HM Treasury writes: "Measures with no net increase to borrowing are not included, these are debt relief for councils in severe financial distress through the Public Works Loan Board and a landlord registration fee for the Private Rented Sector."
 
 We put a registry key on a `row_type: measure` row only when the key's title covers exactly the row's figure.
 
@@ -213,7 +213,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - **Line 56 (pp.67+68):** the components sum to 140 in 2031-32 against Table 6.1's 145. The other years match.
   - **Line 77 (pp.85+86):** the components sum to -170 in 2026-27 against Table 6.1's -175. The other years match.
   - **Line 84 (pp.92+93):** the components sum to -4, -3, -3 in 2027-28 to 2029-30 against Table 6.1's -5, -5, -5.
-  - Each of these three gaps comes to £5m or less, and HM Treasury prints every Table 6.1 cell as a multiple of £5m. That fits HM Treasury rounding each Table 6.1 line from unrounded components, but neither document says so.
+  - Each of these three gaps comes to £5m or less, and HM Treasury prints every Table 6.1 cell as a multiple of £5m. That fits HM Treasury rounding each Table 6.1 line from unrounded components, but HM Treasury says so in neither document.
   - **Line 72 (p.82):** the AME component prints +0, +25, +35, +0, +0, +0 against Table 6.1's 0, -290, -375, 0, 0, 0.
   - **Line 45 (pp.43-52):** the ten components sum to 110, 290, 240, 2,140, 2,635, 3,360 against Table 6.1's 10, 100, 115, 1,980, 2,485, 3,160. Table 6.1 falls short by 100, 190, 125, 160, 150 and 200.
   - **Line 47 (pp.54-58):** the five components sum to -10, 10, 125, 65, 145, 235 against Table 6.1's 195, -125, 60, 75, 155, 240. The differences come to +205, -135, -65, +10, +10 and +5.
@@ -225,7 +225,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
 
 ## Things in the primary that look wrong or contradictory (reported, not fixed)
 
-- **The £10m threshold.** In the introduction HM Treasury says "Measures that were certified by the OBR as below the negligible threshold of £10 million per annum in every year of the forecast period are not considered in this document." Yet five notes print costings below £10m in every year:
+- **The £10m threshold.** In the introduction HM Treasury says "Measures that were certified by the OBR as below the negligible threshold of £10 million per annum in every year of the forecast period are not considered in this document." Yet HM Treasury prints costings below £10m in every year in five notes:
   - p.59 (+0m, then +5m a year);
   - p.92 (-2m, -2m, -3m);
   - p.93 (-2m, -1m);
@@ -236,13 +236,13 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - line 84 (0, -5, -5, -5, 0, 0; Spend head).
 
   Lines 9 and 81 also fall below £10m every year. The footnote's bar covers AME and tax costings only, and HM Treasury prints no head in Table 6.1 finer than Tax or Spend to say whether these two count as AME or departmental spending.
-- **The lines 45 and 47 differences.** In Table 6.1's footnote 4 HM Treasury points to this document for the packages' full costings, but the components don't sum to the lines (above), and no note explains the gap.
-  - For line 45, the gap has the sign that the HMRC spending the notes describe would give: £70 million on debt collection (p.49) and £485 million on compliance staff (p.50), "over the next five years". HM Treasury doesn't say that this spending makes up the difference.
+- **The lines 45 and 47 differences.** In Table 6.1's footnote 4 HM Treasury points to this document for the packages' full costings, but the components don't sum to the lines (above), and it explains the gap in no note.
+  - For line 45, the gap has the sign that the HMRC spending HM Treasury describes in the notes would give: £70 million on debt collection (p.49) and £485 million on compliance staff (p.50), "over the next five years". HM Treasury doesn't say that this spending makes up the difference.
   - For line 47, the gap changes sign: +205 in 2026-27, -135 in 2027-28.
-- **Notes with no Table 6.1 title.** HM Treasury prints costing notes for BBB defence (p.41) and Erasmus+ (p.94), but no Table 6.1 title names them.
+- **Notes with no Table 6.1 title.** HM Treasury prints costing notes for BBB defence (p.41) and Erasmus+ (p.94), but names them in no Table 6.1 title.
 - **Minor title and wording differences:**
   - HM Treasury writes "from 25 June to 1 September" in p.77's title and "from 25 June 2026 to 1 September 2026" in Table 6.1.
-  - p.16's title says "Weekly Earning Limit", while its text says "Weekly Earnings Limit" (Table 6.1 follows the title).
+  - On p.16 HM Treasury writes "Weekly Earning Limit" in the title and "Weekly Earnings Limit" in the text (in Table 6.1 it follows the title).
 
 ## Not staged, and why
 
@@ -423,4 +423,4 @@ Review A (PR #231, issue comment 6635870934) approved this family with fixes C-1
 - C-6: we name the AB2025 uk_obr_tables family as p.84's precedent, in NOTES and the row note.
 - C-7: we keep `stage.py` on the staging branch.
 - T-3 (uk_hmt_tables): `uk_hmt_tables` no longer emits `conditions.fiscal_head`, which it read from the workbook's hidden check column. In the sentences here that reasoned from it (the p.41 bullet, lines 9, 48, 81 and 84, and the lines without a costing note), we now rely only on Table 6.1's printed Tax and Spend heads.
-- D2-1 (GPT-6.1 Sol's delta review of these fixes): C-1's step had marked p.108's whole costing record, which also feeds the note's text row, so row 584 (the 4.9 million properties in scope, `tax_base`) had become a receipts component. `stage.py` now marks only the six Exchequer rows, and row 584 matches its 4f424b9 version again.
+- D2-1 (GPT-6.1 Sol's delta review of these fixes): C-1's step had marked p.108's whole costing record, from which we also build the note's text row, so row 584 (the 4.9 million properties in scope, `tax_base`) had become a receipts component. `stage.py` now marks only the six Exchequer rows, and row 584 matches its 4f424b9 version again.

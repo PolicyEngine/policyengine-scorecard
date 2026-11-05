@@ -19,7 +19,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 
 - We fetched the media-office listing (https://www.ippr.org/media-office, pages 1 and 2) on 2026-10-29 to find the responses. IPPR's `/news-and-media` returns 404, and its `/articles` lists no Budget piece.
 - We fetched all three releases directly (`curl -sSL`, browser User-Agent, HTTP 200): "Unfinished business" at 16:17Z and the North and Scotland releases at 16:35Z.
-- We read each page's JSON-LD `dateModified` as a render time, not an edit. On 29 October each page showed a `dateModified` that day (16:04Z, 16:21Z, 16:34Z), after its 28 October `datePublished`. Review B's fetches on 4 November show 14:39–14:46Z that day with byte-identical length. Two fetches of the same page 30 minutes apart differ only in that field and Cloudflare's email tokens. So IPPR's server stamps the field when it serves the page, and we found no sign of an edit after publication. We hashed the copies from the fetches above and took nothing from a local copy.
+- We read each page's JSON-LD `dateModified` as a render time, not an edit. On 29 October IPPR's server gave each page a `dateModified` that day (16:04Z, 16:21Z, 16:34Z), after its 28 October `datePublished`. Review B's fetches on 4 November show 14:39–14:46Z that day with byte-identical length. Two fetches of the same page 30 minutes apart differ only in that field and Cloudflare's email tokens. So IPPR's server stamps the field when it serves the page, and we found no sign of an edit after publication. We hashed the copies from the fetches above and took nothing from a local copy.
 
 ## Rows by primary and measure key
 

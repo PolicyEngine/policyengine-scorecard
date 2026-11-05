@@ -7,7 +7,7 @@ We staged this family on 2026-10-29 with `stage.py`. We wrote every row into it 
 - Rows: 766 (767 before we dropped row 397 after review; see "Review fixes" at the end).
   - Text: 212 rows from the two press releases, the Spread thin page, both versions of the Spread thin PDF and one comment.
   - Workbook: 554 rows from the chart-data workbook RF links from the Spread thin page.
-- Primaries: 8 (manifest.jsonl): the seven the lane fetched, plus the Spread thin page's 4 November version, which no row cites (README rule 7; see "The replaced PDF").
+- Primaries: 8 (manifest.jsonl): the seven the lane fetched, plus the Spread thin page's 4 November version, which we cite in no row (README rule 7; see "The replaced PDF").
 - source_model:
   - `landman_ttm`: the IPPR tax-benefit model behind RF's distributional and living-standards figures (488 rows).
   - `arithmetic`: RF's sums, averages and energy-bill construction on OBR, HMT and Ofgem inputs (148).
@@ -31,15 +31,15 @@ The lane fetched every primary with `curl -sSL` and the Safari User-Agent, and g
 | Comment, *It's good to be flexible* (Nye Cominetti, 29 Oct) | `3510a245…62fcfc` | 131,349 | 16:20:03 | 1 |
 | Spread thin publication page, 4 November version (review B's fetch) | `d81969ef…0b0259` | 154,801 | 4 Nov | 0 |
 
-- **HTML pages.** The stager quotes each page's own article text. Our locators count body paragraphs after the dateline (press releases and comment) or name the bullet list ("measures bullet 2", "Key findings bullet 3").
-- **PDFs.** We read them with `pdftotext -layout`, and with `-raw` for the two-column boxes. Our locators give the PDF page, which matches the printed folio, and the paragraph, bullet, box, footnote or figure label.
+- **HTML pages.** The stager quotes each page's own article text. In our locators we count body paragraphs after the dateline (press releases and comment) or name the bullet list ("measures bullet 2", "Key findings bullet 3").
+- **PDFs.** We read them with `pdftotext -layout`, and with `-raw` for the two-column boxes. In our locators we give the PDF page, which matches the printed folio, and the paragraph, bullet, box, footnote or figure label.
 - **Workbook.** RF gives one sheet per figure (F1 to F23, plus "Extra spending stats").
-  - For `value_raw` we take the cell's stored `<v>` string from the sheet XML, at full precision, not the rounded display: F8's `_-"£"* #,##0_-` shows 145.33 as £145.
+  - For `value_raw` we take the cell's stored `<v>` string from the sheet XML, at full precision, not the rounded display: with F8's `_-"£"* #,##0_-` RF shows 145.33 as £145.
   - We write the quote as "series label | category | stored value".
   - We write locators as `sheet F8, cell J8`.
   - We take each figure's plotted ranges from the chart objects in the workbook. RF draws Figure 21 from chart object `chart34.xml` (grouped, plotting AD66:AD74), and marks column AD with its own "**USED IN CHART" (AD60). We stage Figure 8's column J (the net change), though RF's chart doesn't plot it.
   - We name each chart row's series in `conditions.series`. We add `conditions.component` only on the rule 9 parts (Figure 8's two VAT-cut columns and p.17's extension).
-- **Local copy.** The assignment's copy of `Spread-thin-1.pdf` (downloaded 08:46Z) hashes to the same `a669f39d…`, so v1 rows cite the fresh fetch.
+- **Local copy.** The assignment's copy of `Spread-thin-1.pdf` (downloaded 08:46Z) hashes to the same `a669f39d…`, so in v1 rows we cite the fresh fetch.
 
 ## The replaced PDF (README rule 7)
 
@@ -54,10 +54,10 @@ RF replaced the briefing on the morning of 29 October.
   - Figure 4: RF added 2031 to the x-axis.
   - p.30: RF dropped "the last" from "restated the last Keir Starmer’s commitment".
   - Elsewhere the lines only reflow.
-- **Which version rows cite.** We cite v2 for every PDF row except the three p.5 v1 rows (£158, £14, £144), on which we set `conditions.document_version: "v1 (superseded)"`.
+- **Which version we cite.** We cite v2 for every PDF row except the three p.5 v1 rows (£158, £14, £144), on which we set `conditions.document_version: "v1 (superseded)"`.
 - **Workbook.** RF uploaded it at 12:16:43 GMT, and it matches v2. Its Figure 8 net gains average about £145 over vigintiles 2–10.
 - **Landing page.** In Key findings RF still printed v1's "gains £158 on average, against £144 for the richer half" at both 29 October fetches. Those two rows (56–57) cite the 29 October bytes, and we set `document_version: "29 October page text (superseded by 4 November)"` on them.
-- **RF changed the landing page by 4 November.** Review B's 4 November fetch (sha256 `d81969ef…0b0259`, 154,801 bytes, JSON-LD `dateModified` 2026-11-04T09:21:48Z) shows v2's £145 / £130 in Key findings bullet 3. We record it as manifest line 8 (README rule 7), with no rows: v2 rows 74 and 76 already give £145 / £130, so we don't stage them again. RF's `dateModified` (09:21Z on 4 November) shows only that RF had made the edit by then.
+- **RF changed the landing page by 4 November.** Review B's 4 November fetch (sha256 `d81969ef…0b0259`, 154,801 bytes, JSON-LD `dateModified` 2026-11-04T09:21:48Z) shows v2's £145 / £130 in Key findings bullet 3. We record it as manifest line 8 (README rule 7), with no rows: we already stage £145 / £130 in v2 rows 74 and 76. RF's `dateModified` (09:21Z on 4 November) shows only that RF had made the edit by then.
 
 ## Harvest rules 8 and 9
 
@@ -67,7 +67,7 @@ The coordinator added two rules to the AB2026 README while we staged this family
   - Under rule 8 we treat a measure's own parameters as design: rates, thresholds, payment amounts, dates and durations. We treat spending allocations to programmes, financing remits and contingent liabilities the same way.
   - We put design in `reform_hint` or `conditions`, never in rows.
   - We treat a worked example's inputs as design too, and stage its computed outcome as a row.
-- **Rule 9: a component of one measure keeps that measure's key.** We give the row `conditions.component` and `conditions.row_type: measure_component`. We proposed keys only for scopes that cross Table 6.1 lines or have no line.
+- **Rule 9: we key a component of one measure to that measure.** We give the row `conditions.component` and `conditions.row_type: measure_component`. We proposed keys only for scopes that cross Table 6.1 lines or have no line.
 
 Under "Not staged" below we list the 36 design rows we removed under rule 8 and where their facts went. RF splits the electricity VAT cut into an "original" six months and a three-month "extension", both parts of Table 6.1 line 2, so we key their 39 rows to line 2 as measure components.
 
@@ -75,8 +75,8 @@ Under "Not staged" below we list the 36 design rows we removed under rule 8 and 
 
 - **Text.** We stage every number RF prints that estimates, forecasts or counts the effect of the Budget's measures or of the Budget as a whole. That covers costs and yields, households affected, gains and losses, bill changes, distributional and poverty effects, and the public finances after the Budget.
   - We also stage, as `measure_key: null` context, the living-standards and poverty projections and the energy-bill context that the cost-of-living measures address.
-  - Where RF prints a number twice with the same meaning in one document, we stage one row, at the occurrence that states its period or scope most completely. For example, RF dates the £2,192 cap level Q1 2027 on p.16 and calls it "next year" on p.5, so the row cites p.16.
-  - Where different documents state the same figure, we stage each (the AB2025 precedent). At ingest we merge rows 26, 27, 60, 132 and 201 into the claim of another printing of the same RF figure.
+  - Where RF prints a number twice with the same meaning in one document, we stage one row, at the occurrence that states its period or scope most completely. For example, RF dates the £2,192 cap level Q1 2027 on p.16 and calls it "next year" on p.5, so we cite p.16 in the row.
+  - Where a producer states the same figure in different documents, we stage each (the AB2025 precedent). At ingest we merge rows 26, 27, 60, 132 and 201 into the claim of another printing of the same RF figure.
 - **Workbook.** We stage the chart data behind the figures that give RF's own estimates.
   - F7 (energy bill and support by year).
   - F8 (temporary AB26 policies by vigintile).
@@ -136,7 +136,7 @@ We key 200 rows to the 19 keys below, which we proposed and registered in tranch
   - We record the basis on each row in `conditions.price_basis`.
 - **Period:**
   - We give fiscal-year figures `fy` and the end year.
-  - RF's temporary package (Figure 8, the 52/48 split, the halves' averages and gap, and the £4.4bn) covers 2026-27 and 2027-28 together. We give those rows no `fy`, `period` 2028 (the £4.4bn rows: 2027, which RF prints on p.19 as "2025-26 and 2026-27" for row 127 and which we read from p.19 for rows 34 and 54), `time_basis: fiscal_year` and `conditions.horizon`. In Figure 8 RF shows each measure's "total cash impact" over the two years (v2 p.20; workbook F8 N35). So we mark its rows, and the text figures that restate it, `cumulative`. For the F8 £ columns, our normalization reads "£ per household as stored: total cash impact over 2026-27 and 2027-28 (Figure 8 note)".
+  - RF's temporary package (Figure 8, the 52/48 split, the halves' averages and gap, and the £4.4bn) covers 2026-27 and 2027-28 together. We give those rows no `fy`, `period` 2028 (the £4.4bn rows: 2027, which RF prints on p.19 as "2025-26 and 2026-27" for row 127 and which we read from p.19 for rows 34 and 54), `time_basis: fiscal_year` and `conditions.horizon`. In Figure 8 RF shows each measure's "total cash impact" over the two years (v2 p.20; workbook F8 N35). So we mark its rows, and the text figures that restate it, `cumulative`. For the F8 £ columns, we record "£ per household as stored: total cash impact over 2026-27 and 2027-28 (Figure 8 note)" in `normalization`.
   - RF prints no year for the gas standing-charge rows (115–125), so we give them no `fy`. We put them at period 2028 with `conditions.horizon` "year not printed: the change lands by the end of 2027 or soon after (p.18)", at medium confidence.
   - For averages over a span (for example "£11 billion a year on average over the next five years"), we use the span's end year with `statistic: annual average`.
   - We mark calendar figures (the 2027 average bill, decade and Parliament RHDI growth) `annual`, and Q1-2027 cap levels and "currently" figures `point_in_time`.
@@ -167,7 +167,7 @@ We key 200 rows to the 19 keys below, which we proposed and registered in tranch
 - **`ab2026__package_household_energy_vat_and_fuel_duty` (Table 6.1 lines 1, 2 and 3).** We key RF's "cost of living package" here. That covers Figure 8's net change and per cent change, the 52 / 48 per cent split, the halves' averages and gap, and the landing page's £158 / £144. We moved the £4.4bn costing off it (review A, K-4; see the keys we proposed).
   - RF's package comprises the Household Energy Payment, the electricity VAT cut ("original" six months plus the three-month "extension") and the Fuel Duty delay.
   - HM Treasury's title for Table 6.1 line 2 covers the whole cut ("from 1 October 2026 to 1 July 2027"), and its costs (£755m in 2026-27, £305m in 2027-28) include the original six months.
-  - The registry's own modifier note reads the line the same way: "about 57% of 2026-27 … about 22% of 2027-28". So RF's package equals lines 1, 2 and 3 exactly.
+  - In the registry's own modifier note we read the line the same way: "about 57% of 2026-27 … about 22% of 2027-28". So RF's package equals lines 1, 2 and 3 exactly.
   - In the £4.4bn rows (34, 54, 127) RF counts Fuel Duty only at the share accruing directly to households (fn 19, `costing_basis`). Their scope therefore differs from lines 1–3 (rule 3), and we key them to `ab2026__package_household_energy_vat_and_household_share_of_fuel_duty`.
 - **`ab2026__electricity_vat_zero_rate_to_july_2027` (line 2):**
   - **The whole cut:** the £40 "total nine-month benefit of the cut", and Figure 7's "Electricity VAT cut" series split by financial year (£26.77 in 2026-27, £12.80 in 2027-28).
@@ -175,7 +175,7 @@ We key 200 rows to the 19 keys below, which we proposed and registered in tranch
 - **`ab2026__household_energy_payment_100_bands_a_to_d`:** Figure 8's "Council Tax rebate", the eligibility shares and counts, and the £2.6bn cost. We treat the £100 payment itself as design (rule 8).
 - **`ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred`:** Figure 8's "Fuel Duty freeze extension", Figure 10's "Fuel Duty" series (equal to line 3), the "just under £1.4 billion" cost and the "around half" household incidence.
 - **`ab2026__pension_tax_allowance`:** F20's "Pensioner Personal Allowance" (RF's workbook label; in the PDF RF writes "Pension Tax Allowance"), the £150m cost and the pensioner who "will pay nothing".
-- **`ab2026__machine_games_duty_higher_stake_25pc`:** F20's "Machine Games Levy" and "around £145 million per year … through Gambling Duties … well-targeted at machine gaming" (Table 6.1 line 56 prints £145m a year from 2029-30).
+- **`ab2026__machine_games_duty_higher_stake_25pc`:** F20's "Machine Games Levy" and "around £145 million per year … through Gambling Duties … well-targeted at machine gaming" (HM Treasury prints £145m a year on Table 6.1 line 56 from 2029-30).
 - **`ab2026__your_first_home_equity_loan`:** Figure 9's "Could access Your First Home", the 76 per cent top-half share, "up to 70,000 families" and the £95m.
 - **`ab2026__carers_allowance_earnings_taper`:** the £80m, the 48,000 carers and the Box 4 cliff edge the taper removes.
 - **Restated lines.** In each of these RF restates exactly one Table 6.1 line:
@@ -200,7 +200,7 @@ We gave each row below `measure_key: null` and its key in `conditions.proposed_m
 | `ab2026__package_tax_decisions_since_march_2026` | 13 | The OBR's Table 3.1 "Direct effect of tax measures" since March, sign flipped. F10 "Net direct effects", the p.23 labels, and p.4 "about £5 billion annually from next year". Differs from Table 6.1's tax total (-£1,749m vs -£1,645m in 2026-27). |
 | `ab2026_option__tax_decisions_with_continued_fuel_duty_freeze` | 11 | The OBR's direct effect of tax measures plus keeping Fuel Duty at current rates: F10 "Net effect if Fuel Duty frozen" and its p.23 labels. On `revenue_change` (README rule 10; see "README rule 10" below). |
 | `ab2026__package_tax_administration_compliance_and_debt_collection_receipts` | 7 | The OBR's Table 3.1 group "Tax administration, compliance and debt collection measures", which covers the receipts of Table 6.1 lines 45 and 46 (OBR review B, finding 3; it includes timely payment for Self Assessment; RF doesn't list the lines). F10 row 52; p.4 "over £3 billion annually by 2030-31". |
-| `ab2026_option__fuel_duty_continued_freeze` | 6 | Fuel Duty rates held at 52.95p a litre instead of rising to 60.59p in July 2027, relative to the announced policy: the OBR's constant-duty-rate alternative less its central forecast. F10 "… and if Fuel Duty frozen"; p.24 £4.3bn in 2029-30. A receipts cost, on `revenue_change`. At ingest we drop these rows as restatements of the OBR's forecast and keep the OBR family's £4.3bn (paragraph 3.43, row 2740), which we move from `decisions_effect_on_borrowing` to `revenue_change`. |
+| `ab2026_option__fuel_duty_continued_freeze` | 6 | Fuel Duty rates held at 52.95p a litre instead of rising to 60.59p in July 2027, relative to the announced policy: the OBR's constant-duty-rate alternative less its central forecast. F10 "… and if Fuel Duty frozen"; p.24 £4.3bn in 2029-30. A receipts cost, on `revenue_change`. At ingest we drop these rows as restatements of the OBR's forecast and keep the OBR family's £4.3bn (paragraph 3.43, row 2740) on `decisions_effect_on_borrowing`, because the OBR states its effect on borrowing. |
 | `ab2026__package_rf_other_tax_measures` | 6 | RF's residual in F10 "Other tax measures": OBR net direct effects less Fuel Duty, Bank Surcharge, capital allowances, savings and property, and tax administration. |
 | `ab2026__package_household_energy_vat_and_household_share_of_fuel_duty` | 3 | Table 6.1 lines 1 and 2 plus the household-incidence share of line 3: RF's "£4.4 billion cost of living package", which counts Fuel Duty "at the share accruing directly to households" (fn 19; about half of line 3's £1.4bn). Lines 1 and 2 sum to £3,685m over 2026-27 and 2027-28. A two-year total, `cumulative` (review A, K-4). |
 | `ab2026__package_household_energy_payment_and_electricity_vat` | 5 | Lines 1 and 2: "A £3.7 billion package of household support"; p.17 "£3.4 billion in 2026-27", "£0.3 billion in 2027-28", 45 per cent. The sums show line 2 is the whole cut; see the discrepancies below. |
@@ -351,8 +351,8 @@ We have registered none of these in the `Metric` enum of `scorecard_db/models.py
 5. **SAHP top-up** (not staged, rule 8). RF's "£1.5 billion top-up" on p.21 differs from Table 6.1 line 35, which sums to £1,750m over 2027-28 to 2030-31.
 6. **Good Growth Funds** (not staged, rule 8). RF's "£285 million in 2027-28" on p.33 differs from line 20, on which HM Treasury prints -£340m that year (the line includes the lending subsidy).
 7. **Tax gap measures.** RF's "over £3 billion annually by 2030-31" on p.4 doesn't match the workbook's OBR series (F10 row 52): 2.89 in 2030-31 and 3.64 in 2031-32. We record it in row 67's `conditions.discrepancy` (review A, K-7(h)).
-8. **Figure 20's AB26 component.** RF's note says "‘AB26 Changes’ includes the Pension Tax Allowance, removal of standing charges on gas bills, and the Machine Games Levy". In the workbook RF's AB26 Changes also includes "Property and savings tax rise" (column K = F + G + I + J). RF labels the Pension Tax Allowance "Pensioner Personal Allowance" in the workbook.
-9. **Figure 10's Fuel Duty series.** RF's note says the series shows "Fuel Duty changes announced in May and October", but the values (-0.575, -0.78) equal Table 6.1 line 3 alone.
+8. **Figure 20's AB26 component.** In its note RF writes "‘AB26 Changes’ includes the Pension Tax Allowance, removal of standing charges on gas bills, and the Machine Games Levy". In the workbook RF's AB26 Changes also includes "Property and savings tax rise" (column K = F + G + I + J). RF labels the Pension Tax Allowance "Pensioner Personal Allowance" in the workbook.
+9. **Figure 10's Fuel Duty series.** In its note RF describes the series as "Fuel Duty changes announced in May and October", but the values (-0.575, -0.78) equal Table 6.1 line 3 alone.
 10. **Primary balance years.** On p.39 RF says the £107bn of higher tax revenues runs to the end of the Parliament (2028-29). In footnote 53 RF computes it "between 2023-24 and 2029-30, multiplied by forecasted GDP in 2029-30".
 11. **Energy bill figures, release vs briefing:**
     - The 28 October release's "£2,210 across 2027" (the 2027 average) differs from Spread thin's £2,192 (the Q1 2027 cap), which RF calls the bill "next year" on p.5.
@@ -397,21 +397,21 @@ In its three OBR groupings RF restates the OBR's own Table 3.1 rows, so we give 
 
 ## README rule 10, 3 November 2026
 
-Under README rule 10, in `stage.py` we move the family's totals of the Budget's decisions from `revenue_change` to `decisions_effect_on_borrowing`. We move Table 6.1's total of policy decisions (1 row) and the OBR's direct effect of tax measures that Figure 10 plots (13 rows), 14 rows in all. Counting from 0, the rows are 66, 102, 141–146 and 385–390. We had already given the OBR's total effect of the Budget's decisions (3 rows) that metric, so 17 rows use it. We keep `revenue_change` for single measures and groups of measures, and changed no value or sign.
+Under README rule 10, in `stage.py` we move the family's totals of the Budget's decisions from `revenue_change` to `decisions_effect_on_borrowing`. We move Table 6.1's total of policy decisions (1 row) and the OBR's direct effect of tax measures that Figure 10 plots (13 rows), 14 rows in all. Counting from 0, the rows are 66, 102, 141–146 and 385–390. We had already given the OBR's total effect of the Budget's decisions (3 rows) that metric, so we use it on 17 rows. We keep `revenue_change` for single measures and groups of measures, and changed no value or sign.
 
-**Not moved (4 November 2026, review B's RF finding 3, option (b), the coordinator's call).** The 3 November pass had moved the 11 rows of Figure 10's "Net effect if Fuel Duty frozen" (`ab2026_option__tax_decisions_with_continued_fuel_duty_freeze`; rows 147–151 and 432–437). We put them back on `revenue_change`. RF's totals here add the freeze's receipts effect, which row 154's note derives from the OBR's constant-duty-rate Fuel Duty forecast less its central forecast. RF's title for Figure 10 also frames the chart as revenue ("Measures announced raise revenues"). Under rule 10 we treat them as a tax-change estimate whose evidence doesn't establish PSNB scope. The OBR states the freeze's effect on borrowing for 2029-30 only (paragraph 3.43, from Table 7.1). RF's values for the other years give receipts differences, so they don't recombine a stated effect on borrowing. We keep rows 154 and 397–401 (`ab2026_option__fuel_duty_continued_freeze`) on `revenue_change` too.
+**Not moved (4 November 2026, review B's RF finding 3, option (b), the coordinator's call).** The 3 November pass had moved the 11 rows of Figure 10's "Net effect if Fuel Duty frozen" (`ab2026_option__tax_decisions_with_continued_fuel_duty_freeze`; rows 147–151 and 432–437). We put them back on `revenue_change`. RF's totals here add the freeze's receipts effect, which we derive in row 154's note from the OBR's constant-duty-rate Fuel Duty forecast less its central forecast. In its title for Figure 10 RF also frames the chart as revenue ("Measures announced raise revenues"). Under rule 10 we treat them as a tax-change estimate whose evidence doesn't establish PSNB scope. The OBR states the freeze's effect on borrowing for 2029-30 only (paragraph 3.43, from Table 7.1). RF's values for the other years give receipts differences, so they don't recombine a stated effect on borrowing. We keep rows 154 and 397–401 (`ab2026_option__fuel_duty_continued_freeze`) on `revenue_change` too.
 
 ## Review fixes, 4 November 2026
 
 Two independent reviews of PR #231 at 4f424b9 approved this family with fixes: review B (RF findings 1–8 and nits) and review A (K-4, K-6, K-7(c), K-7(d), K-7(h) and H-1). We applied all of them in a block before `write()` in `stage.py`, with the coordinator's calls on findings 2 and 3, and changed no printed or stored value. We give 4f424b9's indices.
 
-1. **Two-year totals (finding 1).** We mark all 114 Figure 8 rows (245–358), the text rows that restate them (56, 57, 61, 63, 74, 76), the gap rows 62 and 75 and the £4.4bn rows 34, 54 and 127 `cumulative`. For the 95 F8 £ rows, our normalization reads "£ per household as stored: total cash impact over 2026-27 and 2027-28 (Figure 8 note)"; we keep the K rows' own.
-2. **RF changed the landing page by 4 November (finding 2, rule 7).** We record the 4 November page as manifest line 8 (no rows cite it). The coordinator chose not to stage its £145 / £130 again, since we stage them in v2 rows 74 and 76. We set `document_version: "29 October page text (superseded by 4 November)"` and a "Superseded" sentence on rows 56–57.
-3. **Rule 10 (finding 3, option (b)).** We put rows 147–151 and 432–437 back on `revenue_change`, so the stager's rule 10 count reads 14 (see "README rule 10").
+1. **Two-year totals (finding 1).** We mark all 114 Figure 8 rows (245–358), the text rows that restate them (56, 57, 61, 63, 74, 76), the gap rows 62 and 75 and the £4.4bn rows 34, 54 and 127 `cumulative`. For the 95 F8 £ rows, we record "£ per household as stored: total cash impact over 2026-27 and 2027-28 (Figure 8 note)" in `normalization`, and keep each K row's own normalization.
+2. **RF changed the landing page by 4 November (finding 2, rule 7).** We record the 4 November page as manifest line 8 (we cite it in no row). The coordinator chose not to stage its £145 / £130 again, since we stage them in v2 rows 74 and 76. We set `document_version: "29 October page text (superseded by 4 November)"` and a "Superseded" sentence on rows 56–57.
+3. **Rule 10 (finding 3, option (b)).** We put rows 147–151 and 432–437 back on `revenue_change`, so the stager counts 14 under rule 10 (see "README rule 10").
 4. **Restated counts (finding 4).** We mark rows 55 and 72 `restated`, `hm_government_publication`, medium confidence, with a note naming HM Treasury.
 5. **Tallies (finding 5).** We count 554 workbook rows, corrected the restated source models and recounted the attribution split from the rows (`own` 680, `restated` 86).
 6. **Gas standing charge (finding 6).** We gave rows 115–125 `conditions.horizon` and medium confidence.
-7. **Signs (finding 7, and K-7(d)).** We give the 122 Figure 21–22 rows (629–750) "positive = growth", and text rows 21, 23, 89, 117, 198, 200, 203 and 204 "positive = gain to households". Row 10 reads "positive = saving (a reduction in the household's bills)".
+7. **Signs (finding 7, and K-7(d)).** We give the 122 Figure 21–22 rows (629–750) "positive = growth", and text rows 21, 23, 89, 117, 198, 200, 203 and 204 "positive = gain to households". We give row 10 "positive = saving (a reduction in the household's bills)".
 8. **Nits (finding 8):**
    - We name each chart row's series in `conditions.series` (310 rows), and keep `component` only on the 39 rule 9 parts of line 2 (review A, H-1). On seven text context rows we had used `component` for a driver of a forecast change, or a scenario's spending type; we now use `driver` (rows 51, 80–82, 91, 92) and `spending_type` (row 170);
    - we write F22's category labels "2025-26", not "2025- 26";
@@ -420,10 +420,10 @@ Two independent reviews of PR #231 at 4f424b9 approved this family with fixes: r
    - we gave gap rows 30, 62 and 75 `price_basis: cash terms (Figure 8)`;
    - we corrected the Primaries notes, Figure 21's chart object, F23's second chart, F8 J, discrepancy 15's locator, Review fixes item 2 and the "Not staged" list.
 9. **K-4.** We moved the £4.4bn (34, 54, 127) to `ab2026__package_household_energy_vat_and_household_share_of_fuel_duty`.
-10. **K-6.** We keep `ab2026_option__fuel_duty_rpi_uprating_since_2011` separate from the OBR's `ab2026__package_fuel_duty_freezes_since_2010_11`, and each family's NOTES names the other.
+10. **K-6.** We keep `ab2026_option__fuel_duty_rpi_uprating_since_2011` separate from the OBR's `ab2026__package_fuel_duty_freezes_since_2010_11`, and name each family in the other's NOTES.
 11. **K-7(c).** We propose `gross_earnings_change` on rows 88 and 211.
 12. **K-7(h).** We set `conditions.discrepancy` on row 67.
 13. **OBR review B, finding 3.** We key the tax administration group to `ab2026__package_tax_administration_compliance_and_debt_collection_receipts`, as in the OBR family.
 
-- We key both RF's receipts cost (rows 154, 397–401, `revenue_change`) and the OBR's £4.3bn effect on borrowing (paragraph 3.43, `uk_obr_tables` row 2740) to `ab2026_option__fuel_duty_continued_freeze`. At ingest we drop RF's six rows as restatements of the OBR's forecast, and move the OBR's row to `revenue_change`, because the Government didn't adopt the freeze. In rows 385–390 RF restates the OBR workbook's receipts total exactly; we key them to the tax-decisions key with the borrowing metric, and at ingest we drop them as restatements.
+- We key both RF's receipts cost (rows 154, 397–401, `revenue_change`) and the OBR's £4.3bn effect on borrowing (paragraph 3.43, `uk_obr_tables` row 2740) to `ab2026_option__fuel_duty_continued_freeze`. At ingest we drop RF's six rows as restatements of the OBR's forecast, and keep the OBR's row on `decisions_effect_on_borrowing` under the macro verdict (#55), because the OBR states its effect on public sector net borrowing. In rows 385–390 RF restates the OBR workbook's receipts total exactly; we key them to the tax-decisions key with the borrowing metric, and at ingest we drop them as restatements.
 - The contract checker reports 766 rows, 0 problems, and when we re-run `stage.py` in a scratch directory it reproduces the gzip byte for byte.

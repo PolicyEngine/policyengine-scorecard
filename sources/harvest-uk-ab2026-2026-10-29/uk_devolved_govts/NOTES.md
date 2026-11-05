@@ -9,7 +9,7 @@ We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Wel
 - Finding 2: we gave the Welsh Table 1 Resource and Capital cells (rows 1–7) `conditions.row_type: "measure_component"` with their `component`. We gave the four Total cells and the £448m headline (rows 0 and 8–11) `row_type: "total"` and no `component`. On 4 November we superseded that, and all twelve now form parts of the three-government package (see "Changes on 4 November 2026", finding 1). An ingest can no longer add parts to their total.
 - Finding 3: we named the Welsh package key for its scope, not the nation: `ab2026__package_barnett_consequentials`, which we share with HM Treasury's figures for the same scope in `uk_hmt_redbook`. We record the nation in `conditions.geography`.
 - Finding 4: we gave the seven real-terms settlement rows (Welsh rows 12–13, Scottish rows 14–18) `proposed_metric: devolved_funding_real_terms_change`. In AB2025 we used `block_grant_effect` for a policy's effect on the grant, positive for an increase. These rows instead give a year-on-year real-terms change in the whole settlement, positive for a reduction.
-- Finding 7: we moved the Scottish Government's rows here (above), and the harvest README's slug table now lists both slugs.
+- Finding 7: we moved the Scottish Government's rows here (above), and we now list both slugs in the harvest README's slug table.
 - `component` on context rows: on the seven real-terms rows we had named their budget (Resource, Capital and so on) in `component`, which we use only for parts of a measure (rule 9). Following the reasoning of the review's finding 6, we now name it in `budget`.
 - Attribution, which the coordinator checked under finding 3: we keep the Welsh rows `own`. The Welsh Government cites no source, and the coordinator's settled calls do not change this; we stage HM Treasury's own consequentials as HM Treasury's in `uk_hmt_redbook`.
 
@@ -20,7 +20,7 @@ We re-opened no primary on 3 November, because the session's network policy refu
 Review B (PR #231, issue comment 6635498758) approved this family with fixes, and the coordinator settled the Barnett key with review A's K-7(b) in the brief (section 3.3). We put the fixes in `review_fixes()` in `stage.py`, re-opened no primary and changed no value.
 
 - Finding 1 (Barnett): we give the shared key the red book's scope. HM Treasury prints the £1.3bn (red book row 252), and we take it as the total and each government as a part (rule 9: "a part can be ... a nation"). So we mark rows 0 and 8–11 `measure_component` with `component: "Welsh Government"`, name rows 1–7 `"Welsh Government: Resource"` or `"Welsh Government: Capital"`, and give row 0 `fy: 2029-30`. In the section on the package key below, we give it the red book's scope.
-- Finding 2: we changed row 13's locator to "third sentence", and its note no longer repeats row 12's "next financial year" sentence. We set rows 14–18's `source_column` to null, as on rows 12–13, because we wrote those labels and the producer didn't print them. We removed the old `uk_fai_sfc` folder's name from the Scottish manifest note. We corrected the sentence that called the Welsh package mapping "unresolved".
+- Finding 2: we changed row 13's locator to "third sentence", and we no longer repeat row 12's "next financial year" sentence in its note. We set rows 14–18's `source_column` to null, as on rows 12–13, because we wrote those labels and the producer didn't print them. We removed the old `uk_fai_sfc` folder's name from the Scottish manifest note. We corrected the sentence that called the Welsh package mapping "unresolved".
 
 ## Coverage
 
@@ -130,7 +130,7 @@ The lane fetched the [news release](https://www.gov.scot/news/uk-budget-delivers
 
 - Every FAI figure: FAI's site refused the required fresh fetch, and nobody supplied a local fallback. So we read no primary evidence for FAI's quantitative or qualitative claims.
 - SFC: we found no qualifying publication dated 28–29 October, and we don't recast its earlier forecasts and funding commentary as post-Budget figures.
-- The Scottish Government's £100 household energy-support commitment: the Scottish Government sets a payment-policy parameter, not a separate quantified aggregate or model estimate. It specifies no Scottish eligibility, rollout timing or fully defined Scottish implementation, and the registered Table 6.1 line 1 describes England's council-tax rebate. We attach no England measure key to Scotland's unspecified implementation.
+- The Scottish Government's £100 household energy-support commitment: the Scottish Government sets a payment-policy parameter, not a separate quantified aggregate or model estimate. It specifies no Scottish eligibility, rollout timing or fully defined Scottish implementation, and on the registered Table 6.1 line 1 HM Treasury describes England's council-tax rebate. We attach no England measure key to Scotland's unspecified implementation.
 - The Scottish Government's £300 energy-bill reduction refers to an earlier political promise, not an AB2026 estimate or a newly costed option.
 - We don't stage the minister's repeated £650 million or the repeated £100 commitment twice.
 - We don't treat dates, earlier political reference years or qualitative references to welfare policies as numerical claims. We used no chart-only numbers, macro forecasts or third-party restatements.
@@ -139,7 +139,7 @@ The lane fetched the [news release](https://www.gov.scot/news/uk-budget-delivers
 
 The Scottish Government attributes the figures to the UK Budget but doesn't separate the changes that newly announced decisions cause from the inherited funding path and inflation. It supplies no derivation, explicit comparison baseline or deflator year, so nobody can compare the five context rows directly with a cash-terms Barnett-consequentials table. The two component cash magnitudes agree with the printed total, and we recomputed none.
 
-The page's JSON-LD `dateModified` reads `2026-10-29T08:22:59Z`, while the visible publication time and `dc.date.modified` show 28 October 2026 15:45. Nobody provided an earlier local copy, and the metadata don't show that the numbers changed. We pin the sole fetched version in the manifest, record both timestamps there and invent no second version.
+The Scottish Government's page gives `2026-10-29T08:22:59Z` in its JSON-LD `dateModified`, and 28 October 2026 15:45 in its visible publication time and `dc.date.modified`. Nobody provided an earlier local copy, and the metadata don't show that the numbers changed. We pin the sole fetched version in the manifest, record both timestamps there and invent no second version.
 
 ## Verification
 
@@ -168,7 +168,7 @@ when transcribing, and every row's quote contains its raw value. Its scope
 review found no assigned registry key. On 3 November we gave the Welsh
 package rows the shared proposed key `ab2026__package_barnett_consequentials`
 (scope above), which we registered in tranche 2, and the context rows no key.
-- Scottish rows, 29 October, in `uk_fai_sfc`: the family then held fewer than 10 rows, so the lane checked all 5. It shuffled them reproducibly (`random.Random(20261029)`) and checked rows **3, 2, 1, 4, 5** in that order (now rows 17, 16, 15, 18, 19 of this family, one-based). It re-opened the saved primary at every locator and checked its hash against each row's publication hash.
+- Scottish rows, 29 October, in `uk_fai_sfc`: we then had fewer than 10 rows in the family, so the lane checked all 5. It shuffled them reproducibly (`random.Random(20261029)`) and checked rows **3, 2, 1, 4, 5** in that order (now rows 17, 16, 15, 18, 19 of this family, one-based). It re-opened the saved primary at every locator and checked its hash against each row's publication hash.
 
 | Row | Primary locator | Verbatim figure | Checked normalization | Sign and period |
 | ---: | --- | --- | --- | --- |

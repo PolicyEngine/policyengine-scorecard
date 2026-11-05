@@ -16,7 +16,7 @@ We re-opened no primary on 3 November, because the session's network policy refu
 
 Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's H-6(a) asked for its finding 2. We put the fixes in a block after the rows in `stage.py`, shared word for word with `uk_trussell_wpi`'s (judgement call 10). We re-opened no primary and changed no value.
 
-- Finding 1: IfG's "around 80%" (row 8) restates HM Treasury's paragraph 3.5, which we stage as `uk_hmt_redbook` row 191. We now mark the row `restated`, with `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)" and a rewritten note. Own 4, restated 8.
+- Finding 1: in "around 80%" (row 8) IfG restates HM Treasury's paragraph 3.5, which we stage as `uk_hmt_redbook` row 191. We now mark the row `restated`, with `source_model: administrative_data`, `conditions.originator: "HM Treasury, Budget 2026 para 3.5"`, geography England, denominator "households in England (HM Treasury)" and a rewritten note. Own 4, restated 8.
 - Finding 2 and H-6(a): we now record the registered `fiscal_headroom`, `affected_share` and `affected_count` in `metric` on rows 2, 8 and 10, with `proposed_metric` null.
 - Finding 3: we set row 9's `measure_type` to "real household disposable income per person".
 - H-6(d): we set `geography: "not stated"` on row 11 (Citizens Advice).
