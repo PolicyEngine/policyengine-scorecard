@@ -142,9 +142,9 @@ In its review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the st
 - Finding 2: the reviewer confirmed it. Row 2's derivation cites Table 6.3 row 3 at 1,355, 1,605 and 1,815 (£m, 2029-30 to 2031-32), and we stage exactly those cells in `uk_hmt_redbook`.
 - Finding 3: we record the #207 file's three differences under "Not staged" and in row 27's note.
 - Finding 4 (optional, applied): we stage row 105 as +2e7 with `positive = yield to the Exchequer` and normalisation "£ million × 1e6".
-- Finding 5 (optional, applied): for row 18 (23%, a 25th-percentile EATR) we use the registered `average_tax_rate`, as on rows 7–15. On rows 19–20 we put `revenue_change` in `percent`; tranche 2 must not read them as £.
+- Finding 5 (optional, applied): for row 18 (23%, a 25th-percentile EATR) we use the registered `average_tax_rate`, as on rows 7–15. On rows 19–20 we put `revenue_change` in `percent`. At ingest we drop row 19 (62%) as a ratio and row 20 (88%) as CenTax's earlier estimate restated, so neither becomes a claim.
 - Finding 6: CenTax gives p. 25's "around four times as many parents would be bunching" in the halved-unresponsiveness scenario as a scenario ratio, and we list it under "Not staged".
-- Finding 7: rows 20, 58, 108 and 109 give CenTax's 2024-era estimates at fy 2025-26 under the CGT option key, and we say so in their `scenario` condition, for tranche 2.
+- Finding 7: rows 20, 58, 108 and 109 give CenTax's 2024-era estimates at fy 2025-26 under the CGT option key, and we say so in their `scenario` condition. At ingest we drop row 20 and score rows 58, 108 and 109 on `ab2026_option__cgt_reform_package`, with the `scenario` condition on each claim.
 - The contract checker reports 110 rows, 0 problems, and when we re-run `stage.py` it reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
 
 ## Review fixes, 4 November 2026
