@@ -593,10 +593,14 @@ def _main_ref():
     return None
 
 
-@pytest.mark.skipif(_main_ref() is None, reason="no main ref in this checkout")
 def test_ab2025_ingest_matches_main(tmp_path):
     """AB2025's claims, pe_gap results, diagnoses and lanes come out byte
-    for byte as on main."""
+    for byte as on main. CI fetches origin/main, so there a missing ref
+    fails; a local checkout without one skips."""
+    if _main_ref() is None:
+        if os.environ.get("GITHUB_ACTIONS"):
+            pytest.fail("CI must fetch origin/main for the AB2025 differential")
+        pytest.skip("no main ref in this checkout")
     main = tmp_path / "main"
     main.mkdir()
     archive = subprocess.run(

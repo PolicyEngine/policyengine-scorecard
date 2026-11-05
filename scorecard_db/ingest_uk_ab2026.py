@@ -154,24 +154,21 @@ DISPOSITIONS_AB2026: dict[str, Metric] = {
 
 DROPS_AB2026: dict[str, str] = {
     "hmt_figure_staged_twice": (
-        "HM Treasury prints the same figure in two of its documents: the policy "
-        "costings repeat each Table 6.1 line's exchequer impact, and red book "
-        "Table 6.3 and its prose repeat some Table 6.1 cells. We keep the "
-        "Table 6.1 or 6.2 claim, which the registry builds from, record the "
-        "twin under publication.also_printed_in, and tally the twin, so the "
-        "DB counts each figure once."
+        "HM Treasury prints this figure in Table 6.1 or 6.2 and again in its "
+        "policy costings or the Budget document, sometimes rounded or with "
+        "the opposite sign; we score the Table 6.1 or 6.2 figure and list "
+        "this printing with it."
     ),
     "energy_bill_level_no_metric": (
-        "The level of a typical household's energy bill under the price cap "
-        "(RF's £2,210, for example): a level, not the change energy_bill_change "
-        "records, and a setting of the world rather than a score."
+        "The producer gives the level of a typical household's energy bill "
+        "under the price cap (RF's £2,210, for example), and we score changes "
+        "in bills, so a level has nothing to compare."
     ),
     "single_row_unregistered_world": (
-        "A row scored against a world its producer names once (the OBR's "
-        "uprating rules simulated over 1990-2025 outturn, and its CPI bound "
-        "against the fuel duty policy in its economy forecast). One row "
-        "doesn't justify registering a world in baselines.py, and the #13 rule "
-        "bars defaulting it to current law, so we tally it."
+        "The OBR scores this figure against a world it describes once, such "
+        "as its uprating rules simulated over 1990-2025 outturn or its CPI "
+        "bound against the fuel duty policy, and we compare only against "
+        "worlds we can rebuild or current law."
     ),
 }
 
@@ -249,8 +246,9 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     "capital_allowance_present_value": P,
     # a business's bill
     "business_rates_bill_change": U,
-    # single-row quantities
+    # sums over several years per driver or business
     "average_cumulative_gain": N,
+    # single-row quantities
     "housing_supply_change": N,
     "cash_receipts_change": N,
     "unit_rate_change": N,
