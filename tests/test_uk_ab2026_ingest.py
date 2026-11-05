@@ -300,7 +300,8 @@ def test_the_continued_fuel_duty_freeze_has_one_metric(staged):
         if s.conditions.get("measure_key")
         == "ab2026_option__fuel_duty_continued_freeze"
     ]
-    assert {s.source for s in freeze} == {"obr_efo", "resolution_foundation"}
+    # RF derives its figure from the OBR's forecasts, so only the OBR's stays
+    assert {s.source for s in freeze} == {"obr_efo"}
     assert {s.metric for s in freeze} == {Metric.REVENUE_CHANGE}
     obr = [s for s in freeze if s.source == "obr_efo"]
     assert [s.conditions["staged_metric"] for s in obr] == [
@@ -386,7 +387,7 @@ def test_every_claim_sign_reads_as_reviewed(staged):
 
 def test_only_unsigned_claims_lack_a_direction(staged):
     """Every oriented claim reads same or opposite, or states why no sign
-    applies, except RF's four real-income rows, which print no convention."""
+    applies."""
     scores, _ = staged
     bases = Counter()
     for s in scores:
@@ -398,11 +399,9 @@ def test_only_unsigned_claims_lack_a_direction(staged):
         if relation == "unknown":
             bases[basis] += 1
     assert set(bases) <= {
-        "no_stated_convention",
         "stated:exchequer:not_this_quantity",
         "stated:borrowing:not_this_quantity",
     }
-    assert bases["no_stated_convention"] == 4
 
 
 # --- 5. determinism ---------------------------------------------------------

@@ -1,7 +1,7 @@
 {
  "read": 5952,
- "ingested": 4708,
- "dropped": 1244,
+ "ingested": 4688,
+ "dropped": 1264,
  "by_family": {
   "uk_hmt_tables": {
    "read": 768,
@@ -25,13 +25,13 @@
   },
   "uk_rf_ab2026": {
    "read": 766,
-   "ingested": 588,
-   "dropped": 178
+   "ingested": 574,
+   "dropped": 192
   },
   "uk_ifs_ab2026": {
    "read": 144,
-   "ingested": 15,
-   "dropped": 129
+   "ingested": 11,
+   "dropped": 133
   },
   "uk_ippr": {
    "read": 3,
@@ -40,8 +40,8 @@
   },
   "uk_centax": {
    "read": 112,
-   "ingested": 84,
-   "dropped": 28
+   "ingested": 82,
+   "dropped": 30
   },
   "uk_tpa": {
    "read": 305,
@@ -67,15 +67,19 @@
  "drops": {
   "assumption_or_base_not_a_score": 14,
   "categorical_rating_not_a_value": 7,
+  "earlier_estimate_restated": 1,
   "energy_bill_level_no_metric": 35,
   "hmt_figure_staged_twice": 432,
+  "income_path_not_a_policy_effect": 9,
   "macro_fiscal_or_out_of_scope": 204,
   "mode3_specimen_household": 11,
   "mtr_no_registered_metric": 4,
   "no_registered_metric": 8,
   "parameter_or_threshold_level": 17,
-  "ratio_or_derived_quantity": 14,
-  "republished_twin_merged": 7,
+  "partial_year_household_support": 4,
+  "ratio_or_derived_quantity": 15,
+  "republished_twin_merged": 6,
+  "restated_obr_forecast": 6,
   "restated_official_figure": 450,
   "share_level_no_registered_metric": 17,
   "single_row_unregistered_world": 3,
