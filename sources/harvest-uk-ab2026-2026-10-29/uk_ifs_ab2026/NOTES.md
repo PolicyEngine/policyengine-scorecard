@@ -41,7 +41,7 @@ We take rows 0 to 86 from the decks, by deck, slide and position. Rows 87 to 143
 | measure_key | Rows | of which components (rule 9) | of which from sections 1 and 2 |
 |---|--:|--:|--:|
 | `null`, context (no key) | 116 | 0 | 52 |
-| the four package keys below | 7 | 0 | 3 |
+| the four keys we proposed (below) | 7 | 0 | 3 |
 | `ab2026__household_energy_payment_100_bands_a_to_d` | 5 | 0 | 2 |
 | `ab2026__founders_relief_cgt` | 4 | 0 | 0 |
 | `ab2026__package_household_energy_vat_and_fuel_duty` | 3 | 0 | 0 |
@@ -54,7 +54,7 @@ We take rows 0 to 86 from the decks, by deck, slide and position. Rows 87 to 143
 | `ab2026__package_total_tax_policy_decisions` | 1 | 0 | 0 |
 | `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 1 | 0 | 0 |
 
-## Package keys
+## Keys we proposed
 
 We proposed four keys for seven rows, and tranche 2 registered them and moved them into `measure_key`. We spell them under README rule 2 and give each the producer's printed scope (rule 3).
 
@@ -229,7 +229,7 @@ vendored family, and checked SHA256s with `shasum -a 256`. It read the PDFs with
 `pdftotext -layout` and rendered them for visual checks of labels and embedded
 images. None of IFS's PDF annotations links to a chart-data download.
 
-Stockton's fresh file is byte-for-byte identical to the assigned `stockton.pdf`,
+Stockton's fresh file matches the assigned `stockton.pdf` byte for byte,
 which confirms it as **Weathering-the-fiscal-storm-IS.pdf**. The other three
 current decks also match their supplied local copies. IFS's server returned HTTP
 403 for TW_0, so the lane copied the supplied local PDF to `TW_0-local.pdf` and
@@ -377,11 +377,11 @@ revisions since 2010, excluding 2020-21; we interpret “Spring” as Spring 202
 and disclose it. We give all fiscal rows a null measure_key and no proposed
 measure.
 
-We didn't stage slides 3–6's forecast/borrowing bars, diamonds and lines, or
-slide 8's forecast/outturn lines, because IFS prints no numeric data labels on
-them. We don't stage axis ticks, chart origins or dates as outcome rows, and
-when the lane checked slides 1–6 by eye, it found no printed headroom or
-tax/GDP number.
+The first lane didn't stage slides 3–6's forecast/borrowing bars, diamonds and
+lines, or slide 8's forecast/outturn lines, because IFS prints no numeric data
+labels on them. It staged no axis ticks, chart origins or dates as outcome rows,
+and when it checked slides 1–6 by eye, it found no printed headroom or tax/GDP
+number.
 
 ## Wernham cost-of-living deck
 
@@ -398,7 +398,7 @@ Access and version evidence:
   - IFS removed TW_0 p6, another copy of the unannotated support chart. TW_0 p7–18 correspond to TW_1 p6–17.
   - IFS changed no printed numerical claim. All staged rows cite TW_1. TW_0 gives zero rows, but we manifest it as the changed primary rule 7 requires.
 
-The first lane gave 14 of its rows a null measure_key, 4 `ab2026__household_energy_payment_100_bands_a_to_d`, 2 `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` and 1 `ab2026__bus_fare_cap_2_england_outside_london_2027`. Of the null rows, 6 gave unscored context and 8 carried its proposed measure keys. It staged all 21 rows from TW_1 (TW_1=21, TW_0=0).
+The first lane gave 14 of its rows a null measure_key, 4 `ab2026__household_energy_payment_100_bands_a_to_d`, 2 `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` and 1 `ab2026__bus_fare_cap_2_england_outside_london_2027`. Of the null rows, it staged 6 as unscored context and gave 8 its proposed measure keys. It staged all 21 rows from TW_1 (TW_1=21, TW_0=0).
 
 On 3 November we re-keyed the first lane's three Wernham proposals (see "Keys the addendum changed" above). The cost-of-living package covers exactly lines 1, 2 and 3, because line 2 costs the whole VAT cut, including the weeks before the Budget. We key the full-period VAT row to line 2, and the gas standing-charge rows to `ab2026__gas_standing_charge_moved_to_unit_rates`.
 
@@ -465,7 +465,7 @@ https://ifs.org.uk/system/files/2026-10/Spending-on-public-services-the-Achilles
 The lane fetched it fresh and directly at 2026-10-29 15:43:43Z with the required
 Safari User-Agent: 157,838 bytes, sha256
 `7403ecc0641b23f5ffc0cb28f67435dbd1b8df6b124874ffae7ae7f75e357aa6`. The
-coordinator's assigned local copy and the fresh copy are byte-identical. The
+fresh copy matches the coordinator's assigned local copy byte for byte. The
 lane read it with `pdftotext -layout` and visually inspected all 13 slides and
 the slide 7/9 data labels. It missed no raster-only numeric table.
 
@@ -479,7 +479,8 @@ The first lane's one proposed key here, for the £1.2bn a year of DIP funding, w
 
 For metrics the first lane reused `spending_pressure`, `forecast_spending_change`
 and `real_spending_growth` from AB2025, and used `real_spending_growth_revision`
-for the historical one-percentage-point revision. It proposed the new
+for the historical one-percentage-point revision. The 3 November addendum kept
+these choices on the 21 rows it kept. The first lane proposed the new
 `reserve_allocated_share` for the percentage of the specified day-to-day or
 capital reserve already allocated over its printed multi-year window, and
 proposed no new unit or baseline.
@@ -492,8 +493,8 @@ reserve allocation shares `administrative_fact`, with medium confidence, since
 IFS names no source for them on the slide. It kept real growth in percent,
 growth revisions in percentage points and cash amounts in GBP, with signs as
 printed, and recorded additional spending required as positive pressure and a
-real cut as negative growth. It staged no central-value rows: IFS's scenarios
-are point estimates, and the lane never substituted them for OBR forecasts.
+real cut as negative growth. It staged no central-value rows: IFS gives its scenarios
+as point estimates, and the lane never substituted them for OBR forecasts.
 
 IFS gives the 2027–28 to 2030–31 chart rates as average annual real growth over
 the whole interval. The first lane kept that interval in `growth_period` and
@@ -572,7 +573,9 @@ We superseded these on 3 November (see "Keys the addendum changed" above). We st
 
 ### Conventions and metric proposals
 
-The first lane kept printed signs on all monetary figures. It staged
+The first lane kept printed signs on all monetary figures. The 3 November
+addendum kept these choices on the rows it kept, among them rows 81 and 83–85,
+and dropped the Founders' Relief rows. The first lane staged
 revenue-raising amounts as positive yields, and the Founders' Relief £0.3bn as a
 positive cost, explicitly labelled so. It multiplied amounts in £bn/£m by
 1e9/1e6, kept tax rates in percent, and kept every quoted excerpt under 15
@@ -712,6 +715,6 @@ The first lane gave Wernham's full-period VAT *impact* a proposal because it
 includes earlier relief; since 3 November we key it to line 2. Adam states the
 zero-rate *parameter* directly for the measure and doesn't cost the full period.
 The first lane gave all broader or unidentified packages a null measure_key with
-proposals. We left these as IFS printed them: Adam's cover date, the
+proposals. It left these as IFS printed them: Adam's cover date, the
 savings/property rounding, Boileau's calendar/fiscal target wording and undated
 flows, Wernham's undated gas reform, and Stockton's uncited attribution.
