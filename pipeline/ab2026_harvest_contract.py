@@ -474,7 +474,8 @@ def _factors(normalization):
     """The multipliers a normalization states ("x 1,000,000", "/ 100", "(x 10^6)"),
     or None if it states one the checker can't read whole. Operations in a row
     make one multiplier: "x 1,000,000 / 100" is 10,000."""
-    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", (normalization or "").lower())
+    text = " ".join((normalization or "").lower().split())
+    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", text)
     if _UNREAD.search(text):
         return None
     out = []

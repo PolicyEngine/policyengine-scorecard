@@ -2734,6 +2734,9 @@ def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand)
         "(x 2 and a half)",
         "as printed; x 2 and a half",
         "x 1e6 / 2 and a half",
+        "x 2 and a  half",
+        "x 2 and a\thalf",
+        "x 2 and a\u00a0half",
     ],
 )
 def test_a_numeric_mixed_fraction_is_a_problem_at_any_value(note):
@@ -2750,6 +2753,41 @@ def test_a_word_after_and_leaves_the_factor_alone(note):
     assert not any(
         "a factor in normalization" in p for p in problems(_share("4", 8, note))
     )
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    note=st.sampled_from(
+        [
+            "x 2",
+            "x 2.5",
+            "/ 100",
+            "x 1,000,000 / 100",
+            "x 10 ^ 6",
+            "times 1,000",
+            "x 1 million",
+            "as printed; x 2",
+            "as printed",
+            "x 2 and a half",
+            "x 2 and three quarters",
+            "x 2 and rounded",
+            "x 2 and halfway",
+            "x 2 and a",
+        ]
+    ),
+    run=st.sampled_from(["  ", "   ", "\t", "\n", " \t ", "\u00a0"]),
+    gap=st.integers(0, 20),
+    value=st.sampled_from([4, 8, 10, 40, 400, 4e6]),
+)
+def test_a_run_of_whitespace_in_a_note_reads_as_one_space(note, run, gap, value):
+    """Sol's review of 8200b418: two spaces or a tab hid the fraction in "x 2 and a
+    half", so "4" under it passed at 8."""
+    spaces = [i for i, c in enumerate(note) if c == " "]
+    at = spaces[gap % len(spaces)]
+    stretched = note[:at] + run + note[at + 1 :]
+    assert bool(problems(_share("4", value, stretched))) == bool(
+        problems(_share("4", value, note))
+    ), (stretched, value)
 
 
 def test_a_long_run_of_quotes_stays_quick_to_read():
