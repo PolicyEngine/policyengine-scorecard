@@ -1,27 +1,27 @@
 # uk_centax: CenTax, Autumn Budget 2026
 
-This family stages three CenTax publications:
+In this family we stage three CenTax publications:
 
 - **"Autumn Budget 2026: Initial reaction"** (28 October 2026, centax.org.uk).
-- **The two AB2026 briefings it links:** "Taxes at the top: Understanding what high earners pay and options for reform" (23 September 2026), which sets out "reforms available at the 2026 Budget", and "Capital Gains Tax on Entrepreneurs: Should the UK have a 'Unicorn Relief'?" (8 October 2026).
+- **The two AB2026 briefings it links:** "Taxes at the top: Understanding what high earners pay and options for reform" (23 September 2026), in which CenTax sets out "reforms available at the 2026 Budget", and "Capital Gains Tax on Entrepreneurs: Should the UK have a 'Unicorn Relief'?" (8 October 2026).
 
-The source slug is `centax`, as in the AB2025 `uk_centax` family, and `source_model` is `hmrc_administrative_microdata` for CenTax's estimates and descriptive statistics.
+We use the source slug `centax`, as in the AB2025 `uk_centax` family, and `source_model` `hmrc_administrative_microdata` for CenTax's estimates and descriptive statistics.
 
-**Working files.** `stage.py`, the file meant wherever these notes say `stage.py`, lives on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_centax/stage.py`; this branch carries only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane's local primaries folder (`.ab2026-primaries/uk_centax/`) was never committed: the repository carries no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, the file these notes mean wherever they say `stage.py`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-a/uk_centax/stage.py`. This branch adds only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane never committed its local primaries folder (`.ab2026-primaries/uk_centax/`), and we commit no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
-`stage.py` holds the rows as data and rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its primary's text (HTML text, or `pdftotext -layout`, whitespace-normalised). Result: 0 problems.
+We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and `claims_staged.jsonl.gz` byte for byte. `stage.py --verify` checks each primary's sha256 and finds every quote in its primary's text (HTML text, or `pdftotext -layout`, whitespace-normalised); it reports 0 problems.
 
-- **Rows:** 112 (own 108, restated 4).
-- **Primaries:** 6 (the reaction page in two versions, rule 7).
+- Rows: 112 (own 108, restated 4).
+- Primaries: 6 (the reaction page in two versions, rule 7).
 
-## Access recipe
+## How we fetched the primaries
 
-Every primary was fetched directly on 2026-10-29 with `curl -sSL` and the browser User-Agent in the brief (HTTP 200). Nothing came from a local copy, and LinkedIn was not used.
+We fetched every primary directly on 2026-10-29 with `curl -sSL` and the browser User-Agent in the brief (HTTP 200). We took nothing from a local copy and didn't use LinkedIn.
 
-- **The reaction page** was fetched at 16:17Z. It says "This page is being updated live" and carries no published or modified time, so a later fetch may hash differently.
-- **The reaction page's 4 November version** (sha256 `5103e06ae3a5831a…`, 271,039 bytes, retrieved 2026-11-04 by review B and matched by the coordinator's own fetch that day) says "This page has finished updating". It adds seven sections the 29 October copy lacks: Big picture; Tax reliefs for founders and employees (with its CGT, BADR, Founders' Relief, EMI2/CSOP and evaluation parts); Company distributions framework. Their markup accounts for the growth from 248,542 bytes. It is a second primary (README rule 7): the 3 earlier rows keep citing the 29 October copy, whose quotes it still prints, and the 2 rows from the new sections cite it. This session did not re-open either version; the two new rows' quotes are the coordinator's, checked against its local copy.
-- **The two briefing landing pages** were fetched at 16:30Z. Each prints no figures (0 rows) and links its PDF; they are manifested as the route to the PDFs.
-- **The two PDFs** were fetched at 16:31Z and read with `pdftotext -layout`. Locators are printed page numbers; in "Taxes at the top" the Key findings are p. 1.
+- We fetched the reaction page at 16:17Z. CenTax says "This page is being updated live" and prints no published or modified time, so a later fetch may hash differently.
+- Review B retrieved the reaction page's 4 November version on 2026-11-04 (sha256 `5103e06ae3a5831a…`, 271,039 bytes), and the coordinator's own fetch that day matched it. In it CenTax says "This page has finished updating". CenTax added seven sections that the 29 October copy lacks: Big picture; Tax reliefs for founders and employees (with its CGT, BADR, Founders' Relief, EMI2/CSOP and evaluation parts); Company distributions framework. Their markup accounts for the growth from 248,542 bytes. We treat it as a second primary (README rule 7). The 3 earlier rows keep citing the 29 October copy, whose quotes CenTax still prints, and the 2 rows from the new sections cite the new version. This session re-opened neither version; the coordinator chose the two new rows' quotes and checked them against its local copy.
+- We fetched the two briefing landing pages at 16:30Z. CenTax prints no figures on either (0 rows) and links each PDF from it, so we manifest them as the route to the PDFs.
+- We fetched the two PDFs at 16:31Z and read them with `pdftotext -layout`. We use printed page numbers as locators; in "Taxes at the top" CenTax puts the Key findings on p. 1.
 
 ## Rows by primary
 
@@ -45,11 +45,11 @@ Every primary was fetched directly on 2026-10-29 with `curl -sSL` and the browse
 
 ## Proposed measure keys
 
-The Budget took none of the options below. Founders' Relief (Table 6.1 line 26) and the BADR cut (line 60) are a different CGT design from CenTax's package. Each option is CenTax's own design, in CenTax's words:
+The government took none of the options below in the Budget. It chose Founders' Relief (Table 6.1 line 26) and the BADR cut (line 60), a different CGT design from CenTax's package. CenTax designed each option, and we give each in CenTax's words:
 
 | proposed key | scope | rows |
 |---|---|--:|
-| `ab2026_option__cgt_reform_package` | "Structural reform of CGT and equalising rates with Income Tax": equalise CGT rates with Income Tax rates; an investment allowance for the risk-free rate; remove uplift at death; rebasing on arrival with deemed disposal on departure. "We use administrative data from HMRC to cost the first four elements"; the fifth, more generous loss relief, isn't costed. No Table 6.1 line | 10 |
+| `ab2026_option__cgt_reform_package` | "Structural reform of CGT and equalising rates with Income Tax": equalise CGT rates with Income Tax rates; an investment allowance for the risk-free rate; remove uplift at death; rebasing on arrival with deemed disposal on departure. "We use administrative data from HMRC to cost the first four elements"; CenTax doesn't cost the fifth, more generous loss relief. No Table 6.1 line | 10 |
 | `ab2026_option__nics_on_partnership_income` | "Applying an equivalent of Employer NICs to partnership profits": a top-up rate ("6.9% on partnership profits taxed at the additional rate, 7.6% … higher rate, and 9.6% … basic rate"), a £10,500 Partnership allowance and a £5,000 annual exempt amount per partner. No Table 6.1 line | 24 |
 | `ab2026_option__nics_on_investment_income` | "Applying an equivalent of Class 1 NICs to investment income": rental income, savings income outside ISAs and other non-dividend investment income (`conditions.income_type`). No Table 6.1 line | 10 |
 | `ab2026_option__childcare_100k_threshold_removed` | "Removing the £100,000 childcare cliff-edge": make the free childcare entitlement in England available to parents with incomes over £100,000. No Table 6.1 line | 3 |
@@ -57,37 +57,37 @@ The Budget took none of the options below. Founders' Relief (Table 6.1 line 26) 
 | `ab2026_option__childcare_100k_threshold_raised` | "Increase the threshold at which entitlement to free childcare is withdrawn", to £125,000 or £150,000 (`conditions.threshold`) | 2 |
 | `ab2026_option__childcare_100k_entitlement_taper` | "'Taper' the withdrawal of free childcare", at 8p, 18p or 28p per £1 over £100,000 (`conditions.taper_rate`) | 3 |
 
-Only the options short of full removal (rows 101–106) are "costed on an actual ANI basis" (`conditions.costing_basis`); the full removal's £640m and £520m (rows 1, 25 and 99) carry no costing basis. CenTax's actual-ANI threshold itself ("could be set higher (£111,000) … at the same overall fiscal cost") is that option's design and has no row (README rule 8).
+CenTax says it "costed on an actual ANI basis" only the options short of full removal (rows 101–106), and we record that in `conditions.costing_basis`. We give the full removal's £640m and £520m (rows 1, 25 and 99) no costing basis. CenTax's actual-ANI threshold itself ("could be set higher (£111,000) … at the same overall fiscal cost") forms that option's design, so we staged no row for it (README rule 8).
 
-The £1.6bn timely-payment figure carries `ab2026__hmrc_tax_gap_package` under README rule 9, not a proposed key. It repeats the OBR's printed average (EFO paras 3.4 and 3.13), so it is `restated` (review B, finding 1). More timely payment for Self Assessment is HM Treasury Table 6.3 line 3, a sub-measure of Table 6.1 line 45. The row has `conditions.row_type: measure_component`, with `conditions.component` naming the part.
+Under README rule 9 we key the £1.6bn timely-payment figure to `ab2026__hmrc_tax_gap_package`, not a proposed key. CenTax repeats the OBR's printed average (EFO paras 3.4 and 3.13), so we mark the row `restated` (review B, finding 1). HM Treasury lists more timely payment for Self Assessment as Table 6.3 line 3, a sub-measure of Table 6.1 line 45. We set `conditions.row_type: measure_component` on the row and name the part in `conditions.component`.
 
 ## Conventions
 
-- **Tax years:** CenTax gives tax years as the later year ("2022 is tax year 2021-22", Taxes at the top footnote 2). So "2030" is staged as `fy` 2029-30, "2028" as 2027-28, and the descriptive 2022 data as 2021-22. Every such row carries a `year_note`. This matches #207's reading of the same CenTax childcare figures.
-- **Sign:**
-  - Revenue-raising options are `positive = yield to the Exchequer`.
-  - The childcare options are `positive = cost to the Exchequer`, except "raise £20 million" (28p taper), which is staged as +2e7 with `positive = yield to the Exchequer`: values are not re-signed (AB2025 README; changed on 3 November, review finding 4).
-- **"Central":** CenTax's central scenario (`conditions.scenario: central`). It uses "elasticities drawn from the best available international evidence" for CGT, its "central revenue estimate, after accounting for behavioural responses" for partnership NICs, and its central bunching scenario for childcare. The investment-income NICs figures are static upper bounds ("naturally at the upper bound", footnote 13), so they are `range_high` with `basis: static`.
-- **Units:**
-  - Shares are fractions (`share`).
-  - Effective and marginal rates are `percent`; rate gaps are `percentage_points`. No top-up rate is staged: the partnership top-up rates are the option's design (below).
-  - The CGT package's "increase revenue by 62%" is `revenue_change` in `percent` of baseline CGT revenue.
-  - Income groups follow the AB2025 names (`top_10pct`, `top_1pct`, `top_0.1pct`, `top_0.01pct`, `decile_10`, `bottom_50pct`); percentile bands are `p50_p60` … `p99.5_p99.9`. Single percentiles are `median`, `p99` and `p99.99`, and p. 11's "by around 2.8 percentage points on average" is `top groups, on average`.
-- **Attribution:**
-  - CenTax's model estimates are `own` / `different_model`.
-  - Descriptive HMRC statistics are `own` / `administrative_fact`, as in AB2025.
-  - The OBR's £32bn and £16bn CGT forecasts are `restated`.
-  - The £1.6bn timely-payment average repeats the OBR's printed figure, so it is `restated` with `source_model: obr_efo_forecast` and `conditions.originator` naming EFO paras 3.4 and 3.13 (review B, finding 1).
-  - The £800m for the distributions framework (4 November version) restates Table 6.1 line 49: `restated`, `hmt_costing_obr_certified`.
-  - CenTax's 53% marginal rate is `own` with `source_model: arithmetic`.
-  - The "over half of CGT payers" claim (4 November version) is CenTax's own, about its own CGT package: `own`, `share_with_tax_cut`, value 0.5, `range_low`, medium confidence (no year printed; staged with the package's 2030 costing).
-- **Context rows:** the descriptive 2022 tax statistics and the current-policy childcare behaviour (bunching counts, response shares, partners leaving work) have no measure key and no proposal. The option keys carry only the options' costings and the distribution of their revenue or affected taxpayers.
+- **Tax years.** CenTax names each tax year by its later year ("2022 is tax year 2021-22", Taxes at the top footnote 2). So we stage "2030" as `fy` 2029-30, "2028" as 2027-28 and the descriptive 2022 data as 2021-22, and give every such row a `year_note`. We read the same CenTax childcare figures this way in #207.
+- **Sign.**
+  - We stage revenue-raising options as `positive = yield to the Exchequer`.
+  - We stage the childcare options as `positive = cost to the Exchequer`. The exception, "raise £20 million" (28p taper), we stage as +2e7 with `positive = yield to the Exchequer`, because we don't re-sign values (AB2025 README; changed on 3 November, review finding 4).
+- **"Central".** We record CenTax's central scenario as `conditions.scenario: central`. For CGT CenTax uses "elasticities drawn from the best available international evidence", for partnership NICs its "central revenue estimate, after accounting for behavioural responses", and for childcare its central bunching scenario. CenTax gives the investment-income NICs figures as static upper bounds ("naturally at the upper bound", footnote 13), so we stage them as `range_high` with `basis: static`.
+- **Units.**
+  - We give shares as fractions (`share`).
+  - We give effective and marginal rates in `percent` and rate gaps in `percentage_points`. We stage no top-up rate, because the partnership top-up rates form the option's design (below).
+  - We stage the CGT package's "increase revenue by 62%" as `revenue_change` in `percent` of baseline CGT revenue.
+  - We name income groups as in AB2025 (`top_10pct`, `top_1pct`, `top_0.1pct`, `top_0.01pct`, `decile_10`, `bottom_50pct`), and percentile bands `p50_p60` … `p99.5_p99.9`. We name single percentiles `median`, `p99` and `p99.99`, and p. 11's "by around 2.8 percentage points on average" `top groups, on average`.
+- **Attribution.**
+  - We mark CenTax's model estimates `own` / `different_model`.
+  - We mark descriptive HMRC statistics `own` / `administrative_fact`, as in AB2025.
+  - We mark the OBR's £32bn and £16bn CGT forecasts `restated`.
+  - CenTax repeats the OBR's printed figure for the £1.6bn timely-payment average, so we mark it `restated`, with `source_model: obr_efo_forecast` and `conditions.originator` naming EFO paras 3.4 and 3.13 (review B, finding 1).
+  - CenTax restates Table 6.1 line 49 for the £800m for the distributions framework (4 November version), so we mark it `restated`, `hmt_costing_obr_certified`.
+  - We mark CenTax's 53% marginal rate `own`, with `source_model: arithmetic`.
+  - CenTax makes the "over half of CGT payers" claim (4 November version) on its own account, about its own CGT package. We mark it `own`, `share_with_tax_cut`, value 0.5, `range_low`, medium confidence; CenTax prints no year, so we stage it with the package's 2030 costing.
+- **Context rows.** We gave no measure key and no proposal to the descriptive 2022 tax statistics or the current-policy childcare behaviour (bunching counts, response shares, partners leaving work). We key to the options only their costings and the distribution of their revenue or affected taxpayers.
 
-## Proposed metrics (registered Metrics used where they fit)
+## Proposed metrics (registered metrics where they fit)
 
-Registered: `revenue_change`, `revenue_share` (also for "paid 60% of Income Tax and NICs"), `income_share`, `income_statistic`, `average_tax_rate`, `affected_share`, `share_with_tax_cut`, `participation_rate`, `tax_collections`.
+We use these registered metrics: `revenue_change`, `revenue_share` (also for "paid 60% of Income Tax and NICs"), `income_share`, `income_statistic`, `average_tax_rate`, `affected_share`, `share_with_tax_cut`, `participation_rate`, `tax_collections`.
 
-Proposed, with CenTax's own words:
+We propose these, with CenTax's own words:
 
 - **`marginal_tax_rate` (percent):** "a new marginal rate of 53%".
 - **`effective_tax_rate_gap` (percentage points):** "the gap between headline rates and the average EATRs".
@@ -99,55 +99,55 @@ Proposed, with CenTax's own words:
 
 ## Not staged, and why
 
-- **"Around four times as many parents would be bunching"** (p. 25), the halved-unresponsiveness sensitivity: a scenario ratio, not an estimate of an option's effect (added on 3 November, review finding 6).
+- **"Around four times as many parents would be bunching"** (p. 25): CenTax gives this for its halved-unresponsiveness sensitivity, as a scenario ratio, not an estimate of an option's effect. We added this entry on 3 November, after review finding 6.
 
-- **Duplicates within one primary,** staged once:
+- We staged each duplicate within one primary once:
   - in "Taxes at the top": 62%, 88%, £19.7bn, £2.1bn, 98%, 1,100, 90% and £640m (Key findings, repeated on pp. 17-27); 37%, 34% and 30% (p. 9); 17%→12%, 33%→36% and 37%→33% (p. 13); 40.5%, 60%, 43.9%, 61.5%, 47%, 20% and 23% (Conclusion);
-  - in the Unicorn Relief PDF: "almost £20 billion" restates the £19.7bn in the same footnote.
-- **Design, not estimates** (README rule 8):
-  - the reaction page's "marginal tax rate of 33.3%" (the Pension Tax Allowance's £1-for-£3 withdrawal rate, restated as a percentage; kept in the 53% row's conditions) and "a 100% marginal tax rate" (the Carer's Allowance taper of £1 for every £1, restated);
+  - in the Unicorn Relief PDF: CenTax's "almost £20 billion" restates the £19.7bn in the same footnote.
+- We left out design, not estimates (README rule 8):
+  - the reaction page's "marginal tax rate of 33.3%" (the Pension Tax Allowance's £1-for-£3 withdrawal rate, restated as a percentage; we keep it in the 53% row's conditions) and "a 100% marginal tax rate" (the Carer's Allowance taper of £1 for every £1, restated);
   - Taxes at the top's partnership top-up rates of 6.9%, 7.6% and 9.6% (the option's rates, quoted in its scope above) and its £111,000 actual-ANI threshold.
-- **Policy parameters** (also design under rule 8):
+- We left out policy parameters, which rule 8 also treats as design:
   - in the reaction page: the £12,570 Personal Allowance; the 24%, 44% and 49% rates; the £12,000 cash ISA cap from AB2025; the Direct Recovery of Debts thresholds (£1,000, £5,000, £10,000) and dates;
-  - in "Taxes at the top": Employer NICs at 15%, its "effective rate of Employer NICs is 13.04%", the £10,500 and £5,000 allowances, footnote 11's rates, and Appendix A's rates.
-- **The reaction page's worked mechanics:** the payments-on-account example (a £10,000 liability, two £5,000 payments) explains the existing regime; it is not a figure about the Budget.
-- **Charts without printed values:** Taxes at the top Figures 1-7, B1 and B2.
-- **Unicorn Relief's illustrations and design parameters:**
+  - in "Taxes at the top": Employer NICs at 15%, CenTax's "effective rate of Employer NICs is 13.04%", the £10,500 and £5,000 allowances, footnote 11's rates, and Appendix A's rates.
+- We left out the reaction page's worked mechanics. CenTax uses the payments-on-account example (a £10,000 liability, two £5,000 payments) to explain the existing regime, not to give a figure about the Budget.
+- We left out charts on which CenTax prints no values: Taxes at the top Figures 1-7, B1 and B2.
+- We left out Unicorn Relief's illustrations and design parameters:
   - the risk-aversion example (£100,000 v £1 million at 10%);
   - footnote 27's net-of-tax returns on a £100m gain (76% → 76.06% → 77.4%);
   - the £20m break-even example at a 15% rate;
   - the taper example (45% → 44% per £1m above £750m);
   - the £750m / US$1bn threshold;
   - EMI and SEIS limits.
-  These illustrate design choices rather than estimate outcomes, the same test AB2025 uk_centax applied ("thresholds/equivalences, not scoreable values"). The report says it does not cost Unicorn Relief ("It is difficult to model how much Unicorn Relief would cost").
-- **The September 2026 childcare report** ("Removing the £100,000 childcare cliff-edge: Impacts and cost of reform", linked from the reaction page) is not re-staged. Its Table 4.2 is already in `data/externals/centax-childcare-100k.json` (#207). That file differs from this family in three ways (thinktanks-a review, finding 3):
-  - **sign:** #207 stores the full removal's central net fiscal cost as −640m, negative for a cost; this family stores +640m with `positive = cost to the Exchequer`;
-  - **coverage:** #207 holds only Table 4.2's full removal; the cheaper options (rows 101–106) come only from "Taxes at the top";
-  - **bunching counts:** row 27 has "11,980 by 2030", where #207's 2030 central "Number Bunching, Before Removal" is 16,280. This may be a different concept, or CenTax may differ between its two publications; row 27's note says so. The £520m and £640m staged here are CenTax repeating its own central net fiscal cost in AB2026 publications; the ingest should treat them as the same estimate as #207's.
-- **LinkedIn:** CenTax's 28 October LinkedIn post (seed inventory) needs a login; not used.
-- **The 4 November version's design figures** (README rule 8): the BADR lifetime limit's cut from £1 million to £500,000, Founders' Relief's 10% rate on up to £10 million of gains, and the EMI, EMI2 and CSOP limits. They are the measures' parameters, not estimates. Its "Big picture" section repeats the Budget's headline figures and holds no CenTax estimate.
-- **"Taxes at the top", pp. 2–3:** "around two-thirds of total tax revenue" (a description of the tax base, not an estimate about the Budget or an option) and the "over 100%" marginal rates at the childcare cliff edge (the current regime's design, restated).
+  CenTax uses these to illustrate design choices, not to estimate outcomes, the same test we applied in AB2025 uk_centax ("thresholds/equivalences, not scoreable values"). CenTax says it doesn't cost Unicorn Relief ("It is difficult to model how much Unicorn Relief would cost").
+- We didn't re-stage the September 2026 childcare report ("Removing the £100,000 childcare cliff-edge: Impacts and cost of reform", linked from the reaction page). We already store its Table 4.2 in `data/externals/centax-childcare-100k.json` (#207). That file differs from this family in three ways (thinktanks-a review, finding 3):
+  - **sign:** in #207 we store the full removal's central net fiscal cost as −640m, negative for a cost; in this family we store +640m with `positive = cost to the Exchequer`;
+  - **coverage:** #207 covers only Table 4.2's full removal; we take the cheaper options (rows 101–106) only from "Taxes at the top";
+  - **bunching counts:** row 27 has "11,980 by 2030", where #207's 2030 central "Number Bunching, Before Removal" reads 16,280. CenTax may mean a different concept, or may differ between its two publications, and row 27's note says so. In the £520m and £640m we stage here, CenTax repeats its own central net fiscal cost in AB2026 publications; the ingest should treat them as the same estimate as #207's.
+- **LinkedIn:** CenTax's 28 October LinkedIn post (seed inventory) needs a login, and we didn't use it.
+- We left out the 4 November version's design figures (README rule 8): the BADR lifetime limit's cut from £1 million to £500,000, Founders' Relief's 10% rate on up to £10 million of gains, and the EMI, EMI2 and CSOP limits. CenTax gives them as the measures' parameters, not estimates. In its "Big picture" section CenTax repeats the Budget's headline figures and gives no estimate of its own.
+- We left out two passages from "Taxes at the top", pp. 2–3. CenTax uses "around two-thirds of total tax revenue" to describe the tax base, not to estimate anything about the Budget or an option. It restates the "over 100%" marginal rates at the childcare cliff edge as the current regime's design.
 
 ## Review fixes, 3 November 2026
 
-The thinktanks-a review (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch) approved this family with fixes. Each sits in an explicit block at the end of `stage.py`'s rows. No primary was re-opened (the session's network policy refused centax.org.uk); no printed value changed.
+The thinktanks-a reviewer (`harvest-staging/ab2026/reviews/verify-thinktanks-a.md` on the staging branch) approved this family with fixes. We put each in an explicit block at the end of `stage.py`'s rows. We re-opened no primary, because the session's network policy refused centax.org.uk, and changed no printed value.
 
-- **Finding 1:** rows 84–86 (£3bn, £0.6bn and £0.4bn, p. 22) are the parts of row 24's "up to £4 billion" (3 + 0.6 + 0.4 = 4.0). They carry `conditions.row_type: measure_component` and `conditions.component` naming the income type, so an ingest never adds them to the total.
-- **Finding 2:** confirmed. Row 2's derivation cites Table 6.3 row 3 at 1,355, 1,605 and 1,815 (£m, 2029-30 to 2031-32); `uk_hmt_redbook` stages exactly those cells.
-- **Finding 3:** the #207 file's three differences are recorded under "Not staged" and in row 27's note.
-- **Finding 4 (optional, applied):** row 105 is +2e7 with `positive = yield to the Exchequer` and normalisation "£ million × 1e6".
-- **Finding 5 (optional, applied):** row 18 (23%, a 25th-percentile EATR) uses the registered `average_tax_rate`, as rows 7–15 do. Rows 19–20 put `revenue_change` in `percent`; tranche 2 must not read them as £.
-- **Finding 6:** p. 25's "around four times as many parents would be bunching" in the halved-unresponsiveness scenario is a scenario ratio and is listed under "Not staged".
-- **Finding 7:** rows 20, 58, 108 and 109 are CenTax's 2024-era estimates at fy 2025-26 under the CGT option key; their `scenario` condition says so, for tranche 2.
-- **Verification:** the contract checker reports 110 rows, 0 problems, and a re-run of `stage.py` reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
+- Finding 1: CenTax gives rows 84–86 (£3bn, £0.6bn and £0.4bn, p. 22) as the parts of row 24's "up to £4 billion" (3 + 0.6 + 0.4 = 4.0). We set `conditions.row_type: measure_component` on them and name the income type in `conditions.component`, so an ingest never adds them to the total.
+- Finding 2: the reviewer confirmed it. Row 2's derivation cites Table 6.3 row 3 at 1,355, 1,605 and 1,815 (£m, 2029-30 to 2031-32), and we stage exactly those cells in `uk_hmt_redbook`.
+- Finding 3: we record the #207 file's three differences under "Not staged" and in row 27's note.
+- Finding 4 (optional, applied): we stage row 105 as +2e7 with `positive = yield to the Exchequer` and normalisation "£ million × 1e6".
+- Finding 5 (optional, applied): for row 18 (23%, a 25th-percentile EATR) we use the registered `average_tax_rate`, as on rows 7–15. On rows 19–20 we put `revenue_change` in `percent`; tranche 2 must not read them as £.
+- Finding 6: CenTax gives p. 25's "around four times as many parents would be bunching" in the halved-unresponsiveness scenario as a scenario ratio, and we list it under "Not staged".
+- Finding 7: rows 20, 58, 108 and 109 give CenTax's 2024-era estimates at fy 2025-26 under the CGT option key, and we say so in their `scenario` condition, for tranche 2.
+- The contract checker reports 110 rows, 0 problems, and when we re-run `stage.py` it reproduces both files byte for byte. COUNTS.json pins the gzip's sha256.
 
 ## Review fixes, 4 November 2026
 
-Review B (PR #231, issue comment 6635498758) approved this family with fixes, and the coordinator's brief settled finding 2. They sit in an explicit block after the 3 November fixes in `stage.py`. This session re-opened no primary.
+Review B (PR #231, issue comment 6635498758) approved this family with fixes, and the coordinator's brief settled finding 2. We put the fixes in an explicit block after the 3 November fixes in `stage.py`. This session re-opened no primary.
 
-- **Finding 1:** row 2 (£1.6bn) is `restated`, `source_model: obr_efo_forecast`, with `conditions.originator` "OBR, Economic and fiscal outlook October 2026, paras 3.4 and 3.13" in place of `derived_from`.
-- **Finding 2 (coordinator's call):** the reaction page's 4 November version is a second primary (`5103e06a…`). Two rows are staged from it (rows 110–111): the £800m in 2029-30 for the distributions framework, `restated` on `ab2026__distributions_framework_modernised`; and "over half of CGT payers" would pay less tax under CenTax's package, `own` on `ab2026_option__cgt_reform_package`, 0.5 `range_low`. The new sections' design figures are listed under "Not staged".
-- **Finding 3:** rows 26–27 (the bunching counts) drop `affected_count` for `proposed_metric: parents_bunching`.
-- **Finding 4:** rows 87–92 are `measure_component`s of the investment-income option, `component` = the row's `income_type`.
-- **Finding 5:** Table 1's share-of-affected-population rows (67, 69, …, 83) carry `conditions.denominator: "taxpayers affected by the reform"`.
-- **Finding 6:** the costing-basis sentence names rows 101–106 only; no top-up rate is staged; the income-group list adds `median`, `p99`, `p99.99` and `top groups, on average`; row 0 has a `year_note`; pp. 2–3's two-thirds and "over 100%" rates are listed under "Not staged".
+- Finding 1: we mark row 2 (£1.6bn) `restated`, `source_model: obr_efo_forecast`, with `conditions.originator` "OBR, Economic and fiscal outlook October 2026, paras 3.4 and 3.13" in place of `derived_from`.
+- Finding 2, the coordinator's call: we treat the reaction page's 4 November version as a second primary (`5103e06a…`) and stage two rows from it (rows 110–111). We stage the £800m in 2029-30 for the distributions framework as `restated` on `ab2026__distributions_framework_modernised`. We stage CenTax's claim that "over half of CGT payers" would pay less tax under its package as `own` on `ab2026_option__cgt_reform_package`, 0.5 `range_low`. We list the new sections' design figures under "Not staged".
+- Finding 3: on rows 26–27 (the bunching counts) we dropped `affected_count` for `proposed_metric: parents_bunching`.
+- Finding 4: we mark rows 87–92 as `measure_component`s of the investment-income option, with `component` = the row's `income_type`.
+- Finding 5: on Table 1's share-of-affected-population rows (67, 69, …, 83) we set `conditions.denominator: "taxpayers affected by the reform"`.
+- Finding 6: we name only rows 101–106 in the costing-basis sentence and say we stage no top-up rate. We added `median`, `p99`, `p99.99` and `top groups, on average` to the income-group list, gave row 0 a `year_note`, and list pp. 2–3's two-thirds and "over 100%" rates under "Not staged".
