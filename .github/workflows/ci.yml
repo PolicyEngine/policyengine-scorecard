@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # tests/test_uk_ab2026_ingest.py compares AB2025's ingest with main's
+      - run: git fetch --no-tags --depth=1 origin main:refs/remotes/origin/main
       - uses: astral-sh/setup-uv@v5
       - run: uvx ruff format --check be nz scorecard_db tests pipeline
       # The database is a DERIVED artifact (scorecard_db/build_db.py):

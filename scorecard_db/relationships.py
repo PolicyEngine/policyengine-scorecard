@@ -619,6 +619,19 @@ _AB2025_HELD: dict[str, tuple] = {
 }
 
 
+# Autumn Budget 2026 port (#230, tranche 2): the producers whose AB2026
+# claims reach the DB and that AB2025 didn't have. Held out:
+# policyengine-uk 2.151.0, the Budget-day engine, names Citizens Advice
+# nowhere in its parameters or variables (searched 2026-11-05).
+_AB2026_HELD: dict[str, tuple] = {
+    "citizens_advice": (
+        CR.HELD_OUT,
+        "Citizens Advice's Budget figures are scored, never consumed "
+        "(policyengine-uk 2.151.0's parameters and variables searched "
+        "2026-11-05).",
+    ),
+}
+
 # Centre for British Progress, "Rates and wrongs" technical appendix (lane
 # uk-childcare-100k), read 2026-10-21: the certified populace-uk build's 149
 # calibration targets (microcosm fixture packages/microcosm-data/tests/
@@ -729,6 +742,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         )
     if source in _AB2025_HELD:
         return _AB2025_HELD[source]
+    if source in _AB2026_HELD:
+        return _AB2026_HELD[source]
     if source == "centre_for_british_progress":
         return _CBP_HELD
     if source == "dwp":

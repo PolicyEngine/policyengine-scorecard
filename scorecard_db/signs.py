@@ -80,6 +80,12 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "than in the march 2025 forecast",
             "improvement in the fiscal outlook",
             "british racing",
+            # the OBR's prose on one behavioural part of a measure's yield
+            # (paragraph 3.16's banks moving profits abroad), as "reduction
+            # in yield" above
+            "behavioural erosion of yield",
+            # a transfer of business rates within the public sector
+            "flowing to local government",
         ),
         (
             "positive = cost",
@@ -88,6 +94,13 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = higher spending",
             "positive = receipts lost",
             "positive = revenue forgone",
+            # the OBR's prose costings in the October 2026 EFO
+            "positive = net cost",
+            "positive = reduction in receipts",
+            "positive = spending cost",
+            "positive = additional spending",
+            "positive = ame increase",
+            "positive = pension spending increase",
         ),
         (
             "positive_gain_to_exchequer",
@@ -112,6 +125,11 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "a negative sign implies a loss to the exchequer",
             # IFS's chart of the Budget's tax change at the forecast horizon
             "positive = increase in net tax",
+            # the OBR's prose savings in the October 2026 EFO
+            "positive = reduction in spending",
+            "positive = reduction in resource spending",
+            "positive = spending reduction",
+            "positive = welfare spending reduction",
         ),
     ),
     "spending": (
@@ -135,26 +153,37 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "a negative sign implies a loss to the exchequer",
             "positive = increase in net tax",
             "positive = additional investment income",
+            # HM Treasury's Table 6.2 cash effects, which the AB2026 ingest
+            # keeps on cash_requirement_change
+            "positive = cash inflow",
+            "improves the public sector's cash position",
         ),
         (
             "increase in borrowing",
             "borrowing increase",
             "positive = increase in psnb",
             "positive = cost",
+            # OBR paragraph 3.20's rise in the financing requirement, on
+            # cash_requirement_change
+            "increase in the financing requirement",
         ),
     ),
     "household_gain": (
         ("reduction in benefit entitlement from the two-child limit",),
-        ("loss to households",),
+        ("loss to households", "positive = decrease in real"),
         (
             "positive = gain to",
             "higher mean household income",
             "positive = growth",
+            "positive = real income growth",
+            "positive = higher real",
         ),
     ),
     "tax_increase": (
         (),
-        (),
+        # the red book's per-person savings, which the AB2026 ingest keeps
+        # on average_tax_change
+        ("positive = saving or gain",),
         (
             "positive = increase in",
             "positive = tax increase",
@@ -165,7 +194,9 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
     "bill_increase": (
         (),
         ("positive = reduction in", "positive = saving", "positive = gain to"),
-        ("positive = higher", "positive = increase"),
+        # RF prints only the negative side: "negative = reduction in the
+        # typical household's annual bill"
+        ("positive = higher", "positive = increase", "negative = reduction in"),
     ),
     "more_poverty": (
         (
@@ -195,10 +226,11 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
     "higher_output": (
         ("claimants moved into work",),
         ("positive = reduction",),
-        ("higher gdp", "higher real gdp", "addition to gdp"),
+        ("higher gdp", "higher real gdp", "addition to gdp", "real gdp increase"),
     ),
     "higher_inflation": (
-        (),
+        # a bound on the effect's size with no direction (OBR paragraph 3.6)
+        ("no direction given",),
         ("reduction in cpi inflation",),
         ("increase in cpi inflation", "higher inflation"),
     ),

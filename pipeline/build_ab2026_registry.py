@@ -34,9 +34,11 @@ import sys
 from pathlib import Path
 
 try:
+    from pipeline import ab2026_key_decisions as D
     from pipeline import ab2026_measure_keys as K
     from pipeline.uk_engine_registry import engine_dumps
 except ModuleNotFoundError:  # direct script invocation without PYTHONPATH
+    import ab2026_key_decisions as D
     import ab2026_measure_keys as K
     from uk_engine_registry import engine_dumps
 
@@ -118,6 +120,13 @@ UPSTREAM = {
     "student_loan_interest_cap": "policyengine-uk: a cap on Plan 2 and postgraduate (Plan 3) student loan interest",
     "bik": "policyengine-uk: company cars and their benefit-in-kind appropriate percentages",
     "hvcts_reliefs": "policyengine-uk: deferrals, discounts and exemptions within the high value council tax surcharge",
+    # pipeline/ab2026_key_decisions.py: measures and options with
+    # no Table 6.1 line
+    "energy_bills": "policyengine-uk: household energy bills split into standing charges, unit rates, levies and debt costs (gas_consumption and electricity_consumption are the nearest variables)",
+    "earnings": "policyengine-uk: employment income that responds to minimum wage rates (employment_income is an input)",
+    "childcare_limits": "policyengine-uk: an extended childcare income limit that tapers, or varies by hours and child age",
+    "nics_investment": "policyengine-uk: National Insurance on property, savings and other non-dividend investment income",
+    "nics_partnership": "policyengine-uk: partnership profits apart from other self-employment income, with an employer-equivalent NICs charge",
 }
 
 # The engine's exogenous incidence levers (descriptions read at the pin from
@@ -178,6 +187,32 @@ def scope(why, pattern, link=None):
         "out_of_model_scope": True,
         "action_link": link or ISSUE,
     }
+
+
+def no_expressible_leg(legs):
+    """Derive a package's gap evidence from its legs when the engine can
+    express none of them: `why`, `name_search`, the triage flag and the
+    upstream items come from the legs."""
+    assert legs and all(m["computability"] == "not_expressible" for m in legs)
+    out = {
+        "computability": "not_expressible",
+        "pe_reform_delta": None,
+        "why": f"The engine can't express any of these {len(legs)} legs. "
+        + " ".join(f"{m['measure_key']}: {m['why']}" for m in legs),
+        "name_search": "Each leg's search. "
+        + " ".join(f"{m['measure_key']}: {m['name_search']}" for m in legs),
+    }
+    upstream = list(
+        dict.fromkeys(m["upstream_item"] for m in legs if m.get("upstream_item"))
+    )
+    if upstream:
+        out["policyengine_uk_development_item"] = True
+        out["upstream_item"] = "; ".join(upstream)
+    else:
+        out["out_of_model_scope"] = True
+    links = {m["action_link"] for m in legs}
+    out["action_link"] = links.pop() if len(links) == 1 else ISSUE
+    return out
 
 
 def baseline(*paths):
@@ -1033,6 +1068,8 @@ for slug, spec in K.PACKAGES.items():
             m["note"] = (
                 "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
             )
+    elif all(c == "not_expressible" for c in comp):
+        m.update(no_expressible_leg([BY_LINE[l] for l in lines]))
     else:
         m["computability"] = "partial"
         not_expr = [l for l, c in zip(lines, comp) if c == "not_expressible"]
@@ -1050,6 +1087,180 @@ for slug, spec in K.PACKAGES.items():
         )
         m["expressible_legs"] = expressible
     measures.append(m)
+
+
+# ---------------------------------------------------------------------------
+# The keys the families proposed (pipeline/ab2026_key_decisions.py,
+# KEY_DECISIONS.md), appended after the Table 6.1 entries so those keep
+# their order
+# ---------------------------------------------------------------------------
+
+TEMPLATES = {
+    "SPEND": SPEND,
+    "BUSINESS": BUSINESS,
+    "RATES": RATES,
+    "INDIRECT": INDIRECT,
+    "FINANCE": FINANCE,
+    "ENFORCE": ENFORCE,
+    "REGULATE": REGULATE,
+}
+
+
+def _legs_of(d):
+    return [K.key(x) if isinstance(x, int) else x for x in d.get("legs") or []]
+
+
+def _names(producers):
+    names = [f"`{p}`" for p in producers]
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
+def _producer_note(proposed, d):
+    return (
+        f"{_names(d['producers'])} {'scores' if len(d['producers']) == 1 else 'score'} "
+        f"it on {d['rows']} staged rows of the Autumn Budget 2026 harvest "
+        "(KEY_DECISIONS.md). "
+        f"Scope, from the families' NOTES.md: {d['scope']}"
+    )
+
+
+def _verdict(d):
+    v = d["verdict"]
+    kind = v[0]
+    if kind == "scope":
+        _, template, what, pattern = v
+        return {
+            "computability": "not_expressible",
+            **scope(TEMPLATES[template].format(what=what), pattern),
+        }
+    if kind == "scope_why":
+        _, why, pattern = v
+        return {"computability": "not_expressible", **scope(why, pattern)}
+    if kind == "gap":
+        _, why, pattern, upstream, nearest = v
+        return {
+            "computability": "not_expressible",
+            **gap(why, pattern, upstream=upstream, nearest=nearest),
+        }
+    if kind == "delta":
+        _, delta, delta_kind, paths, note = v
+        return {
+            "computability": "expressible",
+            "construction": "delta_on_current_law",
+            "pe_reform_delta": delta,
+            "delta_kind": delta_kind,
+            "engine_baseline_2026": baseline(*paths),
+            "note": note,
+        }
+    if kind == "partial":
+        _, missing, pattern = v
+        return {
+            "computability": "partial",
+            "pe_reform_delta": None,
+            "missing": missing,
+            "name_search": ns(pattern),
+        }
+    raise ValueError(f"unknown verdict {kind!r}")
+
+
+def _package_verdict(d):
+    kind = d["verdict"][0]
+    if kind == "legs":
+        legs = _legs_of(d)
+        comp = [BY_KEY[k]["computability"] for k in legs]
+        out = {
+            "construction": "package_of_registry_measures",
+            "package_of": legs,
+            "pe_reform_delta": None,
+        }
+        if all(c == "expressible" for c in comp):
+            out["computability"] = "expressible"
+            out["note"] = (
+                "Every leg is expressible; a counterpart is the legs' runs combined, stated as constructed."
+            )
+            return out
+        if all(c == "not_expressible" for c in comp):
+            out.update(no_expressible_leg([BY_KEY[k] for k in legs]))
+            return out
+        expressible = [k for k, c in zip(legs, comp) if c == "expressible"]
+        not_expr = sum(c == "not_expressible" for c in comp)
+        partial = [k for k, c in zip(legs, comp) if c == "partial"]
+        out["computability"] = "partial"
+        out["missing"] = (
+            f"{not_expr} of {len(legs)} legs are not expressible"
+            + (f" and {len(partial)} partial ({', '.join(partial)})" if partial else "")
+            + " (see each leg's verdict); a PolicyEngine number covers only "
+            f"the {len(expressible)} expressible legs: {expressible}"
+        )
+        out["expressible_legs"] = expressible
+        return out
+    if kind == "receipts":
+        legs = [K.key(x) for x in d["receipts_of"]]
+        if all(BY_KEY[k]["computability"] == "not_expressible" for k in legs):
+            return {
+                "construction": "receipts_of_registry_measures",
+                "receipts_of": legs,
+                **no_expressible_leg([BY_KEY[k] for k in legs]),
+            }
+        expressible = [k for k in legs if BY_KEY[k]["computability"] == "expressible"]
+        return {
+            "construction": "receipts_of_registry_measures",
+            "receipts_of": legs,
+            "pe_reform_delta": None,
+            "computability": "partial",
+            "missing": (
+                "The producer allocates its figure to receipts, and a PolicyEngine run gives each leg's whole "
+                "effect, not its receipts head, so a counterpart is constructed and never like-for-like; "
+                f"the expressible legs are {expressible}"
+            ),
+            "expressible_legs": expressible,
+        }
+    if kind == "words":
+        return {
+            "construction": "producer_scope",
+            "package_of": d["scope"],
+            "pe_reform_delta": None,
+            "computability": "partial",
+            "missing": (
+                f"The scope is the producer's own words: {d['verdict'][1]}. A PolicyEngine number can cover "
+                "only the registered measures inside it, stated as constructed, never like-for-like."
+            ),
+        }
+    return {"construction": "producer_scope", "package_of": d["scope"], **_verdict(d)}
+
+
+STATUS = {
+    "measure": "announced",
+    "package": "announced",
+    "option": "option_costed_by_others",
+}
+
+for _pass in ("measure", "package"):
+    BY_KEY = {m["measure_key"]: m for m in measures}
+    for proposed, d in D.DECISIONS.items():
+        if proposed in D.FOLDED or (d["kind"] == "measure") != (_pass == "measure"):
+            continue
+        m = {
+            "measure_key": D.registered_key(proposed),
+            "title": d["title"],
+            "reported_status": STATUS[d["kind"]],
+            "source_note": _producer_note(proposed, d),
+        }
+        if d.get("table_62_line"):
+            m["table_62_line"] = d["table_62_line"]
+        m["program"] = d["program"]
+        m["producers"] = list(d["producers"])
+        if proposed in D.RENAMED:
+            m["proposed_as"] = proposed
+        if d["kind"] == "measure" or (
+            d["kind"] == "option" and d["verdict"][0] not in ("words",)
+        ):
+            m.update(_verdict(d))
+        else:
+            m.update(_package_verdict(d))
+        if d.get("uncapped_sentinel"):
+            m["uncapped_sentinel"] = d["uncapped_sentinel"]
+        measures.append(m)
 
 
 def registry():
@@ -1110,6 +1321,8 @@ def registry():
             "delta_on_current_law": "pe_reform_delta applied to current law at the pin",
             "reversal_on_certified_world": "the measure is already in the engine's current law; a counterpart executes the pre-measure world as baseline (#56 convention)",
             "package_of_registry_measures": "a composition of registry measures (`package_of`, a list of keys, as in AB2025); a PolicyEngine number covers the expressible legs, stated as constructed",
+            "receipts_of_registry_measures": "a producer's receipts allocation of registry measures (`receipts_of`, a list of keys): the OBR's Table 3.1 tax groups; a PolicyEngine run gives each leg's whole effect, so a counterpart is constructed, never like-for-like",
+            "producer_scope": "a package a producer defines in its own words (`package_of`, a string, as AB2025's totals are), with no exact list of registry measures",
         },
         "exogenous_levers_note": (
             "The engine carries exogenous incidence levers that spread a £ amount supplied as an input: "

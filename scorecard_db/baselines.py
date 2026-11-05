@@ -399,6 +399,20 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
     ),
     (
         {
+            "policy": "obr_pre_measures_autumn_budget_2026",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_budget_2026__policy_parameters",
+        "OBR's pre-measures October 2026 forecast, the world the "
+        "Autumn Budget 2026 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/harvest-uk-ab2026-2026-10-29/uk_obr_tables (proposed_baseline "
+        "'OBR pre-measures Autumn Budget 2026 policy parameters'); mapped by "
+        "scorecard_db/ingest_uk_ab2026.py, as AB2025's world is for its OBR rows.",
+    ),
+    (
+        {
             "policy": "obr_november_2025_budget_forecast",
             "counterfactual": "policy_parameters",
         },

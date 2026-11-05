@@ -60,9 +60,11 @@ def test_every_table_61_line_is_registered_once_under_its_written_out_key():
 
 def test_table_62_maps_to_table_61_measures_except_sovereign_ai():
     """Table 6.2 lines are financial transactions of Table 6.1 measures; only
-    line 4 has no Table 6.1 line and so is a measure of its own."""
+    line 4 (Sovereign AI) and line 6 (the reprioritisation that funds line 5's
+    equity loan scheme, registered in tranche 2) have no Table 6.1 line, so
+    each is a measure of its own."""
     own = [m for m in REG["measures"] if "table_62_line" in m]
-    assert [m["table_62_line"] for m in own] == [4]
+    assert [m["table_62_line"] for m in own] == [4, 6]
     for line, slug in K.TABLE_62.items():
         assert K.PREFIX + slug in BY_KEY, (line, slug)
 
@@ -190,6 +192,9 @@ def test_a_package_is_expressible_only_when_every_leg_is():
         ]
         if m["computability"] == "expressible":
             assert len(expressible) == len(legs), m["measure_key"]
+        elif all(leg["computability"] == "not_expressible" for leg in legs):
+            assert m["computability"] == "not_expressible", m["measure_key"]
+            assert "expressible_legs" not in m, m["measure_key"]
         else:
             assert m["computability"] == "partial", m["measure_key"]
             assert sorted(m["expressible_legs"]) == sorted(expressible), m[
@@ -262,3 +267,17 @@ def test_each_receipt_matches_the_dashboard_commit(key):
     assert ex["data"]["dataset_revision"] == rc["dataset_revision"]
     assert ex["data"]["dataset_sha256"] == rc["dataset_sha256"]
     assert ex["wrapper"] == {"name": "policyengine", "version": rc["policyengine"]}
+
+
+def test_a_partial_package_names_an_expressible_or_partial_leg():
+    """A package or receipts group whose every leg is not_expressible takes
+    not_expressible, so its claims get a pe_gap verdict."""
+    for m in REG["measures"]:
+        legs = m.get("receipts_of") or m.get("package_of")
+        if not isinstance(legs, list):
+            continue
+        comp = {BY_KEY[k]["computability"] for k in legs}
+        if m["computability"] == "partial":
+            assert comp & {"expressible", "partial"}, m["measure_key"]
+        if comp == {"not_expressible"}:
+            assert m["computability"] == "not_expressible", m["measure_key"]

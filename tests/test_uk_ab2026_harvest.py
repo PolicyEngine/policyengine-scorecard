@@ -181,8 +181,8 @@ def test_table_64_recostings_name_their_event():
 
 # Table 6.2 line 6 reprioritises FT budgets to fund line 5's scheme, and the
 # table's total spans lines 1-9: neither is a Table 6.1 measure (review A T-1,
-# T-2), so each takes its own proposed key.
-T62_PROPOSED = {"6": "ab2026__your_first_home_ft_reprioritisation"}
+# T-2), so each takes a key of its own, which tranche 2 registers.
+T62_OWN = {"6": "ab2026__your_first_home_ft_reprioritisation"}
 T62_TOTAL = "ab2026__package_total_financial_transactions"
 
 
@@ -196,14 +196,14 @@ def test_table_62_rows_are_financial_transactions_not_revenue():
         assert "metric" not in r
     for r in lines:
         line = r["conditions"]["table_line"]
-        if line in T62_PROPOSED:
-            assert r["measure_key"] is None
-            assert r["conditions"]["proposed_measure_key"] == T62_PROPOSED[line]
+        assert "proposed_measure_key" not in r["conditions"]
+        if line in T62_OWN:
+            assert r["measure_key"] == T62_OWN[line]
         else:
             assert r["measure_key"] == K.PREFIX + K.TABLE_62[int(line)]
     for r in totals:
-        assert r["measure_key"] is None
-        assert r["conditions"]["proposed_measure_key"] == T62_TOTAL
+        assert r["measure_key"] == T62_TOTAL
+        assert "proposed_measure_key" not in r["conditions"]
     # the total is the lines' sum within rounding (footnote 1)
     for fy in {r["conditions"]["fy"] for r in totals}:
         total = next(r["value"] for r in totals if r["conditions"]["fy"] == fy)
