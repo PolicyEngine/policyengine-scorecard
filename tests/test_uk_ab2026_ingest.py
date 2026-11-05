@@ -301,7 +301,8 @@ def test_the_continued_fuel_duty_freeze_has_one_metric(staged):
         if s.conditions.get("measure_key")
         == "ab2026_option__fuel_duty_continued_freeze"
     ]
-    assert {s.source for s in freeze} == {"obr_efo", "resolution_foundation"}
+    # RF derives its figure from the OBR's forecasts, so only the OBR's stays
+    assert {s.source for s in freeze} == {"obr_efo"}
     assert {s.metric for s in freeze} == {Metric.REVENUE_CHANGE}
     obr = [s for s in freeze if s.source == "obr_efo"]
     assert [s.conditions["staged_metric"] for s in obr] == [
@@ -387,7 +388,7 @@ def test_every_claim_sign_reads_as_reviewed(staged):
 
 def test_only_unsigned_claims_lack_a_direction(staged):
     """Every oriented claim reads same or opposite, or states why no sign
-    applies, except RF's four real-income rows, which print no convention."""
+    applies."""
     scores, _ = staged
     bases = Counter()
     for s in scores:
@@ -399,11 +400,9 @@ def test_only_unsigned_claims_lack_a_direction(staged):
         if relation == "unknown":
             bases[basis] += 1
     assert set(bases) <= {
-        "no_stated_convention",
         "stated:exchequer:not_this_quantity",
         "stated:borrowing:not_this_quantity",
     }
-    assert bases["no_stated_convention"] == 4
 
 
 # --- 5. determinism ---------------------------------------------------------
@@ -643,3 +642,133 @@ def test_ab2025_ingest_matches_main(tmp_path):
     assert set(ours) == set(theirs)
     for table in ours:
         assert ours[table] == theirs[table], table
+
+
+# --- value preservation ---------------------------------------------------------
+
+
+def _staged_unit(row):
+    unit = row.get("unit_concept") or row.get("proposed_unit")
+    denominator = str((row.get("conditions") or {}).get("denominator", ""))
+    if unit == "percent" and denominator.strip().lower() == "gdp":
+        return "percent_of_gdp"
+    return {"dwellings": "properties"}.get(unit, unit)
+
+
+def test_every_claim_preserves_its_staged_row(staged):
+    """Read each family's claims file directly, find the row behind each
+    claim by its printed place and printed value, and require the claim to
+    keep the producer's value, unit, statistic, time window and provenance.
+    Sign rule: the ingest stores the value as staged, in the producer's own
+    orientation, and signs.py reads the orientation at comparison."""
+    index = {}
+    for fam, rows in RAW.items():
+        for r in rows:
+            loc = (r.get("publication") or {}).get("locator")
+            index.setdefault(
+                (fam, loc, r.get("source_column") or "", str(r["value_raw"])), []
+            ).append(r)
+    scores, _ = staged
+    for s in scores:
+        fam = s.publication["family"]
+        found = index.get(
+            (
+                fam,
+                s.publication.get("locator"),
+                s.source_column,
+                s.conditions["value_verbatim"],
+            )
+        )
+        assert found, (fam, s.publication.get("locator"))
+        assert any(
+            float(r["value"]) == s.value
+            and _staged_unit(r) == s.unit_concept.value
+            and (r.get("value_kind") or s.unit_concept.value) == s.value_kind
+            and int(r["period"]) == s.period
+            and r["time_basis"] == s.time_basis.value
+            and r.get("quote") == s.publication.get("quote")
+            and r.get("source_table") == s.publication.get("table")
+            and r["attribution"] == s.publication.get("attribution")
+            for r in found
+        ), (fam, s.publication.get("locator"), s.value)
+
+
+# --- guards the mutation runs found untested ----------------------------------
+
+
+def test_each_ab2026_disposition_lands_on_its_metric(staged):
+    """One staged row per DISPOSITIONS_AB2026 entry, by quote."""
+    scores, _ = staged
+    pins = {
+        "financial_transaction_cash_impact": Metric.CASH_REQUIREMENT_CHANGE,
+        "unaffected_share": Metric.SHARE_NO_CHANGE,
+    }
+    assert set(pins) == set(I.DISPOSITIONS_AB2026)
+    for name, metric in pins.items():
+        got = {s.metric for s in scores if s.conditions.get("staged_metric") == name}
+        assert got == {metric}, name
+
+
+def test_ingest_checks_the_accounting_before_writing(tmp_path, monkeypatch):
+    db_path = tmp_path / "t.db"
+    ScorecardDB(db_path).close()
+    monkeypatch.setattr(I, "expected", lambda: {"read": -1})
+    with pytest.raises(ValueError, match="accounting drifted"):
+        I.ingest(db_path, tmp_path / "lanes.json")
+    conn = sqlite3.connect(db_path)
+    assert conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0] == 0
+
+
+def test_verdict_rows_refuses_a_claim_the_registry_contradicts(tmp_path):
+    db_path = tmp_path / "t.db"
+    ScorecardDB(db_path).close()
+    feed = tmp_path / "lanes.json"
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    I.ingest(db_path, feed)
+    key = next(
+        k
+        for k, m in I.REGISTRY.items()
+        if m["computability"] == "partial"
+        and k
+        in {
+            s.conditions.get("measure_key")
+            for s in BASE[0]
+            if s.metric not in I.AB25.MACRO_METRICS
+        }
+    )
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "UPDATE external_scores SET conditions = json_set(conditions,"
+        " '$.pe_expressibility', 'not_expressible')"
+        " WHERE json_extract(conditions, '$.measure_key') = ?",
+        (key,),
+    )
+    conn.commit()
+    conn.close()
+    db = ScorecardDB(db_path)
+    with pytest.raises(ValueError, match="in the registry"):
+        I.verdict_rows(db)
+    db.close()
+
+
+@pytest.mark.parametrize(
+    "mark", [{"component": "rate rise"}, {"row_type": "measure_component"}]
+)
+def test_a_part_of_a_measure_is_never_a_twin_of_the_whole(mark):
+    """Rule 9: a component that equals its line's cell stays a claim."""
+    i, row = T61[0]
+    part = copy.deepcopy(row)
+    part["conditions"].update(mark)
+    part["conditions"]["costing_leg_heading"] = "Exchequer impact (£m)"
+    scores, acct = I.stage(
+        {"uk_hmt_tables": [(i, row)], "uk_hmt_costings": [(99_999, part)]}
+    )
+    assert "hmt_figure_staged_twice" not in acct["drops"]
+    assert len(scores) == 2
+
+
+def test_a_reviewed_twin_that_is_a_component_raises(monkeypatch):
+    rows = copy.deepcopy(RAW["uk_hmt_redbook"])
+    rows[6]["conditions"]["row_type"] = "measure_component"
+    with pytest.raises(ValueError, match="REVIEWED_TWINS"):
+        I._check_row_calls("uk_hmt_redbook", rows)

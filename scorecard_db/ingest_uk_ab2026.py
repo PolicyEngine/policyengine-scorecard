@@ -150,8 +150,6 @@ CLAIMS_SHA256: dict[str, str] = {
 DISPOSITIONS_AB2026: dict[str, Metric] = {
     # Table 6.2 and the costings' financial transactions: a PSNCR effect
     "financial_transaction_cash_impact": Metric.CASH_REQUIREMENT_CHANGE,
-    # IFS's average cost-of-living support per household, October to June
-    "average_household_support": Metric.AVERAGE_HOUSEHOLD_INCOME_CHANGE,
     # the red book's 84% of income tax payers the property and savings
     # rates leave unaffected
     "unaffected_share": Metric.SHARE_NO_CHANGE,
@@ -168,6 +166,28 @@ DROPS_AB2026: dict[str, str] = {
         "The producer gives the level of a typical household's energy bill "
         "under the price cap (RF's £2,210, for example), and we score changes "
         "in bills, so a level has nothing to compare."
+    ),
+    "partial_year_household_support": (
+        "IFS gives the average support per household from the Budget's "
+        "energy and fuel measures over the nine months from October 2026 to "
+        "June 2027, and we score changes in household income over a full "
+        "year, so the two figures cover different periods."
+    ),
+    "restated_obr_forecast": (
+        "Resolution Foundation takes the cost of continuing the fuel duty "
+        "freeze from the OBR's forecasts, as the OBR's constant-duty-rate "
+        "receipts less its central receipts, so we score the OBR's figure "
+        "once rather than as two producers' estimates."
+    ),
+    "income_path_not_a_policy_effect": (
+        "Resolution Foundation gives how typical real household incomes move "
+        "over the Parliament, an outturn or forecast path with no reform to "
+        "compare against, and we score the change a policy makes to income."
+    ),
+    "earlier_estimate_restated": (
+        "CenTax restates the revenue gain it estimated in 2024 from taxing "
+        "capital gains at income tax rates, an estimate of an earlier event "
+        "rather than of this Budget."
     ),
     "single_row_unregistered_world": (
         "The OBR scores this figure against a world it describes once, such "
@@ -253,6 +273,9 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     "business_rates_bill_change": U,
     # sums over several years per driver or business
     "average_cumulative_gain": N,
+    # IFS's maximum gain per beneficiary, a statistic with no registered
+    # metric
+    "taxpayer_gain": N,
     # single-row quantities
     "housing_supply_change": N,
     "cash_receipts_change": N,
@@ -261,13 +284,27 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
     "marginal_tax_amount": X,
     "marginal_take_home_pay": X,
     "net_weekly_income": X,
-    "taxpayer_gain": X,
     # bill levels
     "typical_energy_bill": E,
+    # IFS's support per household over October 2026 to June 2027
+    "average_household_support": "partial_year_household_support",
 }
 
 DISPOSITIONS: dict[str, Metric] = {**AB25.DISPOSITIONS, **DISPOSITIONS_AB2026}
-DROPS: dict[str, str] = {**AB25.DROPS, **DROPS_AB2026}
+# AB2025's restatement reason says the originator's rows sit in the same
+# harvest. In AB2026 some don't: the costings restate HMRC's tax gap
+# (rows 233 and 234), and the harvest stages no HMRC family.
+_RESTATED_AB2026 = (
+    "The producer repeats another body's figure (the OBR's, HM Treasury's, "
+    "HMRC's or another producer's), and we credit a figure only to the body "
+    "that estimated it, so the repetition is tallied, not scored. Where that "
+    "body's own figure is in this harvest, we score it under that body."
+)
+DROPS: dict[str, str] = {
+    **AB25.DROPS,
+    "restated_official_figure": _RESTATED_AB2026,
+    **DROPS_AB2026,
+}
 _DROP_BY_NAME: dict[str, str] = {**AB25._DROP_BY_NAME, **DROP_BY_NAME_AB2026}
 assert not (set(DISPOSITIONS_AB2026) & set(AB25._DROP_BY_NAME))
 assert not (set(DROP_BY_NAME_AB2026) & set(AB25.DISPOSITIONS))
@@ -284,10 +321,9 @@ ROW_METRICS: dict[tuple[str, int], tuple[str, str, Metric, str]] = {
         "£4.3 billion",
         Metric.REVENUE_CHANGE,
         "README rule 10 gives decisions_effect_on_borrowing to the effect of "
-        "the Budget's decisions on PSNB, and a continued fuel duty freeze is an "
-        "option the Government didn't adopt. RF states the same £4.3bn as a "
-        "receipts cost (rows 154 and 397-401), from the OBR's constant-duty-"
-        "rate receipts forecast, so both producers' figures share revenue_change.",
+        "the Budget's decisions on PSNB, and the Government didn't adopt a "
+        "continued fuel duty freeze, so the OBR's cost of one is a receipts "
+        "effect on revenue_change.",
     ),
 }
 
@@ -299,6 +335,32 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
     ),
     ("uk_obr_tables", 2743): ("1.4 per cent", "single_row_unregistered_world"),
     ("uk_obr_tables", 2744): ("4.4 per cent", "single_row_unregistered_world"),
+    # RF's continued fuel duty freeze is the OBR's constant-duty-rate
+    # forecast less its central forecast (RF's notes to rows 154 and
+    # 397-401), so the OBR's row 2740 is the one estimate
+    ("uk_rf_ab2026", 154): ("£4.3 billion", "restated_obr_forecast"),
+    ("uk_rf_ab2026", 397): ("-2.3483484846542702", "restated_obr_forecast"),
+    ("uk_rf_ab2026", 398): ("-3.7389555211291317", "restated_obr_forecast"),
+    ("uk_rf_ab2026", 399): ("-4.2893363032056087", "restated_obr_forecast"),
+    ("uk_rf_ab2026", 400): ("-4.6757828023106249", "restated_obr_forecast"),
+    ("uk_rf_ab2026", 401): ("-4.8671109188223411", "restated_obr_forecast"),
+    # RF's income paths over the Parliament, with no reform and baseline
+    ("uk_rf_ab2026", 20): ("£420", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 22): ("£776", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 39): ("£600", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 40): ("£1,050", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 42): ("£1,000", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 50): ("£1,050", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 90): ("£400", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 199): ("£600", "income_path_not_a_policy_effect"),
+    ("uk_rf_ab2026", 202): ("£1,050", "income_path_not_a_policy_effect"),
+    # the red book's average gains per pub and per small business, outside
+    # the household model as business savings are
+    ("uk_hmt_redbook", 222): ("£3,000", "macro_fiscal_or_out_of_scope"),
+    ("uk_hmt_redbook", 233): ("£3,000", "macro_fiscal_or_out_of_scope"),
+    # CenTax's percentage revenue changes
+    ("uk_centax", 19): ("62%", "ratio_or_derived_quantity"),
+    ("uk_centax", 20): ("88%", "earlier_estimate_restated"),
 }
 
 # A producer's own world, quoted as `proposed_baseline`, by its opening words
