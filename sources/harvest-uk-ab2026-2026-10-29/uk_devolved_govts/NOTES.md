@@ -2,7 +2,7 @@
 
 We keep `stage.py`, which writes `manifest.jsonl` and `claims_staged.jsonl.gz`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/thinktanks-b/uk_devolved_govts/stage.py`. This branch adds only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane never committed its local primaries folder (`.ab2026-primaries/`), and we commit no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
-We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Welsh Government (source `welsh_government`), and rows 14–18 from the Scottish Government (source `scottish_government`). The lane staged the Scottish rows in `uk_fai_sfc` on 29 October. On 3 November, after finding 7 of the thinktanks-b review, we moved them here so that one family holds both devolved governments; we left `uk_fai_sfc` with no rows and don't commit it (see the harvest README). We follow the conventions of the AB2025 `uk_fai_sfc` block-grant rows (`source_model: arithmetic`).
+We stage **19 rows from two primaries.** Rows 0–13 (0-based) come from the Welsh Government (source `welsh_government`), and rows 14–18 from the Scottish Government (source `scottish_government`). The lane staged the Scottish rows in `uk_fai_sfc` on 29 October. On 3 November, after finding 7 of the thinktanks-b review, we moved them here so that both devolved governments share one family; we left `uk_fai_sfc` with no rows and don't commit it (see the harvest README). We follow the conventions of the AB2025 `uk_fai_sfc` block-grant rows (`source_model: arithmetic`).
 
 ## Changes on 3 November 2026 (thinktanks-b review)
 

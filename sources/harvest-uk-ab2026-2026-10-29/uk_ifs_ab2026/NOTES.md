@@ -251,7 +251,7 @@ curl -sSL --max-time 50 -A "$UA" https://flo.uri.sh/visualisation/ID/embed      
 
 Both answered HTTP 200 for all seven ids on 3 November.
 - Flourish serves each embed as an HTML page whose inline script assigns `_Flourish_data`, `_Flourish_data_column_names` and `_Flourish_settings` as JSON, and we read them with a JSON decoder from the assignment onward.
-- `_Flourish_data_timestamps` holds a JavaScript `new Date(...)`, which needs its own parse.
+- Flourish stores `_Flourish_data_timestamps` as a JavaScript `new Date(...)`, which we parse separately.
 - In each manifest note we give the data item's URL, the public page's bytes and hash, the embed URL, the fetch time, the Flourish version, the data's last update and the lead sentence from `data-items.json`.
 
 ### Inventory
@@ -551,8 +551,8 @@ directly with the required browser User-Agent at 2026-10-29 15:43:43Z: 133,005
 bytes, sha256 `6792dc448f40d34f174b6a3c839863b5c969a7334263f5d6b539be62a0428bb8`.
 The fetched bytes match the assignment's local copy. The lane read the text with
 `pdftotext -layout`, and rendered and read all six slides as a safeguard against
-raster text. IFS embeds no raster images on slides 2–6, and the text extraction
-holds every printed number. IFS links no distributional chart or data download
+raster text. IFS embeds no raster images on slides 2–6, and the lane's text extraction
+captured every printed number. IFS links no distributional chart or data download
 inside this deck.
 
 Rows by registered key: `ab2026__package_total_tax_policy_decisions` 1;

@@ -354,7 +354,7 @@ The registry lists none of these as a metric. We give each row one as `proposed_
     - p.17's VAT extension "worth £12" differs from the workbook's 12.80 for the cut in 2027-28 (2026-27 prices).
 12. **Footnote 50's figure reference.** RF writes "From the forecasts shown in Figure 7", but it shows the current-balance forecasts in Figure 18; Figure 7 charts energy bills.
 13. **Capacity vs Table 6.2** (not staged, rule 8). The NWF's £15.4bn and BBB's £5bn "capacity" boosts don't match Table 6.2's financial transactions: NWF line 2 sums to £10.2bn over 2028-29 to 2031-32, BBB line 3 to £0.75bn.
-14. *(Withdrawn on 3 November: the README's rule 3 example was corrected, so RF's package equals the registered one; see "Measure keys".)*
+14. *(Withdrawn on 3 November: the coordinator corrected the README's rule 3 example, so RF's package equals the registered one; see "Measure keys".)*
 15. **The VAT element's description.** In PR28 para 5 and p.17's heading and paragraph 1 RF describes the package's VAT element as the "three-month extension", and on p.17 it calls the six-month cut "support announced before this Budget". Yet Figure 8, the 52/48 split and the £4.4bn all include "Energy VAT cut (original)".
 
 ## Review fixes, 3 November 2026
