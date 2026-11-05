@@ -385,7 +385,7 @@ number.
 
 ## Wernham cost-of-living deck
 
-The first lane staged 21 Tom Wernham rows (15 after the 3 November addendum) from the revised 17-slide Cost of living measures deck, whose cover IFS dates 29 October 2026. We use source slug `ifs`. We use `arithmetic` for IFS's own household-price calculations (the deck doesn't name TAXBEN), `obr_efo_forecast` for OBR forecasts and `edf_energy_price_forecast` for EDF's energy-price forecast. We give announced statutory parameters `administrative_data`, restated attribution and an administrative_fact benchmark. The lane read no chart bars for values.
+The first lane staged 21 Tom Wernham rows (15 after the 3 November addendum) from the revised 17-slide Cost of living measures deck, whose cover IFS dates 29 October 2026. We use source slug `ifs`. We use `arithmetic` for IFS's own household-price calculations (the deck doesn't name TAXBEN), `obr_efo_forecast` for OBR forecasts and `edf_energy_price_forecast` for EDF's energy-price forecast. The first lane gave announced statutory parameters `administrative_data`, restated attribution and an administrative_fact benchmark. The lane read no chart bars for values.
 
 Access and version evidence:
 
@@ -402,19 +402,19 @@ The first lane gave 14 of its rows a null measure_key, 4 `ab2026__household_ener
 
 On 3 November we re-keyed the first lane's three Wernham proposals (see "Keys the addendum changed" above). The cost-of-living package covers exactly lines 1, 2 and 3, because line 2 costs the whole VAT cut, including the weeks before the Budget. We key the full-period VAT row to line 2, and the gas standing-charge rows to `ab2026__gas_standing_charge_moved_to_unit_rates`.
 
-Proposed metrics and units:
+The first lane proposed these metrics and units. Under the 3 November addendum we dropped the rows on `benefit_payment_amount`, `fuel_duty_rate_cut`, `statutory_tax_rate`, `energy_standing_charge`, `energy_standing_charge_share` and `fare_cap` (rule 8).
 
 - `cpi_inflation_rate`: IFS prints the OBR's 3.8% and 1.9% CPI forecast levels for Q1 2027, not inflation effects from measures.
 - `average_energy_bill_change`: an existing AB2025 proposal; EDF's £470 annual energy-price increase from January 2027.
-- `benefit_payment_amount`: the £100 one-off payment per eligible household, not the average gain across all households.
-- `fuel_duty_rate_cut`, proposed_unit `pence_per_litre`: IFS prints a 5p extension, and we insert no negative sign. We follow the named policy's per-litre basis, though the slide prints only 5p.
-- `statutory_tax_rate`: 0% electricity VAT during October 2026–June 2027, not an effective tax rate.
+- `benefit_payment_amount`: the first lane proposed it for the £100 one-off payment per eligible household, not the average gain across all households.
+- `fuel_duty_rate_cut`, proposed_unit `pence_per_litre`: IFS prints a 5p extension, and the first lane inserted no negative sign. It followed the named policy's per-litre basis, though the slide prints only 5p.
+- `statutory_tax_rate`: the first lane proposed it for 0% electricity VAT during October 2026–June 2027, not an effective tax rate.
 - `average_household_support`: nine-month cash support, including indirect tax reductions; we make no conversion to annual gains or household income changes. IFS prints the £140 headline and £24/£36/£80 all-household chart labels.
 - `affected_share`: an existing AB2025 proposal; payment receipt by 80% of all England households and 91% of the poorest 30%, normalised to 0.8 and 0.91 shares. IFS ranks households by spending, not income decile.
 - `share_of_energy_price_increase_offset`: IFS's printed "around 35%" of forecast price increases covered by the three measures, normalised to a 0.35 share; we derive no ratio from bars.
-- `energy_standing_charge`: the current annual gas standing charge of £108; context.
-- `energy_standing_charge_share`: the current 13% of a typical gas bill, normalised to a 0.13 share; context.
-- `fare_cap`: the £2 single bus fare cap, a restated policy parameter. We take the exact 2027 timing and England-outside-London scope from registered Table 6.1 line 4. The slide itself gives only "£2 cap on bus fares", and the row says so explicitly.
+- `energy_standing_charge`: the first lane staged the current annual gas standing charge of £108 on it as context.
+- `energy_standing_charge_share`: the first lane staged the current 13% of a typical gas bill on it as context, normalised to a 0.13 share.
+- `fare_cap`: the £2 single bus fare cap, a restated policy parameter. The first lane took the exact 2027 timing and England-outside-London scope from registered Table 6.1 line 4, and its row's note said the slide gives only "£2 cap on bus fares".
 
 Conventions:
 - We keep GBP amounts as IFS prints them, in cash or 2026-27 prices as it specifies, and multiply the £5bn aggregate by 1e9.
@@ -431,8 +431,8 @@ Not staged:
 - IFS prints no data labels on the spending-decile bars in pp4–6, the energy-price bars/percentiles on pp7/16/17, the carbon implicit-tax bars on p9 or the real-income decade/forecast lines on pp11/14, apart from the separately staged £24/£36/£80 all-household labels and 1% annotation. The lane's visual inspection found no further printed values, embedded raster tables or hidden numeric labels.
 - On slide 5 IFS repeats p4's £140/£24/£36/£80 chart values; we stage only its new 80%/91% annotations as further rows. We don't stage IFS's repeated £100 legend descriptions as extra rows.
 - IFS says the richest 30% "lose a similar amount" without printing an exact cash number, and we inferred no negative £13.
-- We treat the 30% subgroup labels, the 5–15 bus-travel age eligibility, dates, axis ticks, years and 0% chart origins as conditions or context, not separate scored estimates.
-- IFS prints no cost or effect values for the other temporary announcements on p15 (food tariffs, family-days-out VAT, free bus travel), apart from the £2 bus fare parameter we stage.
+- We treat the 30% subgroup labels, dates, axis ticks, years and 0% chart origins as conditions or context, not separate scored estimates, and no row we stage carries the 5–15 bus-travel age eligibility.
+- IFS prints no cost or effect values for the other temporary announcements on p15 (food tariffs, family-days-out VAT, free bus travel), apart from the £2 bus fare parameter.
 - IFS's "no give-away" and "does not change overall costs" for the gas-standing-charge reform are qualitative, and we invented no numerical zero. IFS prints no effect for its future electricity counterpart.
 - The lane found no data download in the PDF, and IFS's server blocked the collection and event fetches, as documented above.
 
@@ -483,10 +483,10 @@ for the historical one-percentage-point revision. It proposed the new
 `reserve_allocated_share` for the percentage of the specified day-to-day or
 capital reserve already allocated over its printed multi-year window, and
 proposed no new unit or baseline. Under the 3 November addendum we kept 21 of
-the deck's rows (rows 54–74). They carry the proposed metrics
+the deck's rows (rows 54–74). We stage them under the proposed metrics
 `real_spending_growth` (11 rows), `spending_pressure` (7),
 `reserve_allocated_share` (2) and `real_spending_growth_revision` (1), and none
-uses `forecast_spending_change`.
+under `forecast_spending_change`.
 
 The first lane used `arithmetic` for IFS's own scenario and growth calculations,
 or for an announced target IFS restates without naming a model. It marked the
