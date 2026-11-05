@@ -877,6 +877,22 @@ def test_a_registered_program_keeps_its_text_beside_a_new_name(
     assert score.conditions.get("program_verbatim") == verbatim
 
 
+def test_a_static_exchequer_row_gains_its_scoring_method():
+    """We staged no row under `exchequer_impact_static`, so we set it on an
+    HM Treasury costings row with no scoring method."""
+    row = copy.deepcopy(
+        next(
+            r
+            for r in RAW["uk_hmt_costings"]
+            if "scoring_method" not in (r.get("conditions") or {})
+        )
+    )
+    row["proposed_metric"] = "exchequer_impact_static"
+    score = I._score(row, "uk_hmt_costings", row["source"], Metric.REVENUE_CHANGE)
+    assert score.conditions["scoring_method"] == "static"
+    assert _keeps_conditions(row, score)
+
+
 def test_every_claim_preserves_its_staged_row(staged):
     """Read each family's claims file directly, find the row behind each
     claim by its printed place and printed value, and require the claim to
