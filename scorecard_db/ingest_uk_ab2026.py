@@ -1,4 +1,4 @@
-"""Ingest every Autumn Budget 2026 score (#230, tranche 2).
+"""Ingest every Autumn Budget 2026 score (#230).
 
 The harvest at ``sources/harvest-uk-ab2026-2026-10-29/`` stages 5,952 rows
 from 12 families: HM Treasury's tables, costings and red book, the OBR's
@@ -24,15 +24,16 @@ helpers where the two agree:
 
 AB2026 differs in six ways:
 
-1. **Keys.** Each row carries an AB2026 key, or for a Table 6.4 recosting the
-   earlier event's key named in ``conditions.recosting_of``. A recosting
+1. **Keys.** We stage each row under an AB2026 key, or for a Table 6.4 recosting
+   under the earlier event's key named in ``conditions.recosting_of``. A recosting
    takes no registry verdict: AB2025's registry states its verdicts at
    policyengine-uk 2.89.2, and AB2026's counterparts run at 2.151.0, so
-   tranche 3 decides.
+   this module writes no verdict for a recosting.
 2. **Dispositions.** ``DISPOSITIONS_AB2026`` and ``DROP_BY_NAME_AB2026``
-   decide the 70 metric names AB2025's tables don't hold. Table 6.2's
-   ``financial_transaction_cash_impact`` lands on ``cash_requirement_change``,
-   the PSNCR metric ``models.py`` keeps apart from PSNB.
+   decide the 66 metric names AB2025's tables don't hold (2 adoptions and
+   64 drops). Table 6.2's ``financial_transaction_cash_impact`` lands on
+   ``cash_requirement_change``, the PSNCR metric ``models.py`` keeps apart
+   from PSNB.
 3. **Shares of GDP.** A ``percent`` row with a GDP denominator (IFS's) takes
    the OBR's and TPA's ``percent_of_gdp``, which AB2025 drops as macro-fiscal.
 4. **HM Treasury figures staged twice.** The costings print each Table 6.1
@@ -40,8 +41,8 @@ AB2026 differs in six ways:
    Table 6.1 cells. We keep the Table 6.1 or 6.2 claim, record the twin under
    ``publication.also_printed_in``, and tally the twin.
 5. **Row calls.** ``ROW_METRICS`` moves one row to another metric, and
-   ``ROW_DROPS`` tallies three rows scored against worlds their producer names
-   once. Each entry names the row and the staged value it expects.
+   ``ROW_DROPS`` tallies 22 rows under six reasons. Each entry names the row
+   and the staged value it expects.
 6. **Lanes.** Three lanes: official, microsimulation, and administrative data
    and other producers. ``advance_lanes`` moves a lane to ``computed`` once
    its claims carry counterparts, which ``pipeline/stage_uk_ab2026.py``
@@ -291,7 +292,7 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
 }
 
 DISPOSITIONS: dict[str, Metric] = {**AB25.DISPOSITIONS, **DISPOSITIONS_AB2026}
-# AB2025's restatement reason says the originator's rows sit in the same
+# AB2025's restatement reason says we stage the originator's rows in the same
 # harvest. In AB2026 some don't: the costings restate HMRC's tax gap
 # (rows 233 and 234), and the harvest stages no HMRC family.
 _RESTATED_AB2026 = (
@@ -336,8 +337,9 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
     ("uk_obr_tables", 2743): ("1.4 per cent", "single_row_unregistered_world"),
     ("uk_obr_tables", 2744): ("4.4 per cent", "single_row_unregistered_world"),
     # RF's continued fuel duty freeze is the OBR's constant-duty-rate
-    # forecast less its central forecast (RF's notes to rows 154 and
-    # 397-401), so the OBR's row 2740 is the one estimate
+    # forecast less its central forecast (our notes to RF's rows 154 and
+    # 397-401, citing its footnote 27), so the OBR's row 2740 is the one
+    # estimate
     ("uk_rf_ab2026", 154): ("£4.3 billion", "restated_obr_forecast"),
     ("uk_rf_ab2026", 397): ("-2.3483484846542702", "restated_obr_forecast"),
     ("uk_rf_ab2026", 398): ("-3.7389555211291317", "restated_obr_forecast"),
@@ -829,8 +831,8 @@ ALL_SOURCES = frozenset(s for _, srcs in FAMILIES.values() for s in srcs)
 
 def ingest(db_path: Path, feed_path: Path | None = None) -> dict:
     """Stage and check first; then one transaction replaces every AB2026
-    claim by registry mark (hm_treasury, obr_efo, ifs and others carry other
-    lanes' rows too) and runs the baseline-registration gate inside it."""
+    claim by registry mark (hm_treasury, obr_efo, ifs and others also mark other
+    lanes' rows) and runs the baseline-registration gate inside it."""
     scores, acct = stage()
     check_accounting(acct)
     db = ScorecardDB(db_path)

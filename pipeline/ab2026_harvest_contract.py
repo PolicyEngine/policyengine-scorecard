@@ -445,8 +445,20 @@ def _read(raw, normalization=""):
 _STEP = r"[x×*/÷]\s*\.?[0-9][^\s;]*"
 _CHAIN = re.compile(rf"(?:^|(?<=[\s(\[]))({_STEP}(?:\s+{_STEP})*)")
 _OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
-# What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million"
-_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(LARGE)}|{_either(SHORT)})\b)")
+# What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million",
+# "x 1 hundred"
+_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)})\b)")
+# An operation on what the checker can't read as a number: a sign, bracket or
+# currency sign first ("x (1e6)", "x +1e6", "x £100"), number words ("x one
+# million", "x hundred"), or an operation in words ("times 1,000", "divided by 100").
+_OPENERS = rf"[{_DASHES}+(\[£$€]\s*"
+_NUMBER_WORDS = rf"(?:{_WORDS}|hundred|{_LARGE})\b"
+_UNREAD = re.compile(
+    r"(?:^|(?<=[\s(\[]))(?:"
+    rf"[x×*/÷]\s*(?:(?:{_OPENERS})+\.?[0-9]|{_NUMBER_WORDS})"
+    rf"|(?:times|multiplied by|divided by)\s+(?:(?:{_OPENERS})*\.?[0-9]|{_NUMBER_WORDS})"
+    r")"
+)
 
 
 def _factors(normalization):
@@ -454,6 +466,8 @@ def _factors(normalization):
     or None if it states one the checker can't read whole. Operations in a row
     make one multiplier: "x 1,000,000 / 100" is 10,000."""
     text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", (normalization or "").lower())
+    if _UNREAD.search(text):
+        return None
     out = []
     for chain in _CHAIN.finditer(text):
         if _CONTINUES.match(text, chain.end()):
@@ -562,20 +576,21 @@ def value_problems(r):
 
 
 # README rule 4. A locator that names Figure 1.A or 1.B ("Figure 1.A", "Fig.
-# 1A", "Figures 1.A and 1.B") says where HM Treasury prints the number only
-# if its first reference, up to its first comma or semicolon, takes one of
-# the forms PRINTED reads and nothing more: a paragraph, table or box by its
-# number, or a data label. The checker reads any other first reference as a
+# 1A", "Figure 1(a)", "Figures 1.A and 1.B") says where HM Treasury prints the
+# number only if its first reference, up to its first comma or semicolon, takes
+# one of the forms PRINTED reads and nothing more: a paragraph, table or box by
+# its number, or a data label. The checker reads any other first reference as a
 # bar reading, "Figure 1.A data label unavailable" included. Anywhere in a
 # locator, a bar, chart, graph, plot, diagram or visual marks a bar reading, and
-# so does a number taken from a figure or read by eye. A single negation just before the phrase cancels it ("not
-# a bar reading", "didn't read it off the chart"), and a double negation doesn't
-# ("not without a bar reading"). The checker looks for these phrases with hyphens
-# and dashes as spaces and with runs of spaces collapsed, and reads the first
-# reference with each dash as a hyphen.
+# so does a number taken from a figure or read by eye. A single negation just
+# before the phrase cancels it ("not a bar reading", "didn't read it off the
+# chart"), and a double negation in the same clause doesn't ("not without a bar
+# reading"). The checker looks for these phrases with hyphens and dashes as
+# spaces and with runs of spaces collapsed, and reads the first reference with
+# each dash as a hyphen.
 _DASH = f"[{_DASHES}]"
 FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*\(?[ab]\b", re.I)
-_FIG = r"fig(?:ure)?s?\.?\s*1[.-]?\s*[ab](?:\s+and\s+1[.-]?\s*[ab])?"
+_FIG = r"fig(?:ure)?s?\.?\s*1[.-]?\s*\(?[ab]\)?(?:\s+and\s+1[.-]?\s*\(?[ab]\)?)?"
 _ID = r"\d+(?:\.[0-9a-z]+)*"
 PRINTED = re.compile(
     rf"(?:paragraph|para|table|box)(?:s|es)?\.?\s+{_ID}"
@@ -585,20 +600,24 @@ PRINTED = re.compile(
     re.I,
 )
 _PICTURE = r"(?:bars?|charts?|graphs?|plots?|diagrams?|visuals?)"
-_FIGS = r"fig(?:ure)?s?"
+_FIGS = r"fig(?:ure)?s?(?![a-z])"
 _OFF = r"(?:off|from)"
-_UP_TO = r"(?:[\w.]+ ){0,4}?"
+_OPEN = r"""[\[("'“‘]"""
+_UP_TO = rf"(?:{_OPEN}?[\w.]+ ){{0,4}}?(?:{_OPEN} ?)?"
+_AFTER = rf"(?::? |:|(?={_OPEN}))"
 # A verb's whole phrase comes first, so that a negation before the verb cancels
 # it: "read it off the decile 3 bar", "reading of the chart", "visual estimate of
 # Figure 1.A". Then any picture, with a reading if it names one ("bar reading from
 # Figure 1.A"), any number from a figure or a figure's column, and any reading by
 # eye. A column of a table prints its number, so a column counts only in a figure.
+# A colon, bracket or quote may come before the figure: "read off: Fig. 1.A", "read
+# from [Figure 1.A]".
 BAR_READING = re.compile(
     r"\b(?:visual )?(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
-    rf" (?:off|from|on|in|using|of) {_UP_TO}(?:{_PICTURE}|{_FIGS})\b"
-    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF} {_UP_TO}{_FIGS})?)?\b"
-    rf"|\b{_OFF} {_UP_TO}{_FIGS}\b"
-    rf"|\bcolumns?(?: [\w.]+){{0,2}}? (?:of|in|on) {_UP_TO}{_FIGS}\b"
+    rf" (?:off|from|on|in|using|of){_AFTER}{_UP_TO}(?:{_PICTURE}\b|{_FIGS})"
+    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF}{_AFTER}{_UP_TO}{_FIGS})?)?\b"
+    rf"|\b{_OFF}{_AFTER}{_UP_TO}{_FIGS}"
+    rf"|\bcolumns?(?: [\w.]+){{0,2}}? (?:of|in|on){_AFTER}{_UP_TO}{_FIGS}"
     r"|\b(?:read\w* )?by eye\b",
     re.I,
 )
@@ -898,7 +917,7 @@ def _denied(before):
     m = DENIED.search(before)
     if not m:
         return False
-    clause = re.split(r"[,;:()]", before[: m.start()])[-1]
+    clause = re.split(r"[,;:().]", before[: m.start()])[-1]
     return not NEGATION.search(clause)
 
 

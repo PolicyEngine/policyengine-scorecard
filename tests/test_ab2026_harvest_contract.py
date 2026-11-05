@@ -1508,6 +1508,8 @@ def test_digits_alone_take_the_normalization_s_factor_failing_that_one(n):
         ("÷ 100", (0.04,), (4, 400)),
         ("percent / 100", (0.04,), (4, 400)),
         ("x .5", (2,), (4, 8)),
+        ("x1e6", (4e6,), (4,)),
+        ("×1e6", (4e6,), (4,)),
         ("x 1,000,000 / 100", (4e4,), (4, 4e6, 0.04)),
         ("x 1,000,000 ÷ 100 * 2", (8e4,), (4, 4e6, 4e4, 0.04)),
         # two statements, so two readings; a semicolon ends a run of operations
@@ -1550,6 +1552,15 @@ def test_a_bare_number_takes_each_whole_factor_the_normalization_states(
         "x 100%",
         "x 1e6->GBP",
         "x 1,000,000 / 100 million",
+        "x 1 hundred",
+        "x 1e6 / (100)",
+        "times 1,000",
+        "times  1,000",
+        "times .5",
+        "times (1,000)",
+        "times one",
+        "multiplied by 1e6",
+        "divided by 100",
         "x 1,000,000 / 10^",
     ],
 )
@@ -1936,6 +1947,58 @@ def test_rule_4_holds_whatever_the_title_case():
         ("Figure 1 (a), decile 3", True),
         ("Fig. 1(b)", True),
         ("paragraph 1.7; Figure 1(a)", False),
+        # the cloud review of 82068821: a bracketed letter names the figure in a
+        # data label too
+        ("Figure 1(a) data label", False),
+        ("Figure 1 (a) data label", False),
+        ("Figures 1(a) and 1(b) data labels", False),
+        ("Figures 1.A and 1(b) data labels", False),
+        ("data label for Figure 1(b)", False),
+        ("paragraph 1.7 and Figure 1(a)", False),
+        ("Figure 1(a)", True),
+        ("Figure 1(a) bar", True),
+        # a number right after the word still names a figure
+        ("paragraph 1.7; read off fig1a", True),
+        ("paragraph 1.7; read off figure1.A", True),
+        ("paragraph 1.7; read off Fig1A", True),
+        ("paragraph 1.7; column 3 of fig1a", True),
+        ("paragraph 1.7; estimated using figure1.B", True),
+        # a word that starts like a figure or a picture doesn't count
+        ("paragraph 1.7; taken from the figurehead", False),
+        ("paragraph 1.7; read off the barometer", False),
+        ("paragraph 1.7; figures taken from Table 2.C", False),
+        ("paragraph 1.7; configured using the table", False),
+        # Sol's review of 82068821: punctuation before the figure doesn't hide it
+        ("paragraph 1.7; estimated using (Figure 1.A)", True),
+        ("paragraph 1.7; estimated using: Figure 1.A", True),
+        ("paragraph 1.7; estimated using(Figure 1.A)", True),
+        ("paragraph 1.7; read from [Figure 1.A]", True),
+        ("paragraph 1.7; read off: Fig. 1.A", True),
+        ("paragraph 1.7; read off:Fig. 1.A", True),
+        ("paragraph 1.7; read from(Figure 1.A)", True),
+        ("paragraph 1.7; read from ( Figure 1.A)", True),
+        ("paragraph 1.7; read from: [Figure 1.A]", True),
+        ("paragraph 1.7; read from (the Figure 1.A)", True),
+        ('paragraph 1.7; read from "Figure 1.A"', True),
+        ("paragraph 1.7; read from 'Figure 1.A'", True),
+        ("paragraph 1.7; read from “Figure 1.A”", True),
+        ("paragraph 1.7; read from ‘Figure 1.A’", True),
+        ("paragraph 1.7; from [Figure 1.A]", True),
+        ("paragraph 1.7; from: Figure 1.A", True),
+        ("paragraph 1.7; column 3 of (Figure 1.A)", True),
+        ("paragraph 1.7; column 3 of: Figure 1.A", True),
+        # and one negation still cancels the phrase
+        ("paragraph 1.7; not read from [Figure 1.A]", False),
+        ("paragraph 1.7; not read off: Fig. 1.A", False),
+        ("paragraph 1.7; no bar reading from: Figure 1.A", False),
+        ("paragraph 1.7; no bar reading from [Figure 1.A]", False),
+        # and a table in brackets still prints its number
+        ("paragraph 1.7; figures from (Table 2.C)", False),
+        ("paragraph 1.7; read from [Table 2.C]", False),
+        ("paragraph 1.7; read off: Table 2.C", False),
+        # a full stop ends a clause
+        ("paragraph 1.7. No rounding. Not a bar reading", False),
+        ("paragraph 1.7; no. 5 not a bar reading", False),
         # plurals count
         ("paragraph 1.7; the decile bars", True),
         # a word that holds a negation isn't one, and a bracket ends a clause
@@ -2471,3 +2534,115 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
     """The checker reads a phrase and its negation through any dash."""
     assert reads_a_bar(f"paragraph 1.7; read by{dash}eye")
     assert not reads_a_bar(f"paragraph 1.7; not{dash}a bar reading")
+
+
+@pytest.mark.parametrize(
+    "op", ["x", "×", "*", "/", "÷", "times", "multiplied by", "divided by"]
+)
+@pytest.mark.parametrize(
+    "operand",
+    [
+        "(1e6)",
+        "( 1e6)",
+        "(.5)",
+        "[1e6]",
+        "+1e6",
+        "-1e6",
+        "−1e6",
+        "–1e6",
+        "—1e6",
+        "‐1e6",
+        "‑1e6",
+        "‒1e6",
+        "―1e6",
+        "(-1)",
+        "£1,000",
+        "$1,000",
+        "€1,000",
+        "one",
+        "twenty-five",
+        "one million",
+        "a million",
+        "a hundred",
+        "hundred",
+        "thousand",
+        "million",
+        "billion",
+        "trillion",
+        "zero",
+    ],
+)
+def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand):
+    """Sol's review of 82068821: the checker never scales by 1, or by part of a
+    chain, past an operation on a bracket, a sign, a currency sign or words."""
+    notes = [
+        f"{op} {operand}",
+        f"as printed; {op} {operand}",
+        f"({op} {operand})",
+        f"[{op} {operand}]",
+        f"x 1e6 {op} {operand}",
+    ]
+    if len(op) == 1:
+        notes.append(f"{op}{operand}")
+    for note in notes:
+        for value in (4, 4e6):
+            found = problems(_share("4", value, note))
+            assert any("a factor in normalization" in p for p in found), (note, value)
+
+
+@pytest.mark.parametrize(
+    "note",
+    [
+        "as printed",
+        "x-axis",
+        "4x",
+        "box 5",
+        "box (5)",
+        "box one",
+        "cell 2/3",
+        "and/or 5",
+        "4x (5)",
+        "x onerous",
+        "x millions",
+        "/ thousands",
+        "x (see note)",
+        "* see note",
+        "* (note 5)",
+        "x + y",
+        "£x million",
+        "printed as a fall ('lower' / 'fall' / 'drop')",
+        "sometimes 5",
+        "3 times the figure",
+        "times onerous",
+        "divided by region",
+        "multiplied by the rate",
+    ],
+)
+def test_an_ordinary_note_states_no_factor(note):
+    """A note that holds an operator or a number beside other words scales nothing,
+    and the checker reports nothing about a factor."""
+    assert problems(_share("4", 4, note)) == [], note
+    found = problems(_share("4", 4e6, note))
+    assert any("at a stated scale" in p for p in found), (note, found)
+
+
+@pytest.mark.parametrize(
+    ("raw", "value", "wrong"),
+    [
+        ("2 and a half k", 2500, 2.5),
+        ("2 and a half m", 2.5e6, 2500),
+        ("2 and a half mn", 2.5e6, 2500),
+        ("2 and a half bn", 2.5e9, 2.5e6),
+        ("2 and a half tn", 2.5e12, 2.5e9),
+        ("2 and a half-bn", 2.5e9, 2.5e6),
+        ("two and a half thousand", 2500, 2.5),
+        ("two and a half million", 2.5e6, 2500),
+        ("two and a half billion", 2.5e9, 2.5e6),
+        ("two and a half trillion", 2.5e12, 2.5e9),
+    ],
+)
+def test_a_whole_number_with_a_fraction_reads_each_multiplier(raw, value, wrong):
+    """Sol's review of 82068821: its own multiplier scales it."""
+    assert problems(_share(raw, value, "as printed")) == []
+    found = problems(_share(raw, wrong, "as printed"))
+    assert any("at a stated scale" in p for p in found), (raw, found)

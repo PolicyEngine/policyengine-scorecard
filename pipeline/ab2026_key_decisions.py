@@ -1,13 +1,13 @@
 """The decision on each AB2026 measure key a family proposed (#230).
 
-A staged row whose scope matched no registered measure carried
+A staged row whose scope matched no registered measure had
 `measure_key: null` and a proposed key in `conditions.proposed_measure_key`
 (harvest README rule 2). This module records, for each of the 86 proposed
 keys, whether we register it in `data/uk/ab2026_measures.json` or fold it into
 a registered key, the scope the family's NOTES.md gives it, and the registry
 verdict. `pipeline/build_ab2026_registry.py` builds an entry from each
 registered key, and `pipeline/apply_ab2026_key_decisions.py` moves each row's
-key into `measure_key`, as AB2025's rows carry theirs, and writes
+key into `measure_key`, where AB2025's rows name theirs, and writes
 `KEY_DECISIONS.md`.
 
 Two producers' packages share a key only if their scopes match line for line
@@ -1199,7 +1199,7 @@ assert set(RENAMED) <= set(DECISIONS)
 
 
 def registered_key(proposed):
-    """The registered key that rows with this proposed key carry."""
+    """The registered key for rows with this proposed key."""
     if proposed in FOLDED:
         return FOLDED[proposed][0]
     return RENAMED.get(proposed, proposed)
