@@ -94,7 +94,7 @@ We follow the AB2025 harvest README's rules 1–10 and its row contract, with th
 
 ## Families staged
 
-We pin 12 families and 5,952 rows (450 `restated`) in `COUNTS.json`.
+We pin 12 families and 5,959 rows (450 `restated`) in `COUNTS.json`.
 
 | family | rows | primaries | producer slugs |
 |---|--:|--:|---|
@@ -105,7 +105,7 @@ We pin 12 families and 5,952 rows (450 `restated`) in `COUNTS.json`.
 | `uk_hmt_tables` | 768 | 2 | `hm_treasury` |
 | `uk_ifs_ab2026` | 144 | 14 | `ifs` |
 | `uk_ippr` | 3 | 3 | `ippr` |
-| `uk_obr_tables` | 2,800 | 4 | `obr_efo` |
+| `uk_obr_tables` | 2,807 | 4 | `obr_efo` |
 | `uk_rf_ab2026` | 766 | 8 | `resolution_foundation` |
 | `uk_thinktank_misc` | 12 | 5 | `citizens_advice`, `cps`, `institute_for_government`, `learning_and_work_institute` |
 | `uk_tpa` | 305 | 10 | `tax_policy_associates` |
