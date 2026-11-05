@@ -21,7 +21,7 @@ Review B (PR #231, issue comment 6635498758) approved this family with fixes, an
 - Finding 3: we set row 9's `measure_type` to "real household disposable income per person".
 - H-6(d): we set `geography: "not stated"` on row 11 (Citizens Advice).
 
-## How we fetched the pages, and their hashes
+## Access recipe and primary hashes
 
 We fetched every primary afresh on 29 October 2026 with `curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"`, and every server answered HTTP 200. The lane kept the HTML bytes, headers and text extracts in its local primaries folder and checked hashes with `shasum -a 256`. We read each page's own body text from BeautifulSoup extracts, but we hashed the HTML, not the extracts. No producer in this family published a PDF or spreadsheet that we used.
 

@@ -14,7 +14,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 - Rows: 112 (own 108, restated 4).
 - Primaries: 6 (the reaction page in two versions, rule 7).
 
-## How we fetched the primaries
+## Access recipe
 
 We fetched every primary directly on 2026-10-29 with `curl -sSL` and the browser User-Agent in the brief (HTTP 200). We took nothing from a local copy and didn't use LinkedIn.
 

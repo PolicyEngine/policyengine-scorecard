@@ -10,7 +10,7 @@ On 4 November 2026 we applied review A's fixes T-1 to T-9 to the stager. We didn
   - Table 6.4: 17 lines across 6 fiscal years (102 rows).
 - Primaries: 2 workbooks.
 
-## How we fetched the workbooks
+## Access recipe
 
 HM Treasury attaches the two XLSX files to [Supporting documents for Budget 2026](https://www.gov.uk/government/publications/supporting-documents-for-budget-2026), and we listed them through the gov.uk content API (`/api/content/government/publications/supporting-documents-for-budget-2026`).
 

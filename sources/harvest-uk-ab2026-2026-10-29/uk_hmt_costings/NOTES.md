@@ -22,7 +22,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
   - We give 22 rows `measure_key: null` and one of 3 proposed keys, for measures with no Table 6.1 line or none we can identify. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
   - We stage 2 rows (p.50's UK tax gap) as context: `measure_key: null` and no proposed key.
 
-## How we fetched and read the PDF
+## Access recipe
 
 - We fetched https://assets.publishing.service.gov.uk/media/6ae1883fe4367e5c8b0467df/AB26_Policy_Costing.pdf with `curl -sSL` and a browser User-Agent on 2026-10-29 at 16:14 UTC.
   - The server answered HTTP 200, `application/pdf`, 745,488 bytes, sha256 `f716efada8a4d0726ce12b0f97d3f0dac671c31b2d005ecf300a48ff309638bf`.

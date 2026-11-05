@@ -9,7 +9,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 - Rows: 305 (own 244, restated 61).
 - Primaries: 10 (the article, seven chart data files, one PNG, and the calculator page as a 0-row descriptor).
 
-## How we fetched the primaries
+## Access recipe
 
 We fetched every primary directly on 2026-10-29 between 16:17Z and 16:19Z, with `curl -sSL` and the browser User-Agent in the brief (HTTP 200). The lane saved the bytes under `.ab2026-primaries/uk_tpa/`, and we took nothing from a local copy.
 

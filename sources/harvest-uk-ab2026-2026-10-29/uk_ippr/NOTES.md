@@ -15,7 +15,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 - Rows: 3 (restated 2, own 1).
 - Primaries: 3.
 
-## How we fetched the releases
+## Access recipe
 
 - We fetched the media-office listing (https://www.ippr.org/media-office, pages 1 and 2) on 2026-10-29 to find the responses. IPPR's `/news-and-media` returns 404, and its `/articles` lists no Budget piece.
 - We fetched all three releases directly (`curl -sSL`, browser User-Agent, HTTP 200): "Unfinished business" at 16:17Z and the North and Scotland releases at 16:35Z.
@@ -85,4 +85,4 @@ The thinktanks-a reviewer (`harvest-staging/ab2026/reviews/verify-thinktanks-a.m
 Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's K-7(f) asked for the same NOTES correction as its second item. We re-opened no primary in this session.
 
 - Finding 1, where the coordinator chose to take the fix: we now store 0.2, `range_low`, `sign_convention: "as worded: positive = reduction in CPI inflation"` on row 0, as the OBR and red book CPI rows keep the magnitude (`uk_obr_tables` row 2653).
-- Finding 2 and K-7(f): under "Not staged" we no longer say that the red book family stages HM Treasury's £285m or the £1.5bn as `policy_parameter`; in the reworked red book family we stage neither. In the section on how we fetched the releases, we now read JSON-LD `dateModified` as a render time, not an edit.
+- Finding 2 and K-7(f): under "Not staged" we no longer say that the red book family stages HM Treasury's £285m or the £1.5bn as `policy_parameter`; in the reworked red book family we stage neither. In the access recipe we now read JSON-LD `dateModified` as a render time, not an edit.
