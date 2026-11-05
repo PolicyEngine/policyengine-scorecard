@@ -1,8 +1,8 @@
 # uk_hmt_redbook: Autumn Budget 2026 red book, Impact on households and Pension Tax Allowance explainer
 
-We keep `stage.py`, which writes this family's two data files and is the file these notes mean wherever they say `stage.py`, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-redbook/uk_hmt_redbook/stage.py`. This branch adds only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz`. The lane kept its local primaries in `.ab2026-primaries/uk_hmt_redbook/` and never committed them, and we commit no primary bytes, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
+We keep `stage.py`, which writes this family's two data files, on branch `uk/ab2026-harvest-staging` at `harvest-staging/ab2026/lanes/hmt-redbook/uk_hmt_redbook/stage.py`. We commit only NOTES.md, `manifest.jsonl` and `claims_staged.jsonl.gz` to this branch, and the repository holds no primary bytes. The lane kept its local primaries in `.ab2026-primaries/uk_hmt_redbook/` and never committed them, so fetch each primary from its `manifest.jsonl` URL and check its sha256.
 
-We use source `hm_treasury`. We stage **425 rows from 3 cited primaries (6 hashed versions), with 21 proposed measure keys.** We embedded every row and manifest line in `stage.py` as data. `python3 stage.py` rewrites `claims_staged.jsonl.gz` and `manifest.jsonl` byte for byte with the standard library alone. We vendor no primary bytes.
+We use source `hm_treasury`. We stage **425 rows from 3 cited primaries (6 hashed versions), on 50 measure keys, 21 of which we proposed and tranche 2 registered.** We embedded every row and manifest line in `stage.py` as data. `python3 stage.py` rewrites `claims_staged.jsonl.gz` and `manifest.jsonl` byte for byte with the standard library alone. We vendor no primary bytes.
 
 Our first staging (29 October, morning) produced 1,699 rows and 250 proposed keys. In this rework we apply README rules 8 and 9. We keep estimates of effects and drop design (parameters, allocations, financing, contingent liabilities), and we key each printed part of one Table 6.1 measure to that measure. After review A at 4f424b9 (4 November) we dropped 7 more (see "Review A fixes"). We account for all 1,274 dropped rows in the section "Not staged (rules 8 and 9)".
 
@@ -26,9 +26,9 @@ curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 
 shasum -a 256 PATH
 ```
 
-Every fresh fetch returned HTTP 200, and the lane saved the files under `.ab2026-primaries/uk_hmt_redbook/`. No page refused access, and we reached every page. We label the two historical copies `local copy` in the manifest. We keep them for the changed-primary comparison (README rule 7), not as blocked-fetch fallbacks.
+Every fresh fetch returned HTTP 200, the lane saved the files under `.ab2026-primaries/uk_hmt_redbook/`, and no page refused access. We label the two historical copies `local copy` in the manifest. We keep them for the changed-primary comparison (README rule 7), not as blocked-fetch fallbacks.
 
-- **Red book.** The lane fetched a fresh PDF about 2026-10-29T15:41Z, and `19b337ac…` matches the supplied 29 October download. We ran `pdftotext -layout` and `diff -u` against the supplied 28 October version `bed70546…` and found one change: HM Treasury cut the words "and potential for ULEV SalSac reforms" from paragraph 6.207's heading, which rewrapped the lines. **HM Treasury changed no printed number.** Every red-book row cites the current version. The printed page equals the PDF page minus six.
+- **Red book.** The lane fetched a fresh PDF about 2026-10-29T15:41Z, and `19b337ac…` matches the supplied 29 October download. It ran `pdftotext -layout` and `diff -u` against the supplied 28 October version `bed70546…` and found one change: HM Treasury cut the words "and potential for ULEV SalSac reforms" from paragraph 6.207's heading, which rewrapped the lines. **HM Treasury changed no printed number.** Every red-book row cites the current version. The printed page equals the PDF page minus six.
 - **HTML discovery.** The publication content API `https://www.gov.uk/api/content/government/publications/budget-2026-document` (hash `4568690c1ca115ff4a7aa5aa116bcdb39cebee39d8af4490b8dc3ad544b3ec6d`) names the HTML attachment, which we fetched as a cross-check (hash `33ee5a00b6383104f83790719c0a67e396cfb52e7ea93986b76ab15a19fdaaec`). We staged no rows from either and take the PDF as the primary.
 - **Impact on households.** The lane fetched a fresh PDF at 2026-10-29T15:41:44Z, identical to the supplied 29 October copy, and read it with `pdftotext -layout`. Its printed pages equal PDF pages.
 - **Pension Tax Allowance explainer.** The lane fetched fresh content API JSON at 2026-10-29T15:41:44Z, matching the supplied 28 October response, and our rows quote its decoded `details.body`. **The supplied 29 October response differs.** In it HM Treasury gives a 353-character introduction without the counts, worked cases or FAQ of the 19,727-character full body. Both show publication date 28 October. No row cites the abbreviated version.
@@ -50,8 +50,8 @@ Rows by measure key:
 
 | measure_key | rows | of which components (rule 9) |
 |---|---:|---:|
-| `null` with a proposed key | 66 | 18 |
-| `null`, context (no proposed key) | 189 | 0 |
+| the 21 package keys below | 66 | 18 |
+| `null`, context (no key) | 189 | 0 |
 | `ab2026__hmrc_tax_gap_package` | 73 | 67 |
 | `ab2026__pension_tax_allowance` | 12 | 0 |
 | `ab2026__british_industrial_competitiveness_scheme` | 8 | 0 |
@@ -82,7 +82,7 @@ Rows by measure key:
 | `ab2026__national_wealth_fund_capital` | 1 | 0 |
 | `ab2026__parental_allowance_fathers_partners_adopters` | 1 | 0 |
 
-We give the 189 context rows no proposed key (README rule 2). They comprise 135 fiscal aggregates about no measure (133 restated, plus HM Treasury's own two Box 1.C shares) and 54 Impact on households rows (Table 2.C and the context statements of paragraphs 1.10, 2.4, 2.5 and 2.10). We key the other 24 Table 1.3 rows, the OBR's effect of policy decisions, and Chart 1.6's "Effect of policy" to `ab2026__package_government_decisions_since_march_2026`.
+We give the 189 context rows no key (README rule 2). They comprise 135 fiscal aggregates about no measure (133 restated, plus HM Treasury's own two Box 1.C shares) and 54 Impact on households rows (Table 2.C and the context statements of paragraphs 1.10, 2.4, 2.5 and 2.10). We key the other 24 Table 1.3 rows, the OBR's effect of policy decisions, and Chart 1.6's "Effect of policy" to `ab2026__package_government_decisions_since_march_2026`.
 
 Rows by metric:
 
@@ -125,7 +125,7 @@ Rows by metric:
 | proposed `share_in_top_half_of_expenditure` | 1 |
 | proposed `share_with_zero_liability` | 1 |
 
-Attribution: we mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British Business Bank, the National Wealth Fund).
+We mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT, the British Business Bank, the National Wealth Fund).
 
 ## Conventions
 
@@ -155,7 +155,7 @@ Attribution: we mark 257 rows `own` and 168 `restated` (OBR, ONS, IMF, DWP, DBT,
   - the India agreement's UK, Scotland, Wales and Northern Ireland GDP effects (line 77). HM Treasury's UK figure covers the trade deal alone, without the Double Contributions Convention;
   - paragraph 3.22's six figures for line 14's real-terms freeze and SSB extension;
   - the British Business Bank's 40,000 jobs (line 29's capacity half, as in Policy Costings p.34);
-  - under proposed keys, the Tax and Spending parts of the OBR's policy effect, the three devolved Barnett consequentials and three parts of the regulatory administrative savings.
+  - under package keys, the Tax and Spending parts of the OBR's policy effect, the three devolved Barnett consequentials and three parts of the regulatory administrative savings.
 - **We use `component` for a part only.** Where our first staging used `component` for a Chapter 6 paragraph title on a whole-measure row, we now use `paragraph_heading`, and in the pension worked cases `quantity`. On 3 November we moved Chart 1.6's six headroom-bridge data labels, which the rework had left under `component`, to `chart_bar`.
 - **Attribution.** We mark OBR forecasts `restated` with source model `obr_efo_forecast`. We mark ONS, IMF, DWP, DBT and British Business Bank figures `restated` and name the original in their notes. We mark HM Treasury's own costings, counts and worked cases `own`.
 
@@ -186,9 +186,9 @@ We treat a spending figure as a measure's design unless the red book presents it
 | 37 Your First Home (Table 6.2 line 5) | £4.7 billion | -4,700 of financial transactions | dropped: a financial-transactions allocation |
 | 6.2 line 4 Sovereign AI | £60 million from 2027-28 | -45 a year | dropped |
 
-## Proposed measure keys (21)
+## Package keys (21)
 
-We give each key below the whole scope of its rows, as Table 6.1 lines or "no Table 6.1 line", with the red book's words.
+We proposed each key below, and tranche 2 registered it and moved it into `measure_key`. We give each key the whole scope of its rows, as Table 6.1 lines or "no Table 6.1 line", with the red book's words.
 
 - `ab2026__package_government_decisions_since_march_2026` (25 rows): the OBR's "Total effect of policy decisions" on PSNB in Table 1.3, with its Tax and Spending parts (components) and the memo effect on the current budget deficit, 2026-27 to 2031-32. It also covers Chart 1.6's "Effect of policy" on stability rule headroom in 2029-30 (+2.0: the memo's −2.0 seen as headroom; proposed `fiscal_balance_change`). The key crosses Table 6.1 lines 1–98 and adds the OBR's indirect effects. In Table 1.3 footnote 1 HM Treasury says the OBR's EFO Table 3.1 explains the "Differences between the direct impacts of the policy measures as set out in Table 6.1 of the Budget, and how the OBR incorporate these into their forecast". We don't use `ab2026__package_total_policy_decisions` here.
 - `ab2026__package_hmrc_tax_gap_and_online_marketplace` (7 rows): exactly Table 6.1 lines 45 and 46. It covers Table 6.3's "Subtotal including memo" (six years) and footnote 73's "£2.3 billion from this Budget". In Table 6.3 HM Treasury prints +2,250m for lines 45 and 46 in 2029-30, against +1,980m for line 45 alone.
@@ -209,8 +209,8 @@ We give each key below the whole scope of its rows, as Table 6.1 lines or "no Ta
 - `ab2026__package_defence_investment_plan` (1 row): the Defence Investment Plan published in June 2026, which no single line covers; HM Treasury puts its savings and funding in lines 40–42. Paragraph 5.34: "The Defence Investment Plan will create approximately 60,000 new jobs by 2029‑30 compared with 2023‑24." In the OBR family we stage the row on this key (paragraph 3.3's £1.8 billion a year) as the plan's RDEL funding part, a component (review A's K-2).
 - `ab2026__package_dwp_fraud_and_error_measures` (1 row): the "new measures" of paragraph 5.17, "expected to save an additional £1.4 billion over the forecast" (2026-27 to 2031-32). The red book doesn't list them.
   - HM Treasury makes paragraphs 6.19–6.22 line 47's own package (its footnote 4; Policy Costings pp.54–58, which we key as line 47 components in `uk_hmt_costings`).
-  - But the £1.4 billion reconciles with no printed basis for line 47. The line prints +600m over the forecast, and +940m with Table 6.2 line 9's +340m, and the costings sum to +570m. So we keep the figure off line 47's key (rule 3; review A's RB-8).
-- `ab2026__package_parliament_welfare_fraud_and_error_savings` (1 row): this Budget's new fraud and error measures plus those already in the forecast. Paragraph 5.17: "bringing total savings from fraud and error to over £20 billion over the forecast". HM Treasury doesn't say which earlier measures count. (Review A suggested dropping "parliament" from the one-row key's name; tranche 2 can rename it when it registers the key.)
+  - But the £1.4 billion reconciles with no printed basis for line 47. Table 6.1 prints +600m on line 47 over the forecast, and +940m with Table 6.2 line 9's +340m, and the costings sum to +570m. So we keep the figure off line 47's key (rule 3; review A's RB-8).
+- `ab2026__package_welfare_fraud_and_error_savings_in_forecast` (1 row): this Budget's new fraud and error measures plus those already in the forecast. Paragraph 5.17: "bringing total savings from fraud and error to over £20 billion over the forecast". HM Treasury doesn't say which earlier measures count. We proposed the key as `ab2026__package_parliament_welfare_fraud_and_error_savings`; review A suggested dropping "parliament" from the name, and tranche 2 renamed it when it registered the key.
 - `ab2026__package_barnett_consequentials` (4 rows): the Barnett consequentials of "decisions confirmed at Budget", 2026-27 to 2029-30, excluding the technical reduction from lower employer pension contributions (paragraph 4.150).
   - The key crosses Table 6.1's England spending lines, and HM Treasury prints no line of its own for it.
   - We mark the three-government £1.3 billion `row_type: total`, and the Scottish, Welsh and Northern Ireland figures as components, one per government. In `uk_devolved_govts` we type the Welsh Government's own figures as Welsh Government components of this key.
@@ -244,7 +244,7 @@ In the rework we dropped 1,267 of the first staging's 1,699 rows, and with revie
 | Category | Rows | Examples (locator) |
 |---|---:|---|
 | A. Measure parameters: rates, thresholds, payment amounts, dates, durations; worked-example inputs | 829 | 817 former `policy_parameter` rows, e.g. "£13.21" per hour (para 3.18), "£2,500" surplus earnings threshold (Impact on households para 1.4), "£13,319" withdrawal threshold (explainer FAQ). Also the £100 Household Energy Payment amount (4 rows, e.g. para 2.48); the £108 current gas standing charge (para 3.9); the £2,000 rise in the full new State Pension over the Parliament (para 5.23); six worked-case inputs, e.g. Tom's "£10,300" income. |
-| B. Spending allocations: programme funding, capitalisations, investment totals, spending levels | 221 | 166 programme amounts that are not a Table 6.1 line's printed impact (table above), e.g. "£120 million" for the AI Security Institute (para 4.130), "£30 million" for Cardiff Parkway (para 4.157), "£1.5 billion" for the Social and Affordable Homes Programme (para 5.4); 46 investment totals, e.g. NWF "£15.4 billion" (para 4.44), Your First Home "£4.7 billion" (para 5.5); public sector net investment (Table 1.2, 6); departmental spending levels (2); £200 million of private AI model credits (para 4.132). |
+| B. Spending allocations: programme funding, capitalisations, investment totals, spending levels | 221 | 166 programme amounts that match no Table 6.1 line's printed impact (table above), e.g. "£120 million" for the AI Security Institute (para 4.130), "£30 million" for Cardiff Parkway (para 4.157), "£1.5 billion" for the Social and Affordable Homes Programme (para 5.4); 46 investment totals, e.g. NWF "£15.4 billion" (para 4.44), Your First Home "£4.7 billion" (para 5.5); public sector net investment (Table 1.2, 6); departmental spending levels (2); £200 million of private AI model credits (para 4.132). |
 | C. Financing: DMO remit, gilts, Treasury bills, NS&I, cash requirements, financial transactions | 177 | DMO net financing requirement "£258.6 billion" (Annex A.8); Table A.1 gilt sales by maturity; CGNCR "£144.1 billion" (para 1.47); Table 1.4 financial transactions by programme, e.g. Student Loans "15.9" (55 rows); Sovereign AI "£60 million" (para 4.135). |
 | D. Contingent liabilities | 14 | Table 1.5, e.g. Department for Energy Security and Net Zero "1.2-1.7"; Total reasonable worst case "4-4.5". |
 | E. Programme inputs, scope counts and targets | 25 | "670" HMRC compliance officers to recruit (paras 2.42, 6.151); tariffs on "over 100" food products (para 3.17); "around 10,000" homes the Social and Affordable Homes Programme funds (para 6.114); the 25% administrative-burden target worth "£5.6 billion" (para 4.51); "over 90% of England's population will have a devolution agreement in place" (para 4.68), a coverage count that includes existing agreements (review A's RB-7, dropped 4 November). |
@@ -258,12 +258,12 @@ Under rule 9 we moved 74 kept rows from proposed keys to a Table 6.1 line's key:
 - the £3 billion and £1.7 billion DIP parts (now line 41 components);
 - the Your First Home count (now line 37).
 
-We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which reconciles with no printed basis for line 47 (rule 3; see its proposed key).
+We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which reconciles with no printed basis for line 47 (rule 3; see its package key, `ab2026__package_dwp_fraud_and_error_measures`).
 
 ### Other material not staged
 
 - **Tables 6.1, 6.2 and 6.4:** we stage these in `uk_hmt_tables`. HM Treasury prints Table 6.3 as a separate breakdown, and we stage it here.
-- **No Impact on households bar readings** (README rule 4). HM Treasury prints no data labels on Figures 1.A–1.E. We stage Chart 1.6's six data labels.
+- **No Impact on households bar readings** (README rule 4). HM Treasury prints no data labels on Figures 1.A–1.E, and we stage Chart 1.6's six data labels.
 - **Words without numbers:** we don't turn "hundreds of pounds a month" or "thousands of jobs" into numbers.
 - **Footnote 73's earlier-event yields** (£6.5 billion, over £1 billion, £2.4 billion): HM Treasury gives them for other fiscal events' measures, and we stage only this Budget's £2.3 billion and the £12 billion total.
 - **Background:** we don't stage macro forecasts that score no measure (GDP growth, inflation, employment, Table 1.1), departmental efficiency histories, Annex B budgets or Annex C charts.
@@ -277,7 +277,7 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 - **Mislabelled shares beyond the 84%.** We stage the 84% as `unaffected_share`, never 16%. BADR's "three-quarters … will still receive relief on their entire gain" gives the unaffected share too. "half of all RHL properties … will not pay business rates at all" includes properties already paying none (`share_with_zero_liability`). Impact on households' 20%, 60%, 59% and approximately 20% don't give affected shares (proposals above). The registry defines `share_no_change` as a household-income measure, so for the 84% of income tax payers we follow the brief's `unaffected_share`.
 - **Registered metrics replace AB2025-era proposals.** For the four "around £50 off the annual Ofgem price cap" rows and the three energy-debt "£30" rows we now use the registered `energy_bill_change` (unit `gbp_per_household`), which the enum mints for HM Treasury bill figures. For the India agreement's GDP effects we use `gdp_level_effect` in GBP (the AB2025 IPPR precedent).
 - **We dropped financial transactions and public sector net investment as financing and spending levels.** In Table 1.4 HM Treasury prints forecast levels of lending by programme, not Budget effects. The OBR produces public sector net investment as an aggregate, but the brief lists `public_investment_share` for removal.
-- **We keep jobs and induced homes, and drop delivery targets.** We stage as estimated effects the estimated jobs (NWF 100,000; BBB 40,000; Rolls-Royce 3,300; DIP 60,000; proposed `jobs_created_or_supported` since review A) and Your First Home's "estimated 20,000 new homes". We treat as delivery targets of allocations the 10,000 homes the Social and Affordable Homes Programme funds (in line 35's title), robotic procedures rising to 500,000, 2,000 learners and the infrastructure pipeline's 650,000 workforce requirement.
+- **We keep jobs and induced homes, and drop delivery targets.** We stage the estimated jobs (NWF 100,000; BBB 40,000; Rolls-Royce 3,300; DIP 60,000; proposed `jobs_created_or_supported` since review A) and Your First Home's "estimated 20,000 new homes" as estimated effects. We treat the 10,000 homes the Social and Affordable Homes Programme funds (in line 35's title), robotic procedures rising to 500,000, 2,000 learners and the infrastructure pipeline's 650,000 workforce requirement as delivery targets of allocations.
 - **We now mark the BBB's 40,000 jobs `restated`.** In footnote 135 HM Treasury cites the British Business Bank's press release. We mark the NWF's 100,000 `restated` too (footnote 134 cites the National Wealth Fund's own statement).
 
 ## Printed problems and differences
@@ -289,7 +289,7 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
   - DWP fraud and error: "an additional £1.4 billion over the forecast" (para 5.17) against line 47's +600m in total (+940m with Table 6.2 line 9; the Policy Costings' +570m).
 - **Regulatory savings target:** HM Treasury prints "£5.6 million" in paragraph 6.36 and "£5.6 billion" in paragraph 4.51. It gives different printed scopes to the executive summary's "almost £800 million per year" and paragraph 4.52's "up to … £640 million per annum", and we keep both.
 - **Repeated amounts that disagree (not staged after rule 8):** local AI partnerships £30 million (para 4.135) and £15 million (para 6.101); Leeds College of Building £28 million (para 4.71) and £15 million (para 6.53); business tariff suspensions on 269 goods (para 3.28), 350 goods (para 4.147) and 361 extensions plus 72 new suspensions (line 16's title).
-- **Pubs relief:** HM Treasury prints an extra "20%" in the text and "20ppts" in Table 6.1.
+- **Pubs relief:** HM Treasury writes the extra relief as "20%" in the text and as "20ppts" in Table 6.1.
 - **Table 1.3:** HM Treasury labels the new forecast "November 2026 forecast" in an October Budget. In Chart 1.6 it prints 14.5 where the text says £15 billion. Its "Debt is lower at the end of the forecast" fits public sector net financial liabilities (83.2% to 81.7%), while public sector net debt goes from 95.5% to 95.6%.
 - **Paragraphs 6.225 and 6.226:** HM Treasury repeats the Machine Games Duty measure. In Annex A footnote 181 it points to A.17 for green gilts, which A.19 covers.
 - **Pension Tax Allowance explainer:** in the FAQ HM Treasury prints "£13.319" for £13,319. It prints both £13,036.40 and the rounded £13,037, and "up to £94" beside Steph's £93.28. In the 28 October version's FAQ it repeats a question and prints "part-time wok". In the version it republished on 29 October (`83f8c894…`) it fixes both and still prints "£13.319".
@@ -338,10 +338,10 @@ We keep one row off a line's key: the £1.4 billion of DWP fraud savings, which 
 The rework stopped before its report, so on 3 November we checked each instruction of `briefs/rework-hmt-redbook.md` (on the staging branch) against the rows:
 
 - **Removed metrics.** No `policy_parameter` row remained. Of the nine allocation and financing metrics, only `spending_to_tax_ratio` remained, on one row (paragraph 1.10's "over four times"). We kept it then as a distributional statement printed in Impact on households, which item 3 of the brief keeps, not the fiscal aggregate the drop list targets. See the judgement calls above.
-- **Rule 9 and the "Also fix" section.** We stage the 84% row as `unaffected_share`, as printed. We key no row to `ab2026__package_tax_gap_timely_payment`, and key line 45's items to line 45 as components. We name no measure without a Table 6.1 line as a package. No kept row has the scope of the coordinator's shared spellings (see "Proposed measure keys").
+- **Rule 9 and the "Also fix" section.** We stage the 84% row as `unaffected_share`, as printed. We key no row to `ab2026__package_tax_gap_timely_payment`, and key line 45's items to line 45 as components. We name no measure without a Table 6.1 line as a package. No kept row has the scope of the coordinator's shared spellings (see "Package keys").
 - **`component`.** Six rows still used `component` for a chart bar, and we moved them to `chart_bar`.
 - **Stale files.** We found no REPORT.md or spot-check files left in the family.
-- **Keys.** The coordinator harmonised keys across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the proposed keys above give the final spellings.
+- **Keys.** The coordinator harmonised keys across families on 3 November; `stage.py`'s `KEY_MAP` lists each rename, and the package keys above give the final spellings.
 - **Checker:** 0 problems. **Determinism:** when we re-ran `stage.py` it reproduced the gzip and manifest byte for byte.
 - **Spot check: not repeated.** The brief asked for 15 random rows re-opened at their locators. The 3 November session's network policy refused gov.uk and assets.publishing.service.gov.uk (HTTP 403 at the proxy), so we fetched no primary and re-opened no row. The 30-row check above is the rework's own; nobody independent has checked this rework yet.
 
@@ -364,7 +364,7 @@ We had already put Table 1.3's total effect of policy decisions and its tax and 
 Review A (issue comment 6635870934 on #231, at 4f424b9) approved this family with fixes. `stage.py` applies each as an explicit, commented step after the rows, indexed by 4f424b9's row numbers, and drops rows only at the end. We give 4f424b9's row numbers in this section too, as in the review. Dropping seven rows moves every later row up to seven places earlier in the staged file (row 365 here becomes row 359 there). We re-opened no primary for this round; every new quote and value comes from the review or the row. The coordinator then finished RB-18 and RB-19 from two pinned primaries (below). 432 rows → 425; `own` 263 → 257, `restated` 169 → 168; 6 hashed primaries.
 
 - **RB-1:** we put paragraph 5.17's two totals "over the forecast" (rows 265 and 266) at 2031-32 with the forecast's horizon. We marked row 265 `cumulative`, kept `range_low` on row 266 and marked row 267 `point_in_time`.
-- **RB-2:** we dropped rows 191 and 200 (the £2.6 billion's third and fourth printings) and dated row 179 2026-27. The same rule drops rows 188 and 201, which repeat "up to 20 million" in paragraph 3.3 and Box 3.A. Once RB-11 put rows 180 and 201 in England, four rows shared one claim identity, and the coordinator's new duplicate-claim check, H-3, rejects more than two.
+- **RB-2:** we dropped rows 191 and 200 (the £2.6 billion's third and fourth printings) and dated row 179 2026-27. Under the same rule we dropped rows 188 and 201, which repeat "up to 20 million" in paragraph 3.3 and Box 3.A. Once RB-11 put rows 180 and 201 in England, four rows shared one claim identity, and the coordinator's new duplicate-claim check, H-3, rejects more than two.
 - **RB-3:** we moved row 226 to `ab2026__package_pubs_relief_35pc_total`.
 - **RB-4:** for Chart 1.6's bridge steps (rows 21, 22, 24) we propose `fiscal_balance_change` with the stability rule's sign, and key row 24 to the government-decisions key. On all six rows we name the stability rule, and on rows 20, 23 and 25 their forecast vintage and policy scenario.
 - **RB-5:** we made row 246 a line 29 component (retiring its proposed key), rows 232–237 line 14 components and row 254 a line 77 component.
@@ -387,7 +387,7 @@ Review A (issue comment 6635870934 on #231, at 4f424b9) approved this family wit
   - We dated row 184 2027-28, at medium confidence, `hmt_published_estimate_method_unspecified`. We removed `presentation` from row 168, and marked row 267 `hmt_published_estimate_method_unspecified`.
   - In row 194's note we give footnote 84's "fuel stressed" definition, which the coordinator read from the red book (19b337ac…).
 - **RB-19:** rows 15, 29, 41 and 42 now quote only their sentence, and rows 103, 104 and 167 drop their leading paragraph numbers. We corrected the locators of rows 172, 190, 227, 248 and 249. Rows 365 and 368 quote their whole sentences, which the coordinator read from Impact on households (36cd5afb…). Row 365's sentence includes the lead-in that dates para 1.10's bullets to 2028-29 (we dropped row 366).
-- **RB-20:** (a) we removed the unverifiable "234 proposed keys" figure; (b) our spending test now reads "the per-year amount equals the line's", which rows 224 and 276 pass, so we keep them; (c) we list five more figures under "Other material not staged".
+- **RB-20:** (a) We removed the unverifiable "234 proposed keys" figure. (b) Our spending test now reads "the per-year amount equals the line's", which rows 224 and 276 pass, so we keep them. (c) We list five more figures under "Other material not staged".
 - **RB-21:** we matched this lane folder's gzip and NOTES to #231's, and set `metric: null` explicitly on the 40 proposed-metric rows. We leave Table 6.3's duplication of Table 6.1 lines 45 and 46 (`uk_hmt_tables`) to tranche 2's cross-family dedupe.
 - **K-7(b):** we made row 258 the Barnett `total`, and gave rows 258–261 the sign convention.
 - **K-7(c):** row 222 already proposes `gross_earnings_change`, the AB2025 spelling, so we made no change.
