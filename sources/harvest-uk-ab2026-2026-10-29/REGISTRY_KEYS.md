@@ -125,32 +125,32 @@ earlier event's registry named in `conditions.recosting_of`.
 | `ab2026__scottish_air_passenger_duty_devolution` |  | not_expressible | Devolve Air Passenger Duty to the Scottish Government in April 2027 |
 | `ab2026__state_pension_triple_lock_adjustment` |  | expressible | Adjust the State Pension triple lock from April 2030 to hold the pension's value relative to earnings as reached in April 2029 |
 | `ab2026__your_first_home_ft_reprioritisation` | 6.2/6 | not_expressible | Reprioritise financial transactions budgets to fund the new equity loan scheme |
-| `ab2026__package_business_rates_rhl_sbrr_and_transitional_support` |  | partial | Business rates: the SBRR thresholds, the real-terms freeze and the transitional support extension, together |
-| `ab2026__package_carbon_price_support_and_cfd_levies` |  | partial | Abolish carbon price support and fund the LCCC to reduce CfD levies, together |
+| `ab2026__package_business_rates_rhl_sbrr_and_transitional_support` |  | not_expressible | Business rates: the SBRR thresholds, the real-terms freeze and the transitional support extension, together |
+| `ab2026__package_carbon_price_support_and_cfd_levies` |  | not_expressible | Abolish carbon price support and fund the LCCC to reduce CfD levies, together |
 | `ab2026__package_dividend_and_capital_gains_tax_changes` |  | partial | OBR Table 3.1: changes to dividend and capital gains taxation |
-| `ab2026__package_hmrc_tax_gap_and_online_marketplace` |  | partial | HMRC's tax gap measures and online marketplace liability, together |
+| `ab2026__package_hmrc_tax_gap_and_online_marketplace` |  | not_expressible | HMRC's tax gap measures and online marketplace liability, together |
 | `ab2026__package_household_energy_payment_and_electricity_vat` |  | expressible | The Household Energy Payment and zero VAT on domestic electricity, together |
 | `ab2026__package_property_and_savings_income_rates` |  | expressible | Property and savings income tax rates up 2ppts, together |
 | `ab2026__package_hmt_distributional_budget_2026` |  | partial | HM Treasury's Impact on households: the Budget 2026 policies it models |
 | `ab2026__package_rf_ab26_permanent_personal_measures` |  | partial | RF Figure 20's AB26 changes: permanent personal tax and benefit measures |
-| `ab2026__package_non_scorecard_decisions` |  | partial | OBR: direct effect of non-scorecard decisions |
-| `ab2026__package_tpa_business_rates` |  | partial | TPA: business rates |
+| `ab2026__package_non_scorecard_decisions` |  | not_expressible | OBR: direct effect of non-scorecard decisions |
+| `ab2026__package_tpa_business_rates` |  | not_expressible | TPA: business rates |
 | `ab2026__package_tpa_cgt_founders_relief_and_badr` |  | partial | TPA: CGT (Founders' Relief and BADR) |
-| `ab2026__package_tpa_energy_and_environment` |  | partial | TPA: energy and environment |
+| `ab2026__package_tpa_energy_and_environment` |  | not_expressible | TPA: energy and environment |
 | `ab2026__package_tpa_fuel_duty_red_diesel_and_hgv_ved` |  | partial | TPA: fuel duty cut, red diesel and HGV VED |
-| `ab2026__package_tpa_other_by_measure` |  | partial | TPA: other (by-measure chart) |
-| `ab2026__package_tpa_other_by_tax_2027_28` |  | partial | TPA: other (by-tax chart, 2027-28) |
+| `ab2026__package_tpa_other_by_measure` |  | not_expressible | TPA: other (by-measure chart) |
+| `ab2026__package_tpa_other_by_tax_2027_28` |  | not_expressible | TPA: other (by-tax chart, 2027-28) |
 | `ab2026__package_tpa_other_by_year` |  | partial | TPA: other (by-year chart) |
-| `ab2026__package_tpa_other_corporate_tax` |  | partial | TPA: other corporate tax |
+| `ab2026__package_tpa_other_corporate_tax` |  | not_expressible | TPA: other corporate tax |
 | `ab2026__package_tpa_other_income_tax` |  | partial | TPA: other income tax |
-| `ab2026__package_tpa_other_vat` |  | partial | TPA: other VAT |
+| `ab2026__package_tpa_other_vat` |  | not_expressible | TPA: other VAT |
 | `ab2026__package_tpa_savings_property_income_and_cash_isa` |  | partial | TPA: savings and property income tax |
-| `ab2026__package_tpa_tariffs` |  | partial | TPA: tariffs (including UK-India) |
+| `ab2026__package_tpa_tariffs` |  | not_expressible | TPA: tariffs (including UK-India) |
 | `ab2026__package_tpa_temporary_vat_and_fuel_cuts` |  | partial | TPA: temporary VAT and fuel cuts |
 | `ab2026__package_fuel_duty_and_electricity_vat` |  | partial | OBR Table 3.1: fuel duty freeze and VAT off domestic energy bills (receipts) |
 | `ab2026__package_property_and_savings_income_rates_receipts` |  | partial | OBR Table 3.1: changes to savings and property income tax rates (receipts) |
-| `ab2026__package_tax_administration_compliance_and_debt_collection_receipts` |  | partial | OBR Table 3.1: tax administration, compliance and debt collection measures (receipts) |
-| `ab2026__package_temporary_business_rates_reliefs_receipts` |  | partial | OBR: the package of temporary business rates measures (receipts) |
+| `ab2026__package_tax_administration_compliance_and_debt_collection_receipts` |  | not_expressible | OBR Table 3.1: tax administration, compliance and debt collection measures (receipts) |
+| `ab2026__package_temporary_business_rates_reliefs_receipts` |  | not_expressible | OBR: the package of temporary business rates measures (receipts) |
 | `ab2026__package_barnett_consequentials` |  | not_expressible | Barnett consequentials of decisions confirmed at Budget for the devolved governments |
 | `ab2026__package_breathing_space_for_households` |  | partial | Government action at this Budget to provide breathing space for households |
 | `ab2026__package_civil_service_transformation_programme` |  | not_expressible | OBR: the civil service transformation programme |
