@@ -446,8 +446,10 @@ _STEP = r"[x×*/÷]\s*\.?[0-9][^\s;]*"
 _CHAIN = re.compile(rf"(?:^|(?<=[\s(\[]))({_STEP}(?:\s+{_STEP})*)")
 _OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
 # What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million",
-# "x 1 hundred"
-_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)})\b)")
+# "x 1 hundred", "x 2 and a half"
+_CONTINUES = re.compile(
+    rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)}|and\s+(?:half|{_PART}))\b)"
+)
 # An operation on what the checker can't read as a number: a sign, bracket, quote
 # or currency sign first ("x (1e6)", "x +1e6", "x '1e6'", "x £100"), or number words
 # ("x one million", "x (a million)", "x half", "/ a quarter"). Also an operation in words ("times 1,000",
@@ -468,11 +470,16 @@ _UNREAD = re.compile(
 )
 
 
+def _collapsed(text):
+    """Text in lower case, with each run of whitespace as one space."""
+    return " ".join((text or "").lower().split())
+
+
 def _factors(normalization):
     """The multipliers a normalization states ("x 1,000,000", "/ 100", "(x 10^6)"),
     or None if it states one the checker can't read whole. Operations in a row
     make one multiplier: "x 1,000,000 / 100" is 10,000."""
-    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", (normalization or "").lower())
+    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", _collapsed(normalization))
     if _UNREAD.search(text):
         return None
     out = []
@@ -574,7 +581,7 @@ def value_problems(r):
     ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
     if (
-        WORDED_SIGN.search(r.get("normalization") or "")
+        WORDED_SIGN.search(_collapsed(r.get("normalization")))
         or any(_same(v, p) for p in exact)
         or any(_rounded(v, f) for f in near)
     ):
