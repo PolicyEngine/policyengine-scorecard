@@ -682,7 +682,9 @@ def _drop(acct: dict, fam: dict, reason_key: str) -> None:
     fam["drops"][reason_key] = fam["drops"].get(reason_key, 0) + 1
 
 
-_PRINTED_AMOUNT = re.compile(r"£(\d+|\d{1,3}(?:,\d{3})+)(?:\.(\d+))? (million|billion)")
+_PRINTED_AMOUNT = re.compile(
+    r"£(0|[1-9]\d*|[1-9]\d{0,2}(?:,\d{3})+)(?:\.(\d+))? (million|billion)"
+)
 _MULTIPLIERS = {"million": 1e6, "billion": 1e9}
 
 

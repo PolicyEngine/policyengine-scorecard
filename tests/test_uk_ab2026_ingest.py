@@ -714,12 +714,32 @@ def _staged_unit(row):
 STORED_UNITS = {("uk_ifs_ab2026", "slide 4", "£80"): "gbp_per_household"}
 
 
+# The conditions `_score`, `_verdict_conditions` and `with_baseline_condition`
+# write beside the staged ones.
+INGEST_CONDITIONS = {
+    "action_link",
+    "baseline_policy",
+    "benchmark_class",
+    "counterfactual",
+    "country",
+    "estimate_kind",
+    "measure_key",
+    "pe_expressibility",
+    "pe_missing",
+    "reform_hint",
+    "scoring_method",
+    "staged_metric",
+    "value_verbatim",
+}
+
+
 def _keeps_conditions(row, score):
     """Require each staged condition on the claim as staged. For a condition the
     ingest canonicalises, require the registered name and the staged text beside
     any name that differs. For a program we haven't registered, require the staged
-    text alone."""
-    for key, value in (row.get("conditions") or {}).items():
+    text alone. Refuse any condition neither the row nor the ingest supplies."""
+    staged = row.get("conditions") or {}
+    for key, value in staged.items():
         stored = score.conditions.get(key)
         verbatim = score.conditions.get(f"{key}_verbatim")
         if key == "program" and value not in known(row["source"], key):
@@ -731,7 +751,12 @@ def _keeps_conditions(row, score):
             kept = stored == value
         if not kept:
             return False
-    return True
+    verbatim = {
+        f"{key}_verbatim"
+        for key in staged
+        if key == "program" or key in I.AB25._CANONICALISED
+    }
+    return set(score.conditions) <= set(staged) | verbatim | INGEST_CONDITIONS
 
 
 _CHILDCARE = "free childcare entitlement (claimed and received some)"
@@ -776,9 +801,21 @@ _CHILDCARE = "free childcare entitlement (claimed and received some)"
             {"source": "obr", "conditions": {"geography": "NI"}},
             {"geography": "Northern Ireland"},
         ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "forecast", "housing_costs": "AHC"},
+        ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "forecast", "basis_verbatim": "forecast"},
+        ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "forecast", "geography_verbatim": "England"},
+        ),
     ],
 )
-def test_preservation_rejects_a_lost_condition(row, stored):
+def test_preservation_rejects_a_lost_or_invented_condition(row, stored):
     assert not _keeps_conditions(row, SimpleNamespace(conditions=stored))
 
 
@@ -807,6 +844,10 @@ def test_preservation_rejects_a_lost_condition(row, stored):
         (
             {"source": "obr", "conditions": {"geography": "NI"}},
             {"geography": "Northern Ireland", "geography_verbatim": "NI"},
+        ),
+        (
+            {"source": "centax", "conditions": {"basis": "forecast"}},
+            {"basis": "forecast", "country": "UK", "value_verbatim": "£1"},
         ),
     ],
 )
@@ -1039,6 +1080,9 @@ def test_a_ukraine_row_keeps_its_table_cell_for_the_year_exception(monkeypatch):
         "£26,00 million",
         "£2600, million",
         "£1,2345 million",
+        "£0,123 million",
+        "£01 million",
+        "£1234,567 million",
     ],
 )
 def test_a_reviewed_twin_printed_in_another_form_raises(raw):
@@ -1046,6 +1090,28 @@ def test_a_reviewed_twin_printed_in_another_form_raises(raw):
     rows[6]["value_raw"] = raw
     with pytest.raises(ValueError, match="no printed amount"):
         I._check_row_calls("uk_hmt_redbook", rows)
+
+
+@given(st.integers(0, 10**12), st.sampled_from(["million", "billion"]))
+def test_a_printed_amount_reads_with_or_without_thousands_commas(number, unit):
+    for digits in (str(number), f"{number:,}"):
+        printed = I._PRINTED_AMOUNT.fullmatch(f"£{digits} {unit}")
+        assert printed and int(printed[1].replace(",", "")) == number
+
+
+@given(st.integers(1, 10**12), st.integers(0, 13))
+def test_a_printed_amount_takes_commas_only_at_thousands(number, at):
+    digits = str(number)
+    comma = f"{digits[:at]},{digits[at:]}"
+    assert (I._PRINTED_AMOUNT.fullmatch(f"£{comma} million") is not None) == (
+        comma == f"{number:,}"
+    )
+
+
+@given(st.integers(1, 10**12))
+def test_a_printed_amount_takes_no_leading_zero(number):
+    assert I._PRINTED_AMOUNT.fullmatch(f"£0{number} million") is None
+    assert I._PRINTED_AMOUNT.fullmatch(f"£0{number:,} million") is None
 
 
 def test_a_reviewed_twin_whose_value_leaves_its_print_raises():
