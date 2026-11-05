@@ -448,16 +448,22 @@ _OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
 # What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million",
 # "x 1 hundred"
 _CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)})\b)")
-# An operation on what the checker can't read as a number: a sign, bracket or
-# currency sign first ("x (1e6)", "x +1e6", "x £100"), number words ("x one
-# million", "x hundred"), or an operation in words ("times 1,000", "divided by 100").
-_OPENERS = rf"[{_DASHES}+(\[£$€]\s*"
+# An operation on what the checker can't read as a number: a sign, bracket, quote
+# or currency sign first ("x (1e6)", "x +1e6", "x '1e6'", "x £100"), or number words
+# ("x one million", "x (a million)"). Also an operation in words ("times 1,000",
+# "multiply by 1e6", "divided by 100", "scaled by 1e6", "x by 1e6"), and an operator
+# with no space before it ("£m×1e6", "£m;x 1e6", "%/100", "£m/100").
+_OPENERS = rf"[{_DASHES}+(\[£$€'\"‘“]\s*"
 _NUMBER_WORDS = rf"(?:{_WORDS}|hundred|{_LARGE})\b"
+_ANY_OPERAND = rf"(?:{_OPENERS})*(?:\.?[0-9]|{_NUMBER_WORDS})"
 _UNREAD = re.compile(
     r"(?:^|(?<=[\s(\[]))(?:"
-    rf"[x×*/÷]\s*(?:(?:{_OPENERS})+\.?[0-9]|{_NUMBER_WORDS})"
-    rf"|(?:times|multiplied by|divided by)\s+(?:(?:{_OPENERS})*\.?[0-9]|{_NUMBER_WORDS})"
+    rf"[x×*/÷]\s*(?:(?:{_OPENERS})+\.?[0-9]|(?:{_OPENERS})*{_NUMBER_WORDS})"
+    rf"|(?:times|(?:multipl|divid|scal)\w*\s+by|x\s+by)\s+{_ANY_OPERAND}"
     r")"
+    rf"|(?<=[^\s(\[*])[×*÷]\s*{_ANY_OPERAND}"
+    rf"|(?<=[;:,=>%)\]])[x/]\s*{_ANY_OPERAND}"
+    rf"|(?<=[a-z])/\s*(?:{_OPENERS})*\.?[0-9]"
 )
 
 
@@ -603,15 +609,16 @@ _PICTURE = r"(?:bars?|charts?|graphs?|plots?|diagrams?|visuals?)"
 _FIGS = r"fig(?:ure)?s?(?![a-z])"
 _OFF = r"(?:off|from)"
 _OPEN = r"""[\[("'“‘]"""
-_UP_TO = rf"(?:{_OPEN}?[\w.]+ ){{0,4}}?(?:{_OPEN} ?)?"
+_UP_TO = rf"(?:(?:{_OPEN} *)*[\w.][\w.'’]*[)\]]? ){{0,4}}?(?:{_OPEN} *)*"
 _AFTER = rf"(?::? |:|(?={_OPEN}))"
 # A verb's whole phrase comes first, so that a negation before the verb cancels
 # it: "read it off the decile 3 bar", "reading of the chart", "visual estimate of
 # Figure 1.A". Then any picture, with a reading if it names one ("bar reading from
 # Figure 1.A"), any number from a figure or a figure's column, and any reading by
 # eye. A column of a table prints its number, so a column counts only in a figure.
-# A colon, bracket or quote may come before the figure: "read off: Fig. 1.A", "read
-# from [Figure 1.A]".
+# A colon, brackets or quotes may come before the figure: "read off: Fig. 1.A", "read
+# from ("Figure 1.A")". A word there may hold an apostrophe or end a bracket: "taken
+# from HMT's Figure 1.A", "read from (HMT) Figure 1.A".
 BAR_READING = re.compile(
     r"\b(?:visual )?(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
     rf" (?:off|from|on|in|using|of){_AFTER}{_UP_TO}(?:{_PICTURE}\b|{_FIGS})"
