@@ -114,7 +114,6 @@ GEOGRAPHY = {
 # A `normalization` that documents a sign taken from the wording, not from a
 # printed minus (review A H-2(3)).
 WORDED_SIGN = re.compile(r"sign from the wording|carried negative|-> -\d|→ negative")
-SCALES = (1, 1e3, 1e6, 1e9, 0.01, 100)
 # A percentage is stored as a share or in percent units.
 PERCENT = (0.01, 1.0)
 
@@ -208,6 +207,12 @@ QUALIFIERS = {
 TAILS = {"a year", "of gdp"}
 # Words that print a zero
 ZERO = {"nil", "no change", "no impact", "no overall impact", "none", "nothing"}
+# A dash prints a zero only if the normalization says the producer prints it for
+# nil ("dash for nil"), since a table may also print one for "not available".
+DASHES = set("-−–—‐‑")
+NIL = re.compile(r"\bnil\b", re.I)
+# After a bare "in", a year gives no denominator: "5 in 2027"
+YEAR = re.compile(r"20[1-9][0-9]")
 
 
 def _either(words):
@@ -242,16 +247,18 @@ WORDED = re.compile(
     rf"(?P<sign>{_SIGN})?(?P<words>{_WORDS})(?P<percent>{_PERCENT})?",
 )
 _PART = rf"(?:{_either(NUMERATORS)})[ -](?:{_either(DENOMINATORS)})"
-# A worded fraction, perhaps of a multiplier: "half", "three-fifths", "half a
-# million", "a quarter of a percentage point"
+# A worded fraction, perhaps of a multiplier or a percentage: "half",
+# "three-fifths", "half a million", "half million", "a quarter of a percentage
+# point", "half of one per cent", "half per cent"
 FRACTION = re.compile(
     rf"(?P<sign>{_SIGN})?(?P<fraction>half|{_PART})"
-    rf"(?:(?: of)? an? (?:(?P<times>hundred|{_LARGE})"
-    rf"|(?P<percent>per ?cent|percentage point)))?"
+    r"(?:(?:(?: of)? (?:an?|one))?"
+    rf"(?: (?P<times>hundred|{_LARGE})|(?P<percent>{_PERCENT})))?"
 )
-# A whole number and a fraction: "two and a half million", "2 and a third"
+# A whole number and a fraction: "two and a half million", "2 and a third", "one
+# hundred and a half"
 MIXED = re.compile(
-    rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_100}) and (?P<fraction>{_PART})"
+    rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_1000}) and (?P<fraction>{_PART})"
     rf"(?:[ -](?P<times>{_LARGE})|(?P<percent>{_PERCENT}))?"
 )
 _COUNT = rf"(?:{_DIGITS}{_TIMES}?|{_WORDS})"
@@ -359,6 +366,9 @@ def _printed(text):
         return [one]
     m = RATIO.fullmatch(text)
     if m:
+        joint = text[m.end("n") : m.start("m")].strip(" -+−–")
+        if joint == "in" and YEAR.fullmatch(m["m"]):
+            return None
         top, bottom = _count(m["n"]), _count(m["m"])
         if top is None or not bottom:
             return None
@@ -369,16 +379,21 @@ def _printed(text):
         low, high = _one_number(m["a"]), _one_number(m["b"])
         if not (low and high) or (low[1] and not high[1]):
             return None
+        # A fraction before a percentage could read as a share or as part of a
+        # percentage point: "a third to 40%"
+        if low[2] == "share" and high[1] == PERCENT:
+            return None
         # The first number takes the second's word: "£4-5 million"
         if high[1] and not low[1]:
             kind = "rounded" if low[2] == "share" else low[2]
             low = (low[0], high[1], kind)
-        # A range joins like with like, and runs upward in value or in size, so
-        # neither "4% to 2 million" nor "2025-26" is one
+        # A range joins like with like, and only a range of no positive number
+        # may run downward, so "4% to 2 million", "2025-26" and "2 to -3" aren't
+        # ranges, and "-4 to -5" is
         if (low[1] == PERCENT) != (high[1] == PERCENT):
             return None
         a, b = (number * (own[0] if own else 1) for number, own, _ in (low, high))
-        if a > b and abs(a) > abs(b):
+        if a > 0 and a > b:
             return None
         return [low, high]
     return None
@@ -400,10 +415,12 @@ def _restates(first, second):
     )
 
 
-def _read(raw):
+def _read(raw, normalization=""):
     """What value_raw prints, as a list of _one_number's tuples, or None if
     it matches no form the checker reads."""
     text = " ".join(raw.lower().split())
+    if text in DASHES and NIL.search(normalization):
+        return [(0.0, (1,), "words")]
     body = WHOLE.fullmatch(text)["body"]
     if body in ZERO:
         return [(0.0, (1,), "words")]
@@ -470,11 +487,11 @@ def value_problems(r):
     """review A H-2: `value` is finite and is value_raw's number at its scale,
     with value_raw's sign unless the normalization documents a worded sign. A
     number's own word sets its scale. Failing that, the normalization's factor
-    does, failing that a fixed set for digits and 1 for number words. Delta
-    review D1-1: a printed number matches exactly, and only a fraction or a
-    ratio's share may round. A `unit_concept: percent` row stores a share in
-    percent units, 100 times the fraction. A categorical row prints a label
-    with no digits. Any other row matches a form the checker reads."""
+    does, failing that 1. Delta review D1-1: a printed number matches exactly,
+    and only a fraction or a ratio's share may round. A `unit_concept: percent`
+    row stores a share in percent units, 100 times the fraction. A categorical
+    row prints a label with no digits. Any other row matches a form the checker
+    reads."""
     v = r["value"]
     if isinstance(v, bool) or not isinstance(v, (int, float)):
         return ["value is not a number"]
@@ -485,7 +502,7 @@ def value_problems(r):
         if re.search(r"\d", raw):
             return [f"categorical value_raw {raw!r} prints a number"]
         return []
-    numbers = _read(raw)
+    numbers = _read(raw, r.get("normalization") or "")
     if numbers is None:
         return [
             f"the checker can't read value_raw {raw!r} as one number; "
@@ -500,8 +517,7 @@ def value_problems(r):
         elif kind == "rounded":
             near += [number * s for s in own or (1,)]
         else:
-            fallback = SCALES if kind == "digits" else (1,)
-            exact += [number * s for s in own or factors or fallback]
+            exact += [number * s for s in own or factors or (1,)]
     if not (
         any(_same(abs(v), abs(p)) for p in exact)
         or any(_rounded(abs(v), abs(f)) for f in near)
@@ -521,26 +537,37 @@ def value_problems(r):
 # if its first reference, up to its first comma or semicolon, takes one of
 # the forms PRINTED reads and nothing more: a paragraph, table or box by its
 # number, or a data label. The checker reads any other first reference as a
-# bar reading, "Figure 1.A data label unavailable" included. A locator that
-# says we read the number off a bar, chart or graph marks a bar reading
-# wherever it says so, unless a negation comes just before ("not a bar
-# reading", "isn't read off the chart"). The checker looks for these phrases
-# with hyphens and dashes as spaces and with runs of spaces collapsed.
+# bar reading, "Figure 1.A data label unavailable" included. Anywhere in a
+# locator, a bar, a chart or a graph marks a bar reading, and so does a number
+# taken from a figure. A single negation just before the phrase cancels it ("not
+# a bar reading", "didn't read it off the chart"), and a double negation doesn't
+# ("not without a bar reading"). The checker looks for these phrases with hyphens
+# and dashes as spaces and with runs of spaces collapsed, and reads the first
+# reference with each dash as a hyphen.
+_DASH = "[-−–—‐‑]"
 FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
-_FIG = r"fig(?:ure)?s?\.?\s*1\.?\s*[ab](?:\s+and\s+1\.?\s*[ab])?"
+_FIG = r"fig(?:ure)?s?\.?\s*1[.-]?\s*[ab](?:\s+and\s+1[.-]?\s*[ab])?"
 _ID = r"\d+(?:\.[0-9a-z]+)*"
 PRINTED = re.compile(
     rf"(?:paragraph|para|table|box)(?:s|es)?\.?\s+{_ID}"
-    rf"(?:(?:\s+(?:and|to)\s+|\s*[-–]\s*){_ID})?(?:\s+and\s+{_FIG})?"
-    rf"|(?:{_FIG}\s*:?\s+)?data\s+labels?"
+    rf"(?:(?:\s+(?:and|to)\s+|\s*-\s*){_ID})?(?:\s+and\s+{_FIG})?"
+    rf"|(?:{_FIG}\s*:?\s+)?data[\s-]+labels?"
     rf"(?:\s+(?:(?:for|on)\s+)?(?:decile|quintile)\s+\d+|\s+(?:for|on)\s+{_FIG})?",
     re.I,
 )
-_VISUAL = r"(?:the |a )?(?:bars?|charts?|graphs?|figures?)"
+_PICTURE = r"(?:bars?|charts?|graphs?)"
+_OFF = r"(?:off|from)"
+_UP_TO = r"(?:[\w.]+ ){0,4}?"
+# A verb's whole phrase comes first, so that a negation before the verb cancels
+# it: "read it off the decile 3 bar", "reading of the chart". Then any bar, chart
+# or graph, with a reading if it names one ("bar reading from Figure 1.A"), and
+# any number from a figure.
 BAR_READING = re.compile(
-    r"\b(?:bar|chart|graph)s? read(?:ing)?s?\b"
-    rf"|\bread(?:s|ing|ings)? (?:off|from) {_VISUAL}\b"
-    rf"|\bestimated from {_VISUAL}\b",
+    r"\b(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
+    rf" {_OFF} {_UP_TO}(?:{_PICTURE}|figures?)\b"
+    rf"|\breadings? of {_UP_TO}(?:{_PICTURE}|figures?)\b"
+    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF} {_UP_TO}figures?)?)?\b"
+    rf"|\b{_OFF} {_UP_TO}figures?\b",
     re.I,
 )
 DENIED = re.compile(
@@ -826,21 +853,28 @@ def _row_problems(r, keys, earlier, metrics, units):
         out.append(
             "no HMT Impact on households bar readings: start the locator with "
             "the paragraph, table, box or data label where HM Treasury prints "
-            "the number (README rule 4)"
+            "the number, and call nothing there a bar, chart or graph (README "
+            "rule 4)"
         )
     return out
+
+
+def _denied(before):
+    """Whether one negation, and no more, comes right before a phrase."""
+    m = DENIED.search(before)
+    return bool(m) and not DENIED.search(before[: m.start()])
 
 
 def reads_a_bar(locator):
     """README rule 4: whether a locator places the number on a bar of Figure
     1.A or 1.B, rather than naming where HM Treasury prints it."""
-    plain = " ".join(re.sub(r"[-−–—‐‑]", " ", locator).split())
-    if any(not DENIED.search(plain[: m.start()]) for m in BAR_READING.finditer(plain)):
+    plain = " ".join(re.sub(_DASH, " ", locator).split())
+    if any(not _denied(plain[: m.start()]) for m in BAR_READING.finditer(plain)):
         return True
     if not FIGURE_1.search(plain):
         return False
-    lead = " ".join(re.split(r"[,;]", locator, maxsplit=1)[0].split())
-    return not PRINTED.fullmatch(lead)
+    first = re.split(r"[,;]", re.sub(_DASH, "-", locator), maxsplit=1)[0]
+    return not PRINTED.fullmatch(" ".join(first.split()))
 
 
 def family_problems(family_dir):
