@@ -117,7 +117,7 @@ Under "Not staged" below we list the 36 design rows we removed under rule 8 and 
 | `ab2026__founders_relief_cgt` | 1 |
 | `ab2026__defence_investment_plan_further_savings` | 1 |
 
-We key 200 rows to the 19 keys below, which we proposed and tranche 2 registered, and stage 332 as context. As context we stage fiscal aggregates, energy bill levels, living standards and poverty. The context rows also include the three pre-AB26 component columns of F20 (57 rows: "pre-AB26 Direct tax changes", "pre-AB26 Benefit changes" and "pre-AB26 Indirect tax changes"), in which RF scores earlier events' measures.
+We key 200 rows to the 19 keys below, which we proposed and registered in tranche 2, and stage 332 as context. As context we stage fiscal aggregates, energy bill levels, living standards and poverty. The context rows also include the three pre-AB26 component columns of F20 (57 rows: "pre-AB26 Direct tax changes", "pre-AB26 Benefit changes" and "pre-AB26 Indirect tax changes"), in which RF scores earlier events' measures.
 
 ## Conventions
 
@@ -188,7 +188,7 @@ We key 200 rows to the 19 keys below, which we proposed and tranche 2 registered
 
 ### Keys we proposed
 
-We gave each row below `measure_key: null` and its key in `conditions.proposed_measure_key`, and tranche 2 registered the keys and moved them into `measure_key`. Every one crosses Table 6.1 lines or has none (rule 9).
+We gave each row below `measure_key: null` and its key in `conditions.proposed_measure_key`, and in tranche 2 we registered the keys and moved them into `measure_key`. Every one crosses Table 6.1 lines or has none (rule 9).
 
 | key | rows | scope (Table 6.1 lines; RF's words) |
 |---|--:|---|

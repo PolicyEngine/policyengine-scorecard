@@ -33,7 +33,7 @@ Review B (PR #231, issue comment 6635498758) approved this family with fixes, an
 | | Paragraphs after Table 1 | 2 | 0.5% resource and almost 10% capital real-terms reductions (context) |
 | Scottish Government news release | Opening paragraph and paragraph 2 | 5 | £650 million; 1.3% and £550 million (resource); 1.5% and £100 million (capital), all 2027-28 real-terms reductions (context) |
 
-By `measure_key`: **`ab2026__package_barnett_consequentials` 12, null 7**. We key the twelve Welsh package rows to it, all `measure_component`, since Wales forms a part of the three-government package. On 3 November we gave these rows the key as a proposal, and tranche 2 registered it. We stage the seven real-terms rows as context with no key. By metric we give 12 rows `block_grant_effect` and 7 `devolved_funding_real_terms_change`; by unit, 15 `gbp` and 4 `percent`; we mark all 19 `own`, benchmark `different_model`.
+By `measure_key`: **`ab2026__package_barnett_consequentials` 12, null 7**. We key the twelve Welsh package rows to it, all `measure_component`, since Wales forms a part of the three-government package. On 3 November we gave these rows the key as a proposal, and in tranche 2 we registered it. We stage the seven real-terms rows as context with no key. By metric we give 12 rows `block_grant_effect` and 7 `devolved_funding_real_terms_change`; by unit, 15 `gbp` and 4 `percent`; we mark all 19 `own`, benchmark `different_model`.
 
 ## Package key
 
@@ -167,7 +167,7 @@ The lane also read the headline and all remaining numeric cells directly
 when transcribing, and every row's quote contains its raw value. Its scope
 review found no assigned registry key. On 3 November we gave the Welsh
 package rows the shared proposed key `ab2026__package_barnett_consequentials`
-(scope above), which tranche 2 registered, and the context rows no key.
+(scope above), which we registered in tranche 2, and the context rows no key.
 - Scottish rows, 29 October, in `uk_fai_sfc`: the family then held fewer than 10 rows, so the lane checked all 5. It shuffled them reproducibly (`random.Random(20261029)`) and checked rows **3, 2, 1, 4, 5** in that order (now rows 17, 16, 15, 18, 19 of this family, one-based). It re-opened the saved primary at every locator and checked its hash against each row's publication hash.
 
 | Row | Primary locator | Verbatim figure | Checked normalization | Sign and period |

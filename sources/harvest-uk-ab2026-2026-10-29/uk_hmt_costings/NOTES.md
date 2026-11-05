@@ -19,7 +19,7 @@ We use source slug `hm_treasury` and source_model `hmt_costing_obr_certified`, a
 - Measure keys: 79 registry keys on 595 rows.
   - We stage 416 rows that each cost a whole Table 6.1 line: `conditions.row_type: measure`, 68 keys.
   - We stage 157 rows that each cost a printed part of one line: `row_type: measure_component`, 8 lines' keys.
-  - We key 22 rows, which cost measures with no Table 6.1 line or none we can identify, to 3 keys that we proposed and tranche 2 registered. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
+  - We key 22 rows, which cost measures with no Table 6.1 line or none we can identify, to 3 keys that we proposed and registered in tranche 2. We mark 6 of them (p.108's receipts) `measure_component`, so 163 rows in all form components.
   - We stage 2 rows (p.50's UK tax gap) as context: `measure_key: null` and no proposed key.
 
 ## Access recipe
@@ -173,7 +173,7 @@ HM Treasury orders its costing notes by Table 6.1 line. When we map each note to
 | 84 | `ab2026__waste_crime_landfill_tax_clearances` | p.92 six priority site clearances; p.93 local authority pilot |
 | 85 | `ab2026__further_priorities_nhs_and_vawg` | p.94 Erasmus+ (by position; see below) |
 
-- **Keys with no Table 6.1 line.** We use 3 keys on 22 rows, all `row_type: measure` except p.108's six receipts rows, which we mark `measure_component`. Under rule 9 we proposed keys only "for scopes that cross Table 6.1 lines, or have none", and tranche 2 registered these three. In the table we give each key's scope in the producer's own words.
+- **Keys with no Table 6.1 line.** We use 3 keys on 22 rows, all `row_type: measure` except p.108's six receipts rows, which we mark `measure_component`. Under rule 9 we proposed keys only "for scopes that cross Table 6.1 lines, or have none", and in tranche 2 we registered these three. In the table we give each key's scope in the producer's own words.
 
 | key | rows | page | scope |
 |---|--:|---|---|

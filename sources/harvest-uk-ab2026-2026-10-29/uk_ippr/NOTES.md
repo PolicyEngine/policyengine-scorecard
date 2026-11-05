@@ -43,7 +43,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
    - We stage it as `apf_indemnity_losses`, the AB2025 uk_ippr proposal, under which we staged IPPR's "£22 billion" the same way. We mark it `restated`, source not stated.
    - Jung gives no year, so we put it at the scoring year 2026-27 with a `year_note`. We stage it as context with no measure key.
 3. **"Five per cent of income tax devolved to mayors would see an additional £4billion"** (IPPR North).
-   - IPPR North estimates, on its own account, an option beyond the Budget's commitment on income tax devolution. We key it to `ab2026_option__income_tax_5pc_share_devolved_to_mayors` and propose the metric `devolved_revenue` (gbp). On 29 October we gave the row `measure_key: null` and proposed this key, and tranche 2 registered it.
+   - IPPR North estimates, on its own account, an option beyond the Budget's commitment on income tax devolution. We key it to `ab2026_option__income_tax_5pc_share_devolved_to_mayors` and propose the metric `devolved_revenue` (gbp). On 29 October we gave the row `measure_key: null` and proposed this key, and in tranche 2 we registered it.
    - IPPR North gives no year, so we put it at the scoring year with a `year_note`. IPPR North links the paper "Devolution that delivers: Fiscal power for regional growth" from the release.
 
 ## Option keys and their scope

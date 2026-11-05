@@ -56,7 +56,7 @@ We take rows 0 to 86 from the decks, by deck, slide and position. Rows 87 to 143
 
 ## Keys we proposed
 
-We proposed four keys for seven rows, and tranche 2 registered them and moved them into `measure_key`. We spell them under README rule 2 and give each the producer's printed scope (rule 3).
+We proposed four keys for seven rows, and in tranche 2 we registered them and moved them into `measure_key`. We spell them under README rule 2 and give each the producer's printed scope (rule 3).
 
 - `ab2026__package_property_and_savings_income_rates` (1 row): exactly Table 6.1 lines 61 and 62. On Adam slide 2 IFS gives "Increased income tax on savings & property income" as £1.1bn in 2031–32 (lines 61 and 62 print 455 + 590 = 1,045). IFS opens slide 2's list "Biggest revenue-raisers in 2031–32", so the year stands, and we record the £55m gap in the row's `conditions.discrepancy` (review A, K-7(a)).
 - `ab2026__gas_standing_charge_moved_to_unit_rates` (3 rows): no Table 6.1 line. Wernham slide 8's "Shifting gas standing charge onto unit price": "This charge will be scrapped, but per-unit price will be increased to absorb this". We take the RF family's spelling.
