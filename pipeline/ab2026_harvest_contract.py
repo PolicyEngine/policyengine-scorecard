@@ -446,8 +446,10 @@ _STEP = r"[x×*/÷]\s*\.?[0-9][^\s;]*"
 _CHAIN = re.compile(rf"(?:^|(?<=[\s(\[]))({_STEP}(?:\s+{_STEP})*)")
 _OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
 # What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million",
-# "x 1 hundred"
-_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)})\b)")
+# "x 1 hundred", "x 2 and a half"
+_CONTINUES = re.compile(
+    rf"\s+(?:[0-9]|(?:{_either(MULTIPLIERS)}|and\s+(?:half|{_PART}))\b)"
+)
 # An operation on what the checker can't read as a number: a sign, bracket, quote
 # or currency sign first ("x (1e6)", "x +1e6", "x '1e6'", "x £100"), or number words
 # ("x one million", "x (a million)", "x half", "/ a quarter"). Also an operation in words ("times 1,000",

@@ -2063,6 +2063,7 @@ def test_rule_4_holds_whatever_the_title_case():
         ('paragraph 1.7; read off the "Impact on households" Figure 1.A', True),
         ("paragraph 1.7; read off the “Impact on households” Figure 1.A", True),
         ("paragraph 1.7; read from ((HMT)) Figure 1.A", True),
+        ("paragraph 1.7; read from [[HMT]] Figure 1.A", True),
         ('paragraph 1.7; read from "HMT" Figure 1.A', True),
         ("paragraph 1.7; read from (“HMT”) Figure 1.A", True),
         # Up to four words stand between "from" and the figure.
@@ -2072,6 +2073,7 @@ def test_rule_4_holds_whatever_the_title_case():
         ('paragraph 1.7; not read from "HMT" Figure 1.A', False),
         ("paragraph 1.7; not read from (“HMT”) Figure 1.A", False),
         ("paragraph 1.7; not read from ((HMT)) Figure 1.A", False),
+        ("paragraph 1.7; not read from [[HMT]] Figure 1.A", False),
         # a comma ends the words before a figure
         ("paragraph 1.7; figures from Table 2.C, Figure 1.A data label", False),
         ("paragraph 1.7; not read from [Figure 1.A]", False),
@@ -2719,6 +2721,35 @@ def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand)
         for value in (4, 4e6):
             found = problems(_share("4", value, note))
             assert any("a factor in normalization" in p for p in found), (note, value)
+
+
+@pytest.mark.parametrize(
+    "note",
+    [
+        "x 2 and a half",
+        "/ 2 and a half",
+        "x 2 and half",
+        "x 2 and three-quarters",
+        "x 2 and three quarters",
+        "(x 2 and a half)",
+        "as printed; x 2 and a half",
+        "x 1e6 / 2 and a half",
+    ],
+)
+def test_a_numeric_mixed_fraction_is_a_problem_at_any_value(note):
+    """Sol's review of 4dd5281d: the checker read "x 2 and a half" as a factor of 2,
+    so "4" under it passed at 8."""
+    for value in (4, 8, 10, 1.6, 2e6):
+        found = problems(_share("4", value, note))
+        assert any("a factor in normalization" in p for p in found), (note, value)
+
+
+@pytest.mark.parametrize("note", ["x 2 and rounded", "x 2 and halfway", "x 2 and a"])
+def test_a_word_after_and_leaves_the_factor_alone(note):
+    """Only a fraction after "and" carries on the number."""
+    assert not any(
+        "a factor in normalization" in p for p in problems(_share("4", 8, note))
+    )
 
 
 def test_a_long_run_of_quotes_stays_quick_to_read():
