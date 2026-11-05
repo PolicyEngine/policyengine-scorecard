@@ -67,7 +67,7 @@ The coordinator added two rules to the AB2026 README while we staged this family
   - Under rule 8 we treat a measure's own parameters as design: rates, thresholds, payment amounts, dates and durations. We treat spending allocations to programmes, financing remits and contingent liabilities the same way.
   - We put design in `reform_hint` or `conditions`, never in rows.
   - We treat a worked example's inputs as design too, and stage its computed outcome as a row.
-- **Rule 9: a component of one measure keeps that measure's key.** We give the row `conditions.component` and `conditions.row_type: measure_component`. We proposed package keys only for scopes that cross Table 6.1 lines, or have none.
+- **Rule 9: a component of one measure keeps that measure's key.** We give the row `conditions.component` and `conditions.row_type: measure_component`. We proposed keys only for scopes that cross Table 6.1 lines or have no line.
 
 Under "Not staged" below we list the 36 design rows we removed under rule 8 and where their facts went. RF splits the electricity VAT cut into an "original" six months and a three-month "extension", both parts of Table 6.1 line 2, so we key their 39 rows to line 2 as measure components.
 
@@ -117,7 +117,7 @@ Under "Not staged" below we list the 36 design rows we removed under rule 8 and 
 | `ab2026__founders_relief_cgt` | 1 |
 | `ab2026__defence_investment_plan_further_savings` | 1 |
 
-We key 200 rows to the 19 keys below, which we proposed and tranche 2 registered, and stage 332 as context. The context rows cover fiscal aggregates, energy bill levels, living standards and poverty. They also include the three pre-AB26 component columns of F20 (57 rows: "pre-AB26 Direct tax changes", "pre-AB26 Benefit changes" and "pre-AB26 Indirect tax changes"), in which RF scores earlier events' measures.
+We key 200 rows to the 19 keys below, which we proposed and tranche 2 registered, and stage 332 as context. As context we stage fiscal aggregates, energy bill levels, living standards and poverty. The context rows also include the three pre-AB26 component columns of F20 (57 rows: "pre-AB26 Direct tax changes", "pre-AB26 Benefit changes" and "pre-AB26 Indirect tax changes"), in which RF scores earlier events' measures.
 
 ## Conventions
 
@@ -214,7 +214,7 @@ We gave each row below `measure_key: null` and its key in `conditions.proposed_m
 
 ## Proposed metrics
 
-The registry lists none of these as a metric. We give each row one as `proposed_metric`, reusing the AB2025 spelling where one exists: `forecast_borrowing_change`, `average_energy_bill_change`, `incidence_share`, `tax_to_gdp_ratio`, `real_spending_growth`, `spending_pressure` and `forecast_revenue_change`. We coined the rest. Every unit we use appears in the registry as a UnitConcept.
+We have registered none of these in the `Metric` enum of `scorecard_db/models.py`. We give each row one as `proposed_metric`, reusing the AB2025 spelling where one exists: `forecast_borrowing_change`, `average_energy_bill_change`, `incidence_share`, `tax_to_gdp_ratio`, `real_spending_growth`, `spending_pressure` and `forecast_revenue_change`. We coined the rest. Every unit we use appears in the registry as a UnitConcept.
 
 - **Energy:**
   - `typical_energy_bill`: the typical household's annual bill level.
@@ -306,11 +306,11 @@ The registry lists none of these as a metric. We give each row one as `proposed_
     - The 19th of 34 fiscal events (a rank).
     - PR28's "mid-2029" date for living standards to recover, and its ranking of the Parliament as the "second worst … since the 1950s" (a date and a rank, not an estimate of a measure).
   - **Other design:**
-    - £100, bands A-D, 5p, 3p / 2p, 2 points and 3 to 6 per cent;
-    - the 31 per cent headline bank rate and 20 / 25 per cent;
-    - the £1.5bn Good Growth lending facility, the 20 per cent equity loan and 2.5 per cent deposit, and the £110,000 / £140,000 income caps;
-    - £86.45, £204, 16 hours, £1 for £1 and the 55 per cent UC taper;
-    - Business Rates retention shares (20 / 50 / 70 / 100 per cent), and the 3 and 3.5 per cent defence targets.
+    - £100, bands A-D, 5p, 3p / 2p, 2 points, 3 to 6 per cent,
+    - the 31 per cent headline bank rate, 20 / 25 per cent,
+    - the £1.5bn Good Growth lending facility, the 20 per cent equity loan and 2.5 per cent deposit, the £110,000 / £140,000 income caps,
+    - £86.45, £204, 16 hours, £1 for £1, the 55 per cent UC taper,
+    - Business Rates retention shares (20 / 50 / 70 / 100 per cent), the 3 and 3.5 per cent defence targets.
   - **Third-party figures:**
     - Anthropic's $65bn (£48bn) round and the "1.5 per cent" comparison.
     - The Health Foundation's £7.5bn.
