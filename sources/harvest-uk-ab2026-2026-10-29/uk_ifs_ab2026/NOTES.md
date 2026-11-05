@@ -574,8 +574,8 @@ We superseded these on 3 November (see "Keys the addendum changed" above). We st
 ### Conventions and metric proposals
 
 The first lane kept printed signs on all monetary figures. The 3 November
-addendum kept these choices on the rows it kept, among them rows 81 and 83–85,
-and dropped the Founders' Relief rows. The first lane staged
+addendum kept these choices on the rows it kept, among them rows 81 to 85. The
+first lane staged
 revenue-raising amounts as positive yields, and the Founders' Relief £0.3bn as a
 positive cost, explicitly labelled so. It multiplied amounts in £bn/£m by
 1e9/1e6, kept tax rates in percent, and kept every quoted excerpt under 15
