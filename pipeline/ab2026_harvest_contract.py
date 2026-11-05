@@ -470,12 +470,16 @@ _UNREAD = re.compile(
 )
 
 
+def _collapsed(text):
+    """Text in lower case, with each run of whitespace as one space."""
+    return " ".join((text or "").lower().split())
+
+
 def _factors(normalization):
     """The multipliers a normalization states ("x 1,000,000", "/ 100", "(x 10^6)"),
     or None if it states one the checker can't read whole. Operations in a row
     make one multiplier: "x 1,000,000 / 100" is 10,000."""
-    text = " ".join((normalization or "").lower().split())
-    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", text)
+    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", _collapsed(normalization))
     if _UNREAD.search(text):
         return None
     out = []
@@ -577,7 +581,7 @@ def value_problems(r):
     ):
         return [f"value {v!r} is not value_raw {raw!r} at a stated scale"]
     if (
-        WORDED_SIGN.search(r.get("normalization") or "")
+        WORDED_SIGN.search(_collapsed(r.get("normalization")))
         or any(_same(v, p) for p in exact)
         or any(_rounded(v, f) for f in near)
     ):

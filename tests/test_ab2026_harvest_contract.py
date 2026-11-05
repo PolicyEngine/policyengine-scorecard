@@ -23,6 +23,7 @@ from hypothesis import strategies as st
 
 from pipeline.ab2026_harvest_contract import (
     OGL,
+    _factors,
     duplicate_problems,
     enums,
     family_problems,
@@ -2755,39 +2756,87 @@ def test_a_word_after_and_leaves_the_factor_alone(note):
     )
 
 
+SPACED_NOTES = [
+    "x 2",
+    "x 2.5",
+    "/ 100",
+    "x 1,000,000 / 100",
+    "x 10 ^ 6",
+    "times 1,000",
+    "x 1 million",
+    "as printed; x 2",
+    "as printed",
+    "x 2 and a half",
+    "x 2 and three quarters",
+    "x 2 and rounded",
+    "x 2 and halfway",
+    "x 2 and a",
+    "sign from the wording; x 2",
+    "carried negative; x 2",
+    "x 2 -> -8",
+    "x 2 → negative",
+    "dash for nil",
+    "the table prints nil as a dash",
+]
+WHITESPACE = [chr(c) for c in range(0x110000) if chr(c).isspace()]
+
+
+def _stretch(note, at, run):
+    return note[:at] + run + note[at + 1 :]
+
+
+@pytest.mark.parametrize("note", SPACED_NOTES)
+def test_a_run_of_whitespace_in_a_note_reads_as_one_space(note):
+    """Sol's reviews of 8200b418 and c9027fe2: two spaces or a tab hid the fraction
+    in "x 2 and a half" and the sign in "sign from the wording", so the checker
+    gave another reading of the same note."""
+    spaces = [i for i, c in enumerate(note) if c == " "]
+    for at, run in product(spaces, ("  ", "   ", "\t", "\n", " \t ", "\u00a0")):
+        stretched = _stretch(note, at, run)
+        assert _factors(stretched) == _factors(note), stretched
+        for raw, value in product(
+            ("4", "-"), (4, -8, 8, 10, 40, 400, 0.04, 40000, 4e6, 0)
+        ):
+            assert problems(_share(raw, value, stretched)) == problems(
+                _share(raw, value, note)
+            ), (stretched, raw, value)
+
+
 @settings(max_examples=300, deadline=None)
 @given(
-    note=st.sampled_from(
-        [
-            "x 2",
-            "x 2.5",
-            "/ 100",
-            "x 1,000,000 / 100",
-            "x 10 ^ 6",
-            "times 1,000",
-            "x 1 million",
-            "as printed; x 2",
-            "as printed",
-            "x 2 and a half",
-            "x 2 and three quarters",
-            "x 2 and rounded",
-            "x 2 and halfway",
-            "x 2 and a",
-        ]
-    ),
-    run=st.sampled_from(["  ", "   ", "\t", "\n", " \t ", "\u00a0"]),
+    note=st.sampled_from(SPACED_NOTES),
+    run=st.text(st.sampled_from(WHITESPACE), min_size=1, max_size=4),
     gap=st.integers(0, 20),
-    value=st.sampled_from([4, 8, 10, 40, 400, 4e6]),
+    raw=st.sampled_from(["4", "-"]),
+    value=st.sampled_from([4, -8, 8, 40000, 0.04, 0]),
 )
-def test_a_run_of_whitespace_in_a_note_reads_as_one_space(note, run, gap, value):
-    """Sol's review of 8200b418: two spaces or a tab hid the fraction in "x 2 and a
-    half", so "4" under it passed at 8."""
+def test_any_whitespace_character_reads_as_one_space(note, run, gap, raw, value):
     spaces = [i for i, c in enumerate(note) if c == " "]
-    at = spaces[gap % len(spaces)]
-    stretched = note[:at] + run + note[at + 1 :]
-    assert bool(problems(_share("4", value, stretched))) == bool(
-        problems(_share("4", value, note))
-    ), (stretched, value)
+    stretched = _stretch(note, spaces[gap % len(spaces)], run)
+    assert _factors(stretched) == _factors(note), stretched
+    assert problems(_share(raw, value, stretched)) == problems(_share(raw, value, note))
+
+
+@pytest.mark.parametrize(
+    "note",
+    [
+        "sign from the wording; x 2",
+        "sign  from the wording; x 2",
+        "sign\tfrom the wording; x 2",
+        "sign\u00a0from the wording; x 2",
+        "Sign from the wording; x 2",
+        "SIGN FROM THE WORDING; X 2",
+        "carried  negative; x 2",
+        "x 2 ->  -8",
+        "x 2 →  negative",
+    ],
+)
+def test_a_worded_sign_reads_in_any_spacing_or_case(note):
+    assert not problems(_share("4", -8, note))
+
+
+def test_a_note_with_no_worded_sign_keeps_the_printed_sign():
+    assert any("opposite sign" in p for p in problems(_share("4", -8, "x 2")))
 
 
 def test_a_long_run_of_quotes_stays_quick_to_read():
