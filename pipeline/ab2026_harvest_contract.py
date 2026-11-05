@@ -114,7 +114,6 @@ GEOGRAPHY = {
 # A `normalization` that documents a sign taken from the wording, not from a
 # printed minus (review A H-2(3)).
 WORDED_SIGN = re.compile(r"sign from the wording|carried negative|-> -\d|→ negative")
-SCALES = (1, 1e3, 1e6, 1e9, 0.01, 100)
 # A percentage is stored as a share or in percent units.
 PERCENT = (0.01, 1.0)
 
@@ -208,6 +207,17 @@ QUALIFIERS = {
 TAILS = {"a year", "of gdp"}
 # Words that print a zero
 ZERO = {"nil", "no change", "no impact", "no overall impact", "none", "nothing"}
+# A dash prints a zero only if one whole clause of the normalization says the
+# producer prints it for nil ("dash for nil", "the table prints nil as a dash"),
+# since a table may also print one for "not available".
+_DASHES = "-−–—‐‑‒―"
+DASHES = set(_DASHES)
+NIL = re.compile(
+    r"(?:(?:(?:the )?(?:table|producer|source|workbook) )?prints? )?"
+    r"(?:nil (?:as|=) (?:a )?dash|(?:a |the )?dash(?:es)? (?:for|means?|=) nil)"
+)
+# After a bare "in", a year gives no denominator: "5 in 2027"
+YEAR = re.compile(r"20[1-9][0-9]")
 
 
 def _either(words):
@@ -242,17 +252,19 @@ WORDED = re.compile(
     rf"(?P<sign>{_SIGN})?(?P<words>{_WORDS})(?P<percent>{_PERCENT})?",
 )
 _PART = rf"(?:{_either(NUMERATORS)})[ -](?:{_either(DENOMINATORS)})"
-# A worded fraction, perhaps of a multiplier: "half", "three-fifths", "half a
-# million", "a quarter of a percentage point"
+# A worded fraction, perhaps of a multiplier or a percentage: "half",
+# "three-fifths", "half a million", "half million", "a quarter of a percentage
+# point", "half of one per cent", "half per cent"
 FRACTION = re.compile(
     rf"(?P<sign>{_SIGN})?(?P<fraction>half|{_PART})"
-    rf"(?:(?: of)? an? (?:(?P<times>hundred|{_LARGE})"
-    rf"|(?P<percent>per ?cent|percentage point)))?"
+    r"(?:(?:(?: of)? (?:an?|one))?"
+    rf"(?: (?P<times>hundred|{_LARGE})|(?P<percent>{_PERCENT})))?"
 )
-# A whole number and a fraction: "two and a half million", "2 and a third"
+# A whole number and a fraction: "two and a half million", "2 and a third", "one
+# hundred and a half"
 MIXED = re.compile(
-    rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_100}) and (?P<fraction>{_PART})"
-    rf"(?:[ -](?P<times>{_LARGE})|(?P<percent>{_PERCENT}))?"
+    rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_1000}) and (?P<fraction>{_PART})"
+    rf"(?:[ -](?P<times>{_either(SHORT)}|{_LARGE})|(?P<percent>{_PERCENT}))?"
 )
 _COUNT = rf"(?:{_DIGITS}{_TIMES}?|{_WORDS})"
 # Two numbers joined all by spaces or all by hyphens. A sign comes before N or,
@@ -359,6 +371,9 @@ def _printed(text):
         return [one]
     m = RATIO.fullmatch(text)
     if m:
+        joint = text[m.end("n") : m.start("m")].strip(" -+−–")
+        if joint == "in" and YEAR.fullmatch(m["m"]):
+            return None
         top, bottom = _count(m["n"]), _count(m["m"])
         if top is None or not bottom:
             return None
@@ -369,16 +384,21 @@ def _printed(text):
         low, high = _one_number(m["a"]), _one_number(m["b"])
         if not (low and high) or (low[1] and not high[1]):
             return None
+        # A fraction before a percentage could read as a share or as part of a
+        # percentage point: "a third to 40%"
+        if low[2] == "share" and high[1] == PERCENT:
+            return None
         # The first number takes the second's word: "£4-5 million"
         if high[1] and not low[1]:
             kind = "rounded" if low[2] == "share" else low[2]
             low = (low[0], high[1], kind)
-        # A range joins like with like, and runs upward in value or in size, so
-        # neither "4% to 2 million" nor "2025-26" is one
+        # A range joins like with like, and only a range of no positive number
+        # may run downward, so "4% to 2 million", "2025-26" and "2 to -3" aren't
+        # ranges, and "-4 to -5" is
         if (low[1] == PERCENT) != (high[1] == PERCENT):
             return None
         a, b = (number * (own[0] if own else 1) for number, own, _ in (low, high))
-        if a > b and abs(a) > abs(b):
+        if a > 0 and a > b:
             return None
         return [low, high]
     return None
@@ -400,10 +420,18 @@ def _restates(first, second):
     )
 
 
-def _read(raw):
+def _says_nil(normalization):
+    """Whether one whole clause of a normalization declares a dash for nil."""
+    clauses = re.split(r"[;,.()]", normalization.lower())
+    return any(NIL.fullmatch(" ".join(c.split())) for c in clauses)
+
+
+def _read(raw, normalization=""):
     """What value_raw prints, as a list of _one_number's tuples, or None if
     it matches no form the checker reads."""
     text = " ".join(raw.lower().split())
+    if text in DASHES and _says_nil(normalization):
+        return [(0.0, (1,), "words")]
     body = WHOLE.fullmatch(text)["body"]
     if body in ZERO:
         return [(0.0, (1,), "words")]
@@ -414,20 +442,33 @@ def _read(raw):
     return first + second if first and second and _restates(first, second) else None
 
 
+_STEP = r"[x×*/÷]\s*\.?[0-9][^\s;]*"
+_CHAIN = re.compile(rf"(?:^|(?<=[\s(\[]))({_STEP}(?:\s+{_STEP})*)")
+_OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
+# What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million"
+_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(LARGE)}|{_either(SHORT)})\b)")
+
+
 def _factors(normalization):
-    """The multipliers a normalization states ("x 1,000,000", "/ 100", ...)."""
+    """The multipliers a normalization states ("x 1,000,000", "/ 100", "(x 10^6)"),
+    or None if it states one the checker can't read whole. Operations in a row
+    make one multiplier: "x 1,000,000 / 100" is 10,000."""
+    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", (normalization or "").lower())
     out = []
-    for op, num in re.findall(
-        r"(?:^|\s)(x|×|\*|/|÷)\s*(\d[\d,]*(?:\.\d+)?(?:e[+-]?\d+)?)",
-        normalization or "",
-        re.I,
-    ):
-        try:
-            f = float(num.replace(",", ""))
-        except ValueError:
-            continue
-        if f and math.isfinite(f):
-            out.append(1 / f if op in "/÷" else f)
+    for chain in _CHAIN.finditer(text):
+        if _CONTINUES.match(text, chain.end()):
+            return None
+        factor = 1.0
+        for step in re.findall(_STEP, chain[0]):
+            operand = _OPERAND.fullmatch(step[1:].strip().rstrip(",:.)]"))
+            if not operand:
+                return None
+            power = operand["power"]
+            f = float(f"1e{power}" if power else operand[0].replace(",", ""))
+            if not f or not math.isfinite(f):
+                return None
+            factor = factor / f if step[0] in "/÷" else factor * f
+        out.append(factor)
     return out
 
 
@@ -470,11 +511,11 @@ def value_problems(r):
     """review A H-2: `value` is finite and is value_raw's number at its scale,
     with value_raw's sign unless the normalization documents a worded sign. A
     number's own word sets its scale. Failing that, the normalization's factor
-    does, failing that a fixed set for digits and 1 for number words. Delta
-    review D1-1: a printed number matches exactly, and only a fraction or a
-    ratio's share may round. A `unit_concept: percent` row stores a share in
-    percent units, 100 times the fraction. A categorical row prints a label
-    with no digits. Any other row matches a form the checker reads."""
+    does, failing that 1. Delta review D1-1: a printed number matches exactly,
+    and only a fraction or a ratio's share may round. A `unit_concept: percent`
+    row stores a share in percent units, 100 times the fraction. A categorical
+    row prints a label with no digits. Any other row matches a form the checker
+    reads."""
     v = r["value"]
     if isinstance(v, bool) or not isinstance(v, (int, float)):
         return ["value is not a number"]
@@ -485,23 +526,27 @@ def value_problems(r):
         if re.search(r"\d", raw):
             return [f"categorical value_raw {raw!r} prints a number"]
         return []
-    numbers = _read(raw)
+    numbers = _read(raw, r.get("normalization") or "")
     if numbers is None:
         return [
             f"the checker can't read value_raw {raw!r} as one number; "
             "narrow it to the number the row stores"
         ]
     factors = _factors(r.get("normalization") or "")
+    if factors is None:
+        return [
+            "the checker can't read a factor in normalization; state one number "
+            "or power of 10"
+        ]
     per = 100 if r.get("unit_concept") == "percent" else 1
     exact, near = [], []
     for number, own, kind in numbers:
         if kind == "share":
             near.append(per * number)
         elif kind == "rounded":
-            near += [number * s for s in own or (1,)]
+            near += [number * s for s in own or factors or (1,)]
         else:
-            fallback = SCALES if kind == "digits" else (1,)
-            exact += [number * s for s in own or factors or fallback]
+            exact += [number * s for s in own or factors or (1,)]
     if not (
         any(_same(abs(v), abs(p)) for p in exact)
         or any(_rounded(abs(v), abs(f)) for f in near)
@@ -521,31 +566,46 @@ def value_problems(r):
 # if its first reference, up to its first comma or semicolon, takes one of
 # the forms PRINTED reads and nothing more: a paragraph, table or box by its
 # number, or a data label. The checker reads any other first reference as a
-# bar reading, "Figure 1.A data label unavailable" included. A locator that
-# says we read the number off a bar, chart or graph marks a bar reading
-# wherever it says so, unless a negation comes just before ("not a bar
-# reading", "isn't read off the chart"). The checker looks for these phrases
-# with hyphens and dashes as spaces and with runs of spaces collapsed.
-FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
-_FIG = r"fig(?:ure)?s?\.?\s*1\.?\s*[ab](?:\s+and\s+1\.?\s*[ab])?"
+# bar reading, "Figure 1.A data label unavailable" included. Anywhere in a
+# locator, a bar, chart, graph, plot, diagram or visual marks a bar reading, and
+# so does a number taken from a figure or read by eye. A single negation just before the phrase cancels it ("not
+# a bar reading", "didn't read it off the chart"), and a double negation doesn't
+# ("not without a bar reading"). The checker looks for these phrases with hyphens
+# and dashes as spaces and with runs of spaces collapsed, and reads the first
+# reference with each dash as a hyphen.
+_DASH = f"[{_DASHES}]"
+FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*\(?[ab]\b", re.I)
+_FIG = r"fig(?:ure)?s?\.?\s*1[.-]?\s*[ab](?:\s+and\s+1[.-]?\s*[ab])?"
 _ID = r"\d+(?:\.[0-9a-z]+)*"
 PRINTED = re.compile(
     rf"(?:paragraph|para|table|box)(?:s|es)?\.?\s+{_ID}"
-    rf"(?:(?:\s+(?:and|to)\s+|\s*[-–]\s*){_ID})?(?:\s+and\s+{_FIG})?"
-    rf"|(?:{_FIG}\s*:?\s+)?data\s+labels?"
+    rf"(?:(?:\s+(?:and|to)\s+|\s*-\s*){_ID})?(?:\s+and\s+{_FIG})?"
+    rf"|(?:{_FIG}\s*:?\s+)?data[\s-]+labels?"
     rf"(?:\s+(?:(?:for|on)\s+)?(?:decile|quintile)\s+\d+|\s+(?:for|on)\s+{_FIG})?",
     re.I,
 )
-_VISUAL = r"(?:the |a )?(?:bars?|charts?|graphs?|figures?)"
+_PICTURE = r"(?:bars?|charts?|graphs?|plots?|diagrams?|visuals?)"
+_FIGS = r"fig(?:ure)?s?"
+_OFF = r"(?:off|from)"
+_UP_TO = r"(?:[\w.]+ ){0,4}?"
+# A verb's whole phrase comes first, so that a negation before the verb cancels
+# it: "read it off the decile 3 bar", "reading of the chart", "visual estimate of
+# Figure 1.A". Then any picture, with a reading if it names one ("bar reading from
+# Figure 1.A"), any number from a figure or a figure's column, and any reading by
+# eye. A column of a table prints its number, so a column counts only in a figure.
 BAR_READING = re.compile(
-    r"\b(?:bar|chart|graph)s? read(?:ing)?s?\b"
-    rf"|\bread(?:s|ing|ings)? (?:off|from) {_VISUAL}\b"
-    rf"|\bestimated from {_VISUAL}\b",
+    r"\b(?:visual )?(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
+    rf" (?:off|from|on|in|using|of) {_UP_TO}(?:{_PICTURE}|{_FIGS})\b"
+    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF} {_UP_TO}{_FIGS})?)?\b"
+    rf"|\b{_OFF} {_UP_TO}{_FIGS}\b"
+    rf"|\bcolumns?(?: [\w.]+){{0,2}}? (?:of|in|on) {_UP_TO}{_FIGS}\b"
+    r"|\b(?:read\w* )?by eye\b",
     re.I,
 )
 DENIED = re.compile(
-    r"(?:\b(?:no|not|never|without)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
+    r"(?:\b(?:no|not|never|without|cannot)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
 )
+NEGATION = re.compile(r"\b(?:no|not|never|without|cannot)\b|n['’]t\b", re.I)
 
 
 def _keys(path):
@@ -826,21 +886,32 @@ def _row_problems(r, keys, earlier, metrics, units):
         out.append(
             "no HMT Impact on households bar readings: start the locator with "
             "the paragraph, table, box or data label where HM Treasury prints "
-            "the number (README rule 4)"
+            "the number, and call nothing there a bar, chart, graph, plot, diagram "
+            "or visual (README rule 4)"
         )
     return out
+
+
+def _denied(before):
+    """Whether a negation comes right before a phrase, with no other earlier in
+    its clause."""
+    m = DENIED.search(before)
+    if not m:
+        return False
+    clause = re.split(r"[,;:()]", before[: m.start()])[-1]
+    return not NEGATION.search(clause)
 
 
 def reads_a_bar(locator):
     """README rule 4: whether a locator places the number on a bar of Figure
     1.A or 1.B, rather than naming where HM Treasury prints it."""
-    plain = " ".join(re.sub(r"[-−–—‐‑]", " ", locator).split())
-    if any(not DENIED.search(plain[: m.start()]) for m in BAR_READING.finditer(plain)):
+    plain = " ".join(re.sub(_DASH, " ", locator).split())
+    if any(not _denied(plain[: m.start()]) for m in BAR_READING.finditer(plain)):
         return True
     if not FIGURE_1.search(plain):
         return False
-    lead = " ".join(re.split(r"[,;]", locator, maxsplit=1)[0].split())
-    return not PRINTED.fullmatch(lead)
+    first = re.split(r"[,;]", re.sub(_DASH, "-", locator), maxsplit=1)[0]
+    return not PRINTED.fullmatch(" ".join(first.split()))
 
 
 def family_problems(family_dir):
