@@ -150,10 +150,10 @@ We use 128 keys on 2,742 rows, 1,951 of them `row_type: measure_component`. Of t
 | `ab2026__writing_down_allowance_12pc_and_fya_50pc` | 43 |
 | `ab2026__your_first_home_equity_loan` | 19 |
 | `ab2026__youth_guarantee_and_apprenticeships_spring_2026` | 18 |
-| the 29 package and option keys below | 535 |
+| the 29 keys we proposed (below) | 535 |
 | `null` (context) | 58 |
 
-## Package and option keys, with the producer's scopes
+## Keys we proposed, with the producer's scopes
 
 We gave all of these rows `measure_key: null` and proposed these keys, and tranche 2 registered them and moved them into `measure_key`. We name them under README rule 2 as harmonised on 3 November (review finding 9). A single measure takes `ab2026__<slug>`, and a scope package's slug names the scope and drops `obr`. The exception is the OBR's own residual groups, which keep it (4 November, review B finding 15). Where the OBR publishes only a named residual group, we leave its line decomposition unresolved and attach no guessed membership or registry key.
 
@@ -187,7 +187,7 @@ We gave all of these rows `measure_key: null` and proposed these keys, and tranc
 | `ab2026__scottish_air_passenger_duty_devolution` | 18 | No Table 6.1 lines. “Devolving Air Passenger Duty to the Scottish Government in April 2027”; Scottish BGA, self-financed expenditure and total. (Was `ab2026__package_obr_scottish_air_passenger_duty_devolution`.) |
 | `ab2026__state_pension_triple_lock_adjustment` | 2 | No Table 6.1 line: OBR paragraph 3.49 adjusted state pension triple lock expected April 2030, retaining CPI/2.5 percent floor but linking catch-up to 2029-30 earnings ratio. Paragraph 3.51's two figures (rows 2743–2744) come from the OBR's simulation over 1990–2025, not from a medium-term costing of the policy. (Was `ab2026__package_obr_adjusted_state_pension_triple_lock`.) The red book's spelling for the same measure. |
 | `ab2026_option__fuel_duty_continued_freeze` | 1 | No Table 6.1 line as an announced measure: OBR paragraph 3.43 counterfactual “if fuel duty were to remain frozen until 2029-30”, extending line 3 beyond July 2027. (Was `ab2026_option__obr_fuel_duty_frozen_until_2029_30`.) Shared with RF, whose series for the OBR's constant-duty-rate alternative prints the same £4.3bn in 2029-30. |
-| `ab2026_option__health_foundation_social_care_reforms` | 2 | No Table 6.1 line: Health Foundation illustrative future social care reforms cited by OBR paragraph 3.41, from limited home-care reform to wider schemes including residential care; costs additional to current spending in 2035-36 per footnote 13. The government hasn't settled this as an AB2026 policy. (Was `ab2026_option__obr_health_foundation_social_care_reforms`.) |
+| `ab2026_option__health_foundation_social_care_reforms` | 2 | No Table 6.1 line: Health Foundation illustrative future social care reforms cited by OBR paragraph 3.41, from limited home-care reform to wider schemes including residential care; costs additional to current spending in 2035-36 per footnote 13. The government announced none of these reforms at AB2026. (Was `ab2026_option__obr_health_foundation_social_care_reforms`.) |
 
 
 ## Metric, unit and baseline proposals
