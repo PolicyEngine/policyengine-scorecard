@@ -5,8 +5,8 @@ tests pin the ingest's invariants:
 
 1. read = ingested + dropped, per family and in total, against COUNTS.json
    and ingest_uk_ab2026_expected.json, with a written reason for each drop;
-2. every claim's key sits in the AB2026 registry, or for a Table 6.4
-   recosting in the earlier event's, and carries that registry's verdict;
+2. the AB2026 registry lists every claim's key, or for a Table 6.4 recosting
+   the earlier event's does, and each claim takes that registry's verdict;
 3. one claim per claim identity, and each HM Treasury figure counted once;
 4. each claim's sign reads as signs.py reads it, pinned for every staged
    (metric, convention) pair and every pair the ingest's metric calls make;

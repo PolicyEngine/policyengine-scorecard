@@ -3,9 +3,9 @@
 pipeline/ab2026_key_decisions.py records a decision for each of the 86
 proposed keys, pipeline/build_ab2026_registry.py registers them, and
 pipeline/apply_ab2026_key_decisions.py moves each staged row's key into
-measure_key, as AB2025's rows carry theirs. These tests check that the three
-agree: no row still proposes a key, every decision's key sits in the
-registry, each decision covers the rows tranche 1 counted, and
+measure_key, where AB2025's rows name theirs. These tests check that the three
+agree: no row still proposes a key, the registry lists every decision's
+key, each decision covers the rows tranche 1 counted, and
 KEY_DECISIONS.md is what the script renders.
 """
 

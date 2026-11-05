@@ -24,8 +24,8 @@ helpers where the two agree:
 
 AB2026 differs in six ways:
 
-1. **Keys.** Each row carries an AB2026 key, or for a Table 6.4 recosting the
-   earlier event's key named in ``conditions.recosting_of``. A recosting
+1. **Keys.** We stage each row under an AB2026 key, or for a Table 6.4 recosting
+   under the earlier event's key named in ``conditions.recosting_of``. A recosting
    takes no registry verdict: AB2025's registry states its verdicts at
    policyengine-uk 2.89.2, and AB2026's counterparts run at 2.151.0, so
    this module writes no verdict for a recosting.
@@ -287,7 +287,7 @@ DROP_BY_NAME_AB2026: dict[str, str] = {
 }
 
 DISPOSITIONS: dict[str, Metric] = {**AB25.DISPOSITIONS, **DISPOSITIONS_AB2026}
-# AB2025's restatement reason says the originator's rows sit in the same
+# AB2025's restatement reason says we stage the originator's rows in the same
 # harvest. In AB2026 some don't: the costings restate HMRC's tax gap
 # (rows 233 and 234), and the harvest stages no HMRC family.
 _RESTATED_AB2026 = (
@@ -826,8 +826,8 @@ ALL_SOURCES = frozenset(s for _, srcs in FAMILIES.values() for s in srcs)
 
 def ingest(db_path: Path, feed_path: Path | None = None) -> dict:
     """Stage and check first; then one transaction replaces every AB2026
-    claim by registry mark (hm_treasury, obr_efo, ifs and others carry other
-    lanes' rows too) and runs the baseline-registration gate inside it."""
+    claim by registry mark (hm_treasury, obr_efo, ifs and others also mark other
+    lanes' rows) and runs the baseline-registration gate inside it."""
     scores, acct = stage()
     check_accounting(acct)
     db = ScorecardDB(db_path)

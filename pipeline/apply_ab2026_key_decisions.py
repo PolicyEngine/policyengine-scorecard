@@ -3,7 +3,7 @@
 Tranche 1 staged 973 rows with `measure_key: null` and a proposed key in
 `conditions.proposed_measure_key` (harvest README rule 2). Tranche 2
 registers each proposed key, or folds it into a registered key
-(pipeline/ab2026_key_decisions.py). AB2025's rows carry their registry key in
+(pipeline/ab2026_key_decisions.py). AB2025's rows name their registry key in
 `measure_key`, and the contract checker rejects a registered key left in
 `proposed_measure_key`, so this script moves each row's key into
 `measure_key` and drops the condition. It changes nothing else in a row, and
@@ -11,7 +11,7 @@ it writes each claims file as the stagers do: sorted keys, UTF-8, gzip level 9
 with no name or time in the header.
 
 Every registered key is new to the registry and we fold none, so the rows a
-decision covers are exactly the rows that now carry its key. `render`
+decision covers are exactly the rows that now name its key. `render`
 rebuilds KEY_DECISIONS.md from the rewritten claims, and the tests check it.
 
 Usage:
@@ -127,7 +127,7 @@ def _why(d):
 
 
 def render(harvest=HARVEST):
-    """KEY_DECISIONS.md from the decisions and the rows that carry each key."""
+    """KEY_DECISIONS.md from the decisions and the rows that name each key."""
     reg = {m["measure_key"]: m for m in json.loads(REGISTRY.read_text())["measures"]}
     rows_of = defaultdict(lambda: defaultdict(list))
     for fam in families(harvest):
@@ -145,7 +145,7 @@ def render(harvest=HARVEST):
         f"The families proposed {len(D.DECISIONS)} keys ({kinds['measure']} measures, {kinds['package']} packages and {kinds['option']} options) on {total} staged rows (README rule 2). "
         f"We register {len(D.DECISIONS) - len(D.FOLDED)} of them in `data/uk/ab2026_measures.json` and fold {len(D.FOLDED)}. "
         "Two producers' packages share a key only if their scopes match line for line (rule 3), and no proposed scope matches a registered key, or another proposed key, that way. "
-        f"We register {len(D.RENAMED)} key under a new name and keep the proposed name in the entry's `proposed_as`. Each row carries its key in `measure_key`, as AB2025's rows do.",
+        f"We register {len(D.RENAMED)} key under a new name and keep the proposed name in the entry's `proposed_as`. We store each row's key in `measure_key`, as we do for AB2025's rows.",
         "",
         "Each row below gives the key, what we did, the registry verdict, why, and the rows it covers by family and row number (from 0, in `claims_staged.jsonl.gz`). "
         "The scope comes from the families' NOTES.md, and the registry entry's `source_note` repeats it.",
@@ -179,7 +179,7 @@ def problems(harvest=HARVEST):
     for fam in families(harvest):
         for i, r in enumerate(read(harvest / fam / "claims_staged.jsonl.gz")):
             if (r.get("conditions") or {}).get("proposed_measure_key"):
-                out.append(f"{fam} row {i} still carries a proposed key")
+                out.append(f"{fam} row {i} still names a proposed key")
     counted = defaultdict(int)
     for fam in families(harvest):
         for r in read(harvest / fam / "claims_staged.jsonl.gz"):
