@@ -1,0 +1,42 @@
+[
+ {
+  "metric": "average_household_income_change",
+  "sign_convention": null,
+  "relation": "unknown"
+ },
+ {
+  "metric": "average_household_income_change",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
+  "metric": "average_tax_change",
+  "sign_convention": "positive = saving or gain as printed",
+  "relation": "opposite"
+ },
+ {
+  "metric": "cash_requirement_change",
+  "sign_convention": "as printed (positive = cash inflow to the public sector, as in Table 6.2)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "cash_requirement_change",
+  "sign_convention": "positive = improves the public sector's cash position (cash inflow or lower outflow); negative = worsens it (financial transactions: the table prints no legend; convention observed from the rows, e.g. the National Wealth Fund's investment is -, and line 6's reprioritisation of existing budgets is +)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = higher bills",
+  "relation": "same"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = increase in household energy bills",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = borrowing increase",
+  "relation": "opposite"
+ }
+]

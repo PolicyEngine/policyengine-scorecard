@@ -1,0 +1,84 @@
+{
+ "read": 5952,
+ "ingested": 4717,
+ "dropped": 1235,
+ "by_family": {
+  "uk_hmt_tables": {
+   "read": 768,
+   "ingested": 768,
+   "dropped": 0
+  },
+  "uk_hmt_costings": {
+   "read": 597,
+   "ingested": 172,
+   "dropped": 425
+  },
+  "uk_hmt_redbook": {
+   "read": 425,
+   "ingested": 188,
+   "dropped": 237
+  },
+  "uk_obr_tables": {
+   "read": 2800,
+   "ingested": 2711,
+   "dropped": 89
+  },
+  "uk_rf_ab2026": {
+   "read": 766,
+   "ingested": 588,
+   "dropped": 178
+  },
+  "uk_ifs_ab2026": {
+   "read": 144,
+   "ingested": 15,
+   "dropped": 129
+  },
+  "uk_ippr": {
+   "read": 3,
+   "ingested": 0,
+   "dropped": 3
+  },
+  "uk_centax": {
+   "read": 112,
+   "ingested": 84,
+   "dropped": 28
+  },
+  "uk_tpa": {
+   "read": 305,
+   "ingested": 189,
+   "dropped": 116
+  },
+  "uk_devolved_govts": {
+   "read": 19,
+   "ingested": 0,
+   "dropped": 19
+  },
+  "uk_thinktank_misc": {
+   "read": 12,
+   "ingested": 1,
+   "dropped": 11
+  },
+  "uk_trussell_wpi": {
+   "read": 1,
+   "ingested": 1,
+   "dropped": 0
+  }
+ },
+ "drops": {
+  "assumption_or_base_not_a_score": 14,
+  "categorical_rating_not_a_value": 7,
+  "energy_bill_level_no_metric": 35,
+  "hmt_figure_staged_twice": 423,
+  "macro_fiscal_or_out_of_scope": 204,
+  "mode3_specimen_household": 11,
+  "mtr_no_registered_metric": 4,
+  "no_registered_metric": 8,
+  "parameter_or_threshold_level": 17,
+  "ratio_or_derived_quantity": 14,
+  "republished_twin_merged": 7,
+  "restated_official_figure": 450,
+  "share_level_no_registered_metric": 17,
+  "single_row_unregistered_world": 3,
+  "unit_no_household_concept": 21
+ }
+}

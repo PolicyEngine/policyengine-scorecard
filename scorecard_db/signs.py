@@ -101,6 +101,9 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = additional spending",
             "positive = ame increase",
             "positive = pension spending increase",
+            # OBR paragraph 3.43's continued fuel duty freeze, which the
+            # AB2026 ingest carries on revenue_change
+            "borrowing increase",
         ),
         (
             "positive_gain_to_exchequer",
@@ -152,6 +155,10 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "a negative sign implies a loss to the exchequer",
             "positive = increase in net tax",
             "positive = additional investment income",
+            # HM Treasury's Table 6.2 cash effects, which the AB2026 ingest
+            # carries on cash_requirement_change
+            "positive = cash inflow",
+            "improves the public sector's cash position",
         ),
         (
             "increase in borrowing",
@@ -176,7 +183,9 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
     ),
     "tax_increase": (
         (),
-        (),
+        # the red book's per-person savings, which the AB2026 ingest carries
+        # on average_tax_change
+        ("positive = saving or gain",),
         (
             "positive = increase in",
             "positive = tax increase",

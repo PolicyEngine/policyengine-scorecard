@@ -1079,6 +1079,56 @@ _identity("which", "geography", ["UK"])
 # IPPR prints one region two ways (Table 1 vs Table 2 of Restoring security); one identity.
 _alias("ippr", "geography", "Yorkshire & Humber", "Yorkshire and The Humber")
 
+# --- Autumn Budget 2026 port (#230, tranche 2) -------------------------------
+# The values the AB2026 harvest (sources/harvest-uk-ab2026-2026-10-29/) stages
+# that the AB2025 block above doesn't register, read from the rows the ingest
+# scores. "not stated" is the harvest README's code for a producer that names
+# no geography; TPA compares the UK with the countries it names.
+_identity("centax", "geography", ["England"])
+_identity(
+    "centax",
+    "income_group",
+    [
+        "median",
+        "p50_p60",
+        "p60_p70",
+        "p70_p80",
+        "p80_p90",
+        "p90_p99",
+        "p99",
+        "p99_p99.5",
+        "p99.5_p99.9",
+        "p99.99",
+        "top_0.01pct",
+        "top_10pct",
+        "top_1pct",
+    ],
+)
+_identity("citizens_advice", "geography", ["not stated"])
+_identity("hm_treasury", "geography", ["England and Wales"])
+# HM Treasury's Impact on households deciles (Tables 2.B and 2.C)
+_identity(
+    "hm_treasury",
+    "income_group",
+    [f"decile_{_i}" for _i in range(1, 11)] + ["decile_1 to decile_3"],
+)
+_identity("ifs", "geography", ["not stated"])
+_identity("ifs", "income_group", ["poorest_30_percent"])
+_identity(
+    "tax_policy_associates",
+    "geography",
+    [
+        "France",
+        "Germany",
+        "Ireland",
+        "Italy",
+        "Netherlands",
+        "Singapore",
+        "Spain",
+        "US",
+    ],
+)
+
 # Pairs that look unifiable across the AB2025 producers and must never be.
 # Every side is registered above or earlier in this module (the ledger test
 # checks); the reasons are the distributions' own definitions.
