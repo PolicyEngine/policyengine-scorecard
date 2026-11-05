@@ -16,6 +16,13 @@ written reason. These tests pin its invariants:
 7. no claim gets two computed answers;
 8. a database built with the AB2026 ingest and these results shows each
    comparison, and build_db.py calls none of it.
+9. each exchequer row carries the timing, baseline and sign annotations,
+   and each Carer's Allowance, property income and Pension Tax Allowance row
+   its scope annotation with the amounts the OBR's claims state;
+10. each measure whose receipt names part of the UK takes a tally or a scope
+    annotation;
+11. the expected file pins each paired claim's file, column and row, and the
+    year from the claim matches the year from the cell.
 
 Hypothesis drives 5 and 6.
 """
