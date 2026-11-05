@@ -94,11 +94,20 @@ _ARTIFACT_IDS = [a["variant_id"] for a, _ in _ARTIFACTS]
 # the 19 June pair's run, which predates the artifact's record of each
 # child's own cap on funded hours
 JUNE = "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+# the pair policyengine.py 6.11.0 certifies, policyengine-scorecard#228's run
+PAIR_6110 = (
+    "pair-pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+)
 
 
 @pytest.fixture
 def june():
     return next(a for a, _ in _ARTIFACTS if a["variant_id"] == JUNE)
+
+
+@pytest.fixture
+def pair_6110():
+    return next(a for a, _ in _ARTIFACTS if a["variant_id"] == PAIR_6110)
 
 
 # --- the vendored sources ---------------------------------------------------
@@ -259,12 +268,15 @@ def test_money_cells_round_trip(value):
 # --- the certified-pair artifact ---------------------------------------------
 
 
-def test_artifact_ran_on_the_certified_bundle_without_behaviour(artifact):
-    assert artifact["data_bundle"] == CERTIFIED["revision"]
-    assert artifact["dataset"]["sha256"] == CERTIFIED["sha256"]
-    assert artifact["engine_version"] == "2.89.2"
-    assert artifact["behavioural_response"] == "none (static)"
-    for world in (*artifact["worlds"].values(), *artifact["diagnostics"].values()):
+@pytest.mark.parametrize("variant, engine", [(JUNE, "2.89.2"), (PAIR_6110, "2.132.6")])
+def test_artifact_ran_on_its_certified_pair_without_behaviour(variant, engine):
+    art = next(a for a, _ in _ARTIFACTS if a["variant_id"] == variant)
+    dataset = lane.run_records()[variant]["identity"]["dataset"]
+    assert art["data_bundle"] == dataset["revision"]
+    assert art["dataset"]["sha256"] == dataset["sha256"]
+    assert art["engine_version"] == engine
+    assert art["behavioural_response"] == "none (static)"
+    for world in (*art["worlds"].values(), *art["diagnostics"].values()):
         assert world["dataset_sha256_before"] == world["dataset_sha256_after"]
 
 
@@ -310,11 +322,26 @@ def test_free_hours_leg_is_the_same_in_both_worlds(artifact):
             assert a == pytest.approx(b, rel=1e-12, abs=1.0), (year, v)
 
 
-def test_removing_the_limit_costs_money_and_switches_universal_hours_off(artifact):
-    for year in artifact["worlds"]["free_hours"]["years"]:
-        assert lane.counterpart(artifact, lane.CENTAX, int(year)) < 0
-        assert _d(artifact, "free_hours", year, "extended_childcare_entitlement") > 0
-        assert _d(artifact, "free_hours", year, "universal_childcare_entitlement") < 0
+def test_removing_the_limit_costs_money_and_switches_universal_hours_off(june):
+    for year in june["worlds"]["free_hours"]["years"]:
+        assert lane.counterpart(june, lane.CENTAX, int(year)) < 0
+        assert _d(june, "free_hours", year, "extended_childcare_entitlement") > 0
+        assert _d(june, "free_hours", year, "universal_childcare_entitlement") < 0
+
+
+def test_removing_the_limit_keeps_universal_and_targeted_hours(pair_6110):
+    """The pe-universal-hours-kept note: the reform never lowers universal or
+    targeted hours on 2.132.6, raises universal spending in every year and
+    leaves targeted spending where it was."""
+    for year in pair_6110["worlds"]["free_hours"]["years"]:
+        assert lane.counterpart(pair_6110, lane.CENTAX, int(year)) < 0
+        for head, moved in (
+            ("extended_childcare_entitlement", True),
+            ("universal_childcare_entitlement", True),
+            ("targeted_childcare_entitlement", False),
+        ):
+            change = _d(pair_6110, "free_hours", year, head)
+            assert change > 0 if moved else change == 0, (year, head)
 
 
 def test_full_use_diagnostic_took_effect_and_costs_more(artifact):
@@ -1788,13 +1815,13 @@ def test_results_keep_an_earlier_certified_run_beside_the_latest(artifact):
     history = [(earlier, path), (latest, path)]
     out = lane.results(scores, history)
     runs = Counter(r.run_id for r in out)
-    assert runs["earlier-certified-run"] == runs[latest["run_id"]] == 22
+    assert runs["earlier-certified-run"] == runs[latest["run_id"]] == 24
     # ingest's tally scales with the runs, so a second artifact builds
     drops = lane.stage()[1]
     diag = lane.diagnoses(scores, history)
     want = lane.expected(scores, history)
     assert lane.accounting(scores, out, diag, drops, history) == want
-    assert want["results"] == 2 * 22 + 4
+    assert want["results"] == 2 * 24 + 4
     one = lane.results(scores, artifacts)
     assert lane.accounting(
         scores, one, lane.diagnoses(scores, artifacts), drops, artifacts
@@ -1883,26 +1910,25 @@ def test_an_artifact_on_an_unverified_pair_is_refused(artifact, tmp_path):
         lane.results(scores, [*artifacts, (idle, lane.RESULTS_DIR / _path(idle))])
 
 
-def test_notes_reach_only_the_pairs_they_were_checked_on(artifact, tmp_path):
+def test_notes_reach_only_the_pairs_they_were_checked_on(june, tmp_path):
     vid = _wide_certified()["variant_id"]
-    other = _on_pair(artifact, _wide_certified(), run_id="other")
+    other = _on_pair(june, _wide_certified(), run_id="other")
     notes = _verified_for(vid, except_ids={"pe-universal-switch-off"})
-    _write(tmp_path, artifact, other)
+    _write(tmp_path, june, other)
     scores, _, artifacts = lane.stage(notes, results_dir=tmp_path)
     out = lane.results(scores, _in_repo(artifacts), notes)
     runs = {
-        run: [r for r in out if r.run_id == run]
-        for run in (artifact["run_id"], "other")
+        run: [r for r in out if r.run_id == run] for run in (june["run_id"], "other")
     }
     switch_off = next(
         a["text"] for a in notes["construction"] if a["id"] == "pe-universal-switch-off"
     )
     draw = notes["pairs"][VARIANTS["default_variant"]]["hours_draw"]
-    assert len(runs["other"]) == len(runs[artifact["run_id"]]) == 22
+    assert len(runs["other"]) == len(runs[june["run_id"]]) == 22
     for r in runs["other"]:
         assert switch_off not in r.annotations
         assert not any(draw in t for t in r.annotations)
-    for r in runs[artifact["run_id"]]:
+    for r in runs[june["run_id"]]:
         assert switch_off in r.annotations
         assert any(draw in t for t in r.annotations)
     # the newest pair states no diagnosis, so none is drawn from the old one
@@ -1914,18 +1940,20 @@ def test_notes_reach_only_the_pairs_they_were_checked_on(artifact, tmp_path):
     )
 
 
-def test_tally_and_pe_missing_follow_each_runs_computed_years(artifact, tmp_path):
+def test_tally_and_pe_missing_follow_each_runs_computed_years(june, tmp_path):
     """Coverage, not dataset support: a run that holds 2031 among its data
     years but computes only the default years leaves CBP's 2031-32 claims
     without a value and says so; one that computes 2031 answers them. The
     tally follows, and no claim id moves across the three histories."""
     wide = _wide_certified()
     notes = _verified_for(wide["variant_id"])
-    histories = {"alone": lane.stage(notes)}
+    (tmp_path / "alone").mkdir()
+    _write(tmp_path / "alone", june)
+    histories = {"alone": lane.stage(notes, results_dir=tmp_path / "alone")}
     for name, with_2031 in (("default_years", False), ("with_2031", True)):
         (tmp_path / name).mkdir()
-        other = _on_pair(artifact, wide, run_id="other", with_2031=with_2031)
-        _write(tmp_path / name, artifact, other)
+        other = _on_pair(june, wide, run_id="other", with_2031=with_2031)
+        _write(tmp_path / name, june, other)
         histories[name] = lane.stage(notes, results_dir=tmp_path / name)
     ids = {k: [s.claim_id() for s in h[0]] for k, h in histories.items()}
     assert ids["alone"] == ids["default_years"] == ids["with_2031"]
@@ -1957,16 +1985,16 @@ def test_tally_and_pe_missing_follow_each_runs_computed_years(artifact, tmp_path
         }
 
 
-def test_a_newer_run_that_skips_a_year_leaves_that_years_diagnosis(artifact, tmp_path):
+def test_a_newer_run_that_skips_a_year_leaves_that_years_diagnosis(june, tmp_path):
     """The round-3 review's case: a newer run on a verified pair that
     computes only 2031 takes no claim's latest result in the years it skips,
     so the diagnoses of those years stay with the run that computed them."""
     wide = _wide_certified()
     notes = _verified_for(wide["variant_id"])
-    other = _on_pair(artifact, wide, run_id="other", with_2031=True)
+    other = _on_pair(june, wide, run_id="other", with_2031=True)
     for world in other["worlds"].values():
         world["years"] = {y: b for y, b in world["years"].items() if y == "2031"}
-    _write(tmp_path, artifact, other)
+    _write(tmp_path, june, other)
     scores, drops, arts = lane.stage(notes, results_dir=tmp_path)
     arts = _in_repo(arts)
     out = lane.results(scores, arts, notes)
@@ -2375,7 +2403,7 @@ def _ingest_isolated(tmp_path, monkeypatch, notes, staged) -> sqlite3.Connection
 
 
 def test_the_database_shows_each_claims_newest_covering_run(
-    artifact, tmp_path, monkeypatch
+    june, tmp_path, monkeypatch
 ):
     """Differential: on a history of three runs, two of them on pairs that
     share a data bundle and the newest computing only 2027, the comparisons
@@ -2400,18 +2428,20 @@ def test_the_database_shows_each_claims_newest_covering_run(
         for a in notes[kind]:
             if "variants" in a:
                 a["variants"].append(v2["variant_id"])
-    notes["pairs"][v1["variant_id"]]["diagnosis"] = "FIRST SHARED-BUNDLE PAIR"
+    notes["pairs"][v1["variant_id"]].update(
+        diagnosis="FIRST SHARED-BUNDLE PAIR", diagnosis_url="https://example.test/gap"
+    )
     notes["pairs"][v2["variant_id"]] = {
         **notes["pairs"][v1["variant_id"]],
         "diagnosis": "SECOND SHARED-BUNDLE PAIR",
     }
-    older = _on_pair(artifact, v1, run_id="shared-older")
-    newer = _on_pair(artifact, v2, run_id="shared-newer")
+    older = _on_pair(june, v1, run_id="shared-older")
+    newer = _on_pair(june, v2, run_id="shared-newer")
     newer["computed_at"] = "2026-10-27T00:00:00+00:00"
     for world in newer["worlds"].values():
         world["years"] = {"2027": world["years"]["2027"]}
     (tmp_path / "in").mkdir()
-    _write(tmp_path / "in", artifact, older, newer)
+    _write(tmp_path / "in", june, older, newer)
     scores, drops, arts = lane.stage(notes, results_dir=tmp_path / "in")
     arts = _in_repo(arts)
     conn = _ingest_isolated(tmp_path, monkeypatch, notes, (scores, drops, arts))
@@ -2460,10 +2490,19 @@ def test_a_note_on_the_engine_or_a_run_names_its_pairs(tmp_path):
     path.write_text(json.dumps(spec))
     with pytest.raises(ValueError, match="variants"):
         lane._spec(path)
+    # #228's pass: each engine- or run-based note names the pairs it holds on,
+    # and the two that failed at 2.132.6 hand over to their replacements
+    only = {
+        "pe-universal-switch-off": [JUNE],
+        "cbp-full-utilisation": [JUNE],
+        "pe-universal-hours-kept": [PAIR_6110],
+        "cbp-full-utilisation-child-caps": [PAIR_6110],
+        "centax-live-accounts-above-limit": [PAIR_6110],
+    }
     for kind in (lane.CENTAX, lane.CBP, "construction"):
         for a in lane.load_notes()[kind]:
             if "variants" in a:
-                assert a["variants"] == [VARIANTS["default_variant"]], a["id"]
+                assert a["variants"] == only.get(a["id"], [JUNE, PAIR_6110]), a["id"]
 
 
 @settings(deadline=None)
@@ -2603,13 +2642,14 @@ def test_built_db_lane_counts_and_latest_result_is_the_certified_run():
     )
     assert len(rows) == 36
     computed = [r for r in rows if r["pe_value"] is not None]
-    assert len(computed) == 22
-    assert {r["data_bundle"] for r in computed} == {CERTIFIED["revision"]}
-    assert {r["engine_version"] for r in computed} == {"2.89.2"}
+    assert len(computed) == 24
+    newest = lane.run_records()[PAIR_6110]["identity"]["dataset"]["revision"]
+    assert {r["data_bundle"] for r in computed} == {newest}
+    assert {r["engine_version"] for r in computed} == {"2.132.6"}
     lanes = _rows("SELECT * FROM lanes WHERE lane = ?", lane.LANE_ID)
     assert [r["stage"] for r in lanes] == ["computed"]
     # the note counts claims on the latest run, not results across the history
-    assert lanes[0]["detail"].startswith("22 of 36 claims computed")
+    assert lanes[0]["detail"].startswith("24 of 36 claims computed")
 
 
 def test_published_dashboard_miss_stays_in_the_history():
@@ -2666,7 +2706,7 @@ def test_the_published_row_says_when_it_was_live_and_what_followed():
     )
 
 
-def test_central_static_rows_carry_the_hours_draw_diagnosis():
+def test_central_static_rows_carry_the_latest_pairs_diagnosis():
     rows = _rows(
         "SELECT period, diagnosis_class, action_link, diagnosis_rationale"
         " FROM comparisons WHERE source = 'centax'"
@@ -2678,9 +2718,54 @@ def test_central_static_rows_carry_the_hours_draw_diagnosis():
         (2030, "pe_gap"),
     ]
     assert {r["action_link"] for r in rows} == {
-        "https://github.com/PolicyEngine/microcosm/issues/1126"
+        "https://github.com/PolicyEngine/microcosm/pull/1338"
     }
-    assert "15.3 of 30 weekly hours" in rows[0]["diagnosis_rationale"]
+    assert "28.3 of 30 weekly hours" in rows[0]["diagnosis_rationale"]
+    assert "26% above CenTax's" in rows[0]["diagnosis_rationale"]
+    assert "25% above CenTax's" in rows[1]["diagnosis_rationale"]
+
+
+def test_the_diagnosis_and_readme_state_the_runs_own_split(pair_6110):
+    """Differential: the figures the pair's diagnosis and the README give in
+    prose equal the run's, including the universal change's share of the excess
+    over CenTax."""
+    text = _pair(pair_6110)["diagnosis"]
+    readme = (CENTAX_SRC / "README.md").read_text()
+    centax = {2027: 0.80, 2029: 0.98}
+    extended, universal, share = {}, {}, {}
+    for year, cost in centax.items():
+        y = str(year)
+        extended[year] = (
+            _d(pair_6110, "free_hours", y, "extended_childcare_entitlement") / 1e9
+        )
+        universal[year] = (
+            _d(pair_6110, "free_hours", y, "universal_childcare_entitlement") / 1e9
+        )
+        total = -lane.counterpart(pair_6110, lane.CENTAX, year) / 1e9
+        assert total == pytest.approx(extended[year] + universal[year], abs=1e-6)
+        share[year] = universal[year] / (total - cost) * 100
+        assert f"{total:.3f}" in readme
+    assert (
+        f"£{universal[2027]:.3f}bn in 2027-28 and £{universal[2029]:.3f}bn in 2029-30"
+        in text
+    )
+    assert f"£{extended[2027]:.3f}bn and £{extended[2029]:.3f}bn" in text
+    assert (
+        f"{share[2027]:.0f}% of the excess over CenTax in 2027-28 and "
+        f"{share[2029]:.0f}% in 2029-30" in text
+    )
+    assert (
+        f"{share[2027]:.0f}% of the excess in 2027-28 and {share[2029]:.0f}%" in readme
+    )
+    assert (
+        f"{(extended[2027] / centax[2027] - 1) * 100:.0f}% and "
+        f"{(extended[2029] / centax[2029] - 1) * 100:.0f}% above" in text
+    )
+    for year in centax:
+        for figure in (extended[year], universal[year]):
+            assert f"{figure:.3f}" in readme
+        full = lane.full_use_cost(pair_6110, year, _pair(pair_6110))
+        assert f"£{full / 1e9:.3f}bn" in readme
 
 
 def test_no_reform_estimate_is_a_calibration_target():
@@ -2709,8 +2794,8 @@ def test_no_reform_estimate_is_a_calibration_target():
 def test_exported_feed_rows_state_the_lane_signs_and_history():
     """The deployed feed is what a reader sees: CenTax rows point the same
     way as PolicyEngine's; CBP states no sign rule, so its rows are
-    unknown; the central static rows carry both results, the published
-    figure first and the certified run as the latest."""
+    unknown; the central static rows carry every result, the published
+    figure first and the newest certified run as the latest."""
     feed = json.loads((REPO / "data" / "populations.json").read_text())
     rows = [
         r
@@ -2733,10 +2818,19 @@ def test_exported_feed_rows_state_the_lane_signs_and_history():
     ]
     assert len(central) == 2
     for r in central:
-        assert [x["engine_version"] for x in r["results"]] == ["2.102.3", "2.89.2"]
-        assert r["latest"]["data_bundle"] == CERTIFIED["revision"]
+        assert [x["engine_version"] for x in r["results"]] == [
+            "2.102.3",
+            "2.89.2",
+            "2.132.6",
+        ]
+        assert (
+            r["latest"]["data_bundle"]
+            == lane.run_records()[PAIR_6110]["identity"]["dataset"]["revision"]
+        )
         assert r["latest"]["status_effective"] == "comparable"
         assert r["results"][0]["status_effective"] == "constructed"
     unscored = [r for r in rows if not r["results"]]
-    assert len(unscored) == 14  # 12 CenTax margins + CBP's two 2031-32 cells
+    # the 12 CenTax margins; #228's run computes CBP's two 2031-32 cells
+    assert len(unscored) == 12
+    assert {r["source"] for r in unscored} == {lane.CENTAX}
     assert all(r["conditions"].get("pe_missing") for r in unscored)

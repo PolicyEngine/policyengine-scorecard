@@ -1,7 +1,7 @@
 {
  "read": 5952,
- "ingested": 4686,
- "dropped": 1266,
+ "ingested": 4687,
+ "dropped": 1265,
  "by_family": {
   "uk_hmt_tables": {
    "read": 768,
@@ -30,8 +30,8 @@
   },
   "uk_ifs_ab2026": {
    "read": 144,
-   "ingested": 11,
-   "dropped": 133
+   "ingested": 12,
+   "dropped": 132
   },
   "uk_ippr": {
    "read": 3,
@@ -76,7 +76,7 @@
   "mtr_no_registered_metric": 4,
   "no_registered_metric": 9,
   "parameter_or_threshold_level": 17,
-  "partial_year_household_support": 4,
+  "partial_year_household_support": 3,
   "ratio_or_derived_quantity": 15,
   "republished_twin_merged": 6,
   "restated_obr_forecast": 6,

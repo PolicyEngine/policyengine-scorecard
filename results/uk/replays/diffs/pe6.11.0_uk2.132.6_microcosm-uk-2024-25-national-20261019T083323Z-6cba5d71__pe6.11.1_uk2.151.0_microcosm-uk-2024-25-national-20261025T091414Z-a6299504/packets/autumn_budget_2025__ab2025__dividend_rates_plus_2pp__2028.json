@@ -1,0 +1,2025 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2026-01-01.2030-12-31": 0.3375
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "ca231798e7ed712e2fcba13a600b5cd9b6f21872951bc4b07373e8595ad736c0"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2026-01-01.2030-12-31": 0.3375
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "506e81d6733c9640ac242d7ebe0418eb149ffbc8d6c3c353659b84c971044403"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "data_bundle": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.132.6",
+   "policyengine_version": "6.11.0",
+   "variant_id": "pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+  },
+  "head": {
+   "certified_dataset_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+   "data_bundle": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "policyengine_core_version": "3.33.3",
+   "policyengine_uk_version": "2.151.0",
+   "policyengine_version": "6.11.1",
+   "variant_id": "pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+  }
+ },
+ "measure_key": "ab2025__dividend_rates_plus_2pp",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.0875,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3375
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.dividends[0].rate",
+     "gov.hmrc.income_tax.rates.dividends[1].rate"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[0\\]\\.rate|gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[1\\]\\.rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2026-01-01.2030-12-31": 0.3375
+    }
+   },
+   "pe_gap": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12306:73a2ece6287dce1c",
+     "source_row_number": 12306,
+     "source_row_sha256": "73a2ece6287dce1cb834e33432ee0d8756f5f7ebc0f4b49864100764544b1070",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12307:90ac5224d0623421",
+     "source_row_number": 12307,
+     "source_row_sha256": "90ac5224d06234211bc4ddbbcb06a59f0ea9883dbbfe33f6499ac5edf6773b49",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 335597518.39493275,
+     "value_gbp_decimal": "335597518.39493275"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12308:5c1e45be5eff2e8d",
+     "source_row_number": 12308,
+     "source_row_sha256": "5c1e45be5eff2e8d8b8776e0ede5304b8d9deb2e62fbbf7050b648874b54f49d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1030669336.0009078,
+     "value_gbp_decimal": "1030669336.0009078"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+     "source_row_number": 12309,
+     "source_row_sha256": "0fbcc0c4dc21227c268caed345eb97e6665977967a88800dcafb3f8654614c16",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1213144307.023997,
+     "value_gbp_decimal": "1213144307.023997"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12310:28dedd8eb897f229",
+     "source_row_number": 12310,
+     "source_row_sha256": "28dedd8eb897f229e6163e8108e278c90ad0a8a5531060e1ac4ff6419dd52dfc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1387680331.3568652,
+     "value_gbp_decimal": "1387680331.3568652"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12311:9143a3313d158e51",
+     "source_row_number": 12311,
+     "source_row_sha256": "9143a3313d158e51a12a71021e0f01eeebbd50b45276460fd8dcd47391ff9a86",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1457940339.8309336,
+     "value_gbp_decimal": "1457940339.8309336"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12312:a797de74813b43ad",
+     "source_row_number": 12312,
+     "source_row_sha256": "a797de74813b43ad74982a910eb9e429df0fdd24f4df5f027de07809c596b545",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12313:b2511408029ed0d7",
+     "source_row_number": 12313,
+     "source_row_sha256": "b2511408029ed0d7e5ba40d606f4afc4782ad733e985179773c9c294a22cc3bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -57881325.340427674,
+     "value_gbp_decimal": "-57881325.340427674"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12314:745357cae61de123",
+     "source_row_number": 12314,
+     "source_row_sha256": "745357cae61de12396f8348021a38a24f856c703877d3caf7ce8f276c06434e5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -182649035.8484948,
+     "value_gbp_decimal": "-182649035.8484948"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12315:7febae39f08cbfb1",
+     "source_row_number": 12315,
+     "source_row_sha256": "7febae39f08cbfb1eb55085f079b8887e27b99baded378a9cf8870f6e1c64009",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -270770124.2242245,
+     "value_gbp_decimal": "-270770124.2242245"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12316:2ab7b0caaa0ace9c",
+     "source_row_number": 12316,
+     "source_row_sha256": "2ab7b0caaa0ace9c2990c96f8bd284c54c378dd34b98a5b009379d5cd4be8e80",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -336382889.551976,
+     "value_gbp_decimal": "-336382889.551976"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12317:4cf949c78d705d18",
+     "source_row_number": 12317,
+     "source_row_sha256": "4cf949c78d705d18659ccb96ff0ce0b365691e9650d786fe0a3160be14539ad4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -387300820.8505152,
+     "value_gbp_decimal": "-387300820.8505152"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12318:715477c9bb8d949a",
+     "source_row_number": 12318,
+     "source_row_sha256": "715477c9bb8d949aa1f36dbaaf5c306da2490215dd4a41976191759e0204fca8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12319:e7697416ea2e9816",
+     "source_row_number": 12319,
+     "source_row_sha256": "e7697416ea2e9816ff93c5920b08278e1515397376543005c2f50cc811cc2a07",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12320:1654d36a764609bd",
+     "source_row_number": 12320,
+     "source_row_sha256": "1654d36a764609bd71d953a987c4f8f2b05560efbdd2c60c410a9777db2f831e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 122181435.47911787,
+     "value_gbp_decimal": "122181435.47911787"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12321:a77bafa0f6f15194",
+     "source_row_number": 12321,
+     "source_row_sha256": "a77bafa0f6f15194582f793ea506185b094fbe068071c93dc6ae2c6589df2560",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 206004270.87861085,
+     "value_gbp_decimal": "206004270.87861085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12322:5c15c5632066facd",
+     "source_row_number": 12322,
+     "source_row_sha256": "5c15c5632066facd4389a0cf626062c3396e6596832024de0e0ba65c041dae1b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 266450548.98205957,
+     "value_gbp_decimal": "266450548.98205957"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12323:e028d55f29a62741",
+     "source_row_number": 12323,
+     "source_row_sha256": "e028d55f29a62741d1f91f7e86844e42e28d564055f06d60673bee91fbc05d23",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 312129427.5330534,
+     "value_gbp_decimal": "312129427.5330534"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12324:6e8044dc6b149536",
+     "source_row_number": 12324,
+     "source_row_sha256": "6e8044dc6b149536caa9890e77d603325a78488057dc7d5991601ce83165ede3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12325:2be73b17d5498ede",
+     "source_row_number": 12325,
+     "source_row_sha256": "2be73b17d5498ede63e1da84cda4764120388a2ecc952c8faaeb2e3f15af71d3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12326:b1eebc6c379e8995",
+     "source_row_number": 12326,
+     "source_row_sha256": "b1eebc6c379e8995875d837eaf01f17d50b2c2eebd70ac22a97995604da05aef",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 16864819.931350008,
+     "value_gbp_decimal": "16864819.931350008"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12327:ba862df46bba3c9b",
+     "source_row_number": 12327,
+     "source_row_sha256": "ba862df46bba3c9bd102189a01fa9343f99a73a493e26958b1c0d7f825faffbe",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 11730019.954526948,
+     "value_gbp_decimal": "11730019.954526948"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12328:1632ff19af602d74",
+     "source_row_number": 12328,
+     "source_row_sha256": "1632ff19af602d74cc96692eefe36eeacf873bf663c5172c9f615167cde570a1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 8623052.841607084,
+     "value_gbp_decimal": "8623052.841607084"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12329:964a3194129b2c01",
+     "source_row_number": 12329,
+     "source_row_sha256": "964a3194129b2c0169339fbb48d8dcdb2b23393b6a3cf45d9e5f94d34c3929c7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 6673792.004353489,
+     "value_gbp_decimal": "6673792.004353489"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23951:caaf431ee96d9479",
+     "source_row_number": 23951,
+     "source_row_sha256": "caaf431ee96d947962df6dc7662e37733e1eefee4203d5ef2da7a02847487873",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23952:acf693b4bf12e0bf",
+     "source_row_number": 23952,
+     "source_row_sha256": "acf693b4bf12e0bf6ed581449cdaeea7dae4788eaf9b43724c181209fdc660b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23953:91469837ddf069e6",
+     "source_row_number": 23953,
+     "source_row_sha256": "91469837ddf069e657f0a47fe353ec02702c2a190aa81598b668a0966e7d1e4e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 197164.75126614983,
+     "value_gbp_decimal": "197164.75126614983"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23954:ab16efe1d4cff6cf",
+     "source_row_number": 23954,
+     "source_row_sha256": "ab16efe1d4cff6cfe952b64334acd1c9b379bf2952d489a55ec818cd7f643c33",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 136959.7690068531,
+     "value_gbp_decimal": "136959.7690068531"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23955:dbe102793cb8649d",
+     "source_row_number": 23955,
+     "source_row_sha256": "dbe102793cb8649df1fa418323a5ac98f954f05c9db852da817d4e72db8645df",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 100698.61457257609,
+     "value_gbp_decimal": "100698.61457257609"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23956:8842f3881bb217c0",
+     "source_row_number": 23956,
+     "source_row_sha256": "8842f3881bb217c055611580559a81c6d4f977306dd071cd5c8656856945ee5f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 77820.26180280553,
+     "value_gbp_decimal": "77820.26180280553"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23957:e09736297edd4051",
+     "source_row_number": 23957,
+     "source_row_sha256": "e09736297edd4051d665c7f07b530b64b31f52f8d6d4b2dd6db58532caa82bfa",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23958:fe18a1efe2173692",
+     "source_row_number": 23958,
+     "source_row_sha256": "fe18a1efe2173692c7b64ef6b3dd83f97dc6decd2b32aa42bbe3bf60b071c918",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23959:39d2734cb67f68a1",
+     "source_row_number": 23959,
+     "source_row_sha256": "39d2734cb67f68a1d2f0e95d38e0ca7800c991d85eaf33ba2b7c37fe6d9312fc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23960:7c6c0ab684177612",
+     "source_row_number": 23960,
+     "source_row_sha256": "7c6c0ab6841776127444135426429e8598871706af6697694a6250f318049f88",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1280625.6912634405,
+     "value_gbp_decimal": "1280625.6912634405"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23961:62a49588692d5238",
+     "source_row_number": 23961,
+     "source_row_sha256": "62a49588692d523854f49e74a420816009e4fe0795c34aa41e06425c8d2cc0b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 890735.7339150496,
+     "value_gbp_decimal": "890735.7339150496"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23962:1d523435af45cc88",
+     "source_row_number": 23962,
+     "source_row_sha256": "1d523435af45cc889d00a77dd05441ac3757bbd0dcb2247bcdfc585eaeed88c7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 654811.8636160415,
+     "value_gbp_decimal": "654811.8636160415"
+    }
+   ],
+   "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2026-27",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.0875,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3375
+    },
+    "2026": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2027": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2028": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2029": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    },
+    "2030": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": 0.1075,
+     "gov.hmrc.income_tax.rates.dividends[1].rate": 0.3575
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.income_tax.rates.dividends[0].rate",
+     "gov.hmrc.income_tax.rates.dividends[1].rate"
+    ],
+    "pattern": "gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[0\\]\\.rate|gov\\.hmrc\\.income_tax\\.rates\\.dividends\\[1\\]\\.rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+     "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+     "2026-01-01.2030-12-31": 0.3375
+    }
+   },
+   "pe_gap": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12306:73a2ece6287dce1c",
+     "source_row_number": 12306,
+     "source_row_sha256": "73a2ece6287dce1cb834e33432ee0d8756f5f7ebc0f4b49864100764544b1070",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12307:90ac5224d0623421",
+     "source_row_number": 12307,
+     "source_row_sha256": "90ac5224d06234211bc4ddbbcb06a59f0ea9883dbbfe33f6499ac5edf6773b49",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 335597518.39493275,
+     "value_gbp_decimal": "335597518.39493275"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12308:5c1e45be5eff2e8d",
+     "source_row_number": 12308,
+     "source_row_sha256": "5c1e45be5eff2e8d8b8776e0ede5304b8d9deb2e62fbbf7050b648874b54f49d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1030669336.0009078,
+     "value_gbp_decimal": "1030669336.0009078"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+     "source_row_number": 12309,
+     "source_row_sha256": "0fbcc0c4dc21227c268caed345eb97e6665977967a88800dcafb3f8654614c16",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1213144307.023997,
+     "value_gbp_decimal": "1213144307.023997"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12310:28dedd8eb897f229",
+     "source_row_number": 12310,
+     "source_row_sha256": "28dedd8eb897f229e6163e8108e278c90ad0a8a5531060e1ac4ff6419dd52dfc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1387680331.3568652,
+     "value_gbp_decimal": "1387680331.3568652"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12311:9143a3313d158e51",
+     "source_row_number": 12311,
+     "source_row_sha256": "9143a3313d158e51a12a71021e0f01eeebbd50b45276460fd8dcd47391ff9a86",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1457940339.8309336,
+     "value_gbp_decimal": "1457940339.8309336"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12312:a797de74813b43ad",
+     "source_row_number": 12312,
+     "source_row_sha256": "a797de74813b43ad74982a910eb9e429df0fdd24f4df5f027de07809c596b545",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12313:b2511408029ed0d7",
+     "source_row_number": 12313,
+     "source_row_sha256": "b2511408029ed0d7e5ba40d606f4afc4782ad733e985179773c9c294a22cc3bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -57881325.340427674,
+     "value_gbp_decimal": "-57881325.340427674"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12314:745357cae61de123",
+     "source_row_number": 12314,
+     "source_row_sha256": "745357cae61de12396f8348021a38a24f856c703877d3caf7ce8f276c06434e5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -182649035.8484948,
+     "value_gbp_decimal": "-182649035.8484948"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12315:7febae39f08cbfb1",
+     "source_row_number": 12315,
+     "source_row_sha256": "7febae39f08cbfb1eb55085f079b8887e27b99baded378a9cf8870f6e1c64009",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -270770124.2242245,
+     "value_gbp_decimal": "-270770124.2242245"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12316:2ab7b0caaa0ace9c",
+     "source_row_number": 12316,
+     "source_row_sha256": "2ab7b0caaa0ace9c2990c96f8bd284c54c378dd34b98a5b009379d5cd4be8e80",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -336382889.551976,
+     "value_gbp_decimal": "-336382889.551976"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12317:4cf949c78d705d18",
+     "source_row_number": 12317,
+     "source_row_sha256": "4cf949c78d705d18659ccb96ff0ce0b365691e9650d786fe0a3160be14539ad4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": -387300820.8505152,
+     "value_gbp_decimal": "-387300820.8505152"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12318:715477c9bb8d949a",
+     "source_row_number": 12318,
+     "source_row_sha256": "715477c9bb8d949aa1f36dbaaf5c306da2490215dd4a41976191759e0204fca8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12319:e7697416ea2e9816",
+     "source_row_number": 12319,
+     "source_row_sha256": "e7697416ea2e9816ff93c5920b08278e1515397376543005c2f50cc811cc2a07",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12320:1654d36a764609bd",
+     "source_row_number": 12320,
+     "source_row_sha256": "1654d36a764609bd71d953a987c4f8f2b05560efbdd2c60c410a9777db2f831e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 122181435.47911787,
+     "value_gbp_decimal": "122181435.47911787"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12321:a77bafa0f6f15194",
+     "source_row_number": 12321,
+     "source_row_sha256": "a77bafa0f6f15194582f793ea506185b094fbe068071c93dc6ae2c6589df2560",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 206004270.87861085,
+     "value_gbp_decimal": "206004270.87861085"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12322:5c15c5632066facd",
+     "source_row_number": 12322,
+     "source_row_sha256": "5c15c5632066facd4389a0cf626062c3396e6596832024de0e0ba65c041dae1b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 266450548.98205957,
+     "value_gbp_decimal": "266450548.98205957"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12323:e028d55f29a62741",
+     "source_row_number": 12323,
+     "source_row_sha256": "e028d55f29a62741d1f91f7e86844e42e28d564055f06d60673bee91fbc05d23",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 312129427.5330534,
+     "value_gbp_decimal": "312129427.5330534"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12324:6e8044dc6b149536",
+     "source_row_number": 12324,
+     "source_row_sha256": "6e8044dc6b149536caa9890e77d603325a78488057dc7d5991601ce83165ede3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12325:2be73b17d5498ede",
+     "source_row_number": 12325,
+     "source_row_sha256": "2be73b17d5498ede63e1da84cda4764120388a2ecc952c8faaeb2e3f15af71d3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12326:b1eebc6c379e8995",
+     "source_row_number": 12326,
+     "source_row_sha256": "b1eebc6c379e8995875d837eaf01f17d50b2c2eebd70ac22a97995604da05aef",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 16864819.931350008,
+     "value_gbp_decimal": "16864819.931350008"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12327:ba862df46bba3c9b",
+     "source_row_number": 12327,
+     "source_row_sha256": "ba862df46bba3c9bd102189a01fa9343f99a73a493e26958b1c0d7f825faffbe",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 11730019.954526948,
+     "value_gbp_decimal": "11730019.954526948"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12328:1632ff19af602d74",
+     "source_row_number": 12328,
+     "source_row_sha256": "1632ff19af602d74cc96692eefe36eeacf873bf663c5172c9f615167cde570a1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 8623052.841607084,
+     "value_gbp_decimal": "8623052.841607084"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12329:964a3194129b2c01",
+     "source_row_number": 12329,
+     "source_row_sha256": "964a3194129b2c0169339fbb48d8dcdb2b23393b6a3cf45d9e5f94d34c3929c7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 6673792.004353489,
+     "value_gbp_decimal": "6673792.004353489"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23951:caaf431ee96d9479",
+     "source_row_number": 23951,
+     "source_row_sha256": "caaf431ee96d947962df6dc7662e37733e1eefee4203d5ef2da7a02847487873",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23952:acf693b4bf12e0bf",
+     "source_row_number": 23952,
+     "source_row_sha256": "acf693b4bf12e0bf6ed581449cdaeea7dae4788eaf9b43724c181209fdc660b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23953:91469837ddf069e6",
+     "source_row_number": 23953,
+     "source_row_sha256": "91469837ddf069e657f0a47fe353ec02702c2a190aa81598b668a0966e7d1e4e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 197164.75126614983,
+     "value_gbp_decimal": "197164.75126614983"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23954:ab16efe1d4cff6cf",
+     "source_row_number": 23954,
+     "source_row_sha256": "ab16efe1d4cff6cfe952b64334acd1c9b379bf2952d489a55ec818cd7f643c33",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 136959.7690068531,
+     "value_gbp_decimal": "136959.7690068531"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23955:dbe102793cb8649d",
+     "source_row_number": 23955,
+     "source_row_sha256": "dbe102793cb8649df1fa418323a5ac98f954f05c9db852da817d4e72db8645df",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 100698.61457257609,
+     "value_gbp_decimal": "100698.61457257609"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23956:8842f3881bb217c0",
+     "source_row_number": 23956,
+     "source_row_sha256": "8842f3881bb217c055611580559a81c6d4f977306dd071cd5c8656856945ee5f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 77820.26180280553,
+     "value_gbp_decimal": "77820.26180280553"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23957:e09736297edd4051",
+     "source_row_number": 23957,
+     "source_row_sha256": "e09736297edd4051d665c7f07b530b64b31f52f8d6d4b2dd6db58532caa82bfa",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23958:fe18a1efe2173692",
+     "source_row_number": 23958,
+     "source_row_sha256": "fe18a1efe2173692c7b64ef6b3dd83f97dc6decd2b32aa42bbe3bf60b071c918",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23959:39d2734cb67f68a1",
+     "source_row_number": 23959,
+     "source_row_sha256": "39d2734cb67f68a1d2f0e95d38e0ca7800c991d85eaf33ba2b7c37fe6d9312fc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23960:7c6c0ab684177612",
+     "source_row_number": 23960,
+     "source_row_sha256": "7c6c0ab6841776127444135426429e8598871706af6697694a6250f318049f88",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 1280625.6912634405,
+     "value_gbp_decimal": "1280625.6912634405"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23961:62a49588692d5238",
+     "source_row_number": 23961,
+     "source_row_sha256": "62a49588692d523854f49e74a420816009e4fe0795c34aa41e06425c8d2cc0b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 890735.7339150496,
+     "value_gbp_decimal": "890735.7339150496"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23962:1d523435af45cc88",
+     "source_row_number": 23962,
+     "source_row_sha256": "1d523435af45cc889d00a77dd05441ac3757bbd0dcb2247bcdfc585eaeed88c7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+     "value_gbp": 654811.8636160415,
+     "value_gbp_decimal": "654811.8636160415"
+    }
+   ],
+   "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": {
+      "baseline_world": 0.0875,
+      "current_law": 0.1075,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.1075,
+      "reform_world": 0.1075
+     },
+     "gov.hmrc.income_tax.rates.dividends[1].rate": {
+      "baseline_world": 0.3375,
+      "current_law": 0.3575,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.3575,
+      "reform_world": 0.3575
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.rates.dividends[0].rate": {
+      "baseline_world": 0.0875,
+      "current_law": 0.1075,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.1075,
+      "reform_world": 0.1075
+     },
+     "gov.hmrc.income_tax.rates.dividends[1].rate": {
+      "baseline_world": 0.3375,
+      "current_law": 0.3575,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.3575,
+      "reform_world": 0.3575
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 1156191002.9865723,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 1213144307.023997,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": -52494558.228759766,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 11561910.029865723
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1103696444.7578125,
+   "key": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 11561910.029865723,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -270770124.2242245,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12315:7febae39f08cbfb1",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 206004270.87861085,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:12321:a77bafa0f6f15194",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 11730019.954526948,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12327:ba862df46bba3c9b",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 136959.7690068531,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23954:ab16efe1d4cff6cf",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 1280625.6912634405,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23960:7c6c0ab684177612",
+   "level": "source_row",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": 1156191002.9865723,
+   "context": {},
+   "delta_gbp": -52494558.228759766,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 11561910.029865723
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1103696444.7578125,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 11561910.029865723,
+   "year": 2028
+  },
+  {
+   "base_gbp": 1156191002.9865723,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -52494558.228759766,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 11561910.029865723
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1103696444.7578125,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 11561910.029865723,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "ab2025__dividend_rates_plus_2pp",
+   "threshold_gbp": 1000000.0,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__dividend_rates_plus_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__dividend_rates_plus_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 1156191002.9865723,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 1103696444.7578125,
+   "obr_value_gbp": 1213144307.023997,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+   "source_row_number": 12309,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -270770124.2242245,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12315:7febae39f08cbfb1",
+   "source_row_number": 12315,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 206004270.87861085,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12321:a77bafa0f6f15194",
+   "source_row_number": 12321,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 11730019.954526948,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12327:ba862df46bba3c9b",
+   "source_row_number": 12327,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 136959.7690068531,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23954:ab16efe1d4cff6cf",
+   "source_row_number": 23954,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 1280625.6912634405,
+   "side": "base",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23960:7c6c0ab684177612",
+   "source_row_number": 23960,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 1156191002.9865723,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 1103696444.7578125,
+   "obr_value_gbp": 1213144307.023997,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12309:0fbcc0c4dc21227c",
+   "source_row_number": 12309,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -270770124.2242245,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12315:7febae39f08cbfb1",
+   "source_row_number": 12315,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 206004270.87861085,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12321:a77bafa0f6f15194",
+   "source_row_number": 12321,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 11730019.954526948,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12327:ba862df46bba3c9b",
+   "source_row_number": 12327,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 136959.7690068531,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23954:ab16efe1d4cff6cf",
+   "source_row_number": 23954,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 1280625.6912634405,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23960:7c6c0ab684177612",
+   "source_row_number": 23960,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+ "year": 2028
+}

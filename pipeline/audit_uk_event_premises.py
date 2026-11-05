@@ -193,16 +193,19 @@ def audit_measure(
             measure["measure_key"],
             world,
             engine.metadata if hasattr(engine, "metadata") else engine.annualisation,
+            engine.current_law,
         )
     else:
         if revision_selection is not None:
-            selected_here = revisions.select_revision(
+            holds = revisions.recorded_revision_holds(
                 measure["measure_key"],
+                revision_selection,
                 engine.metadata
                 if hasattr(engine, "metadata")
                 else engine.annualisation,
+                engine.current_law,
             )
-            if selected_here != revision_selection:
+            if not holds:
                 raise ValueError(
                     f"{measure['measure_key']}: recorded construction revision "
                     "does not match installed parameter metadata or revision registry"
@@ -380,7 +383,7 @@ def audit(
                         for measure in json.loads(payload)["measures"]
                         if (
                             chosen := revisions.select_revision(
-                                measure["measure_key"], metadata
+                                measure["measure_key"], metadata, engine.current_law
                             )
                         )
                     }

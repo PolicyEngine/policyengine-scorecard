@@ -11,16 +11,19 @@ key into `measure_key`, where AB2025's rows name theirs, and writes
 `KEY_DECISIONS.md`.
 
 Two producers' packages share a key only if their scopes match line for line
-(rule 3). We register a package as a list of registry keys (`legs`) only when
-NOTES gives its Table 6.1 lines exactly. We register the OBR's Table 3.1 tax
-groups as the receipts of their lines (`receipts_of`), and every other
-package in its producer's words (`words`).
+(rule 3). We register a package as a list of registry keys (`legs`) when NOTES
+names every leg. Twenty-one such packages name Table 6.1 lines, and one names
+two measures outside that table. We register the OBR's Table 3.1 tax groups as
+the receipts of their lines (`receipts_of`), and every other package in its
+producer's words (`words`).
 
 Verdicts:
   ("legs",)                         computed from the legs, as the builder does
                                     for tranche 1's packages
-  ("receipts",)                     partial: a run gives each leg's whole
-                                    effect, not the producer's receipts head
+  ("receipts",)                     not_expressible when every leg takes that
+                                    verdict, otherwise partial: a run gives
+                                    each leg's whole effect, not the producer's
+                                    receipts head
   ("words", missing)                partial: the producer lists no set of
                                     registry measures
   ("scope", template, what, regex)  not_expressible, out of the model's scope,
@@ -553,7 +556,7 @@ DECISIONS = {
     "ab2026__package_fuel_duty_and_electricity_vat": _d(
         "package",
         "OBR Table 3.1: fuel duty freeze and VAT off domestic energy bills (receipts)",
-        "The receipts of Table 6.1 lines 2 and 3 only (Table 3.1's tax groups are receipts groupings); line 1 doesn't count.",
+        "The receipts of Table 6.1 lines 2 and 3 only (the OBR groups Table 3.1 by receipts head); line 1 doesn't count.",
         ("receipts",),
         "package",
         (OBR,),
@@ -619,7 +622,7 @@ DECISIONS = {
     "ab2026__package_civil_service_transformation_programme": _d(
         "package",
         "OBR: the civil service transformation programme",
-        "The OBR's programme to reduce resource spending; it names no lines, and lines 63 and 64 are probable but not established.",
+        "The OBR's programme to reduce resource spending; the OBR names no lines, though lines 63 and 64 probably belong.",
         (
             "scope",
             "SPEND",
@@ -960,7 +963,7 @@ DECISIONS = {
     "ab2026__package_rf_parliament_permanent_tax_and_benefit_measures": _d(
         "package",
         "RF: permanent personal tax and benefit changes announced this Parliament",
-        "Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26's part is lines 52, 56, 61 and 62 and the gas standing charge.",
+        "Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26 contributes lines 52, 56, 61 and 62 and the gas standing charge.",
         (
             "words",
             "RF spans several events, whose measures this registry doesn't hold",

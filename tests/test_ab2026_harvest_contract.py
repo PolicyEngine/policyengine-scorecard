@@ -13,6 +13,7 @@ import json
 import math
 import shutil
 import tempfile
+import time
 from itertools import product
 from pathlib import Path
 
@@ -1510,6 +1511,10 @@ def test_digits_alone_take_the_normalization_s_factor_failing_that_one(n):
         ("x .5", (2,), (4, 8)),
         ("x1e6", (4e6,), (4,)),
         ("×1e6", (4e6,), (4,)),
+        ("(×1e6)", (4e6,), (4,)),
+        ("[×1e6]", (4e6,), (4,)),
+        ("£ billion × 1e9 → £", (4e9,), (4,)),
+        ("per cent / 100 → share", (0.04,), (4,)),
         ("x 1,000,000 / 100", (4e4,), (4, 4e6, 0.04)),
         ("x 1,000,000 ÷ 100 * 2", (8e4,), (4, 4e6, 4e4, 0.04)),
         # two statements, so two readings; a semicolon ends a run of operations
@@ -1561,6 +1566,41 @@ def test_a_bare_number_takes_each_whole_factor_the_normalization_states(
         "times one",
         "multiplied by 1e6",
         "divided by 100",
+        "multiplied  by 1e6",
+        "divided  by 100",
+        "x\tby 1e6",
+        "x 1e6 / (one hundred)",
+        "£m×1e6",
+        "£m*1e6",
+        "£m÷100",
+        "(£m)×1e6",
+        "£m× 1e6",
+        "£m×(-1e6)",
+        "£m×one million",
+        "£m;x 1e6",
+        "£m:x 1e6",
+        "£m,x 1e6",
+        "£m=x 1e6",
+        "->x 1e6",
+        "£m→x 1e6",
+        "(£m)x 1e6",
+        "[£m]x 1e6",
+        "£m;x one million",
+        "%/100",
+        "£m;/100",
+        "£m:/100",
+        "£m,/100",
+        "£m=/100",
+        "->/100",
+        "£m→/100",
+        "(£m)/100",
+        "[£m]/100",
+        "£m/100",
+        "per cent/100",
+        "per cent/ 100",
+        "per cent/(100)",
+        "per cent/(£100)",
+        "per cent/.01",
         "x 1,000,000 / 10^",
     ],
 )
@@ -1987,7 +2027,53 @@ def test_rule_4_holds_whatever_the_title_case():
         ("paragraph 1.7; from: Figure 1.A", True),
         ("paragraph 1.7; column 3 of (Figure 1.A)", True),
         ("paragraph 1.7; column 3 of: Figure 1.A", True),
+        # brackets and quotes in a row, and before a word
+        ('paragraph 1.7; read from ("Figure 1.A")', True),
+        ("paragraph 1.7; read off ([Figure 1.A])", True),
+        ('paragraph 1.7; read off ( "Figure 1.A")', True),
+        ('paragraph 1.7; read from ("the Figure 1.A")', True),
+        ("paragraph 1.7; read from ( the Figure 1.A", True),
+        ("paragraph 1.7; read from [the Figure 1.A]", True),
+        ('paragraph 1.7; read from "the Figure 1.A"', True),
+        ("paragraph 1.7; read from 'the Figure 1.A'", True),
+        ("paragraph 1.7; read from “the Figure 1.A”", True),
+        ("paragraph 1.7; read from ‘the Figure 1.A’", True),
+        # a word that holds an apostrophe or a dot, or ends a bracket
+        ("paragraph 1.7; taken from ... Figure 1.A", True),
+        ("paragraph 1.7; taken from p.3 of Figure 1.A", True),
+        ("paragraph 1.7; taken from HMT's Figure 1.A", True),
+        ("paragraph 1.7; taken from HM Treasury’s Figure 1.A", True),
+        ("paragraph 1.7; read from (HMT) Figure 1.A", True),
+        ("paragraph 1.7; read from [HMT] Figure 1.A", True),
         # and one negation still cancels the phrase
+        ('paragraph 1.7; not read from ("Figure 1.A")', False),
+        ("paragraph 1.7; not read off ([Figure 1.A])", False),
+        ("paragraph 1.7; not read from [the Figure 1.A]", False),
+        ('paragraph 1.7; not read from "the Figure 1.A"', False),
+        ("paragraph 1.7; not read from 'the Figure 1.A'", False),
+        ("paragraph 1.7; not read from “the Figure 1.A”", False),
+        ("paragraph 1.7; not read from ‘the Figure 1.A’", False),
+        ("paragraph 1.7; not taken from HMT's Figure 1.A", False),
+        ("paragraph 1.7; not taken from HM Treasury’s Figure 1.A", False),
+        ("paragraph 1.7; not read from (HMT) Figure 1.A", False),
+        ("paragraph 1.7; not read from [HMT] Figure 1.A", False),
+        ('paragraph 1.7; not read from ("the Figure 1.A")', False),
+        ("paragraph 1.7; not read from ( the Figure 1.A", False),
+        # A word before the figure may end a double quote or several brackets.
+        ('paragraph 1.7; read off the "Impact on households" Figure 1.A', True),
+        ("paragraph 1.7; read off the “Impact on households” Figure 1.A", True),
+        ("paragraph 1.7; read from ((HMT)) Figure 1.A", True),
+        ('paragraph 1.7; read from "HMT" Figure 1.A', True),
+        ("paragraph 1.7; read from (“HMT”) Figure 1.A", True),
+        # Up to four words stand between "from" and the figure.
+        ("paragraph 1.7; read from a b c d Figure 1.A", True),
+        ("paragraph 1.7; read from a b c d e Figure 1.A", False),
+        ('paragraph 1.7; not read off the "Impact on households" Figure 1.A', False),
+        ('paragraph 1.7; not read from "HMT" Figure 1.A', False),
+        ("paragraph 1.7; not read from (“HMT”) Figure 1.A", False),
+        ("paragraph 1.7; not read from ((HMT)) Figure 1.A", False),
+        # a comma ends the words before a figure
+        ("paragraph 1.7; figures from Table 2.C, Figure 1.A data label", False),
         ("paragraph 1.7; not read from [Figure 1.A]", False),
         ("paragraph 1.7; not read off: Fig. 1.A", False),
         ("paragraph 1.7; no bar reading from: Figure 1.A", False),
@@ -2537,7 +2623,31 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
 
 
 @pytest.mark.parametrize(
-    "op", ["x", "×", "*", "/", "÷", "times", "multiplied by", "divided by"]
+    "op",
+    [
+        "x",
+        "×",
+        "*",
+        "/",
+        "÷",
+        "times",
+        "times by",
+        "times  by",
+        "multiplied by",
+        "multiply by",
+        "multiplying by",
+        "divided by",
+        "divide by",
+        "dividing by",
+        "scaled by",
+        "scale by",
+        "scaling by",
+        "x by",
+        "× by",
+        "* by",
+        "/ by",
+        "÷ by",
+    ],
 )
 @pytest.mark.parametrize(
     "operand",
@@ -2546,6 +2656,10 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "( 1e6)",
         "(.5)",
         "[1e6]",
+        "'1e6'",
+        '"1e6"',
+        "‘1e6’",
+        "“1e6”",
         "+1e6",
         "-1e6",
         "−1e6",
@@ -2562,6 +2676,17 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "one",
         "twenty-five",
         "one million",
+        "(one million)",
+        "(-one million)",
+        "(a million)",
+        "[one million]",
+        "'one million'",
+        '"one million"',
+        "‘one million’",
+        "“one million”",
+        "-one million",
+        "+one million",
+        "£one million",
         "a million",
         "a hundred",
         "hundred",
@@ -2570,11 +2695,17 @@ def test_rule_4_reads_each_dash_as_a_space(dash):
         "billion",
         "trillion",
         "zero",
+        "half",
+        "a half",
+        "a quarter",
+        "another half",
+        "three-quarters",
     ],
 )
 def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand):
-    """Sol's review of 82068821: the checker never scales by 1, or by part of a
-    chain, past an operation on a bracket, a sign, a currency sign or words."""
+    """Sol's review of 82068821 and both of 4707e917: the checker never scales by 1,
+    or by part of a chain, past an operation on a bracket, a quote, a sign, a currency
+    sign or number words, or an operation in words."""
     notes = [
         f"{op} {operand}",
         f"as printed; {op} {operand}",
@@ -2588,6 +2719,34 @@ def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand)
         for value in (4, 4e6):
             found = problems(_share("4", value, note))
             assert any("a factor in normalization" in p for p in found), (note, value)
+
+
+def test_a_long_run_of_quotes_stays_quick_to_read():
+    """If a quote could both open a word and stand as a bracket, the reading's time
+    would grow with about the fifth power of the locator's length."""
+    started = time.monotonic()
+    for run in ("' ", '"a" ', 'a" ', "“a” ", "(a)) "):
+        assert not reads_a_bar("paragraph 1.7; read from " + run * 120), run
+    assert time.monotonic() - started < 2
+
+
+@pytest.mark.parametrize(
+    ("raw", "value"),
+    [
+        ("4m", 4e6),
+        ("1 in 4", 0.25),
+        ("a half", 0.5),
+        ("nil", 0),
+        ("4%", 0.04),
+        ("two and a half", 2.5),
+        ("half a million", 5e5),
+    ],
+)
+def test_an_unread_factor_is_a_problem_whatever_the_number_owns(raw, value):
+    """Sol's review of 4707e917: the checker reports a factor it can't read before it
+    looks at the number's own multiplier, its share or its nil."""
+    found = problems(_share(raw, value, "times 1,000"))
+    assert any("a factor in normalization" in p for p in found), (raw, found)
 
 
 @pytest.mark.parametrize(
@@ -2616,6 +2775,20 @@ def test_an_operand_the_checker_cant_read_is_a_problem_at_any_value(op, operand)
         "times onerous",
         "divided by region",
         "multiplied by the rate",
+        "scaled by region",
+        "multiply by the rate",
+        "x by y",
+        "printed fraction two-thirds -> share 2/3",
+        "£m×rate",
+        "£m*rate",
+        "x**2",
+        "2026/27",
+        "2/3",
+        "and/or",
+        "a;x y",
+        "(b)/c",
+        "tax 5",
+        "lax: y",
     ],
 )
 def test_an_ordinary_note_states_no_factor(note):

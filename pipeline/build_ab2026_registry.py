@@ -190,14 +190,14 @@ def scope(why, pattern, link=None):
 
 
 def no_expressible_leg(legs):
-    """The verdict of a package or receipts group whose every leg is
-    not_expressible: its gap is each leg's gap, so `why`, `name_search`,
-    the triage flag and the upstream items come from the legs."""
+    """Derive a package's gap evidence from its legs when the engine can
+    express none of them: `why`, `name_search`, the triage flag and the
+    upstream items come from the legs."""
     assert legs and all(m["computability"] == "not_expressible" for m in legs)
     out = {
         "computability": "not_expressible",
         "pe_reform_delta": None,
-        "why": f"None of the {len(legs)} legs is expressible. "
+        "why": f"The engine can't express any of these {len(legs)} legs. "
         + " ".join(f"{m['measure_key']}: {m['why']}" for m in legs),
         "name_search": "Each leg's search. "
         + " ".join(f"{m['measure_key']}: {m['name_search']}" for m in legs),
