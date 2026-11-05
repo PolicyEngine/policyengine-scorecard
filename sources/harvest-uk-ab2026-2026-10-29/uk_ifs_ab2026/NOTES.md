@@ -419,11 +419,11 @@ Proposed metrics and units:
 Conventions:
 - We keep GBP amounts as IFS prints them, in cash or 2026-27 prices as it specifies, and multiply the £5bn aggregate by 1e9.
 - We divide printed percentages by 100 for shares, while keeping CPI percentages and the printed 1% income decrease as percentages.
-- We record a positive cost as a cost to the Exchequer, and positive household support as a gain. We don't re-sign IFS's printed 1% decrease in real household disposable income, and state its direction explicitly in sign_convention.
+- We record a positive cost as a cost to the Exchequer, and positive household support as a gain. We don't re-sign IFS's printed 1% decrease in real household disposable income, and state its direction in sign_convention.
 - For October 2026–June 2027 figures we use the annual time_basis, end-period marker 2027 and horizon strings, and no fiscal-year condition, because the nine months cross fiscal years.
 - IFS's 1% RHDI decrease spans FY2024-25 to FY2026-27, and we use FY2026-27/end 2027.
 - We describe no row as central: IFS prints point estimates and parameters throughout.
-- For the gas reform IFS prints no implementation year, so we use 2026 explicitly as a publication marker only.
+- For the gas reform IFS prints no implementation year, so we use 2026 as a publication marker only.
 - We leave the baseline null and invented no unsupported counterfactual definitions.
 
 Not staged:
@@ -479,11 +479,14 @@ The first lane's one proposed key here, for the £1.2bn a year of DIP funding, w
 
 For metrics the first lane reused `spending_pressure`, `forecast_spending_change`
 and `real_spending_growth` from AB2025, and used `real_spending_growth_revision`
-for the historical one-percentage-point revision. The 3 November addendum kept
-these choices on the 21 rows it kept. The first lane proposed the new
+for the historical one-percentage-point revision. It proposed the new
 `reserve_allocated_share` for the percentage of the specified day-to-day or
 capital reserve already allocated over its printed multi-year window, and
-proposed no new unit or baseline.
+proposed no new unit or baseline. Under the 3 November addendum we kept 21 of
+the deck's rows (rows 54–74). They carry the proposed metrics
+`real_spending_growth` (11 rows), `spending_pressure` (7),
+`reserve_allocated_share` (2) and `real_spending_growth_revision` (1), and none
+uses `forecast_spending_change`.
 
 The first lane used `arithmetic` for IFS's own scenario and growth calculations,
 or for an announced target IFS restates without naming a model. It marked the
@@ -558,13 +561,21 @@ raster text. IFS embeds no raster images on slides 2–6, and the lane's text ex
 captured every printed number. IFS links no distributional chart or data download
 inside this deck.
 
-Rows by registered key: `ab2026__package_total_tax_policy_decisions` 1;
+The first lane keyed its 18 rows: `ab2026__package_total_tax_policy_decisions` 1;
 `ab2026__writing_down_allowance_12pc_and_fya_50pc` 1;
 `ab2026__distributions_framework_modernised` 1;
 `ab2026__badr_lifetime_limit_500000` 1;
 `ab2026__founders_relief_cgt` 6;
 `ab2026__business_rates_sbrr_rhl_thresholds_raised` 3;
 `ab2026__electricity_vat_zero_rate_to_july_2027` 1; null 4.
+We now key the 12 rows we stage (rows 75–86) to `ab2026__founders_relief_cgt` 4;
+`ab2026__hmrc_tax_gap_package` 2;
+`ab2026__package_property_and_savings_income_rates` 1;
+`ab2026__package_total_tax_policy_decisions` 1;
+`ab2026__writing_down_allowance_12pc_and_fya_50pc` 1;
+`ab2026__distributions_framework_modernised` 1;
+`ab2026__badr_lifetime_limit_500000` 1; and
+`ab2026__business_rates_sbrr_rhl_thresholds_raised` 1.
 Since 3 November we put the £7bn net tax rise, Table 6.1's total of tax policy decisions, on `decisions_effect_on_borrowing` (README rule 10).
 
 ### Proposed measure scopes
@@ -573,13 +584,14 @@ We superseded these on 3 November (see "Keys the addendum changed" above). We st
 
 ### Conventions and metric proposals
 
-The first lane kept printed signs on all monetary figures. The 3 November
-addendum kept these choices on the rows it kept, among them rows 81 to 85. The
-first lane staged
+The first lane kept printed signs on all monetary figures. It staged
 revenue-raising amounts as positive yields, and the Founders' Relief £0.3bn as a
-positive cost, explicitly labelled so. It multiplied amounts in £bn/£m by
-1e9/1e6, kept tax rates in percent, and kept every quoted excerpt under 15
-words, containing its exact `value_raw`.
+positive cost, labelled as such. It multiplied amounts in £bn/£m by 1e9/1e6,
+kept tax rates in percent, and kept every quoted excerpt under 15 words,
+containing its exact `value_raw`. Under the 3 November addendum we kept 12 of
+these rows (rows 75–86) with these signs, scalings and quotes, among them row
+82's Founders' Relief £0.3bn as a positive cost, and dropped every tax-rate row
+(rule 8).
 
 The first lane marked the HMT-certified Budget costings `restated` with
 `source_model: hmt_costing_obr_certified`, and rates and eligibility parameters
