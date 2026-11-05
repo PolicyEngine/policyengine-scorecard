@@ -789,3 +789,27 @@ def test_a_merged_printing_keeps_its_twins():
     [kept] = scores
     assert kept.publication["locator"] == "z"
     assert [t["locator"] for t in kept.publication["also_printed_in"]] == ["costings"]
+
+
+@pytest.mark.parametrize(
+    "family, row, reading",
+    [
+        # phrases on rows the ingest drops before any claim forms
+        ("uk_obr_tables", 2738, ("opposite", "stated:exchequer:opposite")),
+        ("uk_ifs_ab2026", 53, ("opposite", "stated:household_gain:opposite")),
+        ("uk_thinktank_misc", 9, ("same", "stated:household_gain:same")),
+        ("uk_obr_tables", 2742, ("same", "stated:higher_output:same")),
+        (
+            "uk_obr_tables",
+            2658,
+            ("unknown", "stated:higher_inflation:not_this_quantity"),
+        ),
+    ],
+)
+def test_sign_phrases_on_dropped_rows_read_as_reviewed(family, row, reading):
+    r = RAW[family][row]
+    metric = r.get("metric") or r.get("proposed_metric")
+    got = signs.classify(
+        {"metric": metric, "conditions": r["conditions"], "country": "UK"}
+    )
+    assert got == reading
