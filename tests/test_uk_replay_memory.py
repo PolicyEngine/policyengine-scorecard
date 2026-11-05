@@ -541,7 +541,7 @@ if __name__ == "__main__":
     print(f"[pid {os.getpid()}] private household income 12345", flush=True)
     print(f"[pid {os.getpid()}] starting household income 12345", flush=True)
     print(
-        f"[pid {os.getpid()} year 2029] certified baseline extracted once in 1.0s 777",
+        f"[pid {os.getpid()} year 2029] certified baseline extracted once in 1.0s PRIVATE_BASELINE_SUFFIX",
         file=sys.stderr,
         flush=True,
     )
@@ -556,7 +556,12 @@ def test_measured_run_samples_the_tree_and_keeps_only_aggregate_lines(tmp_path, 
     )
     # Modal streams what the container prints: only the runner's own lines.
     printed = capfd.readouterr()
-    for private in ("private row", "private traceback", "household", "777"):
+    for private in (
+        "private row",
+        "private traceback",
+        "household",
+        "PRIVATE_BASELINE_SUFFIX",
+    ):
         assert private not in printed.out + printed.err
         assert private not in json.dumps(result)
     assert "[2029] m: +0.000bn gain to Exchequer" in printed.out
