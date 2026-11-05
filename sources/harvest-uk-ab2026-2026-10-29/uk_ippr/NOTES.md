@@ -49,7 +49,7 @@ We wrote the rows into `stage.py` as data, and it rewrites `manifest.jsonl` and 
 
 - **`ab2026_option__income_tax_5pc_share_devolved_to_mayors`:** "Five per cent of income tax devolved to mayors". HM Treasury prints no Table 6.1 line for it. The Budget made commitments "on devolving business rates and a share of income tax to England's mayors" (line 21 covers the business rates share) without setting a 5% share.
 
-## What we left out, and why
+## Not staged, and why
 
 - We left out design, not estimates, under README rule 8, which treats spending allocations, financing remits and payment amounts as a measure's design:
   - IPPR North's "£285million of good growth funds" restates HM Treasury's allocation ("£285 million in 2027-28, comprising £165 million to support places with a mayor … to establish Good Growth Funds and £120 million of incubator capital funding for areas transitioning towards a devolution deal"). HM Treasury makes it a spending allocation and costs it within Table 6.1 line 20, whose costing (−£340m in 2027-28) also includes the subsidy on the £1.5bn finance. In the reworked uk_hmt_redbook family we don't stage HM Treasury's £285m either (rule 8).
@@ -85,4 +85,4 @@ The thinktanks-a reviewer (`harvest-staging/ab2026/reviews/verify-thinktanks-a.m
 Review B (PR #231, issue comment 6635498758) approved this family with fixes, and review A's K-7(f) asked for the same NOTES correction as its second item. We re-opened no primary in this session.
 
 - Finding 1, where the coordinator chose to take the fix: we now store 0.2, `range_low`, `sign_convention: "as worded: positive = reduction in CPI inflation"` on row 0, as the OBR and red book CPI rows keep the magnitude (`uk_obr_tables` row 2653).
-- Finding 2 and K-7(f): in the section on what we left out, we no longer say that the red book family stages HM Treasury's £285m or the £1.5bn as `policy_parameter`; in the reworked red book family we stage neither. In the section on how we fetched the releases, we now read JSON-LD `dateModified` as a render time, not an edit.
+- Finding 2 and K-7(f): under "Not staged" we no longer say that the red book family stages HM Treasury's £285m or the £1.5bn as `policy_parameter`; in the reworked red book family we stage neither. In the section on how we fetched the releases, we now read JSON-LD `dateModified` as a render time, not an edit.
