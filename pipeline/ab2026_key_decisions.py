@@ -11,11 +11,11 @@ key into `measure_key`, where AB2025's rows name theirs, and writes
 `KEY_DECISIONS.md`.
 
 Two producers' packages share a key only if their scopes match line for line
-(rule 3). We register a package as a list of registry keys (`legs`) when NOTES
-names every leg. Twenty-one such packages name Table 6.1 lines, and one names
-two measures outside that table. We register the OBR's Table 3.1 tax groups as
-the receipts of their lines (`receipts_of`), and every other package in its
-producer's words (`words`).
+(rule 3). We register a package as a list of registry keys (`legs`) when we
+record every leg in NOTES. We build 21 such packages from Table 6.1 lines and
+one from two measures outside that table. We register the OBR's Table 3.1 tax
+groups as the receipts of their lines (`receipts_of`), and every other package
+in its producer's words (`words`).
 
 Verdicts:
   ("legs",)                         computed from the legs, as the builder does
@@ -963,7 +963,7 @@ DECISIONS = {
     "ab2026__package_rf_parliament_permanent_tax_and_benefit_measures": _d(
         "package",
         "RF: permanent personal tax and benefit changes announced this Parliament",
-        "Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26 contributes lines 52, 56, 61 and 62 and the gas standing charge.",
+        "RF compares every permanent personal tax and benefit change from the 2024 election through AB26 with the policy the Government inherited. From AB26, RF includes lines 52, 56, 61 and 62 and the gas standing charge.",
         (
             "words",
             "RF spans several events, whose measures this registry doesn't hold",

@@ -3692,13 +3692,13 @@
    "measure_key": "ab2026__package_rf_parliament_permanent_tax_and_benefit_measures",
    "title": "RF: permanent personal tax and benefit changes announced this Parliament",
    "reported_status": "announced",
-   "source_note": "`resolution_foundation` scores it on 42 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26 contributes lines 52, 56, 61 and 62 and the gas standing charge.",
+   "source_note": "`resolution_foundation` scores it on 42 staged rows of the Autumn Budget 2026 harvest (KEY_DECISIONS.md). Scope, from the families' NOTES.md: RF compares every permanent personal tax and benefit change from the 2024 election through AB26 with the policy the Government inherited. From AB26, RF includes lines 52, 56, 61 and 62 and the gas standing charge.",
    "program": "package",
    "producers": [
     "resolution_foundation"
    ],
    "construction": "producer_scope",
-   "package_of": "Every permanent personal tax and benefit change from the 2024 election to AB26, against the policy the Government inherited; AB26 contributes lines 52, 56, 61 and 62 and the gas standing charge.",
+   "package_of": "RF compares every permanent personal tax and benefit change from the 2024 election through AB26 with the policy the Government inherited. From AB26, RF includes lines 52, 56, 61 and 62 and the gas standing charge.",
    "pe_reform_delta": null,
    "computability": "partial",
    "missing": "The scope is the producer's own words: RF spans several events, whose measures this registry doesn't hold. A PolicyEngine number can cover only the registered measures inside it, stated as constructed, never like-for-like."
