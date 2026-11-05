@@ -444,6 +444,9 @@ def counterpart(claim: dict, rule: str, manifest: dict | None = None) -> dict:
         annotations += [
             "PE static exchequer effect = Δgov_balance from the dashboard's "
             "budgetary_impact.csv (£bn × 1e9)",
+            "timing: the dashboard counts the year's simulated tax liabilities and "
+            "payments; the producer scores when receipts reach the Exchequer, "
+            "which can fall in a later year",
             f"claim sign: signs.py reads the claim's convention as {relation} "
             f"({basis}); {orient}",
         ]
