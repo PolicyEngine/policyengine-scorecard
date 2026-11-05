@@ -111,7 +111,7 @@ When TPA gives a single Table 6.1 line its own group in a chart, we give the gro
 | key | Table 6.1 lines | TPA's words | rows |
 |---|---|---|--:|
 | `ab2026__package_property_and_savings_income_rates` | 61, 62 | "The savings and property rise"; "Savings and property income tax rates +2ppts" (by-measure chart). Same spelling and scope as the uk_hmt_redbook family | 5 |
-| `ab2026__package_tpa_savings_property_income_and_cash_isa` | 11, 61, 62 | "Savings and property income" (by-year), "Savings and property income tax" (by-tax). TPA puts line 11, the £20,000 cash ISA limit, in the group without mentioning it | 7 |
+| `ab2026__package_tpa_savings_property_income_and_cash_isa` | 11, 61, 62 | "Savings and property income" (by-year), "Savings and property income tax" (by-tax). TPA puts line 11 ("Maintain the cash ISA limit at £20,000") in the group without mentioning it | 7 |
 | `ab2026__package_tpa_temporary_vat_and_fuel_cuts` | 2, 3, 18, 65, 66 | "Temporary VAT and fuel cuts" (by-year) | 6 |
 | `ab2026__package_tpa_fuel_duty_red_diesel_and_hgv_ved` | 3, 18, 65 | "Fuel duty cut, red diesel and HGV VED (temporary)" (by-tax) | 1 |
 | `ab2026__package_tpa_business_rates` | 12, 13, 14, 57, 76, 80 | "Business rates" (all three charts). Registry caveat (review B, TPA finding 5): on the by-tax bar, we place line 76, zero in 2027-28, by assumption; the values do not depend on it. | 8 |

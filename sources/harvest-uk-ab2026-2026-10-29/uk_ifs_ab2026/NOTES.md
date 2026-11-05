@@ -152,7 +152,7 @@ Under the addendum we dropped 19 of the first lane's 106 rows, all under rule 8:
 | Financing and allocations | 2 | ~£1bn a year of NWF and BBB financing for defence (Boileau 5); the £1.2bn a year of DIP funding (Boileau 4) |
 | The base a measure moves | 2 | the £108 average gas standing charge and its 13% share of a typical gas bill (Wernham 8), as we dropped the red book's £108 |
 
-We keep the measure name of each dropped parameter in the kept rows' `reform_hint`. We keep the 25% capital and 40% day-to-day reserve shares (Boileau 11), because the coordinator lists them as estimates in the addendum. We keep the bond spread and debt-ownership context rows (Stockton 7) as context, since they aren't design.
+When a dropped parameter names a measure, such as the £100 payment, we keep it in the kept rows' `reform_hint`. We keep the 25% capital and 40% day-to-day reserve shares (Boileau 11), because the coordinator lists them as estimates in the addendum. We keep the bond spread and debt-ownership context rows (Stockton 7) as context, since they aren't design.
 
 ### Figures on the two pages (11)
 
@@ -174,7 +174,7 @@ We don't count the pages' other numbers as figures to stage:
 - "2030-21", which we keep in row 93;
 - the name of the "10 year plan"; the G7; the count of "two big problems"; and "one-off".
 
-Miller prints no number with "almost halved", and we turn it into none.
+In her remarks Miller gives no number with "almost halved", and we turn it into none.
 
 ### Data cells in the seven visualisations (256 of 302)
 
@@ -396,7 +396,7 @@ Access and version evidence:
   - On TW_0 p4 IFS already includes the 80%/91% eligibility annotations, which TW_1 p4 omits.
   - On TW_0 p5 the eligibility annotations overlap the VAT/fuel commentary. On TW_1 p5 IFS moves eligibility to the lower chart and the VAT/fuel commentary to the upper chart.
   - IFS removed TW_0 p6, another copy of the unannotated support chart. TW_0 p7–18 correspond to TW_1 p6–17.
-  - IFS changed no printed numerical claim. In all staged rows we cite TW_1. We stage zero rows from TW_0, but we manifest it as a changed primary under rule 7.
+  - IFS changed no printed numerical claim. In all staged rows we cite TW_1. We stage zero rows from TW_0, but we give it a manifest line as a changed primary, as README rule 7 requires.
 
 The first lane gave 14 of its rows a null measure_key, 4 `ab2026__household_energy_payment_100_bands_a_to_d`, 2 `ab2026__fuel_duty_5p_cut_extended_and_rpi_rise_deferred` and 1 `ab2026__bus_fare_cap_2_england_outside_london_2027`. Of the null rows, it staged 6 as unscored context and gave 8 its proposed measure keys. It staged all 21 rows from TW_1 (TW_1=21, TW_0=0).
 
@@ -634,9 +634,9 @@ fiscal-year condition, and proposed no baseline.
   rows: the bank surcharge's 15-month period; two years of business-rate
   discounts; the 2029 revaluation; April 2028 income-tax revenue devolution.
   IFS prints no quantified spending or revenue amount on the devolution slide.
-- IFS prints “28 October 2026” on the title slide, though the assignment
-  describes the 29 October briefing and the PDF metadata show creation and
-  modification on 29 October. We follow the printed cover for the publication
+- IFS prints “28 October 2026” on the title slide, though the coordinator
+  assigned the 29 October briefing, and in the PDF metadata IFS records creation
+  and modification on 29 October. We follow the printed cover for the publication
   date (2026-10-28).
 - We keep IFS's £1.1bn combined savings/property yield verbatim. In Table 6.1
   HM Treasury gives lines 61 and 62 final-year amounts of £455m and £590m, totalling
