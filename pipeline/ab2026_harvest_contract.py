@@ -207,10 +207,15 @@ QUALIFIERS = {
 TAILS = {"a year", "of gdp"}
 # Words that print a zero
 ZERO = {"nil", "no change", "no impact", "no overall impact", "none", "nothing"}
-# A dash prints a zero only if the normalization says the producer prints it for
-# nil ("dash for nil"), since a table may also print one for "not available".
-DASHES = set("-−–—‐‑")
-NIL = re.compile(r"\bnil\b", re.I)
+# A dash prints a zero only if one whole clause of the normalization says the
+# producer prints it for nil ("dash for nil", "the table prints nil as a dash"),
+# since a table may also print one for "not available".
+_DASHES = "-−–—‐‑‒―"
+DASHES = set(_DASHES)
+NIL = re.compile(
+    r"(?:(?:(?:the )?(?:table|producer|source|workbook) )?prints? )?"
+    r"(?:nil (?:as|=) (?:a )?dash|(?:a |the )?dash(?:es)? (?:for|means?|=) nil)"
+)
 # After a bare "in", a year gives no denominator: "5 in 2027"
 YEAR = re.compile(r"20[1-9][0-9]")
 
@@ -259,7 +264,7 @@ FRACTION = re.compile(
 # hundred and a half"
 MIXED = re.compile(
     rf"(?P<sign>{_SIGN})?(?P<whole>{_DIGITS}|{_BELOW_1000}) and (?P<fraction>{_PART})"
-    rf"(?:[ -](?P<times>{_LARGE})|(?P<percent>{_PERCENT}))?"
+    rf"(?:[ -](?P<times>{_either(SHORT)}|{_LARGE})|(?P<percent>{_PERCENT}))?"
 )
 _COUNT = rf"(?:{_DIGITS}{_TIMES}?|{_WORDS})"
 # Two numbers joined all by spaces or all by hyphens. A sign comes before N or,
@@ -415,11 +420,17 @@ def _restates(first, second):
     )
 
 
+def _says_nil(normalization):
+    """Whether one whole clause of a normalization declares a dash for nil."""
+    clauses = re.split(r"[;,.()]", normalization.lower())
+    return any(NIL.fullmatch(" ".join(c.split())) for c in clauses)
+
+
 def _read(raw, normalization=""):
     """What value_raw prints, as a list of _one_number's tuples, or None if
     it matches no form the checker reads."""
     text = " ".join(raw.lower().split())
-    if text in DASHES and NIL.search(normalization):
+    if text in DASHES and _says_nil(normalization):
         return [(0.0, (1,), "words")]
     body = WHOLE.fullmatch(text)["body"]
     if body in ZERO:
@@ -431,20 +442,33 @@ def _read(raw, normalization=""):
     return first + second if first and second and _restates(first, second) else None
 
 
+_STEP = r"[x×*/÷]\s*\.?[0-9][^\s;]*"
+_CHAIN = re.compile(rf"(?:^|(?<=[\s(\[]))({_STEP}(?:\s+{_STEP})*)")
+_OPERAND = re.compile(rf"10(?:\^|\*\*)(?P<power>[0-9]+)|{_DIGITS}")
+# What would carry on a number the chain seems to end: "x 1 000 000", "x 1 million"
+_CONTINUES = re.compile(rf"\s+(?:[0-9]|(?:{_either(LARGE)}|{_either(SHORT)})\b)")
+
+
 def _factors(normalization):
-    """The multipliers a normalization states ("x 1,000,000", "/ 100", ...)."""
+    """The multipliers a normalization states ("x 1,000,000", "/ 100", "(x 10^6)"),
+    or None if it states one the checker can't read whole. Operations in a row
+    make one multiplier: "x 1,000,000 / 100" is 10,000."""
+    text = re.sub(r"\s*(\^|\*\*)\s*", r"\1", (normalization or "").lower())
     out = []
-    for op, num in re.findall(
-        r"(?:^|\s)(x|×|\*|/|÷)\s*(\d[\d,]*(?:\.\d+)?(?:e[+-]?\d+)?)",
-        normalization or "",
-        re.I,
-    ):
-        try:
-            f = float(num.replace(",", ""))
-        except ValueError:
-            continue
-        if f and math.isfinite(f):
-            out.append(1 / f if op in "/÷" else f)
+    for chain in _CHAIN.finditer(text):
+        if _CONTINUES.match(text, chain.end()):
+            return None
+        factor = 1.0
+        for step in re.findall(_STEP, chain[0]):
+            operand = _OPERAND.fullmatch(step[1:].strip().rstrip(",:.)]"))
+            if not operand:
+                return None
+            power = operand["power"]
+            f = float(f"1e{power}" if power else operand[0].replace(",", ""))
+            if not f or not math.isfinite(f):
+                return None
+            factor = factor / f if step[0] in "/÷" else factor * f
+        out.append(factor)
     return out
 
 
@@ -509,13 +533,18 @@ def value_problems(r):
             "narrow it to the number the row stores"
         ]
     factors = _factors(r.get("normalization") or "")
+    if factors is None:
+        return [
+            "the checker can't read a factor in normalization; state one number "
+            "or power of 10"
+        ]
     per = 100 if r.get("unit_concept") == "percent" else 1
     exact, near = [], []
     for number, own, kind in numbers:
         if kind == "share":
             near.append(per * number)
         elif kind == "rounded":
-            near += [number * s for s in own or (1,)]
+            near += [number * s for s in own or factors or (1,)]
         else:
             exact += [number * s for s in own or factors or (1,)]
     if not (
@@ -538,14 +567,14 @@ def value_problems(r):
 # the forms PRINTED reads and nothing more: a paragraph, table or box by its
 # number, or a data label. The checker reads any other first reference as a
 # bar reading, "Figure 1.A data label unavailable" included. Anywhere in a
-# locator, a bar, a chart or a graph marks a bar reading, and so does a number
-# taken from a figure. A single negation just before the phrase cancels it ("not
+# locator, a bar, chart, graph, plot, diagram or visual marks a bar reading, and
+# so does a number taken from a figure or read by eye. A single negation just before the phrase cancels it ("not
 # a bar reading", "didn't read it off the chart"), and a double negation doesn't
 # ("not without a bar reading"). The checker looks for these phrases with hyphens
 # and dashes as spaces and with runs of spaces collapsed, and reads the first
 # reference with each dash as a hyphen.
-_DASH = "[-−–—‐‑]"
-FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*[ab]\b", re.I)
+_DASH = f"[{_DASHES}]"
+FIGURE_1 = re.compile(r"\bfig(?:ure)?s?\.?\s*1\.?\s*\(?[ab]\b", re.I)
 _FIG = r"fig(?:ure)?s?\.?\s*1[.-]?\s*[ab](?:\s+and\s+1[.-]?\s*[ab])?"
 _ID = r"\d+(?:\.[0-9a-z]+)*"
 PRINTED = re.compile(
@@ -555,24 +584,28 @@ PRINTED = re.compile(
     rf"(?:\s+(?:(?:for|on)\s+)?(?:decile|quintile)\s+\d+|\s+(?:for|on)\s+{_FIG})?",
     re.I,
 )
-_PICTURE = r"(?:bars?|charts?|graphs?)"
+_PICTURE = r"(?:bars?|charts?|graphs?|plots?|diagrams?|visuals?)"
+_FIGS = r"fig(?:ure)?s?"
 _OFF = r"(?:off|from)"
 _UP_TO = r"(?:[\w.]+ ){0,4}?"
 # A verb's whole phrase comes first, so that a negation before the verb cancels
-# it: "read it off the decile 3 bar", "reading of the chart". Then any bar, chart
-# or graph, with a reading if it names one ("bar reading from Figure 1.A"), and
-# any number from a figure.
+# it: "read it off the decile 3 bar", "reading of the chart", "visual estimate of
+# Figure 1.A". Then any picture, with a reading if it names one ("bar reading from
+# Figure 1.A"), any number from a figure or a figure's column, and any reading by
+# eye. A column of a table prints its number, so a column counts only in a figure.
 BAR_READING = re.compile(
-    r"\b(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
-    rf" {_OFF} {_UP_TO}(?:{_PICTURE}|figures?)\b"
-    rf"|\breadings? of {_UP_TO}(?:{_PICTURE}|figures?)\b"
-    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF} {_UP_TO}figures?)?)?\b"
-    rf"|\b{_OFF} {_UP_TO}figures?\b",
+    r"\b(?:visual )?(?:(?:read|estimat|tak|measur)\w*|took)(?: [\w.]+){0,3}?"
+    rf" (?:off|from|on|in|using|of) {_UP_TO}(?:{_PICTURE}|{_FIGS})\b"
+    rf"|\b{_PICTURE}(?: read\w*(?: {_OFF} {_UP_TO}{_FIGS})?)?\b"
+    rf"|\b{_OFF} {_UP_TO}{_FIGS}\b"
+    rf"|\bcolumns?(?: [\w.]+){{0,2}}? (?:of|in|on) {_UP_TO}{_FIGS}\b"
+    r"|\b(?:read\w* )?by eye\b",
     re.I,
 )
 DENIED = re.compile(
-    r"(?:\b(?:no|not|never|without)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
+    r"(?:\b(?:no|not|never|without|cannot)|n['’]t)\s+(?:(?:a|an|the|been)\s+)?\Z", re.I
 )
+NEGATION = re.compile(r"\b(?:no|not|never|without|cannot)\b|n['’]t\b", re.I)
 
 
 def _keys(path):
@@ -853,16 +886,20 @@ def _row_problems(r, keys, earlier, metrics, units):
         out.append(
             "no HMT Impact on households bar readings: start the locator with "
             "the paragraph, table, box or data label where HM Treasury prints "
-            "the number, and call nothing there a bar, chart or graph (README "
-            "rule 4)"
+            "the number, and call nothing there a bar, chart, graph, plot, diagram "
+            "or visual (README rule 4)"
         )
     return out
 
 
 def _denied(before):
-    """Whether one negation, and no more, comes right before a phrase."""
+    """Whether a negation comes right before a phrase, with no other earlier in
+    its clause."""
     m = DENIED.search(before)
-    return bool(m) and not DENIED.search(before[: m.start()])
+    if not m:
+        return False
+    clause = re.split(r"[,;:()]", before[: m.start()])[-1]
+    return not NEGATION.search(clause)
 
 
 def reads_a_bar(locator):
