@@ -129,6 +129,7 @@ def test_the_new_obr_rows_become_one_claim_and_six_macro_drops():
     )
     assert claim.value == 4_000_000_000
     assert claim.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
+    assert claim.reform.baseline == LATEST_POLICY_WORLD
     old, old_acct = I.stage({"uk_obr_tables": [(2688, RAW["uk_obr_tables"][2688])]})
     assert old == []
     assert set(old_acct["drops"]) == set(acct["drops"])
@@ -379,6 +380,36 @@ def test_the_fuel_freeze_keeps_the_obrs_borrowing_and_receipts_figures(staged):
     assert obr.conditions["pe_expressibility"] == "not_expressible"
     assert obr.conditions["pe_missing"] == I.AB25.MACRO_MISSING
     assert obr.conditions["action_link"] == I.AB25.MACRO_LINK
+
+
+LATEST_POLICY_WORLD = {
+    "policy": "obr_october_2026_budget_forecast",
+    "counterfactual": "policy_parameters",
+}
+
+
+def test_the_freeze_claims_score_against_the_obrs_latest_policy_world(staged):
+    """Review of #255, M1: both OBR costings of a continued freeze take the
+    registered latest-policy world, and every other OBR claim keeps its own."""
+    scores, _ = staged
+    obr = [s for s in scores if s.source == "obr_efo"]
+    latest = [s for s in obr if s.reform.baseline == LATEST_POLICY_WORLD]
+    assert sorted(s.publication["locator"] for s in latest) == [
+        "para 3.43 (p.76)",
+        "para 4.30 (p.96)",
+    ]
+    assert {s.conditions["measure_key"] for s in latest} == {
+        "ab2026_option__fuel_duty_continued_freeze"
+    }
+    assert {s.conditions["baseline_policy"] for s in latest} == {
+        "obr_october_2026_budget_forecast"
+    }
+    assert Counter((s.reform.baseline or {}).get("policy") for s in obr) == {
+        "obr_pre_measures_autumn_budget_2026": 2702,
+        "obr_october_2026_budget_forecast": 2,
+        "obr_fuel_duty_rpi_uprated_since_2010_11": 1,
+        None: 7,
+    }
 
 
 def test_ifs_keeps_the_one_off_payment_and_tallies_the_partial_year_support():

@@ -390,6 +390,8 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
 _PROPOSED_BASELINE_PREFIXES: dict[str, str] = {
     **AB25._PROPOSED_BASELINE_PREFIXES,
     "OBR pre-measures Autumn Budget 2026 policy parameters": "obr_pre_measures_autumn_budget_2026__policy_parameters",
+    # the OBR's costings of a continued fuel duty freeze (paragraphs 3.43, 4.30)
+    "OBR October 2026 forecast, on the assumption that the latest policy is implemented": "obr_october_2026_budget_forecast__policy_parameters",
     # the AB2025 world, as the AB2026 OBR family words it
     "Fuel duty rates increase in line with RPI inflation: stated policy since 2010-11": "obr_fuel_duty_rpi_uprated_since_2010_11",
 }
