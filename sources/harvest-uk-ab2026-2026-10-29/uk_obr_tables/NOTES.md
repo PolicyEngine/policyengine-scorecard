@@ -220,7 +220,8 @@ We leave every `baseline_policy` null, and give effect estimates the explicit un
 
 | proposed_baseline, verbatim | Rows |
 |---|---:|
-| OBR pre-measures Autumn Budget 2026 policy parameters | 2,737 |
+| OBR pre-measures Autumn Budget 2026 policy parameters | 2,735 |
+| OBR October 2026 forecast, on the assumption that the latest policy is implemented: the Autumn Budget 2026 measures, with fuel duty rates frozen until July 2027 | 2 |
 | Fuel duty policy reflected in OBR October 2026 economy forecast, confirmed before the final Budget parameters | 1 |
 | Current social care spending (Health Foundation 2024 scenarios, additional spending in 2035-36) | 2 |
 | Fuel duty rates increase in line with RPI inflation: stated policy since 2010-11 | 1 |
@@ -366,6 +367,16 @@ For #249's finding L4, we set the property behavioural aggregation to
 to the £0.4 billion yield and states the behavioural reduction per year. It
 draws the same line between the £0.6 billion savings yield and the £0.2
 billion ISA response, so we set that behavioural aggregation to `annual` too.
+
+On 6 November we moved rows 2740 and 2800 to the OBR's forecast on the
+latest policy. In paragraph 4.30 the OBR forecasts fuel duty receipts on
+the assumption that the government carries out its latest policy: it
+freezes the duty until July 2027 and raises it from then. Against that
+forecast, the OBR estimates that keeping the freeze would add £4.3
+billion to borrowing in 2029-30 (paragraph 3.43) and cut receipts by £4
+billion a year on average from 2027-28 to 2031-32 (paragraph 4.30). So we
+propose that world for both rows, and the ingest maps it to
+`obr_october_2026_budget_forecast__policy_parameters`.
 
 The stager also reproduces tranche 2's 535 key registrations, and
 `python stage.py` writes all 2,807 rows without primary files or network
