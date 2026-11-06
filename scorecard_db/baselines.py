@@ -417,12 +417,11 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
             "counterfactual": "policy_parameters",
         },
         "obr_october_2026_budget_forecast__policy_parameters",
-        "The OBR's October 2026 Budget forecast, on the assumption that the "
-        "latest policy is implemented: the Autumn Budget 2026 measures, with "
-        "fuel duty rates frozen until July 2027 and raised from then. The OBR "
-        "costs a continued freeze against it (EFO October 2026, paragraphs "
-        "3.43 and 4.30). A post-measures world, deliberately not a "
-        "pre-measures one.",
+        "In its October 2026 forecast, the OBR assumes that the government "
+        "implements the Autumn Budget 2026 measures. The government freezes "
+        "fuel duty rates until July 2027 and raises them from then. The OBR "
+        "costs a continued freeze against that forecast (EFO October 2026, "
+        "paragraphs 3.43 and 4.30).",
         "policy_ref",
         "sources/harvest-uk-ab2026-2026-10-29/uk_obr_tables (proposed_baseline "
         "'OBR October 2026 forecast, on the assumption that the latest policy "
