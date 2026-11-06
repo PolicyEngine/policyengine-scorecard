@@ -355,6 +355,16 @@ flags 356 rows; its flag counts are construction 28, numerical 350 and
 structural 20, and every other flag count is zero. The results pull request
 wrote this paragraph from the receipt's counts.
 
+`results/uk/replays/pe6.15.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/`
+holds the qualification of policyengine.py 6.15.0: request `4fd7cac5…`,
+receipt SHA-256 `1851d42f…`, `replay-state` commit `d66eb2f`. Integrity is
+complete with no failures, and all six events have complete supported grids
+and no inert measure-years. Its release diff is against
+`pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504`,
+the newest certified variant with committed results at the time. That diff
+flags no rows. The results pull request wrote this paragraph from the
+receipt's counts.
+
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
