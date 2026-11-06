@@ -4239,6 +4239,16 @@ def review_fixes_nov4(R):
     return out
 
 
+# The OBR costs a continued fuel duty freeze against its forecast on the latest
+# policy, which includes this Budget's measures (paragraphs 3.43 and 4.30), so
+# rows 2740 and 2800 propose that world rather than the pre-measures one.
+LATEST_POLICY = (
+    "OBR October 2026 forecast, on the assumption that the latest policy is "
+    "implemented: the Autumn Budget 2026 measures, with fuel duty rates frozen "
+    "until July 2027"
+)
+
+
 # Paragraph 4.30's receipts average for the continued fuel duty freeze and Table
 # 6.3's policy line, which the 4 November pass listed as not staged. We add them
 # last, so every earlier row keeps its number.
@@ -4283,6 +4293,7 @@ def added_rows():
             locator="para 4.30 (p.96)",
             measure_key="ab2026_option__fuel_duty_continued_freeze",
             metric="revenue_change",
+            proposed_baseline=LATEST_POLICY,
             note="We key this to the option because RF's series for the OBR's constant-duty-rate forecast averages £3.98 billion across these five years. The OBR holds the rate throughout the forecast period here, and until 2029-30 in paragraph 3.43.",
             period=2032,
             quote="If the duty rate were to again remain unchanged at its current level throughout the forecast period it would reduce receipts, on average, by £4 billion a year between 2027-28 and 2031-32.",
@@ -4339,6 +4350,13 @@ def build():
         key = row["conditions"].pop("proposed_measure_key", None)
         if key is not None:
             row["measure_key"] = key
+    freeze = reviewed[2740]
+    assert freeze["publication"]["locator"] == "para 3.43 (p.76)"
+    assert freeze["measure_key"] == "ab2026_option__fuel_duty_continued_freeze"
+    assert freeze["proposed_baseline"] == (
+        "OBR pre-measures Autumn Budget 2026 policy parameters"
+    )
+    freeze["proposed_baseline"] = LATEST_POLICY
     return reviewed + added_rows()
 
 
