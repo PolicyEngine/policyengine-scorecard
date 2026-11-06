@@ -35,7 +35,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import HealthCheck, given, settings
+from hypothesis import HealthCheck, example, given, settings
 from hypothesis import strategies as st
 
 from scorecard_db import ScorecardDB, signs
@@ -629,10 +629,14 @@ def _printing(s, printed, value):
     cell=st.integers(-9_999_999, 9_999_999).filter(bool),
     label=st.integers(-99, 99).filter(bool),
 )
+@example(cell=100_000, label=1)
+@example(cell=150_000, label=1)
 def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
     """We print the cell in £bn to six places (cell / 10**6) and the label to
     one (label / 10). The ingest accepts the pair exactly when they differ by
-    at most £50 million."""
+    at most £50 million. In the first example RF prints £0.1 billion in both
+    places, so only the precision check stops us keeping the label. In the
+    second, the two values differ by exactly £50 million."""
     label_claim, cell_claim = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
     kept = _printing(cell_claim, f"{cell / 10**6:.6f}", cell * 1_000)
     repeat = _printing(label_claim, f"£{abs(label) / 10:.1f}bn", label * 100_000_000)
@@ -670,6 +674,20 @@ def test_a_bound_merges_into_a_point_value():
     assert repeat.conditions["estimate_kind"] == "range_high"
     assert kept.conditions.get("estimate_kind") not in ("range_low", "range_high")
     I._check_printing("uk_rf_ab2026", 28, repeat, kept)
+
+
+def test_a_printing_of_the_opposite_sign_raises():
+    """The OBR prints Founders' Relief's 2029-30 effect as a £0.3 billion cut
+    in receipts in paragraph 3.18 and as -261 in Table 1.1, where it prints a
+    loss to the Exchequer as negative. If the OBR printed +261 there, a gain,
+    the two printings would agree in size and differ in direction."""
+    repeat, kept = _claim("uk_obr_tables", 2674), _claim("uk_obr_tables", 537)
+    assert kept.conditions["value_verbatim"] == "-261"
+    I._check_printing("uk_obr_tables", 2674, repeat, kept)
+    kept.value = -kept.value
+    kept.conditions["value_verbatim"] = "261"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_obr_tables", 2674, repeat, kept)
 
 
 _AFFIXES = st.sampled_from([("", ""), ("£", ""), ("£", " billion"), ("", "%")])

@@ -927,7 +927,7 @@ def _check_row_calls(family: str, rows: list[dict]) -> None:
                 raise ValueError(f"REVIEWED_TWINS {family} row {i} no longer matches")
 
 
-_NUMBER = re.compile(r"(\d[\d,]*)(?:\.(\d+))?(?:[eE]([+-]?\d+))?")
+_NUMBER = re.compile(r"(\d[\d,]*)(?:\.(\d+))?")
 
 
 def _printed_place(s: ExternalScore) -> float:
@@ -937,20 +937,20 @@ def _printed_place(s: ExternalScore) -> float:
     0, so only an equal value agrees.
 
     We raise unless the value equals the printed number times a power of
-    ten."""
+    ten. We fold any workbook exponent into that power, so we read the digits
+    before "E" and ignore the exponent."""
     printed = _NUMBER.search(s.conditions["value_verbatim"])
     if printed is None or s.value == 0:
         return 0.0
-    whole, places, exponent = printed.groups()
-    shift = int(exponent or 0)
-    number = float(whole.replace(",", "") + "." + (places or "0")) * 10.0**shift
+    whole, places = printed.groups()
+    number = float(whole.replace(",", "") + "." + (places or "0"))
     if number == 0:
         return 0.0
     scale = abs(s.value) / number
     unit = 10.0 ** round(math.log10(scale))
     if not math.isclose(scale, unit, rel_tol=1e-9):
         raise ValueError(f"{s.value} doesn't match printed {printed[0]!r}")
-    return unit * 10.0 ** (shift - len(places or ""))
+    return unit * 10.0 ** -len(places or "")
 
 
 def _signed_values(a: ExternalScore, b: ExternalScore) -> tuple[float, float]:
