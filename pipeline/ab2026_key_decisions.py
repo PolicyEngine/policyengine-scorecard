@@ -1087,8 +1087,8 @@ DECISIONS = {
     ),
     "ab2026_option__fuel_duty_continued_freeze": _d(
         "option",
-        "Keep fuel duty frozen until 2029-30 instead of the rise in July 2027",
-        "Rates held at 52.95p a litre to 2029-30 against the announced policy, which extends line 3: OBR paragraph 3.43's alternative and RF's series for the OBR's constant-duty-rate forecast.",
+        "Keep fuel duty frozen instead of the rise in July 2027",
+        "The OBR's alternative of holding rates at 52.95p a litre after line 3's freeze ends in July 2027, instead of the rise the government announced. We key to it the OBR's effect on borrowing in 2029-30 (paragraph 3.43) and average cut in receipts over 2027-28 to 2031-32 (paragraph 4.30), and RF's series from the OBR's constant-duty-rate forecast.",
         (
             "partial",
             "The rate leg resolves (gov.hmrc.fuel_duty.petrol_and_diesel), but the option's baseline is the announced path, Table 6.1 line 3, which the dashboard ran as a modifier with no parameter path. A counterpart needs line 3's modifier as its baseline and the frozen rate as its reform.",
