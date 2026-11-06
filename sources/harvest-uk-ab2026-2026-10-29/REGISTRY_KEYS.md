@@ -188,7 +188,7 @@ earlier event's registry named in `conditions.recosting_of`.
 | `ab2026_option__childcare_100k_threshold_raised` |  | expressible | CenTax: raise the free childcare income limit from £100,000 |
 | `ab2026_option__childcare_100k_threshold_removed` |  | expressible | CenTax: remove the £100,000 free childcare income limit |
 | `ab2026_option__childcare_100k_threshold_removed_first_15_hours_under_3s` |  | not_expressible | CenTax: remove the income limit for the first 15 hours of childcare for under-3s |
-| `ab2026_option__fuel_duty_continued_freeze` |  | partial | Keep fuel duty frozen until 2029-30 instead of the rise in July 2027 |
+| `ab2026_option__fuel_duty_continued_freeze` |  | partial | Keep fuel duty frozen instead of the rise in July 2027 |
 | `ab2026_option__fuel_duty_rpi_uprating_since_2011` |  | not_expressible | Fuel duty uprated by RPI since January 2011 |
 | `ab2026_option__health_foundation_social_care_reforms` |  | not_expressible | Health Foundation's illustrative social care reforms |
 | `ab2026_option__income_tax_5pc_share_devolved_to_mayors` |  | not_expressible | IPPR North: devolve 5% of income tax to mayors |

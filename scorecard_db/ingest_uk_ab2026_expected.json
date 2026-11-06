@@ -1,7 +1,7 @@
 {
- "read": 5952,
- "ingested": 4687,
- "dropped": 1265,
+ "read": 5959,
+ "ingested": 4688,
+ "dropped": 1271,
  "by_family": {
   "uk_hmt_tables": {
    "read": 768,
@@ -19,9 +19,9 @@
    "dropped": 248
   },
   "uk_obr_tables": {
-   "read": 2800,
-   "ingested": 2711,
-   "dropped": 89
+   "read": 2807,
+   "ingested": 2712,
+   "dropped": 95
   },
   "uk_rf_ab2026": {
    "read": 766,
@@ -71,7 +71,7 @@
   "energy_bill_level_no_metric": 35,
   "hmt_figure_staged_twice": 432,
   "income_path_not_a_policy_effect": 9,
-  "macro_fiscal_or_out_of_scope": 206,
+  "macro_fiscal_or_out_of_scope": 212,
   "mode3_specimen_household": 10,
   "mtr_no_registered_metric": 4,
   "no_registered_metric": 9,

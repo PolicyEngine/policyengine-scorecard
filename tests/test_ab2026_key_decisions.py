@@ -31,14 +31,14 @@ def test_key_decisions_md_is_rendered_from_the_rows():
     assert (HARVEST / "KEY_DECISIONS.md").read_text() == render()
 
 
-def test_tranche_one_proposed_86_keys_on_973_rows():
+def test_registered_86_keys_cover_980_rows():
     kinds = [d["kind"] for d in D.DECISIONS.values()]
     assert (kinds.count("measure"), kinds.count("package"), kinds.count("option")) == (
         15,
         58,
         13,
     )
-    assert sum(d["rows"] for d in D.DECISIONS.values()) == 973
+    assert sum(d["rows"] for d in D.DECISIONS.values()) == 980
 
 
 def test_each_registered_key_carries_its_kind_and_producers():

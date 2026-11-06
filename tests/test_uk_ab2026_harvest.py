@@ -308,7 +308,8 @@ def test_a_totals_lines_by_head_keep_revenue_change():
     Government decisions. Those rows keep revenue_change; every other row on
     that key gives the total, its direct or indirect effects or a part of
     them, and takes the borrowing metric or, for the current budget deficit,
-    proposes fiscal_balance_change."""
+    proposes fiscal_balance_change. Table 6.3's policy effects on financial
+    transactions propose public_sector_net_debt_change."""
     on_key = [
         r for fam in FAMILIES for r in rows(fam) if _key(r) == GOVERNMENT_DECISIONS
     ]
@@ -323,9 +324,9 @@ def test_a_totals_lines_by_head_keep_revenue_change():
         assert not re.search(r"\b(total|effects? of)\b", _label(r), re.I), _label(r)
     for r in on_key:
         if r.get("metric") != "revenue_change":
-            assert (
-                r.get("metric") == BORROWING
-                or r.get("proposed_metric") == "fiscal_balance_change"
+            assert r.get("metric") == BORROWING or r.get("proposed_metric") in (
+                "fiscal_balance_change",
+                "public_sector_net_debt_change",
             ), _label(r)
 
 
@@ -333,6 +334,110 @@ def test_the_fuel_freeze_totals_keep_revenue_change():
     freeze = [r for r in rows("uk_rf_ab2026") if _key(r) == FREEZE_TOTALS]
     assert len(freeze) == 11
     assert {r["metric"] for r in freeze} == {"revenue_change"}
+
+
+def test_the_fuel_freeze_receipts_series_rounds_to_the_obr_average():
+    """RF's constant-duty-rate path and OBR paragraph 4.30 describe the same
+    option: their five annual receipts cuts average £3.98bn, which rounds to
+    the OBR's £4bn a year over 2027-28 to 2031-32."""
+    key = "ab2026_option__fuel_duty_continued_freeze"
+    rf = rows("uk_rf_ab2026")[397:402]
+    assert [r["conditions"]["fy"] for r in rf] == [
+        f"{year}-{(year + 1) % 100:02d}" for year in range(2027, 2032)
+    ]
+    assert {_key(r) for r in rf} == {key}
+    obr = [
+        r
+        for r in rows("uk_obr_tables")
+        if _key(r) == key and r["source_table"] == "para 4.30"
+    ]
+    assert len(obr) == 1
+    assert obr[0]["conditions"]["aggregation"] == "annual average 2027-28 to 2031-32"
+    assert {r["metric"] for r in rf + obr} == {"revenue_change"}
+    average = sum(abs(r["value"]) for r in rf) / len(rf)
+    assert round(average / 1e9) * 1e9 == obr[0]["value"] == 4e9
+
+
+FREEZE = "ab2026_option__fuel_duty_continued_freeze"
+LATEST_POLICY = (
+    "OBR October 2026 forecast, on the assumption that the latest policy is implemented"
+)
+
+
+def test_the_obr_costs_a_continued_freeze_against_its_latest_policy_forecast():
+    """Review of #255, M1: in paragraphs 3.43 and 4.30 the OBR costs a
+    continued fuel duty freeze against its forecast on the latest policy,
+    which includes this Budget's measures, so those two rows, and only they,
+    propose that world."""
+    obr = rows("uk_obr_tables")
+    latest = [
+        i
+        for i, r in enumerate(obr)
+        if (r.get("proposed_baseline") or "").startswith(LATEST_POLICY)
+    ]
+    assert latest == [2740, 2800]
+    assert [obr[i]["publication"]["locator"] for i in latest] == [
+        "para 3.43 (p.76)",
+        "para 4.30 (p.96)",
+    ]
+    assert [i for i, r in enumerate(obr) if _key(r) == FREEZE] == latest
+
+
+# Table 6.3's "Effects of policy on financial transactions" line as the OBR
+# prints it (£ billion), typed from the table, not read from the stager.
+TABLE_6_3_POLICY = (
+    ("2026-27", 2027, "-0.1"),
+    ("2027-28", 2028, "0.8"),
+    ("2028-29", 2029, "2.1"),
+    ("2029-30", 2030, "-12.4"),
+    ("2030-31", 2031, "3.9"),
+    ("2031-32", 2032, "4.0"),
+)
+
+
+def test_table_6_3s_policy_line_keeps_each_printed_cell():
+    """Review of #255, L1: each of rows 2801-2806 takes its fiscal year, its
+    printed cell and its sign from Table 6.3, on the Government-decisions
+    package's key."""
+    line = "Effects of policy on financial transactions"
+    staged = rows("uk_obr_tables")[2801:]
+    assert len(staged) == len(TABLE_6_3_POLICY)
+    for r, (fy, period, cell) in zip(staged, TABLE_6_3_POLICY):
+        assert (r["conditions"]["fy"], r["source_column"], r["period"]) == (
+            fy,
+            fy,
+            period,
+        )
+        assert r["value_raw"] == r["quote"] == cell
+        assert r["value"] == round(float(cell) * 1e9)
+        assert _key(r) == GOVERNMENT_DECISIONS
+        assert r["proposed_metric"] == "public_sector_net_debt_change"
+        assert r["conditions"]["table_row"] == line
+        assert r["conditions"]["sign_convention"] == (
+            "as worded: positive = net debt increase"
+        )
+        assert r["publication"]["locator"] == f"Table 6.3 (p.141), {line}, {fy}"
+
+
+def test_paragraph_3_17_averages_the_yields_and_not_the_responses():
+    """Review of #255, L2 (#249's finding L4): the OBR averages the savings
+    and property yields from 2028-29, and states each behavioural reduction
+    per year."""
+    obr = rows("uk_obr_tables")[2668:2672]
+    assert [(_key(r), r["value"], r["conditions"]["aggregation"]) for r in obr] == [
+        (
+            "ab2026__savings_income_rates_plus_2pp",
+            600_000_000,
+            "annual average from 2028-29",
+        ),
+        ("ab2026__savings_income_rates_plus_2pp", 200_000_000, "annual"),
+        (
+            "ab2026__property_income_rates_plus_2pp",
+            400_000_000,
+            "annual average from 2028-29",
+        ),
+        ("ab2026__property_income_rates_plus_2pp", 100_000_000, "annual"),
+    ]
 
 
 def test_receipts_totals_and_tax_change_estimates_keep_revenue_change():

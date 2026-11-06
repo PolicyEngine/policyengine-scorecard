@@ -1,6 +1,6 @@
 """Ingest every Autumn Budget 2026 score (#230).
 
-We stage 5,952 rows in ``sources/harvest-uk-ab2026-2026-10-29/`` from 12
+We stage 5,959 rows in ``sources/harvest-uk-ab2026-2026-10-29/`` from 12
 families: HM Treasury's tables, costings and red book, the OBR's
 October 2026 EFO and policy workbook, Resolution Foundation, IFS, Tax Policy
 Associates, CenTax, IPPR, the devolved governments, Trussell and four smaller
@@ -183,8 +183,9 @@ DROPS_AB2026: dict[str, str] = {
     "restated_obr_forecast": (
         "Resolution Foundation computes the cost of continuing the fuel duty "
         "freeze from two OBR forecasts, the constant-duty-rate receipts less "
-        "the central receipts. We keep only the OBR's own figure, which it "
-        "prints for 2029-30 as an effect on borrowing."
+        "the central receipts. We keep the OBR's own figures: its effect on "
+        "borrowing in 2029-30 (paragraph 3.43) and its average cut in receipts "
+        "from 2027-28 to 2031-32 (paragraph 4.30)."
     ),
     "income_path_not_a_policy_effect": (
         "Resolution Foundation gives the change in real household incomes, per "
@@ -389,6 +390,8 @@ ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
 _PROPOSED_BASELINE_PREFIXES: dict[str, str] = {
     **AB25._PROPOSED_BASELINE_PREFIXES,
     "OBR pre-measures Autumn Budget 2026 policy parameters": "obr_pre_measures_autumn_budget_2026__policy_parameters",
+    # the OBR's costings of a continued fuel duty freeze (paragraphs 3.43, 4.30)
+    "OBR October 2026 forecast, on the assumption that the latest policy is implemented": "obr_october_2026_budget_forecast__policy_parameters",
     # the AB2025 world, as the AB2026 OBR family words it
     "Fuel duty rates increase in line with RPI inflation: stated policy since 2010-11": "obr_fuel_duty_rpi_uprated_since_2010_11",
 }

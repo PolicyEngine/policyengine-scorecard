@@ -1,6 +1,6 @@
 """The Autumn Budget 2026 ingest (#230, tranche 2).
 
-Every one of the 5,952 staged rows becomes a claim or a tallied drop. These
+Every one of the 5,959 staged rows becomes a claim or a tallied drop. These
 tests pin the ingest's invariants:
 
 1. read = ingested + dropped, per family and in total, against COUNTS.json
@@ -87,7 +87,7 @@ def _rows(scores):
 def test_every_staged_row_is_ingested_or_tallied(staged):
     scores, acct = staged
     exp = I.expected()
-    assert acct["read"] == exp["read"] == COUNTS["_totals"]["rows"] == 5952
+    assert acct["read"] == exp["read"] == COUNTS["_totals"]["rows"] == 5959
     assert acct["ingested"] == len(scores) == exp["ingested"]
     assert acct["ingested"] + acct["dropped"] == acct["read"]
     assert set(acct["by_family"]) == {k for k in COUNTS if not k.startswith("_")}
@@ -103,6 +103,36 @@ def test_every_drop_states_a_reason(staged):
         assert entry["rows"] > 0, key
         assert len(entry["reason"]) > 80, key
     assert sum(e["rows"] for e in acct["drops"].values()) == acct["dropped"]
+
+
+def test_the_restated_fuel_freeze_reason_names_both_obr_figures():
+    assert I.DROPS_AB2026["restated_obr_forecast"] == (
+        "Resolution Foundation computes the cost of continuing the fuel duty "
+        "freeze from two OBR forecasts, the constant-duty-rate receipts less "
+        "the central receipts. We keep the OBR's own figures: its effect on "
+        "borrowing in 2029-30 (paragraph 3.43) and its average cut in receipts "
+        "from 2027-28 to 2031-32 (paragraph 4.30)."
+    )
+
+
+def test_the_new_obr_rows_become_one_claim_and_six_macro_drops():
+    numbered = {"uk_obr_tables": list(enumerate(RAW["uk_obr_tables"][2800:], 2800))}
+    scores, acct = I.stage(numbered)
+    assert (acct["read"], acct["ingested"], acct["dropped"]) == (7, 1, 6)
+    assert {key: value["rows"] for key, value in acct["drops"].items()} == {
+        "macro_fiscal_or_out_of_scope": 6
+    }
+    claim = scores[0]
+    assert claim.metric == Metric.REVENUE_CHANGE
+    assert (
+        claim.conditions["measure_key"] == "ab2026_option__fuel_duty_continued_freeze"
+    )
+    assert claim.value == 4_000_000_000
+    assert claim.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
+    assert claim.reform.baseline == LATEST_POLICY_WORLD
+    old, old_acct = I.stage({"uk_obr_tables": [(2688, RAW["uk_obr_tables"][2688])]})
+    assert old == []
+    assert set(old_acct["drops"]) == set(acct["drops"])
 
 
 def test_restated_rows_are_tallied_not_carried(staged):
@@ -325,9 +355,8 @@ def test_table_6_2_and_the_obr_financing_requirement_share_one_metric(staged):
     assert [s.metric for s in obr] == [Metric.CASH_REQUIREMENT_CHANGE]
 
 
-def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
-    """The OBR states the option's effect on public sector net borrowing, so we
-    retain that metric and apply #55's macro verdict."""
+def test_the_fuel_freeze_keeps_the_obrs_borrowing_and_receipts_figures(staged):
+    """Keep both OBR quantities and apply #55's macro verdict to borrowing."""
     scores, _ = staged
     freeze = [
         s
@@ -335,14 +364,52 @@ def test_the_continued_fuel_duty_freeze_stays_on_borrowing(staged):
         if s.conditions.get("measure_key")
         == "ab2026_option__fuel_duty_continued_freeze"
     ]
-    # RF derives its figure from the OBR's forecasts, so only the OBR's stays
-    [obr] = freeze
-    assert obr.source == "obr_efo"
-    assert obr.metric == Metric.DECISIONS_EFFECT_ON_BORROWING
+    # RF derives its figures from the OBR's forecasts; keep both OBR estimates.
+    assert len(freeze) == 2
+    assert {s.source for s in freeze} == {"obr_efo"}
+    by_metric = {s.metric: s for s in freeze}
+    assert set(by_metric) == {
+        Metric.DECISIONS_EFFECT_ON_BORROWING,
+        Metric.REVENUE_CHANGE,
+    }
+    receipts = by_metric[Metric.REVENUE_CHANGE]
+    assert (receipts.value, receipts.period) == (4_000_000_000, 2032)
+    assert receipts.conditions["aggregation"] == "annual average 2027-28 to 2031-32"
+    obr = by_metric[Metric.DECISIONS_EFFECT_ON_BORROWING]
     assert "staged_metric" not in obr.conditions
     assert obr.conditions["pe_expressibility"] == "not_expressible"
     assert obr.conditions["pe_missing"] == I.AB25.MACRO_MISSING
     assert obr.conditions["action_link"] == I.AB25.MACRO_LINK
+
+
+LATEST_POLICY_WORLD = {
+    "policy": "obr_october_2026_budget_forecast",
+    "counterfactual": "policy_parameters",
+}
+
+
+def test_the_freeze_claims_score_against_the_obrs_latest_policy_world(staged):
+    """Review of #255, M1: both OBR costings of a continued freeze take the
+    registered latest-policy world, and every other OBR claim keeps its own."""
+    scores, _ = staged
+    obr = [s for s in scores if s.source == "obr_efo"]
+    latest = [s for s in obr if s.reform.baseline == LATEST_POLICY_WORLD]
+    assert sorted(s.publication["locator"] for s in latest) == [
+        "para 3.43 (p.76)",
+        "para 4.30 (p.96)",
+    ]
+    assert {s.conditions["measure_key"] for s in latest} == {
+        "ab2026_option__fuel_duty_continued_freeze"
+    }
+    assert {s.conditions["baseline_policy"] for s in latest} == {
+        "obr_october_2026_budget_forecast"
+    }
+    assert Counter((s.reform.baseline or {}).get("policy") for s in obr) == {
+        "obr_pre_measures_autumn_budget_2026": 2702,
+        "obr_october_2026_budget_forecast": 2,
+        "obr_fuel_duty_rpi_uprated_since_2010_11": 1,
+        None: 7,
+    }
 
 
 def test_ifs_keeps_the_one_off_payment_and_tallies_the_partial_year_support():
@@ -746,7 +813,6 @@ INGEST_CONDITIONS = {
     "pe_expressibility",
     "pe_missing",
     "reform_hint",
-    "scoring_method",
     "staged_metric",
     "value_verbatim",
 }
@@ -775,7 +841,15 @@ def _keeps_conditions(row, score):
         for key in staged
         if key == "program" or key in I.AB25._CANONICALISED
     }
-    return set(score.conditions) <= set(staged) | verbatim | INGEST_CONDITIONS
+    allowed = set(staged) | verbatim | INGEST_CONDITIONS
+    if "scoring_method" in score.conditions and "scoring_method" not in staged:
+        if (
+            row.get("proposed_metric") != "exchequer_impact_static"
+            or score.conditions["scoring_method"] != "static"
+        ):
+            return False
+        allowed.add("scoring_method")
+    return set(score.conditions) <= allowed
 
 
 _CHILDCARE = "free childcare entitlement (claimed and received some)"
@@ -831,6 +905,14 @@ _CHILDCARE = "free childcare entitlement (claimed and received some)"
         (
             {"source": "centax", "conditions": {"basis": "forecast"}},
             {"basis": "forecast", "geography_verbatim": "England"},
+        ),
+        (
+            {
+                "source": "centax",
+                "proposed_metric": "exchequer_impact_static",
+                "conditions": {},
+            },
+            {"scoring_method": "post_behavioural"},
         ),
     ],
 )
@@ -896,9 +978,18 @@ def test_a_registered_program_keeps_its_text_beside_a_new_name(
     assert score.conditions.get("program_verbatim") == verbatim
 
 
-def test_a_static_exchequer_row_gains_its_scoring_method():
+def test_a_centax_row_cannot_gain_an_unstaged_scoring_method():
+    row = RAW["uk_centax"][100]
+    assert "scoring_method" not in (row.get("conditions") or {})
+    score = I._score(row, "uk_centax", row["source"], Metric.AFFECTED_SHARE)
+    score.conditions["scoring_method"] = "static"
+    assert not _keeps_conditions(row, score)
+
+
+@pytest.mark.parametrize("method", [None, "post_behavioural"])
+def test_a_static_exchequer_row_gains_its_scoring_method(method):
     """We staged no row under `exchequer_impact_static`, so we set it on an
-    HM Treasury costings row with no scoring method."""
+    HM Treasury costings row and preserve any staged scoring method."""
     row = copy.deepcopy(
         next(
             r
@@ -907,8 +998,10 @@ def test_a_static_exchequer_row_gains_its_scoring_method():
         )
     )
     row["proposed_metric"] = "exchequer_impact_static"
+    if method is not None:
+        row.setdefault("conditions", {})["scoring_method"] = method
     score = I._score(row, "uk_hmt_costings", row["source"], Metric.REVENUE_CHANGE)
-    assert score.conditions["scoring_method"] == "static"
+    assert score.conditions["scoring_method"] == (method or "static")
     assert _keeps_conditions(row, score)
 
 
@@ -1172,7 +1265,14 @@ def test_a_reviewed_twin_outside_the_printed_rounding_raises(monkeypatch):
         I._check_row_calls("uk_hmt_redbook", rows)
 
 
-@given(st.integers(1, 99_999), st.integers(0, 3), st.booleans())
+def test_a_four_place_decimal_prints_a_hundred_thousand_pound_unit():
+    assert (
+        I._printed_unit({"value": 1_234_500_000, "value_raw": "£1.2345 billion"})
+        == 100_000
+    )
+
+
+@given(st.integers(1, 99_999), st.integers(0, 6), st.booleans())
 def test_the_printed_unit_follows_the_last_printed_digit(digits, places, billions):
     number = digits / 10**places
     word, scale = ("billion", 1e9) if billions else ("million", 1e6)

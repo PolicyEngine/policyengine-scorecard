@@ -413,6 +413,24 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
     ),
     (
         {
+            "policy": "obr_october_2026_budget_forecast",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_october_2026_budget_forecast__policy_parameters",
+        "The OBR's October 2026 Budget forecast, on the assumption that the "
+        "latest policy is implemented: the Autumn Budget 2026 measures, with "
+        "fuel duty rates frozen until July 2027 and raised from then. The OBR "
+        "costs a continued freeze against it (EFO October 2026, paragraphs "
+        "3.43 and 4.30). A post-measures world, deliberately not a "
+        "pre-measures one.",
+        "policy_ref",
+        "sources/harvest-uk-ab2026-2026-10-29/uk_obr_tables (proposed_baseline "
+        "'OBR October 2026 forecast, on the assumption that the latest policy "
+        "is implemented' on rows 2740 and 2800); mapped by "
+        "scorecard_db/ingest_uk_ab2026.py.",
+    ),
+    (
+        {
             "policy": "obr_november_2025_budget_forecast",
             "counterfactual": "policy_parameters",
         },
