@@ -1,0 +1,95 @@
+{
+ "certification": {
+  "certified_for_model_version": "2.151.0",
+  "compatibility_basis": "built_with_model_package",
+  "data_build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+  "source": "policyengine.py 6.15.0 packaged bundle manifest (qualification request; {\"pypi\": {\"wheel_sha256\": \"c6d7b6a01a43240d854b900ac017e280f20b3bf2c576d975f372190662dca0f6\"}})"
+ },
+ "data_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031,
+  2032
+ ],
+ "data_years_evidence": {
+  "simulation_dataset_years": [
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030,
+   2031,
+   2032
+  ],
+  "source": "Measured by pipeline/uk_replay_qualify.py probe in the candidate environment."
+ },
+ "executor": [
+  "local"
+ ],
+ "identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+   "size_bytes": 342348841
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "bec380682cc96f5fc68bdad2794e42dbd23cf514d2725b8b4ea33608a77836d3",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "3babba0d62ffefa9867f50cc80fa9a5fd972ecc011ccc2adc98193b5faca6e16",
+    "version": "6.15.0",
+    "wheel_sha256": "c6d7b6a01a43240d854b900ac017e280f20b3bf2c576d975f372190662dca0f6"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3",
+    "wheel_sha256": "5847d9938412095fe9848c2ce535838a7dc8fac9238d8fd9e6c9d0a0648e0888"
+   },
+   "policyengine-uk": {
+    "record_sha256": "5107c6f7cbfb5ed2680237286612c4eeebea827c8da6a549a6155f025bfe160e",
+    "version": "2.151.0",
+    "wheel_sha256": "5722f55aca3eb88e1a228e95e1a57e3bd70a4d530a5a000991565ebd8955ce35"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.15.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "compatibility_basis": "built_with_model_package",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.151.0",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+   "model_package": "policyengine-uk",
+   "model_version": "2.151.0",
+   "policyengine_version": "6.15.0"
+  },
+  "requirements_sha256": "24076e4d640c0ccad829b1f9513efa063b8204c40d6eca6ebbc3343eab2b31d4"
+ },
+ "identity_sha256": "082e667df0bc59042ddf68b8c1127459283051ef7c3a3dfa25eef4d11be53754",
+ "layout": "replay_namespace",
+ "qualification_request_sha256": "4fd7cac5613860292b6562313e88fe60d053b945b3dbed9ae4539337ab4bc2fe",
+ "requirements": {
+  "path": "docs/uk_replay/requirements/pe6.15.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504.txt",
+  "sha256": "24076e4d640c0ccad829b1f9513efa063b8204c40d6eca6ebbc3343eab2b31d4"
+ },
+ "result_root": "results/uk/replays/pe6.15.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+ "status": "certified",
+ "variant_id": "pe6.15.0_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504"
+}
