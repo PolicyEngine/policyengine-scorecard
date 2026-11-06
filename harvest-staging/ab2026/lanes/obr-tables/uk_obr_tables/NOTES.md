@@ -372,10 +372,10 @@ On 6 November we moved rows 2740 and 2800 to the OBR's forecast on the
 latest policy. In paragraph 4.30 the OBR forecasts fuel duty receipts on
 the assumption that the government carries out its latest policy: it
 freezes the duty until July 2027 and raises it from then. Against that
-forecast, the OBR estimates that keeping the freeze would add £4.3
-billion to borrowing in 2029-30 (paragraph 3.43) and cut receipts by £4
-billion a year on average from 2027-28 to 2031-32 (paragraph 4.30). So we
-propose that world for both rows, and the ingest maps it to
+forecast, the OBR estimates that if the government kept the freeze, it
+would borrow £4.3 billion more in 2029-30 (paragraph 3.43) and collect £4
+billion less a year on average from 2027-28 to 2031-32 (paragraph 4.30).
+So we propose that world for both rows, and the ingest maps it to
 `obr_october_2026_budget_forecast__policy_parameters`.
 
 The stager also reproduces tranche 2's 535 key registrations, and
