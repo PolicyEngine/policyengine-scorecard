@@ -40,7 +40,7 @@ from hypothesis import strategies as st
 
 from scorecard_db import ScorecardDB, signs
 from scorecard_db import ingest_uk_ab2026 as I
-from scorecard_db.models import Metric
+from scorecard_db.models import Metric, ReformRef, TimeBasis, UnitConcept
 from scorecard_db.uk_aliases import canon, known
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -1015,12 +1015,15 @@ def _printing(s, printed, value):
 )
 @example(cell=100_000, label=1)
 @example(cell=150_000, label=1)
+@example(cell=150_001, label=1)
+@example(cell=-100_000, label=1)
 def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
     """We print the cell in £bn to six places (cell / 10**6) and the label to
     one (label / 10). The ingest accepts the pair exactly when they differ by
     at most £50 million. In the first example we print £0.1 billion in both
     places, so only the precision check stops us keeping the label. In the
-    second, the two values differ by exactly £50 million."""
+    second, the two values differ by exactly £50 million, and in the third by
+    £1,000 more. In the fourth, they match in size and differ in sign."""
     label_claim, cell_claim = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
     kept = _printing(cell_claim, f"{cell / 10**6:.6f}", cell * 1_000)
     repeat = _printing(label_claim, f"£{abs(label) / 10:.1f}bn", label * 100_000_000)
@@ -1038,26 +1041,30 @@ def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
 @pytest.mark.parametrize(
     "change",
     [
-        lambda s: setattr(s, "period", s.period + 1),
+        lambda s: setattr(s, "source", "another_producer"),
+        lambda s: setattr(s, "reform", ReformRef("policy_ref", {"policy": "another"})),
         lambda s: setattr(s, "metric", Metric.POVERTY_RATE_CHANGE),
+        lambda s: setattr(s, "unit_concept", UnitConcept.PERSONS),
+        lambda s: setattr(s, "period", s.period + 1),
+        lambda s: setattr(s, "time_basis", TimeBasis.POINT_IN_TIME),
+        lambda s: setattr(s, "period_start", s.period - 1),
+        lambda s: setattr(s, "period_end", s.period + 1),
         lambda s: s.conditions.update(row_type="measure_component"),
         lambda s: s.conditions.update(estimate_kind="range_high"),
-        lambda s: s.conditions.update(geography="Scotland"),
-        lambda s: s.conditions.update(income_group="top_half"),
-        lambda s: s.conditions.update(component="Receipts: Fuel duty"),
-        lambda s: s.conditions.update(housing_costs="bhc"),
-        lambda s: s.conditions.update(aggregation="annual average from 2027-28"),
+        lambda s: s.conditions.update(estimate_kind="cumulative"),
     ],
     ids=[
-        "year",
+        "source",
+        "reform",
         "metric",
+        "unit",
+        "year",
+        "time_basis",
+        "window_start",
+        "window_end",
         "part_of_a_measure",
         "kept_bound",
-        "geography",
-        "income_group",
-        "component",
-        "housing_costs",
-        "aggregation",
+        "estimate_kind",
     ],
 )
 def test_a_printing_of_another_figure_raises(change):
@@ -1069,6 +1076,53 @@ def test_a_printing_of_another_figure_raises(change):
     change(kept)
     with pytest.raises(ValueError, match="no longer matches"):
         I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+@pytest.mark.parametrize(
+    "key",
+    [
+        "geography",
+        "income_group",
+        "unit_population",
+        "subgroup",
+        "denominator",
+        "statistic",
+        "housing_costs",
+        "component",
+        "aggregation",
+        "horizon",
+        "price_basis",
+    ],
+)
+def test_a_printing_in_another_scope_raises(key):
+    """We give one scope key of the workbook's claim for RF's fuel freeze path a
+    wording that we don't list in ``_SAME_SCOPE``, so the ingest raises. We name
+    the keys here, apart from ``_SCOPE``, so that dropping one from ``_SCOPE``
+    fails a test."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    kept.conditions[key] = "a wording we don't list"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+def test_we_list_only_the_wordings_that_repeats_use():
+    """We list in ``_SAME_SCOPE`` each pair of wordings on which a repeat and
+    the claim we keep differ, and no others, so a stale pair can't let another
+    figure through."""
+    used = set()
+    for (family, i), (k, _) in I.REPEATED_PRINTINGS.items():
+        repeat, kept = _claim(family, i), _claim(*_kept_row(family, k))
+        first, second = (
+            {key: s.conditions.get(key, I._UNSTATED.get(key)) for key in I._SCOPE}
+            for s in (repeat, kept)
+        )
+        used |= {
+            (key, first[key], second[key])
+            for key in I._SCOPE
+            if first[key] != second[key]
+        }
+    assert used == I._SAME_SCOPE
 
 
 # Each bound a producer prints, the point value we keep for it, and a
@@ -1085,8 +1139,8 @@ OUTSIDE_THE_BOUND = {
 
 @pytest.mark.parametrize("entry", sorted(OUTSIDE_THE_BOUND))
 def test_a_bound_merges_only_into_a_point_value_within_it(entry):
-    """Review of #256, M2: we keep the point value, and the ingest checks
-    that it lies within the bound, with half its last digit to spare."""
+    """Review of #256, M2: we keep the point value, and the ingest raises if
+    it lies more than half its last digit past the bound."""
     family, i, k = entry
     bound, point = _claim(family, i), _claim(family, k)
     assert bound.conditions["estimate_kind"] in ("range_low", "range_high")
@@ -1121,6 +1175,27 @@ def test_a_point_value_agrees_with_a_bound_its_rounding_could_meet(
         I._check_printing(family, i, _printing(bound, *outside), point)
 
 
+@pytest.mark.parametrize(
+    "entry, bound_printing, point_printing",
+    [
+        (("uk_rf_ab2026", 48, 130), ("over 3.5 per cent", 0.035), ("3 per cent", 0.03)),
+        (("uk_centax", 65, 66), ("less than 4.5%", 0.045), ("5%", 0.05)),
+    ],
+)
+def test_a_point_half_its_last_digit_past_a_bound_agrees(
+    entry, bound_printing, point_printing
+):
+    """A producer could print 3 per cent for any share up to 3.5 per cent, so
+    that printing agrees with a bound of over 3.5 per cent. In the same way, 5%
+    agrees with a bound of less than 4.5%. In binary floating point, 0.03 + 0.005
+    falls short of 0.035 and 0.05 - 0.005 exceeds 0.045, so the ingest allows a
+    few units in the last place here too."""
+    family, i, k = entry
+    bound = _printing(_claim(family, i), *bound_printing)
+    point = _printing(_claim(family, k), *point_printing)
+    I._check_printing(family, i, bound, point)
+
+
 def test_a_bound_and_a_point_of_opposite_signs_raise():
     """RF bounds a typical household's gain under £145 and gives £145 in
     another printing. If RF printed the second as a loss, we could no longer
@@ -1132,6 +1207,18 @@ def test_a_bound_and_a_point_of_opposite_signs_raise():
     point.conditions["value_verbatim"] = "-£145"
     with pytest.raises(ValueError, match="no longer matches"):
         I._check_printing("uk_rf_ab2026", 28, bound, point)
+
+
+def test_two_bounds_merge_only_in_the_same_direction():
+    """HM Treasury counts up to 20 million households in two printings, and we
+    merge one into the other. If it printed at least 20 million in one of them,
+    the two would bound the count from opposite sides, so the ingest raises."""
+    repeat, kept = _claim("uk_hmt_redbook", 180), _claim("uk_hmt_redbook", 7)
+    assert {s.conditions["estimate_kind"] for s in (repeat, kept)} == {"range_high"}
+    I._check_printing("uk_hmt_redbook", 180, repeat, kept)
+    kept.conditions["estimate_kind"] = "range_low"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_hmt_redbook", 180, repeat, kept)
 
 
 def test_a_share_half_a_point_from_its_rounding_agrees():
@@ -1158,6 +1245,22 @@ def test_a_printing_of_the_opposite_sign_raises():
     kept.conditions["value_verbatim"] = "261"
     with pytest.raises(ValueError, match="no longer matches"):
         I._check_printing("uk_obr_tables", 2674, repeat, kept)
+
+
+@pytest.mark.parametrize("marks", [(True, False), (False, True), (True, True)])
+def test_a_printing_with_its_direction_in_its_label_agrees_in_size(marks):
+    """We flip the sign of the workbook's claim for RF's fuel freeze path, so
+    the ingest raises. Then we mark one printing or both as giving its direction
+    in its label, as ``signs.classify`` reads it. The ingest can't orient that
+    printing, so it compares the two magnitudes and accepts the pair."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept.value = -kept.value
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    for s, mark in zip((repeat, kept), marks):
+        if mark:
+            s.conditions["sign_convention"] = signs.MAGNITUDE_CONVENTION
+    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
 
 
 _AFFIXES = st.sampled_from([("", ""), ("£", ""), ("£", " billion"), ("", "%")])

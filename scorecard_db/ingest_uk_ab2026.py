@@ -526,13 +526,15 @@ _ANNOUNCEMENT_YEARS: dict[tuple[str, int], tuple[int, int, int]] = {
 # geography or population, unless we list the two wordings in ``_SAME_SCOPE``.
 # Of two point values we keep the more precise, and the ingest raises if we
 # keep the coarser, or if they differ by more than half the coarser printing's
-# last digit. Where the producer states each printing's sign convention, it
-# compares the values in PolicyEngine's orientation, and otherwise it compares
-# their magnitudes. Where a producer bounds a figure that it prints elsewhere
-# as a point value, we keep the point value, and the ingest raises if we keep
-# the bound. It compares the producer's own values, and raises if the two
-# printings differ in sign convention, or if the point value lies more than
-# half its last digit outside the bound.
+# last digit. It also raises if they differ in estimate kind, as when one is
+# cumulative and the other isn't. Where the producer states each printing's sign
+# convention, it compares the values in PolicyEngine's orientation, and otherwise
+# it compares their magnitudes. Where a producer bounds a figure that it prints
+# elsewhere as a point value, we keep the point value, and the ingest raises if
+# we keep the bound. It compares the producer's own values, and raises if the
+# two printings differ in sign convention, or if the point value lies more than
+# half its last digit outside the bound. It also raises on two bounds of
+# opposite directions.
 _CENTAX_640 = (
     "CenTax prints the £640 million cost of removing the £100,000 childcare "
     "threshold in two documents: the key findings of Taxes at the top, and "
@@ -1296,14 +1298,17 @@ def _within_half(a: float, b: float, place: float) -> bool:
 def _within_bound(bound: ExternalScore, point: ExternalScore, place: float) -> bool:
     """Whether a point value printed to ``place`` lies within a bound
     printing: at or above a lower bound ("over a million"), or at or below an
-    upper bound ("under £145"), with half the point's last digit to spare. We
-    compare the producer's own values, so the two printings must share a sign
-    convention."""
+    upper bound ("under £145"). The point may lie up to half its last digit past
+    the bound, because the producer may have rounded it across. We compare the
+    producer's own values, so the two printings must share a sign convention."""
     if _relation(bound) != _relation(point):
         return False
-    if bound.conditions["estimate_kind"] == "range_low":
-        return point.value + place / 2 >= bound.value
-    return point.value - place / 2 <= bound.value
+    inside = (
+        point.value >= bound.value
+        if bound.conditions["estimate_kind"] == "range_low"
+        else point.value <= bound.value
+    )
+    return inside or _within_half(point.value, bound.value, place)
 
 
 def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalScore):
@@ -1332,11 +1337,7 @@ def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalSc
     elif bound == [False, True]:
         agree = False  # we never keep a bound over a point value
     else:
-        agree = (
-            (kinds[0] == kinds[1] or not any(bound))
-            and fine <= coarse
-            and _within_half(a, b, coarse)
-        )
+        agree = kinds[0] == kinds[1] and fine <= coarse and _within_half(a, b, coarse)
     first, second = scope(repeat), scope(kept)
     reworded = {(k, first[k], second[k]) for k in _SCOPE if first[k] != second[k]}
     if identity(repeat) != identity(kept) or reworded - _SAME_SCOPE or not agree:
