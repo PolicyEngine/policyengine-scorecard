@@ -19,10 +19,13 @@ independence, the twin rule and the share-of-GDP rule.
 """
 
 import copy
+import functools
 import gzip
 import json
+import math
 import os
 import random
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -235,10 +238,14 @@ def test_each_hm_treasury_figure_is_counted_once(staged):
         acct["by_family"]["uk_hmt_costings"]["drops"]["hmt_figure_staged_twice"] == 408
     )
     assert acct["by_family"]["uk_hmt_redbook"]["drops"]["hmt_figure_staged_twice"] == 24
-    printed = [s for s in scores if "also_printed_in" in s.publication]
+    printed = [
+        s
+        for s in scores
+        if s.publication["family"] == "uk_hmt_tables"
+        and "also_printed_in" in s.publication
+    ]
     assert sum(len(s.publication["also_printed_in"]) for s in printed) == 432
     for s in printed:
-        assert s.publication["family"] == "uk_hmt_tables"
         assert {
             t["family"] for t in s.publication["also_printed_in"]
         } <= I._TWIN_FAMILIES
@@ -336,6 +343,412 @@ def test_no_costings_or_red_book_claim_repeats_a_table_figure(staged):
     assert all(len(why) > 40 for why in NOT_TWINS.values())
 
 
+# --- figures a producer prints more than once ----------------------------------
+
+# Each repeated printing, the printing whose claim we keep, and the value_raw
+# of both, which we list here apart from I.REPEATED_PRINTINGS:
+# (family, repeat row) -> (kept row, repeat's printing, kept printing)
+REPEATED_PINS = {
+    ("uk_centax", 25): (1, "£640 million", "£640 million"),
+    ("uk_centax", 62): (82, "58%", "57.52%"),
+    ("uk_centax", 64): (67, "9%", "8.75%"),
+    ("uk_centax", 107): (21, "£19.7 billion", "£19.7 billion"),
+    ("uk_centax", 108): (58, "£14 billion", "£14 billion"),
+    ("uk_hmt_redbook", 181): (354, "£2.3 billion", "+2,250m"),
+    ("uk_hmt_redbook", 190): (188, "£50", "£50"),
+    ("uk_hmt_redbook", 194): (9, "£30", "around £30"),
+    ("uk_hmt_redbook", 197): (188, "£50", "£50"),
+    ("uk_hmt_redbook", 201): (9, "£30", "around £30"),
+    ("uk_hmt_redbook", 202): (187, "35 million", "35 million"),
+    ("uk_hmt_redbook", 256): (14, "70,000", "70,000"),
+    ("uk_hmt_redbook", 265): (176, "£50 million", "£50 million"),
+    ("uk_hmt_redbook", 268): (258, "£15 million", "£15 million"),
+    ("uk_hmt_redbook", 362): (400, "£33,500", "33,500"),
+    ("uk_hmt_redbook", 423): (422, "£166", "£166"),
+    ("uk_ifs_ab2026", 97): (91, "80%", "80%"),
+    ("uk_obr_tables", 2526): (2171, "£5.5 billion", "5500"),
+    ("uk_obr_tables", 2531): (1183, "£1 billion", "951"),
+    ("uk_obr_tables", 2667): (1167, "£0.7 billion", "688"),
+    ("uk_obr_tables", 2672): (1005, "£0.8 billion", "802"),
+    ("uk_obr_tables", 2673): (1347, "£0.3 billion", "253"),
+    ("uk_obr_tables", 2674): (537, "£0.3 billion", "-261"),
+    ("uk_rf_ab2026", 28): (74, "under £145", "£145"),
+    ("uk_rf_ab2026", 29): (76, "over £130", "£130"),
+    ("uk_rf_ab2026", 54): (34, "£4.4 billion", "£4.4 billion"),
+    ("uk_rf_ab2026", 60): (765, "2.6 percentage points", "-2.6014506816864014"),
+    ("uk_rf_ab2026", 61): (56, "£158", "£158"),
+    ("uk_rf_ab2026", 63): (57, "£144", "£144"),
+    ("uk_rf_ab2026", 93): (47, "£3.7 billion", "£3.7 billion"),
+    ("uk_rf_ab2026", 127): (34, "£4.4 billion", "£4.4 billion"),
+    ("uk_rf_ab2026", 137): (58, "over a million", "over a million"),
+    ("uk_rf_ab2026", 138): (59, "91 per cent", "91 per cent"),
+    ("uk_rf_ab2026", 147): (433, "-£2.0bn", "-2.003759382381924"),
+    ("uk_rf_ab2026", 148): (434, "-£0.7bn", "-0.66114480370056317"),
+    ("uk_rf_ab2026", 149): (435, "+£1.5bn", "1.4700235532486525"),
+    ("uk_rf_ab2026", 150): (436, "+£1.9bn", "1.8860311488670831"),
+    ("uk_rf_ab2026", 151): (437, "+£2.7bn", "2.6523035758874194"),
+    ("uk_rf_ab2026", 177): (13, "£2 billion", "£2 billion"),
+    ("uk_rf_ab2026", 198): (633, "1.8 per cent", "1.835872215777723E-2"),
+    ("uk_rf_ab2026", 200): (631, "5.0 per cent", "5.0346160874108259E-2"),
+    ("uk_rf_ab2026", 205): (765, "2.6 percentage points", "-2.6014506816864014"),
+    ("uk_rf_ab2026", 208): (763, "+0.8ppts", "0.83668380975723267"),
+    ("uk_rf_ab2026", 209): (764, "-0.4ppts", "-0.41938871145248413"),
+    ("uk_tpa", 4): (27, "£19bn", "£19.1bn"),
+    ("uk_tpa", 8): (6, "about £1bn", "£1.1bn"),
+    ("uk_tpa", 168): (25, "£0.7bn", "£700m"),
+    ("uk_tpa", 176): (166, "-0.49", "-0.49"),
+    ("uk_tpa", 194): (163, "-0.29", "-0.29"),
+    ("uk_tpa", 206): (158, "0.38", "0.38"),
+    ("uk_tpa", 212): (160, "0.155", "0.155"),
+    ("uk_tpa", 224): (157, "0.63", "0.63"),
+    ("uk_tpa", 264): (27, "£19.1bn", "£19.1bn"),
+}
+
+
+def test_each_repeated_printing_pairs_the_rows_we_read():
+    assert set(I.REPEATED_PRINTINGS) == set(REPEATED_PINS)
+    for (family, i), (k, repeat, kept) in REPEATED_PINS.items():
+        assert I.REPEATED_PRINTINGS[(family, i)][0] == k, (family, i)
+        assert len(I.REPEATED_PRINTINGS[(family, i)][1]) > 40, (family, i)
+        assert RAW[family][i]["value_raw"] == repeat, (family, i)
+        assert RAW[family][k]["value_raw"] == kept, (family, i)
+
+
+@pytest.mark.parametrize("entry", sorted(REPEATED_PINS))
+def test_a_repeated_printing_merges_into_the_printing_we_keep(entry):
+    family, i = entry
+    k, repeat, kept = REPEATED_PINS[entry]
+    [claim], acct = I.stage({family: [(i, RAW[family][i]), (k, RAW[family][k])]})
+    assert (acct["read"], acct["ingested"], acct["dropped"]) == (2, 1, 1)
+    assert acct["drops"]["figure_printed_again"]["rows"] == 1
+    assert claim.conditions["value_verbatim"] == kept
+    assert claim.publication["locator"] == RAW[family][k]["publication"]["locator"]
+    row = RAW[family][i]
+    assert claim.publication["also_printed_in"] == [
+        {
+            "family": family,
+            "table": row.get("source_table"),
+            "locator": row["publication"].get("locator"),
+            "source_column": row.get("source_column") or None,
+            "value_verbatim": repeat,
+        }
+    ]
+
+
+def test_each_repeated_printing_leaves_one_claim(staged):
+    """The full ingest drops each repeat once and lists it on the claim it
+    keeps, in that claim's family. On HM Treasury's table claims it lists only
+    their costings and red book twins."""
+    scores, acct = staged
+    assert acct["drops"]["figure_printed_again"]["rows"] == len(REPEATED_PINS) == 53
+    for family, n in Counter(f for f, _ in REPEATED_PINS).items():
+        assert acct["by_family"][family]["drops"]["figure_printed_again"] == n
+    listed = [
+        (s.publication["family"], t)
+        for s in scores
+        if s.publication["family"] != "uk_hmt_tables"
+        for t in s.publication.get("also_printed_in", [])
+    ]
+    assert len(listed) == 53
+    assert all(family == t["family"] for family, t in listed)
+    assert sorted((t["family"], t["value_verbatim"]) for _, t in listed) == sorted(
+        (family, repeat) for (family, _), (_, repeat, _) in REPEATED_PINS.items()
+    )
+
+
+# Condition keys on which the scan below lets two printings of one figure
+# differ. In most of them we record how the producer prints the figure: its
+# wording, sign convention, table, source or date. In a few (basis, bound,
+# eligibility, quantity) we record what the figure measures, and we let those
+# differ too so that the scan flags more pairs.
+PRINTING_KEYS = {
+    "action_link",
+    "baseline_forecast",
+    "basis",
+    "benchmark_class",
+    "chart_label",
+    "costing_basis",
+    "deflator",
+    "derived_from",
+    "document_version",
+    "eligibility",
+    "estimate_kind",
+    "horizon",
+    "horizon_text",
+    "locator",
+    "measure_type",
+    "note",
+    "paragraph_heading",
+    "pe_expressibility",
+    "pe_missing",
+    "period_detail",
+    "period_interpretation",
+    "proposed_metric",
+    "quantity",
+    "quote",
+    "reference_date",
+    "reform_hint",
+    "reform_text",
+    "sheet_section",
+    "sign_convention",
+    "source_note",
+    "table",
+    "table_row",
+    "value_verbatim",
+    "year_note",
+}
+# Two claims the scan below pairs that we keep apart: (family, locator,
+# period) of each, sorted -> why both stay claims.
+NOT_REPEATS: dict[tuple, str] = {}
+
+_PRINTED = re.compile(r"(\d[\d,]*)(?:\.(\d+))?(?:[eE]([+-]?\d+))?")
+
+
+def _last_digit(s):
+    """Return the place of a printing's last digit in claim units, which we
+    compute apart from I._printed_place. For a printing without digits, or a
+    value of zero, we return 0."""
+    m = _PRINTED.search(s.conditions.get("value_verbatim") or "")
+    if not m or not s.value:
+        return 0.0
+    number = float(m[1].replace(",", "") + "." + (m[2] or "0")) * 10 ** int(m[3] or 0)
+    if not number:
+        return 0.0
+    return 10.0 ** (int(m[3] or 0) - len(m[2] or "")) * abs(s.value) / number
+
+
+def _oriented(s):
+    relation, _ = signs.classify(
+        {
+            "metric": s.metric.value,
+            "conditions": s.conditions,
+            "country": "UK",
+            "source": s.source,
+        }
+    )
+    if relation in (signs.SAME, signs.OPPOSITE):
+        return signs.external_value_pe_sign(s.value, relation)
+    return abs(s.value)
+
+
+def test_no_claim_repeats_another_printing_of_its_figure(staged):
+    """We pair the ingest's claims by a rule we wrote apart from
+    I.REPEATED_PRINTINGS. We treat two claims as one figure that the producer
+    prints twice when they share a source, reform, metric, unit, year, time
+    basis and window. Their values must also agree to half the coarser
+    printing's last digit, and their conditions must differ only in
+    PRINTING_KEYS. For each such pair that the ingest keeps, we give our
+    reason in NOT_REPEATS."""
+    scores, _ = staged
+    groups: dict[tuple, list] = {}
+    for s in scores:
+        key = (
+            s.source,
+            s.reform.key(),
+            s.metric,
+            s.unit_concept,
+            s.period,
+            s.time_basis,
+            s.period_start,
+            s.period_end,
+        )
+        groups.setdefault(key, []).append(s)
+    hits = {}
+    for group in groups.values():
+        for x, a in enumerate(group):
+            for b in group[x + 1 :]:
+                if a.value is None or b.value is None or a.value == b.value == 0:
+                    continue
+                if (
+                    abs(_oriented(a) - _oriented(b))
+                    > max(_last_digit(a), _last_digit(b)) / 2 + 1e-9
+                ):
+                    continue
+                differ = {
+                    k
+                    for k in set(a.conditions) | set(b.conditions)
+                    if a.conditions.get(k) != b.conditions.get(k)
+                }
+                if differ <= PRINTING_KEYS:
+                    pair = tuple(
+                        sorted(
+                            (
+                                s.publication["family"],
+                                str(s.publication.get("locator")),
+                                s.period,
+                            )
+                            for s in (a, b)
+                        )
+                    )
+                    hits[pair] = sorted(differ)
+    assert set(hits) <= set(NOT_REPEATS), sorted(set(hits) - set(NOT_REPEATS))
+    assert all(len(why) > 40 for why in NOT_REPEATS.values())
+
+
+def test_the_merge_never_leaves_a_same_claim_twin(monkeypatch):
+    """RF prints row 60's figure again on row 205. Without row 60's entry, the
+    ingest would merge row 205 into row 765 and keep row 60, whose claim
+    shares row 205's id, so it raises."""
+    monkeypatch.delitem(I.REPEATED_PRINTINGS, ("uk_rf_ab2026", 60))
+    rows = [(i, RAW["uk_rf_ab2026"][i]) for i in (60, 205, 765)]
+    with pytest.raises(ValueError, match="shares its id with a repeat we dropped"):
+        I.stage({"uk_rf_ab2026": rows})
+
+
+def test_a_full_ingest_raises_when_a_printing_goes_missing(monkeypatch):
+    monkeypatch.setitem(I.REPEATED_PRINTINGS, ("uk_tpa", 999_999), (27, "x" * 41))
+    with pytest.raises(ValueError, match="uk_tpa row 999999 or its kept row 27"):
+        I.stage()
+
+
+@functools.cache
+def _staged_alone(family, i):
+    [s], _ = I.stage({family: [(i, RAW[family][i])]})
+    return s
+
+
+def _claim(family, i):
+    return copy.deepcopy(_staged_alone(family, i))
+
+
+# RF's fuel freeze path for 2027-28, which RF rounds on its chart's label and
+# gives in full in its workbook.
+FREEZE_LABEL = ("uk_rf_ab2026", 147)
+FREEZE_CELL = ("uk_rf_ab2026", 433)
+
+
+def _printing(s, printed, value):
+    s = copy.deepcopy(s)
+    s.conditions["value_verbatim"] = printed
+    s.value = float(value)
+    return s
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    cell=st.integers(-9_999_999, 9_999_999).filter(bool),
+    label=st.integers(-99, 99).filter(bool),
+)
+def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
+    """We print the cell in £bn to six places (cell / 10**6) and the label to
+    one (label / 10). The ingest accepts the pair exactly when they differ by
+    at most £50 million."""
+    label_claim, cell_claim = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept = _printing(cell_claim, f"{cell / 10**6:.6f}", cell * 1_000)
+    repeat = _printing(label_claim, f"£{abs(label) / 10:.1f}bn", label * 100_000_000)
+    agree = abs(cell * 1_000 - label * 100_000_000) <= 50_000_000
+    if agree:
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    else:
+        with pytest.raises(ValueError, match="no longer matches"):
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    # we never keep the coarser printing
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, kept, repeat)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda s: setattr(s, "period", s.period + 1),
+        lambda s: setattr(s, "metric", Metric.POVERTY_RATE_CHANGE),
+        lambda s: s.conditions.update(row_type="measure_component"),
+        lambda s: s.conditions.update(estimate_kind="range_high"),
+    ],
+    ids=["year", "metric", "part_of_a_measure", "kept_bound"],
+)
+def test_a_printing_of_another_figure_raises(change):
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    change(kept)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+def test_a_bound_merges_into_a_point_value():
+    repeat, kept = _claim("uk_rf_ab2026", 28), _claim("uk_rf_ab2026", 74)
+    assert repeat.conditions["estimate_kind"] == "range_high"
+    assert kept.conditions.get("estimate_kind") not in ("range_low", "range_high")
+    I._check_printing("uk_rf_ab2026", 28, repeat, kept)
+
+
+_AFFIXES = st.sampled_from([("", ""), ("£", ""), ("£", " billion"), ("", "%")])
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    whole=st.integers(1, 999_999),
+    places=st.integers(0, 6),
+    data=st.data(),
+    power=st.integers(-6, 12),
+    commas=st.booleans(),
+    affixes=_AFFIXES,
+)
+def test_the_last_printed_digit_sets_the_place(
+    whole, places, data, power, commas, affixes
+):
+    fraction = data.draw(st.integers(0, 10**places - 1))
+    digits = f"{whole:,}" if commas else str(whole)
+    printed = digits + (f".{fraction:0{places}d}" if places else "")
+    number = whole + fraction / 10**places
+    s = SimpleNamespace(
+        conditions={"value_verbatim": affixes[0] + printed + affixes[1]},
+        value=-number * 10.0**power,
+    )
+    assert math.isclose(I._printed_place(s), 10.0 ** (power - places), rel_tol=1e-9), (
+        printed
+    )
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    mantissa=st.integers(1, 9_999_999),
+    exponent=st.integers(-4, 4),
+    power=st.integers(-3, 9),
+)
+def test_a_workbook_exponent_moves_the_place(mantissa, exponent, power):
+    """RF writes '1.835872215777723E-2' in its workbook, with the last digit
+    at 10**-17."""
+    text = f"{mantissa / 10**6:.6f}E{exponent}"
+    s = SimpleNamespace(
+        conditions={"value_verbatim": text},
+        value=mantissa / 10**6 * 10.0**exponent * 10.0**power,
+    )
+    assert math.isclose(
+        I._printed_place(s), 10.0 ** (power + exponent - 6), rel_tol=1e-9
+    ), text
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    number=st.integers(1, 999_999),
+    factor=st.integers(2, 9),
+    power=st.integers(-6, 12),
+)
+def test_a_value_off_its_printing_by_more_than_a_power_of_ten_raises(
+    number, factor, power
+):
+    s = SimpleNamespace(
+        conditions={"value_verbatim": f"£{number}"},
+        value=number * factor * 10.0**power,
+    )
+    with pytest.raises(ValueError, match="doesn't match printed"):
+        I._printed_place(s)
+
+
+@pytest.mark.parametrize(
+    "printed, value",
+    [("over a million", 1_000_000.0), ("£0", 0.0), ("0.0", 0.0), ("£5", 0.0)],
+)
+def test_a_printing_without_digits_or_of_zero_has_no_place(printed, value):
+    assert (
+        I._printed_place(
+            SimpleNamespace(conditions={"value_verbatim": printed}, value=value)
+        )
+        == 0.0
+    )
+
+
 # --- the metric calls ----------------------------------------------------------
 
 
@@ -404,8 +817,10 @@ def test_the_freeze_claims_score_against_the_obrs_latest_policy_world(staged):
     assert {s.conditions["baseline_policy"] for s in latest} == {
         "obr_october_2026_budget_forecast"
     }
+    # we merge six of the pre-measures world's 2,702 claims into Table 1.1
+    # totals (REPEATED_PRINTINGS), so 2,696 remain
     assert Counter((s.reform.baseline or {}).get("policy") for s in obr) == {
-        "obr_pre_measures_autumn_budget_2026": 2702,
+        "obr_pre_measures_autumn_budget_2026": 2696,
         "obr_october_2026_budget_forecast": 2,
         "obr_fuel_duty_rpi_uprated_since_2010_11": 1,
         None: 7,
@@ -597,8 +1012,10 @@ def test_any_sample_of_the_harvest_closes_its_accounting(seed, share):
         assert v["ingested"] + v["dropped"] == v["read"]
         assert v["read"] == sum(1 for f, _ in sample if f == fam)
     base_ids = {s.claim_id() for s in BASE[0]}
-    assert {s.claim_id() for s in scores} <= base_ids | {
-        # a sample can keep a twin whose Table 6.1 row it left out
+    # the ingest keeps a repeat whose kept printing we left out of the sample
+    repeats = {_staged_alone(*row).claim_id() for row in I.REPEATED_PRINTINGS}
+    assert {s.claim_id() for s in scores} <= base_ids | repeats | {
+        # and a twin whose Table 6.1 row we left out
         s.claim_id()
         for s in scores
         if s.publication["family"] in I._TWIN_FAMILIES

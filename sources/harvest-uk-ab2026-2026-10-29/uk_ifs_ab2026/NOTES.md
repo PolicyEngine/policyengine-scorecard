@@ -101,7 +101,7 @@ The opening remarks (rows 92 to 97; we saved the whole speech on line 6 of the t
 - £17 billion: proposed metric `spending_pressure`, IFS's estimate of the top-up that avoiding real-terms cuts could need. IFS prints its year as "2030-21", a typo, most likely for 2030–31. We keep "2030-21" in the quote and `conditions.horizon`, set no `fy`, use 2026 as a publication-year marker and give the row medium confidence.
 - £11 billion: `spending_pressure` for defence plans, on top of the £17 billion. IFS prints no year on the page; on Boileau slide 4 it prints £11 billion more defence spending in 2030–31 (row 55). We give the row medium confidence and a 2026 marker.
 - 25% and 40%: proposed metric `reserve_allocated_share`, the shares of the capital and day-to-day reserves already spent, restated `administrative_fact`. IFS names a source neither in the remarks nor on Boileau slide 11, where it prints the same two shares. So in all four rows we infer the restated attribution and give medium confidence.
-- 80%: `affected_share` 0.8 of households, for the £100 payment through council tax bands A-D, keyed to `ab2026__household_energy_payment_100_bands_a_to_d`.
+- 80%: `affected_share` 0.8 of households, for the £100 payment through council tax bands A-D, keyed to `ab2026__household_energy_payment_100_bands_a_to_d`. IFS gives the same estimate in its initial response, on line 28 (row 91), so at ingest we merge this row into that one and list it in the ingest's `REPEATED_PRINTINGS`.
 
 ### The seven visualisations (46 rows)
 
