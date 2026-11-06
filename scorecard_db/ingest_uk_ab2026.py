@@ -45,12 +45,15 @@ The AB2026 ingest adds six steps:
    key, staged metric, unit, year and value. We also record nine reviewed red
    book printings in ``REVIEWED_TWINS``, where HM Treasury repeats a cell with
    the opposite sign, a rounding or another year. In ``REPEATED_PRINTINGS``
-   we merge 53 more rows on which a producer prints a figure it prints
-   elsewhere in its family, and we keep the most precise printing.
+   we merge 176 more rows on which a producer prints a figure it prints
+   elsewhere: in the same family, or for 60 rows of HM Treasury's costings,
+   in red book Table 6.3. We keep the most precise printing, and a point
+   value over a bound.
 5. **Row calls.** We move IFS row 46 to another metric in ``ROW_METRICS``,
    give it a per-household unit in ``ROW_UNITS``, and tally 22 rows under six
-   reasons in ``ROW_DROPS``. With each entry we record the staged value we
-   expect on that row.
+   reasons in ``ROW_DROPS``. In ``ROW_TIME_BASES`` we give three red book
+   rows the time basis on which we stage another printing of their figure.
+   With each entry we record the staged value we expect on that row.
 6. **Lanes.** We add three lanes: official, microsimulation, and
    administrative data and other producers. ``advance_lanes`` moves a lane to
    ``computed`` once its claims have counterparts, which
@@ -174,10 +177,11 @@ DROPS_AB2026: dict[str, str] = {
         "sign. We score the table figure and list this printing with it."
     ),
     "figure_printed_again": (
-        "The producer prints this figure more than once, in prose and in a "
-        "table, a chart or its workbook, or in two of its documents, sometimes "
-        "rounding it or giving it the opposite sign. We score its most precise "
-        "printing and list this one with it."
+        "The producer prints this figure more than once: in prose and in a "
+        "table, a chart or its workbook, in two tables, or in two of its "
+        "documents. It sometimes rounds or bounds the figure, or gives it the "
+        "opposite sign. We score its most precise printing, and a point value "
+        "over a bound, and list this one with it."
     ),
     "energy_bill_level_no_metric": (
         "The producer gives the level of a typical household's energy bill "
@@ -358,6 +362,36 @@ ROW_METRICS: dict[tuple[str, int], tuple[str, str, Metric, str]] = {
 ROW_UNITS: dict[tuple[str, int], str] = {("uk_ifs_ab2026", 46): "gbp_per_household"}
 assert set(ROW_UNITS) <= set(ROW_METRICS)
 
+# (family, row) -> (staged time basis, staged value_raw, the time basis the
+# ingest stores, why). HM Treasury prints each of these figures on another row,
+# where we stage it on the other basis, and we merge the two printings in
+# REPEATED_PRINTINGS.
+_ANNUAL_CAP = (
+    "HM Treasury expects the government to take around £50 off the annual Ofgem "
+    "price cap in April 2027 by extending the VAT cut, a saving we stage as "
+    "annual on rows 188, 190 and 197."
+)
+_PAID_IN_JANUARY = (
+    "HM Treasury counts up to 20 million households that the government pays "
+    "the Household Energy Payment from January 2027, a count we stage at that "
+    "point in time on row 7."
+)
+ROW_TIME_BASES: dict[tuple[str, int], tuple[str, str, str, str]] = {
+    ("uk_hmt_redbook", 5): ("point_in_time", "around £50", "annual", _ANNUAL_CAP),
+    ("uk_hmt_redbook", 180): (
+        "annual",
+        "20 million",
+        "point_in_time",
+        _PAID_IN_JANUARY,
+    ),
+    ("uk_hmt_redbook", 189): (
+        "annual",
+        "20 million",
+        "point_in_time",
+        _PAID_IN_JANUARY,
+    ),
+}
+
 # (family, row) -> (staged value_raw, drop reason)
 ROW_DROPS: dict[tuple[str, int], tuple[str, str]] = {
     ("uk_obr_tables", 2658): (
@@ -481,17 +515,24 @@ _ANNOUNCEMENT_YEARS: dict[tuple[str, int], tuple[int, int, int]] = {
     ("uk_hmt_redbook", i): (2026, 252, 2027) for i in (263, 271, 272)
 }
 
-# Rows on which a producer prints a figure it prints elsewhere in the family:
-# in prose and in a table, a chart or the chart's workbook, or in two of its
+# Rows on which a producer prints a figure it prints elsewhere: in prose and
+# in a table, a chart or the chart's workbook, in two tables, or in two of its
 # documents. We map each (family, row) to the row whose claim we keep, and to
-# our reading of the pair. We keep the most precise printing, and a point
-# value over a bound. The ingest raises if the two claims differ in key,
-# metric, unit, year or time basis, or if the producer costs part of a
-# measure in one and the whole measure in the other. Where the producer
-# states each printing's sign convention, the ingest compares the values in
-# PolicyEngine's orientation, and otherwise it compares their magnitudes. It
-# raises if they differ by more than half the coarser printing's last digit,
-# if we keep the coarser printing, or if we keep a bound over a point value.
+# our reading of the pair. We name the kept row's family where it differs
+# from the repeat's, as for HM Treasury's costings and red book. The ingest
+# raises if the two claims differ in key, metric, unit, year or time basis, or
+# if the producer costs part of a measure in one and the whole measure in the
+# other. It also raises if they differ in a scope key in ``_SCOPE``, such as
+# geography or population, unless we list the two wordings in ``_SAME_SCOPE``.
+# Of two point values we keep the more precise, and the ingest raises if we
+# keep the coarser, or if they differ by more than half the coarser printing's
+# last digit. Where the producer states each printing's sign convention, it
+# compares the values in PolicyEngine's orientation, and otherwise it compares
+# their magnitudes. Where a producer bounds a figure that it prints elsewhere
+# as a point value, we keep the point value, and the ingest raises if we keep
+# the bound. It compares the producer's own values, and raises if the two
+# printings differ in sign convention, or if the point value lies more than
+# half its last digit outside the bound.
 _CENTAX_640 = (
     "CenTax prints the £640 million cost of removing the £100,000 childcare "
     "threshold in two documents: the key findings of Taxes at the top, and "
@@ -508,6 +549,11 @@ _CENTAX_14 = (
     "Taxes at the top, and again in footnote 9 of its Unicorn Relief paper."
 )
 _CENTAX_TABLE = "CenTax rounds Table 1's shares in the text of section 3.2."
+_CENTAX_BOUND = (
+    "In section 3.2 of Taxes at the top, CenTax says the bottom 50% would pay "
+    "less than 0.5% of the revenue from NICs on partnerships, and in Table 1 it "
+    "prints their share as 0.40%."
+)
 _HMT_30 = (
     "In its executive summary and Box 3.A, HM Treasury estimates that "
     "billpayers save around £30 by 2030 under the Energy Debt Circuit Breaker. "
@@ -534,9 +580,14 @@ _HMT_35M = (
     "paragraph 3.13."
 )
 _HMT_50 = (
-    "In paragraphs 3.4 and 3.5 and in Box 3.A, HM Treasury expects the "
-    "government to take around £50 off the annual Ofgem price cap in April "
-    "2027 by extending the VAT cut on domestic electricity."
+    "In its executive summary, in paragraphs 3.4 and 3.5 and in Box 3.A, HM "
+    "Treasury expects the government to take around £50 off the annual Ofgem "
+    "price cap in April 2027 by extending the VAT cut on domestic electricity."
+)
+_HMT_20M = (
+    "HM Treasury counts up to 20 million households in England that the "
+    "government pays the Household Energy Payment, in its executive summary "
+    "and in paragraphs 2.48 and 3.5."
 )
 _HMT_15M = (
     "In paragraph 5.12 and again in paragraph 6.77, the government gives the "
@@ -551,6 +602,10 @@ _HMT_NADIA = (
     "In its worked example HM Treasury prints Nadia's £166 of income tax "
     "twice, as the tax she owes and the tax she pays."
 )
+_HMT_TAX_GAP = (
+    "HM Treasury prints each tax-gap measure's yield from 2026-27 to 2031-32 "
+    "in its policy costings and again in red book Table 6.3, where we keep it."
+)
 _IFS_80 = (
     "IFS prints one share, around 80% of households in England, in both its "
     "initial response and Helen Miller's opening remarks."
@@ -558,6 +613,31 @@ _IFS_80 = (
 _OBR_TOTAL = (
     "The OBR rounds the measure's Table 1.1 total for the year in its chapter 3 "
     "text, to £0.1 billion or to £1 billion."
+)
+_OBR_T31 = (
+    "The OBR prints this line in £ billion in Table 3.1, with a positive sign "
+    "for higher borrowing, and in £ million in Table 1.1 of its policy "
+    "workbook, with a negative sign for a cost to the Exchequer."
+)
+_OBR_T33 = (
+    "The OBR prints the online marketplace measure's yield from 2027-28 to "
+    "2031-32 in Table 3.3, under the tax head, and in Table 1.1. It costs the "
+    "measure in VAT receipts alone, so it prints the same figures in both "
+    "tables, with opposite signs."
+)
+_OBR_DIRECT = (
+    "In paragraph 3.2 the OBR puts the direct effect of policy measures at a "
+    "£12 billion cut in borrowing in 2031-32, rounding the 11,681 (£ million) "
+    "it prints in Table 1.1."
+)
+_OBR_DEPARTMENTS = (
+    "In paragraph 3.11 the OBR rounds 2026-27's 5.4 (£ billion) on Table "
+    "3.1's line for other departmental spending changes to £5 billion."
+)
+_OBR_VAT = (
+    "In paragraph 3.19 the OBR costs the VAT cut on domestic electricity at "
+    "£0.7 billion in 2026-27 and £0.3 billion in 2027-28, rounding the VAT "
+    "line of measure 2 in Table 1.1 (-734 and -296, £ million)."
 )
 _OBR_FOUNDERS = (
     "The OBR gives Founders' Relief's 2029-30 effect as a £0.3 billion cut in "
@@ -576,6 +656,21 @@ _RF_WORKBOOK = (
     "Resolution Foundation rounds the figure in its text or on its chart, and "
     "gives the unrounded value in the chart's workbook."
 )
+_RF_3PC = (
+    "Resolution Foundation expects typical non-pensioner incomes to fall by 3 "
+    "per cent between 2026-27 and 2028-29 in a press release, and by 3.0 per "
+    "cent on its publication page."
+)
+_RF_HALF = (
+    "On its publication page Resolution Foundation says just over half of the "
+    "cost of living support goes to the poorer half of households, and on "
+    "page 19 of its briefing it estimates 52 per cent."
+)
+_RF_MILLION = (
+    "Resolution Foundation says over a million private renting families lose "
+    "out from the LHA freeze, and in its workbook for Figure 9 it counts "
+    "1,572,152 families who would gain if the government unfroze LHA."
+)
 _TPA_1BN = (
     "Tax Policy Associates gives the 2028/29 yield of Table 6.1 lines 61 and 62 "
     "as £1.1bn, and calls it about £1bn in its section on savers and landlords."
@@ -588,17 +683,23 @@ _TPA_19BN = (
     "Tax Policy Associates prints the real-terms total as £19.1bn in footnote 7 "
     "and in its chart's description, and rounds it to £19bn in the text."
 )
+_TPA_6BN = (
+    "Tax Policy Associates says only about £6bn of the 2030-31 tax rises in "
+    "2026 money comes from this Budget, and plots £5.9bn for it on its chart of "
+    "tax rises by fiscal event."
+)
 _TPA_CHART = (
     "Tax Policy Associates gives each group's 2027/28 value in two charts: it "
     "labels the value on its chart of the 2027/28 measures by tax, and plots "
     "it again on its chart of the changes by year."
 )
-REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
+REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int | tuple[str, int], str]] = {
     ("uk_centax", 25): (1, _CENTAX_640),
     ("uk_centax", 107): (21, _CENTAX_197),
     ("uk_centax", 108): (58, _CENTAX_14),
     ("uk_centax", 62): (82, _CENTAX_TABLE),
     ("uk_centax", 64): (67, _CENTAX_TABLE),
+    ("uk_centax", 65): (66, _CENTAX_BOUND),
     ("uk_hmt_redbook", 194): (9, _HMT_30),
     ("uk_hmt_redbook", 201): (9, _HMT_30),
     ("uk_hmt_redbook", 256): (14, _HMT_70K),
@@ -610,6 +711,27 @@ REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_hmt_redbook", 268): (258, _HMT_15M),
     ("uk_hmt_redbook", 362): (400, _HMT_DECILE),
     ("uk_hmt_redbook", 423): (422, _HMT_NADIA),
+    ("uk_hmt_redbook", 5): (188, _HMT_50),
+    ("uk_hmt_redbook", 180): (7, _HMT_20M),
+    ("uk_hmt_redbook", 189): (7, _HMT_20M),
+    # each measure's six years, from row 191 of the costings and row 273 of
+    # the red book
+    **{
+        ("uk_hmt_costings", c + y): (("uk_hmt_redbook", t + y), _HMT_TAX_GAP)
+        for c, t in (
+            (191, 273),
+            (197, 279),
+            (203, 285),
+            (209, 291),
+            (215, 297),
+            (221, 303),
+            (227, 309),
+            (235, 315),
+            (241, 321),
+            (247, 327),
+        )
+        for y in range(6)
+    },
     ("uk_ifs_ab2026", 97): (91, _IFS_80),
     ("uk_obr_tables", 2674): (537, _OBR_FOUNDERS),
     ("uk_obr_tables", 2672): (1005, _OBR_TOTAL),
@@ -617,6 +739,25 @@ REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_obr_tables", 2531): (1183, _OBR_TOTAL),
     ("uk_obr_tables", 2673): (1347, _OBR_TOTAL),
     ("uk_obr_tables", 2526): (2171, _OBR_TOTAL),
+    ("uk_obr_tables", 2520): (2501, _OBR_DIRECT),
+    ("uk_obr_tables", 2655): (2570, _OBR_DEPARTMENTS),
+    ("uk_obr_tables", 2680): (18, _OBR_VAT),
+    ("uk_obr_tables", 2681): (19, _OBR_VAT),
+    # Table 3.1's lines in 2026-27 to 2031-32, from its row to Table 1.1's
+    **{
+        ("uk_obr_tables", t31 + y): (t11 + y, _OBR_T31)
+        for t31, t11 in (
+            (2540, 2352),  # the direct effect of spending measures
+            (2552, 2514),  # indirect effects of Government decisions
+            (2558, 2496),  # direct effects of Government decisions
+            (2564, 6),  # the council tax rebate, measure 1
+            (2576, 2184),  # the net impact of the unfunded pensions valuation
+            (2630, 2502),  # decisions on HM Treasury's policy decisions table
+            (2636, 2508),  # decisions not on that table
+        )
+        for y in range(6)
+    },
+    **{("uk_obr_tables", 2712 + y): (943 + y, _OBR_T33) for y in range(5)},
     ("uk_rf_ab2026", 177): (13, _RF_AGAIN),
     ("uk_rf_ab2026", 28): (74, _RF_BOUND),
     ("uk_rf_ab2026", 29): (76, _RF_BOUND),
@@ -625,8 +766,15 @@ REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_rf_ab2026", 93): (47, _RF_AGAIN),
     ("uk_rf_ab2026", 61): (56, _RF_AGAIN),
     ("uk_rf_ab2026", 63): (57, _RF_AGAIN),
-    ("uk_rf_ab2026", 137): (58, _RF_AGAIN),
-    ("uk_rf_ab2026", 138): (59, _RF_AGAIN),
+    ("uk_rf_ab2026", 133): (4, _RF_AGAIN),
+    ("uk_rf_ab2026", 153): (12, _RF_AGAIN),
+    ("uk_rf_ab2026", 41): (49, _RF_3PC),
+    ("uk_rf_ab2026", 48): (130, _RF_HALF),
+    ("uk_rf_ab2026", 58): (383, _RF_MILLION),
+    ("uk_rf_ab2026", 137): (383, _RF_MILLION),
+    ("uk_rf_ab2026", 59): (379, _RF_WORKBOOK),
+    ("uk_rf_ab2026", 138): (379, _RF_WORKBOOK),
+    ("uk_rf_ab2026", 77): (382, _RF_WORKBOOK),
     ("uk_rf_ab2026", 147): (433, _RF_WORKBOOK),
     ("uk_rf_ab2026", 148): (434, _RF_WORKBOOK),
     ("uk_rf_ab2026", 149): (435, _RF_WORKBOOK),
@@ -638,6 +786,7 @@ REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_rf_ab2026", 205): (765, _RF_WORKBOOK),
     ("uk_rf_ab2026", 208): (763, _RF_WORKBOOK),
     ("uk_rf_ab2026", 209): (764, _RF_WORKBOOK),
+    ("uk_tpa", 2): (104, _TPA_6BN),
     ("uk_tpa", 8): (6, _TPA_1BN),
     ("uk_tpa", 168): (25, _TPA_700M),
     ("uk_tpa", 4): (27, _TPA_19BN),
@@ -648,12 +797,160 @@ REPEATED_PRINTINGS: dict[tuple[str, int], tuple[int, str]] = {
     ("uk_tpa", 194): (163, _TPA_CHART),
     ("uk_tpa", 176): (166, _TPA_CHART),
 }
-_PRINTING_ROWS = set(REPEATED_PRINTINGS) | {
-    (fam, k) for (fam, _), (k, _) in REPEATED_PRINTINGS.items()
-}
-assert not {(fam, k) for (fam, _), (k, _) in REPEATED_PRINTINGS.items()} & set(
-    REPEATED_PRINTINGS
-), "we keep a row that we also drop as a repeat"
+
+
+def _kept_row(family: str, k: int | tuple[str, int]) -> tuple[str, int]:
+    """The (family, row) whose claim we keep for a repeat in ``family``."""
+    return k if isinstance(k, tuple) else (family, k)
+
+
+_KEPT_ROWS = {_kept_row(fam, k) for (fam, _), (k, _) in REPEATED_PRINTINGS.items()}
+_PRINTING_ROWS = set(REPEATED_PRINTINGS) | _KEPT_ROWS
+assert not _KEPT_ROWS & set(REPEATED_PRINTINGS), (
+    "we keep a row that we also drop as a repeat"
+)
+# The scope keys on which a repeat and the printing we keep must agree. We
+# read a claim without an income group as covering everyone, and one without
+# a component as covering the whole measure.
+_SCOPE = (
+    "geography",
+    "income_group",
+    "unit_population",
+    "subgroup",
+    "denominator",
+    "statistic",
+    "housing_costs",
+    "component",
+    "aggregation",
+    "horizon",
+    "price_basis",
+)
+_UNSTATED = {"income_group": "all", "component": "Total"}
+# (key, the repeat's wording, the kept printing's wording) for each pair of
+# wordings that we read as the same scope.
+_SAME_SCOPE = frozenset(
+    {
+        # HM Treasury names each tax-gap measure in full in its costings, and in
+        # short in red book Table 6.3
+        (
+            "component",
+            "E-invoicing: HMRC will require VAT invoices to be issued in a specified electronic format from 1 April 2029",
+            "E-invoicing (Table 6.3 row 1)",
+        ),
+        (
+            "component",
+            "Employment expenses: Remove the £2,500 Income Tax Self Assessment expenses threshold from 6 April 2028",
+            "Reforming employment expenses (Table 6.3 row 2)",
+        ),
+        (
+            "component",
+            "More Timely Payment: Require Income Tax Self Assessment taxpayers to pay more of their liabilities in-year from 2029",
+            "More timely payment for Self Assessment (Table 6.3 row 3)",
+        ),
+        (
+            "component",
+            "VAT and PAYE: Require direct debit arrangements for VAT and PAYE return liabilities from 1 and 6 April 2029 respectively",
+            "Direct debit for VAT and PAYE (Table 6.3 row 4)",
+        ),
+        (
+            "component",
+            "Real Estate: Participate in a new international agreement to automatically exchange information on real estate from 2029-30",
+            "Real estate information exchange (Table 6.3 row 5)",
+        ),
+        (
+            "component",
+            "Debt Management: Enable HMRC to recover lower value tax debts from the bank accounts of taxpayers who can afford to pay but repeatedly fail to do so from July 2029",
+            "Debt management: recovery from bank accounts (Table 6.3 row 6)",
+        ),
+        (
+            "component",
+            "Debt Management: Invest in HMRC's debt management to collect more overdue tax debts",
+            "Debt management: investment in HMRC debt collection (Table 6.3 row 7)",
+        ),
+        (
+            "component",
+            "Tax Compliance: Expand investment in HMRC's compliance workforce to recruit an additional 670 officers by 2029-30",
+            "Tax compliance: additional HMRC compliance officers (Table 6.3 row 8)",
+        ),
+        (
+            "component",
+            "Making Tax Digital (MTD) for Income Tax Self Assessment: Introduce a 12 month penalty easement for taxpayers joining MTD for Income Tax from 6 April 2027",
+            "MTD for Income Tax Self Assessment penalty easement (Table 6.3 row 9)",
+        ),
+        (
+            "component",
+            "Image Rights: Delay the implementation of legislation to clarify the tax treatment of image rights by one year to 6 April 2028",
+            "Image rights legislation delay (Table 6.3 row 10)",
+        ),
+        # the OBR words three lines of Table 1.1 differently in Table 3.1 and in
+        # paragraph 3.2
+        (
+            "component",
+            "Direct effect of policy measures (para 3.2)",
+            "Direct effect of Government decisions",
+        ),
+        (
+            "component",
+            "Indirect effects of Government decisions",
+            "Indirect effect of Government decisions",
+        ),
+        (
+            "component",
+            "Direct effects of Government decisions",
+            "Direct effect of Government decisions",
+        ),
+        # HM Treasury, RF and TPA state a population, a statistic, a horizon or a
+        # price basis in one printing and not the other, or word it differently
+        (
+            "denominator",
+            "private renter households with the resources to access Your First Home",
+            "private renting families who could access Your First Home",
+        ),
+        (
+            "denominator",
+            "private renting families who lose out from the prolonged LHA freeze",
+            "private renting families who would benefit if LHA were unfrozen",
+        ),
+        (
+            "horizon",
+            "2025-26 and 2026-27 (as printed)",
+            "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
+        ),
+        (
+            "horizon",
+            "2026-27 and 2027-28 (p.17: £3.4bn and £0.3bn)",
+            "2026-27 and 2027-28 (Spread thin p.17: £3.4bn and £0.3bn)",
+        ),
+        ("horizon", None, "scheme lifetime"),
+        (
+            "horizon",
+            "across 2027-28 and 2028-29 (para 2.15)",
+            "across 2027-28 and 2028-29",
+        ),
+        ("horizon", "change since 2023-24", "2023-24 to 2028-29"),
+        (
+            "horizon",
+            "years not printed on the page (Spread thin p.19 prints '2025-26 and 2026-27')",
+            "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
+        ),
+        ("housing_costs", None, "ahc"),
+        ("price_basis", "2026-27 prices (footnote 7)", "2026-27 prices"),
+        ("price_basis", "today's money (2026)", "2026 money"),
+        ("statistic", None, "median"),
+        ("statistic", "median real annual disposable income", "median"),
+        ("subgroup", None, "council tax bands A-D"),
+        ("subgroup", None, "first-time buyers"),
+        ("subgroup", "Ofgem price cap", None),
+        (
+            "subgroup",
+            "live in higher-band properties and will miss out on the Household Energy Payment",
+            "live in higher-band properties (Council Tax bands E and above) and miss out on the Household Energy Payment",
+        ),
+        ("subgroup", "typical household", "all billpayers"),
+        ("unit_population", None, "private renting families (benefit units)"),
+        ("unit_population", "working-age (non-pensioner) households", "non-pensioners"),
+    }
+)
 
 
 def _is_component(row: dict) -> bool:
@@ -907,6 +1204,12 @@ def _check_row_calls(family: str, rows: list[dict]) -> None:
     for (fam, i), (raw, _) in ROW_DROPS.items():
         if fam == family and rows[i]["value_raw"] != raw:
             raise ValueError(f"ROW_DROPS {fam} row {i} no longer matches")
+    for (fam, i), (basis, raw, _, _) in ROW_TIME_BASES.items():
+        if fam == family and (rows[i]["time_basis"], rows[i]["value_raw"]) != (
+            basis,
+            raw,
+        ):
+            raise ValueError(f"ROW_TIME_BASES {fam} row {i} no longer matches")
     reviewed = {i: v for (fam, i), v in REVIEWED_TWINS.items() if fam == family}
     if reviewed:
         table = _load("uk_hmt_tables")
@@ -953,21 +1256,24 @@ def _printed_place(s: ExternalScore) -> float:
     return unit * 10.0 ** -len(places or "")
 
 
+def _relation(s: ExternalScore) -> str:
+    """How the producer's sign on this printing relates to PolicyEngine's
+    (scorecard_db.signs)."""
+    return signs.classify(
+        {
+            "metric": s.metric.value,
+            "conditions": s.conditions,
+            "country": "UK",
+            "source": s.source,
+        }
+    )[0]
+
+
 def _signed_values(a: ExternalScore, b: ExternalScore) -> tuple[float, float]:
     """Return both values in PolicyEngine's orientation where the producer
     states each printing's sign convention (scorecard_db.signs), and
     otherwise both magnitudes."""
-    relations = [
-        signs.classify(
-            {
-                "metric": s.metric.value,
-                "conditions": s.conditions,
-                "country": "UK",
-                "source": s.source,
-            }
-        )[0]
-        for s in (a, b)
-    ]
+    relations = [_relation(s) for s in (a, b)]
     if set(relations) <= {signs.SAME, signs.OPPOSITE}:
         return (
             signs.external_value_pe_sign(a.value, relations[0]),
@@ -977,6 +1283,27 @@ def _signed_values(a: ExternalScore, b: ExternalScore) -> tuple[float, float]:
 
 
 _BOUNDS = {"range_low", "range_high"}
+
+
+def _within_half(a: float, b: float, place: float) -> bool:
+    """Whether a and b differ by at most half of ``place``. In binary floating
+    point, 0.58 - 0.575 = 0.0050000000000000044, so we allow a few units in the
+    last place of each operand."""
+    slack = 4 * (math.ulp(a) + math.ulp(b) + math.ulp(place))
+    return abs(a - b) <= place / 2 + slack
+
+
+def _within_bound(bound: ExternalScore, point: ExternalScore, place: float) -> bool:
+    """Whether a point value printed to ``place`` lies within a bound
+    printing: at or above a lower bound ("over a million"), or at or below an
+    upper bound ("under £145"), with half the point's last digit to spare. We
+    compare the producer's own values, so the two printings must share a sign
+    convention."""
+    if _relation(bound) != _relation(point):
+        return False
+    if bound.conditions["estimate_kind"] == "range_low":
+        return point.value + place / 2 >= bound.value
+    return point.value - place / 2 <= bound.value
 
 
 def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalScore):
@@ -993,15 +1320,26 @@ def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalSc
             s.conditions.get("row_type") == "measure_component",
         )
 
+    def scope(s: ExternalScore) -> dict:
+        return {key: s.conditions.get(key, _UNSTATED.get(key)) for key in _SCOPE}
+
     a, b = _signed_values(repeat, kept)
     coarse, fine = _printed_place(repeat), _printed_place(kept)
-    bound = [s.conditions.get("estimate_kind") in _BOUNDS for s in (repeat, kept)]
-    if (
-        identity(repeat) != identity(kept)
-        or fine > coarse
-        or abs(a - b) > coarse / 2
-        or bound == [False, True]
-    ):
+    kinds = [s.conditions.get("estimate_kind") for s in (repeat, kept)]
+    bound = [kind in _BOUNDS for kind in kinds]
+    if bound == [True, False]:
+        agree = _within_bound(repeat, kept, fine)
+    elif bound == [False, True]:
+        agree = False  # we never keep a bound over a point value
+    else:
+        agree = (
+            (kinds[0] == kinds[1] or not any(bound))
+            and fine <= coarse
+            and _within_half(a, b, coarse)
+        )
+    first, second = scope(repeat), scope(kept)
+    reworded = {(k, first[k], second[k]) for k in _SCOPE if first[k] != second[k]}
+    if identity(repeat) != identity(kept) or reworded - _SAME_SCOPE or not agree:
         raise ValueError(f"REPEATED_PRINTINGS {family} row {i} no longer matches")
 
 
@@ -1063,6 +1401,8 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
                 )
             if (family, i) in ROW_UNITS:
                 row = {**row, "unit_concept": ROW_UNITS[(family, i)]}
+            if (family, i) in ROW_TIME_BASES:
+                row = {**row, "time_basis": ROW_TIME_BASES[(family, i)][2]}
             twin = _twin_key(row, name)
             kept = None
             if family in _TWIN_FAMILIES and (family, i) in REVIEWED_TWINS:
@@ -1091,16 +1431,20 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
             fam["ingested"] += 1
             acct["ingested"] += 1
         acct["by_family"][family] = fam
-    # Figures a producer prints more than once (REPEATED_PRINTINGS). When a
-    # test stages a sample that lacks either row of a pair, we skip the pair.
+    # Figures a producer prints more than once (REPEATED_PRINTINGS). When we
+    # stage a sample of rows, as we do in tests, we skip a pair unless we stage
+    # both its rows.
     repeats: set[int] = set()
+    # a dropped repeat's claim id -> the claims we merged it into
+    targets: dict[str, set[int]] = {}
     for (family, i), (k, _) in sorted(REPEATED_PRINTINGS.items()):
-        repeat, kept = printed.get((family, i)), printed.get((family, k))
+        kept_row = _kept_row(family, k)
+        repeat, kept = printed.get((family, i)), printed.get(kept_row)
         if repeat is None or kept is None:
             if families is None:
                 raise ValueError(
                     f"no claim from REPEATED_PRINTINGS {family} row {i} or its "
-                    f"kept row {k}"
+                    f"kept row {kept_row[1]}"
                 )
             continue
         _check_printing(family, i, repeat, kept)
@@ -1114,16 +1458,17 @@ def stage(families: dict | None = None) -> tuple[list[ExternalScore], dict]:
             }
         )
         repeats.add(id(repeat))
+        targets.setdefault(repeat.claim_id(), set()).add(id(kept))
         fam = acct["by_family"][family]
         fam["ingested"] -= 1
         acct["ingested"] -= 1
         _drop(acct, fam, "figure_printed_again")
-    dropped = {s.claim_id() for s in scores if id(s) in repeats}
     scores = [s for s in scores if id(s) not in repeats]
-    # We raise if a claim we keep shares its id with a repeat we dropped.
-    # merge_republications would have merged the two, so unless we list that
-    # claim's row in REPEATED_PRINTINGS too, we would score the figure twice.
-    if dropped & {s.claim_id() for s in scores}:
+    # We raise if a claim we keep shares its id with a repeat we dropped, unless
+    # we merged that repeat into the claim itself. Had we kept the repeat,
+    # merge_republications would have merged the two, so unless we also list
+    # that claim's row in REPEATED_PRINTINGS, we would score the figure twice.
+    if any(id(s) not in targets.get(s.claim_id(), {id(s)}) for s in scores):
         raise ValueError("we keep a claim that shares its id with a repeat we dropped")
     # One producer's twin printings within a family (AB2025's merge).
     merged: list[ExternalScore] = []

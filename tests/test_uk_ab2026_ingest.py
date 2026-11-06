@@ -184,6 +184,30 @@ def test_a_moved_row_call_raises(monkeypatch):
         I._check_row_calls("uk_obr_tables", RAW["uk_obr_tables"])
 
 
+def test_a_moved_time_basis_call_raises(monkeypatch):
+    monkeypatch.setitem(
+        I.ROW_TIME_BASES,
+        ("uk_hmt_redbook", 0),
+        ("annual", "not this value", "point_in_time", "x" * 41),
+    )
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+
+
+def test_each_restaged_row_takes_the_time_basis_we_store():
+    """Review of #256, M3: we stage HM Treasury's £50 off the annual price
+    cap, and its count of households that the government pays from January
+    2027, on the time basis of the printing we keep."""
+    assert len(I.ROW_TIME_BASES) == 3
+    for (family, i), (staged, printed, stored, why) in I.ROW_TIME_BASES.items():
+        assert (RAW[family][i]["time_basis"], RAW[family][i]["value_raw"]) == (
+            staged,
+            printed,
+        )
+        assert _staged_alone(family, i).time_basis.value == stored, (family, i)
+        assert len(why) > 40
+
+
 # --- 2. keys and verdicts ----------------------------------------------------
 
 
@@ -347,14 +371,79 @@ def test_no_costings_or_red_book_claim_repeats_a_table_figure(staged):
 
 # Each repeated printing, the printing whose claim we keep, and the value_raw
 # of both, which we list here apart from I.REPEATED_PRINTINGS:
-# (family, repeat row) -> (kept row, repeat's printing, kept printing)
+# (family, repeat row) -> (kept row, repeat's printing, kept printing). We
+# give the kept row as (family, row) where its family differs.
 REPEATED_PINS = {
     ("uk_centax", 25): (1, "£640 million", "£640 million"),
     ("uk_centax", 62): (82, "58%", "57.52%"),
     ("uk_centax", 64): (67, "9%", "8.75%"),
+    ("uk_centax", 65): (66, "less than 0.5%", "0.40%"),
     ("uk_centax", 107): (21, "£19.7 billion", "£19.7 billion"),
     ("uk_centax", 108): (58, "£14 billion", "£14 billion"),
+    ("uk_hmt_costings", 191): (("uk_hmt_redbook", 273), "+0m", "+0m"),
+    ("uk_hmt_costings", 192): (("uk_hmt_redbook", 274), "+10m", "+10m"),
+    ("uk_hmt_costings", 193): (("uk_hmt_redbook", 275), "+55m", "+55m"),
+    ("uk_hmt_costings", 194): (("uk_hmt_redbook", 276), "+140m", "+140m"),
+    ("uk_hmt_costings", 195): (("uk_hmt_redbook", 277), "+160m", "+160m"),
+    ("uk_hmt_costings", 196): (("uk_hmt_redbook", 278), "+150m", "+150m"),
+    ("uk_hmt_costings", 197): (("uk_hmt_redbook", 279), "+0m", "+0m"),
+    ("uk_hmt_costings", 198): (("uk_hmt_redbook", 280), "+0m", "+0m"),
+    ("uk_hmt_costings", 199): (("uk_hmt_redbook", 281), "-85m", "-85m"),
+    ("uk_hmt_costings", 200): (("uk_hmt_redbook", 282), "+70m", "+70m"),
+    ("uk_hmt_costings", 201): (("uk_hmt_redbook", 283), "+25m", "+25m"),
+    ("uk_hmt_costings", 202): (("uk_hmt_redbook", 284), "+25m", "+25m"),
+    ("uk_hmt_costings", 203): (("uk_hmt_redbook", 285), "+0m", "+0m"),
+    ("uk_hmt_costings", 204): (("uk_hmt_redbook", 286), "+0m", "+0m"),
+    ("uk_hmt_costings", 205): (("uk_hmt_redbook", 287), "+0m", "+0m"),
+    ("uk_hmt_costings", 206): (("uk_hmt_redbook", 288), "+1,355m", "+1,355m"),
+    ("uk_hmt_costings", 207): (("uk_hmt_redbook", 289), "+1,605m", "+1,605m"),
+    ("uk_hmt_costings", 208): (("uk_hmt_redbook", 290), "+1,815m", "+1,815m"),
+    ("uk_hmt_costings", 209): (("uk_hmt_redbook", 291), "+0m", "+0m"),
+    ("uk_hmt_costings", 210): (("uk_hmt_redbook", 292), "+0m", "+0m"),
+    ("uk_hmt_costings", 211): (("uk_hmt_redbook", 293), "+0m", "+0m"),
+    ("uk_hmt_costings", 212): (("uk_hmt_redbook", 294), "+165m", "+165m"),
+    ("uk_hmt_costings", 213): (("uk_hmt_redbook", 295), "+5m", "+5m"),
+    ("uk_hmt_costings", 214): (("uk_hmt_redbook", 296), "+5m", "+5m"),
+    ("uk_hmt_costings", 215): (("uk_hmt_redbook", 297), "+0m", "+0m"),
+    ("uk_hmt_costings", 216): (("uk_hmt_redbook", 298), "+0m", "+0m"),
+    ("uk_hmt_costings", 217): (("uk_hmt_redbook", 299), "+0m", "+0m"),
+    ("uk_hmt_costings", 218): (("uk_hmt_redbook", 300), "+20m", "+20m"),
+    ("uk_hmt_costings", 219): (("uk_hmt_redbook", 301), "+65m", "+65m"),
+    ("uk_hmt_costings", 220): (("uk_hmt_redbook", 302), "+55m", "+55m"),
+    ("uk_hmt_costings", 221): (("uk_hmt_redbook", 303), "+0m", "+0m"),
+    ("uk_hmt_costings", 222): (("uk_hmt_redbook", 304), "+0m", "+0m"),
+    ("uk_hmt_costings", 223): (("uk_hmt_redbook", 305), "+0m", "+0m"),
+    ("uk_hmt_costings", 224): (("uk_hmt_redbook", 306), "+50m", "+50m"),
+    ("uk_hmt_costings", 225): (("uk_hmt_redbook", 307), "+255m", "+255m"),
+    ("uk_hmt_costings", 226): (("uk_hmt_redbook", 308), "+320m", "+320m"),
+    ("uk_hmt_costings", 227): (("uk_hmt_redbook", 309), "+65m", "+65m"),
+    ("uk_hmt_costings", 228): (("uk_hmt_redbook", 310), "+120m", "+120m"),
+    ("uk_hmt_costings", 229): (("uk_hmt_redbook", 311), "+0m", "+0m"),
+    ("uk_hmt_costings", 230): (("uk_hmt_redbook", 312), "+75m", "+75m"),
+    ("uk_hmt_costings", 231): (("uk_hmt_redbook", 313), "+250m", "+250m"),
+    ("uk_hmt_costings", 232): (("uk_hmt_redbook", 314), "+575m", "+575m"),
+    ("uk_hmt_costings", 235): (("uk_hmt_redbook", 315), "+50m", "+50m"),
+    ("uk_hmt_costings", 236): (("uk_hmt_redbook", 316), "+205m", "+205m"),
+    ("uk_hmt_costings", 237): (("uk_hmt_redbook", 317), "+310m", "+310m"),
+    ("uk_hmt_costings", 238): (("uk_hmt_redbook", 318), "+260m", "+260m"),
+    ("uk_hmt_costings", 239): (("uk_hmt_redbook", 319), "+270m", "+270m"),
+    ("uk_hmt_costings", 240): (("uk_hmt_redbook", 320), "+415m", "+415m"),
+    ("uk_hmt_costings", 241): (("uk_hmt_redbook", 321), "+0m", "+0m"),
+    ("uk_hmt_costings", 242): (("uk_hmt_redbook", 322), "-15m", "-15m"),
+    ("uk_hmt_costings", 243): (("uk_hmt_redbook", 323), "-40m", "-40m"),
+    ("uk_hmt_costings", 244): (("uk_hmt_redbook", 324), "+5m", "+5m"),
+    ("uk_hmt_costings", 245): (("uk_hmt_redbook", 325), "+0m", "+0m"),
+    ("uk_hmt_costings", 246): (("uk_hmt_redbook", 326), "+0m", "+0m"),
+    ("uk_hmt_costings", 247): (("uk_hmt_redbook", 327), "-5m", "-5m"),
+    ("uk_hmt_costings", 248): (("uk_hmt_redbook", 328), "-30m", "-30m"),
+    ("uk_hmt_costings", 249): (("uk_hmt_redbook", 329), "+0m", "+0m"),
+    ("uk_hmt_costings", 250): (("uk_hmt_redbook", 330), "+0m", "+0m"),
+    ("uk_hmt_costings", 251): (("uk_hmt_redbook", 331), "+0m", "+0m"),
+    ("uk_hmt_costings", 252): (("uk_hmt_redbook", 332), "+0m", "+0m"),
+    ("uk_hmt_redbook", 5): (188, "around £50", "£50"),
+    ("uk_hmt_redbook", 180): (7, "20 million", "up to 20 million"),
     ("uk_hmt_redbook", 181): (354, "£2.3 billion", "+2,250m"),
+    ("uk_hmt_redbook", 189): (7, "20 million", "up to 20 million"),
     ("uk_hmt_redbook", 190): (188, "£50", "£50"),
     ("uk_hmt_redbook", 194): (9, "£30", "around £30"),
     ("uk_hmt_redbook", 197): (188, "£50", "£50"),
@@ -366,33 +455,92 @@ REPEATED_PINS = {
     ("uk_hmt_redbook", 362): (400, "£33,500", "33,500"),
     ("uk_hmt_redbook", 423): (422, "£166", "£166"),
     ("uk_ifs_ab2026", 97): (91, "80%", "80%"),
+    ("uk_obr_tables", 2520): (2501, "£12 billion", "11,681"),
     ("uk_obr_tables", 2526): (2171, "£5.5 billion", "5500"),
     ("uk_obr_tables", 2531): (1183, "£1 billion", "951"),
+    ("uk_obr_tables", 2540): (2352, "5.8", "-5,848"),
+    ("uk_obr_tables", 2541): (2353, "3.9", "-3,877"),
+    ("uk_obr_tables", 2542): (2354, "3.5", "-3,458"),
+    ("uk_obr_tables", 2543): (2355, "1.7", "-1,699"),
+    ("uk_obr_tables", 2544): (2356, "1.6", "-1,578"),
+    ("uk_obr_tables", 2545): (2357, "-4.2", "4,161"),
+    ("uk_obr_tables", 2552): (2514, "-1.3", "-1,308"),
+    ("uk_obr_tables", 2553): (2515, "3.5", "3,483"),
+    ("uk_obr_tables", 2554): (2516, "1.7", "1,702"),
+    ("uk_obr_tables", 2555): (2517, "1.4", "1,424"),
+    ("uk_obr_tables", 2556): (2518, "1.4", "1,442"),
+    ("uk_obr_tables", 2557): (2519, "2.4", "2,412"),
+    ("uk_obr_tables", 2558): (2496, "7.6", "-7,597"),
+    ("uk_obr_tables", 2559): (2497, "3.5", "-3,532"),
+    ("uk_obr_tables", 2560): (2498, "0.4", "-380"),
+    ("uk_obr_tables", 2561): (2499, "-4.1", "4,061"),
+    ("uk_obr_tables", 2562): (2500, "-5.0", "4,983"),
+    ("uk_obr_tables", 2563): (2501, "-11.7", "11,681"),
+    ("uk_obr_tables", 2564): (6, "2.6", "-2627"),
+    ("uk_obr_tables", 2565): (7, "0.0", "0"),
+    ("uk_obr_tables", 2566): (8, "0.0", "0"),
+    ("uk_obr_tables", 2567): (9, "0.0", "0"),
+    ("uk_obr_tables", 2568): (10, "0.0", "0"),
+    ("uk_obr_tables", 2569): (11, "0.0", "0"),
+    ("uk_obr_tables", 2576): (2184, "0.0", "0"),
+    ("uk_obr_tables", 2577): (2185, "1.1", "-1058"),
+    ("uk_obr_tables", 2578): (2186, "1.1", "-1113"),
+    ("uk_obr_tables", 2579): (2187, "1.1", "-1132"),
+    ("uk_obr_tables", 2580): (2188, "1.2", "-1151"),
+    ("uk_obr_tables", 2581): (2189, "1.2", "-1169"),
+    ("uk_obr_tables", 2630): (2502, "7.6", "-7,597"),
+    ("uk_obr_tables", 2631): (2503, "2.5", "-2,475"),
+    ("uk_obr_tables", 2632): (2504, "-0.7", "732"),
+    ("uk_obr_tables", 2633): (2505, "-5.2", "5,192"),
+    ("uk_obr_tables", 2634): (2506, "-6.1", "6,134"),
+    ("uk_obr_tables", 2635): (2507, "-7.3", "7,349"),
+    ("uk_obr_tables", 2636): (2508, "0.0", "0"),
+    ("uk_obr_tables", 2637): (2509, "1.1", "-1,058"),
+    ("uk_obr_tables", 2638): (2510, "1.1", "-1,113"),
+    ("uk_obr_tables", 2639): (2511, "1.1", "-1,132"),
+    ("uk_obr_tables", 2640): (2512, "1.2", "-1,151"),
+    ("uk_obr_tables", 2641): (2513, "-4.3", "4,331"),
+    ("uk_obr_tables", 2655): (2570, "£5 billion", "5.4"),
     ("uk_obr_tables", 2667): (1167, "£0.7 billion", "688"),
     ("uk_obr_tables", 2672): (1005, "£0.8 billion", "802"),
     ("uk_obr_tables", 2673): (1347, "£0.3 billion", "253"),
     ("uk_obr_tables", 2674): (537, "£0.3 billion", "-261"),
+    ("uk_obr_tables", 2680): (18, "£0.7 billion", "-734"),
+    ("uk_obr_tables", 2681): (19, "£0.3 billion", "-296"),
+    ("uk_obr_tables", 2712): (943, "-164", "164"),
+    ("uk_obr_tables", 2713): (944, "-318", "318"),
+    ("uk_obr_tables", 2714): (945, "-270", "270"),
+    ("uk_obr_tables", 2715): (946, "-250", "250"),
+    ("uk_obr_tables", 2716): (947, "-264", "264"),
     ("uk_rf_ab2026", 28): (74, "under £145", "£145"),
     ("uk_rf_ab2026", 29): (76, "over £130", "£130"),
+    ("uk_rf_ab2026", 41): (49, "3 per cent", "3.0 per cent"),
+    ("uk_rf_ab2026", 48): (130, "just over half", "52 per cent"),
     ("uk_rf_ab2026", 54): (34, "£4.4 billion", "£4.4 billion"),
+    ("uk_rf_ab2026", 58): (383, "over a million", "1572152"),
+    ("uk_rf_ab2026", 59): (379, "91 per cent", "0.90648359700588743"),
     ("uk_rf_ab2026", 60): (765, "2.6 percentage points", "-2.6014506816864014"),
     ("uk_rf_ab2026", 61): (56, "£158", "£158"),
     ("uk_rf_ab2026", 63): (57, "£144", "£144"),
+    ("uk_rf_ab2026", 77): (382, "76 per cent", "0.76228673788146883"),
     ("uk_rf_ab2026", 93): (47, "£3.7 billion", "£3.7 billion"),
     ("uk_rf_ab2026", 127): (34, "£4.4 billion", "£4.4 billion"),
-    ("uk_rf_ab2026", 137): (58, "over a million", "over a million"),
-    ("uk_rf_ab2026", 138): (59, "91 per cent", "91 per cent"),
+    ("uk_rf_ab2026", 133): (4, "around one-in-eight", "around one-in-eight"),
+    ("uk_rf_ab2026", 137): (383, "over a million", "1572152"),
+    ("uk_rf_ab2026", 138): (379, "91 per cent", "0.90648359700588743"),
     ("uk_rf_ab2026", 147): (433, "-£2.0bn", "-2.003759382381924"),
     ("uk_rf_ab2026", 148): (434, "-£0.7bn", "-0.66114480370056317"),
     ("uk_rf_ab2026", 149): (435, "+£1.5bn", "1.4700235532486525"),
     ("uk_rf_ab2026", 150): (436, "+£1.9bn", "1.8860311488670831"),
     ("uk_rf_ab2026", 151): (437, "+£2.7bn", "2.6523035758874194"),
+    ("uk_rf_ab2026", 153): (12, "around £20 billion", "around £20 billion"),
     ("uk_rf_ab2026", 177): (13, "£2 billion", "£2 billion"),
     ("uk_rf_ab2026", 198): (633, "1.8 per cent", "1.835872215777723E-2"),
     ("uk_rf_ab2026", 200): (631, "5.0 per cent", "5.0346160874108259E-2"),
     ("uk_rf_ab2026", 205): (765, "2.6 percentage points", "-2.6014506816864014"),
     ("uk_rf_ab2026", 208): (763, "+0.8ppts", "0.83668380975723267"),
     ("uk_rf_ab2026", 209): (764, "-0.4ppts", "-0.41938871145248413"),
+    ("uk_tpa", 2): (104, "about £6bn", "5.9"),
     ("uk_tpa", 4): (27, "£19bn", "£19.1bn"),
     ("uk_tpa", 8): (6, "about £1bn", "£1.1bn"),
     ("uk_tpa", 168): (25, "£0.7bn", "£700m"),
@@ -405,24 +553,37 @@ REPEATED_PINS = {
 }
 
 
+def _kept_row(family, k):
+    return k if isinstance(k, tuple) else (family, k)
+
+
 def test_each_repeated_printing_pairs_the_rows_we_read():
     assert set(I.REPEATED_PRINTINGS) == set(REPEATED_PINS)
     for (family, i), (k, repeat, kept) in REPEATED_PINS.items():
         assert I.REPEATED_PRINTINGS[(family, i)][0] == k, (family, i)
         assert len(I.REPEATED_PRINTINGS[(family, i)][1]) > 40, (family, i)
+        kept_family, kept_row = _kept_row(family, k)
         assert RAW[family][i]["value_raw"] == repeat, (family, i)
-        assert RAW[family][k]["value_raw"] == kept, (family, i)
+        assert RAW[kept_family][kept_row]["value_raw"] == kept, (family, i)
 
 
 @pytest.mark.parametrize("entry", sorted(REPEATED_PINS))
 def test_a_repeated_printing_merges_into_the_printing_we_keep(entry):
     family, i = entry
     k, repeat, kept = REPEATED_PINS[entry]
-    [claim], acct = I.stage({family: [(i, RAW[family][i]), (k, RAW[family][k])]})
+    kept_family, kept_row = _kept_row(family, k)
+    families = {family: [(i, RAW[family][i])]}
+    families.setdefault(kept_family, []).append((kept_row, RAW[kept_family][kept_row]))
+    [claim], acct = I.stage(families)
     assert (acct["read"], acct["ingested"], acct["dropped"]) == (2, 1, 1)
     assert acct["drops"]["figure_printed_again"]["rows"] == 1
+    assert acct["by_family"][family]["drops"]["figure_printed_again"] == 1
+    assert claim.publication["family"] == kept_family
     assert claim.conditions["value_verbatim"] == kept
-    assert claim.publication["locator"] == RAW[family][k]["publication"]["locator"]
+    assert (
+        claim.publication["locator"]
+        == RAW[kept_family][kept_row]["publication"]["locator"]
+    )
     row = RAW[family][i]
     assert claim.publication["also_printed_in"] == [
         {
@@ -436,70 +597,252 @@ def test_a_repeated_printing_merges_into_the_printing_we_keep(entry):
 
 
 def test_each_repeated_printing_leaves_one_claim(staged):
-    """The full ingest drops each repeat once and lists it on the claim it
-    keeps, in that claim's family. On HM Treasury's table claims it lists only
-    their costings and red book twins."""
+    """The full ingest drops each repeat once, in the repeat's family, and
+    lists it on the claim it keeps. On HM Treasury's table claims it lists only
+    their costings and red book twins, so we leave those claims out."""
     scores, acct = staged
-    assert acct["drops"]["figure_printed_again"]["rows"] == len(REPEATED_PINS) == 53
+    assert acct["drops"]["figure_printed_again"]["rows"] == len(REPEATED_PINS) == 176
     for family, n in Counter(f for f, _ in REPEATED_PINS).items():
         assert acct["by_family"][family]["drops"]["figure_printed_again"] == n
     listed = [
-        (s.publication["family"], t)
+        (s.publication["family"], t["family"], t["value_verbatim"])
         for s in scores
         if s.publication["family"] != "uk_hmt_tables"
         for t in s.publication.get("also_printed_in", [])
     ]
-    assert len(listed) == 53
-    assert all(family == t["family"] for family, t in listed)
-    assert sorted((t["family"], t["value_verbatim"]) for _, t in listed) == sorted(
-        (family, repeat) for (family, _), (_, repeat, _) in REPEATED_PINS.items()
+    assert sorted(listed) == sorted(
+        (_kept_row(family, k)[0], family, repeat)
+        for (family, _), (k, repeat, _) in REPEATED_PINS.items()
     )
 
 
-# Condition keys on which the scan below lets two printings of one figure
-# differ. In most of them we record how the producer prints the figure: its
-# wording, sign convention, table, source or date. In a few (basis, bound,
-# eligibility, quantity) we record what the figure measures, and we let those
-# differ too so that the scan flags more pairs.
-PRINTING_KEYS = {
-    "action_link",
-    "baseline_forecast",
-    "basis",
-    "benchmark_class",
-    "chart_label",
-    "costing_basis",
-    "deflator",
-    "derived_from",
-    "document_version",
-    "eligibility",
-    "estimate_kind",
-    "horizon",
-    "horizon_text",
-    "locator",
-    "measure_type",
-    "note",
-    "paragraph_heading",
-    "pe_expressibility",
-    "pe_missing",
-    "period_detail",
-    "period_interpretation",
-    "proposed_metric",
-    "quantity",
-    "quote",
-    "reference_date",
-    "reform_hint",
-    "reform_text",
-    "sheet_section",
-    "sign_convention",
-    "source_note",
-    "table",
-    "table_row",
-    "value_verbatim",
-    "year_note",
+# Two claims that we pair in the scan below but keep apart: (family,
+# locator, period, printed value) of each, sorted -> why both stay claims.
+_HMT_PACKAGE = (
+    "HM Treasury costs two different measures of one package at the same amount "
+    "in this year, and we stage both under one reform key."
+)
+_OBR_TAX_GAP_ZERO = (
+    "The OBR prints zero in this year for two different parts of the "
+    "government's package of measures to close the tax gap."
+)
+NOT_REPEATS: dict[tuple, str] = {
+    (
+        ("uk_centax", "p. 22, section 3.3", 2030, "4%"),
+        ("uk_centax", "p. 22, section 3.3", 2030, "4%"),
+    ): (
+        "CenTax estimates that the bottom 50% would pay 4% of the additional "
+        "revenue from taxing each of two kinds of income more: savings, and "
+        "other non-dividend investment income."
+    ),
+    **dict.fromkeys(
+        [
+            (
+                ("uk_hmt_costings", "p.33 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.34 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.33 (Exchequer impact (£m))", 2029, "+0m"),
+                ("uk_hmt_costings", "p.34 (Exchequer impact (£m))", 2029, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2031, "+40m"),
+                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2031, "+40m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2029, "+0m"),
+                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2029, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.56 (Exchequer impact (£m))", 2027, "-5m"),
+                ("uk_hmt_costings", "p.57 (Exchequer impact (£m))", 2027, "-5m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.67 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.68 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2027, "+0m"),
+                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2027, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2028, "-2m"),
+                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2028, "-2m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2031, "+0m"),
+                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2031, "+0m"),
+            ),
+            (
+                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2032, "+0m"),
+                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2032, "+0m"),
+            ),
+        ],
+        _HMT_PACKAGE,
+    ),
+    **dict.fromkeys(
+        [
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
+                    2027,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Alcohol duty; 2026-27; cell I204",
+                    2027,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
+                    2027,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2026-27; cell I198",
+                    2027,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
+                    2027,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Vehicle excise duty; 2026-27; cell I206",
+                    2027,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2027-28",
+                    2028,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "Table 3.3 (p.72), Direct recovery of debt, 2027-28",
+                    2028,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2027-28",
+                    2028,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2027-28; cell J198",
+                    2028,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.1 (p.61), Timely payment for self-assessment, 2028-29",
+                    2029,
+                    "0.0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Current AME / Scottish BGA (current); 2028-29; cell K208",
+                    2029,
+                    "0",
+                ),
+            ),
+            (
+                (
+                    "uk_obr_tables",
+                    "Table 3.3 (p.72), Direct recovery of debt, 2027-28",
+                    2028,
+                    "0",
+                ),
+                (
+                    "uk_obr_tables",
+                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2027-28; cell J198",
+                    2028,
+                    "0",
+                ),
+            ),
+        ],
+        _OBR_TAX_GAP_ZERO,
+    ),
+    (
+        ("uk_obr_tables", "para 3.13 (p.65)", 2032, "£0.4 billion"),
+        (
+            "uk_obr_tables",
+            "sheet '1.1'; Table 1.1; measure 45; Receipts / Onshore CT; 2031-32; cell N201",
+            2032,
+            "445",
+        ),
+    ): (
+        "In paragraph 3.13 the OBR costs the changes to HMRC's compliance "
+        "workforce, one part of the tax-gap package, at £0.4 billion in 2031-32. "
+        "In Table 1.1 it prints the whole package's onshore corporation tax, 445 "
+        "(£ million)."
+    ),
+    (
+        (
+            "uk_obr_tables",
+            "Table 3.3 (p.72), Property income tax rate increase, 2027-28",
+            2028,
+            "-2",
+        ),
+        (
+            "uk_obr_tables",
+            "sheet '1.1'; Table 1.1; measure 61; Receipts / Onshore CT; 2027-28; cell J298",
+            2028,
+            "2",
+        ),
+    ): (
+        "Under the property income measure's tax head in Table 3.3, the OBR sums "
+        "the measure's receipts. In 2027-28 it prints zero on the measure's income "
+        "tax line in Table 1.1, so the sum equals the onshore corporation tax "
+        "line, 2 (£ million)."
+    ),
+    (
+        ("uk_tpa", "footnote 5", 2028, "£700m"),
+        (
+            "uk_tpa",
+            "series[7] 'Healey Oct 2026 Budget', data[3] (2027-28)",
+            2028,
+            "0.7",
+        ),
+    ): (
+        "In footnote 5 Tax Policy Associates sums HM Treasury's 2027-28 tax "
+        "costings to £700m in cash. On its chart of tax rises by fiscal event it "
+        "plots the OBR's costings in 2026 money, and puts that year's total at "
+        "£0.7bn too."
+    ),
 }
-# Two claims the scan below pairs that we keep apart: (family, locator,
-# period) of each, sorted -> why both stay claims.
-NOT_REPEATS: dict[tuple, str] = {}
 
 _PRINTED = re.compile(r"(\d[\d,]*)(?:\.(\d+))?(?:[eE]([+-]?\d+))?")
 
@@ -531,14 +874,42 @@ def _oriented(s):
     return abs(s.value)
 
 
+def _one_table(a, b):
+    """Whether the producer prints both claims in one table. We read two lines
+    of one table as two figures."""
+    pa, pb = a.publication, b.publication
+    return (
+        pa["family"] == pb["family"]
+        and pa.get("table") is not None
+        and pa.get("table") == pb.get("table")
+    )
+
+
+def _differ_in_scope(a, b):
+    """Whether two claims cover different places, housing cost bases, income
+    groups or averaging windows. We compare geography and housing costs where
+    both claims state them, read a claim without an income group as covering
+    everyone, and read one without an aggregation as a single year's figure."""
+    ca, cb = a.conditions, b.conditions
+    if any(
+        k in ca and k in cb and ca[k] != cb[k] for k in ("geography", "housing_costs")
+    ):
+        return True
+    return (ca.get("income_group", "all"), ca.get("aggregation")) != (
+        cb.get("income_group", "all"),
+        cb.get("aggregation"),
+    )
+
+
 def test_no_claim_repeats_another_printing_of_its_figure(staged):
     """We pair the ingest's claims by a rule we wrote apart from
     I.REPEATED_PRINTINGS. We treat two claims as one figure that the producer
     prints twice when they share a source, reform, metric, unit, year, time
-    basis and window. Their values must also agree to half the coarser
-    printing's last digit, and their conditions must differ only in
-    PRINTING_KEYS. For each such pair that the ingest keeps, we give our
-    reason in NOT_REPEATS."""
+    basis and window, and their values, zeros included, agree to half the
+    coarser printing's last digit. We also require that the producer cost part
+    of a measure in both, or the whole measure in both. We skip two lines of
+    one table and two claims that differ in scope, and for each other pair
+    that the ingest keeps, we give our reason in NOT_REPEATS."""
     scores, _ = staged
     groups: dict[tuple, list] = {}
     for s in scores:
@@ -551,37 +922,39 @@ def test_no_claim_repeats_another_printing_of_its_figure(staged):
             s.time_basis,
             s.period_start,
             s.period_end,
+            s.conditions.get("row_type") == "measure_component",
         )
         groups.setdefault(key, []).append(s)
-    hits = {}
+    hits = set()
     for group in groups.values():
         for x, a in enumerate(group):
             for b in group[x + 1 :]:
-                if a.value is None or b.value is None or a.value == b.value == 0:
+                if a.value is None or b.value is None:
+                    continue
+                if _one_table(a, b) or _differ_in_scope(a, b):
                     continue
                 if (
                     abs(_oriented(a) - _oriented(b))
                     > max(_last_digit(a), _last_digit(b)) / 2 + 1e-9
                 ):
                     continue
-                differ = {
-                    k
-                    for k in set(a.conditions) | set(b.conditions)
-                    if a.conditions.get(k) != b.conditions.get(k)
-                }
-                if differ <= PRINTING_KEYS:
-                    pair = tuple(
+                hits.add(
+                    tuple(
                         sorted(
                             (
                                 s.publication["family"],
                                 str(s.publication.get("locator")),
                                 s.period,
+                                s.conditions.get("value_verbatim"),
                             )
                             for s in (a, b)
                         )
                     )
-                    hits[pair] = sorted(differ)
-    assert set(hits) <= set(NOT_REPEATS), sorted(set(hits) - set(NOT_REPEATS))
+                )
+    assert hits == set(NOT_REPEATS), (
+        sorted(hits - set(NOT_REPEATS)),
+        sorted(set(NOT_REPEATS) - hits),
+    )
     assert all(len(why) > 40 for why in NOT_REPEATS.values())
 
 
@@ -593,6 +966,17 @@ def test_the_merge_never_leaves_a_same_claim_twin(monkeypatch):
     rows = [(i, RAW["uk_rf_ab2026"][i]) for i in (60, 205, 765)]
     with pytest.raises(ValueError, match="shares its id with a repeat we dropped"):
         I.stage({"uk_rf_ab2026": rows})
+
+
+def test_a_repeat_that_shares_its_kept_claim_s_id_merges():
+    """Review of #256, L3: if we staged row 25 with row 1's conditions, the
+    two claims would share an id. The ingest merges row 25 into row 1 and
+    keeps that one claim, so the twin guard lets it through."""
+    rows = {i: copy.deepcopy(RAW["uk_centax"][i]) for i in (1, 25)}
+    rows[25]["conditions"] = copy.deepcopy(rows[1]["conditions"])
+    [claim], acct = I.stage({"uk_centax": sorted(rows.items())})
+    assert acct["drops"]["figure_printed_again"]["rows"] == 1
+    assert claim.publication["locator"] == rows[1]["publication"]["locator"]
 
 
 def test_a_full_ingest_raises_when_a_printing_goes_missing(monkeypatch):
@@ -634,7 +1018,7 @@ def _printing(s, printed, value):
 def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
     """We print the cell in £bn to six places (cell / 10**6) and the label to
     one (label / 10). The ingest accepts the pair exactly when they differ by
-    at most £50 million. In the first example RF prints £0.1 billion in both
+    at most £50 million. In the first example we print £0.1 billion in both
     places, so only the precision check stops us keeping the label. In the
     second, the two values differ by exactly £50 million."""
     label_claim, cell_claim = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
@@ -658,10 +1042,28 @@ def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
         lambda s: setattr(s, "metric", Metric.POVERTY_RATE_CHANGE),
         lambda s: s.conditions.update(row_type="measure_component"),
         lambda s: s.conditions.update(estimate_kind="range_high"),
+        lambda s: s.conditions.update(geography="Scotland"),
+        lambda s: s.conditions.update(income_group="top_half"),
+        lambda s: s.conditions.update(component="Receipts: Fuel duty"),
+        lambda s: s.conditions.update(housing_costs="bhc"),
+        lambda s: s.conditions.update(aggregation="annual average from 2027-28"),
     ],
-    ids=["year", "metric", "part_of_a_measure", "kept_bound"],
+    ids=[
+        "year",
+        "metric",
+        "part_of_a_measure",
+        "kept_bound",
+        "geography",
+        "income_group",
+        "component",
+        "housing_costs",
+        "aggregation",
+    ],
 )
 def test_a_printing_of_another_figure_raises(change):
+    """We change one field of the workbook's claim for RF's 2027-28 fuel
+    freeze path, which RF also labels on its chart. After each change we read
+    the claim as another figure, so the ingest raises."""
     repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
     I._check_printing("uk_rf_ab2026", 147, repeat, kept)
     change(kept)
@@ -669,11 +1071,79 @@ def test_a_printing_of_another_figure_raises(change):
         I._check_printing("uk_rf_ab2026", 147, repeat, kept)
 
 
-def test_a_bound_merges_into_a_point_value():
-    repeat, kept = _claim("uk_rf_ab2026", 28), _claim("uk_rf_ab2026", 74)
-    assert repeat.conditions["estimate_kind"] == "range_high"
-    assert kept.conditions.get("estimate_kind") not in ("range_low", "range_high")
-    I._check_printing("uk_rf_ab2026", 28, repeat, kept)
+# Each bound a producer prints, the point value we keep for it, and a
+# printing of that point outside the bound: (family, bound row, point row) ->
+# (printed, value)
+OUTSIDE_THE_BOUND = {
+    ("uk_rf_ab2026", 28, 74): ("£146", 146),  # under £145
+    ("uk_rf_ab2026", 29, 76): ("£129", 129),  # over £130
+    ("uk_rf_ab2026", 48, 130): ("49 per cent", 0.49),  # just over half
+    ("uk_rf_ab2026", 58, 383): ("999000", 999_000),  # over a million
+    ("uk_centax", 65, 66): ("0.60%", 0.006),  # less than 0.5%
+}
+
+
+@pytest.mark.parametrize("entry", sorted(OUTSIDE_THE_BOUND))
+def test_a_bound_merges_only_into_a_point_value_within_it(entry):
+    """Review of #256, M2: we keep the point value, and the ingest checks
+    that it lies within the bound, with half its last digit to spare."""
+    family, i, k = entry
+    bound, point = _claim(family, i), _claim(family, k)
+    assert bound.conditions["estimate_kind"] in ("range_low", "range_high")
+    assert point.conditions.get("estimate_kind") not in ("range_low", "range_high")
+    I._check_printing(family, i, bound, point)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing(family, i, bound, _printing(point, *OUTSIDE_THE_BOUND[entry]))
+
+
+@pytest.mark.parametrize(
+    "entry, inside, outside",
+    [
+        (
+            ("uk_rf_ab2026", 48, 130),
+            ("over 52.4 per cent", 0.524),
+            ("over 52.6 per cent", 0.526),
+        ),
+        (("uk_rf_ab2026", 28, 74), ("under £144.6", 144.6), ("under £144.4", 144.4)),
+    ],
+)
+def test_a_point_value_agrees_with_a_bound_its_rounding_could_meet(
+    entry, inside, outside
+):
+    """RF prints 52 per cent, which stands for any share from 51.5 to 52.5
+    per cent, so it agrees with a bound of over 52.4 per cent but not with
+    one of over 52.6 per cent. In the same way £145 agrees with a bound of
+    under £144.6 but not with one of under £144.4."""
+    family, i, k = entry
+    bound, point = _claim(family, i), _claim(family, k)
+    I._check_printing(family, i, _printing(bound, *inside), point)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing(family, i, _printing(bound, *outside), point)
+
+
+def test_a_bound_and_a_point_of_opposite_signs_raise():
+    """RF bounds a typical household's gain under £145 and gives £145 in
+    another printing. If RF printed the second as a loss, we could no longer
+    read the bound against it."""
+    bound, point = _claim("uk_rf_ab2026", 28), _claim("uk_rf_ab2026", 74)
+    I._check_printing("uk_rf_ab2026", 28, bound, point)
+    point.conditions["sign_convention"] = "positive = loss to households"
+    point.value = -point.value
+    point.conditions["value_verbatim"] = "-£145"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 28, bound, point)
+
+
+def test_a_share_half_a_point_from_its_rounding_agrees():
+    """Review of #256, L2: 58% and 57.5% differ by exactly half of 58%'s
+    last digit. In binary floating point, 0.58 - 0.575 =
+    0.0050000000000000044, so the ingest allows a few units in the last place
+    of each value."""
+    repeat, kept = _claim("uk_centax", 62), _claim("uk_centax", 82)
+    assert repeat.conditions["value_verbatim"] == "58%"
+    I._check_printing("uk_centax", 62, repeat, _printing(kept, "57.5%", 0.575))
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_centax", 62, repeat, _printing(kept, "57.4%", 0.574))
 
 
 def test_a_printing_of_the_opposite_sign_raises():
@@ -835,10 +1305,10 @@ def test_the_freeze_claims_score_against_the_obrs_latest_policy_world(staged):
     assert {s.conditions["baseline_policy"] for s in latest} == {
         "obr_october_2026_budget_forecast"
     }
-    # we merge six of the pre-measures world's 2,702 claims into Table 1.1
-    # totals (REPEATED_PRINTINGS), so 2,696 remain
+    # we merge 57 of the pre-measures world's 2,702 claims into other
+    # printings of their figures (REPEATED_PRINTINGS), so 2,645 remain
     assert Counter((s.reform.baseline or {}).get("policy") for s in obr) == {
-        "obr_pre_measures_autumn_budget_2026": 2696,
+        "obr_pre_measures_autumn_budget_2026": 2645,
         "obr_october_2026_budget_forecast": 2,
         "obr_fuel_duty_rpi_uprated_since_2010_11": 1,
         None: 7,

@@ -10,13 +10,13 @@
    }
   },
   "ab2026__electricity_vat_zero_rate_to_july_2027": {
-   "claims": 72,
+   "claims": 69,
    "computed": 4,
    "reasons": {
     "cumulative_real_terms": 1,
-    "exchequer_component": 14,
+    "exchequer_component": 12,
     "household_count": 1,
-    "typical_bill": 6,
+    "typical_bill": 5,
     "vigintile_ahc_breakdown": 38,
     "zero_both_sides": 8
    }
@@ -32,13 +32,13 @@
    }
   },
   "ab2026__household_energy_payment_100_bands_a_to_d": {
-   "claims": 59,
+   "claims": 51,
    "computed": 0,
    "reasons": {
-    "devolved_share_not_modelled": 24,
+    "devolved_share_not_modelled": 18,
     "england_only_average": 1,
-    "household_count": 2,
-    "share_of_households": 13,
+    "household_count": 1,
+    "share_of_households": 12,
     "vigintile_ahc_breakdown": 19
    }
   },
@@ -79,22 +79,22 @@
    }
   }
  },
- "claims": 363,
+ "claims": 352,
  "computed": 35,
  "reasons": {
   "benefit_recipients_count": 1,
   "cumulative_real_terms": 4,
-  "devolved_share_not_modelled": 24,
+  "devolved_share_not_modelled": 18,
   "england_only_average": 1,
-  "exchequer_component": 141,
+  "exchequer_component": 139,
   "fuel_duty_base": 6,
-  "household_count": 3,
+  "household_count": 2,
   "measure_ended": 4,
   "motorists_count": 1,
   "no_fiscal_year": 1,
-  "share_of_households": 13,
+  "share_of_households": 12,
   "taken_out_of_tax_count": 1,
-  "typical_bill": 6,
+  "typical_bill": 5,
   "vigintile_ahc_breakdown": 95,
   "worked_example": 5,
   "zero_both_sides": 22
