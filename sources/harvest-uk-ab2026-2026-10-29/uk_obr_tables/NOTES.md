@@ -29,7 +29,7 @@ We give the resolved ZIP URL as the publication URL for both members, with the m
   - Table 3.3, 35 costings plus 7 categorical uncertainty ratings.
   - Policy and behavioural prose and Box 3.1, 69 rows. On 4 November we restored paragraph 3.20's financing requirement and added Box 3.1's two measure counts.
   - We treat Table 3.2's 47 funding cells as design (rule 8) and don't stage them.
-- Paragraph 4.30 and Table 6.3: **7** rows, appended on 5 November as rows 2800–2806. We stage the continued fuel duty freeze's receipts average once and the whole-package financial-transactions line for each of six fiscal years.
+- Paragraph 4.30 and Table 6.3: **7** rows, which we appended on 5 November as rows 2800–2806. We stage the continued fuel duty freeze's receipts average once and the whole-package financial-transactions line for each of six fiscal years.
 - Headline fiscal context: we stage **55** rows: 13 workbook cells (PSNB cash six years; ex-BoE PSND/GDP seven years) and 42 PDF cells (Table 7.1 headroom 13; Annex A Table A.9 PSNB, PSNFL and ex-BoE PSND 29). For the current-budget and PSNFL rules we include current pre-measures, post-measures and the printed memo excluding fuel-duty rises, and we include the welfare-cap margin. Where the OBR gives the same forecast in the PDF and the aggregate workbook, we stage it once.
 
 ## Conventions
@@ -180,7 +180,7 @@ We gave all of these rows `measure_key: null` and proposed these keys, and in tr
 | `ab2026__package_property_and_savings_income_rates_receipts` | 7 | The receipts of Table 6.1 lines 61 and 62: Table 3.1's “Changes to savings and property income tax rates”. (Was `ab2026__package_obr_savings_and_property_income_tax_rates`.) **Receipts only (3 November):** The OBR prints −0.1 in 2027-28 and −0.9 in 2029-30 in Table 3.1, with positive values for borrowing increases. We match their rounded magnitudes to receipts, rather than to the policy workbook's line totals of £160m and £954m. In Table 3.3 the OBR prints line 61's receipts as −2, −543 and −400 (£m) from 2027-28. So we don't use `ab2026__package_property_and_savings_income_rates`, which covers exactly lines 61 and 62. |
 | `ab2026__package_spending_decisions_since_march_2026` | 13 | OBR “Direct effect of spending measures” / “Spending measures”: expenditure-side effects of decisions since March, including unfunded public service pensions valuation and the £5.5bn 2031-32 RDEL assumption reduction. We don't use the HMT total-spending package here. Table 6.1 lines 1–98 can affect expenditure fiscal heads; the OBR publishes no complete narrower line decomposition, and we leave it unresolved. (Was `ab2026__package_obr_spending_decisions_since_march`.) Since 4 November we also key the workbook's total of expenditure measures (I520:N520) here, the reverse of Table 3.1's direct effect of spending measures (review B finding 6). |
 | `ab2026__package_tax_administration_compliance_and_debt_collection_receipts` | 6 | The receipts of Table 6.1 lines 45 and 46: OBR “Tax administration, compliance and debt collection measures”. The group (−0.1 / −0.5 / −0.6 / −2.4 / −2.9 / −3.6) equals lines 45 and 46's receipts (107 / 455 / 567 / 2,411 / 2,881 / 3,630) in all six years; their totals (8 / 262 / 434 / 2,248 / 2,733 / 3,423) round differently in every year (review B finding 3). Never key it to line 45 alone. (Was `ab2026__package_obr_tax_administration_compliance_and_debt`, then `ab2026__package_tax_administration_compliance_and_debt_collection` until 4 November.) Shared with RF's restatement. |
-| `ab2026__package_tax_decisions_since_march_2026` | 6 | OBR Table 3.1 "Direct effect of tax measures": the direct effect of tax decisions since March 2026, as the OBR classifies them. Shared with RF's restatement of the same row. It equals −1 × the workbook's total of receipts measures, so the OBR groups receipts here. Before 3 November we put these rows under the total package with `component: tax measures (OBR classification)`. Since 4 November we also key paragraph 3.4's "reducing borrowing by an average of £6 billion over the final four years" here, the mean of this line from 2028-29 (review B finding 6). |
+| `ab2026__package_tax_decisions_since_march_2026` | 7 | OBR Table 3.1 "Direct effect of tax measures": the direct effect of tax decisions since March 2026, as the OBR classifies them. Shared with RF's restatement of the same row. It equals −1 × the workbook's total of receipts measures, so the OBR groups receipts here. Before 3 November we put these rows under the total package with `component: tax measures (OBR classification)`. Since 4 November we also key paragraph 3.4's "reducing borrowing by an average of £6 billion over the final four years" here, the mean of this line from 2028-29 (review B finding 6). |
 | `ab2026__package_temporary_business_rates_reliefs_receipts` | 1 | The receipts of Table 6.1 lines 12, 13 and 14 (paragraph 3.19's "net cost of around £0.5 billion in 2028-29" covers their receipts, 536, against totals of 663; review B finding 3 and review A's K-7(g)): “package of temporary business rates measures” including real-terms freeze for certain sectors, pubs/live-music reliefs, small-business thresholds and extension of transitional support, partly offset by transitional relief supplement. (Was `ab2026__package_obr_temporary_business_rates_reliefs`, then `ab2026__package_temporary_business_rates_reliefs` until 4 November.) |
 | `ab2026__private_landlord_register_fee_65` | 18 | No Table 6.1 lines. “Landlord registration fee”; receipts, current DEL and total. (Was `ab2026__package_obr_landlord_registration_fee`.) The costings family's spelling for the same measure. |
 | `ab2026__public_sector_pensions_2024_valuations` | 27 | No Table 6.1 lines. “Public Sector Pensions: Net impact of the 2024 valuations”; departmental reductions, net public service pension payments and their net total. In the PDF the OBR calls this “Net impact of unfunded pensions valuation”. (Was `ab2026__package_obr_public_sector_pensions_2024_valuations`.) |
@@ -326,7 +326,7 @@ Review B (issue comments 6635496734 to 6635499259 on #231) approved this family 
    - We mark the workbook's direct and indirect effects, its total of receipts measures and its 288 lines by head, Table 3.1's direct and indirect effects, and paragraphs 3.2 and 3.5 as `measure_component`. We set each part's `component` from the OBR's wording, adding the fiscal head for workbook lines and the paragraph number for paragraphs 3.2 and 3.5.
    - We mark the workbook's scorecard and non-scorecard rows `measure_total` on their own keys, and give Table 3.1's total, indirect and current budget memo rows `source_model: obr_efo_forecast`.
 3. **Receipts-only figures (finding 3, review A's K-5 and K-7(g)):** we mark paragraph 3.17's £0.4bn and paragraph 3.19's electricity VAT figures as receipts components of their lines. We gave the tax administration and temporary business rates groupings `_receipts` keys, and stage Table 3.3's online marketplace rows as line 46's whole costing.
-4. **Chapters 1, 2 and 4–6 and paragraph 7.20 (finding 4):** we left these estimates unstaged on 4 November and listed each with its reason. On 5 November we added paragraph 4.30 and Table 6.3's policy line, as recorded below.
+4. **Chapters 1, 2 and 4–6 and paragraph 7.20 (finding 4):** we left these estimates unstaged on 4 November and listed each with its reason. On 5 November we added paragraph 4.30 and Table 6.3's policy line.
 5. **Paragraph 3.20's financing requirement (finding 5):** we restored it on `cash_requirement_change`, under the rule for lending and financing above.
 6. **Splits on the split keys (finding 6):** we stage the workbook's total of expenditure measures and paragraph 3.4's tax line as whole rows on the spending- and tax-decisions keys.
 7. **Lines 70 and 71 (finding 7):** we give the carbon price package's scope, and key footnote 9's £0.8bn to line 70 as its current AME.
@@ -345,28 +345,28 @@ Under review A's K-2 we make row 2522 the defence investment plan's RDEL part, w
 
 ## Paragraph 4.30 and Table 6.3, 5 November 2026
 
-We append paragraph 4.30's £4 billion annual receipts reduction as row 2800,
-on `ab2026_option__fuel_duty_continued_freeze`, for 2027-28 to 2031-32.
-RF's rows 397–401 average about £3.98 billion over those years, so we use
-that option's key for both paths. We retain row 2740's effect on borrowing.
+We append paragraph 4.30's £4 billion annual cut in receipts as row 2800, on
+`ab2026_option__fuel_duty_continued_freeze`, for 2027-28 to 2031-32. RF's
+rows 397–401 average about £3.98 billion over those years, so we give both
+paths that option's key and keep row 2740's effect on borrowing.
 
 We append Table 6.3's six policy effects on financial transactions as rows
 2801–2806, on `public_sector_net_debt_change` and the Government-decisions
-package. In paragraph 6.13 the OBR includes self-assessment payment timing
-in this line, so we use the whole package rather than HM Treasury's Table
-6.2 total. We leave every earlier row at its existing index.
+package. In paragraph 6.13 the OBR includes timely payment for self
+assessment in this line, so we key it to the whole package rather than to
+HM Treasury's Table 6.2 total. We leave every earlier row at its index.
 
-We checked every new quote against the corrected text and both PDFs.
-The corrected PDF hashes to `555e0c26…`; `9e0e9c34…` identifies the original
-28 October PDF, which prints these same quotes and which the rows cite.
-We add no primary bytes and leave the four manifest entries unchanged.
+The OBR prints these quotes in both the original 28 October PDF
+(`9e0e9c34…`), which we cite in the rows, and the corrected one
+(`555e0c26…`). We add no primary bytes and leave the four manifest entries
+unchanged.
 
-For #249's L4, we set the property behavioural aggregation to `annual`.
-Paragraph 3.17 attaches the average from 2028-29 to the £0.4 billion yield,
-and states the behavioural reduction per year. It makes the same distinction
-between the £0.6 billion savings yield and the £0.2 billion ISA response,
-so we set that behavioural aggregation to `annual` too.
+For #249's finding L4, we set the property behavioural aggregation to
+`annual`, since in paragraph 3.17 the OBR attaches the average from 2028-29
+to the £0.4 billion yield and states the behavioural reduction per year. It
+draws the same line between the £0.6 billion savings yield and the £0.2
+billion ISA response, so we set that behavioural aggregation to `annual` too.
 
-The stager also reproduces tranche 2's 535 key registrations, and we copy
-the notes corrections already on main before recording this pass.
-`python stage.py` writes 2,807 rows without primary files or network access.
+The stager also reproduces tranche 2's 535 key registrations, and
+`python stage.py` writes all 2,807 rows without primary files or network
+access.
