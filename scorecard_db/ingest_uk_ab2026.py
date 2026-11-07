@@ -515,26 +515,27 @@ _ANNOUNCEMENT_YEARS: dict[tuple[str, int], tuple[int, int, int]] = {
     ("uk_hmt_redbook", i): (2026, 252, 2027) for i in (263, 271, 272)
 }
 
-# Rows on which a producer prints a figure it prints elsewhere: in prose and
-# in a table, a chart or the chart's workbook, in two tables, or in two of its
+# Rows on which a producer prints a figure it prints elsewhere: in prose and in
+# a table, a chart or the chart's workbook, in two tables, or in two of its
 # documents. We map each (family, row) to the row whose claim we keep, and to
-# our reading of the pair. We name the kept row's family where it differs
-# from the repeat's, as for HM Treasury's costings and red book. The ingest
-# raises if the two claims differ in key, metric, unit, year or time basis, or
-# if the producer costs part of a measure in one and the whole measure in the
-# other. It also raises if they differ in a scope key in ``_SCOPE``, such as
-# geography or population, unless we list the two wordings in ``_SAME_SCOPE``.
-# Of two point values we keep the more precise, and the ingest raises if we
-# keep the coarser, or if they differ by more than half the coarser printing's
-# last digit. It also raises if they differ in estimate kind, as when one is
-# cumulative and the other isn't. Where the producer states each printing's sign
-# convention, it compares the values in PolicyEngine's orientation, and otherwise
-# it compares their magnitudes. Where a producer bounds a figure that it prints
-# elsewhere as a point value, we keep the point value, and the ingest raises if
-# we keep the bound. It compares the producer's own values, and raises if the
-# two printings differ in sign convention, or if the point value lies more than
-# half its last digit outside the bound. It also raises on two bounds of
-# opposite directions.
+# our reading of the pair. We name the kept row's family where it differs from
+# the repeat's, as for HM Treasury's costings and red book. The ingest raises
+# if the two claims differ in key, metric, unit, year or time basis, or if the
+# producer costs part of a measure in one and the whole measure in the other.
+# It also raises if they differ in any condition outside ``_PER_PRINTING``,
+# such as geography, population or scenario, unless we list the two wordings
+# for that repeat in ``_SAME_READING``. Of two point values we keep the more
+# precise, and the ingest raises if we keep the coarser, or if they differ by
+# more than half the coarser printing's last digit. It also raises if they
+# differ in estimate kind, as when the producer sums several years in one
+# printing and gives one year in the other. Where the producer states each
+# printing's sign convention, it compares the values in PolicyEngine's
+# orientation, and otherwise it compares their magnitudes. Where a producer
+# bounds a figure that it prints elsewhere as a point value, we keep the point
+# value, and the ingest raises if we keep the bound. It compares the producer's
+# own values, and raises if the two printings differ in sign convention, or if
+# the point value lies more than half its last digit outside the bound. It also
+# raises on two bounds of opposite directions.
 _CENTAX_640 = (
     "CenTax prints the £640 million cost of removing the £100,000 childcare "
     "threshold in two documents: the key findings of Taxes at the top, and "
@@ -811,147 +812,721 @@ _PRINTING_ROWS = set(REPEATED_PRINTINGS) | _KEPT_ROWS
 assert not _KEPT_ROWS & set(REPEATED_PRINTINGS), (
     "we keep a row that we also drop as a repeat"
 )
-# The scope keys on which a repeat and the printing we keep must agree. We
-# read a claim without an income group as covering everyone, and one without
-# a component as covering the whole measure.
-_SCOPE = (
-    "geography",
-    "income_group",
-    "unit_population",
-    "subgroup",
-    "denominator",
-    "statistic",
-    "housing_costs",
-    "component",
-    "aggregation",
-    "horizon",
-    "price_basis",
-)
-_UNSTATED = {"income_group": "all", "component": "Total"}
-# (key, the repeat's wording, the kept printing's wording) for each pair of
-# wordings that we read as the same scope.
-_SAME_SCOPE = frozenset(
+# We read these conditions as belonging to each printing rather than to the
+# figure, and the ingest compares every other condition of a repeat and the
+# printing we keep. It compares each printing's value, sign convention and
+# estimate kind when it checks that the values agree. In the identity it
+# compares the reform key, which we take from the registry measure or, for a
+# row we don't key to a measure, from the first 120 characters of its reform
+# hint (AB25._reform). In the other keys we record where, and in which version
+# of a document, the producer prints the figure.
+_PER_PRINTING = frozenset(
     {
-        # HM Treasury names each tax-gap measure in full in its costings, and in
-        # short in red book Table 6.3
-        (
-            "component",
-            "E-invoicing: HMRC will require VAT invoices to be issued in a specified electronic format from 1 April 2029",
-            "E-invoicing (Table 6.3 row 1)",
-        ),
-        (
-            "component",
-            "Employment expenses: Remove the £2,500 Income Tax Self Assessment expenses threshold from 6 April 2028",
-            "Reforming employment expenses (Table 6.3 row 2)",
-        ),
-        (
-            "component",
-            "More Timely Payment: Require Income Tax Self Assessment taxpayers to pay more of their liabilities in-year from 2029",
-            "More timely payment for Self Assessment (Table 6.3 row 3)",
-        ),
-        (
-            "component",
-            "VAT and PAYE: Require direct debit arrangements for VAT and PAYE return liabilities from 1 and 6 April 2029 respectively",
-            "Direct debit for VAT and PAYE (Table 6.3 row 4)",
-        ),
-        (
-            "component",
-            "Real Estate: Participate in a new international agreement to automatically exchange information on real estate from 2029-30",
-            "Real estate information exchange (Table 6.3 row 5)",
-        ),
-        (
-            "component",
-            "Debt Management: Enable HMRC to recover lower value tax debts from the bank accounts of taxpayers who can afford to pay but repeatedly fail to do so from July 2029",
-            "Debt management: recovery from bank accounts (Table 6.3 row 6)",
-        ),
-        (
-            "component",
-            "Debt Management: Invest in HMRC's debt management to collect more overdue tax debts",
-            "Debt management: investment in HMRC debt collection (Table 6.3 row 7)",
-        ),
-        (
-            "component",
-            "Tax Compliance: Expand investment in HMRC's compliance workforce to recruit an additional 670 officers by 2029-30",
-            "Tax compliance: additional HMRC compliance officers (Table 6.3 row 8)",
-        ),
-        (
-            "component",
-            "Making Tax Digital (MTD) for Income Tax Self Assessment: Introduce a 12 month penalty easement for taxpayers joining MTD for Income Tax from 6 April 2027",
-            "MTD for Income Tax Self Assessment penalty easement (Table 6.3 row 9)",
-        ),
-        (
-            "component",
-            "Image Rights: Delay the implementation of legislation to clarify the tax treatment of image rights by one year to 6 April 2028",
-            "Image rights legislation delay (Table 6.3 row 10)",
-        ),
-        # the OBR words three lines of Table 1.1 differently in Table 3.1 and in
-        # paragraph 3.2
-        (
-            "component",
-            "Direct effect of policy measures (para 3.2)",
-            "Direct effect of Government decisions",
-        ),
-        (
-            "component",
-            "Indirect effects of Government decisions",
-            "Indirect effect of Government decisions",
-        ),
-        (
-            "component",
-            "Direct effects of Government decisions",
-            "Direct effect of Government decisions",
-        ),
-        # HM Treasury, RF and TPA state a population, a statistic, a horizon or a
-        # price basis in one printing and not the other, or word it differently
-        (
-            "denominator",
-            "private renter households with the resources to access Your First Home",
-            "private renting families who could access Your First Home",
-        ),
-        (
-            "denominator",
-            "private renting families who lose out from the prolonged LHA freeze",
-            "private renting families who would benefit if LHA were unfrozen",
-        ),
-        (
-            "horizon",
-            "2025-26 and 2026-27 (as printed)",
-            "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
-        ),
-        (
-            "horizon",
-            "2026-27 and 2027-28 (p.17: £3.4bn and £0.3bn)",
-            "2026-27 and 2027-28 (Spread thin p.17: £3.4bn and £0.3bn)",
-        ),
-        ("horizon", None, "scheme lifetime"),
-        (
-            "horizon",
-            "across 2027-28 and 2028-29 (para 2.15)",
-            "across 2027-28 and 2028-29",
-        ),
-        ("horizon", "change since 2023-24", "2023-24 to 2028-29"),
-        (
-            "horizon",
-            "years not printed on the page (Spread thin p.19 prints '2025-26 and 2026-27')",
-            "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
-        ),
-        ("housing_costs", None, "ahc"),
-        ("price_basis", "2026-27 prices (footnote 7)", "2026-27 prices"),
-        ("price_basis", "today's money (2026)", "2026 money"),
-        ("statistic", None, "median"),
-        ("statistic", "median real annual disposable income", "median"),
-        ("subgroup", None, "council tax bands A-D"),
-        ("subgroup", None, "first-time buyers"),
-        ("subgroup", "Ofgem price cap", None),
-        (
-            "subgroup",
-            "live in higher-band properties and will miss out on the Household Energy Payment",
-            "live in higher-band properties (Council Tax bands E and above) and miss out on the Household Energy Payment",
-        ),
-        ("subgroup", "typical household", "all billpayers"),
-        ("unit_population", None, "private renting families (benefit units)"),
-        ("unit_population", "working-age (non-pensioner) households", "non-pensioners"),
+        "value_verbatim",
+        "sign_convention",
+        "estimate_kind",
+        "reform_hint",
+        "table",
+        "table_line",
+        "table_row",
+        "sheet_section",
+        "chart_label",
+        "costing_leg_heading",
+        "heading",
+        "paragraph_heading",
+        "document_position",
+        "document_version",
     }
+)
+# We read a claim without an income group as covering everyone, and one without
+# a component as covering the whole measure.
+_UNSTATED = {"income_group": "all", "component": "Total"}
+
+
+def _rows(family: str, *rows: int | range) -> frozenset[tuple[str, int]]:
+    """Return (family, row) for each row we name, and for each row in each range."""
+    return frozenset(
+        (family, i) for r in rows for i in (r if isinstance(r, range) else (r,))
+    )
+
+
+# HM Treasury costs each of the ten measures in its package to close the tax
+# gap in six years, one row a year. On six of the rows it costs the measure
+# that expands HMRC's compliance workforce.
+_TAX_GAP = _rows("uk_hmt_costings", range(191, 233), range(235, 253))
+_TAX_COMPLIANCE = _rows("uk_hmt_costings", range(235, 241))
+# For each group of repeats we list the conditions that we stage with one
+# wording on the repeat and another on the printing we keep. We write each as
+# (key, the repeat's wording, the kept printing's wording), and where we don't
+# stage the condition on one printing, we write None for its wording. The
+# ingest accepts a wording for the repeats we list it with, and raises on any
+# other repeat that differs in it.
+_Wording = tuple[str, str | None, str | None]
+_READINGS: tuple[tuple[frozenset[tuple[str, int]], tuple[_Wording, ...]], ...] = (
+    # On the printing of the £19.7 billion in the key findings of Taxes at the
+    # top, we note the OBR's £32 billion baseline forecast for capital gains
+    # tax from page 17.
+    (
+        _rows("uk_centax", 107),
+        (
+            (
+                "baseline_forecast",
+                None,
+                "OBR baseline forecast of £32 billion for CGT (p. 17)",
+            ),
+        ),
+    ),
+    # In each year note we record how we date the printing. CenTax prints a
+    # year with one printing of the £640 million and of the £14 billion, but
+    # not with the other. It prints no year with either printing of the three
+    # shares in section 3.2 and Table 1 of Taxes at the top.
+    (
+        _rows("uk_centax", 25),
+        (
+            (
+                "year_note",
+                "CenTax gives tax years as the later year ('2022 is tax year 2021-22', Taxes at the top fn 2)",
+                "'in 2030'; CenTax gives tax years as the later year ('2022 is tax year 2021-22', Taxes at the top fn 2)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_centax", 108),
+        (
+            (
+                "year_note",
+                "CenTax gives tax years as the later year ('2022 is tax year 2021-22', Taxes at the top fn 2)",
+                "the 2024 estimate was for 2026; CenTax gives tax years as the later year ('2022 is tax year 2021-22', Taxes at the top fn 2)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_centax", 62, 64, 65),
+        (
+            (
+                "year_note",
+                "no year in the sentence; staged with the 2030 costing it describes; CenTax gives tax years as the later year ('2022 is tax year 2021-22', Taxes at the top fn 2)",
+                "no year printed with the table; staged with the 2030 costing",
+            ),
+        ),
+    ),
+    # HM Treasury costs each of the ten measures in its package to close the
+    # tax gap in its policy costings, and prints the same figures in red book
+    # Table 6.3. On the costings' rows we record the package's Table 6.1 line,
+    # 45, the impact channel and the National Accounts basis that HM Treasury
+    # states on page 10. We label the costings' basis a forecast and Table
+    # 6.3's post-behavioural, though in both HM Treasury prints the costing
+    # after any behavioural effect.
+    (
+        _TAX_GAP,
+        (
+            ("basis", "forecast", "post_behavioural"),
+            ("impact_channel", "tax_measure", None),
+            (
+                "national_accounts_basis",
+                "All costings are presented on a National Accounts basis (p.10)",
+                None,
+            ),
+            ("table_61_line", "45", None),
+        ),
+    ),
+    # On the costings' rows we also record whether HM Treasury includes a
+    # behavioural effect, and quote HM Treasury where it says a measure has
+    # none, or has no static impact on taxpayer liabilities.
+    (
+        _TAX_GAP - _TAX_COMPLIANCE,
+        (("behavioural_adjustment", "included (see note)", None),),
+    ),
+    (
+        _TAX_COMPLIANCE,
+        (("behavioural_adjustment", "none: 'There is no behavioural effect.'", None),),
+    ),
+    (
+        _rows("uk_hmt_costings", range(191, 197)),
+        (
+            (
+                "static_impact",
+                "none: 'The costing has no static impact on taxpayer liabilities.'",
+                None,
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(197, 203)),
+        (
+            (
+                "static_impact",
+                "none: 'The measure has no static impact on taxpayer liabilities.'",
+                None,
+            ),
+        ),
+    ),
+    # HM Treasury names each tax-gap measure in full in its costings, and in
+    # short in red book Table 6.3.
+    (
+        _rows("uk_hmt_costings", range(191, 197)),
+        (
+            (
+                "component",
+                "E-invoicing: HMRC will require VAT invoices to be issued in a specified electronic format from 1 April 2029",
+                "E-invoicing (Table 6.3 row 1)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(197, 203)),
+        (
+            (
+                "component",
+                "Employment expenses: Remove the £2,500 Income Tax Self Assessment expenses threshold from 6 April 2028",
+                "Reforming employment expenses (Table 6.3 row 2)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(203, 209)),
+        (
+            (
+                "component",
+                "More Timely Payment: Require Income Tax Self Assessment taxpayers to pay more of their liabilities in-year from 2029",
+                "More timely payment for Self Assessment (Table 6.3 row 3)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(209, 215)),
+        (
+            (
+                "component",
+                "VAT and PAYE: Require direct debit arrangements for VAT and PAYE return liabilities from 1 and 6 April 2029 respectively",
+                "Direct debit for VAT and PAYE (Table 6.3 row 4)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(215, 221)),
+        (
+            (
+                "component",
+                "Real Estate: Participate in a new international agreement to automatically exchange information on real estate from 2029-30",
+                "Real estate information exchange (Table 6.3 row 5)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(221, 227)),
+        (
+            (
+                "component",
+                "Debt Management: Enable HMRC to recover lower value tax debts from the bank accounts of taxpayers who can afford to pay but repeatedly fail to do so from July 2029",
+                "Debt management: recovery from bank accounts (Table 6.3 row 6)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(227, 233)),
+        (
+            (
+                "component",
+                "Debt Management: Invest in HMRC's debt management to collect more overdue tax debts",
+                "Debt management: investment in HMRC debt collection (Table 6.3 row 7)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(235, 241)),
+        (
+            (
+                "component",
+                "Tax Compliance: Expand investment in HMRC's compliance workforce to recruit an additional 670 officers by 2029-30",
+                "Tax compliance: additional HMRC compliance officers (Table 6.3 row 8)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(241, 247)),
+        (
+            (
+                "component",
+                "Making Tax Digital (MTD) for Income Tax Self Assessment: Introduce a 12 month penalty easement for taxpayers joining MTD for Income Tax from 6 April 2027",
+                "MTD for Income Tax Self Assessment penalty easement (Table 6.3 row 9)",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_costings", range(247, 253)),
+        (
+            (
+                "component",
+                "Image Rights: Delay the implementation of legislation to clarify the tax treatment of image rights by one year to 6 April 2028",
+                "Image rights legislation delay (Table 6.3 row 10)",
+            ),
+        ),
+    ),
+    # HM Treasury names the annual Ofgem price cap and April 2027 in both
+    # printings of the £50. We record them, with a static basis, on the
+    # executive summary's printing and not on paragraph 3.4's.
+    (
+        _rows("uk_hmt_redbook", 5),
+        (
+            ("basis", "static", None),
+            ("date", "April 2027", None),
+            ("subgroup", "Ofgem price cap", None),
+        ),
+    ),
+    # In paragraph 3.5 HM Treasury describes a £100 payment to households in
+    # council tax bands A to D in England from January 2027. We record the
+    # bands, the date and a static basis on the executive summary's count of up
+    # to 20 million households, and not on paragraphs 2.48 and 3.5.
+    (
+        _rows("uk_hmt_redbook", 180, 189),
+        (
+            ("basis", None, "static"),
+            ("date", None, "January 2027"),
+            ("subgroup", None, "council tax bands A-D"),
+        ),
+    ),
+    # We record the basis and scoring method on Table 6.3's subtotal including
+    # the memo line, and not on footnote 73's £2.3 billion.
+    (
+        _rows("uk_hmt_redbook", 181),
+        (
+            ("basis", None, "post_behavioural"),
+            ("scoring_method", None, "final"),
+        ),
+    ),
+    # HM Treasury names all billpayers in its executive summary and Box 3.A,
+    # and a typical household in paragraph 3.8, and we read the three printings
+    # as one estimate of the saving. We record a static basis on the summary's
+    # printing, and the comparison without the strategy's measures on paragraph
+    # 3.8's.
+    (
+        _rows("uk_hmt_redbook", 194, 201),
+        (("basis", None, "static"),),
+    ),
+    (
+        _rows("uk_hmt_redbook", 194),
+        (
+            ("comparison", "without strategy measures", None),
+            ("subgroup", "typical household", "all billpayers"),
+        ),
+    ),
+    # In both printings HM Treasury expects Your First Home to help about
+    # 70,000 households in England onto the housing ladder. On the executive
+    # summary's printing we record the scheme's first-time buyers, its lifetime
+    # and a static basis, and we note the period differently on the two.
+    (
+        _rows("uk_hmt_redbook", 256),
+        (
+            ("basis", None, "static"),
+            ("horizon", None, "scheme lifetime"),
+            (
+                "period_detail",
+                None,
+                "Budget announcement; period of application as described in quote",
+            ),
+            (
+                "period_interpretation",
+                "publication-year policy observation; printed horizon retained without an inferred endpoint",
+                None,
+            ),
+            ("subgroup", None, "first-time buyers"),
+        ),
+    ),
+    # We label chapter 6's printings of the £50 million Civil Service AI
+    # transformation fund and the £15 million for misogyny prevention as policy
+    # announcements. We date paragraph 6.6's £50 million by paragraph 2.15, and
+    # note the period of the £15 million differently on its two printings.
+    (
+        _rows("uk_hmt_redbook", 265),
+        (
+            ("basis", "policy_announcement", None),
+            (
+                "horizon",
+                "across 2027-28 and 2028-29 (para 2.15)",
+                "across 2027-28 and 2028-29",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_hmt_redbook", 268),
+        (
+            ("basis", "policy_announcement", None),
+            (
+                "period_detail",
+                "Budget announcement year; no specific year stated for this quantity in the paragraph",
+                None,
+            ),
+            (
+                "period_interpretation",
+                None,
+                "publication-year policy observation; printed horizon retained without an inferred endpoint",
+            ),
+        ),
+    ),
+    # We record the statistic, a median, on Table 2.C's cell and not on
+    # paragraph 2.10's example.
+    (
+        _rows("uk_hmt_redbook", 362),
+        (("statistic", None, "median"),),
+    ),
+    # In its worked example HM Treasury says Nadia owes £166 of income tax, and
+    # then that she pays it.
+    (
+        _rows("uk_hmt_redbook", 423),
+        (("quantity", "income tax paid", "income tax liability"),),
+    ),
+    # We give IFS's initial response a reference date of 28 October and Helen
+    # Miller's opening remarks one of 29 October. On the remarks' printing of
+    # the 80% we also record council tax bands A to D.
+    (
+        _rows("uk_ifs_ab2026", 97),
+        (
+            ("eligibility", "council tax bands A-D", None),
+            ("reference_date", "2026-10-29", "2026-10-28"),
+        ),
+    ),
+    # The OBR words two lines of Table 1.1 differently in Table 3.1 and in
+    # paragraph 3.2.
+    (
+        _rows("uk_obr_tables", 2520),
+        (
+            (
+                "component",
+                "Direct effect of policy measures (para 3.2)",
+                "Direct effect of Government decisions",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_obr_tables", range(2552, 2558)),
+        (
+            (
+                "component",
+                "Indirect effects of Government decisions",
+                "Indirect effect of Government decisions",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_obr_tables", range(2558, 2564)),
+        (
+            (
+                "component",
+                "Direct effects of Government decisions",
+                "Direct effect of Government decisions",
+            ),
+        ),
+    ),
+    # On the rows of the OBR's policy workbook we mark each measure's total,
+    # and record the measure's Table 6.1 line and the fiscal head and category
+    # that the OBR gives it. We record none of these on the OBR's chapter 3
+    # text or its Tables 3.1 and 3.3. The OBR labels two of Table 3.1's lines,
+    # the direct effects of decisions on and off HM Treasury's policy decisions
+    # table, as memo lines, and we mark their scoring as memo. We mark the
+    # scoring of the other rows of these tables and of the workbook as final,
+    # and leave the OBR's chapter 3 text unmarked. In Table 3.3 we record that
+    # the OBR lists the online marketplace measure under tax and rates the
+    # uncertainty of its costing as high.
+    (
+        _rows(
+            "uk_obr_tables",
+            2526,
+            2531,
+            2667,
+            range(2564, 2570),
+            range(2576, 2582),
+            range(2672, 2675),
+            range(2712, 2717),
+        ),
+        (
+            ("fiscal_head", None, "Total"),
+            ("row_type", None, "measure_total"),
+        ),
+    ),
+    (
+        _rows("uk_obr_tables", range(2540, 2546), range(2630, 2642)),
+        (("row_type", None, "measure_total"),),
+    ),
+    (
+        _rows("uk_obr_tables", 2680, 2681),
+        (
+            ("category", None, "VAT"),
+            ("fiscal_head", None, "Receipts"),
+            ("table_61_line", None, "2"),
+        ),
+    ),
+    (
+        _rows("uk_obr_tables", range(2564, 2570)),
+        (("table_61_line", None, "1"),),
+    ),
+    (
+        _rows("uk_obr_tables", range(2712, 2717)),
+        (
+            ("head", "Tax", None),
+            ("table_61_line", None, "46"),
+            ("uncertainty_rating", "High", None),
+        ),
+    ),
+    (
+        _rows("uk_obr_tables", 2531),
+        (("table_61_line", None, "55"),),
+    ),
+    (
+        _rows("uk_obr_tables", 2667),
+        (("table_61_line", None, "54"),),
+    ),
+    (
+        _rows("uk_obr_tables", 2672),
+        (("table_61_line", None, "49"),),
+    ),
+    (
+        _rows("uk_obr_tables", 2673),
+        (("table_61_line", None, "60"),),
+    ),
+    (
+        _rows("uk_obr_tables", 2674),
+        (("table_61_line", None, "26"),),
+    ),
+    (
+        _rows(
+            "uk_obr_tables", 2520, 2526, 2531, 2655, 2667, range(2672, 2675), 2680, 2681
+        ),
+        (("scoring_method", None, "final"),),
+    ),
+    (
+        _rows("uk_obr_tables", range(2630, 2642)),
+        (("scoring_method", "memo", "final"),),
+    ),
+    # In our notes on these horizons and on the costing basis we cite pages of
+    # Spread thin, the briefing by Resolution Foundation (RF). We word each
+    # note for the document in which RF prints the figure.
+    (
+        _rows("uk_rf_ab2026", 127),
+        (
+            (
+                "costing_basis",
+                "Fuel Duty counted at the share accruing directly to households (fn 19)",
+                "Fuel Duty counted at the share accruing directly to households (Spread thin fn 19)",
+            ),
+            (
+                "horizon",
+                "2025-26 and 2026-27 (as printed)",
+                "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_rf_ab2026", 54),
+        (
+            (
+                "horizon",
+                "years not printed on the page (Spread thin p.19 prints '2025-26 and 2026-27')",
+                "years not printed in the release (Spread thin p.19 prints '2025-26 and 2026-27')",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_rf_ab2026", 93),
+        (
+            (
+                "horizon",
+                "2026-27 and 2027-28 (p.17: £3.4bn and £0.3bn)",
+                "2026-27 and 2027-28 (Spread thin p.17: £3.4bn and £0.3bn)",
+            ),
+        ),
+    ),
+    # We record Figure 8's notes on where RF models each measure on page 19's
+    # 52 per cent, and not on the publication page's 'just over half'.
+    (
+        _rows("uk_rf_ab2026", 48),
+        (
+            (
+                "modelling_geography",
+                None,
+                "Council Tax and VAT cuts modelled for Great Britain only; Fuel Duty for the UK (Figure 8 notes)",
+            ),
+        ),
+    ),
+    # In its text RF counts the private renting families who lose out when the
+    # government extends the LHA freeze. In Figure 9's workbook it labels the
+    # same families as those who would gain if the government unfroze LHA. For
+    # Your First Home it counts renter households with the resources to access
+    # the scheme in its text, and families who could access it in the workbook.
+    # On the workbook's cells we record the benefit units that RF counts and
+    # its ranking by income after housing costs. On the text's printings we
+    # record the halves of the income distribution that RF names, or our note
+    # on the freeze.
+    (
+        _rows("uk_rf_ab2026", 58, 59, 77, 137, 138),
+        (("housing_costs", None, "ahc"),),
+    ),
+    (
+        _rows("uk_rf_ab2026", 58, 137),
+        (
+            (
+                "framing",
+                "RF: lose out from prolonging the LHA freeze into 2027-28; they would gain if LHA were unfrozen",
+                None,
+            ),
+            (
+                "income_axis",
+                None,
+                "net equivalised household income decile, after housing costs",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_rf_ab2026", 59, 77, 138),
+        (
+            (
+                "income_axis",
+                "household income distribution, split at the median (RF: poorer / richer half)",
+                "net equivalised household income decile, after housing costs",
+            ),
+            ("unit_population", None, "private renting families (benefit units)"),
+        ),
+    ),
+    (
+        _rows("uk_rf_ab2026", 59, 138),
+        (
+            (
+                "denominator",
+                "private renting families who lose out from the prolonged LHA freeze",
+                "private renting families who would benefit if LHA were unfrozen",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_rf_ab2026", 77),
+        (
+            (
+                "denominator",
+                "private renter households with the resources to access Your First Home",
+                "private renting families who could access Your First Home",
+            ),
+        ),
+    ),
+    # On page 24 of Spread thin RF compares receipts with a path on which the
+    # government raised Fuel Duty with RPI from January 2011. In its press
+    # release it compares them with the rises the government planned over the
+    # past 15 years. We read both as the same path of rates.
+    (
+        _rows("uk_rf_ab2026", 153),
+        (
+            (
+                "counterfactual",
+                "Fuel Duty rates risen in line with RPI since January 2011",
+                "planned Fuel Duty rises delivered over the past 15 years",
+            ),
+        ),
+    ),
+    # On Figure 23's points we note a change since 2023-24, and on the
+    # workbook's cells for 2028-29 a change from 2023-24 to 2028-29.
+    (
+        _rows("uk_rf_ab2026", 208, 209),
+        (("horizon", "change since 2023-24", "2023-24 to 2028-29"),),
+    ),
+    # We word RF's median and its population in full on the press release's
+    # printing of the fall in typical non-pensioner incomes, and in short on
+    # the publication page's.
+    (
+        _rows("uk_rf_ab2026", 41),
+        (
+            ("statistic", "median real annual disposable income", "median"),
+            (
+                "unit_population",
+                "working-age (non-pensioner) households",
+                "non-pensioners",
+            ),
+        ),
+    ),
+    # On the press release's printing we record council tax bands E and above
+    # for the households in higher-band properties that miss out on the
+    # Household Energy Payment.
+    (
+        _rows("uk_rf_ab2026", 133),
+        (
+            (
+                "subgroup",
+                "live in higher-band properties and will miss out on the Household Energy Payment",
+                "live in higher-band properties (Council Tax bands E and above) and miss out on the Household Energy Payment",
+            ),
+        ),
+    ),
+    # In our notes we trace the £6 billion in the text of Tax Policy Associates
+    # (TPA) to Table 6.1's total in today's money. We trace the £5.9 billion on
+    # its chart to its grouping of the OBR's costings by fiscal event in 2026
+    # money, under the series 'Healey Oct 2026 Budget'.
+    (
+        _rows("uk_tpa", 2),
+        (
+            (
+                "derived_from",
+                "HM Treasury Budget 2026 Table 6.1 total tax policy decisions, in 2026 money",
+                "OBR costings of tax measures announced since 2020, grouped by TPA by fiscal event",
+            ),
+            ("policy_event", None, "Healey Oct 2026 Budget"),
+            ("price_basis", "today's money (2026)", "2026 money"),
+        ),
+    ),
+    # TPA prints no year with its 'about £1bn' from savers and landlords, and
+    # in a note on that printing we date it at 2028-29, the year that TPA gives
+    # with its £1.1 billion.
+    (
+        _rows("uk_tpa", 8),
+        (
+            (
+                "year_note",
+                "no year stated ('it will be permanent'); staged at 2028-29, the first full year of the rise",
+                None,
+            ),
+        ),
+    ),
+    # TPA sums its groups of Table 6.1's tax rows to £700m in footnote 5 and to
+    # £0.7 billion in its chart's description, and we describe the sum in
+    # different words on each.
+    (
+        _rows("uk_tpa", 168),
+        (
+            (
+                "derived_from",
+                "HM Treasury Budget 2026 Table 6.1 tax rows, summed by TPA's groups",
+                "HM Treasury Budget 2026 Table 6.1, tax rows (53 lines)",
+            ),
+            ("measure_type", None, "sum of TPA's groups of the Table 6.1 tax rows"),
+        ),
+    ),
+    # We record TPA's deflator on footnote 7's £19.1 billion, and not on the
+    # text's £19 billion or the chart description's £19.1 billion. On the
+    # text's printing we give the same source and price basis in more words.
+    (
+        _rows("uk_tpa", 4, 264),
+        (
+            (
+                "deflator",
+                None,
+                "OBR CPI forecast (EFO Table A.1), 2.0% assumed for 2032",
+            ),
+        ),
+    ),
+    (
+        _rows("uk_tpa", 4),
+        (
+            (
+                "derived_from",
+                "HM Treasury Budget 2026 Table 6.1 tax lines, deflated by the OBR's October 2026 CPI forecast",
+                "HM Treasury Budget 2026 Table 6.1 tax rows, deflated",
+            ),
+            ("price_basis", "2026-27 prices (footnote 7)", "2026-27 prices"),
+        ),
+    ),
+)
+_SAME_READING = frozenset(
+    (family, i, *wording)
+    for repeats, wordings in _READINGS
+    for family, i in repeats
+    for wording in wordings
 )
 
 
@@ -1238,8 +1813,8 @@ _NUMBER = re.compile(r"(\d[\d,]*)(?:\.(\d+))?")
 def _printed_place(s: ExternalScore) -> float:
     """Return the place value of a printing's last digit in the claim's units:
     £100m for "£2.6 billion", 0.01 for "91 per cent" on a share. For a
-    printing without digits ("over a million"), or a value of zero, we return
-    0, so only an equal value agrees.
+    printing without digits ("over a million"), or a value of zero, we
+    return 0.
 
     We raise unless the value equals the printed number times a power of
     ten. We fold any workbook exponent into that power, so we read the digits
@@ -1325,9 +1900,6 @@ def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalSc
             s.conditions.get("row_type") == "measure_component",
         )
 
-    def scope(s: ExternalScore) -> dict:
-        return {key: s.conditions.get(key, _UNSTATED.get(key)) for key in _SCOPE}
-
     a, b = _signed_values(repeat, kept)
     coarse, fine = _printed_place(repeat), _printed_place(kept)
     kinds = [s.conditions.get("estimate_kind") for s in (repeat, kept)]
@@ -1338,9 +1910,16 @@ def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalSc
         agree = False  # we never keep a bound over a point value
     else:
         agree = kinds[0] == kinds[1] and fine <= coarse and _within_half(a, b, coarse)
-    first, second = scope(repeat), scope(kept)
-    reworded = {(k, first[k], second[k]) for k in _SCOPE if first[k] != second[k]}
-    if identity(repeat) != identity(kept) or reworded - _SAME_SCOPE or not agree:
+    keys = (
+        repeat.conditions.keys() | kept.conditions.keys() | _UNSTATED.keys()
+    ) - _PER_PRINTING
+    first, second = (
+        {k: s.conditions.get(k, _UNSTATED.get(k)) for k in keys} for s in (repeat, kept)
+    )
+    reworded = {
+        (family, i, k, first[k], second[k]) for k in keys if first[k] != second[k]
+    }
+    if identity(repeat) != identity(kept) or reworded - _SAME_READING or not agree:
         raise ValueError(f"REPEATED_PRINTINGS {family} row {i} no longer matches")
 
 

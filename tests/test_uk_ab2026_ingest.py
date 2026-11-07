@@ -208,6 +208,27 @@ def test_each_restaged_row_takes_the_time_basis_we_store():
         assert len(why) > 40
 
 
+@pytest.mark.parametrize(
+    "family, i, field, value, table",
+    [
+        ("uk_hmt_redbook", 5, "time_basis", "annual", "ROW_TIME_BASES"),
+        ("uk_hmt_redbook", 5, "value_raw", "around £60", "ROW_TIME_BASES"),
+        ("uk_ifs_ab2026", 46, "proposed_metric", "another_metric", "ROW_METRICS"),
+        ("uk_ifs_ab2026", 46, "value_raw", "£90", "ROW_METRICS"),
+    ],
+)
+def test_a_row_call_raises_when_either_of_its_fields_moves(
+    family, i, field, value, table
+):
+    """Review of #256, L9: on a row we restage, we change one of the two fields
+    that the ingest checks and leave the other, and the ingest raises on
+    each."""
+    rows = list(RAW[family])
+    rows[i] = {**rows[i], field: value}
+    with pytest.raises(ValueError, match=f"{table} {family} row {i} no longer"):
+        I._check_row_calls(family, rows)
+
+
 # --- 2. keys and verdicts ----------------------------------------------------
 
 
@@ -616,8 +637,8 @@ def test_each_repeated_printing_leaves_one_claim(staged):
     )
 
 
-# Two claims that we pair in the scan below but keep apart: (family,
-# locator, period, printed value) of each, sorted -> why both stay claims.
+# Two claims that we pair in the scan below but keep apart: the (family,
+# row) of each in the harvest -> why both stay claims.
 _HMT_PACKAGE = (
     "HM Treasury costs two different measures of one package at the same amount "
     "in this year, and we stage both under one reform key."
@@ -626,221 +647,67 @@ _OBR_TAX_GAP_ZERO = (
     "The OBR prints zero in this year for two different parts of the "
     "government's package of measures to close the tax gap."
 )
-NOT_REPEATS: dict[tuple, str] = {
-    (
-        ("uk_centax", "p. 22, section 3.3", 2030, "4%"),
-        ("uk_centax", "p. 22, section 3.3", 2030, "4%"),
-    ): (
+
+
+def _pairs(family, *rows):
+    return [((family, a), (family, b)) for a, b in rows]
+
+
+NOT_REPEATS: dict[tuple[tuple[str, int], tuple[str, int]], str] = {
+    (("uk_centax", 90), ("uk_centax", 92)): (
         "CenTax estimates that the bottom 50% would pay 4% of the additional "
         "revenue from taxing each of two kinds of income more: savings, and "
         "other non-dividend investment income."
     ),
-    **dict.fromkeys(
-        [
-            (
-                ("uk_hmt_costings", "p.33 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.34 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.33 (Exchequer impact (£m))", 2029, "+0m"),
-                ("uk_hmt_costings", "p.34 (Exchequer impact (£m))", 2029, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.54 (Exchequer impact (£m))", 2031, "+40m"),
-                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2031, "+40m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.55 (Exchequer impact (£m))", 2029, "+0m"),
-                ("uk_hmt_costings", "p.58 (Exchequer impact (£m))", 2029, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.56 (Exchequer impact (£m))", 2027, "-5m"),
-                ("uk_hmt_costings", "p.57 (Exchequer impact (£m))", 2027, "-5m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.67 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.68 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2027, "+0m"),
-                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2027, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2028, "-2m"),
-                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2028, "-2m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2031, "+0m"),
-                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2031, "+0m"),
-            ),
-            (
-                ("uk_hmt_costings", "p.92 (Exchequer impact (£m))", 2032, "+0m"),
-                ("uk_hmt_costings", "p.93 (Exchequer impact (£m))", 2032, "+0m"),
-            ),
-        ],
-        _HMT_PACKAGE,
-    ),
-    **dict.fromkeys(
-        [
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
-                    2027,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Alcohol duty; 2026-27; cell I204",
-                    2027,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
-                    2027,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2026-27; cell I198",
-                    2027,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2026-27",
-                    2027,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Vehicle excise duty; 2026-27; cell I206",
-                    2027,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2027-28",
-                    2028,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "Table 3.3 (p.72), Direct recovery of debt, 2027-28",
-                    2028,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2027-28",
-                    2028,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2027-28; cell J198",
-                    2028,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.1 (p.61), Timely payment for self-assessment, 2028-29",
-                    2029,
-                    "0.0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Current AME / Scottish BGA (current); 2028-29; cell K208",
-                    2029,
-                    "0",
-                ),
-            ),
-            (
-                (
-                    "uk_obr_tables",
-                    "Table 3.3 (p.72), Direct recovery of debt, 2027-28",
-                    2028,
-                    "0",
-                ),
-                (
-                    "uk_obr_tables",
-                    "sheet '1.1'; Table 1.1; measure 45; Receipts / Capital gains tax; 2027-28; cell J198",
-                    2028,
-                    "0",
-                ),
-            ),
-        ],
-        _OBR_TAX_GAP_ZERO,
-    ),
-    (
-        ("uk_obr_tables", "para 3.13 (p.65)", 2032, "£0.4 billion"),
-        (
-            "uk_obr_tables",
-            "sheet '1.1'; Table 1.1; measure 45; Receipts / Onshore CT; 2031-32; cell N201",
-            2032,
-            "445",
-        ),
-    ): (
+    (("uk_obr_tables", 875), ("uk_obr_tables", 2660)): (
         "In paragraph 3.13 the OBR costs the changes to HMRC's compliance "
         "workforce, one part of the tax-gap package, at £0.4 billion in 2031-32. "
         "In Table 1.1 it prints the whole package's onshore corporation tax, 445 "
         "(£ million)."
     ),
-    (
-        (
-            "uk_obr_tables",
-            "Table 3.3 (p.72), Property income tax rate increase, 2027-28",
-            2028,
-            "-2",
-        ),
-        (
-            "uk_obr_tables",
-            "sheet '1.1'; Table 1.1; measure 61; Receipts / Onshore CT; 2027-28; cell J298",
-            2028,
-            "2",
-        ),
-    ): (
+    (("uk_obr_tables", 1357), ("uk_obr_tables", 2700)): (
         "Under the property income measure's tax head in Table 3.3, the OBR sums "
         "the measure's receipts. In 2027-28 it prints zero on the measure's income "
         "tax line in Table 1.1, so the sum equals the onshore corporation tax "
         "line, 2 (£ million)."
     ),
-    (
-        ("uk_tpa", "footnote 5", 2028, "£700m"),
-        (
-            "uk_tpa",
-            "series[7] 'Healey Oct 2026 Budget', data[3] (2027-28)",
-            2028,
-            "0.7",
-        ),
-    ): (
+    (("uk_tpa", 25), ("uk_tpa", 101)): (
         "In footnote 5 Tax Policy Associates sums HM Treasury's 2027-28 tax "
         "costings to £700m in cash. On its chart of tax rises by fiscal event it "
         "plots the OBR's costings in 2026 money, and puts that year's total at "
         "£0.7bn too."
+    ),
+    **dict.fromkeys(
+        _pairs(
+            "uk_hmt_costings",
+            (126, 134),
+            (128, 136),
+            (259, 265),
+            (259, 284),
+            (263, 269),
+            (265, 284),
+            (267, 286),
+            (271, 277),
+            (340, 346),
+            (488, 494),
+            (489, 495),
+            (492, 498),
+            (493, 499),
+        ),
+        _HMT_PACKAGE,
+    ),
+    **dict.fromkeys(
+        _pairs(
+            "uk_obr_tables",
+            (852, 2594),
+            (853, 2595),
+            (853, 2706),
+            (888, 2594),
+            (900, 2594),
+            (914, 2596),
+            (2595, 2706),
+        ),
+        _OBR_TAX_GAP_ZERO,
     ),
 }
 
@@ -888,8 +755,9 @@ def _one_table(a, b):
 def _differ_in_scope(a, b):
     """Whether two claims cover different places, housing cost bases, income
     groups or averaging windows. We compare geography and housing costs where
-    both claims state them, read a claim without an income group as covering
-    everyone, and read one without an aggregation as a single year's figure."""
+    we staged each condition for both printings, read a claim without an
+    income group as covering everyone, and read one without an aggregation as
+    a single year's figure."""
     ca, cb = a.conditions, b.conditions
     if any(
         k in ca and k in cb and ca[k] != cb[k] for k in ("geography", "housing_costs")
@@ -901,16 +769,9 @@ def _differ_in_scope(a, b):
     )
 
 
-def test_no_claim_repeats_another_printing_of_its_figure(staged):
-    """We pair the ingest's claims by a rule we wrote apart from
-    I.REPEATED_PRINTINGS. We treat two claims as one figure that the producer
-    prints twice when they share a source, reform, metric, unit, year, time
-    basis and window, and their values, zeros included, agree to half the
-    coarser printing's last digit. We also require that the producer cost part
-    of a measure in both, or the whole measure in both. We skip two lines of
-    one table and two claims that differ in scope, and for each other pair
-    that the ingest keeps, we give our reason in NOT_REPEATS."""
-    scores, _ = staged
+def _repeats_in(scores):
+    """Pair claims by the scan's rule, each pair as the set of its two claim
+    ids."""
     groups: dict[tuple, list] = {}
     for s in scores:
         key = (
@@ -938,24 +799,56 @@ def test_no_claim_repeats_another_printing_of_its_figure(staged):
                     > max(_last_digit(a), _last_digit(b)) / 2 + 1e-9
                 ):
                     continue
-                hits.add(
-                    tuple(
-                        sorted(
-                            (
-                                s.publication["family"],
-                                str(s.publication.get("locator")),
-                                s.period,
-                                s.conditions.get("value_verbatim"),
-                            )
-                            for s in (a, b)
-                        )
-                    )
-                )
-    assert hits == set(NOT_REPEATS), (
-        sorted(hits - set(NOT_REPEATS)),
-        sorted(set(NOT_REPEATS) - hits),
+                hits.add(frozenset((a.claim_id(), b.claim_id())))
+    return hits
+
+
+def _listed():
+    """Map the two claim ids of each pair in NOT_REPEATS to its two rows."""
+    listed = {
+        frozenset(_staged_alone(*row).claim_id() for row in pair): pair
+        for pair in NOT_REPEATS
+    }
+    assert all(len(ids) == 2 for ids in listed) and len(listed) == len(NOT_REPEATS)
+    return listed
+
+
+def test_no_claim_repeats_another_printing_of_its_figure(staged):
+    """We pair the ingest's claims by a rule we wrote apart from
+    I.REPEATED_PRINTINGS. We treat two claims as one figure that the producer
+    prints twice when they share a source, reform, metric, unit, year, time
+    basis and window, and their values, zeros included, agree to half the
+    coarser printing's last digit. We also require that the producer cost part
+    of a measure in both, or the whole measure in both. We skip two lines of
+    one table and two claims that differ in scope, and for each other pair
+    that the ingest keeps, we give our reason in NOT_REPEATS under the two
+    claims' rows."""
+    scores, _ = staged
+    listed = _listed()
+    where = {
+        s.claim_id(): (s.publication["family"], str(s.publication.get("locator")))
+        for s in scores
+    }
+    hits = _repeats_in(scores)
+    assert hits == set(listed), (
+        sorted(sorted(where[i] for i in ids) for ids in hits - set(listed)),
+        sorted(listed[ids] for ids in set(listed) - hits),
     )
     assert all(len(why) > 40 for why in NOT_REPEATS.values())
+
+
+def test_the_scan_pairs_a_third_printing_with_both_listed_claims(staged):
+    """Review of #256, L8: we add a third printing of CenTax row 90's 4% and
+    change one of its conditions, so it gets its own claim id. The scan pairs
+    it with rows 90 and 92, which NOT_REPEATS lists, and with no other claim."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    third.conditions["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
 
 
 def test_the_merge_never_leaves_a_same_claim_twin(monkeypatch):
@@ -1078,51 +971,133 @@ def test_a_printing_of_another_figure_raises(change):
         I._check_printing("uk_rf_ab2026", 147, repeat, kept)
 
 
-@pytest.mark.parametrize(
-    "key",
-    [
-        "geography",
-        "income_group",
-        "unit_population",
-        "subgroup",
-        "denominator",
-        "statistic",
-        "housing_costs",
-        "component",
-        "aggregation",
-        "horizon",
-        "price_basis",
-    ],
+# We name here, apart from I._PER_PRINTING, the conditions that the printing
+# check leaves out, so that adding one to I._PER_PRINTING fails a test.
+PER_PRINTING = frozenset(
+    {
+        "chart_label",
+        "costing_leg_heading",
+        "document_position",
+        "document_version",
+        "estimate_kind",
+        "heading",
+        "paragraph_heading",
+        "reform_hint",
+        "sheet_section",
+        "sign_convention",
+        "table",
+        "table_line",
+        "table_row",
+        "value_verbatim",
+    }
 )
-def test_a_printing_in_another_scope_raises(key):
-    """We give one scope key of the workbook's claim for RF's fuel freeze path a
-    wording that we don't list in ``_SAME_SCOPE``, so the ingest raises. We name
-    the keys here, apart from ``_SCOPE``, so that dropping one from ``_SCOPE``
-    fails a test."""
-    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
-    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
-    kept.conditions[key] = "a wording we don't list"
+
+
+def test_the_printing_check_leaves_out_the_conditions_we_name():
+    assert I._PER_PRINTING == PER_PRINTING
+
+
+def _compared(repeat, kept):
+    """Map each condition outside PER_PRINTING on which the two claims differ
+    to their two wordings, reading I._UNSTATED for a missing one."""
+    keys = (
+        repeat.conditions.keys() | kept.conditions.keys() | I._UNSTATED.keys()
+    ) - PER_PRINTING
+    first, second = (
+        {k: s.conditions.get(k, I._UNSTATED.get(k)) for k in keys}
+        for s in (repeat, kept)
+    )
+    return {k: (first[k], second[k]) for k in keys if first[k] != second[k]}
+
+
+@pytest.mark.parametrize("side", ["repeat", "kept"])
+def test_a_printing_that_differs_in_any_compared_condition_raises(
+    staged, side, monkeypatch
+):
+    """Review of #256, L7: we give each condition that the check compares a
+    wording we don't list, on RF's chart label for the 2027-28 fuel freeze
+    path or on its workbook cell, and the ingest raises. When we also list the
+    wording for that repeat, the ingest accepts the pair."""
+    scores, _ = staged
+    keys = (
+        set(I._UNSTATED).union(
+            *(s.conditions for s in scores),
+            *(_staged_alone(*row).conditions for row in I.REPEATED_PRINTINGS),
+        )
+        - PER_PRINTING
+    )
+    assert len(keys) > 80
+    listed = I._SAME_READING
+    missed, refused = [], []
+    for key in sorted(keys):
+        repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+        (repeat if side == "repeat" else kept).conditions[key] = (
+            "a wording we don't list"
+        )
+        try:
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+            missed.append(key)
+        except ValueError as e:
+            assert "no longer matches" in str(e)
+        [(a, b)] = _compared(repeat, kept).values()
+        monkeypatch.setattr(I, "_SAME_READING", listed | {(*FREEZE_LABEL, key, a, b)})
+        try:
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+        except ValueError:
+            refused.append(key)
+        monkeypatch.setattr(I, "_SAME_READING", listed)
+    assert (missed, refused) == ([], [])
+
+
+@pytest.mark.parametrize(
+    "family, i, j, change, differ",
+    [
+        ("uk_tpa", 274, 284, {}, {"tax_component"}),
+        ("uk_tpa", 287, 288, {}, {"country", "scenario"}),
+        (
+            "uk_hmt_redbook",
+            362,
+            400,
+            {"household_type": "1 adult"},
+            {"household_type", "statistic"},
+        ),
+        ("uk_rf_ab2026", 147, 433, {"subgroup": "first-time buyers"}, {"subgroup"}),
+    ],
+    ids=["tax_component", "scenario", "household_type", "subgroup"],
+)
+def test_a_printing_for_another_part_scenario_or_group_raises(
+    family, i, j, change, differ, monkeypatch
+):
+    """Review of #256, L7: TPA puts a notional investment bank's tax in
+    Singapore at 14.9% of its profit, in total and from corporate income taxes
+    alone. It puts the bank's UK bank levies and deposit insurance at 2.3% of
+    profit before and after the Budget. We also change the household type of
+    HM Treasury's Table 2.C cell from two adults to one, and give RF's fuel
+    freeze cell a subgroup of first-time buyers. The ingest accepts each pair
+    once we list its wordings, and raises without them."""
+    repeat, kept = _claim(family, i), _claim(family, j)
+    kept.conditions.update(change)
+    compared = _compared(repeat, kept)
+    assert set(compared) == differ
     with pytest.raises(ValueError, match="no longer matches"):
-        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+        I._check_printing(family, i, repeat, kept)
+    monkeypatch.setattr(
+        I,
+        "_SAME_READING",
+        I._SAME_READING | {(family, i, k, *w) for k, w in compared.items()},
+    )
+    I._check_printing(family, i, repeat, kept)
 
 
-def test_we_list_only_the_wordings_that_repeats_use():
-    """We list in ``_SAME_SCOPE`` each pair of wordings on which a repeat and
-    the claim we keep differ, and no others, so a stale pair can't let another
-    figure through."""
+def test_we_list_each_wording_for_the_repeat_that_uses_it():
+    """We list in ``_SAME_READING`` each wording on which a repeat and the claim
+    we keep differ, under that repeat's row, and no other, so the ingest can't
+    use a stale listing to merge another figure."""
     used = set()
     for (family, i), (k, _) in I.REPEATED_PRINTINGS.items():
         repeat, kept = _claim(family, i), _claim(*_kept_row(family, k))
-        first, second = (
-            {key: s.conditions.get(key, I._UNSTATED.get(key)) for key in I._SCOPE}
-            for s in (repeat, kept)
-        )
-        used |= {
-            (key, first[key], second[key])
-            for key in I._SCOPE
-            if first[key] != second[key]
-        }
-    assert used == I._SAME_SCOPE
+        used |= {(family, i, key, *w) for key, w in _compared(repeat, kept).items()}
+    assert used == I._SAME_READING
 
 
 # Each bound a producer prints, the point value we keep for it, and a
@@ -1316,7 +1291,7 @@ def test_a_workbook_exponent_moves_the_place(mantissa, exponent, power):
     factor=st.integers(2, 9),
     power=st.integers(-6, 12),
 )
-def test_a_value_off_its_printing_by_more_than_a_power_of_ten_raises(
+def test_a_value_other_than_its_printing_times_a_power_of_ten_raises(
     number, factor, power
 ):
     s = SimpleNamespace(

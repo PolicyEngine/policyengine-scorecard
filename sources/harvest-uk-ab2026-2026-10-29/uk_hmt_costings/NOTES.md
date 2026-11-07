@@ -218,7 +218,7 @@ We put a registry key on a `row_type: measure` row only when the key's title cov
   - **Line 45 (pp.43-52):** the ten components sum to 110, 290, 240, 2,140, 2,635, 3,360 against Table 6.1's 10, 100, 115, 1,980, 2,485, 3,160. Table 6.1 falls short by 100, 190, 125, 160, 150 and 200.
   - **Line 47 (pp.54-58):** the five components sum to -10, 10, 125, 65, 145, 235 against Table 6.1's 195, -125, 60, 75, 155, 240. The differences come to +205, -135, -65, +10, +10 and +5.
   - **Line 85 (p.94):** equal from 2029-30 to 2031-32. HM Treasury prints larger costs in Table 6.1 from 2026-27 to 2028-29: -355, -175, -140 against the note's -15, +70, +45.
-- **Red book Table 6.3:** HM Treasury prints each of line 45's ten costings again in red book Table 6.3, with the same figures in all six years. At ingest we merge these 60 rows into the red book's claims, and list them in the ingest's `REPEATED_PRINTINGS`.
+- HM Treasury prints each of line 45's ten costings again in red book Table 6.3, with the same figures in all six years. At ingest we merge these 60 rows into the red book's claims, and list them in the ingest's `REPEATED_PRINTINGS`.
 - **Table 6.2:** p.58's "+£130m estimated in 2029-30 in cash terms" equals Table 6.2 line 9 (DWP Fraud and Error) for 2029-30.
 - **Lines without a costing note:** HM Treasury gives 22 Table 6.1 lines no note: 1, 4, 9, 20, 22, 23, 24, 25, 31, 32, 34, 35, 40, 41, 42, 43, 63, 64, 67, 73, 74 and 81.
   - In the introduction HM Treasury limits the document to "tax and annually managed expenditure (AME) policy decisions".
