@@ -843,6 +843,15 @@ _PER_PRINTING = frozenset(
 _UNSTATED = {"income_group": "all", "component": "Total"}
 
 
+def _costs_part(s: ExternalScore) -> bool:
+    """Whether the producer costs part of a measure in this printing: we
+    stage it with a component other than the measure's total, or as a
+    measure component."""
+    c = s.conditions
+    named = c.get("component") not in (None, _UNSTATED["component"])
+    return named or c.get("row_type") == "measure_component"
+
+
 def _rows(family: str, *rows: int | range) -> frozenset[tuple[str, int]]:
     """Return (family, row) for each row we name, and for each row in each range."""
     return frozenset(
@@ -1897,7 +1906,7 @@ def _check_printing(family: str, i: int, repeat: ExternalScore, kept: ExternalSc
             s.time_basis,
             s.period_start,
             s.period_end,
-            s.conditions.get("row_type") == "measure_component",
+            _costs_part(s),
         )
 
     a, b = _signed_values(repeat, kept)

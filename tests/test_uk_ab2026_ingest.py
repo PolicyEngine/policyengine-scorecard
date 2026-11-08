@@ -1017,7 +1017,9 @@ def test_a_printing_that_differs_in_any_compared_condition_raises(
     """Review of #256, L7: we give each condition that the check compares a
     wording we don't list, on RF's chart label for the 2027-28 fuel freeze
     path or on its workbook cell, and the ingest raises. When we also list the
-    wording for that repeat, the ingest accepts the pair."""
+    wording for that repeat, the ingest accepts the pair for every condition
+    but the component. It reads any component other than the measure's total
+    as part of the measure, and it never merges a part into the whole."""
     scores, _ = staged
     keys = (
         set(I._UNSTATED).union(
@@ -1046,7 +1048,28 @@ def test_a_printing_that_differs_in_any_compared_condition_raises(
         except ValueError:
             refused.append(key)
         monkeypatch.setattr(I, "_SAME_READING", listed)
-    assert (missed, refused) == ([], [])
+    assert (missed, refused) == ([], ["component"])
+
+
+@pytest.mark.parametrize(
+    "mark",
+    [{"component": "a part we name"}, {"row_type": "measure_component"}],
+    ids=["component", "row_type"],
+)
+def test_a_listed_wording_never_merges_a_part_into_the_whole(mark, monkeypatch):
+    """We stage RF's workbook cell for the 2027-28 fuel freeze path as part of
+    the measure, with a component we name or by its row type, and list both
+    wordings for its chart label. The ingest raises, since it never merges a
+    part of a measure into the whole, whatever wordings we list."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept.conditions.update(mark)
+    [(key, (a, b))] = _compared(repeat, kept).items()
+    assert key in mark
+    monkeypatch.setattr(
+        I, "_SAME_READING", I._SAME_READING | {(*FREEZE_LABEL, key, a, b)}
+    )
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
 
 
 @pytest.mark.parametrize(
