@@ -1,0 +1,153 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+    "2024-01-01.2035-12-31": 60000
+   },
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+    "2024-01-01.2035-12-31": 50000
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2024 proxies FY 2024-25.",
+ "certified_aggregates_gbp": {
+  "child_benefit": 13381308212.448774,
+  "income_tax": 309586129282.4224
+ },
+ "certified_dataset_sha256": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "components": [
+  "spring_budget_2024__hicbc_threshold_and_taper"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "dataset_sha256_after": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "dataset_sha256_before": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "engine_version": "2.174.1",
+ "event": "spring_budget_2024",
+ "fiscal_event": "Spring Budget 2024",
+ "fy_proxy": "2024-25",
+ "head_channels": {
+  "child_benefit": "spending",
+  "income_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "child_benefit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "child_benefit": -0.0,
+  "income_tax": -1182111779.5344849
+ },
+ "head_variables": [
+  "income_tax",
+  "child_benefit"
+ ],
+ "literal_reform_minus_baseline": {
+  "child_benefit": 0.0,
+  "income_tax": 1182111779.5344849
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "child_benefit": 0.0,
+  "income_tax": 1182111779.5344849
+ },
+ "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+ "measure_total_gbp": -1182111779.5344849,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2035-12-31": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2035-12-31": 50000
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.16.1",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+    "intended": 60000,
+    "processed": 60000
+   },
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+    "intended": 50000,
+    "processed": 50000
+   }
+  },
+  "reform_world": {
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+    "intended": 80000,
+    "processed": 80000
+   },
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+    "intended": 60000,
+    "processed": 60000
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; household microsimulation with the engine's default capital gains and labour supply response parameters",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "child_benefit": 13381308212.448774,
+    "income_tax": 310768241061.9569
+   }
+  },
+  "reform": {
+   "heads": {
+    "child_benefit": 13381308212.448774,
+    "income_tax": 309586129282.4224
+   }
+  }
+ },
+ "variable_metadata": {
+  "child_benefit": {
+   "definition_period": "year",
+   "documentation": "Total Child Benefit paid to a benefit unit that would claim it. Claimants with payment opt-outs resume when the charge share falls below the assumed opt-out threshold; an opt-out flag never establishes a claim.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/child_benefit.py",
+   "entity": "benunit",
+   "label": "Child Benefit",
+   "unit": "currency-GBP"
+  },
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability: the liability before the winter fuel payment charge, plus the charge, which is additional tax added at Step 7 after the reductions capped at the Step 5 tax. Finance Act 2026 Sch. 10 para. 4(3) adds the charge to ITA 2007 s. 30(1).",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.16.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "variant_identity_sha256": "71911124fd51c7bb89bf887bad6bfd69144f1fa5f9dfe3afd2a14fe031caa5a1",
+ "year": 2024
+}
