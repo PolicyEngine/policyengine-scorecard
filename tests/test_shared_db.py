@@ -6,7 +6,9 @@ module checks the share against the built database, checks that SQLite and
 the file system both refuse writes to it, and then runs inner pytest
 sessions, through the real conftest fixtures, in which a read-only test
 writes to the share: each such session fails, and its report names the
-test that wrote.
+test that wrote. One more inner session starts from a database whose schema
+predates the code: its readers pass, the source keeps its bytes, and the
+report says to rebuild it.
 """
 
 import importlib.util
@@ -16,6 +18,7 @@ import stat
 import tempfile
 from pathlib import Path
 
+import clone_copy
 import pytest
 import shared_db
 from hypothesis import given, settings
@@ -32,10 +35,17 @@ BUILT = TESTS.parent / "data" / "scorecard.db"
 # --- the share --------------------------------------------------------------
 
 
-def test_the_share_is_the_built_database_and_read_only(shared_scorecard_db):
+def test_the_share_is_the_built_database_and_read_only(shared_scorecard_db, tmp_path):
+    # The built database as ScorecardDB's open leaves it: the file itself
+    # when this code built it, or the file migrated to the code's schema
+    # when it predates it (conftest.py warns then).
+    expected = Path(clone_copy.copy2(BUILT, tmp_path / BUILT.name))
+    stale = shared_db.bring_up_to_date(expected)
     assert shared_scorecard_db != BUILT
     assert shared_scorecard_db.name == BUILT.name
-    assert shared_db.sha256(shared_scorecard_db) == shared_db.sha256(BUILT)
+    assert shared_db.sha256(shared_scorecard_db) == shared_db.sha256(expected)
+    if not stale:  # the usual case, and CI's: the share has the file's bytes
+        assert shared_db.sha256(shared_scorecard_db) == shared_db.sha256(BUILT)
     assert stat.S_IMODE(os.stat(shared_scorecard_db).st_mode) == 0o444
     assert shared_db.siblings(shared_scorecard_db) == []
 
@@ -75,12 +85,37 @@ def test_a_writable_copy_is_private(writable_scorecard_db, shared_scorecard_db):
 
 
 def _small_database(path: Path) -> Path:
+    """A database with one table of 500 rows and none of ScorecardDB's
+    schema: to ScorecardDB, a file whose schema predates the code."""
     conn = sqlite3.connect(path)
     conn.execute("CREATE TABLE t (x)")
     conn.executemany("INSERT INTO t VALUES (?)", [(i,) for i in range(500)])
     conn.commit()
     conn.close()
     return path
+
+
+def _current_database(path: Path) -> Path:
+    """The same table in a file with this code's schema, as a build leaves
+    it: ScorecardDB's open writes nothing to it."""
+    ScorecardDB(path).close()
+    return _small_database(path)
+
+
+def test_bringing_a_schema_up_to_date_writes_only_to_an_older_one(tmp_path):
+    """The share test above relies on this: two migrations of one older file
+    agree byte for byte, and a current file takes no write at all."""
+    older = _small_database(tmp_path / "older.db")
+    migrated = []
+    for name in ("a.db", "b.db"):
+        path = Path(clone_copy.copy2(older, tmp_path / name))
+        assert shared_db.bring_up_to_date(path)
+        migrated.append(shared_db.sha256(path))
+    assert migrated[0] == migrated[1] != shared_db.sha256(older)
+    current = _current_database(tmp_path / "current.db")
+    before = shared_db.sha256(current)
+    assert not shared_db.bring_up_to_date(current)
+    assert shared_db.sha256(current) == before
 
 
 def _folder(parent, name) -> Path:
@@ -166,22 +201,25 @@ writable_scorecard_db = real.writable_scorecard_db
 
 @pytest.fixture
 def inner(pytester, tmp_path):
-    source = _small_database(tmp_path / "scorecard.db")
+    """Run ``body`` as an inner session's test file, its database made by
+    ``make``; return the result, the database and its SHA-256 before."""
+    source = tmp_path / "scorecard.db"
     pytester.makeconftest(
         INNER_CONFTEST.format(
             tests=str(TESTS), conftest=str(TESTS / "conftest.py"), source=str(source)
         )
     )
 
-    def run(body):
+    def run(body, make=_current_database):
+        before = shared_db.sha256(make(source))
         pytester.makepyfile(test_inner="import os, sqlite3\n" + body)
-        return pytester.runpytest("-p", "no:cacheprovider", "-q"), source
+        return pytester.runpytest("-p", "no:cacheprovider", "-q"), source, before
 
     return run
 
 
 def test_an_inner_session_of_readers_passes(inner):
-    result, source = inner(
+    result, source, before = inner(
         "def test_reads(readonly_scorecard_db):\n"
         "    with sqlite3.connect(readonly_scorecard_db) as conn:\n"
         "        assert conn.execute('SELECT COUNT(*) FROM t').fetchone() == (500,)\n"
@@ -190,10 +228,36 @@ def test_an_inner_session_of_readers_passes(inner):
         "        conn.execute('DELETE FROM t')\n"
     )
     result.assert_outcomes(passed=2)
+    assert "StaleDatabaseWarning" not in result.stdout.str()
+    assert shared_db.sha256(source) == before
+
+
+def test_an_older_schema_is_migrated_in_the_share_never_in_place(inner):
+    """ScorecardDB's open migrates a file whose schema predates the code. The
+    session does that to the share before sealing it, so a reader that opens
+    ScorecardDB passes; the source keeps its bytes, and the report says to
+    rebuild it. Without that step this reader would fail with "attempt to
+    write a readonly database", and a test that opened the committed file
+    in place would have migrated it."""
+    result, source, before = inner(
+        "from scorecard_db import ScorecardDB\n"
+        "def test_opens_it(readonly_scorecard_db):\n"
+        "    db = ScorecardDB(readonly_scorecard_db)\n"
+        "    assert db.conn.execute('SELECT COUNT(*) FROM t').fetchone()[0] == 500\n"
+        "    db.close()\n",
+        make=_small_database,
+    )
+    result.assert_outcomes(passed=1)
+    out = result.stdout.str()
+    assert "StaleDatabaseWarning" in out and "predates the schema" in out
+    assert shared_db.sha256(source) == before
+    with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn:
+        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master")}
+    assert tables == {"t"}, "the source keeps its older schema"
 
 
 def test_a_read_only_test_that_writes_through_sqlite_fails(inner):
-    result, source = inner(
+    result, source, before = inner(
         "def test_writes(readonly_scorecard_db):\n"
         "    with sqlite3.connect(readonly_scorecard_db) as conn:\n"
         "        conn.execute('DELETE FROM t')\n"
@@ -207,7 +271,7 @@ def test_a_read_only_test_that_writes_around_the_mode_fails(inner):
     """A write that gets past the mode bits (here the test restores them; a
     process running as root needs no chmod) fails the test that made it at
     its teardown, and fails the session's own check at the end."""
-    result, source = inner(
+    result, source, before = inner(
         "def test_writes(readonly_scorecard_db):\n"
         "    os.chmod(readonly_scorecard_db, 0o644)\n"
         "    with sqlite3.connect(readonly_scorecard_db) as conn:\n"
@@ -221,8 +285,7 @@ def test_a_read_only_test_that_writes_around_the_mode_fails(inner):
     assert "test_inner.py::test_writes wrote to the shared read-only database" in out
     assert "changed during the session" in out
     assert source.stat().st_mode & 0o200, "the source itself stays untouched"
-    with sqlite3.connect(source) as conn:
-        assert conn.execute("SELECT COUNT(*) FROM t").fetchone() == (500,)
+    assert shared_db.sha256(source) == before
 
 
 def test_the_inner_conftest_loads_the_real_fixture_code():

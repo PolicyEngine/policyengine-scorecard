@@ -12,6 +12,7 @@ private copy for a test that writes, made as an APFS clone where the
 filesystem allows (clone_copy.py)."""
 
 import sys
+import warnings
 from pathlib import Path
 
 import pytest
@@ -32,12 +33,27 @@ def pytest_configure(config):
         build(_DB)
 
 
+def _bring_up_to_date(path):
+    """Open the share once before it goes read-only, so that no test's
+    ScorecardDB has to migrate it. This writes nothing to a database this
+    code built; an older data/scorecard.db is migrated in the share, as a
+    test's first open migrated it in place before the share existed."""
+    if shared_db.bring_up_to_date(path):
+        warnings.warn(
+            shared_db.StaleDatabaseWarning(
+                f"{_DB} predates the schema in scorecard_db/db.py, so the "
+                "tests read a copy migrated to it. Delete the file and run "
+                "pytest again, which rebuilds a missing one (tests/conftest.py)."
+            )
+        )
+
+
 @pytest.fixture(scope="session")
 def shared_scorecard_db(tmp_path_factory):
     """The built database as one read-only file per session (per xdist
     worker). Its teardown fails the session if the file's bytes changed."""
     directory = tmp_path_factory.mktemp("shared-db")
-    with shared_db.read_only_share(_DB, directory) as path:
+    with shared_db.read_only_share(_DB, directory, _bring_up_to_date) as path:
         yield path
 
 

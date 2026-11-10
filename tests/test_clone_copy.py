@@ -1,8 +1,8 @@
 """clone_copy makes the copy its shutil namesake makes, without the bytes.
 
-Differential: for any contents and mode, each function leaves the file
-shutil leaves (bytes, mode, and for copy2 the timestamps) and returns the
-same path. Independence: a clone and its source never see each other's
+Differential: for any contents, mode (setuid and sticky included) and
+umask, each function leaves the file shutil leaves (bytes, mode bits and
+file flags, and for copy2 the timestamps) and returns the same path. Independence: a clone and its source never see each other's
 later writes. Cost: on APFS a fresh clone holds no data blocks of its own,
 and the clone path is the one taken (a broken binding would silently fall
 back to byte copies, which no other test would notice)."""
@@ -21,11 +21,17 @@ from pathlib import Path
 
 import clone_copy
 import pytest
-from hypothesis import given, settings
+from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 APFS = sys.platform == "darwin"
-MODES = st.sampled_from([0o644, 0o600, 0o755, 0o640, 0o444, 0o400, 0o700])
+MODES = st.sampled_from(
+    [0o644, 0o600, 0o755, 0o640, 0o444, 0o400, 0o700, 0o664, 0o666, 0o777]
+    # setuid, setgid (dropped by chmod where the file's group is not the
+    # caller's) and sticky: clonefile(2) drops the first two.
+    + [0o4755, 0o2755, 0o6755, 0o1755]
+)
+UMASKS = st.sampled_from([0o022, 0o077, 0o002, 0o027, 0o000])
 CONTENTS = st.binary(max_size=3 * 4096 + 7)
 NAMES = ("copyfile", "copy", "copy2")
 TESTS = Path(__file__).resolve().parent
@@ -66,7 +72,8 @@ def _private_bytes(path) -> int:
 
 def _seen(path):
     st_ = os.stat(path)
-    return Path(path).read_bytes(), stat.S_IMODE(st_.st_mode)
+    flags = getattr(st_, "st_flags", 0)  # BSD file flags; Linux has none
+    return Path(path).read_bytes(), stat.S_IMODE(st_.st_mode), flags
 
 
 @pytest.fixture(scope="module")
@@ -74,17 +81,28 @@ def scratch(tmp_path_factory):
     return tmp_path_factory.mktemp("clone-copy")
 
 
-@settings(max_examples=40, deadline=None)
-@given(name=st.sampled_from(NAMES), contents=CONTENTS, mode=MODES)
-def test_each_function_leaves_the_file_shutil_leaves(scratch, name, contents, mode):
+@settings(max_examples=60, deadline=None)
+@given(name=st.sampled_from(NAMES), contents=CONTENTS, mode=MODES, umask=UMASKS)
+# The cases a clone alone gets wrong, every run: setuid, which clonefile(2)
+# drops, and a umask other than the one at import time.
+@example(name="copy", contents=b"setuid", mode=0o4755, umask=0o022)
+@example(name="copy2", contents=b"setuid", mode=0o4755, umask=0o022)
+@example(name="copyfile", contents=b"umask", mode=0o644, umask=0o077)
+def test_each_function_leaves_the_file_shutil_leaves(
+    scratch, name, contents, mode, umask
+):
     with tempfile.TemporaryDirectory(dir=scratch) as d:
         d = Path(d)
         src = d / "src.bin"
         src.write_bytes(contents)
         os.chmod(src, mode)
         os.utime(src, ns=(1_600_000_000_123_456_789, 1_700_000_000_987_654_321))
-        ours = getattr(clone_copy, name)(src, d / "ours")
-        theirs = getattr(shutil, name)(src, d / "theirs")
+        old = os.umask(umask)  # copyfile's new-file mode depends on it
+        try:
+            ours = getattr(clone_copy, name)(src, d / "ours")
+            theirs = getattr(shutil, name)(src, d / "theirs")
+        finally:
+            os.umask(old)
         assert Path(ours).name == "ours" and Path(theirs).name == "theirs"
         assert _seen(d / "ours") == _seen(d / "theirs")
         if name == "copy2":
@@ -150,6 +168,45 @@ def test_an_existing_destination_is_overwritten_as_shutil_overwrites(tmp_path):
             os.chmod(dst, 0o600)
             getattr(module, name)(src, dst)
         assert _seen(tmp_path / f"{name}-ours") == _seen(tmp_path / f"{name}-theirs")
+
+
+@pytest.mark.skipif(not hasattr(os, "chflags"), reason="file flags are BSD's")
+@pytest.mark.parametrize("name", NAMES)
+@pytest.mark.parametrize(
+    "flags",
+    [
+        stat.UF_NODUMP | stat.UF_HIDDEN,
+        stat.UF_IMMUTABLE,
+        stat.UF_IMMUTABLE | stat.UF_NODUMP,
+    ],
+    ids=["nodump-hidden", "immutable", "immutable-nodump"],
+)
+def test_file_flags_end_as_shutil_leaves_them(tmp_path, name, flags):
+    """A clone carries the source's flags; shutil's copyfile and copy leave
+    none and copy2 copies them. The setuid bit makes copy2 clear an
+    immutable flag to put the bit back, then set the flag again."""
+    src = tmp_path / "src"
+    src.write_bytes(b"flagged")
+    os.chmod(src, 0o4755)
+    try:
+        os.chflags(src, flags)
+        outcome = {}
+        for who, module in (("ours", clone_copy), ("theirs", shutil)):
+            dst = tmp_path / who
+            try:
+                getattr(module, name)(src, dst)
+            except OSError as error:
+                outcome[who] = type(error).__name__
+            else:
+                # copy2's modification time (shutil reads the source's
+                # data and a clone does not, so its access time can differ).
+                mtime = os.stat(dst).st_mtime_ns if name == "copy2" else None
+                outcome[who] = (*_seen(dst), mtime)
+        assert outcome["ours"] == outcome["theirs"]
+        assert isinstance(outcome["ours"], tuple), outcome
+    finally:
+        for path in tmp_path.iterdir():
+            os.chflags(path, 0)  # an immutable file would outlive the test
 
 
 @pytest.mark.parametrize("name", NAMES)

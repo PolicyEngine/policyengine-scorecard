@@ -499,8 +499,9 @@ def test_registry_mark_has_one_writer_and_deletes_only_complement(database, tmp_
             writers.append(path.name)
     assert writers == ["ingest_obr_pmd.py"]
     path, _, _ = database
-    # A clone of the committed file: the backup API would write all of its
-    # pages (about 100 MB) before the delete below touches a fraction.
+    # A clone of the module's ingested database: SQLite's backup API would
+    # write all of its pages (about 100 MB) before the delete below touches
+    # a fraction of them.
     clone_copy.copy(path, tmp_path / "delete.db")
     clone = sqlite3.connect(tmp_path / "delete.db")
     total = clone.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0]
