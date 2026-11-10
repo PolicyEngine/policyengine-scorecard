@@ -1,0 +1,77 @@
+# Investigation packet: autumn_statement_2023 / autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p / CY2024
+
+This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.
+
+* Title: National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NICs from January 2024
+* Flags: numerical
+* Base: `pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504`
+* Head: `pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e`
+
+## Movements (£m, positive = gain to the Exchequer)
+
+| Level | Key | Base | Head | Change | Flags | Details |
+|---|---|---:|---:|---:|---|---|
+| source_row | obr_pmd_nov2025:10543:a1f1338aee24ceda | 0.0 | 0.0 | 0.0 | — | — |
+| source_row | obr_pmd_nov2025:10549:7322b894d39fa3ec | -10,469.2 | -10,910.6 | -441.3 | numerical | move_above_threshold |
+| source_row | obr_pmd_nov2025:10555:6e52d779b70c2afe | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:10561:0142012d49059613 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:21462:c775903b43caf723 | 163.0 | 176.8 | 13.9 | numerical | move_above_threshold |
+| source_row | obr_pmd_nov2025:21468:3a8f7c4777a80257 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:21474:9cbc966cf0e74bd1 | — | — | — | — | — |
+| measure_year | total | -10,306.2 | -10,733.7 | -427.5 | numerical | move_above_threshold |
+| head | income_tax | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_1_employee | -10,474.8 | -10,914.4 | -439.6 | numerical | move_above_threshold |
+| head | ni_class_1_employer | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_2 | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_4 | 5.6 | 3.8 | -1.7 | numerical | move_above_threshold |
+| head | universal_credit | 163.0 | 176.8 | 13.9 | numerical | move_above_threshold |
+
+## OBR source cells
+
+| Side | Source row | Table / column | FY | Head | OBR £m | Base £m | Head £m |
+|---|---|---|---|---|---:|---:|---:|
+| base | obr_pmd_nov2025:10543:a1f1338aee24ceda (row 10543) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Income tax | 369.0 | 0.0 | 0.0 |
+| base | obr_pmd_nov2025:10549:7322b894d39fa3ec (row 10549) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | NICs | -9,128.9 | -10,469.2 | -10,910.6 |
+| base | obr_pmd_nov2025:10555:6e52d779b70c2afe (row 10555) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Corporation tax (onshore) | -102.4 | — | — |
+| base | obr_pmd_nov2025:10561:0142012d49059613 (row 10561) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Capital gains tax | 0.0 | — | — |
+| base | obr_pmd_nov2025:21462:c775903b43caf723 (row 21462) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | Welfare inside cap | 116.3 | 163.0 | 176.8 |
+| base | obr_pmd_nov2025:21468:3a8f7c4777a80257 (row 21468) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | PSCE in RDEL | 2.0 | — | — |
+| base | obr_pmd_nov2025:21474:9cbc966cf0e74bd1 (row 21474) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | Scottish BGA (current) | 26.5 | — | — |
+| head | obr_pmd_nov2025:10543:a1f1338aee24ceda (row 10543) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Income tax | 369.0 | 0.0 | 0.0 |
+| head | obr_pmd_nov2025:10549:7322b894d39fa3ec (row 10549) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | NICs | -9,128.9 | -10,469.2 | -10,910.6 |
+| head | obr_pmd_nov2025:10555:6e52d779b70c2afe (row 10555) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Corporation tax (onshore) | -102.4 | — | — |
+| head | obr_pmd_nov2025:10561:0142012d49059613 (row 10561) | Tax Measures (Policy measures database) / 2024-25 | 2024-25 | Capital gains tax | 0.0 | — | — |
+| head | obr_pmd_nov2025:21462:c775903b43caf723 (row 21462) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | Welfare inside cap | 116.3 | 163.0 | 176.8 |
+| head | obr_pmd_nov2025:21468:3a8f7c4777a80257 (row 21468) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | PSCE in RDEL | 2.0 | — | — |
+| head | obr_pmd_nov2025:21474:9cbc966cf0e74bd1 (row 21474) | Spending Measures (Policy measures database) / 2024-25 | 2024-25 | Scottish BGA (current) | 26.5 | — | — |
+
+## Executed worlds
+
+* base: `results/uk/replays/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2024.json` (sha256 `5202657109177d8df58dfdf2bb9700c4782b86f2343905d3c0838d99d829fb42`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_1.rates.employee.main": {"2024-01-01.2035-12-31": 0.1}}`; reform dict `null`
+* head: `results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2024.json` (sha256 `147a9d46a53684aec68fc733d4abe8737053fe3a63a1a568f75a2ca80cc2abc7`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_1.rates.employee.main": {"2024-01-01.2035-12-31": 0.1}}`; reform dict `null`
+
+## Reproduce
+
+base:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504 --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.11.1_uk2.151.0_microcosm-uk-2024-25-national-20261025T091414Z-a6299504/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2024
+```
+
+head:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e --registry data/uk/events/autumn_statement_2023_measures.json --measures autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2024
+```
+
+## Sources the registry cites
+
+* none recorded
+
+## Minimal case
+
+To be completed by the investigating lane.
+
+## Statutory evidence
+
+To be completed by the investigating lane.

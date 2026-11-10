@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4f3f2ea2f254adc718969d13e1175a726331fee91d8a5314962bb6b09928ac21",
+  "COMPARISON.json": "a825a9782ba95c249ed8d0ec5e2e3afbb11127ef2261fd4235c078498f0fcbf0",
+  "COMPARISON.md": "dc7c63435ecb37cf2727684114a831882a23733e996a12d549b14739a7fe45f3"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "0cd2389eb0de82070bab79ea6acc6523bef1deb474c830949264d4168daea9b9",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "b3412a1530b5c49ec31999989eaaa9e82220469e61b8e80194b720897dc8a969",
+ "staging_manifest_path": "results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "8e4ff4237622ce4de3756b7b59c26eb03c27be7a4cdaf282d60dad46dc4e4850"
+}

@@ -1,0 +1,68 @@
+{
+ "by_status": {
+  "constructed": 24,
+  "inert_construction": 10,
+  "not_computed": 1100
+ },
+ "computed_measure_years": 30,
+ "event": "autumn_budget_2024",
+ "full_event_complete": false,
+ "full_event_grid_size": 30,
+ "full_supported_grid_complete": false,
+ "inert_measure_years": [
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2029
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2029
+  }
+ ],
+ "missing_measure_years": [],
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "source_rows": 1134,
+ "source_value_gbp": -190164695347.9921,
+ "source_value_gbp_decimal": "-190164695347.9920989661272",
+ "staged_path": "results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/STAGED.jsonl",
+ "staged_rows": 1134,
+ "staged_sha256": "ed54d093419e6858225b8174faf588cfc12d0a951f189a4632d713f6b332f35e",
+ "staged_value_gbp_decimal": "-190164695347.9920989661272",
+ "supported_grid_size": 30,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+}

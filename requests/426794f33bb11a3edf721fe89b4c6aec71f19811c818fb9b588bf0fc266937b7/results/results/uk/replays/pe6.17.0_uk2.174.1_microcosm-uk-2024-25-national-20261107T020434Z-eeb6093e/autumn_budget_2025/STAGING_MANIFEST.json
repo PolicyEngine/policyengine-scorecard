@@ -1,0 +1,52 @@
+{
+ "by_status": {
+  "constructed": 78,
+  "inert_construction": 12,
+  "not_computed": 1422
+ },
+ "computed_measure_years": 54,
+ "event": "autumn_budget_2025",
+ "full_event_complete": false,
+ "full_event_grid_size": 54,
+ "full_supported_grid_complete": false,
+ "inert_measure_years": [
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2025
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2026
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2027
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2028
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2029
+  },
+  {
+   "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+   "year": 2030
+  }
+ ],
+ "missing_measure_years": [],
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "source_rows": 1512,
+ "source_value_gbp": 20106669555.758602,
+ "source_value_gbp_decimal": "20106669555.75860149730126",
+ "staged_path": "results/uk/replays/pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2025/STAGED.jsonl",
+ "staged_rows": 1512,
+ "staged_sha256": "fbe9c5df33da5c73081ebda74aa26f924e42e1dcdee50a7347eba5a25a514778",
+ "staged_value_gbp_decimal": "20106669555.75860149730126",
+ "supported_grid_size": 54,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.17.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+}
