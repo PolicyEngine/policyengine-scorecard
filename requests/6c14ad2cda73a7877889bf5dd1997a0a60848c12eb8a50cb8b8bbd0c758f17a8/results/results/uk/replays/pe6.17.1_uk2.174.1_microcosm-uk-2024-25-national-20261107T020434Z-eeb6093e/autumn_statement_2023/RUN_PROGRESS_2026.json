@@ -1,0 +1,20 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json": "c674369344c6f5a6c73ecb178d504a726257d39d4c0db36ea4b77f2eebf63b8b",
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2026.json": "09d18514acab4c427e2248fe1380c7ed85f468af885a7dc40c871651ce6149f1",
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json": "d652af4c0b38446556df5c996b8944c87a9a06c239ce0d3037598d28f74d5636",
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2026.json": "8f4f988c4082fd1e90f5631aafacd97babb56ed46776452c492201180a0565ca"
+ },
+ "certified_dataset_sha256": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "data_bundle": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "engine_version": "2.174.1",
+ "event": "autumn_statement_2023",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.17.1",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "schema_version": 1,
+ "variant_id": "pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "variant_identity_sha256": "cc739b298c0311ffa3cd8b7fb9aedca35a6e8b961e577948b20f2c4747f99aee",
+ "year": 2026
+}

@@ -1,0 +1,18 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2026.json": "89e2ed359f083289203a1ad24b7b79d9d96296e91419fded07f9a1b4878dddb8",
+  "results/uk/replays/pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2026.json": "bc15bac53baa9e20463b9129f4e8e94c3547c47cbb1138072524bb3589d9af2e"
+ },
+ "certified_dataset_sha256": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "data_bundle": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "engine_version": "2.174.1",
+ "event": "spring_budget_2023",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.17.1",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "schema_version": 1,
+ "variant_id": "pe6.17.1_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "variant_identity_sha256": "cc739b298c0311ffa3cd8b7fb9aedca35a6e8b961e577948b20f2c4747f99aee",
+ "year": 2026
+}
