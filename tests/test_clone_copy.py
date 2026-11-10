@@ -7,6 +7,7 @@ later writes. Cost: on APFS a fresh clone holds no data blocks of its own,
 and the clone path is the one taken (a broken binding would silently fall
 back to byte copies, which no other test would notice)."""
 
+import ast
 import ctypes
 import ctypes.util
 import errno
@@ -27,6 +28,7 @@ APFS = sys.platform == "darwin"
 MODES = st.sampled_from([0o644, 0o600, 0o755, 0o640, 0o444, 0o400, 0o700])
 CONTENTS = st.binary(max_size=3 * 4096 + 7)
 NAMES = ("copyfile", "copy", "copy2")
+TESTS = Path(__file__).resolve().parent
 
 
 def _private_bytes(path) -> int:
@@ -232,3 +234,71 @@ def test_on_apfs_a_copy_is_a_clone_that_holds_no_blocks_of_its_own(tmp_path):
     for name in NAMES:
         os.unlink(tmp_path / name)
     assert _private_bytes(src) >= 1 << 20
+
+
+# --- every copy in the tests goes through clone_copy -------------------------
+
+_COPIERS = {"copy", "copy2", "copyfile", "copytree"}
+
+
+def _direct_copies(source: str) -> list[tuple[int, str]]:
+    """Where code (not a string) names one of shutil's file copiers: a call,
+    a reference such as copy_function=shutil.copy, or an import."""
+    tree = ast.parse(source)
+    names = {"shutil"}  # and any `import shutil as x`
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            names |= {a.asname for a in node.names if a.name == "shutil" and a.asname}
+    found = []
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Attribute)
+            and node.attr in _COPIERS
+            and isinstance(node.value, ast.Name)
+            and node.value.id in names
+        ):
+            found.append((node.lineno, f"shutil.{node.attr}"))
+        elif isinstance(node, ast.ImportFrom) and node.module == "shutil":
+            found += [
+                (node.lineno, f"from shutil import {a.name}")
+                for a in node.names
+                if a.name in _COPIERS or a.name == "*"
+            ]
+    return sorted(found)
+
+
+def test_no_test_copies_a_file_with_shutil_directly():
+    """A byte copy of the database or of a replay tree costs its full size
+    in temp disk; clone_copy's copy costs only what the test then changes.
+    Scripts that a test writes out and runs in a subprocess hold their
+    copies in strings, which this leaves alone: tests/ is not on their path."""
+    offenders = {}
+    for path in sorted(TESTS.glob("*.py")):
+        if path.name in {"clone_copy.py", Path(__file__).name}:
+            continue
+        hits = _direct_copies(path.read_text())
+        if hits:
+            offenders[path.name] = hits
+    assert offenders == {}, "use clone_copy's copy functions instead"
+
+
+def test_the_copy_guard_sees_calls_references_and_imports_not_strings():
+    source = (
+        "import shutil\n"
+        "import shutil as sh\n"
+        "shutil.copy2(a, b)\n"
+        "shutil.copytree(a, b, copy_function=shutil.copy)\n"
+        "from shutil import copyfile as cf, rmtree\n"
+        "sh.copyfile(a, b)\n"
+        "SCRIPT = 'shutil.copytree(a, b)'\n"
+        "shutil.rmtree(a)\n"
+        "shutil.copyfileobj(f, g)\n"
+        "clone_copy.copy2(a, b)\n"
+    )
+    assert _direct_copies(source) == [
+        (3, "shutil.copy2"),
+        (4, "shutil.copy"),
+        (4, "shutil.copytree"),
+        (5, "from shutil import copyfile"),
+        (6, "shutil.copyfile"),
+    ]
