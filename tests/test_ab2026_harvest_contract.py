@@ -11,12 +11,12 @@ import gzip
 import io
 import json
 import math
-import shutil
 import tempfile
 import time
 from itertools import product
 from pathlib import Path
 
+import clone_copy
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -2265,7 +2265,7 @@ def _family_with_a_proposed_key(
     tmp_path, notes_extra, key="ab2026__package_test_scope"
 ):
     fam = tmp_path / "uk_test_family"
-    shutil.copytree(FAMILY, fam)
+    clone_copy.copytree(FAMILY, fam)
     rows = read_rows(fam)
     i = rows.index(BASE)
     rows[i]["measure_key"] = None
@@ -2305,7 +2305,7 @@ def test_a_scope_for_a_longer_key_does_not_scope_its_prefix(tmp_path):
 
 def _family_with_copies(tmp_path, n, factor=1.0):
     fam = tmp_path / "uk_test_family"
-    shutil.copytree(FAMILY, fam)
+    clone_copy.copytree(FAMILY, fam)
     rows = read_rows(fam)
     i = rows.index(BASE)
     extra = copy.deepcopy(BASE)
@@ -2331,7 +2331,7 @@ def test_a_pair_that_disagrees_is_a_problem(tmp_path):
 
 def _family(tmp_path):
     fam = tmp_path / "uk_test_family"
-    shutil.copytree(FAMILY, fam)
+    clone_copy.copytree(FAMILY, fam)
     return fam
 
 
@@ -2606,7 +2606,7 @@ def test_any_family_file_gives_problems_never_an_exception(lines):
         fam = Path(d) / "uk_fuzz"
         fam.mkdir()
         (fam / "NOTES.md").write_text("Fuzzed family.\n")
-        shutil.copy(FAMILY / "manifest.jsonl", fam / "manifest.jsonl")
+        clone_copy.copy(FAMILY / "manifest.jsonl", fam / "manifest.jsonl")
         body = "".join(
             line.replace("\n", " ").replace("\r", " ") + "\n"
             for line in [json.dumps(BASE), *lines]

@@ -66,7 +66,7 @@ def test_qc_catches_a_wrong_household_size():
         a.qc(b1, b2)
 
 
-def test_facts_route_to_chronicle_not_claims():
+def test_facts_route_to_chronicle_not_claims(readonly_scorecard_db):
     facts = staging.stage_snap_qc()
     assert len(facts) == 540
     assert {f["routing"] for f in facts} == {staging.ROUTING}
@@ -80,14 +80,10 @@ def test_facts_route_to_chronicle_not_claims():
     assert [f for f in committed if f["fact_id"] in ids] == sorted(
         facts, key=lambda f: f["fact_id"]
     )
-    db = REPO / "data" / "scorecard.db"
-    if db.exists():
-        conn = sqlite3.connect(db)
-        stage = conn.execute(
-            "SELECT stage FROM lanes WHERE lane = 'snap-qc'"
-        ).fetchone()
-        n = conn.execute(
-            "SELECT COUNT(*) FROM external_scores WHERE source LIKE 'snap_qc%'"
-        ).fetchone()[0]
-        conn.close()
-        assert stage == ("cataloged",) and n == 0
+    conn = sqlite3.connect(readonly_scorecard_db)
+    stage = conn.execute("SELECT stage FROM lanes WHERE lane = 'snap-qc'").fetchone()
+    n = conn.execute(
+        "SELECT COUNT(*) FROM external_scores WHERE source LIKE 'snap_qc%'"
+    ).fetchone()[0]
+    conn.close()
+    assert stage == ("cataloged",) and n == 0

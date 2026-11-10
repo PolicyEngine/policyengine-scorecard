@@ -30,6 +30,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import clone_copy
 import pytest
 import yaml
 from hypothesis import given, settings
@@ -2914,13 +2915,13 @@ class Remote:
         for key, value in (("user.name", "Test"), ("user.email", "test@example.org")):
             git(self.seed, "config", key, value)
         ignore = shutil.ignore_patterns("__pycache__")
-        shutil.copytree(ROOT / "pipeline", self.seed / "pipeline", ignore=ignore)
-        shutil.copytree(ROOT / ".github", self.seed / ".github")
+        clone_copy.copytree(ROOT / "pipeline", self.seed / "pipeline", ignore=ignore)
+        clone_copy.copytree(ROOT / ".github", self.seed / ".github")
         for relative in (
             "docs/uk_replay/schemas",
             "docs/uk_replay/requirements",
         ):
-            shutil.copytree(ROOT / relative, self.seed / relative)
+            clone_copy.copytree(ROOT / relative, self.seed / relative)
         for relative in (
             builder.INDEX,
             builder.DOC,
@@ -2930,14 +2931,14 @@ class Remote:
             "docs/uk_replay/requirements.txt",
         ):
             (self.seed / relative).parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(ROOT / relative, self.seed / relative)
+            clone_copy.copyfile(ROOT / relative, self.seed / relative)
         (self.seed / ".github/scripts/uk_replay_regenerate.sh").write_text(
             REGENERATE_STUB
         )
         (self.seed / "scorecard_db").mkdir()
         (self.seed / "scorecard_db/__init__.py").write_text("")
         (self.seed / "scorecard_db/build_db.py").write_text(BUILD_STUB)
-        shutil.copyfile(ROOT / ".gitignore", self.seed / ".gitignore")
+        clone_copy.copyfile(ROOT / ".gitignore", self.seed / ".gitignore")
         git(self.seed, "add", ".")
         git(self.seed, "commit", "-qm", "Main")
         self.state = tmp_path / "state"
@@ -3715,7 +3716,7 @@ def test_a_variant_whose_digest_is_not_its_identitys_is_refused(tmp_path):
     record["identity"]["packages"]["policyengine"]["record_sha256"] = "f" * 64
     (directory / "results/VARIANT.json").write_bytes(qualify.canonical_bytes(record))
     (tmp_path / "main" / builder.INDEX).parent.mkdir(parents=True)
-    shutil.copyfile(rv.VARIANTS_PATH, tmp_path / "main" / builder.INDEX)
+    clone_copy.copyfile(rv.VARIANTS_PATH, tmp_path / "main" / builder.INDEX)
     for strict in (True, False):
         with pytest.raises(builder.Refused, match="not its identity's digest"):
             builder.check(directory, tmp_path / "main", rid, "0" * 40, strict=strict)
@@ -4319,9 +4320,11 @@ def test_the_recorder_dispatches_the_results_workflow_for_a_complete_request(
     git(runner, "switch", "-q", "--detach")
     for relative in ("pipeline/uk_replay_queue.py", "pipeline/uk_replay_interface.py"):
         (runner / relative).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / relative, runner / relative)
-    shutil.copytree(ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas")
-    shutil.copytree(ROOT / ".github/scripts", runner / ".github/scripts")
+        clone_copy.copyfile(ROOT / relative, runner / relative)
+    clone_copy.copytree(
+        ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas"
+    )
+    clone_copy.copytree(ROOT / ".github/scripts", runner / ".github/scripts")
     receipt = committed_receipt(PE650)
     receipt.update(request_id=request_id)
     receipt["results"]["path"] = f"requests/{request_id}/results/"
@@ -4411,9 +4414,11 @@ def test_the_recorder_dispatches_nothing_for_a_failed_request(tmp_path):
     git(runner, "switch", "-q", "--detach")
     for relative in ("pipeline/uk_replay_queue.py", "pipeline/uk_replay_interface.py"):
         (runner / relative).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / relative, runner / relative)
-    shutil.copytree(ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas")
-    shutil.copytree(ROOT / ".github/scripts", runner / ".github/scripts")
+        clone_copy.copyfile(ROOT / relative, runner / relative)
+    clone_copy.copytree(
+        ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas"
+    )
+    clone_copy.copytree(ROOT / ".github/scripts", runner / ".github/scripts")
     receipt = queue.write_failure_receipt(
         tmp_path / "scratch", request_id, code="event_run_failed", detail="failed"
     )

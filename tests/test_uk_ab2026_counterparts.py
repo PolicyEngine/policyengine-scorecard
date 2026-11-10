@@ -45,12 +45,12 @@ import io
 import json
 import random
 import re
-import shutil
 import sqlite3
 from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
 
+import clone_copy
 import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
@@ -1106,7 +1106,7 @@ def built(tmp_path_factory):
     db_path = tmp / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     I.ingest(db_path, feed)
     I.ingest_verdicts(db_path)
     attached = ingest_campaign.ingest(db_path, I.STAGED_COUNTERPARTS)

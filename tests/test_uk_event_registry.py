@@ -7,6 +7,7 @@ import json
 from decimal import Decimal
 from pathlib import Path
 
+import clone_copy
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -661,9 +662,10 @@ def test_a_registry_without_a_selector_has_no_execution_gate():
 
 
 def test_historical_selector_must_match_the_source_years(tmp_path, monkeypatch):
-    import shutil
 
-    shutil.copy(ROOT / "docs/uk_replay/selectors/spring_statement_2022.json", tmp_path)
+    clone_copy.copy(
+        ROOT / "docs/uk_replay/selectors/spring_statement_2022.json", tmp_path
+    )
     selector = json.loads((tmp_path / "spring_statement_2022.json").read_text())
     selector["scoring_fys"] = selector["scoring_fys"][1:]
     (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))

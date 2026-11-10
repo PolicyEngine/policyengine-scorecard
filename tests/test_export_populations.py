@@ -372,10 +372,12 @@ def test_release_label():
 
 
 @pytest.mark.skipif(not COMMITTED_DB.exists(), reason="no committed DB")
-def test_integration_committed_db(tmp_path):
-    stats = export(COMMITTED_DB, out_path=tmp_path / "p.json", built="2026-08-05")
+def test_integration_committed_db(tmp_path, readonly_scorecard_db):
+    stats = export(
+        readonly_scorecard_db, out_path=tmp_path / "p.json", built="2026-08-05"
+    )
     payload = json.loads((tmp_path / "p.json").read_text())
-    db = ScorecardDB(COMMITTED_DB)
+    db = ScorecardDB(readonly_scorecard_db)
     expected = db.conn.execute(
         """SELECT COUNT(*) FROM external_scores s
            WHERE source != 'urban_sotsn'

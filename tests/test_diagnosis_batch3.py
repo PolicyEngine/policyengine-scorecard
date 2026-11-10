@@ -7,8 +7,6 @@ import sqlite3
 from collections import Counter
 from pathlib import Path
 
-import pytest
-
 from scorecard_db import ingest_aspe_welfare_indicators as aspe
 from scorecard_db import ingest_fns_snap_rates as fns
 from scorecard_db import ingest_irs_eitc_participation as eitc
@@ -60,12 +58,9 @@ def test_memos_match_the_records():
             assert f"## {key}{n}. {item['title']}" in memo
 
 
-def test_ingest_wrote_the_batch():
-    db = REPO / "data" / "scorecard.db"
-    if not db.exists():
-        pytest.skip("scorecard.db not built")
+def test_ingest_wrote_the_batch(readonly_scorecard_db):
     ids = [c for items in _items().values() for i in items for c in i["claim_ids"]]
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect(readonly_scorecard_db)
     marks = ",".join("?" * len(ids))
     rows = conn.execute(
         f"SELECT diagnosis_class, COUNT(*) FROM diagnoses WHERE claim_id IN ({marks})"

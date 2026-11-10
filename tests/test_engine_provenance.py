@@ -60,10 +60,10 @@ def test_every_model_output_source_names_a_registered_engine():
         assert engine in engines.ENGINES, src
 
 
-def test_the_built_db_carries_engines_not_publishers():
+def test_the_built_db_carries_engines_not_publishers(readonly_scorecard_db):
     """The end-to-end check: no model-output claim may carry its own
     source slug in source_model."""
-    conn = sqlite3.connect("data/scorecard.db")
+    conn = sqlite3.connect(readonly_scorecard_db)
     rows = dict(
         conn.execute(
             "SELECT source, source_model FROM external_scores "
@@ -102,10 +102,12 @@ def test_a_release_the_ledger_lacks_is_not_known():
     assert not engines.known_release("ifs", "ukmod_b1.13")
 
 
-def test_every_versioned_spelling_in_the_built_db_is_a_recorded_release():
+def test_every_versioned_spelling_in_the_built_db_is_a_recorded_release(
+    readonly_scorecard_db,
+):
     """The ledger is consumed, not decorative: a claim may carry a release
     only if the ledger records that publisher running it."""
-    conn = sqlite3.connect("data/scorecard.db")
+    conn = sqlite3.connect(readonly_scorecard_db)
     rows = conn.execute(
         "SELECT DISTINCT source, source_model FROM external_scores"
         " WHERE source_model IS NOT NULL"

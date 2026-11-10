@@ -96,11 +96,8 @@ def test_claims_and_results():
         )
 
 
-def test_the_registry_claim_survives():
-    db = REPO / "data" / "scorecard.db"
-    if not db.exists():
-        pytest.skip("scorecard.db not built")
-    conn = sqlite3.connect(db)
+def test_the_registry_claim_survives(readonly_scorecard_db):
+    conn = sqlite3.connect(readonly_scorecard_db)
     rows = conn.execute(
         "SELECT COALESCE(source_model, ''), COUNT(*) FROM external_scores "
         "WHERE source = 'ca_fiscal_note' GROUP BY 1"

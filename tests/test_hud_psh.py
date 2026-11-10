@@ -104,13 +104,10 @@ def test_facts_route_to_chronicle_not_claims():
     )
 
 
-def test_no_hud_claims_in_the_scorecard_db():
+def test_no_hud_claims_in_the_scorecard_db(readonly_scorecard_db):
     import sqlite3
 
-    db = REPO / "data" / "scorecard.db"
-    if not db.exists():
-        pytest.skip("scorecard.db not built")
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect(readonly_scorecard_db)
     n = conn.execute(
         "SELECT COUNT(*) FROM external_scores WHERE source LIKE 'hud%'"
     ).fetchone()[0]

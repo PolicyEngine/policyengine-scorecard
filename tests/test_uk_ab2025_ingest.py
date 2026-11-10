@@ -10,10 +10,10 @@ that puts national-grain rows on the page before a counterpart exists.
 
 import gzip
 import json
-import shutil
 import sqlite3
 from pathlib import Path
 
+import clone_copy
 import pytest
 
 from scorecard_db import ScorecardDB
@@ -290,7 +290,7 @@ def test_round_trip_and_lanes(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp_path / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     summary = ingest(db_path, feed)
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -318,7 +318,7 @@ def test_ingest_is_idempotent_and_touches_only_its_own_rows(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp_path / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     ingest(db_path, feed)
     ingest(db_path, feed)
     conn = sqlite3.connect(db_path)

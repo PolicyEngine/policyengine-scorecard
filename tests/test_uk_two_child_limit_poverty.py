@@ -25,7 +25,6 @@ from scorecard_db.models import STANDARD_CONDITIONS
 REPO = Path(__file__).resolve().parent.parent
 DWP_SRC = REPO / "sources" / "dwp-two-child-limit-poverty"
 RF_SRC = REPO / "sources" / "rf-no-half-measures"
-DB = REPO / "data" / "scorecard.db"
 RESULTS = REPO / "results" / "uk" / "two_child_limit_poverty"
 
 # DWP Table 1 (relative low income AHC) as published, read from the note on
@@ -64,8 +63,8 @@ def artifact():
 
 
 @pytest.fixture(scope="module")
-def conn():
-    c = sqlite3.connect(DB)
+def conn(shared_scorecard_db):
+    c = sqlite3.connect(shared_scorecard_db)
     c.row_factory = sqlite3.Row
     yield c
     c.close()

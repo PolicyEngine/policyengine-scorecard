@@ -2,22 +2,18 @@
 vocabulary, exhibit deferral, idempotency, and provenance fidelity."""
 
 import json
-import shutil
 import sqlite3
 
 import pytest
 
-from scorecard_db.export_populations import REPO
 from scorecard_db.ingest_campaign import STAGED_US, _normalize, ingest
-
-COMMITTED_DB = REPO / "data" / "scorecard.db"
 
 
 @pytest.fixture()
-def db_copy(tmp_path):
-    path = tmp_path / "scorecard.db"
-    shutil.copy(COMMITTED_DB, path)
-    return path
+def db_copy(writable_scorecard_db):
+    # Every test here writes to the database, or proves that an abort
+    # leaves it unchanged, so each gets its own (cloned) copy.
+    return writable_scorecard_db
 
 
 def test_normalizers():

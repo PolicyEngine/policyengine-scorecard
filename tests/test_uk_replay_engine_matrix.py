@@ -17,11 +17,11 @@ import ast
 import importlib.util
 import json
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import clone_copy
 import pytest
 import yaml
 from hypothesis import given, settings
@@ -87,7 +87,7 @@ def run_step(directory):
 def checkout_copy(tmp_path, index_bytes):
     """What the job's sparse checkout holds: the script and the index."""
     (tmp_path / ".github/scripts").mkdir(parents=True)
-    shutil.copyfile(SCRIPT, tmp_path / ".github/scripts" / SCRIPT.name)
+    clone_copy.copyfile(SCRIPT, tmp_path / ".github/scripts" / SCRIPT.name)
     (tmp_path / INDEX).parent.mkdir(parents=True)
     (tmp_path / INDEX).write_bytes(index_bytes)
     return tmp_path

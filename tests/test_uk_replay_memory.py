@@ -8,10 +8,11 @@ measurements here, so the committed per-dataset peaks are derived, not typed.
 
 import copy
 import json
-import shutil
 import sys
+import tempfile
 from pathlib import Path
 
+import clone_copy
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -43,7 +44,7 @@ def workload_root(tmp_path) -> Path:
     for relative in qualify.MEMORY_WORKLOAD_FILES:
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(qualify.ROOT / relative, target)
+        clone_copy.copy2(qualify.ROOT / relative, target)
     return tmp_path
 
 
@@ -128,19 +129,21 @@ def test_process_tree_rss_sums_the_root_and_every_descendant_only(tmp_path):
 )
 def test_process_tree_rss_is_the_sum_over_the_subtree(tmp_path_factory, sizes, data):
     """For any tree, the root's total is its own RSS plus each child's total."""
-    tmp_path = tmp_path_factory.mktemp("proc")
-    parents = {
-        10 + i: (data.draw(st.integers(10, 9 + i)) if i else 1)
-        for i in range(len(sizes))
-    }
-    proc = fake_proc(
-        tmp_path, {pid: (parents[pid], sizes[pid - 10]) for pid in parents}
-    )
-    for pid in parents:
-        children = [child for child, parent in parents.items() if parent == pid]
-        assert qualify.process_tree_rss(pid, proc) == sizes[pid - 10] * 1024 + sum(
-            qualify.process_tree_rss(child, proc) for child in children
+    # Each example's folder goes when the example ends: a mktemp folder
+    # would stay until the session ends, one per example.
+    with tempfile.TemporaryDirectory(dir=tmp_path_factory.getbasetemp()) as d:
+        parents = {
+            10 + i: (data.draw(st.integers(10, 9 + i)) if i else 1)
+            for i in range(len(sizes))
+        }
+        proc = fake_proc(
+            Path(d), {pid: (parents[pid], sizes[pid - 10]) for pid in parents}
         )
+        for pid in parents:
+            children = [child for child, parent in parents.items() if parent == pid]
+            assert qualify.process_tree_rss(pid, proc) == sizes[pid - 10] * 1024 + sum(
+                qualify.process_tree_rss(child, proc) for child in children
+            )
 
 
 # --- choosing the worker count ----------------------------------------------------
@@ -276,13 +279,16 @@ def test_an_unknown_evidence_format_means_one_worker(tmp_path):
 def test_the_choice_is_the_fit_and_monotone(tmp_path_factory, peak, total, more):
     """Two workers exactly when peak + reserve <= memory; more memory never
     means fewer workers, and a higher peak never means more."""
-    root = evidence_root(tmp_path_factory.mktemp("evidence"), [peak])
-    assert choose(root, total)[0] == (
-        2 if peak + qualify.MEMORY_RESERVE_BYTES <= total else 1
-    )
-    assert choose(root, total + more)[0] >= choose(root, total)[0]
-    higher = evidence_root(tmp_path_factory.mktemp("evidence"), [peak + more])
-    assert choose(higher, total)[0] <= choose(root, total)[0]
+    # Each example's folders go when the example ends: mktemp folders would
+    # stay until the session ends, two per example (about 1.4 GB at 300).
+    with tempfile.TemporaryDirectory(dir=tmp_path_factory.getbasetemp()) as d:
+        root = evidence_root(Path(d) / "lower", [peak])
+        assert choose(root, total)[0] == (
+            2 if peak + qualify.MEMORY_RESERVE_BYTES <= total else 1
+        )
+        assert choose(root, total + more)[0] >= choose(root, total)[0]
+        higher = evidence_root(Path(d) / "higher", [peak + more])
+        assert choose(higher, total)[0] <= choose(root, total)[0]
 
 
 # --- the committed evidence ---------------------------------------------------------

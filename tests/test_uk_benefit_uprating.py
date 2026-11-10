@@ -113,15 +113,8 @@ def test_lha_rise_needs_the_freeze():
         up.rise(staged, "lha", "2026")
 
 
-def _db():
-    db = REPO / "data" / "scorecard.db"
-    if not db.exists():
-        pytest.skip("scorecard.db not built")
-    return sqlite3.connect(db)
-
-
-def test_attached_results_in_the_built_db():
-    conn = _db()
+def test_attached_results_in_the_built_db(readonly_scorecard_db):
+    conn = sqlite3.connect(readonly_scorecard_db)
     rows = conn.execute(
         "SELECT s.source, r.status, COUNT(*) FROM pe_results r "
         "JOIN external_scores s USING (claim_id) WHERE r.run_id LIKE ? "
@@ -137,8 +130,8 @@ def test_attached_results_in_the_built_db():
     ]
 
 
-def test_every_hmt_uprating_claim_is_mapped():
-    conn = _db()
+def test_every_hmt_uprating_claim_is_mapped(readonly_scorecard_db):
+    conn = sqlite3.connect(readonly_scorecard_db)
     policies = {
         json.loads(r)["reform"]["policy"]
         for (r,) in conn.execute(

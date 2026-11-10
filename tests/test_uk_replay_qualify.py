@@ -10,6 +10,7 @@ import json
 import shutil
 from pathlib import Path
 
+import clone_copy
 import jsonschema
 import pytest
 from hypothesis import given, settings
@@ -350,7 +351,6 @@ def test_an_inert_construction_makes_the_receipt_incomplete_and_names_the_pair(
     # Coordinator, 2026-10-11: identical worlds in an in-force year on the
     # candidate's engine must not let a receipt claim a complete corpus.
     import functools
-    import shutil
 
     from test_uk_event_diff import EVENT, KEY, make_namespace, synthetic_record
 
@@ -363,7 +363,7 @@ def test_an_inert_construction_makes_the_receipt_incomplete_and_names_the_pair(
         tmp_path, "candidate", variant=CURRENT, identical=(2025,) if inert else ()
     )
     record = rv.get_variant(CURRENT)
-    shutil.copytree(
+    clone_copy.copytree(
         tmp_path / "ns" / "candidate", rv.namespace_root(record, root=tmp_path)
     )
     monkeypatch.setattr(
@@ -402,7 +402,6 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
     # the premises predict stays incomplete. Found by 6.4.1, where the UC
     # health element reversal went inert on policyengine-uk 2.130.1.
     import functools
-    import shutil
 
     from test_uk_event_diff import EVENT, KEY, make_namespace, synthetic_record
 
@@ -414,7 +413,7 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
     make_namespace(tmp_path, "candidate", variant=CURRENT, identical=(2025,))
     record = rv.get_variant(CURRENT)
     namespace = rv.namespace_root(record, root=tmp_path)
-    shutil.copytree(tmp_path / "ns" / "candidate", namespace)
+    clone_copy.copytree(tmp_path / "ns" / "candidate", namespace)
     path = "gov.example.amount"
     reform_value = 437.66 if premises_say_differ else 217.26
     premises = {
@@ -716,7 +715,6 @@ def test_corpus_logs_memory_around_each_event_with_its_worker_count(
 
 
 def local_runner(tmp_path, variant_id=CURRENT):
-    import shutil
     import subprocess
 
     root = tmp_path / "runner"
@@ -730,7 +728,7 @@ def local_runner(tmp_path, variant_id=CURRENT):
     ):
         target = root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(qualify.ROOT / relative, target)
+        clone_copy.copy2(qualify.ROOT / relative, target)
     namespace = rv.namespace_root(record, root=root)
     (namespace / qualify.EVENTS[0]).mkdir(parents=True)
     (namespace / qualify.EVENTS[0] / "RUN_MANIFEST.json").write_text(
@@ -968,7 +966,7 @@ def test_the_corpus_runs_the_measured_worker_count_and_the_receipt_says_why(
     evidence.parent.mkdir(parents=True, exist_ok=True)
     for relative in qualify.MEMORY_WORKLOAD_FILES:
         (root / relative).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(qualify.ROOT / relative, root / relative)
+        clone_copy.copy2(qualify.ROOT / relative, root / relative)
     rows = [
         {
             "workload": qualify.memory_workload(
