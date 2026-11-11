@@ -144,6 +144,6 @@ def unchanged_by(path, who: str):
     after = signature(path)
     if after != before or siblings(path):
         raise SharedDatabaseWritten(
-            f"{who} wrote to the shared read-only database {path}: "
+            f"{who} changed the shared read-only database {path}: "
             f"signature {before} -> {after}, files beside it {siblings(path)}"
         )

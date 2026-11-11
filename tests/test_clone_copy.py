@@ -4,8 +4,9 @@ Differential: for any contents, mode (setuid and sticky included) and
 umask, each function leaves the file shutil leaves (bytes, mode bits and
 file flags, and for copy2 the timestamps) and returns the same path. Independence: a clone and its source never see each other's
 later writes. Cost: on APFS a fresh clone holds no data blocks of its own,
-and the clone path is the one taken (a broken binding would silently fall
-back to byte copies, which no other test would notice)."""
+and the clone path is the one taken, for a copy into a directory and for
+each file copytree copies too (a broken binding would silently fall back
+to byte copies, which no other test would notice)."""
 
 import ast
 import ctypes
@@ -288,8 +289,22 @@ def test_on_apfs_a_copy_is_a_clone_that_holds_no_blocks_of_its_own(tmp_path):
         # One written byte copies one extent (16 KiB here), not the file.
         _write_synced(dst, b"x", offset=0)
         assert 0 < _private_bytes(dst) <= 64 * 1024, name
-    for name in NAMES:
-        os.unlink(tmp_path / name)
+    # A copy into a directory, and each file copytree copies, clone too:
+    # shutil's byte copies would leave the same files at full cost.
+    clones = []
+    for name in ("copy", "copy2"):
+        folder = tmp_path / f"into-{name}"
+        folder.mkdir()
+        clones.append(Path(getattr(clone_copy, name)(src, folder)))
+        assert clones[-1] == folder / src.name
+    tree = tmp_path / "tree"
+    tree.mkdir()
+    os.link(src, tree / src.name)  # the same file, so the same blocks
+    clones.append(Path(clone_copy.copytree(tree, tmp_path / "tree-copy")) / src.name)
+    for clone in clones:
+        assert _private_bytes(clone) == 0, clone
+    for path in [tmp_path / name for name in NAMES] + clones + [tree / src.name]:
+        os.unlink(path)
     assert _private_bytes(src) >= 1 << 20
 
 

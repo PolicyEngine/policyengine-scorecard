@@ -5,12 +5,13 @@ data/scorecard.db per session (shared_db.py, wired up in conftest.py). This
 module checks the share against the built database, checks that SQLite and
 the file system both refuse writes to it, and then runs inner pytest
 sessions, through the real conftest fixtures, in which a read-only test
-writes to the share: each such session fails, and its report names the
-test that wrote. One more inner session starts from a database whose schema
-predates the code: its readers pass, the source keeps its bytes, and the
-report says to rebuild it. Between the two, a section checks that a copy
-holds what SQLite's readers see when a writer died mid-transaction, while a
-writer holds the file, and when the database runs in WAL mode.
+writes to the share or clears its read-only mode: each such session fails,
+and its report names the test. One more inner session starts from a
+database whose schema predates the code: its readers pass, the source keeps
+its bytes, and the report says to rebuild it. Between the two, a section
+checks that a copy holds what SQLite's readers see when a writer died
+mid-transaction, while a writer holds the file, when a writer tries to
+commit during the copy, and when the database runs in WAL mode.
 """
 
 import contextlib
@@ -309,6 +310,28 @@ def test_a_copy_of_a_wal_database_holds_the_pages_its_wal_file_holds(tmp_path):
         holder.close()
 
 
+def test_no_writer_commits_while_a_copy_runs(tmp_path):
+    """The copy runs inside a read transaction, so a writer that starts
+    after it began cannot commit until it ends; once it ends, the same
+    write goes through."""
+    source = _rows_database(tmp_path / "source.db", rows=500)
+
+    def copy_while_a_writer_tries(src, dst):
+        writer = sqlite3.connect(src, timeout=0, isolation_level=None)
+        try:
+            with pytest.raises(sqlite3.OperationalError, match="locked"):
+                writer.execute("UPDATE t SET s = 'during the copy'")
+        finally:
+            writer.close()
+        return clone_copy.copy2(src, dst)
+
+    copy = shared_db.snapshot(source, tmp_path / "copy.db", copy_while_a_writer_tries)
+    assert _values(copy) == {"committed": 500}
+    with contextlib.closing(sqlite3.connect(source, isolation_level=None)) as writer:
+        writer.execute("UPDATE t SET s = 'after the copy'")
+    assert _values(source) == {"after the copy": 500}
+
+
 def test_a_copy_never_creates_a_missing_database(tmp_path):
     with pytest.raises(sqlite3.OperationalError):
         shared_db.snapshot(tmp_path / "missing.db", tmp_path / "copy.db")
@@ -442,9 +465,27 @@ def test_a_read_only_test_that_writes_around_the_mode_fails(inner):
     )
     assert result.ret != 0
     out = result.stdout.str()
-    assert "test_inner.py::test_writes wrote to the shared read-only database" in out
+    assert "test_inner.py::test_writes changed the shared read-only database" in out
     assert "changed during the session" in out
     assert source.stat().st_mode & 0o200, "the source itself stays untouched"
+    assert shared_db.sha256(source) == before
+
+
+def test_a_read_only_test_that_makes_the_share_writable_fails(inner):
+    """A test that only clears the share's read-only mode writes no byte, so
+    the session's hash check passes, but every later test could then write
+    to it: its own teardown fails it, by name."""
+    result, source, before = inner(
+        "def test_unlocks(readonly_scorecard_db):\n"
+        "    os.chmod(readonly_scorecard_db, 0o644)\n"
+        "def test_reads_after(readonly_scorecard_db):\n"
+        "    pass\n"
+    )
+    assert result.ret != 0
+    out = result.stdout.str()
+    assert "test_inner.py::test_unlocks changed the shared read-only database" in out
+    assert "test_reads_after changed" not in out
+    assert "changed during the session" not in out
     assert shared_db.sha256(source) == before
 
 
