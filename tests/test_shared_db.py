@@ -8,13 +8,18 @@ sessions, through the real conftest fixtures, in which a read-only test
 writes to the share: each such session fails, and its report names the
 test that wrote. One more inner session starts from a database whose schema
 predates the code: its readers pass, the source keeps its bytes, and the
-report says to rebuild it.
+report says to rebuild it. Between the two, a section checks that a copy
+holds what SQLite's readers see when a writer died mid-transaction, while a
+writer holds the file, and when the database runs in WAL mode.
 """
 
+import contextlib
 import importlib.util
 import os
 import sqlite3
 import stat
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -180,6 +185,117 @@ def test_the_per_test_check_names_the_test_that_wrote(tmp_path):
                 assert conn.execute("SELECT COUNT(*) FROM t").fetchone() == (500,)
 
 
+# --- copying a database mid-write --------------------------------------------
+
+ROWS = 20_000
+
+# A writer whose transaction outgrows a five-page cache: SQLite writes the
+# original pages to the -journal and then the changed ones into the database
+# file itself, before any commit.
+_WRITE_UNCOMMITTED = """
+import os, sqlite3, sys, time
+conn = sqlite3.connect(sys.argv[1], isolation_level=None)
+conn.execute("PRAGMA cache_size=5")
+conn.execute("BEGIN")
+conn.execute("UPDATE t SET s = 'uncommitted'")
+if sys.argv[2] == "die":
+    os._exit(0)  # no rollback: a hot journal stays beside the file
+print("written", flush=True)
+time.sleep(float(sys.argv[2]))
+conn.execute("ROLLBACK")
+"""
+
+
+def _rows_database(path: Path, rows: int = ROWS) -> Path:
+    conn = sqlite3.connect(path)
+    conn.execute("CREATE TABLE t (i INTEGER PRIMARY KEY, s TEXT)")
+    conn.executemany(
+        "INSERT INTO t VALUES (?, 'committed')", ((i,) for i in range(rows))
+    )
+    conn.commit()
+    conn.close()
+    return path
+
+
+def _values(path) -> dict:
+    with contextlib.closing(sqlite3.connect(f"file:{path}?mode=ro", uri=True)) as c:
+        return dict(c.execute("SELECT s, COUNT(*) FROM t GROUP BY s").fetchall())
+
+
+def _file_alone(source: Path, scratch: Path) -> dict:
+    """What a copy of the database file alone, without its journal, holds."""
+    return _values(clone_copy.copy2(source, _folder(scratch, "raw") / source.name))
+
+
+def _snapshot_by(how: str, source: Path, scratch: Path) -> dict:
+    """The values in a copy made the way the share or a private copy is."""
+    if how == "share":
+        with shared_db.read_only_share(source, _folder(scratch, "share")) as share:
+            return _values(share)
+    copy = shared_db.snapshot(source, scratch / "private.db", clone_copy.copy)
+    return _values(copy)
+
+
+@pytest.mark.parametrize("how", ["share", "private"])
+def test_a_copy_drops_what_a_writer_that_died_left_uncommitted(tmp_path, how):
+    source = _rows_database(tmp_path / "source.db")
+    subprocess.run(
+        [sys.executable, "-c", _WRITE_UNCOMMITTED, str(source), "die"], check=True
+    )
+    journal = tmp_path / "source.db-journal"
+    assert journal.stat().st_size > 0
+    assert _file_alone(source, tmp_path).get("uncommitted", 0) > ROWS // 2
+    assert _snapshot_by(how, source, tmp_path) == {"committed": ROWS}
+    # SQLite rolled the journal back into the file, as any reader's open would.
+    assert not journal.exists()
+    assert _values(source) == {"committed": ROWS}
+
+
+@pytest.mark.parametrize("how", ["share", "private"])
+def test_a_copy_waits_for_a_writer_that_holds_the_file(tmp_path, how):
+    source = _rows_database(tmp_path / "source.db")
+    writer = subprocess.Popen(
+        [sys.executable, "-c", _WRITE_UNCOMMITTED, str(source), "1.0"],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    try:
+        assert writer.stdout.readline() == "written\n"
+        assert _file_alone(source, tmp_path).get("uncommitted", 0) > ROWS // 2
+        assert _snapshot_by(how, source, tmp_path) == {"committed": ROWS}
+    finally:
+        assert writer.wait(timeout=60) == 0
+    assert _values(source) == {"committed": ROWS}
+
+
+def test_a_copy_of_a_wal_database_holds_the_pages_its_wal_file_holds(tmp_path):
+    source = tmp_path / "wal.db"
+    holder = sqlite3.connect(source, isolation_level=None)
+    try:
+        holder.execute("PRAGMA journal_mode=WAL")
+        holder.execute("PRAGMA wal_autocheckpoint=0")  # keep every page in -wal
+        holder.execute("BEGIN")
+        holder.execute("CREATE TABLE t (i INTEGER PRIMARY KEY, s TEXT)")
+        holder.executemany(
+            "INSERT INTO t VALUES (?, 'committed')", ((i,) for i in range(500))
+        )
+        holder.execute("COMMIT")
+        assert (tmp_path / "wal.db-wal").stat().st_size > 0
+        with pytest.raises(sqlite3.OperationalError, match="no such table"):
+            _file_alone(source, tmp_path)
+        with shared_db.read_only_share(source, _folder(tmp_path, "share")) as share:
+            assert _values(share) == {"committed": 500}
+            assert share.read_bytes()[18:20] == b"\x01\x01"  # rollback mode
+    finally:
+        holder.close()
+
+
+def test_a_copy_never_creates_a_missing_database(tmp_path):
+    with pytest.raises(sqlite3.OperationalError):
+        shared_db.snapshot(tmp_path / "missing.db", tmp_path / "copy.db")
+    assert sorted(p.name for p in tmp_path.iterdir()) == []
+
+
 # --- inner sessions through the real fixtures ---------------------------------
 
 INNER_CONFTEST = """
@@ -254,6 +370,31 @@ def test_an_older_schema_is_migrated_in_the_share_never_in_place(inner):
     with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn:
         tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master")}
     assert tables == {"t"}, "the source keeps its older schema"
+
+
+def _died_mid_write(path: Path) -> Path:
+    """A database with this code's schema, left with a hot journal."""
+    ScorecardDB(path).close()
+    _rows_database(path)
+    subprocess.run(
+        [sys.executable, "-c", _WRITE_UNCOMMITTED, str(path), "die"], check=True
+    )
+    assert Path(f"{path}-journal").stat().st_size > 0
+    return path
+
+
+@pytest.mark.parametrize("fixture", ["readonly_scorecard_db", "writable_scorecard_db"])
+def test_each_fixture_holds_the_committed_rows_when_a_writer_died(inner, fixture):
+    """Each fixture alone, so each is the first to copy the torn source."""
+    result, source, _ = inner(
+        f"def test_reads({fixture}):\n"
+        f"    with sqlite3.connect({fixture}) as conn:\n"
+        "        rows = dict(conn.execute('SELECT s, COUNT(*) FROM t GROUP BY s'))\n"
+        f"    assert rows == {{'committed': {ROWS}}}, rows\n",
+        make=_died_mid_write,
+    )
+    result.assert_outcomes(passed=1)
+    assert not Path(f"{source}-journal").exists()
 
 
 def test_a_read_only_test_that_writes_through_sqlite_fails(inner):

@@ -69,6 +69,4 @@ def readonly_scorecard_db(shared_scorecard_db, request):
 def writable_scorecard_db(tmp_path):
     """A private copy of the built database for a test that writes to it:
     a clone on APFS, which costs only the pages the test changes."""
-    path = tmp_path / "scorecard.db"
-    clone_copy.copy(_DB, path)
-    return path
+    return shared_db.snapshot(_DB, tmp_path / "scorecard.db", clone_copy.copy)
