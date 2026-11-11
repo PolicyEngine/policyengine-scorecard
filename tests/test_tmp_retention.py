@@ -1,10 +1,11 @@
 """pytest.ini's tmp_path retention, as pytest applies it.
 
 Inner pytest sessions run under the repository's own pytest.ini and check
-what its comment says. A passing test's tmp_path goes when the test ends. A
-failing test's stays. A test whose error is in setup or teardown keeps
-nothing. And a session that passes leaves no basetemp behind. Under
-pytest's default policy ("all"), every one of those folders would stay.
+what its comment says. A passing test's tmp_path goes when the test ends.
+A test whose body fails or skips keeps its folder. A test whose error is in
+setup or teardown keeps nothing. And a session that passes leaves no
+basetemp behind. Under pytest's default policy ("all"), every one of those
+folders would stay.
 """
 
 import sys
@@ -39,6 +40,11 @@ def test_fails(tmp_path):
     assert False
 
 
+def test_skips_in_its_body(tmp_path):
+    (tmp_path / "evidence").write_text("x")
+    pytest.skip("inside the body")
+
+
 def test_errors_in_setup(broken_setup):
     pass
 
@@ -48,18 +54,19 @@ def test_errors_in_teardown(tmp_path, broken_teardown):
 """
 
 
-def test_only_a_failing_tests_tmp_path_stays(pytester):
+def test_only_a_body_that_does_not_pass_keeps_its_tmp_path(pytester):
     pytester.makefile(".ini", pytest=INI.read_text())
     pytester.makepyfile(test_outcomes=OUTCOMES)
     basetemp = pytester.path.parent / "inner-basetemp"
     result = pytester.runpytest("-p", "no:cacheprovider", f"--basetemp={basetemp}")
     # test_errors_in_teardown counts once as passed and once as an error.
-    result.assert_outcomes(passed=2, failed=1, errors=2)
+    result.assert_outcomes(passed=2, failed=1, skipped=1, errors=2)
     # Folders only: pytest also points a "test_failscurrent" link at the one
     # it keeps.
     left = sorted(p.name for p in basetemp.iterdir() if not p.is_symlink())
-    assert left == ["test_fails0"], left
-    assert (basetemp / "test_fails0" / "evidence").read_text() == "x"
+    assert left == ["test_fails0", "test_skips_in_its_body0"], left
+    for kept in left:
+        assert (basetemp / kept / "evidence").read_text() == "x"
 
 
 def test_a_passing_session_leaves_no_basetemp(pytester, monkeypatch):
