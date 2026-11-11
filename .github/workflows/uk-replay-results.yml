@@ -72,9 +72,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      # Python 3.12, as ci.yml's python job pins it: preflight runs that
+      # job's format check and suite on the results commit (tests check the
+      # two pins agree).
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: false
+          python-version: "3.12"
       - name: Build and verify the results commit, holding no write credential
         id: build
         env:
