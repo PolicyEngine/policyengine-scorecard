@@ -36,14 +36,16 @@ def pytest_configure(config):
 def _bring_up_to_date(path):
     """Open the share once before it goes read-only, so that no test's
     ScorecardDB has to migrate it. This writes nothing to a database this
-    code built; an older data/scorecard.db is migrated in the share, as a
-    test's first open migrated it in place before the share existed."""
+    code built; one built by older code or another branch is migrated in
+    the share, as a test's first open migrated it in place before the share
+    existed."""
     if shared_db.bring_up_to_date(path):
         warnings.warn(
             shared_db.StaleDatabaseWarning(
-                f"{_DB} predates the schema in scorecard_db/db.py, so the "
-                "tests read a copy migrated to it. Delete the file and run "
-                "pytest again, which rebuilds a missing one (tests/conftest.py)."
+                f"{_DB} has a schema other than scorecard_db/db.py's (built by "
+                "older code or another branch), so the tests read a copy "
+                "migrated to it. Delete the file and run pytest again, which "
+                "rebuilds a missing one (tests/conftest.py)."
             )
         )
 

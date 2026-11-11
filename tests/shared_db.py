@@ -3,20 +3,22 @@ read it.
 
 The share is a snapshot of data/scorecard.db (snapshot below: a clone on
 APFS, which writes no data blocks, and a byte copy elsewhere) with its
-write bits cleared. SQLite opens a
-file it cannot write read-only, so any write through it fails at once with
-"attempt to write a readonly database", inside the test that tried. Two
-checks catch a write that gets around the mode bits (a test that chmods the
-file back, or a process running as root): every test that takes the share
-compares its stat signature before and after, and the session compares the
-file's SHA-256 at the end with the one taken when the share was made.
+write bits cleared. SQLite opens a file it cannot write read-only, so any
+write through it fails at once with "attempt to write a readonly
+database", inside the test that tried. Two checks catch a write that gets
+around the mode bits (a test that chmods the file back, or a process
+running as root): every test that takes the share compares its stat
+signature before and after, and the session compares the file's SHA-256 at
+the end with the one taken when the share was made. A writer that also
+puts back the file's mtime gets past the first check; the second still
+fails the session, without naming the test.
 
 Before it seals the share, the session lets a ``prepare`` step write to it.
-conftest.py's step opens it with ScorecardDB, whose open brings a file with
-an older schema up to the code's (scorecard_db/db.py: _migrate and
-_ensure_view) and writes nothing to a file this code built. So no reader
-ever needs to write, and an older data/scorecard.db is migrated in the
-share, never in place.
+conftest.py's step opens it with ScorecardDB, whose open brings a file
+whose schema is not the code's up to the code's (scorecard_db/db.py:
+_migrate and _ensure_view) and writes nothing to a file this code built.
+So no reader ever needs to write, and a data/scorecard.db built by older
+code or another branch is migrated in the share, never in place.
 """
 
 from __future__ import annotations
@@ -36,7 +38,7 @@ class SharedDatabaseWritten(AssertionError):
 
 
 class StaleDatabaseWarning(UserWarning):
-    """The built database predates the code's schema."""
+    """The built database's schema is not the code's."""
 
 
 def sha256(path) -> str:
@@ -74,7 +76,9 @@ def snapshot(source, dest, copy=clone_copy.copy2):
     writer cannot change the file until the copy ends; one that holds it
     makes this wait, for up to a minute. A database in WAL mode keeps
     committed pages in its -wal file, which a file copy misses, so it goes
-    through SQLite's backup API instead, into a copy in rollback mode.
+    through SQLite's backup API instead, into a copy in rollback mode; when
+    this is the last connection to close, SQLite checkpoints the -wal file
+    into the source and removes it, as any reader's last close does.
     """
     uri = Path(source).resolve().as_uri() + "?mode=rw"  # never create it
     conn = sqlite3.connect(uri, uri=True, timeout=60, isolation_level=None)
@@ -97,8 +101,8 @@ def snapshot(source, dest, copy=clone_copy.copy2):
 
 def bring_up_to_date(path) -> bool:
     """Open ``path`` with ScorecardDB, as a test would, and close it; return
-    whether that wrote to the file (it does only when the file's schema
-    predates the code's)."""
+    whether that wrote to the file (it does only when the file's schema is
+    not the code's)."""
     from scorecard_db import ScorecardDB
 
     before = signature(path)

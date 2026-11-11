@@ -277,10 +277,12 @@ def test_a_copy_waits_for_a_writer_that_holds_the_file(tmp_path, how):
         started = time.monotonic()
         timer.start()
         try:
-            assert _snapshot_by(how, source, tmp_path) == {"committed": ROWS}
+            values = _snapshot_by(how, source, tmp_path)
+            waited = time.monotonic() - started  # before join(), which waits too
         finally:
             timer.join()
-        assert time.monotonic() - started >= 0.5
+        assert values == {"committed": ROWS}
+        assert waited >= 0.5
     assert writer.returncode == 0
     assert _values(source) == {"committed": ROWS}
 
@@ -382,7 +384,7 @@ def test_an_older_schema_is_migrated_in_the_share_never_in_place(inner):
     )
     result.assert_outcomes(passed=1)
     out = result.stdout.str()
-    assert "StaleDatabaseWarning" in out and "predates the schema" in out
+    assert "StaleDatabaseWarning" in out and "a schema other than" in out
     assert shared_db.sha256(source) == before
     with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn:
         tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master")}
