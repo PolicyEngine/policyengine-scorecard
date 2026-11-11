@@ -21,6 +21,8 @@ import stat
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 from pathlib import Path
 
 import clone_copy
@@ -193,7 +195,7 @@ ROWS = 20_000
 # original pages to the -journal and then the changed ones into the database
 # file itself, before any commit.
 _WRITE_UNCOMMITTED = """
-import os, sqlite3, sys, time
+import os, sqlite3, sys
 conn = sqlite3.connect(sys.argv[1], isolation_level=None)
 conn.execute("PRAGMA cache_size=5")
 conn.execute("BEGIN")
@@ -201,7 +203,7 @@ conn.execute("UPDATE t SET s = 'uncommitted'")
 if sys.argv[2] == "die":
     os._exit(0)  # no rollback: a hot journal stays beside the file
 print("written", flush=True)
-time.sleep(float(sys.argv[2]))
+sys.stdin.readline()  # hold the file until told to let go
 conn.execute("ROLLBACK")
 """
 
@@ -254,17 +256,32 @@ def test_a_copy_drops_what_a_writer_that_died_left_uncommitted(tmp_path, how):
 @pytest.mark.parametrize("how", ["share", "private"])
 def test_a_copy_waits_for_a_writer_that_holds_the_file(tmp_path, how):
     source = _rows_database(tmp_path / "source.db")
-    writer = subprocess.Popen(
-        [sys.executable, "-c", _WRITE_UNCOMMITTED, str(source), "1.0"],
+    # The writer holds its uncommitted pages in the file until told to roll
+    # back. A timer tells it half a second after the copy starts, so a copy
+    # that waits for the writer takes that long and finds the committed rows.
+    # Leaving the block closes the pipes and waits for the writer.
+    with subprocess.Popen(
+        [sys.executable, "-c", _WRITE_UNCOMMITTED, str(source), "hold"],
+        stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         text=True,
-    )
-    try:
+    ) as writer:
         assert writer.stdout.readline() == "written\n"
         assert _file_alone(source, tmp_path).get("uncommitted", 0) > ROWS // 2
-        assert _snapshot_by(how, source, tmp_path) == {"committed": ROWS}
-    finally:
-        assert writer.wait(timeout=60) == 0
+
+        def let_go():
+            writer.stdin.write("go\n")
+            writer.stdin.flush()
+
+        timer = threading.Timer(0.5, let_go)
+        started = time.monotonic()
+        timer.start()
+        try:
+            assert _snapshot_by(how, source, tmp_path) == {"committed": ROWS}
+        finally:
+            timer.join()
+        assert time.monotonic() - started >= 0.5
+    assert writer.returncode == 0
     assert _values(source) == {"committed": ROWS}
 
 
