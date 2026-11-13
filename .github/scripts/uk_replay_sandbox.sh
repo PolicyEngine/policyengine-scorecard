@@ -41,6 +41,8 @@ set -euo pipefail
 CANDIDATE=replay-candidate
 CANDIDATE_HOME=/home/$CANDIDATE
 COPY=$CANDIDATE_HOME/scorecard
+source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_plan.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_io.sh"
 # Prints its last line only when an IPv4 socket opens, a Unix socket does
 # not, and io_uring_setup (425 in every Linux ABI) fails with EPERM.
 OFFLINE_PROBE='import ctypes, errno, socket
@@ -65,44 +67,8 @@ print("unix and io_uring refused")'
 # without socket(2)); those fail with EPERM. (${a[@]+"${a[@]}"} is an empty
 # array under set -u in bash 3.2 too.)
 in_sandbox() {
-  local offline=() settings=()
-  if [ "${1:-}" = --offline ]; then
-    offline=(-p PrivateNetwork=yes -p RestrictAddressFamilies=AF_INET
-      -p RestrictAddressFamilies=AF_INET6 -p RestrictAddressFamilies=AF_NETLINK
-      -p SystemCallArchitectures=native
-      -p "SystemCallFilter=~io_uring_setup io_uring_enter io_uring_register"
-      -p SystemCallErrorNumber=EPERM)
-    shift
-  fi
-  while [ "$#" -gt 0 ] && [[ "$1" == *=* ]]; do
-    settings+=(--setenv "$1")
-    shift
-  done
-  sudo systemd-run --quiet --collect --pipe --wait \
-    --uid="$CANDIDATE" --gid="$CANDIDATE" \
-    --working-directory="$CANDIDATE_HOME" \
-    --setenv HOME="$CANDIDATE_HOME" --setenv USER="$CANDIDATE" \
-    --setenv LANG=C.UTF-8 \
-    --setenv PATH="$CANDIDATE_HOME/bin:/usr/local/bin:/usr/bin:/bin" \
-    ${settings[@]+"${settings[@]}"} \
-    -p ProtectSystem=strict \
-    -p ReadWritePaths="$CANDIDATE_HOME" \
-    -p InaccessiblePaths=-/home/runner \
-    -p PrivateTmp=yes \
-    -p PrivateDevices=yes \
-    -p NoNewPrivileges=yes \
-    -p RestrictSUIDSGID=yes \
-    -p ProtectProc=invisible \
-    -p ProtectKernelTunables=yes \
-    -p ProtectKernelModules=yes \
-    -p ProtectKernelLogs=yes \
-    -p ProtectClock=yes \
-    -p ProtectControlGroups=yes \
-    -p RestrictNamespaces=yes \
-    -p LockPersonality=yes \
-    -p CapabilityBoundingSet= \
-    ${offline[@]+"${offline[@]}"} \
-    "$@"
+  sandbox_argv "$CANDIDATE" "$CANDIDATE_HOME" "$@"
+  "${PLAN_ARGV[@]}"
 }
 
 # The account, outside the sandbox, for streaming its output out.
@@ -112,31 +78,19 @@ as_candidate() {
 
 # Make sure nothing of the account runs anywhere.
 stop_candidate() {
-  sudo pkill -KILL -u "$CANDIDATE" || true
-  for _ in $(seq 30); do
-    pgrep -u "$CANDIDATE" > /dev/null || break
-    sleep 1
+  local state=kill observed= count=0
+  while :; do
+    stop_next "$state" "$observed" "$count" "$CANDIDATE"
+    state=$PLAN_NEXT count=$PLAN_COUNT observed=
+    case "$PLAN_ACTION" in
+      kill) "${PLAN_ARGV[@]}" || true ;;
+      probe) if "${PLAN_ARGV[@]}" > /dev/null; then observed=present; else observed=absent; fi ;;
+      sleep) "${PLAN_ARGV[@]}" ;;
+      advance) ;;
+      done) return ;;
+      refuse) echo "::error::$PLAN_ERROR"; exit "$PLAN_STATUS" ;;
+    esac
   done
-  if pgrep -u "$CANDIDATE" > /dev/null; then
-    echo "::error::$CANDIDATE processes survive"
-    exit 1
-  fi
-}
-
-# Run a command whose output the variant writes, with the runner's workflow
-# commands stopped until a token the variant never sees. Its stderr joins
-# stdout: the runner reads stderr as a second stream, where a last line
-# without a newline would reach it only after the token. setup-uv registers
-# a problem matcher (owner python) for the rest of the job, and matchers
-# read plain lines, which stopping commands does not stop, so it goes first.
-untrusted_output() {
-  local token status=0
-  token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
-  echo "::remove-matcher owner=python::"
-  echo "::stop-commands::$token"
-  "$@" 2>&1 || status=$?
-  printf '\n::%s::\n' "$token"
-  return "$status"
 }
 
 case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
@@ -222,15 +176,25 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|install|replay|collect}" in
     # made afresh: a link left in its copy can send the bytes nowhere the
     # sandbox cannot already write, a pipe left there cannot stall the write,
     # and nothing runs as root inside its home.
-    stop_candidate
-    # shellcheck disable=SC2016 # expanded by the sandboxed shell
-    /bin/cat "$DATASET_FILE" | in_sandbox --offline /bin/sh -c \
-      '/bin/rm -rf "$HOME/scorecard/input" && /bin/mkdir "$HOME/scorecard/input" && exec /bin/cat > "$HOME/scorecard/input/dataset.h5"'
-    # shellcheck disable=SC2016 # expanded by the sandboxed shell
-    untrusted_output in_sandbox --offline PYTHONPATH=. \
-      VARIANT="$VARIANT" REPLAY_EVENT="$REPLAY_EVENT" \
-      REPLAY_MEASURE="$REPLAY_MEASURE" REPLAY_YEAR="$REPLAY_YEAR" \
-      /bin/bash -c 'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay'
+    replay_state=start replay_observed=
+    while :; do
+      replay_next "$replay_state" "$replay_observed" "$CANDIDATE" "$CANDIDATE_HOME" \
+        "$DATASET_FILE" "$VARIANT" "$REPLAY_EVENT" "$REPLAY_MEASURE" "$REPLAY_YEAR"
+      replay_state=$PLAN_NEXT replay_observed=
+      case "$PLAN_ACTION" in
+        stop) stop_candidate ;;
+        handin)
+          if sandbox_stream_dataset "$PLAN_STDIN" "${PLAN_ARGV[@]}"; then
+            replay_observed=0
+          else
+            replay_observed=$?
+          fi ;;
+        replay) untrusted_output "${PLAN_ARGV[@]}" ;;
+        advance) ;;
+        done) break ;;
+        refuse) exit "$PLAN_STATUS" ;;
+      esac
+    done
     ;;
   collect)
     # systemd killed what was left in the service; make sure nothing of the
