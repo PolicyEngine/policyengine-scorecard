@@ -315,8 +315,11 @@ def test_no_writer_commits_while_a_copy_runs(tmp_path):
     after it began cannot commit until it ends; once it ends, the same
     write goes through."""
     source = _rows_database(tmp_path / "source.db", rows=500)
+    copy_called = False
 
     def copy_while_a_writer_tries(src, dst):
+        nonlocal copy_called
+        copy_called = True
         writer = sqlite3.connect(src, timeout=0, isolation_level=None)
         try:
             with pytest.raises(sqlite3.OperationalError, match="locked"):
@@ -326,6 +329,7 @@ def test_no_writer_commits_while_a_copy_runs(tmp_path):
         return clone_copy.copy2(src, dst)
 
     copy = shared_db.snapshot(source, tmp_path / "copy.db", copy_while_a_writer_tries)
+    assert copy_called
     assert _values(copy) == {"committed": 500}
     with contextlib.closing(sqlite3.connect(source, isolation_level=None)) as writer:
         writer.execute("UPDATE t SET s = 'after the copy'")
