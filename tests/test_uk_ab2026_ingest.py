@@ -195,7 +195,7 @@ def test_a_moved_time_basis_call_raises(monkeypatch):
 
 
 def test_each_restaged_row_takes_the_time_basis_we_store():
-    """Review of #256, M3: we stage HM Treasury's £50 off the annual price
+    """We stage HM Treasury's £50 off the annual price
     cap, and its count of households that the government pays from January
     2027, on the time basis of the printing we keep."""
     assert len(I.ROW_TIME_BASES) == 3
@@ -220,7 +220,7 @@ def test_each_restaged_row_takes_the_time_basis_we_store():
 def test_a_row_call_raises_when_either_of_its_fields_moves(
     family, i, field, value, table
 ):
-    """Review of #256, L9: on a row we restage, we change one of the two fields
+    """On a row we restage, we change one of the two fields
     that the ingest checks and leave the other, and the ingest raises on
     each."""
     rows = list(RAW[family])
@@ -847,7 +847,7 @@ def test_no_claim_repeats_another_printing_of_its_figure(staged):
 
 
 def test_the_scan_pairs_a_third_printing_with_both_listed_claims(staged):
-    """Review of #256, L8: we add a third printing of CenTax row 90's 4% and
+    """We add a third printing of CenTax row 90's 4% and
     change one of its conditions, so it gets its own claim id. The scan pairs
     it with rows 90 and 92, which NOT_REPEATS lists, and with no other claim."""
     scores, _ = staged
@@ -861,7 +861,7 @@ def test_the_scan_pairs_a_third_printing_with_both_listed_claims(staged):
 
 
 def test_the_scan_reads_a_part_from_its_component_alone(staged):
-    """Review of #256, L14: we add a third printing of CenTax row 90's 4%,
+    """We add a third printing of CenTax row 90's 4%,
     keep row 90's named component and stage it with the row type of a whole
     measure. The scan reads it as part of the measure from its component,
     and pairs it with rows 90 and 92."""
@@ -870,6 +870,35 @@ def test_the_scan_reads_a_part_from_its_component_alone(staged):
     assert third.conditions["component"] not in (None, "Total")
     third.conditions["row_type"] = "measure_total"
     third.conditions["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
+
+
+@pytest.mark.parametrize(
+    "marks",
+    [{"component": None}, {"component": "Total"}, {"row_type": None}],
+    ids=["no component", "the total", "no row type"],
+)
+def test_the_scan_reads_a_part_from_either_marker(staged, marks):
+    """We add a third printing of CenTax row 90's 4%, which marks a part of
+    the measure by its named component and by its row type, and take one
+    marker away: we drop the component, name the measure's total in its
+    place, or drop the row type. The scan reads the part from the other
+    marker, and pairs the printing with rows 90 and 92 alone."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    c = third.conditions
+    assert c["component"] not in (None, "Total")
+    assert c["row_type"] == "measure_component"
+    for key, value in marks.items():
+        if value is None:
+            del c[key]
+        else:
+            c[key] = value
+    c["document_position"] = "a third printing"
     ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
     assert third.claim_id() not in ids
     assert _repeats_in([*scores, third]) - set(_listed()) == {
@@ -888,7 +917,7 @@ def test_the_merge_never_leaves_a_same_claim_twin(monkeypatch):
 
 
 def test_a_repeat_that_shares_its_kept_claim_s_id_merges():
-    """Review of #256, L3: if we staged row 25 with row 1's conditions, the
+    """If we staged row 25 with row 1's conditions, the
     two claims would share an id. The ingest merges row 25 into row 1 and
     keeps that one claim, so the twin guard lets it through."""
     rows = {i: copy.deepcopy(RAW["uk_centax"][i]) for i in (1, 25)}
@@ -1040,7 +1069,7 @@ def _compared(repeat, kept):
 def test_a_printing_that_differs_in_any_compared_condition_raises(
     staged, side, monkeypatch
 ):
-    """Review of #256, L7: we give each condition that the check compares a
+    """We give each condition that the check compares a
     wording we don't list, on RF's chart label for the 2027-28 fuel freeze
     path or on its workbook cell, and the ingest raises. When we also list the
     wording for that repeat, the ingest accepts the pair. For the component, we
@@ -1119,7 +1148,7 @@ def test_a_listed_wording_never_merges_a_part_into_the_whole(mark, monkeypatch):
 def test_a_printing_for_another_part_scenario_or_group_raises(
     family, i, j, change, differ, monkeypatch
 ):
-    """Review of #256, L7: TPA puts a notional investment bank's tax in
+    """TPA puts a notional investment bank's tax in
     Singapore at 14.9% of its profit, in total and from corporate income taxes
     alone. It puts the bank's UK bank levies and deposit insurance at 2.3% of
     profit before and after the Budget. We also change the household type of
@@ -1165,7 +1194,7 @@ OUTSIDE_THE_BOUND = {
 
 @pytest.mark.parametrize("entry", sorted(OUTSIDE_THE_BOUND))
 def test_a_bound_merges_only_into_a_point_value_within_it(entry):
-    """Review of #256, M2: we keep the point value, and the ingest raises if
+    """We keep the point value, and the ingest raises if
     it lies more than half its last digit past the bound."""
     family, i, k = entry
     bound, point = _claim(family, i), _claim(family, k)
@@ -1248,7 +1277,7 @@ def test_two_bounds_merge_only_in_the_same_direction():
 
 
 def test_a_share_half_a_point_from_its_rounding_agrees():
-    """Review of #256, L2: 58% and 57.5% differ by exactly half of 58%'s
+    """58% and 57.5% differ by exactly half of 58%'s
     last digit. In binary floating point, 0.58 - 0.575 =
     0.0050000000000000044, so the ingest allows a few units in the last place
     of each value."""
