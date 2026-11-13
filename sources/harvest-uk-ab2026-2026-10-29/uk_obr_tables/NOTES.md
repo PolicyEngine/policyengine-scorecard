@@ -236,7 +236,7 @@ We leave every `baseline_policy` null, and give effect estimates the explicit un
   - Guarantee capacity, a contingent liability: UK Export Finance's £40bn and the Growth Guarantee Scheme's £7bn (para 3.21).
   - A lending allocation: Your First Home's £0.7bn and £1bn of loans (para 3.22). We stage paragraph 3.22's effect on debt (£0.7bn in the first year).
 - **The rule for lending and financing (4 November, the coordinator's call on review B's finding 5; README rule 8).** In the harvest we stage HM Treasury's Tables 6.1, 6.2 and 6.4 and the OBR's policy workbook whole, as the decisions' costings. Elsewhere we treat an amount a scheme will lend or spend as design (rule 8), and an effect on borrowing, debt or the financing requirement as an estimate. So we keep paragraph 3.22's loan volumes dropped and its effect on debt staged. We had dropped paragraph 3.20's "£1.9 billion a year" increase in the Government's financing requirement on 3 November as a financing allocation, and we restored it as a fiscal-aggregate estimate (`cash_requirement_change`). In EFO paragraphs 6.19–6.20 the OBR says the CGNCR "forms the basis of" the DMO's remit, so we treat the requirement as the aggregate and the remit as the design.
-- **Repeats, which we dropped on 3 November (review finding 5, the coordinator's call): 37 rows.** As in the AB2025 OBR family, we stage the table cells. We dropped text that repeats a Table 3.1 cell (paras 3.2, 3.3, 3.4, 3.11, 3.13, 3.16, 3.17 and 3.19: 19 rows) or earlier text (paras 3.11, 3.12, 3.13 and 3.16: 6 rows). We also dropped Table 3.1's "Spending measures" and "Tax measures" rows, which repeat its "Direct effect of spending measures" and "Direct effect of tax measures" rows (12 rows).
+- **Repeats, which we dropped on 3 November (review finding 5, the coordinator's call): 37 rows.** As in the AB2025 OBR family, we stage the table cells. We dropped text that repeats a Table 3.1 cell (paras 3.2, 3.3, 3.4, 3.11, 3.13, 3.16, 3.17 and 3.19: 19 rows) or earlier text (paras 3.11, 3.12, 3.13 and 3.16: 6 rows). We also dropped Table 3.1's "Spending measures" and "Tax measures" rows, which repeat its "Direct effect of spending measures" and "Direct effect of tax measures" rows (12 rows). At ingest we also merge 57 rows into another printing of the same figure, and list them in the ingest's `REPEATED_PRINTINGS`. The OBR rounds six of the policy workbook's Table 1.1 totals in paragraphs 3.3, 3.4, 3.16 and 3.18 (rows 2526, 2531, 2667, 2672, 2673 and 2674). It rounds two more Table 1.1 lines, the direct effect of Government decisions and measure 2's VAT, in paragraphs 3.2 and 3.19 (rows 2520, 2680 and 2681), and a Table 3.1 line in paragraph 3.11 (row 2655). It prints seven lines of Table 3.1 again in Table 1.1, each from 2026-27 to 2031-32 (rows 2540–2545, 2552–2569, 2576–2581 and 2630–2641), and the online marketplace measure's yield in both Table 3.3 and Table 1.1 (rows 2712–2716).
 
 - **Other estimates in chapters 1, 2 and 4–6 and paragraph 7.20 (4 November, review B finding 4; the coordinator's call).** In most of these chapters the OBR repeats Table 3.1 and the workbook's lines by head (Tables 4.5–4.7, 5.4, 5.6 and 6.2 among them). The OBR gives these new estimates there, which we didn't stage; tranche 2 may add any of them as components:
   - Tables 4.2 (p.87, indirect effects on receipts), 5.2 (p.108, indirect effects on spending) and 5.8 (p.128, "Effects of Government decisions" on debt interest, −0.9 / 1.2 / 1.0 / 0.7 / 0.4 / 0.3). They form parts of the decisions' total effect, which we stage whole in rows 2490–2495 and 2534–2539 (4f424b9 order).
@@ -372,10 +372,10 @@ On 6 November we moved rows 2740 and 2800 to the OBR's forecast on the
 latest policy. In paragraph 4.30 the OBR forecasts fuel duty receipts on
 the assumption that the government carries out its latest policy: it
 freezes the duty until July 2027 and raises it from then. Against that
-forecast, the OBR estimates that keeping the freeze would add £4.3
-billion to borrowing in 2029-30 (paragraph 3.43) and cut receipts by £4
-billion a year on average from 2027-28 to 2031-32 (paragraph 4.30). So we
-propose that world for both rows, and the ingest maps it to
+forecast, the OBR estimates that if the government kept the freeze, it
+would borrow £4.3 billion more in 2029-30 (paragraph 3.43) and collect £4
+billion less a year on average from 2027-28 to 2031-32 (paragraph 4.30).
+So we propose that world for both rows, and the ingest maps it to
 `obr_october_2026_budget_forecast__policy_parameters`.
 
 The stager also reproduces tranche 2's 535 key registrations, and

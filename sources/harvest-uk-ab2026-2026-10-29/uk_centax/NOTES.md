@@ -109,6 +109,7 @@ We propose these, with CenTax's own words:
     - p. 13: 17%→12%, 33%→36% and 37%→33%;
     - Conclusion: 40.5%, 60%, 43.9%, 61.5%, 47%, 20% and 23%;
   - in the Unicorn Relief PDF: CenTax's "almost £20 billion" restates the £19.7bn in the same footnote.
+- At ingest we merge six rows into another printing of the same figure, and list them in the ingest's `REPEATED_PRINTINGS`. In section 3.2 of Taxes at the top, CenTax rounds two of Table 1's shares (rows 62 and 64, into rows 82 and 67) and bounds a third (row 65, into row 66). It also prints three figures in two documents each. It gives the £640m in Taxes at the top's key findings and on its reaction page (row 25, into row 1). In footnote 9 of the Unicorn Relief PDF it repeats the £19.7bn of Taxes at the top's key findings and the £14bn of its section 3.1 (rows 107 and 108, into rows 21 and 58).
 - Under README rule 8 we left out these figures, which set an option's or a measure's design and estimate nothing:
   - the reaction page's "marginal tax rate of 33.3%", the Pension Tax Allowance's £1-for-£3 withdrawal rate restated as a percentage, which we keep in the 53% row's conditions;
   - its "a 100% marginal tax rate" (the Carer's Allowance taper of £1 for every £1, restated);

@@ -19,10 +19,13 @@ independence, the twin rule and the share-of-GDP rule.
 """
 
 import copy
+import functools
 import gzip
 import json
+import math
 import os
 import random
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -32,12 +35,12 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import HealthCheck, given, settings
+from hypothesis import HealthCheck, example, given, settings
 from hypothesis import strategies as st
 
 from scorecard_db import ScorecardDB, signs
 from scorecard_db import ingest_uk_ab2026 as I
-from scorecard_db.models import Metric
+from scorecard_db.models import Metric, ReformRef, TimeBasis, UnitConcept
 from scorecard_db.uk_aliases import canon, known
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -181,6 +184,51 @@ def test_a_moved_row_call_raises(monkeypatch):
         I._check_row_calls("uk_obr_tables", RAW["uk_obr_tables"])
 
 
+def test_a_moved_time_basis_call_raises(monkeypatch):
+    monkeypatch.setitem(
+        I.ROW_TIME_BASES,
+        ("uk_hmt_redbook", 0),
+        ("annual", "not this value", "point_in_time", "x" * 41),
+    )
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_row_calls("uk_hmt_redbook", RAW["uk_hmt_redbook"])
+
+
+def test_each_restaged_row_takes_the_time_basis_we_store():
+    """We stage HM Treasury's £50 off the annual price
+    cap, and its count of households that the government pays from January
+    2027, on the time basis of the printing we keep."""
+    assert len(I.ROW_TIME_BASES) == 3
+    for (family, i), (staged, printed, stored, why) in I.ROW_TIME_BASES.items():
+        assert (RAW[family][i]["time_basis"], RAW[family][i]["value_raw"]) == (
+            staged,
+            printed,
+        )
+        assert _staged_alone(family, i).time_basis.value == stored, (family, i)
+        assert len(why) > 40
+
+
+@pytest.mark.parametrize(
+    "family, i, field, value, table",
+    [
+        ("uk_hmt_redbook", 5, "time_basis", "annual", "ROW_TIME_BASES"),
+        ("uk_hmt_redbook", 5, "value_raw", "around £60", "ROW_TIME_BASES"),
+        ("uk_ifs_ab2026", 46, "proposed_metric", "another_metric", "ROW_METRICS"),
+        ("uk_ifs_ab2026", 46, "value_raw", "£90", "ROW_METRICS"),
+    ],
+)
+def test_a_row_call_raises_when_either_of_its_fields_moves(
+    family, i, field, value, table
+):
+    """On a row we restage, we change one of the two fields
+    that the ingest checks and leave the other, and the ingest raises on
+    each."""
+    rows = list(RAW[family])
+    rows[i] = {**rows[i], field: value}
+    with pytest.raises(ValueError, match=f"{table} {family} row {i} no longer"):
+        I._check_row_calls(family, rows)
+
+
 # --- 2. keys and verdicts ----------------------------------------------------
 
 
@@ -235,10 +283,14 @@ def test_each_hm_treasury_figure_is_counted_once(staged):
         acct["by_family"]["uk_hmt_costings"]["drops"]["hmt_figure_staged_twice"] == 408
     )
     assert acct["by_family"]["uk_hmt_redbook"]["drops"]["hmt_figure_staged_twice"] == 24
-    printed = [s for s in scores if "also_printed_in" in s.publication]
+    printed = [
+        s
+        for s in scores
+        if s.publication["family"] == "uk_hmt_tables"
+        and "also_printed_in" in s.publication
+    ]
     assert sum(len(s.publication["also_printed_in"]) for s in printed) == 432
     for s in printed:
-        assert s.publication["family"] == "uk_hmt_tables"
         assert {
             t["family"] for t in s.publication["also_printed_in"]
         } <= I._TWIN_FAMILIES
@@ -336,6 +388,1013 @@ def test_no_costings_or_red_book_claim_repeats_a_table_figure(staged):
     assert all(len(why) > 40 for why in NOT_TWINS.values())
 
 
+# --- figures a producer prints more than once ----------------------------------
+
+# Each repeated printing, the printing whose claim we keep, and the value_raw
+# of both, which we list here apart from I.REPEATED_PRINTINGS:
+# (family, repeat row) -> (kept row, repeat's printing, kept printing). We
+# give the kept row as (family, row) where its family differs.
+REPEATED_PINS = {
+    ("uk_centax", 25): (1, "£640 million", "£640 million"),
+    ("uk_centax", 62): (82, "58%", "57.52%"),
+    ("uk_centax", 64): (67, "9%", "8.75%"),
+    ("uk_centax", 65): (66, "less than 0.5%", "0.40%"),
+    ("uk_centax", 107): (21, "£19.7 billion", "£19.7 billion"),
+    ("uk_centax", 108): (58, "£14 billion", "£14 billion"),
+    ("uk_hmt_costings", 191): (("uk_hmt_redbook", 273), "+0m", "+0m"),
+    ("uk_hmt_costings", 192): (("uk_hmt_redbook", 274), "+10m", "+10m"),
+    ("uk_hmt_costings", 193): (("uk_hmt_redbook", 275), "+55m", "+55m"),
+    ("uk_hmt_costings", 194): (("uk_hmt_redbook", 276), "+140m", "+140m"),
+    ("uk_hmt_costings", 195): (("uk_hmt_redbook", 277), "+160m", "+160m"),
+    ("uk_hmt_costings", 196): (("uk_hmt_redbook", 278), "+150m", "+150m"),
+    ("uk_hmt_costings", 197): (("uk_hmt_redbook", 279), "+0m", "+0m"),
+    ("uk_hmt_costings", 198): (("uk_hmt_redbook", 280), "+0m", "+0m"),
+    ("uk_hmt_costings", 199): (("uk_hmt_redbook", 281), "-85m", "-85m"),
+    ("uk_hmt_costings", 200): (("uk_hmt_redbook", 282), "+70m", "+70m"),
+    ("uk_hmt_costings", 201): (("uk_hmt_redbook", 283), "+25m", "+25m"),
+    ("uk_hmt_costings", 202): (("uk_hmt_redbook", 284), "+25m", "+25m"),
+    ("uk_hmt_costings", 203): (("uk_hmt_redbook", 285), "+0m", "+0m"),
+    ("uk_hmt_costings", 204): (("uk_hmt_redbook", 286), "+0m", "+0m"),
+    ("uk_hmt_costings", 205): (("uk_hmt_redbook", 287), "+0m", "+0m"),
+    ("uk_hmt_costings", 206): (("uk_hmt_redbook", 288), "+1,355m", "+1,355m"),
+    ("uk_hmt_costings", 207): (("uk_hmt_redbook", 289), "+1,605m", "+1,605m"),
+    ("uk_hmt_costings", 208): (("uk_hmt_redbook", 290), "+1,815m", "+1,815m"),
+    ("uk_hmt_costings", 209): (("uk_hmt_redbook", 291), "+0m", "+0m"),
+    ("uk_hmt_costings", 210): (("uk_hmt_redbook", 292), "+0m", "+0m"),
+    ("uk_hmt_costings", 211): (("uk_hmt_redbook", 293), "+0m", "+0m"),
+    ("uk_hmt_costings", 212): (("uk_hmt_redbook", 294), "+165m", "+165m"),
+    ("uk_hmt_costings", 213): (("uk_hmt_redbook", 295), "+5m", "+5m"),
+    ("uk_hmt_costings", 214): (("uk_hmt_redbook", 296), "+5m", "+5m"),
+    ("uk_hmt_costings", 215): (("uk_hmt_redbook", 297), "+0m", "+0m"),
+    ("uk_hmt_costings", 216): (("uk_hmt_redbook", 298), "+0m", "+0m"),
+    ("uk_hmt_costings", 217): (("uk_hmt_redbook", 299), "+0m", "+0m"),
+    ("uk_hmt_costings", 218): (("uk_hmt_redbook", 300), "+20m", "+20m"),
+    ("uk_hmt_costings", 219): (("uk_hmt_redbook", 301), "+65m", "+65m"),
+    ("uk_hmt_costings", 220): (("uk_hmt_redbook", 302), "+55m", "+55m"),
+    ("uk_hmt_costings", 221): (("uk_hmt_redbook", 303), "+0m", "+0m"),
+    ("uk_hmt_costings", 222): (("uk_hmt_redbook", 304), "+0m", "+0m"),
+    ("uk_hmt_costings", 223): (("uk_hmt_redbook", 305), "+0m", "+0m"),
+    ("uk_hmt_costings", 224): (("uk_hmt_redbook", 306), "+50m", "+50m"),
+    ("uk_hmt_costings", 225): (("uk_hmt_redbook", 307), "+255m", "+255m"),
+    ("uk_hmt_costings", 226): (("uk_hmt_redbook", 308), "+320m", "+320m"),
+    ("uk_hmt_costings", 227): (("uk_hmt_redbook", 309), "+65m", "+65m"),
+    ("uk_hmt_costings", 228): (("uk_hmt_redbook", 310), "+120m", "+120m"),
+    ("uk_hmt_costings", 229): (("uk_hmt_redbook", 311), "+0m", "+0m"),
+    ("uk_hmt_costings", 230): (("uk_hmt_redbook", 312), "+75m", "+75m"),
+    ("uk_hmt_costings", 231): (("uk_hmt_redbook", 313), "+250m", "+250m"),
+    ("uk_hmt_costings", 232): (("uk_hmt_redbook", 314), "+575m", "+575m"),
+    ("uk_hmt_costings", 235): (("uk_hmt_redbook", 315), "+50m", "+50m"),
+    ("uk_hmt_costings", 236): (("uk_hmt_redbook", 316), "+205m", "+205m"),
+    ("uk_hmt_costings", 237): (("uk_hmt_redbook", 317), "+310m", "+310m"),
+    ("uk_hmt_costings", 238): (("uk_hmt_redbook", 318), "+260m", "+260m"),
+    ("uk_hmt_costings", 239): (("uk_hmt_redbook", 319), "+270m", "+270m"),
+    ("uk_hmt_costings", 240): (("uk_hmt_redbook", 320), "+415m", "+415m"),
+    ("uk_hmt_costings", 241): (("uk_hmt_redbook", 321), "+0m", "+0m"),
+    ("uk_hmt_costings", 242): (("uk_hmt_redbook", 322), "-15m", "-15m"),
+    ("uk_hmt_costings", 243): (("uk_hmt_redbook", 323), "-40m", "-40m"),
+    ("uk_hmt_costings", 244): (("uk_hmt_redbook", 324), "+5m", "+5m"),
+    ("uk_hmt_costings", 245): (("uk_hmt_redbook", 325), "+0m", "+0m"),
+    ("uk_hmt_costings", 246): (("uk_hmt_redbook", 326), "+0m", "+0m"),
+    ("uk_hmt_costings", 247): (("uk_hmt_redbook", 327), "-5m", "-5m"),
+    ("uk_hmt_costings", 248): (("uk_hmt_redbook", 328), "-30m", "-30m"),
+    ("uk_hmt_costings", 249): (("uk_hmt_redbook", 329), "+0m", "+0m"),
+    ("uk_hmt_costings", 250): (("uk_hmt_redbook", 330), "+0m", "+0m"),
+    ("uk_hmt_costings", 251): (("uk_hmt_redbook", 331), "+0m", "+0m"),
+    ("uk_hmt_costings", 252): (("uk_hmt_redbook", 332), "+0m", "+0m"),
+    ("uk_hmt_redbook", 5): (188, "around £50", "£50"),
+    ("uk_hmt_redbook", 180): (7, "20 million", "up to 20 million"),
+    ("uk_hmt_redbook", 181): (354, "£2.3 billion", "+2,250m"),
+    ("uk_hmt_redbook", 189): (7, "20 million", "up to 20 million"),
+    ("uk_hmt_redbook", 190): (188, "£50", "£50"),
+    ("uk_hmt_redbook", 194): (9, "£30", "around £30"),
+    ("uk_hmt_redbook", 197): (188, "£50", "£50"),
+    ("uk_hmt_redbook", 201): (9, "£30", "around £30"),
+    ("uk_hmt_redbook", 202): (187, "35 million", "35 million"),
+    ("uk_hmt_redbook", 256): (14, "70,000", "70,000"),
+    ("uk_hmt_redbook", 265): (176, "£50 million", "£50 million"),
+    ("uk_hmt_redbook", 268): (258, "£15 million", "£15 million"),
+    ("uk_hmt_redbook", 362): (400, "£33,500", "33,500"),
+    ("uk_hmt_redbook", 423): (422, "£166", "£166"),
+    ("uk_ifs_ab2026", 97): (91, "80%", "80%"),
+    ("uk_obr_tables", 2520): (2501, "£12 billion", "11,681"),
+    ("uk_obr_tables", 2526): (2171, "£5.5 billion", "5500"),
+    ("uk_obr_tables", 2531): (1183, "£1 billion", "951"),
+    ("uk_obr_tables", 2540): (2352, "5.8", "-5,848"),
+    ("uk_obr_tables", 2541): (2353, "3.9", "-3,877"),
+    ("uk_obr_tables", 2542): (2354, "3.5", "-3,458"),
+    ("uk_obr_tables", 2543): (2355, "1.7", "-1,699"),
+    ("uk_obr_tables", 2544): (2356, "1.6", "-1,578"),
+    ("uk_obr_tables", 2545): (2357, "-4.2", "4,161"),
+    ("uk_obr_tables", 2552): (2514, "-1.3", "-1,308"),
+    ("uk_obr_tables", 2553): (2515, "3.5", "3,483"),
+    ("uk_obr_tables", 2554): (2516, "1.7", "1,702"),
+    ("uk_obr_tables", 2555): (2517, "1.4", "1,424"),
+    ("uk_obr_tables", 2556): (2518, "1.4", "1,442"),
+    ("uk_obr_tables", 2557): (2519, "2.4", "2,412"),
+    ("uk_obr_tables", 2558): (2496, "7.6", "-7,597"),
+    ("uk_obr_tables", 2559): (2497, "3.5", "-3,532"),
+    ("uk_obr_tables", 2560): (2498, "0.4", "-380"),
+    ("uk_obr_tables", 2561): (2499, "-4.1", "4,061"),
+    ("uk_obr_tables", 2562): (2500, "-5.0", "4,983"),
+    ("uk_obr_tables", 2563): (2501, "-11.7", "11,681"),
+    ("uk_obr_tables", 2564): (6, "2.6", "-2627"),
+    ("uk_obr_tables", 2565): (7, "0.0", "0"),
+    ("uk_obr_tables", 2566): (8, "0.0", "0"),
+    ("uk_obr_tables", 2567): (9, "0.0", "0"),
+    ("uk_obr_tables", 2568): (10, "0.0", "0"),
+    ("uk_obr_tables", 2569): (11, "0.0", "0"),
+    ("uk_obr_tables", 2576): (2184, "0.0", "0"),
+    ("uk_obr_tables", 2577): (2185, "1.1", "-1058"),
+    ("uk_obr_tables", 2578): (2186, "1.1", "-1113"),
+    ("uk_obr_tables", 2579): (2187, "1.1", "-1132"),
+    ("uk_obr_tables", 2580): (2188, "1.2", "-1151"),
+    ("uk_obr_tables", 2581): (2189, "1.2", "-1169"),
+    ("uk_obr_tables", 2630): (2502, "7.6", "-7,597"),
+    ("uk_obr_tables", 2631): (2503, "2.5", "-2,475"),
+    ("uk_obr_tables", 2632): (2504, "-0.7", "732"),
+    ("uk_obr_tables", 2633): (2505, "-5.2", "5,192"),
+    ("uk_obr_tables", 2634): (2506, "-6.1", "6,134"),
+    ("uk_obr_tables", 2635): (2507, "-7.3", "7,349"),
+    ("uk_obr_tables", 2636): (2508, "0.0", "0"),
+    ("uk_obr_tables", 2637): (2509, "1.1", "-1,058"),
+    ("uk_obr_tables", 2638): (2510, "1.1", "-1,113"),
+    ("uk_obr_tables", 2639): (2511, "1.1", "-1,132"),
+    ("uk_obr_tables", 2640): (2512, "1.2", "-1,151"),
+    ("uk_obr_tables", 2641): (2513, "-4.3", "4,331"),
+    ("uk_obr_tables", 2655): (2570, "£5 billion", "5.4"),
+    ("uk_obr_tables", 2667): (1167, "£0.7 billion", "688"),
+    ("uk_obr_tables", 2672): (1005, "£0.8 billion", "802"),
+    ("uk_obr_tables", 2673): (1347, "£0.3 billion", "253"),
+    ("uk_obr_tables", 2674): (537, "£0.3 billion", "-261"),
+    ("uk_obr_tables", 2680): (18, "£0.7 billion", "-734"),
+    ("uk_obr_tables", 2681): (19, "£0.3 billion", "-296"),
+    ("uk_obr_tables", 2712): (943, "-164", "164"),
+    ("uk_obr_tables", 2713): (944, "-318", "318"),
+    ("uk_obr_tables", 2714): (945, "-270", "270"),
+    ("uk_obr_tables", 2715): (946, "-250", "250"),
+    ("uk_obr_tables", 2716): (947, "-264", "264"),
+    ("uk_rf_ab2026", 28): (74, "under £145", "£145"),
+    ("uk_rf_ab2026", 29): (76, "over £130", "£130"),
+    ("uk_rf_ab2026", 41): (49, "3 per cent", "3.0 per cent"),
+    ("uk_rf_ab2026", 48): (130, "just over half", "52 per cent"),
+    ("uk_rf_ab2026", 54): (34, "£4.4 billion", "£4.4 billion"),
+    ("uk_rf_ab2026", 58): (383, "over a million", "1572152"),
+    ("uk_rf_ab2026", 59): (379, "91 per cent", "0.90648359700588743"),
+    ("uk_rf_ab2026", 60): (765, "2.6 percentage points", "-2.6014506816864014"),
+    ("uk_rf_ab2026", 61): (56, "£158", "£158"),
+    ("uk_rf_ab2026", 63): (57, "£144", "£144"),
+    ("uk_rf_ab2026", 77): (382, "76 per cent", "0.76228673788146883"),
+    ("uk_rf_ab2026", 93): (47, "£3.7 billion", "£3.7 billion"),
+    ("uk_rf_ab2026", 127): (34, "£4.4 billion", "£4.4 billion"),
+    ("uk_rf_ab2026", 133): (4, "around one-in-eight", "around one-in-eight"),
+    ("uk_rf_ab2026", 137): (383, "over a million", "1572152"),
+    ("uk_rf_ab2026", 138): (379, "91 per cent", "0.90648359700588743"),
+    ("uk_rf_ab2026", 147): (433, "-£2.0bn", "-2.003759382381924"),
+    ("uk_rf_ab2026", 148): (434, "-£0.7bn", "-0.66114480370056317"),
+    ("uk_rf_ab2026", 149): (435, "+£1.5bn", "1.4700235532486525"),
+    ("uk_rf_ab2026", 150): (436, "+£1.9bn", "1.8860311488670831"),
+    ("uk_rf_ab2026", 151): (437, "+£2.7bn", "2.6523035758874194"),
+    ("uk_rf_ab2026", 153): (12, "around £20 billion", "around £20 billion"),
+    ("uk_rf_ab2026", 177): (13, "£2 billion", "£2 billion"),
+    ("uk_rf_ab2026", 198): (633, "1.8 per cent", "1.835872215777723E-2"),
+    ("uk_rf_ab2026", 200): (631, "5.0 per cent", "5.0346160874108259E-2"),
+    ("uk_rf_ab2026", 205): (765, "2.6 percentage points", "-2.6014506816864014"),
+    ("uk_rf_ab2026", 208): (763, "+0.8ppts", "0.83668380975723267"),
+    ("uk_rf_ab2026", 209): (764, "-0.4ppts", "-0.41938871145248413"),
+    ("uk_tpa", 2): (104, "about £6bn", "5.9"),
+    ("uk_tpa", 4): (27, "£19bn", "£19.1bn"),
+    ("uk_tpa", 8): (6, "about £1bn", "£1.1bn"),
+    ("uk_tpa", 168): (25, "£0.7bn", "£700m"),
+    ("uk_tpa", 176): (166, "-0.49", "-0.49"),
+    ("uk_tpa", 194): (163, "-0.29", "-0.29"),
+    ("uk_tpa", 206): (158, "0.38", "0.38"),
+    ("uk_tpa", 212): (160, "0.155", "0.155"),
+    ("uk_tpa", 224): (157, "0.63", "0.63"),
+    ("uk_tpa", 264): (27, "£19.1bn", "£19.1bn"),
+}
+
+
+def _kept_row(family, k):
+    return k if isinstance(k, tuple) else (family, k)
+
+
+def test_each_repeated_printing_pairs_the_rows_we_read():
+    assert set(I.REPEATED_PRINTINGS) == set(REPEATED_PINS)
+    for (family, i), (k, repeat, kept) in REPEATED_PINS.items():
+        assert I.REPEATED_PRINTINGS[(family, i)][0] == k, (family, i)
+        assert len(I.REPEATED_PRINTINGS[(family, i)][1]) > 40, (family, i)
+        kept_family, kept_row = _kept_row(family, k)
+        assert RAW[family][i]["value_raw"] == repeat, (family, i)
+        assert RAW[kept_family][kept_row]["value_raw"] == kept, (family, i)
+
+
+@pytest.mark.parametrize("entry", sorted(REPEATED_PINS))
+def test_a_repeated_printing_merges_into_the_printing_we_keep(entry):
+    family, i = entry
+    k, repeat, kept = REPEATED_PINS[entry]
+    kept_family, kept_row = _kept_row(family, k)
+    families = {family: [(i, RAW[family][i])]}
+    families.setdefault(kept_family, []).append((kept_row, RAW[kept_family][kept_row]))
+    [claim], acct = I.stage(families)
+    assert (acct["read"], acct["ingested"], acct["dropped"]) == (2, 1, 1)
+    assert acct["drops"]["figure_printed_again"]["rows"] == 1
+    assert acct["by_family"][family]["drops"]["figure_printed_again"] == 1
+    assert claim.publication["family"] == kept_family
+    assert claim.conditions["value_verbatim"] == kept
+    assert (
+        claim.publication["locator"]
+        == RAW[kept_family][kept_row]["publication"]["locator"]
+    )
+    row = RAW[family][i]
+    assert claim.publication["also_printed_in"] == [
+        {
+            "family": family,
+            "table": row.get("source_table"),
+            "locator": row["publication"].get("locator"),
+            "source_column": row.get("source_column") or None,
+            "value_verbatim": repeat,
+        }
+    ]
+
+
+def test_each_repeated_printing_leaves_one_claim(staged):
+    """The full ingest drops each repeat once, in the repeat's family, and
+    lists it on the claim it keeps. On HM Treasury's table claims it lists only
+    their costings and red book twins, so we leave those claims out."""
+    scores, acct = staged
+    assert acct["drops"]["figure_printed_again"]["rows"] == len(REPEATED_PINS) == 176
+    for family, n in Counter(f for f, _ in REPEATED_PINS).items():
+        assert acct["by_family"][family]["drops"]["figure_printed_again"] == n
+    listed = [
+        (s.publication["family"], t["family"], t["value_verbatim"])
+        for s in scores
+        if s.publication["family"] != "uk_hmt_tables"
+        for t in s.publication.get("also_printed_in", [])
+    ]
+    assert sorted(listed) == sorted(
+        (_kept_row(family, k)[0], family, repeat)
+        for (family, _), (k, repeat, _) in REPEATED_PINS.items()
+    )
+
+
+# Two claims that we pair in the scan below but keep apart: the (family,
+# row) of each in the harvest -> why both stay claims.
+_HMT_PACKAGE = (
+    "HM Treasury costs two different measures of one package at the same amount "
+    "in this year, and we stage both under one reform key."
+)
+_OBR_TAX_GAP_ZERO = (
+    "The OBR prints zero in this year for two different parts of the "
+    "government's package of measures to close the tax gap."
+)
+
+
+def _pairs(family, *rows):
+    return [((family, a), (family, b)) for a, b in rows]
+
+
+NOT_REPEATS: dict[tuple[tuple[str, int], tuple[str, int]], str] = {
+    (("uk_centax", 90), ("uk_centax", 92)): (
+        "CenTax estimates that the bottom 50% would pay 4% of the additional "
+        "revenue from taxing each of two kinds of income more: savings, and "
+        "other non-dividend investment income."
+    ),
+    (("uk_obr_tables", 875), ("uk_obr_tables", 2660)): (
+        "In paragraph 3.13 the OBR costs the changes to HMRC's compliance "
+        "workforce, one part of the tax-gap package, at £0.4 billion in 2031-32. "
+        "In Table 1.1 it prints the whole package's onshore corporation tax, 445 "
+        "(£ million)."
+    ),
+    (("uk_obr_tables", 1357), ("uk_obr_tables", 2700)): (
+        "Under the property income measure's tax head in Table 3.3, the OBR sums "
+        "the measure's receipts. In 2027-28 it prints zero on the measure's income "
+        "tax line in Table 1.1, so the sum equals the onshore corporation tax "
+        "line, 2 (£ million)."
+    ),
+    (("uk_tpa", 25), ("uk_tpa", 101)): (
+        "In footnote 5 Tax Policy Associates sums HM Treasury's 2027-28 tax "
+        "costings to £700m in cash. On its chart of tax rises by fiscal event it "
+        "plots the OBR's costings in 2026 money, and puts that year's total at "
+        "£0.7bn too."
+    ),
+    **dict.fromkeys(
+        _pairs(
+            "uk_hmt_costings",
+            (126, 134),
+            (128, 136),
+            (259, 265),
+            (259, 284),
+            (263, 269),
+            (265, 284),
+            (267, 286),
+            (271, 277),
+            (340, 346),
+            (488, 494),
+            (489, 495),
+            (492, 498),
+            (493, 499),
+        ),
+        _HMT_PACKAGE,
+    ),
+    **dict.fromkeys(
+        _pairs(
+            "uk_obr_tables",
+            (852, 2594),
+            (853, 2595),
+            (853, 2706),
+            (888, 2594),
+            (900, 2594),
+            (914, 2596),
+            (2595, 2706),
+        ),
+        _OBR_TAX_GAP_ZERO,
+    ),
+}
+
+_PRINTED = re.compile(r"(\d[\d,]*)(?:\.(\d+))?(?:[eE]([+-]?\d+))?")
+
+
+def _last_digit(s):
+    """Return the place of a printing's last digit in claim units, which we
+    compute apart from I._printed_place. For a printing without digits, or a
+    value of zero, we return 0."""
+    m = _PRINTED.search(s.conditions.get("value_verbatim") or "")
+    if not m or not s.value:
+        return 0.0
+    number = float(m[1].replace(",", "") + "." + (m[2] or "0")) * 10 ** int(m[3] or 0)
+    if not number:
+        return 0.0
+    return 10.0 ** (int(m[3] or 0) - len(m[2] or "")) * abs(s.value) / number
+
+
+def _oriented(s):
+    relation, _ = signs.classify(
+        {
+            "metric": s.metric.value,
+            "conditions": s.conditions,
+            "country": "UK",
+            "source": s.source,
+        }
+    )
+    if relation in (signs.SAME, signs.OPPOSITE):
+        return signs.external_value_pe_sign(s.value, relation)
+    return abs(s.value)
+
+
+def _one_table(a, b):
+    """Whether the producer prints both claims in one table. We read two lines
+    of one table as two figures."""
+    pa, pb = a.publication, b.publication
+    return (
+        pa["family"] == pb["family"]
+        and pa.get("table") is not None
+        and pa.get("table") == pb.get("table")
+    )
+
+
+def _differ_in_scope(a, b):
+    """Whether two claims cover different places, housing cost bases, income
+    groups or averaging windows. We compare geography and housing costs where
+    we staged each condition for both printings, read a claim without an
+    income group as covering everyone, and read one without an aggregation as
+    a single year's figure."""
+    ca, cb = a.conditions, b.conditions
+    if any(
+        k in ca and k in cb and ca[k] != cb[k] for k in ("geography", "housing_costs")
+    ):
+        return True
+    return (ca.get("income_group", "all"), ca.get("aggregation")) != (
+        cb.get("income_group", "all"),
+        cb.get("aggregation"),
+    )
+
+
+def _part_of_measure(s):
+    """Whether the producer costs part of a measure in this printing, by the
+    scan's own reading, apart from the ingest's: we stage a component other
+    than the measure's total, or the row type of a measure component."""
+    c = s.conditions
+    named = c.get("component") not in (None, "Total")
+    return named or c.get("row_type") == "measure_component"
+
+
+def _repeats_in(scores):
+    """Pair claims by the scan's rule, each pair as the set of its two claim
+    ids."""
+    groups: dict[tuple, list] = {}
+    for s in scores:
+        key = (
+            s.source,
+            s.reform.key(),
+            s.metric,
+            s.unit_concept,
+            s.period,
+            s.time_basis,
+            s.period_start,
+            s.period_end,
+            _part_of_measure(s),
+        )
+        groups.setdefault(key, []).append(s)
+    hits = set()
+    for group in groups.values():
+        for x, a in enumerate(group):
+            for b in group[x + 1 :]:
+                if a.value is None or b.value is None:
+                    continue
+                if _one_table(a, b) or _differ_in_scope(a, b):
+                    continue
+                if (
+                    abs(_oriented(a) - _oriented(b))
+                    > max(_last_digit(a), _last_digit(b)) / 2 + 1e-9
+                ):
+                    continue
+                hits.add(frozenset((a.claim_id(), b.claim_id())))
+    return hits
+
+
+def _listed():
+    """Map the two claim ids of each pair in NOT_REPEATS to its two rows."""
+    listed = {
+        frozenset(_staged_alone(*row).claim_id() for row in pair): pair
+        for pair in NOT_REPEATS
+    }
+    assert all(len(ids) == 2 for ids in listed) and len(listed) == len(NOT_REPEATS)
+    return listed
+
+
+def test_no_claim_repeats_another_printing_of_its_figure(staged):
+    """We pair the ingest's claims by a rule we wrote apart from
+    I.REPEATED_PRINTINGS. We treat two claims as one figure that the producer
+    prints twice when they share a source, reform, metric, unit, year, time
+    basis and window, and their values, zeros included, agree to half the
+    coarser printing's last digit. We also require that the producer cost part
+    of a measure in both, or the whole measure in both. We skip two lines of
+    one table and two claims that differ in scope, and for each other pair
+    that the ingest keeps, we give our reason in NOT_REPEATS under the two
+    claims' rows."""
+    scores, _ = staged
+    listed = _listed()
+    where = {
+        s.claim_id(): (s.publication["family"], str(s.publication.get("locator")))
+        for s in scores
+    }
+    hits = _repeats_in(scores)
+    assert hits == set(listed), (
+        sorted(sorted(where[i] for i in ids) for ids in hits - set(listed)),
+        sorted(listed[ids] for ids in set(listed) - hits),
+    )
+    assert all(len(why) > 40 for why in NOT_REPEATS.values())
+
+
+def test_the_scan_pairs_a_third_printing_with_both_listed_claims(staged):
+    """We add a third printing of CenTax row 90's 4% and
+    change one of its conditions, so it gets its own claim id. The scan pairs
+    it with rows 90 and 92, which NOT_REPEATS lists, and with no other claim."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    third.conditions["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
+
+
+def test_the_scan_reads_a_part_from_its_component_alone(staged):
+    """We add a third printing of CenTax row 90's 4%,
+    keep row 90's named component and stage it with the row type of a whole
+    measure. The scan reads it as part of the measure from its component,
+    and pairs it with rows 90 and 92."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    assert third.conditions["component"] not in (None, "Total")
+    third.conditions["row_type"] = "measure_total"
+    third.conditions["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
+
+
+@pytest.mark.parametrize(
+    "marks",
+    [{"component": None}, {"component": "Total"}, {"row_type": None}],
+    ids=["no component", "the total", "no row type"],
+)
+def test_the_scan_reads_a_part_from_either_marker(staged, marks):
+    """We add a third printing of CenTax row 90's 4%, which marks a part of
+    the measure by its named component and by its row type, and take one
+    marker away: we drop the component, name the measure's total in its
+    place, or drop the row type. The scan reads the part from the other
+    marker, and pairs the printing with rows 90 and 92 alone."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    c = third.conditions
+    assert c["component"] not in (None, "Total")
+    assert c["row_type"] == "measure_component"
+    for key, value in marks.items():
+        if value is None:
+            del c[key]
+        else:
+            c[key] = value
+    c["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
+
+
+def test_the_merge_never_leaves_a_same_claim_twin(monkeypatch):
+    """RF prints row 60's figure again on row 205. Without row 60's entry, the
+    ingest would merge row 205 into row 765 and keep row 60, whose claim
+    shares row 205's id, so it raises."""
+    monkeypatch.delitem(I.REPEATED_PRINTINGS, ("uk_rf_ab2026", 60))
+    rows = [(i, RAW["uk_rf_ab2026"][i]) for i in (60, 205, 765)]
+    with pytest.raises(ValueError, match="shares its id with a repeat we dropped"):
+        I.stage({"uk_rf_ab2026": rows})
+
+
+def test_a_repeat_that_shares_its_kept_claim_s_id_merges():
+    """If we staged row 25 with row 1's conditions, the
+    two claims would share an id. The ingest merges row 25 into row 1 and
+    keeps that one claim, so the twin guard lets it through."""
+    rows = {i: copy.deepcopy(RAW["uk_centax"][i]) for i in (1, 25)}
+    rows[25]["conditions"] = copy.deepcopy(rows[1]["conditions"])
+    [claim], acct = I.stage({"uk_centax": sorted(rows.items())})
+    assert acct["drops"]["figure_printed_again"]["rows"] == 1
+    assert claim.publication["locator"] == rows[1]["publication"]["locator"]
+
+
+def test_a_full_ingest_raises_when_a_printing_goes_missing(monkeypatch):
+    monkeypatch.setitem(I.REPEATED_PRINTINGS, ("uk_tpa", 999_999), (27, "x" * 41))
+    with pytest.raises(ValueError, match="uk_tpa row 999999 or its kept row 27"):
+        I.stage()
+
+
+@functools.cache
+def _staged_alone(family, i):
+    [s], _ = I.stage({family: [(i, RAW[family][i])]})
+    return s
+
+
+def _claim(family, i):
+    return copy.deepcopy(_staged_alone(family, i))
+
+
+# RF's fuel freeze path for 2027-28, which RF rounds on its chart's label and
+# gives in full in its workbook.
+FREEZE_LABEL = ("uk_rf_ab2026", 147)
+FREEZE_CELL = ("uk_rf_ab2026", 433)
+
+
+def _printing(s, printed, value):
+    s = copy.deepcopy(s)
+    s.conditions["value_verbatim"] = printed
+    s.value = float(value)
+    return s
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    cell=st.integers(-9_999_999, 9_999_999).filter(bool),
+    label=st.integers(-99, 99).filter(bool),
+)
+@example(cell=100_000, label=1)
+@example(cell=150_000, label=1)
+@example(cell=150_001, label=1)
+@example(cell=-100_000, label=1)
+def test_a_rounded_printing_agrees_only_to_half_its_last_digit(cell, label):
+    """We print the cell in £bn to six places (cell / 10**6) and the label to
+    one (label / 10). The ingest accepts the pair exactly when they differ by
+    at most £50 million. In the first example we print £0.1 billion in both
+    places, so only the precision check stops us keeping the label. In the
+    second, the two values differ by exactly £50 million, and in the third by
+    £1,000 more. In the fourth, they match in size and differ in sign."""
+    label_claim, cell_claim = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept = _printing(cell_claim, f"{cell / 10**6:.6f}", cell * 1_000)
+    repeat = _printing(label_claim, f"£{abs(label) / 10:.1f}bn", label * 100_000_000)
+    agree = abs(cell * 1_000 - label * 100_000_000) <= 50_000_000
+    if agree:
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    else:
+        with pytest.raises(ValueError, match="no longer matches"):
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    # we never keep the coarser printing
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, kept, repeat)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda s: setattr(s, "source", "another_producer"),
+        lambda s: setattr(s, "reform", ReformRef("policy_ref", {"policy": "another"})),
+        lambda s: setattr(s, "metric", Metric.POVERTY_RATE_CHANGE),
+        lambda s: setattr(s, "unit_concept", UnitConcept.PERSONS),
+        lambda s: setattr(s, "period", s.period + 1),
+        lambda s: setattr(s, "time_basis", TimeBasis.POINT_IN_TIME),
+        lambda s: setattr(s, "period_start", s.period - 1),
+        lambda s: setattr(s, "period_end", s.period + 1),
+        lambda s: s.conditions.update(row_type="measure_component"),
+        lambda s: s.conditions.update(estimate_kind="range_high"),
+        lambda s: s.conditions.update(estimate_kind="cumulative"),
+    ],
+    ids=[
+        "source",
+        "reform",
+        "metric",
+        "unit",
+        "year",
+        "time_basis",
+        "window_start",
+        "window_end",
+        "part_of_a_measure",
+        "kept_bound",
+        "estimate_kind",
+    ],
+)
+def test_a_printing_of_another_figure_raises(change):
+    """We change one field of the workbook's claim for RF's 2027-28 fuel
+    freeze path, which RF also labels on its chart. After each change we read
+    the claim as another figure, so the ingest raises."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    change(kept)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+# We name here, apart from I._PER_PRINTING, the conditions that the printing
+# check leaves out, so that adding one to I._PER_PRINTING fails a test.
+PER_PRINTING = frozenset(
+    {
+        "chart_label",
+        "costing_leg_heading",
+        "document_position",
+        "document_version",
+        "estimate_kind",
+        "heading",
+        "paragraph_heading",
+        "reform_hint",
+        "sheet_section",
+        "sign_convention",
+        "table",
+        "table_line",
+        "table_row",
+        "value_verbatim",
+    }
+)
+
+
+def test_the_printing_check_leaves_out_the_conditions_we_name():
+    assert I._PER_PRINTING == PER_PRINTING
+
+
+def _compared(repeat, kept):
+    """Map each condition outside PER_PRINTING on which the two claims differ
+    to their two wordings, reading I._UNSTATED for a missing one."""
+    keys = (
+        repeat.conditions.keys() | kept.conditions.keys() | I._UNSTATED.keys()
+    ) - PER_PRINTING
+    first, second = (
+        {k: s.conditions.get(k, I._UNSTATED.get(k)) for k in keys}
+        for s in (repeat, kept)
+    )
+    return {k: (first[k], second[k]) for k in keys if first[k] != second[k]}
+
+
+@pytest.mark.parametrize("side", ["repeat", "kept"])
+def test_a_printing_that_differs_in_any_compared_condition_raises(
+    staged, side, monkeypatch
+):
+    """We give each condition that the check compares a
+    wording we don't list, on RF's chart label for the 2027-28 fuel freeze
+    path or on its workbook cell, and the ingest raises. When we also list the
+    wording for that repeat, the ingest accepts the pair. For the component, we
+    also name a part on the other printing, so the ingest reads both as parts
+    of the measure and compares the two parts we name."""
+    scores, _ = staged
+    keys = (
+        set(I._UNSTATED).union(
+            *(s.conditions for s in scores),
+            *(_staged_alone(*row).conditions for row in I.REPEATED_PRINTINGS),
+        )
+        - PER_PRINTING
+    )
+    assert len(keys) > 80
+    listed = I._SAME_READING
+    missed, refused = [], []
+    for key in sorted(keys):
+        repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+        if key == "component":
+            (kept if side == "repeat" else repeat).conditions[key] = "a part we name"
+        (repeat if side == "repeat" else kept).conditions[key] = (
+            "a wording we don't list"
+        )
+        try:
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+            missed.append(key)
+        except ValueError as e:
+            assert "no longer matches" in str(e)
+        [(a, b)] = _compared(repeat, kept).values()
+        monkeypatch.setattr(I, "_SAME_READING", listed | {(*FREEZE_LABEL, key, a, b)})
+        try:
+            I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+        except ValueError:
+            refused.append(key)
+        monkeypatch.setattr(I, "_SAME_READING", listed)
+    assert (missed, refused) == ([], [])
+
+
+@pytest.mark.parametrize(
+    "mark",
+    [{"component": "a part we name"}, {"row_type": "measure_component"}],
+    ids=["component", "row_type"],
+)
+def test_a_listed_wording_never_merges_a_part_into_the_whole(mark, monkeypatch):
+    """We stage RF's workbook cell for the 2027-28 fuel freeze path as part of
+    the measure, with a component we name or by its row type, and list both
+    wordings for its chart label. The ingest raises, since it never merges a
+    part of a measure into the whole, whatever wordings we list."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept.conditions.update(mark)
+    [(key, (a, b))] = _compared(repeat, kept).items()
+    assert key in mark
+    monkeypatch.setattr(
+        I, "_SAME_READING", I._SAME_READING | {(*FREEZE_LABEL, key, a, b)}
+    )
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+@pytest.mark.parametrize(
+    "family, i, j, change, differ",
+    [
+        ("uk_tpa", 274, 284, {}, {"tax_component"}),
+        ("uk_tpa", 287, 288, {}, {"country", "scenario"}),
+        (
+            "uk_hmt_redbook",
+            362,
+            400,
+            {"household_type": "1 adult"},
+            {"household_type", "statistic"},
+        ),
+        ("uk_rf_ab2026", 147, 433, {"subgroup": "first-time buyers"}, {"subgroup"}),
+    ],
+    ids=["tax_component", "scenario", "household_type", "subgroup"],
+)
+def test_a_printing_for_another_part_scenario_or_group_raises(
+    family, i, j, change, differ, monkeypatch
+):
+    """TPA puts a notional investment bank's tax in
+    Singapore at 14.9% of its profit, in total and from corporate income taxes
+    alone. It puts the bank's UK bank levies and deposit insurance at 2.3% of
+    profit before and after the Budget. We also change the household type of
+    HM Treasury's Table 2.C cell from two adults to one, and give RF's fuel
+    freeze cell a subgroup of first-time buyers. The ingest accepts each pair
+    once we list its wordings, and raises without them."""
+    repeat, kept = _claim(family, i), _claim(family, j)
+    kept.conditions.update(change)
+    compared = _compared(repeat, kept)
+    assert set(compared) == differ
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing(family, i, repeat, kept)
+    monkeypatch.setattr(
+        I,
+        "_SAME_READING",
+        I._SAME_READING | {(family, i, k, *w) for k, w in compared.items()},
+    )
+    I._check_printing(family, i, repeat, kept)
+
+
+def test_we_list_each_wording_for_the_repeat_that_uses_it():
+    """We list in ``_SAME_READING`` each wording on which a repeat and the claim
+    we keep differ, under that repeat's row, and no other, so the ingest can't
+    use a stale listing to merge another figure."""
+    used = set()
+    for (family, i), (k, _) in I.REPEATED_PRINTINGS.items():
+        repeat, kept = _claim(family, i), _claim(*_kept_row(family, k))
+        used |= {(family, i, key, *w) for key, w in _compared(repeat, kept).items()}
+    assert used == I._SAME_READING
+
+
+# Each bound a producer prints, the point value we keep for it, and a
+# printing of that point outside the bound: (family, bound row, point row) ->
+# (printed, value)
+OUTSIDE_THE_BOUND = {
+    ("uk_rf_ab2026", 28, 74): ("£146", 146),  # under £145
+    ("uk_rf_ab2026", 29, 76): ("£129", 129),  # over £130
+    ("uk_rf_ab2026", 48, 130): ("49 per cent", 0.49),  # just over half
+    ("uk_rf_ab2026", 58, 383): ("999000", 999_000),  # over a million
+    ("uk_centax", 65, 66): ("0.60%", 0.006),  # less than 0.5%
+}
+
+
+@pytest.mark.parametrize("entry", sorted(OUTSIDE_THE_BOUND))
+def test_a_bound_merges_only_into_a_point_value_within_it(entry):
+    """We keep the point value, and the ingest raises if
+    it lies more than half its last digit past the bound."""
+    family, i, k = entry
+    bound, point = _claim(family, i), _claim(family, k)
+    assert bound.conditions["estimate_kind"] in ("range_low", "range_high")
+    assert point.conditions.get("estimate_kind") not in ("range_low", "range_high")
+    I._check_printing(family, i, bound, point)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing(family, i, bound, _printing(point, *OUTSIDE_THE_BOUND[entry]))
+
+
+@pytest.mark.parametrize(
+    "entry, inside, outside",
+    [
+        (
+            ("uk_rf_ab2026", 48, 130),
+            ("over 52.4 per cent", 0.524),
+            ("over 52.6 per cent", 0.526),
+        ),
+        (("uk_rf_ab2026", 28, 74), ("under £144.6", 144.6), ("under £144.4", 144.4)),
+    ],
+)
+def test_a_point_value_agrees_with_a_bound_its_rounding_could_meet(
+    entry, inside, outside
+):
+    """RF prints 52 per cent, which stands for any share from 51.5 to 52.5
+    per cent, so it agrees with a bound of over 52.4 per cent but not with
+    one of over 52.6 per cent. In the same way £145 agrees with a bound of
+    under £144.6 but not with one of under £144.4."""
+    family, i, k = entry
+    bound, point = _claim(family, i), _claim(family, k)
+    I._check_printing(family, i, _printing(bound, *inside), point)
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing(family, i, _printing(bound, *outside), point)
+
+
+@pytest.mark.parametrize(
+    "entry, bound_printing, point_printing",
+    [
+        (("uk_rf_ab2026", 48, 130), ("over 3.5 per cent", 0.035), ("3 per cent", 0.03)),
+        (("uk_centax", 65, 66), ("less than 4.5%", 0.045), ("5%", 0.05)),
+    ],
+)
+def test_a_point_half_its_last_digit_past_a_bound_agrees(
+    entry, bound_printing, point_printing
+):
+    """A producer could print 3 per cent for any share up to 3.5 per cent, so
+    that printing agrees with a bound of over 3.5 per cent. In the same way, 5%
+    agrees with a bound of less than 4.5%. In binary floating point, 0.03 + 0.005
+    falls short of 0.035 and 0.05 - 0.005 exceeds 0.045, so the ingest allows a
+    few units in the last place here too."""
+    family, i, k = entry
+    bound = _printing(_claim(family, i), *bound_printing)
+    point = _printing(_claim(family, k), *point_printing)
+    I._check_printing(family, i, bound, point)
+
+
+def test_a_bound_and_a_point_of_opposite_signs_raise():
+    """RF bounds a typical household's gain under £145 and gives £145 in
+    another printing. If RF printed the second as a loss, we could no longer
+    read the bound against it."""
+    bound, point = _claim("uk_rf_ab2026", 28), _claim("uk_rf_ab2026", 74)
+    I._check_printing("uk_rf_ab2026", 28, bound, point)
+    point.conditions["sign_convention"] = "positive = loss to households"
+    point.value = -point.value
+    point.conditions["value_verbatim"] = "-£145"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 28, bound, point)
+
+
+def test_two_bounds_merge_only_in_the_same_direction():
+    """HM Treasury counts up to 20 million households in two printings, and we
+    merge one into the other. If it printed at least 20 million in one of them,
+    the two would bound the count from opposite sides, so the ingest raises."""
+    repeat, kept = _claim("uk_hmt_redbook", 180), _claim("uk_hmt_redbook", 7)
+    assert {s.conditions["estimate_kind"] for s in (repeat, kept)} == {"range_high"}
+    I._check_printing("uk_hmt_redbook", 180, repeat, kept)
+    kept.conditions["estimate_kind"] = "range_low"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_hmt_redbook", 180, repeat, kept)
+
+
+def test_a_share_half_a_point_from_its_rounding_agrees():
+    """58% and 57.5% differ by exactly half of 58%'s
+    last digit. In binary floating point, 0.58 - 0.575 =
+    0.0050000000000000044, so the ingest allows a few units in the last place
+    of each value."""
+    repeat, kept = _claim("uk_centax", 62), _claim("uk_centax", 82)
+    assert repeat.conditions["value_verbatim"] == "58%"
+    I._check_printing("uk_centax", 62, repeat, _printing(kept, "57.5%", 0.575))
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_centax", 62, repeat, _printing(kept, "57.4%", 0.574))
+
+
+def test_a_printing_of_the_opposite_sign_raises():
+    """The OBR prints Founders' Relief's 2029-30 effect as a £0.3 billion cut
+    in receipts in paragraph 3.18 and as -261 in Table 1.1, where it prints a
+    loss to the Exchequer as negative. If the OBR printed +261 there, a gain,
+    the two printings would agree in size and differ in direction."""
+    repeat, kept = _claim("uk_obr_tables", 2674), _claim("uk_obr_tables", 537)
+    assert kept.conditions["value_verbatim"] == "-261"
+    I._check_printing("uk_obr_tables", 2674, repeat, kept)
+    kept.value = -kept.value
+    kept.conditions["value_verbatim"] = "261"
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_obr_tables", 2674, repeat, kept)
+
+
+@pytest.mark.parametrize("marks", [(True, False), (False, True), (True, True)])
+def test_a_printing_with_its_direction_in_its_label_agrees_in_size(marks):
+    """We flip the sign of the workbook's claim for RF's fuel freeze path, so
+    the ingest raises. Then we mark one printing or both as giving its direction
+    in its label, as ``signs.classify`` reads it. The ingest can't orient that
+    printing, so it compares the two magnitudes and accepts the pair."""
+    repeat, kept = _claim(*FREEZE_LABEL), _claim(*FREEZE_CELL)
+    kept.value = -kept.value
+    with pytest.raises(ValueError, match="no longer matches"):
+        I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+    for s, mark in zip((repeat, kept), marks):
+        if mark:
+            s.conditions["sign_convention"] = signs.MAGNITUDE_CONVENTION
+    I._check_printing("uk_rf_ab2026", 147, repeat, kept)
+
+
+_AFFIXES = st.sampled_from([("", ""), ("£", ""), ("£", " billion"), ("", "%")])
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    whole=st.integers(1, 999_999),
+    places=st.integers(0, 6),
+    data=st.data(),
+    power=st.integers(-6, 12),
+    commas=st.booleans(),
+    affixes=_AFFIXES,
+)
+def test_the_last_printed_digit_sets_the_place(
+    whole, places, data, power, commas, affixes
+):
+    fraction = data.draw(st.integers(0, 10**places - 1))
+    digits = f"{whole:,}" if commas else str(whole)
+    printed = digits + (f".{fraction:0{places}d}" if places else "")
+    number = whole + fraction / 10**places
+    s = SimpleNamespace(
+        conditions={"value_verbatim": affixes[0] + printed + affixes[1]},
+        value=-number * 10.0**power,
+    )
+    assert math.isclose(I._printed_place(s), 10.0 ** (power - places), rel_tol=1e-9), (
+        printed
+    )
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    mantissa=st.integers(1, 9_999_999),
+    exponent=st.integers(-4, 4),
+    power=st.integers(-3, 9),
+)
+def test_a_workbook_exponent_moves_the_place(mantissa, exponent, power):
+    """RF writes '1.835872215777723E-2' in its workbook, with the last digit
+    at 10**-17."""
+    text = f"{mantissa / 10**6:.6f}E{exponent}"
+    s = SimpleNamespace(
+        conditions={"value_verbatim": text},
+        value=mantissa / 10**6 * 10.0**exponent * 10.0**power,
+    )
+    assert math.isclose(
+        I._printed_place(s), 10.0 ** (power + exponent - 6), rel_tol=1e-9
+    ), text
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    number=st.integers(1, 999_999),
+    factor=st.integers(2, 9),
+    power=st.integers(-6, 12),
+)
+def test_a_value_other_than_its_printing_times_a_power_of_ten_raises(
+    number, factor, power
+):
+    s = SimpleNamespace(
+        conditions={"value_verbatim": f"£{number}"},
+        value=number * factor * 10.0**power,
+    )
+    with pytest.raises(ValueError, match="doesn't match printed"):
+        I._printed_place(s)
+
+
+@pytest.mark.parametrize(
+    "printed, value",
+    [("over a million", 1_000_000.0), ("£0", 0.0), ("0.0", 0.0), ("£5", 0.0)],
+)
+def test_a_printing_without_digits_or_of_zero_has_no_place(printed, value):
+    assert (
+        I._printed_place(
+            SimpleNamespace(conditions={"value_verbatim": printed}, value=value)
+        )
+        == 0.0
+    )
+
+
 # --- the metric calls ----------------------------------------------------------
 
 
@@ -404,8 +1463,10 @@ def test_the_freeze_claims_score_against_the_obrs_latest_policy_world(staged):
     assert {s.conditions["baseline_policy"] for s in latest} == {
         "obr_october_2026_budget_forecast"
     }
+    # we merge 57 of the pre-measures world's 2,702 claims into other
+    # printings of their figures (REPEATED_PRINTINGS), so 2,645 remain
     assert Counter((s.reform.baseline or {}).get("policy") for s in obr) == {
-        "obr_pre_measures_autumn_budget_2026": 2702,
+        "obr_pre_measures_autumn_budget_2026": 2645,
         "obr_october_2026_budget_forecast": 2,
         "obr_fuel_duty_rpi_uprated_since_2010_11": 1,
         None: 7,
@@ -597,8 +1658,10 @@ def test_any_sample_of_the_harvest_closes_its_accounting(seed, share):
         assert v["ingested"] + v["dropped"] == v["read"]
         assert v["read"] == sum(1 for f, _ in sample if f == fam)
     base_ids = {s.claim_id() for s in BASE[0]}
-    assert {s.claim_id() for s in scores} <= base_ids | {
-        # a sample can keep a twin whose Table 6.1 row it left out
+    # the ingest keeps a repeat whose kept printing we left out of the sample
+    repeats = {_staged_alone(*row).claim_id() for row in I.REPEATED_PRINTINGS}
+    assert {s.claim_id() for s in scores} <= base_ids | repeats | {
+        # and a twin whose Table 6.1 row we left out
         s.claim_id()
         for s in scores
         if s.publication["family"] in I._TWIN_FAMILIES
