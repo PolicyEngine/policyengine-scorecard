@@ -3,6 +3,7 @@
 import ast
 import json
 import os
+import pwd
 import re
 import shutil
 import subprocess
@@ -11,6 +12,8 @@ from pathlib import Path
 
 import pytest
 import yaml
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from pipeline import uk_replay_interface as interface
 from pipeline import uk_replay_queue as queue
@@ -814,8 +817,11 @@ def test_output_guard_caps_the_total(tmp_path):
 
 def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_home():
     script = (ROOT / ".github/scripts/uk_replay_sandbox.sh").read_text()
+    planner = (ROOT / ".github/scripts/uk_replay_sandbox_plan.sh").read_text()
     code = "\n".join(
-        line for line in script.splitlines() if not line.lstrip().startswith("#")
+        line
+        for line in (script + "\n" + planner).splitlines()
+        if not line.lstrip().startswith("#")
     )
     # A fresh account, denied cron and at, never added to a group.
     assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in code
@@ -826,9 +832,9 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
     # writable, sudo cannot gain privileges and the runner's home is hidden.
     for setting in (
         "sudo systemd-run --quiet --collect --pipe --wait",
-        '--uid="$CANDIDATE"',
+        '--uid="$target"',
         "-p ProtectSystem=strict",
-        '-p ReadWritePaths="$CANDIDATE_HOME"',
+        '-p ReadWritePaths="$home"',
         "-p InaccessiblePaths=-/home/runner",
         "-p PrivateTmp=yes",
         "-p NoNewPrivileges=yes",
@@ -881,7 +887,14 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         assert target in setup
     # Nothing it starts outlives the run, and its output comes back streamed
     # out by the account itself, links kept as links for the guard.
-    assert 'sudo pkill -KILL -u "$CANDIDATE"' in code
+    assert 'sudo pkill -KILL -u "$target"' in planner
+    assert 'sandbox_argv "$CANDIDATE" "$CANDIDATE_HOME" "$@"' in script
+    assert 'stop_next "$state" "$observed" "$count" "$CANDIDATE"' in script
+    assert '"${PLAN_ARGV[@]}"' in script
+    assert 'sandbox_stream_dataset "$PLAN_STDIN" "${PLAN_ARGV[@]}"' in script
+    assert 'untrusted_output "${PLAN_ARGV[@]}"' in script
+    assert 'source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_plan.sh"' in script
+    assert 'source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_io.sh"' in script
     assert 'as_candidate tar -C "$COPY/output" -cf - .' in code
     assert "sudo cp -R" not in code
     assert (
@@ -921,7 +934,10 @@ def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
 # --- the real replay's way through the sandbox --------------------------------------------
 
 SANDBOX = ROOT / ".github/scripts/uk_replay_sandbox.sh"
-CANDIDATE_HOME = "/home/replay-candidate"
+CANDIDATE = "nonexistent-f1-a935c4ce844d"
+CANDIDATE_HOME = f"/{CANDIDATE}"
+PLANNER = ROOT / ".github/scripts/uk_replay_sandbox_plan.sh"
+SANDBOX_IO = ROOT / ".github/scripts/uk_replay_sandbox_io.sh"
 # Every service property the sandbox sets, as systemd-run receives them.
 SANDBOX_PROPERTIES = [
     "ProtectSystem=strict",
@@ -955,23 +971,56 @@ OFFLINE_PROPERTIES = [
     "SystemCallFilter=~io_uring_setup io_uring_enter io_uring_register",
     "SystemCallErrorNumber=EPERM",
 ]
-# sudo records what it is asked to run and what it receives on stdin, and
-# runs nothing; systemd-run "runs" the variant's script by printing what the
-# variant would, and exits with SANDBOX_EXIT.
-SUDO_STUB = """#!{python}
-import json, os, sys
-
-args = sys.argv[1:]
-entry = {{"argv": args, "stdin": sys.stdin.buffer.read().hex()}}
-with open(os.environ["SUDO_LOG"], "a") as handle:
-    handle.write(json.dumps(entry) + "\\n")
-if args[:1] == ["systemd-run"] and "uk_replay_determinism.sh" in args[-1]:
-    print("::error::the variant's own output", flush=True)
-    sys.stderr.write("::set-output name=forged::on stderr, with no newline")
-    sys.exit(int(os.environ.get("SANDBOX_EXIT", "0")))
+# The actual inert Bash planner is called directly with DATA observations.
+# PATH deliberately cannot resolve external commands. Returned argv is never run.
+PLAN_DRIVER = r"""
+before=$-
+source "$PLAN_LIBRARY"
+[ "$before" = "$-" ]
+emit() {
+  printf '%s\0' "$1" "$2" "$PLAN_ACTION" "$PLAN_NEXT" "$PLAN_COUNT" \
+    "$PLAN_STDIN" "$PLAN_ERROR" "$PLAN_STATUS" "${#PLAN_ARGV[@]}" \
+    ${PLAN_ARGV[@]+"${PLAN_ARGV[@]}"}
+}
+read -r -a observations <<< "$OBSERVATIONS"
+seen=0
+plan_stop() {
+  local state=kill observed= count=0
+  while :; do
+    stop_next "$state" "$observed" "$count" "$TARGET"
+    emit "stop-$state" "$observed"
+    state=$PLAN_NEXT count=$PLAN_COUNT observed=
+    case "$PLAN_ACTION" in
+      probe) observed=${observations[$seen]}; seen=$((seen + 1)) ;;
+      kill|sleep|advance) ;;
+      done) return 0 ;;
+      refuse) return "$PLAN_STATUS" ;;
+    esac
+  done
+}
+if [ "$MODE" = install ]; then
+  sandbox_argv "$TARGET" "$TARGET_HOME" REQUIREMENTS="$REQUIREMENTS" \
+    /bin/bash -c 'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh install'
+  emit install ''
+  exit
+fi
+state=start observed=
+while :; do
+  replay_next "$state" "$observed" "$TARGET" "$TARGET_HOME" \
+    "$DATASET_FILE" "$VARIANT" "$REPLAY_EVENT" "$REPLAY_MEASURE" "$REPLAY_YEAR"
+  emit "replay-$state" "$observed"
+  state=$PLAN_NEXT observed=
+  case "$PLAN_ACTION" in
+    stop) plan_stop ;;
+    handin) observed=$HANDIN_STATUS ;;
+    replay|advance) ;;
+    done) break ;;
+    refuse) exit "$PLAN_STATUS" ;;
+  esac
+done
 """
 REPLAY_SETTINGS = {
-    "DATASET_FILE": None,  # set per test
+    "DATASET_FILE": None,
     "VARIANT": "pe9.9.9_example",
     "REPLAY_EVENT": "autumn_budget_2024",
     "REPLAY_MEASURE": "autumn_budget_2024__private_school_vat_20pct",
@@ -979,39 +1028,105 @@ REPLAY_SETTINGS = {
 }
 
 
-def sandbox_mode(tmp_path, mode, settings, *, exit_status=0, survivors=False):
-    """uk_replay_sandbox.sh MODE with sudo and pgrep replaced by stubs; the
-    sudo calls it made, its result."""
-    tools = tmp_path / "bin"
-    tools.mkdir(exist_ok=True)
-    (tools / "sudo").write_text(SUDO_STUB.format(python=sys.executable))
-    (tools / "pgrep").write_text(f"#!/bin/sh\nexit {0 if survivors else 1}\n")
-    (tools / "sleep").write_text("#!/bin/sh\nexit 0\n")
-    for tool in ("sudo", "pgrep", "sleep"):
-        (tools / tool).chmod(0o755)
-    log = tmp_path / "sudo.jsonl"
-    log.unlink(missing_ok=True)
+def sandbox_plan(mode, settings, *, observations=("absent", "absent"), handin_status=0):
+    with pytest.raises(KeyError):
+        pwd.getpwnam(CANDIDATE)
+    assert not Path(CANDIDATE_HOME).exists()
     environment = {
-        "PATH": f"{tools}:/usr/bin:/bin",
-        "HOME": str(tmp_path),
-        "SUDO_LOG": str(log),
-        "SANDBOX_EXIT": str(exit_status),
+        "PATH": "/nonexistent-f1-no-executables",
+        "PLAN_LIBRARY": str(PLANNER),
+        "MODE": mode,
+        "TARGET": CANDIDATE,
+        "TARGET_HOME": CANDIDATE_HOME,
+        "OBSERVATIONS": " ".join(observations),
+        "HANDIN_STATUS": str(handin_status),
+        "REQUIREMENTS": "",
+        **dict.fromkeys(REPLAY_SETTINGS, ""),
         **{key: value for key, value in settings.items() if value is not None},
     }
     result = subprocess.run(
-        ["bash", str(SANDBOX), mode],
-        cwd=tmp_path,
+        ["/bin/bash", "--noprofile", "--norc", "-eu", "-c", PLAN_DRIVER],
         env=environment,
         stdin=subprocess.DEVNULL,
         capture_output=True,
-        text=True,
     )
-    calls = (
-        [json.loads(line) for line in log.read_text().splitlines()]
-        if log.exists()
-        else []
+    fields = result.stdout.split(b"\0")
+    assert fields.pop() == b"", result.stderr
+    records = []
+    while fields:
+        state, observation, action, next_state, count, stdin, error, status, size = [
+            field.decode() for field in fields[:9]
+        ]
+        del fields[:9]
+        argv = [field.decode() for field in fields[: int(size)]]
+        del fields[: int(size)]
+        records.append(
+            dict(
+                state=state,
+                observation=observation,
+                action=action,
+                next=next_state,
+                count=int(count),
+                stdin=stdin,
+                error=error,
+                status=int(status),
+                argv=argv,
+            )
+        )
+    assert result.stderr == b"", result.stderr
+    return records, result
+
+
+def planned_calls(records):
+    calls = [record for record in records if record["argv"][:1] == ["sudo"]]
+    assert all(record["argv"][1] in ("pkill", "systemd-run") for record in calls)
+    return [{**record, "argv": record["argv"][1:]} for record in calls]
+
+
+def benign_io(script, **settings):
+    environment = {
+        "PATH": "/usr/bin:/bin",
+        "IO_LIBRARY": str(SANDBOX_IO),
+        "PYTHON": sys.executable,
+        **{
+            key: os.environ[key]
+            for key in ("PYTHONPATH", "F1_IMPORT_AUDIT")
+            if key in os.environ
+        },
+        **settings,
+    }
+    return subprocess.run(
+        [
+            "/bin/bash",
+            "--noprofile",
+            "--norc",
+            "-euo",
+            "pipefail",
+            "-c",
+            'source "$IO_LIBRARY"\n' + script,
+        ],
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
     )
-    return calls, result
+
+
+def benign_output(exit_status=0):
+    # This only runs a benign byte producer through the ACTUAL output fence.
+    producer = (
+        "import sys; assert sys.stdin.buffer.read() == b''; "
+        "print('::error::the variant\\'s own output', flush=True); "
+        "sys.stderr.write('::set-output name=forged::on stderr, with no newline'); "
+        "sys.exit(int(sys.argv[1]))"
+    )
+    result = benign_io(
+        'untrusted_output "$PYTHON" -c "$PRODUCER" "$EXIT_STATUS"',
+        PRODUCER=producer,
+        EXIT_STATUS=str(exit_status),
+    )
+    return subprocess.CompletedProcess(
+        result.args, result.returncode, result.stdout.decode(), result.stderr.decode()
+    )
 
 
 def systemd_run(argv):
@@ -1047,12 +1162,12 @@ def stopped_commands(stdout):
 def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
     tmp_path, exit_status
 ):
-    calls, result = sandbox_mode(
-        tmp_path,
-        "install",
-        {"REQUIREMENTS": "docs/uk_replay/requirements/x.txt"},
-        exit_status=exit_status,
+    records, planned = sandbox_plan(
+        "install", {"REQUIREMENTS": "docs/uk_replay/requirements/x.txt"}
     )
+    assert planned.returncode == 0
+    calls = planned_calls(records)
+    result = benign_output(exit_status)
     # The sandbox's exit is the step's, and the variant's output is printed
     # with workflow commands stopped either way: its stderr too, joined to
     # stdout, so a last line there with no newline is still inside the fence.
@@ -1069,14 +1184,14 @@ def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
         "--collect",
         "--pipe",
         "--wait",
-        "--uid=replay-candidate",
-        "--gid=replay-candidate",
+        f"--uid={CANDIDATE}",
+        f"--gid={CANDIDATE}",
         f"--working-directory={CANDIDATE_HOME}",
     ]
     # An environment built from nothing but these, and the network on.
     assert environment == {
         "HOME": CANDIDATE_HOME,
-        "USER": "replay-candidate",
+        "USER": CANDIDATE,
         "LANG": "C.UTF-8",
         "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
         "REQUIREMENTS": "docs/uk_replay/requirements/x.txt",
@@ -1093,7 +1208,10 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
     dataset = tmp_path / "the dataset.h5"
     dataset.write_bytes(bytes(range(256)) * 9)
     settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
-    calls, result = sandbox_mode(tmp_path, "replay", settings)
+    records, planned = sandbox_plan("replay", settings)
+    assert planned.returncode == 0
+    calls = planned_calls(records)
+    result = benign_output()
     assert result.returncode == 0, result.stderr
     assert stopped_commands(result.stdout) == [
         "::error::the variant's own output",
@@ -1105,14 +1223,14 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
     # else; nothing runs as root inside its home, and nothing as the account
     # outside the sandbox.
     assert [c["argv"][:4] for c in calls] == [
-        ["pkill", "-KILL", "-u", "replay-candidate"],
+        ["pkill", "-KILL", "-u", CANDIDATE],
         ["systemd-run", "--quiet", "--collect", "--pipe"],
         ["systemd-run", "--quiet", "--collect", "--pipe"],
     ]
     handin, replay = (systemd_run(c["argv"]) for c in calls[1:])
     base = {
         "HOME": CANDIDATE_HOME,
-        "USER": "replay-candidate",
+        "USER": CANDIDATE,
         "LANG": "C.UTF-8",
         "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
     }
@@ -1124,11 +1242,16 @@ def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path
         '/bin/rm -rf "$HOME/scorecard/input" && /bin/mkdir "$HOME/scorecard/input" '
         '&& exec /bin/cat > "$HOME/scorecard/input/dataset.h5"',
     ]
-    assert bytes.fromhex(calls[1]["stdin"]) == dataset.read_bytes()
+    assert calls[1]["stdin"] == str(dataset)
+    streamed = benign_io(
+        'sandbox_stream_dataset "$DATASET_FILE" /bin/cat', DATASET_FILE=str(dataset)
+    )
+    assert streamed.returncode == 0 and streamed.stdout == dataset.read_bytes()
+    assert streamed.stderr == b""
     # Then the replay, offline, on top of every other property; neither the
     # dataset's path on the runner nor any token reaches it.
     flags, environment, properties, command = replay
-    assert "--uid=replay-candidate" in flags and "--wait" in flags
+    assert f"--uid={CANDIDATE}" in flags and "--wait" in flags
     assert properties == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
     assert environment == {
         **base,
@@ -1147,10 +1270,11 @@ def test_replay_hands_nothing_in_while_a_process_of_the_account_survives(tmp_pat
     dataset = tmp_path / "dataset.h5"
     dataset.write_bytes(b"x")
     settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
-    calls, result = sandbox_mode(tmp_path, "replay", settings, survivors=True)
+    records, result = sandbox_plan("replay", settings, observations=["present"] * 31)
+    calls = planned_calls(records)
     assert result.returncode == 1
-    assert "replay-candidate processes survive" in result.stdout
-    assert [c["argv"] for c in calls] == [["pkill", "-KILL", "-u", "replay-candidate"]]
+    assert records[-1]["error"] == f"{CANDIDATE} processes survive"
+    assert [c["argv"] for c in calls] == [["pkill", "-KILL", "-u", CANDIDATE]]
 
 
 @pytest.mark.parametrize("missing", sorted(REPLAY_SETTINGS))
@@ -1158,15 +1282,15 @@ def test_replay_refuses_to_start_without_its_settings(tmp_path, missing):
     dataset = tmp_path / "dataset.h5"
     dataset.write_bytes(b"x")
     settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset), missing: None}
-    calls, result = sandbox_mode(tmp_path, "replay", settings)
-    assert result.returncode != 0 and missing in result.stderr
-    assert calls == []
+    records, result = sandbox_plan("replay", settings)
+    assert result.returncode != 0 and missing in records[-1]["error"]
+    assert planned_calls(records) == []
 
 
 def test_each_stop_token_is_fresh(tmp_path):
     tokens = set()
     for _ in range(3):
-        _, result = sandbox_mode(tmp_path, "install", {"REQUIREMENTS": "r.txt"})
+        result = benign_output()
         tokens.add(result.stdout.splitlines()[1])
     assert len(tokens) == 3
 
@@ -1907,3 +2031,82 @@ def test_the_fetch_names_the_hub_cache_the_replay_searches(
     with pytest.raises(rv.VariantError):
         rv.find_dataset_bytes(variant)
     assert searched == [Path(record["env"]["HF_HUB_CACHE"])]
+
+
+@pytest.mark.parametrize(
+    ("observations", "sleeps", "status"),
+    [
+        (["absent", "absent"], 0, 0),
+        (["absent", "present"], 0, 1),
+        (["present", "absent", "absent"], 1, 0),
+        (["present"] * 30 + ["present"], 30, 1),
+        (["present"] * 30 + ["absent"], 30, 0),
+        (["present"] * 29 + ["absent", "absent"], 29, 0),
+    ],
+)
+def test_stop_plan_preserves_polling_and_the_independent_final_check(
+    observations, sleeps, status
+):
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": "/nonexistent-f1-dataset"},
+        observations=observations,
+    )
+    assert result.returncode == status
+    assert sum(r["action"] == "kill" for r in records) == 1
+    assert sum(r["action"] == "sleep" for r in records) == sleeps
+    assert sum(r["action"] == "probe" for r in records) == len(observations)
+    assert sum(r["state"] == "stop-verify" for r in records) == 1
+    final = next(r for r in records if r["state"] == "stop-verified")
+    assert final["action"] == ("refuse" if status else "done")
+    assert [r["action"] for r in records if r["action"] in ("handin", "replay")] == (
+        [] if status else ["handin", "replay"]
+    )
+    for record in records:
+        if record["action"] in ("advance", "stop", "done", "refuse"):
+            assert record["argv"] == [] and record["stdin"] == ""
+
+
+@settings(max_examples=25, deadline=None)
+@given(present_polls=st.integers(0, 29), final_present=st.booleans())
+def test_any_absent_poll_still_requires_an_independent_final_check(
+    present_polls, final_present
+):
+    observations = ["present"] * present_polls + ["absent"]
+    observations.append("present" if final_present else "absent")
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": "/nonexistent-f1-dataset"},
+        observations=observations,
+    )
+    assert result.returncode == int(final_present)
+    assert sum(r["action"] == "probe" for r in records) == present_polls + 2
+    assert sum(r["action"] == "sleep" for r in records) == present_polls
+    absent = next(
+        i
+        for i, r in enumerate(records)
+        if r["state"] == "stop-polled" and r["observation"] == "absent"
+    )
+    assert records[absent]["next"] == "verify"
+    assert records[absent + 1]["state"] == "stop-verify"
+    assert not any(r["action"] in ("handin", "replay") for r in records[: absent + 3])
+
+
+def test_failed_actual_dataset_stream_prevents_a_planned_replay(tmp_path):
+    dataset = tmp_path / "binary dataset.h5"
+    dataset.write_bytes(bytes(range(256)) * 9)
+    streamed = benign_io(
+        'sandbox_stream_dataset "$DATASET_FILE" /bin/sh -c "exit 7"',
+        DATASET_FILE=str(dataset),
+    )
+    assert streamed.returncode == 7
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)},
+        handin_status=streamed.returncode,
+    )
+    assert result.returncode == streamed.returncode
+    assert [r["action"] for r in records if r["action"] in ("handin", "replay")] == [
+        "handin"
+    ]
+    assert records[-1]["error"] == "dataset hand-in failed"

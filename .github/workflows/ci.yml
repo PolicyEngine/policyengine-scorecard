@@ -28,7 +28,19 @@ jobs:
       - uses: actions/checkout@v4
       # tests/test_uk_ab2026_ingest.py compares AB2025's ingest with main's
       - run: git fetch --no-tags --depth=1 origin main:refs/remotes/origin/main
+      # Given a version, setup-uv sets UV_PYTHON, makes a .venv on it in the
+      # workspace, puts that venv's bin first on PATH and sets VIRTUAL_ENV.
+      # So every uv command in this job, and any bare python, runs Python
+      # 3.12: the version pipeline/modal_uk_event.py's control interpreter
+      # requires, and the one the replay-engine and receiver-sandbox jobs
+      # below pin for their venvs (uv venv --python 3.12). Unpinned, the
+      # job followed the runner's own Python, which went from 3.12 to 3.14
+      # when ubuntu-latest moved to ubuntu-26.04 in November 2026.
+      # uk-replay-results.yml's build job runs this job's format check and
+      # suite, so it pins the same version (tests check both).
       - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
       - run: uvx ruff format --check be nz scorecard_db tests pipeline
       # The database is a DERIVED artifact (scorecard_db/build_db.py):
       # built fresh from the committed sources on every run (~4s), then

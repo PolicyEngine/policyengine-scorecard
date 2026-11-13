@@ -122,7 +122,7 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
     assert checkout["uses"] == "actions/checkout@v4"
     assert checkout["with"] == {"fetch-depth": 0, "persist-credentials": False}
     assert setup["uses"] == "astral-sh/setup-uv@v5"
-    assert setup["with"] == {"enable-cache": False}
+    assert setup["with"] == {"enable-cache": False, "python-version": "3.12"}
     assert build["id"] == "build"
     assert build["run"] == "bash .github/scripts/uk_replay_results_pr.sh build"
     assert build["env"] == {
@@ -1527,6 +1527,16 @@ def test_the_build_job_runs_cis_format_check_and_suite_word_for_word():
     assert script_array("SUITE") == shlex.split(suite["run"])
     assert suite["env"] == {"PYTHONPATH": "."}
     assert 'PYTHONPATH=. "${SUITE[@]}"' in phase(SCRIPT.read_text(), "preflight")
+    # And on CI's Python: each job's setup-uv sets the interpreter of every
+    # uv command after it, and the suite holds a test that fails on any
+    # Python but 3.12 (test_modal_uk_event.py).
+    builder = yaml.safe_load(WORKFLOW.read_text())["jobs"]["build"]["steps"]
+    (ci_uv,) = [s for s in steps if s.get("uses", "").startswith("astral-sh/setup-uv")]
+    (build_uv,) = [
+        s for s in builder if s.get("uses", "").startswith("astral-sh/setup-uv")
+    ]
+    assert build_uv["uses"] == ci_uv["uses"]
+    assert build_uv["with"]["python-version"] == ci_uv["with"]["python-version"]
 
 
 RELEASE = {"policyengine", "policyengine_uk", "policyengine_core", "huggingface_hub"}
