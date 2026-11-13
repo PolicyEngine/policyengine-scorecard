@@ -861,7 +861,7 @@ def _rows(family: str, *rows: int | range) -> frozenset[tuple[str, int]]:
 
 # HM Treasury costs each of the ten measures in its package to close the tax
 # gap in six years, one row a year. On six of the rows it costs the measure
-# that expands HMRC's compliance workforce.
+# under which HMRC expands its compliance workforce.
 _TAX_GAP = _rows("uk_hmt_costings", range(191, 233), range(235, 253))
 _TAX_COMPLIANCE = _rows("uk_hmt_costings", range(235, 241))
 # For each group of repeats we list the conditions that we stage with one
@@ -885,10 +885,12 @@ _READINGS: tuple[tuple[frozenset[tuple[str, int]], tuple[_Wording, ...]], ...] =
             ),
         ),
     ),
-    # In each year note we record how we date the printing. CenTax prints a
-    # year with one printing of the £640 million and of the £14 billion, but
-    # not with the other. It prints no year with either printing of the three
-    # shares in section 3.2 and Table 1 of Taxes at the top.
+    # In each year note we record how we date the printing. CenTax prints 2030
+    # with both printings of the £640 million, and we record the year in the
+    # kept printing's note alone. CenTax prints a year with one printing of
+    # the £14 billion but not with the other, and no year with either
+    # printing of the three shares in section 3.2 and Table 1 of Taxes at the
+    # top.
     (
         _rows("uk_centax", 25),
         (
@@ -970,8 +972,8 @@ _READINGS: tuple[tuple[frozenset[tuple[str, int]], tuple[_Wording, ...]], ...] =
             ),
         ),
     ),
-    # HM Treasury names each tax-gap measure in full in its costings, and in
-    # short in red book Table 6.3.
+    # We record each tax-gap measure's full name on its costings' rows and a
+    # short name on red book Table 6.3's rows.
     (
         _rows("uk_hmt_costings", range(191, 197)),
         (

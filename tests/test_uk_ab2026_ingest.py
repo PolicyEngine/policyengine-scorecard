@@ -769,6 +769,15 @@ def _differ_in_scope(a, b):
     )
 
 
+def _part_of_measure(s):
+    """Whether the producer costs part of a measure in this printing, by the
+    scan's own reading, apart from the ingest's: we stage a component other
+    than the measure's total, or the row type of a measure component."""
+    c = s.conditions
+    named = c.get("component") not in (None, "Total")
+    return named or c.get("row_type") == "measure_component"
+
+
 def _repeats_in(scores):
     """Pair claims by the scan's rule, each pair as the set of its two claim
     ids."""
@@ -783,7 +792,7 @@ def _repeats_in(scores):
             s.time_basis,
             s.period_start,
             s.period_end,
-            s.conditions.get("row_type") == "measure_component",
+            _part_of_measure(s),
         )
         groups.setdefault(key, []).append(s)
     hits = set()
@@ -843,6 +852,23 @@ def test_the_scan_pairs_a_third_printing_with_both_listed_claims(staged):
     it with rows 90 and 92, which NOT_REPEATS lists, and with no other claim."""
     scores, _ = staged
     third = _claim("uk_centax", 90)
+    third.conditions["document_position"] = "a third printing"
+    ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
+    assert third.claim_id() not in ids
+    assert _repeats_in([*scores, third]) - set(_listed()) == {
+        frozenset((third.claim_id(), i)) for i in ids
+    }
+
+
+def test_the_scan_reads_a_part_from_its_component_alone(staged):
+    """Review of #256, L14: we add a third printing of CenTax row 90's 4%,
+    keep row 90's named component and stage it with the row type of a whole
+    measure. The scan reads it as part of the measure from its component,
+    and pairs it with rows 90 and 92."""
+    scores, _ = staged
+    third = _claim("uk_centax", 90)
+    assert third.conditions["component"] not in (None, "Total")
+    third.conditions["row_type"] = "measure_total"
     third.conditions["document_position"] = "a third printing"
     ids = [_staged_alone("uk_centax", i).claim_id() for i in (90, 92)]
     assert third.claim_id() not in ids
