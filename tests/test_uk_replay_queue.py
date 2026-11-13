@@ -10,6 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import clone_copy
 import pytest
 import yaml
 from hypothesis import given, settings
@@ -115,8 +116,10 @@ def test_enqueue_reapplies_after_a_real_concurrent_git_conflict(
     ):
         destination = seed / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / relative, destination)
-    shutil.copytree(ROOT / "docs/uk_replay/schemas", seed / "docs/uk_replay/schemas")
+        clone_copy.copyfile(ROOT / relative, destination)
+    clone_copy.copytree(
+        ROOT / "docs/uk_replay/schemas", seed / "docs/uk_replay/schemas"
+    )
     git(seed, "add", ".")
     git(seed, "commit", "-qm", "Code")
     git(seed, "switch", "--orphan", "replay-state")
@@ -301,7 +304,7 @@ def test_ci_checks_untracked_regeneration_and_announces_skipped_real_replay():
 def test_nonzero_candidate_exit_keeps_logs_and_uploadable_outcome(tmp_path):
     scripts = tmp_path / ".github/scripts"
     scripts.mkdir(parents=True)
-    shutil.copyfile(
+    clone_copy.copyfile(
         ROOT / ".github/scripts/uk_replay_drain.sh", scripts / "uk_replay_drain.sh"
     )
     tools = tmp_path / "bin"
@@ -351,12 +354,14 @@ def control_runner(tmp_path, seed):
     for relative in ("pipeline/uk_replay_queue.py", "pipeline/uk_replay_interface.py"):
         destination = runner / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / relative, destination)
-    shutil.copytree(ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas")
+        clone_copy.copyfile(ROOT / relative, destination)
+    clone_copy.copytree(
+        ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas"
+    )
     scripts = runner / ".github/scripts"
     scripts.mkdir(parents=True)
     for path in (ROOT / ".github/scripts").glob("uk_replay_*.sh"):
-        shutil.copyfile(path, scripts / path.name)
+        clone_copy.copyfile(path, scripts / path.name)
     tools = tmp_path / "bin"
     tools.mkdir()
     uv = tools / "uv"
@@ -671,7 +676,7 @@ def test_ci_regeneration_preserves_sealed_source_and_detects_every_changed_byte(
         path.write_bytes(contents)
     script = source / ".github/scripts/uk_replay_regenerate.sh"
     script.parent.mkdir(parents=True)
-    shutil.copyfile(ROOT / ".github/scripts/uk_replay_regenerate.sh", script)
+    clone_copy.copyfile(ROOT / ".github/scripts/uk_replay_regenerate.sh", script)
     git(source, "add", ".")
     git(source, "commit", "-qm", "Sealed namespace")
     tools = tmp_path / "bin"
@@ -1320,7 +1325,7 @@ if {tool!r} == "python":
 def in_sandbox_script(tmp_path, mode, settings, *, engine_exit=None):
     copy = tmp_path / "scorecard"
     (copy / ".github/scripts").mkdir(parents=True)
-    shutil.copyfile(
+    clone_copy.copyfile(
         ROOT / ".github/scripts/uk_replay_determinism.sh",
         copy / ".github/scripts/uk_replay_determinism.sh",
     )
@@ -1539,7 +1544,7 @@ def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):
     scripts = tmp_path / ".github/scripts"
     scripts.mkdir(parents=True)
     for name in ("uk_replay_recheck.sh", "uk_replay_output_guard.py"):
-        shutil.copyfile(ROOT / ".github/scripts" / name, scripts / name)
+        clone_copy.copyfile(ROOT / ".github/scripts" / name, scripts / name)
     tools = tmp_path / "bin"
     tools.mkdir()
     (tools / "python3").symlink_to(sys.executable)

@@ -24,6 +24,7 @@ from itertools import product
 from pathlib import Path
 from types import SimpleNamespace
 
+import clone_copy
 import numpy as np
 import pytest
 from hypothesis import example, given, settings
@@ -37,7 +38,6 @@ from scorecard_db.relationships import uk_relationship
 REPO = Path(__file__).resolve().parent.parent
 CENTAX_SRC = REPO / "sources" / "centax-childcare-100k"
 CBP_SRC = REPO / "sources" / "cbp-rates-and-wrongs"
-DB = REPO / "data" / "scorecard.db"
 CERTIFIED = json.loads((REPO / "data" / "uk" / "certified_bundle.json").read_text())
 VARIANTS = json.loads((REPO / "data" / "uk" / "replay_variants.json").read_text())
 
@@ -1632,7 +1632,7 @@ def _write(directory, *arts):
     for art in arts:
         (directory / _path(art)).write_text(json.dumps(art))
     # the construction notes live beside the artifacts and are not one
-    shutil.copy(lane.CONSTRUCTION, directory / lane.CONSTRUCTION.name)
+    clone_copy.copy(lane.CONSTRUCTION, directory / lane.CONSTRUCTION.name)
 
 
 def test_every_certified_artifact_stays_and_the_newest_is_latest(tmp_path):
@@ -2388,7 +2388,7 @@ def _ingest_isolated(tmp_path, monkeypatch, notes, staged) -> sqlite3.Connection
     monkeypatch.setattr(lane, "stage", lambda n=None: (scores, drops, artifacts))
     monkeypatch.setattr(lane, "load_notes", lambda: notes)
     feed = tmp_path / "lanes.json"
-    shutil.copy(REPO / "data" / "lanes.json", feed)
+    clone_copy.copy(REPO / "data" / "lanes.json", feed)
     sync = ingest_harvest.sync_lane_feed
     monkeypatch.setattr(
         ingest_harvest,
@@ -2627,16 +2627,19 @@ def test_every_annotation_has_a_basis_and_cites_files_that_exist():
 # --- the built database --------------------------------------------------------
 
 
-def _rows(sql, *args):
-    conn = sqlite3.connect(DB)
+def _rows(db, sql, *args):
+    conn = sqlite3.connect(db)
     conn.row_factory = sqlite3.Row
     out = conn.execute(sql, args).fetchall()
     conn.close()
     return out
 
 
-def test_built_db_lane_counts_and_latest_result_is_the_certified_run():
+def test_built_db_lane_counts_and_latest_result_is_the_certified_run(
+    readonly_scorecard_db,
+):
     rows = _rows(
+        readonly_scorecard_db,
         "SELECT * FROM comparisons WHERE json_extract(publication, '$.registry') = ?",
         lane.REGISTRY_MARK,
     )
@@ -2646,19 +2649,22 @@ def test_built_db_lane_counts_and_latest_result_is_the_certified_run():
     newest = lane.run_records()[PAIR_6110]["identity"]["dataset"]["revision"]
     assert {r["data_bundle"] for r in computed} == {newest}
     assert {r["engine_version"] for r in computed} == {"2.132.6"}
-    lanes = _rows("SELECT * FROM lanes WHERE lane = ?", lane.LANE_ID)
+    lanes = _rows(
+        readonly_scorecard_db, "SELECT * FROM lanes WHERE lane = ?", lane.LANE_ID
+    )
     assert [r["stage"] for r in lanes] == ["computed"]
     # the note counts claims on the latest run, not results across the history
     assert lanes[0]["detail"].startswith("24 of 36 claims computed")
 
 
-def test_published_dashboard_miss_stays_in_the_history():
+def test_published_dashboard_miss_stays_in_the_history(readonly_scorecard_db):
     rows = _rows(
+        readonly_scorecard_db,
         "SELECT s.period, json_extract(s.conditions, '$.component') AS comp,"
         " r.computed_value, r.status, r.engine_version, r.data_bundle, r.computed_at"
         " FROM pe_results r JOIN external_scores s USING (claim_id)"
         " WHERE s.source = 'centax' AND r.run_id = 'uk-childcare-100k-dashboard-1b57118'"
-        " ORDER BY s.period, comp"
+        " ORDER BY s.period, comp",
     )
     got = {(r["period"], r["comp"]): (r["computed_value"], r["status"]) for r in rows}
     assert got == {
@@ -2673,13 +2679,16 @@ def test_published_dashboard_miss_stays_in_the_history():
     }
     # history, not the latest: the lane's certified run is newer
     certified = _rows(
+        readonly_scorecard_db,
         "SELECT MIN(computed_at) AS t FROM pe_results WHERE run_id = ?",
         lane.load_artifact()[0]["run_id"],
     )[0]["t"]
     assert max(r["computed_at"] for r in rows) < certified
 
 
-def test_the_published_row_says_when_it_was_live_and_what_followed():
+def test_the_published_row_says_when_it_was_live_and_what_followed(
+    readonly_scorecard_db,
+):
     """policyengine.org served the figure from 12 to 21 October 2026; what
     the dashboard has served since is stated on the row, never a value."""
     pub = lane._published()
@@ -2700,18 +2709,20 @@ def test_the_published_row_says_when_it_was_live_and_what_followed():
     )
     marks = ",".join("?" * len(after_m))
     assert not _rows(
+        readonly_scorecard_db,
         "SELECT 1 FROM pe_results r JOIN external_scores s USING (claim_id)"
         f" WHERE s.source = 'centax' AND ROUND(r.computed_value / 1e6) IN ({marks})",
         *after_m,
     )
 
 
-def test_central_static_rows_carry_the_latest_pairs_diagnosis():
+def test_central_static_rows_carry_the_latest_pairs_diagnosis(readonly_scorecard_db):
     rows = _rows(
+        readonly_scorecard_db,
         "SELECT period, diagnosis_class, action_link, diagnosis_rationale"
         " FROM comparisons WHERE source = 'centax'"
         " AND json_extract(conditions, '$.component') = 'static_cost'"
-        " AND diagnosis_class IS NOT NULL ORDER BY period"
+        " AND diagnosis_class IS NOT NULL ORDER BY period",
     )
     assert [(r["period"], r["diagnosis_class"]) for r in rows] == [
         (2028, "pe_gap"),
@@ -2768,7 +2779,7 @@ def test_the_diagnosis_and_readme_state_the_runs_own_split(pair_6110):
         assert f"£{full / 1e9:.3f}bn" in readme
 
 
-def test_no_reform_estimate_is_a_calibration_target():
+def test_no_reform_estimate_is_a_calibration_target(readonly_scorecard_db):
     """The 2026-08-02 rulings: another model's reform estimate is never a
     calibration target. never_calibrate() is keyed on metric (the poverty
     family), so this checks the rule on the built DB for every source:
@@ -2776,13 +2787,15 @@ def test_no_reform_estimate_is_a_calibration_target():
     reform, a PolicyEngine reform or an input-override counterfactual) is
     held out, never consumed_as_target or seed_source."""
     rows = _rows(
+        readonly_scorecard_db,
         "SELECT source, calibration_relationship, COUNT(*) AS n FROM external_scores"
         " WHERE json_extract(reform_json, '$.framework') != 'baseline'"
         " AND calibration_relationship != 'held_out'"
-        " GROUP BY source, calibration_relationship"
+        " GROUP BY source, calibration_relationship",
     )
     assert [tuple(r) for r in rows] == []
     lane_rows = _rows(
+        readonly_scorecard_db,
         "SELECT DISTINCT json_extract(reform_json, '$.framework') AS fw,"
         " calibration_relationship AS cr FROM external_scores"
         " WHERE json_extract(publication, '$.registry') = ?",

@@ -23,7 +23,6 @@ import gzip
 import json
 import os
 import random
-import shutil
 import sqlite3
 import subprocess
 import sys
@@ -31,6 +30,7 @@ from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
 
+import clone_copy
 import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
@@ -659,7 +659,7 @@ def test_round_trip_lanes_and_verdicts(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp_path / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     summary = I.ingest(db_path, feed)
     I.ingest(db_path, feed)  # idempotent
     verdicts = I.ingest_verdicts(db_path)
@@ -726,7 +726,10 @@ def _ab2025_dump(tree: Path, out: Path):
     subprocess.run(
         [sys.executable, "-c", _AB2025_DUMP, str(out)],
         cwd=tree,
-        env={**os.environ, "PYTHONPATH": str(tree)},
+        # The dump's scratch database (tempfile.mkdtemp) goes beside its
+        # output in the test's tmp_path, which pytest deletes, rather than
+        # in the shared temp folder, which nothing would clean.
+        env={**os.environ, "PYTHONPATH": str(tree), "TMPDIR": str(out.parent)},
         check=True,
         capture_output=True,
         text=True,
@@ -1079,7 +1082,7 @@ def test_verdict_rows_refuses_a_claim_the_registry_contradicts(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp_path / "lanes.json"
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     I.ingest(db_path, feed)
     key = next(
         k

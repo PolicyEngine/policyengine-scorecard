@@ -100,7 +100,9 @@ def _archive_claim_ids(conn: sqlite3.Connection) -> set[str]:
     }
 
 
-def test_staging_reproduces_the_committed_counterparts_byte_for_byte(monkeypatch):
+def test_staging_reproduces_the_committed_counterparts_byte_for_byte(
+    monkeypatch, readonly_scorecard_db
+):
     """Frozen campaign artifacts reproduce over their original claim cohort.
 
     Comprehensive PMD capture subsequently adds claims, without adding any
@@ -113,18 +115,20 @@ def test_staging_reproduces_the_committed_counterparts_byte_for_byte(monkeypatch
         return [c for c in current_claims(conn) if c["claim_id"] not in archive_ids]
 
     monkeypatch.setattr(stg, "claims", original_cohort)
-    rows, tally, unanswered = stg.stage(DB)
+    rows, tally, unanswered = stg.stage(readonly_scorecard_db)
     assert rows == STAGED
     assert tally == TALLY
     assert unanswered == UNANSWERED
 
 
-def test_current_staging_keeps_archive_claims_unanswered_and_original_rows_unchanged():
+def test_current_staging_keeps_archive_claims_unanswered_and_original_rows_unchanged(
+    readonly_scorecard_db,
+):
     """Every added archive claim has one receipt and no staged counterpart."""
-    with sqlite3.connect(DB) as conn:
+    with sqlite3.connect(readonly_scorecard_db) as conn:
         archive_ids = _archive_claim_ids(conn)
     assert archive_ids, "built database has no new ab2025 PMD archive claims"
-    rows, tally, unanswered = stg.stage(DB)
+    rows, tally, unanswered = stg.stage(readonly_scorecard_db)
     assert rows == STAGED
     assert tally["attached"] == TALLY["attached"]
     attached_ids = {r["external_claim_match"]["claim_id"] for r in rows}
@@ -175,9 +179,11 @@ def test_every_unanswered_claim_has_one_receipt_and_the_tally_adds_up():
     assert zeros and all(r["measure_key"] not in TALLY["inert_measures"] for r in zeros)
 
 
-def test_every_counterpart_names_a_registered_executed_world_and_its_claim():
+def test_every_counterpart_names_a_registered_executed_world_and_its_claim(
+    readonly_scorecard_db,
+):
     arts = _artifacts()
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(readonly_scorecard_db)
     alias = {
         k: str(m["construction"]).removeprefix("same_lever_as_")
         for k, m in INDEX.items()
@@ -200,11 +206,11 @@ def test_every_counterpart_names_a_registered_executed_world_and_its_claim():
     conn.close()
 
 
-def test_no_claim_carries_two_computed_answers():
+def test_no_claim_carries_two_computed_answers(readonly_scorecard_db):
     """The #56 / #140 rule as a fact of the built database: a claim answered
     by this run has no other comparable or constructed result, and the OBR
     costings lane's claims (obr_measure_key) are never answered here."""
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(readonly_scorecard_db)
     twice = conn.execute(
         "SELECT r1.claim_id, r2.run_id FROM pe_results r1"
         " JOIN pe_results r2 ON r2.claim_id = r1.claim_id AND r2.run_id != r1.run_id"
@@ -222,7 +228,9 @@ def test_no_claim_carries_two_computed_answers():
     conn.close()
 
 
-def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed():
+def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed(
+    readonly_scorecard_db,
+):
     """Per lane: the claims answered by this run, counted from the database
     through the lane's own families, equal the figure the lane's feed note
     prints, and the lane reads computed."""
@@ -230,7 +238,7 @@ def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed():
 
     from scorecard_db.ingest_uk_ab2025 import FAMILIES, LANES
 
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(readonly_scorecard_db)
     n = conn.execute(
         "SELECT COUNT(*) FROM pe_results WHERE run_id = ?", (MANIFEST["run_id"],)
     ).fetchone()[0]
@@ -262,7 +270,7 @@ def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed():
     assert checked >= 2
 
 
-def test_a_zero_is_attached_only_before_a_recorded_commencement():
+def test_a_zero_is_attached_only_before_a_recorded_commencement(readonly_scorecard_db):
     """Every attached counterpart whose worlds are identical sits in a fiscal
     year before its measure's recorded commencement, and — the converse, a
     fact of a static model — every year before a recorded commencement has
@@ -275,7 +283,7 @@ def test_a_zero_is_attached_only_before_a_recorded_commencement():
         for k, m in INDEX.items()
         if str(m.get("construction", "")).startswith("same_lever_as_")
     }
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(readonly_scorecard_db)
     fys = dict(
         conn.execute(
             "SELECT claim_id, json_extract(conditions, '$.fy') FROM external_scores"

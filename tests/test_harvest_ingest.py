@@ -8,6 +8,7 @@ report). Staged inputs are vendored at sources/harvest-2026-08-02/.
 import json
 from pathlib import Path
 
+import clone_copy
 import pytest
 
 from scorecard_db import (
@@ -556,7 +557,6 @@ class TestFullIngest:
     @pytest.fixture(scope="class")
     def ingested(self, tmp_path_factory):
         import json
-        import shutil
 
         from scorecard_db.harvest import REPO
         from scorecard_db.ingest_harvest import ADAPTERS, sync_lane_feed
@@ -565,7 +565,7 @@ class TestFullIngest:
         db_path = tmp / "s.db"
         stats = {name: adapter.ingest(db_path) for name, adapter in ADAPTERS.items()}
         feed_path = tmp / "lanes.json"
-        shutil.copy(REPO / "data" / "lanes.json", feed_path)
+        clone_copy.copy(REPO / "data" / "lanes.json", feed_path)
         db = ScorecardDB(db_path)
         sync_lane_feed(db, feed_path, "2026-08-02")
         feed = json.loads(feed_path.read_text())
@@ -686,7 +686,6 @@ class TestAdvanceComputedLanes:
 
     @pytest.fixture()
     def prepared(self, tmp_path):
-        import shutil
 
         from scorecard_db import PEResult
 
@@ -725,7 +724,7 @@ class TestAdvanceComputedLanes:
             db.set_lane(lane, "ingested", "adapter note", "2026-08-02")
         db.close()
         feed = tmp_path / "lanes.json"
-        shutil.copy(REPO / "data" / "lanes.json", feed)
+        clone_copy.copy(REPO / "data" / "lanes.json", feed)
         return db_path, feed
 
     def test_advances_only_lanes_with_results(self, prepared):

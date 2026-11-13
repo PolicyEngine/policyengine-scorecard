@@ -23,13 +23,13 @@ import io
 import json
 import math
 import re
-import shutil
 from decimal import Decimal
 from fractions import Fraction
 from importlib import metadata
 from pathlib import Path
 from types import SimpleNamespace
 
+import clone_copy
 import pytest
 from hypothesis import HealthCheck, example, given, settings
 from hypothesis import strategies as st
@@ -596,15 +596,15 @@ def sealed_copy(tmp_path: Path, event: str = EVENT) -> tuple[dict, Path]:
         variants.CORPUS_NAME,
         "CONSTRUCTION_PREMISES.json",
     ):
-        shutil.copy2(source / name, target / name)
-    shutil.copytree(source / event, target / event)
+        clone_copy.copy2(source / name, target / name)
+    clone_copy.copytree(source / event, target / event)
     run = json.loads((source / event / "RUN_MANIFEST.json").read_text())
     registry = tmp_path / run["registry_path"]
     registry.parent.mkdir(parents=True)
-    shutil.copy2(ROOT / run["registry_path"], registry)
+    clone_copy.copy2(ROOT / run["registry_path"], registry)
     requirements = tmp_path / record["requirements"]["path"]
     requirements.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / record["requirements"]["path"], requirements)
+    clone_copy.copy2(ROOT / record["requirements"]["path"], requirements)
     return record, target
 
 
@@ -745,15 +745,15 @@ def test_a_missing_sealed_event_cannot_disappear_from_the_default_export(tmp_pat
     record = variants.get_variant(FIRST)
     source = variants.namespace_root(record)
     target = variants.namespace_root(record, root=tmp_path)
-    shutil.copytree(source, target)
+    clone_copy.copytree(source, target)
     requirements = tmp_path / record["requirements"]["path"]
     requirements.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / record["requirements"]["path"], requirements)
+    clone_copy.copy2(ROOT / record["requirements"]["path"], requirements)
     for event in json.loads((source / variants.CORPUS_NAME).read_bytes())["events"]:
         run = json.loads((source / event / "RUN_MANIFEST.json").read_bytes())
         registry = tmp_path / run["registry_path"]
         registry.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / run["registry_path"], registry)
+        clone_copy.copy2(ROOT / run["registry_path"], registry)
     (target / EVENT / "RUN_MANIFEST.json").unlink()
     with pytest.raises(
         export.ExportError, match="RUN_MANIFEST.json: sealed file is missing"

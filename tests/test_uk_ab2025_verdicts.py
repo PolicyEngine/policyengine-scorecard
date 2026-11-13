@@ -10,9 +10,10 @@ action_link" is checked here as a fact of the DB.
 """
 
 import json
-import shutil
 import sqlite3
 from pathlib import Path
+
+import clone_copy
 
 from scorecard_db import ScorecardDB
 from scorecard_db.ingest_uk_ab2025 import (
@@ -32,7 +33,7 @@ def _fresh(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     feed = tmp_path / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     ingest(db_path, feed)
     return db_path
 
@@ -172,10 +173,9 @@ def test_lanes_advance_to_computed_only_when_a_counterpart_exists(tmp_path):
 
     db_path = _fresh(tmp_path)
     ingest_verdicts(db_path)  # pe_gap rows are verdicts, not counterparts
-    import shutil
 
     feed = tmp_path / "lanes.json"  # a copy: never the committed feed
-    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    clone_copy.copy(ROOT / "data" / "lanes.json", feed)
     before = advance_lanes(db_path, feed)
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row

@@ -1,8 +1,8 @@
 """Tests for the UK campaign staging producer (archive -> resolved)."""
 
 import json
-import shutil
 
+import clone_copy
 import pytest
 
 from scorecard_db import ScorecardDB
@@ -16,8 +16,8 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_produce_resolves_reckoner_and_blocks_the_rest(tmp_path):
-    summary = produce(DB, out_dir=tmp_path)
+def test_produce_resolves_reckoner_and_blocks_the_rest(tmp_path, readonly_scorecard_db):
+    summary = produce(readonly_scorecard_db, out_dir=tmp_path)
     assert summary["resolved"] == {"hmrc_reckoner_t2": 14}
     assert set(summary["blocked"]) == {
         "free_joins",
@@ -35,7 +35,7 @@ def test_produce_resolves_reckoner_and_blocks_the_rest(tmp_path):
         for line in (tmp_path / "hmrc_reckoner_t2.jsonl").read_text().splitlines()
     ]
     assert len(rows) == 14
-    db = ScorecardDB(DB)
+    db = ScorecardDB(readonly_scorecard_db)
     cids = set()
     for r in rows:
         match = r["external_claim_match"]
@@ -110,13 +110,13 @@ def test_blocked_dispositions_match_the_archive_exactly():
     }
 
 
-def test_blocked_targets_have_no_claims_yet():
+def test_blocked_targets_have_no_claims_yet(readonly_scorecard_db):
     """'Genuinely blocked' is machine-checked: zero DB claims exist for
     every blocked target shape. When a future lane stages one of these
     (OBR receipts, DWP expenditure forecasts, the OBR costings DB, RF,
     a UKMOD 2CL-reform claim), this fails and forces the deliberate
     unblock instead of a silent one."""
-    db = ScorecardDB(DB)
+    db = ScorecardDB(readonly_scorecard_db)
 
     def n(sql, *args):
         return db.conn.execute(sql, args).fetchone()[0]
@@ -200,7 +200,7 @@ def test_blocked_targets_have_no_claims_yet():
     db.close()
 
 
-def test_resolution_chain_is_closed(tmp_path, monkeypatch):
+def test_resolution_chain_is_closed(tmp_path, monkeypatch, readonly_scorecard_db):
     """A construction the archived runs never executed must fail the
     produce, never guess a claim."""
     import scorecard_db.produce_campaign_uk as mod
@@ -208,17 +208,19 @@ def test_resolution_chain_is_closed(tmp_path, monkeypatch):
     bad_dir = tmp_path / "uk"
     bad_dir.mkdir()
     for p in ARCHIVE.glob("*.jsonl"):
-        shutil.copy(p, bad_dir / p.name)
+        clone_copy.copy(p, bad_dir / p.name)
     target = bad_dir / "hmrc_reckoner_t2.jsonl"
     rows = [json.loads(line) for line in target.read_text().splitlines()]
     rows[0]["pe_construction"] = "gov.made.up.parameter: 1 -> 2 | heads income_tax"
     target.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
     monkeypatch.setattr(mod, "ARCHIVE", bad_dir)
     with pytest.raises(ValueError, match="matches no"):
-        produce(DB, out_dir=tmp_path / "out")
+        produce(readonly_scorecard_db, out_dir=tmp_path / "out")
 
 
-def test_new_archive_family_needs_a_disposition(tmp_path, monkeypatch):
+def test_new_archive_family_needs_a_disposition(
+    tmp_path, monkeypatch, readonly_scorecard_db
+):
     """Every archived family must be resolved, copied, or blocked-with-
     reason — a new family cannot be silently skipped."""
     import scorecard_db.produce_campaign_uk as mod
@@ -226,20 +228,19 @@ def test_new_archive_family_needs_a_disposition(tmp_path, monkeypatch):
     new_dir = tmp_path / "uk"
     new_dir.mkdir()
     for p in ARCHIVE.glob("*.jsonl"):
-        shutil.copy(p, new_dir / p.name)
+        clone_copy.copy(p, new_dir / p.name)
     (new_dir / "brand_new_family.jsonl").write_text("{}\n")
     monkeypatch.setattr(mod, "ARCHIVE", new_dir)
     with pytest.raises(ValueError, match="without a disposition"):
-        produce(DB, out_dir=tmp_path / "out")
+        produce(readonly_scorecard_db, out_dir=tmp_path / "out")
 
 
-def test_attach_round_trip(tmp_path):
+def test_attach_round_trip(tmp_path, writable_scorecard_db):
     """Resolved staging attaches through ingest_campaign's strict
     claim_id-direct form: 14 results land and re-ingest is idempotent."""
     from scorecard_db.ingest_campaign import ingest
 
-    db_copy = tmp_path / "scorecard.db"
-    shutil.copy(DB, db_copy)
+    db_copy = writable_scorecard_db
     staged = tmp_path / "uk_resolved"
     produce(db_copy, out_dir=staged)
 
@@ -270,7 +271,7 @@ def test_attach_round_trip(tmp_path):
     db.close()
 
 
-def test_collation_hints_match_db_options_exactly():
+def test_collation_hints_match_db_options_exactly(readonly_scorecard_db):
     """The resolution key: HMRC's verbatim change label in the t2
     collation equals the ingested claim's option string, character for
     character, for every resolved row."""
@@ -278,7 +279,7 @@ def test_collation_hints_match_db_options_exactly():
 
     with open(RUNS / "t2_collation.csv") as f:
         hints = {r["key"]: r["hmrc_hint"] for r in csv.DictReader(f)}
-    db = ScorecardDB(DB)
+    db = ScorecardDB(readonly_scorecard_db)
     options = {
         r[0]
         for r in db.conn.execute(

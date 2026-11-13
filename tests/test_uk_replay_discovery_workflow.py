@@ -9,6 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import clone_copy
 import pytest
 import yaml
 
@@ -238,13 +239,15 @@ def enqueue_runner(tmp_path):
     git(seed, "init", "-q", "-b", "main")
     git(seed, "config", "user.name", "Test")
     git(seed, "config", "user.email", "test@example.org")
-    shutil.copytree(
+    clone_copy.copytree(
         ROOT / "pipeline",
         seed / "pipeline",
         ignore=shutil.ignore_patterns("__pycache__"),
     )
-    shutil.copytree(ROOT / ".github/scripts", seed / ".github/scripts")
-    shutil.copytree(ROOT / "docs/uk_replay/schemas", seed / "docs/uk_replay/schemas")
+    clone_copy.copytree(ROOT / ".github/scripts", seed / ".github/scripts")
+    clone_copy.copytree(
+        ROOT / "docs/uk_replay/schemas", seed / "docs/uk_replay/schemas"
+    )
     git(seed, "add", ".")
     git(seed, "commit", "-qm", "Receiver code")
     git(seed, "switch", "--orphan", "replay-state")
