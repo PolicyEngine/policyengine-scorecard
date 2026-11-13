@@ -1,0 +1,19 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2024.json": "f7fce3e5a6bdf6c95d41ec30ba26c3b3fe5170666ffad43e082085bcb02dcb2a",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2024.json": "236da04a0dd96863e134a0b0983b69068d0559c5fe448a2510d163173be0815f",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2024.json": "ca4461c4ef23189d3866290a44af1777507267dc725dd9423d38a6eac5c5e342"
+ },
+ "certified_dataset_sha256": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "data_bundle": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "engine_version": "2.174.1",
+ "event": "spring_budget_2024",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.18.0",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "variant_id": "pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "variant_identity_sha256": "05dbcf308942856b919a126507a1eda644b0b4f8d4f362e83291262cd15fbb4e",
+ "year": 2024
+}

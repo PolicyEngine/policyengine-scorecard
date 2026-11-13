@@ -1,0 +1,41 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2026.json": "8b1e3acee00965c34345724f280cfe8981af55cbd89f3fa2a4d3e87466704790",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026.json": "a1a4fd877f04a727107808e057203373c21c600a838a57b7b59eddd1569676c0",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2026.json": "da88191485238aac369b47b276ac3c53356ad856c402da98affc7f94898d79ca",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2026.json": "59d0f11f14b330393f4f2a5e75bffb0088c767db4229e161e8dd7ac6ce437160",
+  "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2026.json": "aaba1cfd51b65cf7a0385b6d9990135dddd04083a5a1cd03e71b30268bf39bbb"
+ },
+ "certified_dataset_sha256": "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25",
+ "construction_revisions": {
+  "autumn_budget_2024__capital_gains_main_rates_and_reliefs": {
+   "activation_fy": "2024-25",
+   "part_year_rule": "part_year_day_weighted",
+   "paths": [
+    "gov.hmrc.cgt.basic_rate",
+    "gov.hmrc.cgt.higher_rate",
+    "gov.hmrc.cgt.additional_rate"
+   ],
+   "registry_sha256": "419026fee39e7d0f32d8ec38c19f3d99da21ac7646fcd7b63aa8e5f90e3238a6",
+   "revision_id": "ab2024_cgt_fiscal_year_blend.v2"
+  },
+  "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp": {
+   "activation_fy": "2025-26",
+   "part_year_rule": null,
+   "paths": [],
+   "registry_sha256": "419026fee39e7d0f32d8ec38c19f3d99da21ac7646fcd7b63aa8e5f90e3238a6",
+   "revision_id": "ab2024_sdlt_surcharge_in_current_law.v1"
+  }
+ },
+ "data_bundle": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "engine_version": "2.174.1",
+ "event": "autumn_budget_2024",
+ "policyengine_core_version": "3.33.3",
+ "policyengine_version": "6.18.0",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "variant_id": "pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+ "variant_identity_sha256": "05dbcf308942856b919a126507a1eda644b0b4f8d4f362e83291262cd15fbb4e",
+ "year": 2026
+}

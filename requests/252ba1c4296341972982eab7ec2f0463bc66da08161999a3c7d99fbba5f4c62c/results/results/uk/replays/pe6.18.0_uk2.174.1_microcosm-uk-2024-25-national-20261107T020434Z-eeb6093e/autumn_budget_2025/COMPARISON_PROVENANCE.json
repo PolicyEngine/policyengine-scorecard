@@ -1,0 +1,55 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2025",
+ "outputs_sha256": {
+  "COMPARISON.csv": "41ecca4b3e02d73f06aa583969a0f31913d98cb034d92d9a2141c2be37aa889b",
+  "COMPARISON.json": "658752d37b01f682f4e05bf744e3e8fbc5fc8de21a66d3e8ff77e385532f41e5",
+  "COMPARISON.md": "7e426b38e9b13da7fa8d8c87ec99b9c6f5d9d06ebc884d91971b45111358dff5"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2025_measures.json",
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "replay_grid": {
+  "computed_measure_years": 54,
+  "full_event_complete": false,
+  "full_event_grid_size": 54,
+  "full_supported_grid_complete": false,
+  "inert_measure_years": [
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2025
+   },
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2026
+   },
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2027
+   },
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2028
+   },
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2029
+   },
+   {
+    "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+    "year": 2030
+   }
+  ],
+  "missing_measure_years": [],
+  "supported_grid_size": 54,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2025/RUN_MANIFEST.json",
+ "run_manifest_sha256": "9730ae16c4e86c26abb713913b76ec5a9246b408c917b9292597e77476ad64ae",
+ "source_rows": 1512,
+ "staged_path": "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2025/STAGED.jsonl",
+ "staged_sha256": "2adc656b0ded164e97a6a4e99110bbc8a8b6b40f28377e15c78b5e9af4432f9a",
+ "staging_manifest_path": "results/uk/replays/pe6.18.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2025/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "1c859f397d3330ec80040312e5398995340164a02e992086c2203f1211961e29"
+}
