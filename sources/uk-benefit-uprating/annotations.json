@@ -1,0 +1,29 @@
+{
+  "lane": "uk-benefit-uprating",
+  "annotations": [
+    {
+      "id": "uk-uprating-tree-only",
+      "applies_to": "all",
+      "text": "Parameter-tree read-back, no simulation: the April rise in the rate PolicyEngine-UK holds. April 2026 rates are legislated amounts entered in the tree, so those comparisons check the entry, not a model.",
+      "basis": "pipeline/compute_uk_uprating_readback.py"
+    },
+    {
+      "id": "uk-uprating-benefit-index",
+      "applies_to": "cpi",
+      "text": "PolicyEngine-UK uprates CPI-linked working-age rates by gov.benefit_uprating_cpi, which follows OBR's calendar-year CPI forecast lagged one year (2.30% for 2026 in the March 2026 EFO), not the September rate the law uses. Tracked in PolicyEngine/policyengine-uk#2533; PR #2557 moves the index to September CPI and enters 3.5% for September 2026.",
+      "basis": "policyengine-uk 2.147.2 parameters/gov/benefit_uprating_cpi.yaml (uprating: gov.economic_assumptions.indices.obr.lagged_cpi); OBR EFO March 2026 Table 1.7, calendar year 2026; https://github.com/PolicyEngine/policyengine-uk/pull/2557"
+    },
+    {
+      "id": "uk-uprating-september-forecast",
+      "applies_to": "cpi",
+      "text": "policyengine-uk 2.147.2 has no September 2026 outturn: statutory_uprating_inputs.cpi_september is null for 2026, so the model uses its own forecast. That forecast sets the income tax thresholds and the Universal Credit Act 2025 s. 4 floor for the protected health element.",
+      "basis": "policyengine-uk 2.147.2 parameters/gov/economic_assumptions/statutory_uprating_inputs/cpi_september.yaml"
+    },
+    {
+      "id": "uk-uprating-uc-act",
+      "applies_to": "standard_allowance",
+      "text": "PolicyEngine-UK sets the UC standard allowance as CPI-only uprating from 2025-26 plus the Universal Credit Act 2025 uplift (2.3%, 3.1%, 4.0% and 4.8% for 2026-27 to 2029-30, not compounded), so its April 2027 to 2029 rises move with its CPI forecast.",
+      "basis": "policyengine-uk 2.147.2 parameters/gov/dwp/universal_credit/rebalancing/standard_allowance_uplift.yaml; Universal Credit Act 2025 s. 1"
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 """Queue bounds and control-job behavior against local git repositories."""
 
+import ast
 import json
 import os
+import pwd
 import re
 import shutil
 import subprocess
@@ -10,6 +12,8 @@ from pathlib import Path
 
 import pytest
 import yaml
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from pipeline import uk_replay_interface as interface
 from pipeline import uk_replay_queue as queue
@@ -813,8 +817,11 @@ def test_output_guard_caps_the_total(tmp_path):
 
 def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_home():
     script = (ROOT / ".github/scripts/uk_replay_sandbox.sh").read_text()
+    planner = (ROOT / ".github/scripts/uk_replay_sandbox_plan.sh").read_text()
     code = "\n".join(
-        line for line in script.splitlines() if not line.lstrip().startswith("#")
+        line
+        for line in (script + "\n" + planner).splitlines()
+        if not line.lstrip().startswith("#")
     )
     # A fresh account, denied cron and at, never added to a group.
     assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in code
@@ -825,9 +832,9 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
     # writable, sudo cannot gain privileges and the runner's home is hidden.
     for setting in (
         "sudo systemd-run --quiet --collect --pipe --wait",
-        '--uid="$CANDIDATE"',
+        '--uid="$target"',
         "-p ProtectSystem=strict",
-        '-p ReadWritePaths="$CANDIDATE_HOME"',
+        '-p ReadWritePaths="$home"',
         "-p InaccessiblePaths=-/home/runner",
         "-p PrivateTmp=yes",
         "-p NoNewPrivileges=yes",
@@ -841,15 +848,35 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         "-p LockPersonality=yes",
     ):
         assert setting in code, setting
-    run = code[code.index("  run)") : code.index("  collect)")]
+    run = code[code.index("  run)") : code.index("  install)")]
     assert "in_sandbox PYTHONPATH=. " in run
     assert "exec bash .github/scripts/uk_replay_drain.sh" in run
     assert "sudo -n -u" not in run and "--preserve-env" not in code
-    # setup checks from inside the sandbox, over the runner's whole PATH.
+    # setup checks from inside the sandbox, over the runner's whole PATH,
+    # and that the real replay's offline sandbox has only loopback and no
+    # Unix socket.
     setup = code[code.index("  setup)") : code.index("  run)")]
     assert "if in_sandbox sudo -n true" in setup
     assert 'IFS=: read -r -a path_entries <<< "$PATH"' in setup
     assert "writable=$(in_sandbox /bin/sh -c" in setup
+    assert "interfaces=$(in_sandbox --offline /bin/sh -c" in setup
+    assert "/proc/self/net/dev" in setup and '"$interfaces" != lo' in setup
+    # The probe passes only by printing its last line: a probe that cannot
+    # run at all fails the job.
+    assert (
+        'refused=$(in_sandbox --offline /usr/bin/python3 -I -c "$OFFLINE_PROBE"'
+        in setup
+    )
+    assert '[ "$refused" != "unix and io_uring refused" ]' in setup
+    probe = script[script.index("OFFLINE_PROBE='") : script.index("refused\")'")]
+    for check in (
+        "socket.socket(socket.AF_INET).close()",
+        "socket.socket(socket.AF_UNIX).close()",
+        "libc.syscall(425, 1,",
+        "ctypes.get_errno() != errno.EPERM",
+    ):
+        assert check in probe, check
+    compile(probe[len("OFFLINE_PROBE='") :] + 'refused")', "<probe>", "exec")
     for target in (
         "/opt",
         "/usr",
@@ -860,7 +887,14 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         assert target in setup
     # Nothing it starts outlives the run, and its output comes back streamed
     # out by the account itself, links kept as links for the guard.
-    assert 'sudo pkill -KILL -u "$CANDIDATE"' in code
+    assert 'sudo pkill -KILL -u "$target"' in planner
+    assert 'sandbox_argv "$CANDIDATE" "$CANDIDATE_HOME" "$@"' in script
+    assert 'stop_next "$state" "$observed" "$count" "$CANDIDATE"' in script
+    assert '"${PLAN_ARGV[@]}"' in script
+    assert 'sandbox_stream_dataset "$PLAN_STDIN" "${PLAN_ARGV[@]}"' in script
+    assert 'untrusted_output "${PLAN_ARGV[@]}"' in script
+    assert 'source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_plan.sh"' in script
+    assert 'source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_sandbox_io.sh"' in script
     assert 'as_candidate tar -C "$COPY/output" -cf - .' in code
     assert "sudo cp -R" not in code
     assert (
@@ -895,6 +929,610 @@ def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
     assert "test -f output/probe.json" in joined
     assert "if pgrep -u replay-candidate" in joined
     assert "python3 -I .github/scripts/uk_replay_output_guard.py output" in joined
+
+
+# --- the real replay's way through the sandbox --------------------------------------------
+
+SANDBOX = ROOT / ".github/scripts/uk_replay_sandbox.sh"
+CANDIDATE = "nonexistent-f1-a935c4ce844d"
+CANDIDATE_HOME = f"/{CANDIDATE}"
+PLANNER = ROOT / ".github/scripts/uk_replay_sandbox_plan.sh"
+SANDBOX_IO = ROOT / ".github/scripts/uk_replay_sandbox_io.sh"
+# Every service property the sandbox sets, as systemd-run receives them.
+SANDBOX_PROPERTIES = [
+    "ProtectSystem=strict",
+    f"ReadWritePaths={CANDIDATE_HOME}",
+    "InaccessiblePaths=-/home/runner",
+    "PrivateTmp=yes",
+    "PrivateDevices=yes",
+    "NoNewPrivileges=yes",
+    "RestrictSUIDSGID=yes",
+    "ProtectProc=invisible",
+    "ProtectKernelTunables=yes",
+    "ProtectKernelModules=yes",
+    "ProtectKernelLogs=yes",
+    "ProtectClock=yes",
+    "ProtectControlGroups=yes",
+    "RestrictNamespaces=yes",
+    "LockPersonality=yes",
+    "CapabilityBoundingSet=",
+]
+# Offline: loopback only, and no Unix socket (systemd-resolved, over D-Bus,
+# resolved a name for the account on the runner with PrivateNetwork alone).
+# systemd filters socket(2) for that; only native system calls (the 32-bit
+# ABI's socketcall passes the filter) and no io_uring (which opens sockets
+# without socket(2)).
+OFFLINE_PROPERTIES = [
+    "PrivateNetwork=yes",
+    "RestrictAddressFamilies=AF_INET",
+    "RestrictAddressFamilies=AF_INET6",
+    "RestrictAddressFamilies=AF_NETLINK",
+    "SystemCallArchitectures=native",
+    "SystemCallFilter=~io_uring_setup io_uring_enter io_uring_register",
+    "SystemCallErrorNumber=EPERM",
+]
+# The actual inert Bash planner is called directly with DATA observations.
+# PATH deliberately cannot resolve external commands. Returned argv is never run.
+PLAN_DRIVER = r"""
+before=$-
+source "$PLAN_LIBRARY"
+[ "$before" = "$-" ]
+emit() {
+  printf '%s\0' "$1" "$2" "$PLAN_ACTION" "$PLAN_NEXT" "$PLAN_COUNT" \
+    "$PLAN_STDIN" "$PLAN_ERROR" "$PLAN_STATUS" "${#PLAN_ARGV[@]}" \
+    ${PLAN_ARGV[@]+"${PLAN_ARGV[@]}"}
+}
+read -r -a observations <<< "$OBSERVATIONS"
+seen=0
+plan_stop() {
+  local state=kill observed= count=0
+  while :; do
+    stop_next "$state" "$observed" "$count" "$TARGET"
+    emit "stop-$state" "$observed"
+    state=$PLAN_NEXT count=$PLAN_COUNT observed=
+    case "$PLAN_ACTION" in
+      probe) observed=${observations[$seen]}; seen=$((seen + 1)) ;;
+      kill|sleep|advance) ;;
+      done) return 0 ;;
+      refuse) return "$PLAN_STATUS" ;;
+    esac
+  done
+}
+if [ "$MODE" = install ]; then
+  sandbox_argv "$TARGET" "$TARGET_HOME" REQUIREMENTS="$REQUIREMENTS" \
+    /bin/bash -c 'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh install'
+  emit install ''
+  exit
+fi
+state=start observed=
+while :; do
+  replay_next "$state" "$observed" "$TARGET" "$TARGET_HOME" \
+    "$DATASET_FILE" "$VARIANT" "$REPLAY_EVENT" "$REPLAY_MEASURE" "$REPLAY_YEAR"
+  emit "replay-$state" "$observed"
+  state=$PLAN_NEXT observed=
+  case "$PLAN_ACTION" in
+    stop) plan_stop ;;
+    handin) observed=$HANDIN_STATUS ;;
+    replay|advance) ;;
+    done) break ;;
+    refuse) exit "$PLAN_STATUS" ;;
+  esac
+done
+"""
+REPLAY_SETTINGS = {
+    "DATASET_FILE": None,
+    "VARIANT": "pe9.9.9_example",
+    "REPLAY_EVENT": "autumn_budget_2024",
+    "REPLAY_MEASURE": "autumn_budget_2024__private_school_vat_20pct",
+    "REPLAY_YEAR": "2026",
+}
+
+
+def sandbox_plan(mode, settings, *, observations=("absent", "absent"), handin_status=0):
+    with pytest.raises(KeyError):
+        pwd.getpwnam(CANDIDATE)
+    assert not Path(CANDIDATE_HOME).exists()
+    environment = {
+        "PATH": "/nonexistent-f1-no-executables",
+        "PLAN_LIBRARY": str(PLANNER),
+        "MODE": mode,
+        "TARGET": CANDIDATE,
+        "TARGET_HOME": CANDIDATE_HOME,
+        "OBSERVATIONS": " ".join(observations),
+        "HANDIN_STATUS": str(handin_status),
+        "REQUIREMENTS": "",
+        **dict.fromkeys(REPLAY_SETTINGS, ""),
+        **{key: value for key, value in settings.items() if value is not None},
+    }
+    result = subprocess.run(
+        ["/bin/bash", "--noprofile", "--norc", "-eu", "-c", PLAN_DRIVER],
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+    )
+    fields = result.stdout.split(b"\0")
+    assert fields.pop() == b"", result.stderr
+    records = []
+    while fields:
+        state, observation, action, next_state, count, stdin, error, status, size = [
+            field.decode() for field in fields[:9]
+        ]
+        del fields[:9]
+        argv = [field.decode() for field in fields[: int(size)]]
+        del fields[: int(size)]
+        records.append(
+            dict(
+                state=state,
+                observation=observation,
+                action=action,
+                next=next_state,
+                count=int(count),
+                stdin=stdin,
+                error=error,
+                status=int(status),
+                argv=argv,
+            )
+        )
+    assert result.stderr == b"", result.stderr
+    return records, result
+
+
+def planned_calls(records):
+    calls = [record for record in records if record["argv"][:1] == ["sudo"]]
+    assert all(record["argv"][1] in ("pkill", "systemd-run") for record in calls)
+    return [{**record, "argv": record["argv"][1:]} for record in calls]
+
+
+def benign_io(script, **settings):
+    environment = {
+        "PATH": "/usr/bin:/bin",
+        "IO_LIBRARY": str(SANDBOX_IO),
+        "PYTHON": sys.executable,
+        **{
+            key: os.environ[key]
+            for key in ("PYTHONPATH", "F1_IMPORT_AUDIT")
+            if key in os.environ
+        },
+        **settings,
+    }
+    return subprocess.run(
+        [
+            "/bin/bash",
+            "--noprofile",
+            "--norc",
+            "-euo",
+            "pipefail",
+            "-c",
+            'source "$IO_LIBRARY"\n' + script,
+        ],
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+    )
+
+
+def benign_output(exit_status=0):
+    # This only runs a benign byte producer through the ACTUAL output fence.
+    producer = (
+        "import sys; assert sys.stdin.buffer.read() == b''; "
+        "print('::error::the variant\\'s own output', flush=True); "
+        "sys.stderr.write('::set-output name=forged::on stderr, with no newline'); "
+        "sys.exit(int(sys.argv[1]))"
+    )
+    result = benign_io(
+        'untrusted_output "$PYTHON" -c "$PRODUCER" "$EXIT_STATUS"',
+        PRODUCER=producer,
+        EXIT_STATUS=str(exit_status),
+    )
+    return subprocess.CompletedProcess(
+        result.args, result.returncode, result.stdout.decode(), result.stderr.decode()
+    )
+
+
+def systemd_run(argv):
+    """(flags, environment, properties, command) of one systemd-run call."""
+    assert argv[0] == "systemd-run"
+    flags, environment, properties = [], {}, []
+    rest = argv[1:]
+    while rest and rest[0].startswith("-"):
+        option = rest.pop(0)
+        if option == "--setenv":
+            key, value = rest.pop(0).split("=", 1)
+            assert key not in environment
+            environment[key] = value
+        elif option == "-p":
+            properties.append(rest.pop(0))
+        else:
+            flags.append(option)
+    return flags, environment, properties, rest
+
+
+def stopped_commands(stdout):
+    """The variant's output lies between a stop-commands line and the token
+    that resumes them, after setup-uv's problem matcher is removed."""
+    lines = stdout.splitlines()
+    assert lines[0] == "::remove-matcher owner=python::"
+    match = re.fullmatch(r"::stop-commands::([0-9a-f]{32})", lines[1])
+    assert match, lines[1]
+    assert lines[-1] == f"::{match.group(1)}::"
+    return lines[2:-1]
+
+
+@pytest.mark.parametrize("exit_status", [0, 3])
+def test_install_runs_only_the_freeze_install_in_the_online_sandbox(
+    tmp_path, exit_status
+):
+    records, planned = sandbox_plan(
+        "install", {"REQUIREMENTS": "docs/uk_replay/requirements/x.txt"}
+    )
+    assert planned.returncode == 0
+    calls = planned_calls(records)
+    result = benign_output(exit_status)
+    # The sandbox's exit is the step's, and the variant's output is printed
+    # with workflow commands stopped either way: its stderr too, joined to
+    # stdout, so a last line there with no newline is still inside the fence.
+    assert result.returncode == exit_status, result.stderr
+    assert stopped_commands(result.stdout) == [
+        "::error::the variant's own output",
+        "::set-output name=forged::on stderr, with no newline",
+    ]
+    assert result.stderr == ""
+    ((call,),) = [[c["argv"] for c in calls]]
+    flags, environment, properties, command = systemd_run(call)
+    assert flags == [
+        "--quiet",
+        "--collect",
+        "--pipe",
+        "--wait",
+        f"--uid={CANDIDATE}",
+        f"--gid={CANDIDATE}",
+        f"--working-directory={CANDIDATE_HOME}",
+    ]
+    # An environment built from nothing but these, and the network on.
+    assert environment == {
+        "HOME": CANDIDATE_HOME,
+        "USER": CANDIDATE,
+        "LANG": "C.UTF-8",
+        "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
+        "REQUIREMENTS": "docs/uk_replay/requirements/x.txt",
+    }
+    assert properties == SANDBOX_PROPERTIES
+    assert command == [
+        "/bin/bash",
+        "-c",
+        'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh install',
+    ]
+
+
+def test_replay_writes_the_dataset_in_from_the_sandbox_and_runs_offline(tmp_path):
+    dataset = tmp_path / "the dataset.h5"
+    dataset.write_bytes(bytes(range(256)) * 9)
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
+    records, planned = sandbox_plan("replay", settings)
+    assert planned.returncode == 0
+    calls = planned_calls(records)
+    result = benign_output()
+    assert result.returncode == 0, result.stderr
+    assert stopped_commands(result.stdout) == [
+        "::error::the variant's own output",
+        "::set-output name=forged::on stderr, with no newline",
+    ]
+    # Nothing of the account runs when the dataset goes in. The account
+    # writes it in from a pipe, inside the offline sandbox, with absolute
+    # tools, so a link left in its copy cannot point the write anywhere
+    # else; nothing runs as root inside its home, and nothing as the account
+    # outside the sandbox.
+    assert [c["argv"][:4] for c in calls] == [
+        ["pkill", "-KILL", "-u", CANDIDATE],
+        ["systemd-run", "--quiet", "--collect", "--pipe"],
+        ["systemd-run", "--quiet", "--collect", "--pipe"],
+    ]
+    handin, replay = (systemd_run(c["argv"]) for c in calls[1:])
+    base = {
+        "HOME": CANDIDATE_HOME,
+        "USER": CANDIDATE,
+        "LANG": "C.UTF-8",
+        "PATH": f"{CANDIDATE_HOME}/bin:/usr/local/bin:/usr/bin:/bin",
+    }
+    assert handin[1] == base
+    assert handin[2] == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
+    assert handin[3] == [
+        "/bin/sh",
+        "-c",
+        '/bin/rm -rf "$HOME/scorecard/input" && /bin/mkdir "$HOME/scorecard/input" '
+        '&& exec /bin/cat > "$HOME/scorecard/input/dataset.h5"',
+    ]
+    assert calls[1]["stdin"] == str(dataset)
+    streamed = benign_io(
+        'sandbox_stream_dataset "$DATASET_FILE" /bin/cat', DATASET_FILE=str(dataset)
+    )
+    assert streamed.returncode == 0 and streamed.stdout == dataset.read_bytes()
+    assert streamed.stderr == b""
+    # Then the replay, offline, on top of every other property; neither the
+    # dataset's path on the runner nor any token reaches it.
+    flags, environment, properties, command = replay
+    assert f"--uid={CANDIDATE}" in flags and "--wait" in flags
+    assert properties == SANDBOX_PROPERTIES + OFFLINE_PROPERTIES
+    assert environment == {
+        **base,
+        "PYTHONPATH": ".",
+        **{k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"},
+    }
+    assert command == [
+        "/bin/bash",
+        "-c",
+        'cd "$HOME/scorecard" && exec bash .github/scripts/uk_replay_determinism.sh replay',
+    ]
+    assert calls[2]["stdin"] == ""
+
+
+def test_replay_hands_nothing_in_while_a_process_of_the_account_survives(tmp_path):
+    dataset = tmp_path / "dataset.h5"
+    dataset.write_bytes(b"x")
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)}
+    records, result = sandbox_plan("replay", settings, observations=["present"] * 31)
+    calls = planned_calls(records)
+    assert result.returncode == 1
+    assert records[-1]["error"] == f"{CANDIDATE} processes survive"
+    assert [c["argv"] for c in calls] == [["pkill", "-KILL", "-u", CANDIDATE]]
+
+
+@pytest.mark.parametrize("missing", sorted(REPLAY_SETTINGS))
+def test_replay_refuses_to_start_without_its_settings(tmp_path, missing):
+    dataset = tmp_path / "dataset.h5"
+    dataset.write_bytes(b"x")
+    settings = {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset), missing: None}
+    records, result = sandbox_plan("replay", settings)
+    assert result.returncode != 0 and missing in records[-1]["error"]
+    assert planned_calls(records) == []
+
+
+def test_each_stop_token_is_fresh(tmp_path):
+    tokens = set()
+    for _ in range(3):
+        result = benign_output()
+        tokens.add(result.stdout.splitlines()[1])
+    assert len(tokens) == 3
+
+
+# The in-sandbox script, run as the sandbox runs it, from the candidate's
+# copy, with uv and the variant's Python replaced by recording stubs.
+RECORDER = """#!{python}
+import json, os, sys
+from pathlib import Path
+
+args = sys.argv[1:]
+with open({log!r}, "a") as handle:
+    handle.write(json.dumps({{"tool": {tool!r}, "argv": args, "cwd": os.getcwd()}}) + "\\n")
+if {tool!r} == "python":
+    assert sorted(os.listdir("output")) == [], os.listdir("output")
+    work = Path(args[args.index("--output-dir") + 1])
+    assert not work.exists()
+    if os.environ.get("ENGINE_EXIT"):
+        sys.exit(int(os.environ["ENGINE_EXIT"]))
+    work.mkdir(parents=True)
+    name = args[args.index("--measures") + 1] + "_" + args[args.index("--years") + 1]
+    (work / f"{{name}}.json").write_text('{{"replayed": true}}\\n')
+    (work / "RUN_MANIFEST.json").write_text("{{}}\\n")
+"""
+
+
+def in_sandbox_script(tmp_path, mode, settings, *, engine_exit=None):
+    copy = tmp_path / "scorecard"
+    (copy / ".github/scripts").mkdir(parents=True)
+    shutil.copyfile(
+        ROOT / ".github/scripts/uk_replay_determinism.sh",
+        copy / ".github/scripts/uk_replay_determinism.sh",
+    )
+    log = tmp_path / "calls.jsonl"
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (copy / ".venv-variant/bin").mkdir(parents=True)
+    for tool, path in (
+        ("uv", tools / "uv"),
+        ("python", copy / ".venv-variant/bin/python"),
+    ):
+        path.write_text(RECORDER.format(python=sys.executable, log=str(log), tool=tool))
+        path.chmod(0o755)
+    # Left by an earlier attempt: replay starts from neither.
+    (copy / "output").mkdir()
+    (copy / "output/stale.json").write_text("{}")
+    (copy / ".venv-replay-checks/determinism").mkdir(parents=True)
+    environment = {
+        "PATH": f"{tools}:/usr/bin:/bin",
+        **settings,
+        **({"ENGINE_EXIT": str(engine_exit)} if engine_exit else {}),
+    }
+    result = subprocess.run(
+        ["bash", ".github/scripts/uk_replay_determinism.sh", mode],
+        cwd=copy,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    calls = (
+        [json.loads(line) for line in log.read_text().splitlines()]
+        if log.exists()
+        else []
+    )
+    return copy, calls, result
+
+
+def test_the_sandboxed_install_builds_exactly_the_variants_freeze(tmp_path):
+    copy, calls, result = in_sandbox_script(
+        tmp_path, "install", {"REQUIREMENTS": "docs/x.txt"}
+    )
+    assert result.returncode == 0, result.stderr
+    assert [(c["tool"], c["argv"]) for c in calls] == [
+        ("uv", ["venv", "--python", "3.12", ".venv-variant"]),
+        (
+            "uv",
+            [
+                "pip",
+                "install",
+                "--python",
+                ".venv-variant/bin/python",
+                "-r",
+                "docs/x.txt",
+            ],
+        ),
+        (
+            "uv",
+            [
+                "pip",
+                "install",
+                "--python",
+                ".venv-variant/bin/python",
+                "rfc8785==0.1.4",
+                "jsonschema",
+            ],
+        ),
+    ]
+    assert {Path(c["cwd"]).resolve() for c in calls} == {copy.resolve()}
+
+
+def test_the_sandboxed_replay_returns_only_the_replayed_artifact(tmp_path):
+    settings = {k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"}
+    copy, calls, result = in_sandbox_script(tmp_path, "replay", settings)
+    assert result.returncode == 0, result.stderr
+    ((call,),) = [[c for c in calls if c["tool"] == "python"]]
+    assert call["argv"] == [
+        "-m",
+        "pipeline.compute_uk_event",
+        "--event",
+        "autumn_budget_2024",
+        "--variant",
+        "pe9.9.9_example",
+        "--measures",
+        "autumn_budget_2024__private_school_vat_20pct",
+        "--years",
+        "2026",
+        "--workers",
+        "1",
+        "--dataset-file",
+        "input/dataset.h5",
+        "--output-dir",
+        ".venv-replay-checks/determinism",
+    ]
+    name = "autumn_budget_2024__private_school_vat_20pct_2026.json"
+    assert sorted(p.name for p in (copy / "output").iterdir()) == [name]
+    assert (copy / "output" / name).read_text() == '{"replayed": true}\n'
+    assert not (copy / "output" / name).is_symlink()
+
+
+def test_a_failed_sandboxed_replay_returns_nothing(tmp_path):
+    settings = {k: v for k, v in REPLAY_SETTINGS.items() if k != "DATASET_FILE"}
+    copy, _, result = in_sandbox_script(tmp_path, "replay", settings, engine_exit=4)
+    assert result.returncode == 4
+    assert list((copy / "output").iterdir()) == []
+
+
+def test_the_real_replay_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
+    # install, replay and collect need sudo, useradd and systemd, so CI runs
+    # them on the runner image itself, with a stand-in dataset and, in the
+    # candidate's copy only, a small freeze and a stub engine module.
+    job = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())["jobs"][
+        "real-replay-sandbox"
+    ]
+    assert job["permissions"] == {"contents": "read"}
+    assert "secrets." not in json.dumps(job)
+    steps = job["steps"]
+    runs = [step.get("run", "") for step in steps]
+    joined = "\n".join(runs)
+    order = [
+        'echo "DATASET_FILE=$RUNNER_TEMP/dataset.h5" >> "$GITHUB_ENV"',
+        "bash .github/scripts/uk_replay_sandbox.sh setup",
+        "tee /home/replay-candidate/scorecard/pipeline/compute_uk_event.py",
+        "bash .github/scripts/uk_replay_sandbox.sh install",
+        "bash .github/scripts/uk_replay_sandbox.sh replay",
+        "bash .github/scripts/uk_replay_sandbox.sh collect",
+        "/usr/bin/python3 -E -s -m pipeline.uk_replay_determinism",
+    ]
+    assert [joined.index(line) for line in order] == sorted(
+        joined.index(line) for line in order
+    )
+    # The stub engine is written into the copy, never the runner's checkout,
+    # and imports the freeze the sandboxed install built.
+    assert "sudo -u replay-candidate tee /home/replay-candidate/scorecard/" in joined
+    assert "import rfc8785" in joined
+    # It reports what it finds offline, leaves a process and forges workflow
+    # commands; the runner expects exactly loopback, no connection out or to
+    # D-Bus, its own dataset's digest, a working pool and its own arguments.
+    for probe in (
+        "/proc/self/net/dev",
+        'socket.create_connection(("1.1.1.1", 443)',
+        'client.connect("/run/dbus/system_bus_socket")',
+        'get_context("spawn").Pool(2)',
+        'subprocess.Popen(["sleep", "600"], start_new_session=True)',
+        "::error::forged by the stub engine",
+        'sys.stderr.write("::set-" "output name=forged::from stderr")',
+        "raise Forged('an annotation from the stub engine')",
+    ):
+        assert probe in joined, probe
+    # The forged output is read back: it must be empty, beside a control
+    # that shows the runner still honours the deprecated command outside the
+    # fence (else an empty output would prove nothing).
+    by_id = {s.get("id"): s for s in steps}
+    control, replay = by_id["control"], by_id["replay"]
+    assert control["run"] == 'echo "::set-""output name=honoured::yes"'
+    assert steps.index(control) < steps.index(replay)
+    check = next(s for s in steps if "FORGED" in s.get("env", {}))
+    assert check["env"] == {
+        "CONTROL": "${{ steps.control.outputs.honoured }}",
+        "FORGED": "${{ steps.replay.outputs.forged }}",
+    }
+    assert 'if [ "$CONTROL" != yes ] || [ -n "$FORGED" ]; then' in check["run"]
+    assert "if pgrep -u replay-candidate" in check["run"]
+    assert 'test "$(stat -c %U "$report")" = "$(id -un)"' in check["run"]
+    # The stub reports exactly the fields the runner expects, and the runner
+    # expects these values; the stub really starts a process.
+    stub = heredoc(next(r for r in runs if "compute_uk_event.py" in r))
+    expected = heredoc(check["run"])
+    assert dict_keys(stub, "report") == dict_keys(expected, "expected")
+    values = dict_values(expected, "expected")
+    assert values["interfaces"] == ["lo"]
+    assert values["pool"] == 3 and values["rfc8785"] == '{"a":2,"b":1}'
+    assert not any(values[k] for k in ("connects_out", "reaches_dbus", "resolves"))
+    assert "dataset_sha256" in values and 'sha256sum "$DATASET_FILE"' in check["run"]
+    assert any(
+        isinstance(node, ast.Call)
+        and ast.unparse(node.func) == "subprocess.Popen"
+        and "start_new_session" in {k.arg for k in node.keywords}
+        for node in ast.walk(ast.parse(stub))
+    )
+
+
+def heredoc(run: str) -> str:
+    """The Python program a step's run feeds through <<'PY'."""
+    body = run.split("<<'PY'\n", 1)[1]
+    return body[: body.index("\nPY")]
+
+
+def dict_literal(source: str, name: str) -> ast.Dict:
+    (node,) = [
+        node.value
+        for node in ast.walk(ast.parse(source))
+        if isinstance(node, ast.Assign)
+        and [getattr(target, "id", None) for target in node.targets] == [name]
+    ]
+    assert isinstance(node, ast.Dict)
+    return node
+
+
+def dict_keys(source: str, name: str) -> list[str]:
+    return sorted(key.value for key in dict_literal(source, name).keys)
+
+
+def dict_values(source: str, name: str) -> dict:
+    """``name``'s dict, each value a literal or None."""
+    literal = dict_literal(source, name)
+    values = {}
+    for key, value in zip(literal.keys, literal.values):
+        try:
+            values[key.value] = ast.literal_eval(value)
+        except ValueError:
+            values[key.value] = None
+    return values
 
 
 def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):
@@ -1042,9 +1680,9 @@ def test_the_data_token_is_used_only_outside_pull_requests():
             assert "secrets." not in json.dumps(job.get("env", {}))
             for step in job["steps"]:
                 assert "secrets.HUGGING_FACE_TOKEN" not in json.dumps(step)
-    # The job that runs a variant's engine beside the token reads only,
-    # keeps no checkout credential, and runs the engine in later steps than
-    # the token, which they do not hold.
+    # The job that runs a variant's engine in the same job as the token reads
+    # only, keeps no checkout credential, and runs the engine in later steps
+    # than the token, which they do not hold.
     engine = determinism["jobs"]["real-replay"]
     assert engine["permissions"] == {"contents": "read"}
     checkout = next(
@@ -1055,15 +1693,7 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     fetch = engine["steps"][
         names.index("Fetch the certified dataset for the real replay")
     ]
-    replay_step = engine["steps"][
-        names.index("One real measure-year replays byte for byte")
-    ]
-    assert names.index(fetch["name"]) < names.index(replay_step["name"])
-    assert replay_step["if"] == "steps.fetch.outputs.fetched == 'true'"
-    # A leg that fetched nothing (the legacy variant, an unsealed namespace,
-    # no token) installs nothing: the runner holds the token there too.
-    install = engine["steps"][names.index("Install the variant's exact environment")]
-    assert install["if"] == "steps.fetch.outputs.fetched == 'true'"
+    assert "huggingface_hub==2.2.0" in fetch["run"]
     # A pull request's CI says that no real replay ran there.
     (notice,) = [
         s
@@ -1073,21 +1703,19 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     assert notice["if"] == "env.LEGACY == 'False' && github.event_name != 'push'"
     assert "uk-replay-determinism.yml" in notice["run"]
     assert "nothing was replayed" in notice["run"]
-    assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]
     # The token step comes before any variant code: before the first step
-    # that touches the variant's environment, and after only the checkout,
-    # uv's setup and a read of the index, none of which installs or runs
-    # anything of the variant's. A package from the variant's requirements
-    # could otherwise write $GITHUB_ENV or $GITHUB_PATH, or plant a file,
-    # that the token step then runs. (It could still read the token from the
-    # runner's memory later in the job; see the job's comment.)
+    # that hands anything to the candidate account, and after only the
+    # checkout, uv's setup and a read of the index, none of which installs or
+    # runs anything of the variant's. A package from the variant's
+    # requirements could otherwise write $GITHUB_ENV or $GITHUB_PATH, or
+    # plant a file, that the token step then runs.
     fetch_index = names.index(fetch["name"])
-    variant_steps = [
+    sandboxed = [
         index
         for index, step in enumerate(engine["steps"])
-        if ".venv-variant" in json.dumps(step)
+        if "uk_replay_sandbox.sh" in step.get("run", "")
     ]
-    assert variant_steps and fetch_index < variant_steps[0]
+    assert sandboxed and fetch_index < sandboxed[0]
     before = engine["steps"][:fetch_index]
     assert [step.get("name") or step["uses"] for step in before] == [
         "actions/checkout@v4",
@@ -1097,6 +1725,66 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     installs = re.compile(r"\b(uvx?|pipx?|pip3|venv|pipeline)\b|\$\{?REQUIREMENTS\b")
     for step in before:
         assert not installs.search(step.get("run", "")), step
+    # After the fetch, the variant's code runs only as the candidate account
+    # in the sandbox, which cannot read the runner's memory: its install
+    # (with the network) and its replay (offline), then collect, which runs
+    # always so nothing of the account outlives the job's last step. Outside
+    # the sandbox only the runner's own /usr/bin/python3 runs, isolated, to
+    # find the dataset and to compare the replay that comes back; neither
+    # step holds the token, and nothing else installs or runs Python.
+    after = engine["steps"][fetch_index + 1 :]
+    fetched = "steps.fetch.outputs.fetched == 'true'"
+    assert [(step["name"], step["if"], step["run"]) for step in after] == [
+        (
+            "Find the fetched dataset by its digest",
+            fetched,
+            after[0]["run"],
+        ),
+        (
+            "Hand a private copy to the unprivileged candidate account",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh setup",
+        ),
+        (
+            "Install the variant's exact environment in the sandbox",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh install",
+        ),
+        (
+            "Replay one real measure-year in the sandbox, offline",
+            fetched,
+            "bash .github/scripts/uk_replay_sandbox.sh replay",
+        ),
+        (
+            "Stop every candidate process and take its output back",
+            f"always() && {fetched}",
+            "bash .github/scripts/uk_replay_sandbox.sh collect",
+        ),
+        (
+            "One real measure-year replays byte for byte",
+            fetched,
+            after[-1]["run"],
+        ),
+    ]
+    assert all(set(step) == {"name", "if", "run"} for step in after)
+    find, compare = after[0]["run"], after[-1]["run"]
+    assert "rv.find_dataset_bytes(rv.get_variant(sys.argv[1]))" in find
+    assert 'echo "DATASET_FILE=$dataset" >> "$GITHUB_ENV"' in find
+    assert "/usr/bin/python3 -E -s -m pipeline.uk_replay_determinism" in compare
+    variant_code = re.compile(
+        r"\b(uvx?|pipx?|pip3|venv)\b|\.venv-variant|compute_uk_event|\$\{?REQUIREMENTS\b"
+    )
+    for text in (find, compare):
+        assert not variant_code.search(text), text
+        isolated = text.count("/usr/bin/python3 -I ")
+        isolated += text.count("/usr/bin/python3 -E -s ")
+        assert text.count("python") == isolated == 1, text
+    # The dataset stays on the runner: this workflow uploads and caches
+    # nothing.
+    for job in determinism["jobs"].values():
+        for step in job["steps"]:
+            uses = step.get("uses", "")
+            assert not uses.startswith(("actions/upload-artifact", "actions/cache"))
 
 
 # --- the real replay's dataset fetch, run as GitHub runs it -------------------------------
@@ -1343,3 +2031,82 @@ def test_the_fetch_names_the_hub_cache_the_replay_searches(
     with pytest.raises(rv.VariantError):
         rv.find_dataset_bytes(variant)
     assert searched == [Path(record["env"]["HF_HUB_CACHE"])]
+
+
+@pytest.mark.parametrize(
+    ("observations", "sleeps", "status"),
+    [
+        (["absent", "absent"], 0, 0),
+        (["absent", "present"], 0, 1),
+        (["present", "absent", "absent"], 1, 0),
+        (["present"] * 30 + ["present"], 30, 1),
+        (["present"] * 30 + ["absent"], 30, 0),
+        (["present"] * 29 + ["absent", "absent"], 29, 0),
+    ],
+)
+def test_stop_plan_preserves_polling_and_the_independent_final_check(
+    observations, sleeps, status
+):
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": "/nonexistent-f1-dataset"},
+        observations=observations,
+    )
+    assert result.returncode == status
+    assert sum(r["action"] == "kill" for r in records) == 1
+    assert sum(r["action"] == "sleep" for r in records) == sleeps
+    assert sum(r["action"] == "probe" for r in records) == len(observations)
+    assert sum(r["state"] == "stop-verify" for r in records) == 1
+    final = next(r for r in records if r["state"] == "stop-verified")
+    assert final["action"] == ("refuse" if status else "done")
+    assert [r["action"] for r in records if r["action"] in ("handin", "replay")] == (
+        [] if status else ["handin", "replay"]
+    )
+    for record in records:
+        if record["action"] in ("advance", "stop", "done", "refuse"):
+            assert record["argv"] == [] and record["stdin"] == ""
+
+
+@settings(max_examples=25, deadline=None)
+@given(present_polls=st.integers(0, 29), final_present=st.booleans())
+def test_any_absent_poll_still_requires_an_independent_final_check(
+    present_polls, final_present
+):
+    observations = ["present"] * present_polls + ["absent"]
+    observations.append("present" if final_present else "absent")
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": "/nonexistent-f1-dataset"},
+        observations=observations,
+    )
+    assert result.returncode == int(final_present)
+    assert sum(r["action"] == "probe" for r in records) == present_polls + 2
+    assert sum(r["action"] == "sleep" for r in records) == present_polls
+    absent = next(
+        i
+        for i, r in enumerate(records)
+        if r["state"] == "stop-polled" and r["observation"] == "absent"
+    )
+    assert records[absent]["next"] == "verify"
+    assert records[absent + 1]["state"] == "stop-verify"
+    assert not any(r["action"] in ("handin", "replay") for r in records[: absent + 3])
+
+
+def test_failed_actual_dataset_stream_prevents_a_planned_replay(tmp_path):
+    dataset = tmp_path / "binary dataset.h5"
+    dataset.write_bytes(bytes(range(256)) * 9)
+    streamed = benign_io(
+        'sandbox_stream_dataset "$DATASET_FILE" /bin/sh -c "exit 7"',
+        DATASET_FILE=str(dataset),
+    )
+    assert streamed.returncode == 7
+    records, result = sandbox_plan(
+        "replay",
+        {**REPLAY_SETTINGS, "DATASET_FILE": str(dataset)},
+        handin_status=streamed.returncode,
+    )
+    assert result.returncode == streamed.returncode
+    assert [r["action"] for r in records if r["action"] in ("handin", "replay")] == [
+        "handin"
+    ]
+    assert records[-1]["error"] == "dataset hand-in failed"

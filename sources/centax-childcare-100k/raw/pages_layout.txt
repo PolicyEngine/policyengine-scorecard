@@ -1,0 +1,598 @@
+=== PDF page 3 (printed page 2) ===
+Executive summary
+
+Since 2010, all parents of 3- and 4-year-olds in England have been able to
+claim 15 hours a week of free childcare funded by government for 38 weeks
+of the year. Since 2017, working parents of 3- and 4-year-olds have been able
+to claim a further 15 hours, provided that certain conditions are met. These
+include the requirement that neither parent expects to have income above
+£100,000. Families with a parent whose expected income is above £100,000
+– after adjustments such as for pension contributions and charitable
+donations – face the prospect of losing access to some or all of their free
+childcare, potentially leaving them worse off overall. This childcare ‘cliff-
+edge’ is in addition to and, for those affected, more severe than the
+withdrawal of the Personal Allowance for Income Tax, which also starts at
+£100,000.
+
+The size of the childcare cliff-edge has been getting bigger, as the value of
+the free childcare entitlement has increased following recent reforms and
+rising childcare costs over time. Starting in April 2024, the entitlement has
+also been gradually expanded to cover a wider range of ages. Working
+parents of children aged 9 months to 2 years old are now eligible for 30 hours
+per week of free childcare, provided they both expect their income for the
+tax year to be below £100,000. Parents of under-3s therefore lose 30 hours of
+free childcare by crossing the threshold, rather than the 15 hours that
+parents of 3- and 4-year-olds lose. The threshold has also stayed fixed at
+£100,000 in cash terms since 2017, so rising incomes pull more parents into
+its range each year. The combined effect is that the median affected
+parent would have had to reach income of roughly £105,000 to be no
+worse off after losing free childcare in the tax year 2021/22, but this will
+rise to £124,000 by the end of this parliament, in 2029/30.1
+
+The childcare cliff-edge has been widely criticised for discouraging work and
+creating incentives that hold back economic growth. However, quantifying
+these impacts and estimating the fiscal cost of reform requires analysis of
+HMRC administrative tax data covering the full population of parents
+affected by the cliff-edge, which has not previously been available. In this
+report, we provide the first detailed evidence on who is affected by the
+withdrawal of free childcare, how they respond, and how much it would cost
+to remove this cliff-edge by making the free childcare entitlement available
+to parents with incomes over £100,000, or other options short of this.
+
+Editorial note: all references to years in this report are based on tax years, giving the later
+1
+
+year e.g., tax year 2021-22 is given as 2022.
+
+
+                                              2                                       © CenTax
+=== PDF page 9 (printed page 8) ===
+In Wales, all 3- and 4-year-olds receive a universal Foundation Phase
+entitlement of at least 10 hours per week with no income test. Since April
+2019 working parents can add to this through the Childcare Offer for Wales,
+taking combined provision up to 30 hours per week for up to 48 weeks.4 The
+income condition for this is assessed on each parent's gross income being
+£100,000 or less. Gross income is measured before deductions such as
+pension contributions and salary sacrifice, in contrast to ANI used in
+England.5
+
+Alongside these devolved schemes, Tax-Free Childcare operates across the
+whole UK. It creates a childcare account that both parents and the
+government pay into. For every £8 a parent pays into the account, the
+government will top it up by £2, up to £2,000 per child a year (higher for
+disabled children). It is withdrawn in full, with no taper, once either parent
+has an ANI above £100,000.6
+
+1.2. Understanding the effect of the childcare entitlement threshold in
+England
+
+The design of the childcare entitlement in England means that very small
+changes in expected incomes can result in large reductions in the number
+of hours per year that the government will fund for an early-years child. This
+creates a strong incentive for parents who choose to make use of the
+childcare entitlement to keep their income below the threshold.
+
+Starting in April 2024, the entitlement has also been gradually expanded to
+cover a wider range of ages. This now provides 30 hours for 38 weeks per
+year for children from 9-months to 2 years, in addition to the 15 hours for 3-
+and 4-year-olds introduced in 2017. Significantly, the universal free 15 hours
+of childcare has not also been expanded beyond 3- and 4-year-olds, which
+means that parents of under-3s risk losing 1,140 hours of annual funded
+childcare, rather than the 570 hours that parents of 3- and 4-year-olds would
+lose.7
+
+Figure 1.1 shows the range of the implicit value of childcare entitlement
+across England, driven by large variation in the hourly cost of childcare
+parents face when paying for it out of their own pocket. For most working
+parents of a 3- or 4-year-old in 2025, losing a full year of the childcare
+
+
+4
+  https://www.gov.wales/get-30-hours-childcare-3-and-4-year-olds/nursery-education
+5
+  The number of parents of young children in Wales receiving this level of income is small,
+meaning we are not able to perform statistical analysis on this group.
+6
+  https://www.gov.uk/tax-free-childcare
+7
+  30 hours per week multiplied by 38 weeks per year.
+
+
+                                            8                                     © CenTax
+=== PDF page 40 (printed page 39) ===
+Table 4.1: Relative bunching and friction parameter estimates, 2019-2022
+
+                            Employees                         Non-Employees
+   Tax Year         Relative          Friction           Relative          Friction
+                   Bunching          Parameter          Bunching          Parameter
+ 2019                        1.33               0.94             8.29               0.72
+
+ 2020                        1.43               0.93              9.19              0.72
+
+ 2021                        1.68               0.92             9.79               0.68
+
+ 2022                        1.79               0.93             12.41              0.67
+Notes: This table shows the relative bunching and friction parameter estimates for
+employee and non-employee parents in each tax year 2019 to 2022. Relative bunching refers
+to the estimated excess number of parents with an income just below £100,000 for that tax
+year divided by the number estimated to have an income of £100,000 were there no
+incentive to bunch at £100,000. The friction parameter estimates are the share of parents
+remaining that have an income that is in a ‘dominated region’. That is, where the value of
+the childcare entitlement exceeds the additional post-tax income they receive over
+£100,000.
+
+Source: Authors' calculations based on HMRC administrative datasets.
+
+Given this ongoing trend, our modelling takes as a conservative central
+estimate the assumption that this trend continues in coming years. By 2028
+this would mean the friction parameter for employees would have reduced
+by another 2%, and for non-employees by about 13%, which would imply an
+overall reduction of around 5%, given the relative share of employees and
+non-employees in the sample. Increased response by parents to the current
+policy reduces the cost of reform, since relaxation of restrictions on childcare
+entitlement would lead (some of) them to have higher incomes, and pay
+more tax, while continuing to receive the entitlement as now.
+
+Since there is now a larger age range in which children are eligible for the
+entitlement, as well as a greater number of free hours lost for under-3s,
+some parents that previously would not have considered it worth the hassle
+to respond may now do so. In this case the friction parameter might have
+reduced more quickly than the previous trend indicates. As a lower bound
+on the financial cost of reforms (or upper bound of the benefits), we assume
+that uptake of childcare entitlements rises to match the share just below
+the threshold. As shown in Figure 2.1, this is around 60%, providing a likely
+‘floor’ on how much further the friction parameter can fall, as we would
+expect at least 40% of parents above £100,000 to not make use of the
+entitlement even if it were available.
+
+
+
+
+                                           39                                    © CenTax
+=== PDF page 41 (printed page 40) ===
+Conversely, since we have no quantitative evidence that the trend in the
+friction parameter has continued post-2022, as an upper bound on the
+financial cost we assume that the friction parameter remains unchanged at
+its 2022 level.
+
+We therefore present a high cost, low cost, and central cost scenario
+illustrating the potential fiscal effects of reforms. In the high-cost scenario,
+we assume that the level of friction remains as it was in 2022. In the central
+scenario, we assume the trend of the change in responsiveness between
+2019 and 2022 continues into the future. In the low-cost scenario, we assume
+the friction parameter falls by 50%, which corresponds approximately to the
+‘floor’ in which the only parents not responding are those that would not be
+making use of the entitlement regardless. The scenarios presented in
+Section 4.2 are intended as bounds on the estimated effects of any reforms,
+with our central estimate representing a conservative prediction of how
+responsiveness to the cliff-edge has increased since 2022. As we cannot
+directly observe what the magnitude of frictions are beyond 2022, Appendix
+C presents the results for a range of changes to the friction parameters in
+order to show the estimated fiscal effects change with the friction
+parameter, as well as the modelling results for each of the reforms under the
+low-cost and high-cost scenarios.
+
+4.2.   Reform modelling results
+
+4.2.1. Abolish the threshold
+We take as our baseline abolishing the threshold and providing the
+childcare entitlement with no limit on how high a parent’s income can be
+before losing any entitlement. There are no significant administrative
+considerations in doing so, as it simply removes the complexity from the
+system. Childcare accounts could continue to be used to administer the
+entitlement but significantly simplified given there is no longer a link to
+individual incomes or the tax system.
+
+
+
+
+                                      40                                © CenTax
+=== PDF page 42 (printed page 41) ===
+Table 4.2: Fiscal cost estimates of removing £100,000 threshold, 2028
+and 2030
+
+                             Number                               Behavioural
+                            Bunching                                Gain (£)           Net
+              Tax                                Static                               Fiscal
+ Scenario
+              Year                              Cost (£)                               Cost
+                       Before       After                     Intensive   Extensive     (£)
+                      Removal      Removal                     Margin      Margin
+
+
+
+              2028        13,360       3,850        -800m        +150m       +120m    -520m
+ Central
+ Scenario
+              2030       16,280        4,300        -980m        +210m       +130m    -640m
+
+
+ High-        2028         9,710       3,850        -820m        +100m       +120m    -610m
+ Cost
+ Scenario     2030       10,860        4,300        -1,010m      +120m       +120m    -770m
+
+
+ Low-         2028        58,510       3,850        -580m       +630m         +90m    +140m
+ Cost
+ Scenario     2030       67,650        4,300        -700m        +770m        +90m    +160m
+
+Notes: This table presents the results of modelling the fiscal effects of removing the
+£100,000 threshold for eligibility for free childcare hours. The static cost is the estimated
+cost of providing the modelled childcare policy, relative to the status quo, before accounting
+for any behavioural effects. The intensive margin behavioural gain is the estimated fiscal
+effect of the modelled policy due to taxpayers changing their ANI due to the change in
+incentive to bunch at the threshold. The extensive margin behavioural gain is the modelled
+effect of change in the share of partners above the threshold that enter the labour market
+and begin paying Income Tax and National Insurance Contributions. Figures may not sum
+due to rounding. Figures in £m; negative = cost to the Exchequer
+
+Source: Authors' calculations based on HMRC administrative datasets.
+
+Table 4.2 presents the estimated effects of removing the threshold. Under
+our central estimate, the static cost of providing childcare to those above
+the threshold is estimated to be just below £1 billion by 2030. Fiscal drag
+means that by this point there will be almost 200,000 potentially eligible
+parents with an income greater than £100,000.
+
+Before the removal of threshold, the number of parents estimated to be
+bunching at £100,000 in our central scenario is about 13,000 and 16,000 in
+2028 and 2030, respectively. Following the removal of the entitlement
+threshold, we estimate around 4,000 parents will continue bunching due to
+the Personal Allowance withdrawal. After accounting for these changes in
+parents’ behaviour, the overall cost is estimated to be around £340 million
+
+
+                                               41                                     © CenTax
+=== PDF page 43 (printed page 42) ===
+less than the static cost. £210 million of this is estimated to arise from
+parents ceasing to hold their income below £100,000 and thus generating
+additional tax revenue. Another £130 million is expected to come from an
+increase in the participation rate of the partners of parents currently
+ineligible for the entitlement, who are now able to re-enter the labour
+market.
+
+Under the lower bound cost scenario, where the share of parents assumed
+to remain above the threshold is half that observed in 2022, the removal of
+the threshold is revenue positive. This is because under this scenario, around
+four times as many parents are estimated to bunch due to the childcare
+entitlement threshold. This reduces the cost of expanding the entitlement,
+as there are fewer parents remaining above the threshold that would
+represent a new cost, while greatly increasing the behavioural revenue
+effect, as there are many more parents that would increase their incomes
+following the removal of the threshold. The extensive margin effect is
+smaller for the same reason the static cost is smaller – that is there are fewer
+currently-ineligible parents whose partners are assumed to return to work
+after becoming eligible.
+
+4.2.2. Change to an actual ANI threshold
+As explained in Section 2.5, some parents with incomes above £100,000 for
+the tax year have still had a live childcare account for some period of the
+year. One possible reform to the entitlement would be to change the
+income measure used to determine eligibility for the entitlement away from
+expected ANI and use parents’ actual ANI for the year. This would mean that
+parents that were deemed eligible for at least part of the year because they
+had expected to have an income below £100,000 but ended up with an
+actual ANI greater than £100,000 would no longer be considered eligible for
+the entitlement in that year.
+
+In 2022 there were approximately 11,000 parents who had a live childcare
+account for at least part of the year while going on to have an actual ANI
+greater than £100,000. If the free childcare that was provided to these
+parents was instead provided on the basis of actual ANI, the upper income
+threshold could be expanded to about £111,000 at the same fiscal cost.26
+
+
+
+
+26
+  This is estimated by calculating the number of additional parents with incomes just above
+£100,000 that could be provided the free childcare entitlement if the total quarters of
+childcare claimed by all parents above £100,000 in 2022 were instead allocated to parents
+just above £100,000, assuming the average number of quarters claimed by these parents
+would be the same as observed for parents below £100,000.
+
+
+                                            42                                    © CenTax
+=== PDF page 45 (printed page 44) ===
+Table 4.3: Fiscal cost estimates of childcare policy reforms, 2028 and
+2030: actual ANI, central scenario
+
+                                                                                      Net
+                                                       Behavioural Gain (£)
+                   Tax     Number          Static                                   Fiscal
+     Reform
+                  Year    Bunching        Cost (£)    Intensive    Extensive         Cost
+                                                        Margin       Margin            (£)
+
+    Abolish       2028         3,850       -800m          +150m        +120m        -520m
+        the
+  threshold      2030          4,300       -980m          +210m        +130m        -640m
+    Abolish
+         the      2028          11,930     -300m          +80m          +50m        -170m
+  threshold
+     for the
+     first 15    2030          14,690       -370m         +110m         +50m        -210m
+   Hours to
+   Under-3s
+  Raise the       2028          7,880       -230m        +100m          +50m         -90m
+  threshold
+         to
+   £125,000      2030           9,570       -290m         +130m         +50m        -100m
+
+  Raise the       2028          5,060      -400m          +120m         +70m        -210m
+  threshold
+         to
+   £150,000      2030           6,360      -490m         +160m          +80m        -250m
+
+  Additional      2028          6,390      -440m          +120m         +70m        -250m
+         8%
+   Marginal
+        Rate     2030           8,460       -570m         +170m         +80m        -320m
+
+  Additional      2028          7,300       -220m         +120m         +40m         -60m
+         18%
+   Marginal
+        Rate     2030           9,450      -300m          +170m         +50m         -80m
+
+  Additional      2028          8,060       -120m         +120m         +30m         +30m
+        28%
+   Marginal
+        Rate     2030          10,230       -180m        +160m          +40m         +20m
+Notes: This table presents the results of modelling the fiscal effects of replacing the
+£100,000 threshold with other reforms. The static cost is the estimated cost of providing the
+modelled childcare policy, relative to the status quo, before accounting for any behavioural
+effects. The intensive margin behavioural gain is the estimated fiscal effect of the modelled
+policy due to taxpayers changing their ANI due to the change in incentive to bunch at the
+threshold. The extensive margin behavioural gain is the modelled effect of change in the
+share of partners above the threshold that enter the labour market and begin paying
+Income Tax and National Insurance Contributions. Figures may not sum due to rounding.
+Negative = cost to the Exchequer. Source: Authors' calculations based on HMRC
+administrative datasets.
+
+
+
+                                             44                                     © CenTax
+=== PDF page 74 (printed page 73) ===
+including those that were already eligible for the 3- and 4-year-olds offer
+within the tax year.
+
+Since we would expect a larger response from parents that face a larger
+notch, we separate the new sample into parents that would have any
+eligibility for under-3 childcare (as for these ages, the full 30 hours is lost) and
+those that would only have eligibility for 3- and 4-year-olds childcare (as only
+15 hours would be lost). We therefore estimate the income response
+separately for four subsamples: (i) employees with any under-3 childcare
+eligibility; (ii) employees with only 3- and 4-year-old eligibility; (iii) non-
+employees with any under-3 childcare eligibility; (iv) non-employees with
+only 3- and 4-year-old eligibility.
+
+To predict the income response for each of these subsamples, we first
+calculate average notch size faced by the parents in the subsample, based
+on the number of hours lost if passing the £100,000 threshold, and the
+hourly cost in their region for a child of the relevant age.
+
+We then use the estimated elasticity and the relationship between the
+elasticity and the marginal bunching individual to estimate the income of
+the marginal bunching individual in each of the subsamples.
+
+Finally, to estimate the absolute number of individuals that would bunch,
+we estimate the counterfactual income distribution for that subsample in
+the same way as for the original sample and assume the share of missing
+mass would follow the same relative shape as estimated on our original
+sample. Concretely, we regress 𝑚𝑗 on 𝑧𝑗𝑟𝑒𝑙 , where 𝑚𝑗 is the share of missing
+mass in income bin 𝑗 and 𝑧𝑗𝑟𝑒𝑙 = (𝑧𝑗 − 𝑧 ∗ )/Δ𝑧 ∗ is the position of income bin 𝑗
+relative to the notch threshold 𝑧 ∗ and marginal bunching income bin Δ𝑧 ∗ ,
+and then predict 𝑚  ̂𝑗 for each income bin in each subsample, using the
+relative income bins positions calculated from the estimated marginal
+bunching income.
+
+This leaves us with a predicted number of taxpayers in each income bin had
+the expanded childcare offer been in place in the 2022 tax year, and a
+counterfactual number of taxpayers in each bin if no kink or notch existed.
+
+Modelling reforms to the childcare policy
+
+Removal of the £100,000 threshold
+We first model the fiscal effects of removing the £100,000 income eligibility
+threshold completely. We do this by first calculating the static cost of
+increasing the number of eligible children to those with a parent with an
+
+
+
+                                        73                                  © CenTax
+=== PDF page 75 (printed page 74) ===
+ANI above £100,000. We then estimate the behavioural revenue gain arising
+from parents having less of an incentive to hold their income below
+£100,000 and so increasing their incomes that generates additional tax
+revenue.
+
+Static cost
+We first estimate the ‘static’ (i.e. mechanical) cost of this reform, in the
+following way. For those with incomes above the estimated marginal
+buncher’s income, we assume none of these parents reduce their income
+to below £100,000 if the child threshold was in place. We sum up the implied
+cost to the government of funding hours for children of these parents,
+assuming their use of free hours would be the same (on average) as use by
+children of parents just below the threshold.
+
+For those with counterfactual incomes between £100,000 and the marginal
+buncher’s income, some share of these taxpayers we assume will bunch
+their income below £100,000. Our previous estimation approach allows us
+to understand the distribution of where this bunching comes from,
+although we cannot identify which specific individuals would respond. We
+therefore calculate average cost to government per taxpayer in each income
+bin and multiply this by the number of taxpayers assumed to remain in this
+income bin if the expanded offer and income eligibility threshold are in
+place.
+
+To obtain the final total static cost, we adjust the total cost to account for
+the share of parents with incomes over £100,000 whose partner also has an
+income over £100,000, to avoid counting the cost of the same child twice.
+We then also adjust the cost to assume there is no provision of free childcare
+hours for the share of parents with incomes over £100,000 whose partner is
+not working in that tax year, as these children would remain ineligible under
+this reform.
+
+We also adjust the cost of removing the £100,000 threshold to account for
+parents with live accounts with ANI of over £100,000. These live accounts are
+already in receipt of (some) free childcare hours and so would not represent
+a full additional cost of removing the threshold. However, as shown earlier in
+this appendix, the average number of quarters for which the live accounts
+above £100,000 are eligible is significantly lower than the live accounts
+below £100,000, so if they were to become eligible independent of income
+then they would still represent some additional cost. To account for this, we
+assume that post-removal of the £100,000 threshold, they would on average
+utilise the free childcare hours for the same number of quarters as parents
+with ANI below £100,000
+
+
+                                     74                               © CenTax
+=== PDF page 76 (printed page 75) ===
+Finally, we assume that take-up rates of the benefit for the newly eligible
+parents would be the same as currently estimated take-up rate. For parents
+of 3- and 4-year-olds, we use the estimated take-up rate for the year in
+question from the DfE’s Funded early education and childcare annual
+January statistics.44 As the expanded childcare offer to under-3s has only
+been in place since April 2024, there is only one year of take-up rate data for
+this group. Therefore, for this group we apply this take-up rate in each year.
+
+Behavioural revenue gain
+
+To estimate the amount of additional tax revenue that would be gained
+from parents who would no longer keep their income below £100,000, we
+first estimate the number of parents who would no longer be bunching
+based on who we model as bunchers under the expanded offer and
+£100,000 threshold policy. As there would still be an incentive to bunch at
+£100,000 (for example, due to the kink in the tax schedule generated by the
+tapering of the Personal Allowance), we assume there would be some
+residual excess mass remaining at £100,000.
+
+To account for this, we use the equivalent population of parents located in
+Scotland, where free childcare hours are universal, as a control population
+for the number of parents we estimate would continue to bunch in England
+if the £100,000 threshold was removed. We implement this by estimating
+the relative excess mass (that is, total observed excess mass divided by the
+estimated counterfactual mass in the income bin at £100,000) for the
+pooled population of Scottish parents of children of eligible age across the
+tax years 2019 to 2022.
+
+We then divide the relative bunching estimated from our control Scottish
+population by the relative bunching estimated for our treated English
+population to estimate the share of taxpayers who would not increase their
+incomes following the removal of the £100,000 threshold.
+
+For the parents we assume do increase their incomes, we assume that the
+number that ‘debunch’ into each income bin between the £100,000
+threshold and the marginal bunching income is proportional to the amount
+of missing mass in that income bin. We then calculate the implied increase
+in tax liability from incomes increasing from £100,000 to the average
+income within each income bin above £100,000 and multiply this by the
+
+
+
+44
+  Up until the latest year (2025). For modelling beyond this year, we assume take up rates
+remain constant at the last observed year in the data (https://explore-education-
+statistics.service.gov.uk/find-statistics/funded-early-education-and-childcare/2025)
+
+
+                                           75                                    © CenTax
+=== PDF page 100 (printed page 99) ===
+Appendix D: Comparison to previous work
+The Centre for British Progress (CBP) has published the only other
+quantitative estimate of the fiscal effect of reforming the £100,000 childcare
+threshold.46 Their report covers four cliff-edges and tapers in the tax and
+benefit system; we comment here only on the childcare component. CBP
+estimate that abolishing the threshold would raise between £130 million
+and £425 million in 2030, and that replacing it with a 3% per-child surtax on
+income above £100,000 would raise between £330 million and £700
+million.47
+Their approach is a synthetic microsimulation. Children are generated from
+Office for National Statistics (ONS) birth numbers and assigned a date of
+birth reflecting seasonal variation in births, which determines their
+entitlement. Each child is assigned two parents whose incomes are drawn
+from the 2023 Survey of Personal Incomes (SPI), restricted to those aged 25
+to 44 and of opposite sex, with an imposed correlation of 0.5 between
+partners' incomes. The value of the entitlement is calculated from national
+average hourly funding rates, with £500 added for Tax-Free Childcare. Two
+behavioural models are then run separately, each allowing only one margin
+of response. In the first, labour income is fixed and individuals choose how
+much of their income above £100,000 to divert into a salary sacrifice
+pension. In the second, pension saving is set aside and individuals choose
+labour supply. In both, an individual bunches their income at the threshold
+if doing so leaves them at least £1,000 better off.
+The synthetic approach was necessary because the data needed to answer
+this question directly were not in the public domain. Estimating the cost of
+reform requires identifying which taxpayers around £100,000 have a child of
+qualifying age, measuring their income on the ANI basis that determines
+eligibility rather than on a gross basis, observing whether they actually claim
+the entitlement, and observing their partner's income and work status.
+None of this is available in published statistics. HM Treasury confirmed in
+response to a Freedom of Information request in November 2025 that it
+holds no estimate of the number of parents affected by the threshold
+measured on gross income.48 The SPI data that CBP use measure neither
+ANI nor gross income, so it captures some, but not all, of the bunching. CBP
+are explicit in their report that their analysis was subject to these constraints.
+Our estimates differ from theirs principally because we can directly observe
+
+46
+   Cohen, E. and Stubbs, M., Rates and wrongs: fixing UK tax cliff edges and tapers, Centre
+for British Progress, 25 March 2026, https://britishprogress.org/reports/rates-and-wrongs-
+fixing-uk-tax-cliff-edges-and-tap
+47
+     Figures     are    drawn     from     their   accompanying      technical   appendix,
+https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf
+48
+      Freedom       of   Information    response,    HM    Treasury,    November      2025,
+https://www.whatdotheyknow.com/request/impact_of_ps100000_threshold_on_2
+
+
+                                            99                                    © CenTax
+=== PDF page 101 (printed page 100) ===
+these quantities in administrative data, and the assumptions the synthetic
+model made in place of data turn out to be highly consequential.
+The most important of these is the treatment of frictions. CBP assume that
+an individual reduces their income to the threshold whenever doing so
+leaves them at least £1,000 better off. Set against entitlements which their
+model values at between roughly £3,500 and £18,000 a year, this is a low
+barrier, and the model consequently predicts that almost everyone with a
+financial incentive to hold their income down will do so. That prediction
+implies that the 'dominated region' above £100,000 should be nearly empty
+for parents of eligible-age children. As set out in Section 4.1, we estimate that
+93% of employees and 67% of non-employees whose incomes placed them
+in their own dominated region in 2022 remained there. Prior work on
+bunching in UK incomes by Adam et al. (2021) provided previously available
+evidence of the importance of such frictions, outside the childcare context,
+finding substantial non-response to tax incentives.
+A related assumption is that all eligible parents take up the full entitlement.
+We observe that around 60% of parents with incomes below £100,000 held
+a live childcare account in 2022 (Figure 2.1). Parents who do not want the
+free hours have nothing to gain by reducing their income, so the population
+who would bunch even with no frictions is substantially smaller than the
+overall parent population at these incomes. Unlike the previous point, this
+was not evident from previously published data. The incomplete take-up by
+parents means both that the behavioural effect CBP estimate is too large,
+but also that their static cost is too large, so the impact on the post-
+behavioural costing is smaller.
+
+The labour supply model raises two further issues. The first concerns the
+elasticity. CBP use a Frisch elasticity of 0.3, which is a reasonable central
+value in the labour supply literature. However, their utility function is quasi-
+linear and isoelastic in hours, which removes income effects and so makes
+the Frisch, compensated and uncompensated elasticities coincide. Since
+the model contains no margin beyond labour supply, this single parameter
+determines the whole response of ANI, so it is in practice functioning as an
+Elasticity of Taxable Income while being interpreted entirely as a labour
+supply response. The relevant comparison is therefore with our structural
+estimates of 0.13 for employees and 0.19 for non-employees, rather than our
+reduced-form figures of 0.31 and 0.45. On that basis their elasticity is 1.5-2.3
+times too large for the total response. As we show, 'paper' responses
+(pension contributions, rather than labour supply) account for around half
+of the employee response (Section 3.3), so the pure labour supply parameter
+we estimate is lower still. Because the income response to a notch scales
+approximately with the square root of the elasticity, this difference alone
+raises the predicted response by between a quarter and a half.
+
+
+                                      100                                © CenTax
+

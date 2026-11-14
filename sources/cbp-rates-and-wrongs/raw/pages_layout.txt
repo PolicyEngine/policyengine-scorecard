@@ -1,0 +1,370 @@
+=== PDF page 1 ===
+                        Technical Appendix
+ Underlying modelling and analysis for each of the policies in the Rates and
+                             Wrongs paper.
+
+                        Centre for British Progress
+                                  2026-03-25
+
+
+Contents
+1 Free Childcare Hours and Tax-Free Childcare                                  3
+  1.1 Policy Background . . . . . . . . . . . . . . . . . . . . . . . . . .    3
+  1.2 Creating a Synthetic Microsimulation . . . . . . . . . . . . . . .       4
+      1.2.1 The Children . . . . . . . . . . . . . . . . . . . . . . . . .     4
+      1.2.2 The Parents . . . . . . . . . . . . . . . . . . . . . . . . . .    5
+      1.2.3 Inflators and Childcare Subsidy . . . . . . . . . . . . . . .      5
+  1.3 The Exogenous labour and Endogenous Pension Model . . . . . .            5
+      1.3.1 Utility Function . . . . . . . . . . . . . . . . . . . . . . .     5
+      1.3.2 The Budget Constraint . . . . . . . . . . . . . . . . . . .        6
+      1.3.3 Optimization . . . . . . . . . . . . . . . . . . . . . . . . .     6
+      1.3.4 Global Maximization . . . . . . . . . . . . . . . . . . . . .      7
+      1.3.5 Calibration of γ . . . . . . . . . . . . . . . . . . . . . . . .   7
+      1.3.6 Modelling a Taper . . . . . . . . . . . . . . . . . . . . . .      7
+      1.3.7 Results . . . . . . . . . . . . . . . . . . . . . . . . . . . .    8
+  1.4 Endogenous Labour Supply and No Pension Model . . . . . . . .            8
+      1.4.1 Utility Function . . . . . . . . . . . . . . . . . . . . . . .     8
+      1.4.2 The Budget Constraint . . . . . . . . . . . . . . . . . . .        9
+      1.4.3 Calibration of α . . . . . . . . . . . . . . . . . . . . . . .     9
+      1.4.4 Optimisation . . . . . . . . . . . . . . . . . . . . . . . . .     9
+      1.4.5 Global Maximization . . . . . . . . . . . . . . . . . . . . .      9
+      1.4.6 Results . . . . . . . . . . . . . . . . . . . . . . . . . . . .    9
+
+2 Personal Allowance Withdrawal                                               10
+  2.1 How much bunching? . . . . . . . . . . . . . . . . . . . . . . . . . 10
+  2.2 Policies to Model . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+  2.3 Modelling the Policies . . . . . . . . . . . . . . . . . . . . . . . . 13
+      2.3.1 Static Response . . . . . . . . . . . . . . . . . . . . . . . . 13
+      2.3.2 Labour Response . . . . . . . . . . . . . . . . . . . . . . . 14
+      2.3.3 Pension Response . . . . . . . . . . . . . . . . . . . . . . . 15
+
+
+
+
+                                       1
+=== PDF page 3 ===
+1     Free Childcare Hours and Tax-Free Childcare
+1.1     Policy Background
+Families are currently eligible for free childcare hours mainly through two gov-
+ernment schemes: Free Childcare for Working Parents (FCWP) and 15 hours
+free childcare for 3 and 4-year-olds.
+
+FCWP has, since September 2025, entitled families with children aged between
+9 months and four years to 30 hours per week of free childcare. This scheme
+has a number of requirements but the relevant one for this paper is that both
+parents of the relevant child must not have an ”expected adjustable net income
+of over £100,000 in the current tax year”. This creates a notch in the tax sys-
+tem where households earning just above the threshold can miss out on all of
+the free childcare hours. The value of these free childcare hours can be large,
+especially for children aged 2 and under, and those living in London (where the
+cost of early years is higher). For example, a child born on 1st January 2024
+that is growing up in Westminster was entitled to childcare worth approximately
+£16,480.80 in the year 2025/26.
+
+The other scheme is 15 hours free childcare for 3 and 4-year-olds. This childcare
+has no restriction based on income so households where parents have incomes
+over £100k are eligible for these 15 hours. The two schemes cannot be claimed
+simultaneously so parents eligible for both will only get a maximum of 30 hours
+per week of childcare for 3 and 4-year-olds.
+
+The childcare entitlement of 30 hours per week is only available for 38 weeks
+in a year (a total of 1140 hours). The annual hourly entitlement to childcare
+varies with the date of birth of the child. The hours can only be claimed from
+the start of three dates: 1st January, 1st April and 1st September. The child
+must be at least 9 months old on the start date to be eligible for the childcare
+for that term, creating discontinuities in entitlement based on date of birth.
+
+As can be seen in Table 1, the hourly funding rate varies considerably by the
+age of the child and the local authority of the providers 1
+
+
+
+
+   1 We discuss this more later but this essentially means that there is a much greater disin-
+
+centive to supply labour for high earners in the most productive regions of the UK.
+
+
+                                              3
+=== PDF page 4 ===
+      Table 1: Maximum Value of Childcare Subsidies by Age and Location
+
+                                                   Hourly                 Value of
+ Age of Child           Location
+                                                Funding Rate              Subsidy
+ Under 2                National Average             £11.54               £13,156
+ 2 years old            National Average              £8.53                   £9,724
+ 3 and 4 year olds      National Average              £6.06                   £3,454
+ Under 2                Inner London                 £15.95               £18,183
+ 2 years old            Inner London                 £11.61               £13,235
+ 3 and 4 year olds      Inner London                  £8.07                   £4,600
+Uses 2025-26 funding rates. Inner London rate is the median for the region.
+
+
+
+1.2     Creating a Synthetic Microsimulation
+There is not a publicly available dataset with the gross incomes (not adjustable
+net incomes) of parents of nursery age children and the implicit childcare sub-
+sidy they receive. HMT responded to an FOI in November 2025 confirming
+they do not hold information relating to the number of “parents of children
+aged between 9 months and 4 years who are impacted by the £100,000 thresh-
+old when measured by gross income, rather than adjusted net income.” This is a
+crucial piece of evidence which is required to fully estimate the fiscal cost of the
+childcare related cliffs; many parents substantially increase their salary sacrifice
+pension contributions to ensure that their ANI is below £100k. To demonstrate
+the strength of this behaviour change, we have created a synthetic dataset that
+recreates known facts about this group of people to see the effect of the tax cliff
+and to simulate new policy effects.
+
+
+1.2.1    The Children
+The model uses the forecast number of births for England over the next 10
+years and the actual number of births in England over the previous 5 years.
+The sources for this are the ONS.
+
+The children are then assigned a birthday in each year with the probability of
+having been born in the UK on any particular day in 2024. This is to ensure
+that the seasonal variation in births is picked up in the dataset - entitlement to
+early years can sometimes vary by over £10k depending on the date of birth of
+the child.
+
+
+
+
+                                            4
+=== PDF page 5 ===
+1.2.2   The Parents
+The simulation assumes that every child has two parents and no siblings. This is
+the most conservative way of modelling the fiscal impact of the policy change as
+multiple children increase the total value of the household’s childcare subsidies,
+increasing the incentive for the family to cut their incomes to under £100k.
+Likewise, the requirement of two parents means that, where both earn over
+£100k, it has to be worthwhile for them both to cut their ANI to under £100k,
+a greater hurdle.
+
+Parents’ incomes are assigned using the total incomes in the 2022-23 SPI data
+where only those aged 25 to 44 are considered and the sex of each of the partners
+is different (both assumptions can be relaxed). The dataset ensures there is a
+correlation coefficient between each of the male and female partner’s incomes of
+around 0.5.
+
+The parents are then assigned their child at random.
+
+
+1.2.3   Inflators and Childcare Subsidy
+The maximum entitled number of childcare hours in each funding age group
+(under 2, 2 year old and 3 & 4) is modelled for each financial year. The national
+average funding rate is used to calculate the value of the subsidy in each finan-
+cial year. Different funding rates are used as a sensitivity test. The average
+rates for all of London are used as well as just Inner London. Both lead to
+higher static costs but stronger behavioural change. Up to £2000 is then added
+to the subsidy to simulate the effect of Tax Free Childcare.
+
+Incomes and the Childcare hours funding are increased in line with the OBR’s
+forecast for average earnings growth. The tax system keeps in line with the
+Government’s current personal taxation plans.
+
+
+1.3     The Exogenous labour and Endogenous Pension Model
+We model the household’s response to the tax system as a choice over pension
+contributions. The agent treats their gross labour income Z as fixed (exogenous
+labour supply) but chooses the optimal allocation between current consumption
+(c) and future pension wealth (p) to maximize utility.
+
+1.3.1   Utility Function
+We employ a Quasi-Linear utility function. This specification implies that the
+demand for pension savings is driven by the relative price (tax relief) rather
+than wealth effects.
+
+
+
+                                        5
+=== PDF page 7 ===
+Step B: Corner Solutions (Bunching)
+The agent also evaluates the specific strategy of bunching exactly at the thresh-
+old K to retain the benefit B.
+
+                              pbunch = max(0, Z − K)                               (6)
+
+In this scenario, consumption is fixed at cbunch = K − T (K) + B.
+
+1.3.4   Global Maximization
+The agent compares the indirect utility between the two strategies. They only
+choose to bunch at £100k if the utility from doing so is greater than from the
+optimal pension saving scenario and a friction value (in our central scenario,
+that is £1k).
+
+     (
+   ∗  pbunch       if U (c(pnormal ), pnormal ) + f riction < U (c(pbunch ), pbunch )
+ p =
+      pnormal      else
+                                                                                    (7)
+Agents only choose to respond if they can secure themselves £1k of extra net
+income - this compensates for the planning and tax advice which may be required
+to embark on Salary Sacrifice.
+This discrete choice framework naturally generates:
+   • Smooth responses: Agents gradually increasing pensions as γ rises.
+   • Clumping: A mass of agents setting p = Z − 100, 000 because the utility
+     jump from the benefit B outweighs the liquidity cost of the extra saving.
+
+1.3.5   Calibration of γ
+The parameter γ determines the baseline savings rate. A conservative estimate
+of γ = 0.04 has been used here. Where τ = 0, workers will naturally save 4% of
+their income.
+
+1.3.6   Modelling a Taper
+Under a taper policy, the binary cliff edge is replaced by a gradual withdrawal
+rate s (e.g., 3%). Agents decide whether they want to opt-in to the childcare
+benefits, leading to an indefinite taper above £100k, or to avoid the additional
+charge. Mechanically, this acts as a surcharge on the marginal tax rate for
+Adjusted Net Income above K.The effective marginal tax rate τef f becomes:
+                               (
+                                 τbase + s if K < (Z − p)
+                       τef f =                                               (8)
+                                 τbase     otherwise
+
+The optimization problem remains very similar to Step A (Interior Solutions).
+The agent calculates the optimal pension p∗ using the First Order Condition,
+
+
+                                          7
+=== PDF page 8 ===
+but substituting τef f for τj . They then compare this scenario against one where
+the original optimal pension provision is used and where no childcare benefit is
+received. Simply, they compare whether it is worth paying the surtax in order
+to gain the additional net income from the childcare policy (this is the case for
+almost all couples where the s value is small. The higher utility alternative is
+chosen.
+
+Under the Taper, the friction parameter is dropped.
+
+1.3.7    Results
+
+Table 2: Projected Net Fiscal Impact of Childcare Entitlements (£bn): Endoge-
+nous Pension, Exogenous Labour
+
+ Taper Rate          2026/27     2027/28    2028/29     2029/30    2030/31    2031/32
+ Abolish Cliff         0.070      0.077         0.091    0.132      0.147       0.172
+ 1%                    0.106      0.120         0.136    0.224      0.247       0.282
+ 2%                    0.150      0.169         0.187    0.282      0.310       0.352
+ 3%                    0.189      0.212         0.232    0.333      0.365       0.412
+ 4%                    0.223      0.247         0.271    0.375      0.413       0.465
+ 5%                    0.253      0.279         0.305    0.413      0.454       0.512
+This assumes full utilisation of FCWP and £500 utilisation of TFC. It also assumes a
+friction parameter of £1000.
+
+
+
+
+1.4     Endogenous Labour Supply and No Pension Model
+We model the household’s response to the tax system as a discrete choice over
+labour. The agent no longer optimizes their pension contributions (which are
+now treated as exogenous or zero); instead, they can choose to reduce their
+labour supply in response to the tax cliff edge; they choose h ∈ {1, 0.9, 0.8, 0.7, ...}
+to maximize utility.
+
+1.4.1    Utility Function
+We employ a Quasi-Linear utility function with iso-elastic labour supply. This
+specification eliminates income effects on labour supply, isolating the substitu-
+tion effects driven by the tax notch.
+                                                 α   1+ 1ε
+                               U (c, h) = c −      1h                                  (9)
+                                                1+ ε
+Where:
+   • c: Net consumption.
+
+
+                                           8
+=== PDF page 9 ===
+   • h: Labour hours (normalized such that h = 1 represents status quo full-
+     time work).
+   • Zpot : Potential Earnings Capacity (Exogenous scalar).
+   • α: Disutility of labour parameter (calibrated individually).
+
+   • ε: Frisch elasticity of labour supply.
+
+1.4.2   The Budget Constraint
+The household faces a budget constraint defined by the tax function T (·) and
+the conditional Child Benefit B. The benefit is withdrawn if ”Adjusted Net
+Income” (AN I) exceeds the threshold K = £100, 000.
+
+                     c = w · h − T (w · h) + B · I(w · h ≤ K)                  (10)
+This creates a non-convex budget set. To solve the optimization problem, we
+evaluate two distinct regimes for each household and select the global maximum.
+
+1.4.3   Calibration of α
+To ensure the model reproduces the status quo distribution, we calibrate αi for
+each individual i such that their observed choice (hi = 1) is optimal under the
+current tax system.
+   Using the inverse of the labour FOC:
+
+                                 αi = wi (1 − τi )                             (11)
+
+This ensures that any deviation from the status quo in our counterfactual sim-
+ulations is driven purely by changes in the tax incentives τ or the benefit rules
+B.
+
+1.4.4   Optimisation
+We find the maximum h that only just brings total income below £100k.
+
+                        hbunch = max h | h · Z ≤ 100, 000                      (12)
+
+1.4.5   Global Maximization
+This is very similar to the previous model. The agent compares the indirect
+utility between the scenario where h = 1 and h = hbunch . They only choose to
+bunch at £100k if the utility from doing so is greater than from the normal in-
+come (with its associated disutility) and a friction value (in our central scenario,
+that is £1k).
+
+1.4.6   Results
+
+
+
+                                         9
+=== PDF page 10 ===
+Table 3: Projected Net Fiscal Impact of Childcare Entitlements (£bn): Endoge-
+nous Labour, No Pension
+
+ Taper Rate           2026/27     2027/28     2028/29       2029/30   2030/31   2031/32
+ Abolish Cliff          0.330       0.349         0.399      0.427     0.462     0.507
+ 1%                     0.398       0.427         0.483      0.518     0.560     0.615
+ 2%                     0.472       0.508         0.569      0.611     0.662     0.726
+ 3%                     0.537       0.580         0.646      0.694     0.752     0.825
+ 4%                     0.595       0.643         0.715      0.767     0.832     0.912
+ 5%                     0.647       0.700         0.775      0.833     0.903     0.99
+This assumes full utilisation of FCWP and £500 utilisation of TFC. It also assumes a
+friction parameter of £1000 and Frisch elasticity of 0.3.
+
+
+2     Personal Allowance Withdrawal
+The withdrawal of the Personal Allowance causes substantial bunching at the
+£100k kink in the tax system. For an employee, the marginal tax rate increases
+from 42% to 62% at this point, disincentivizing work at or around this thresh-
+old. There are approximately 20% more people with incomes bunched around
+the threshold than would be expected if the density of income remained smooth
+at the kink. This causes significant distortions in labour supply and tax revenue.
+
+This issue is further exacerbated for individuals with undergraduate and post-
+graduate student loans, where the effective marginal tax rate can be 15 percent-
+age points higher. The 62% tax rate caused by the withdrawal of the Personal
+Allowance generally ends at £125,140, where the marginal rate drops to 47%.
+
+We simulate the fiscal effects of various policies intended to mitigate the im-
+pact of this sharp kink in the tax system while also reducing the peak effective
+marginal tax rate.
+
+
+2.1     How much bunching?
+We use the Survey of Personal Incomes: Public Use Tape 2022-23 to conduct a
+bunching analysis of the change in the marginal tax rate at the £100k kink.
+
+This paper estimates the average compensated elasticity of taxable income with
+respect to marginal tax rates, following the methodology of Saez (2010). Esti-
+mating the average elasticity is necessary for two reasons. First, agents possess
+heterogeneous elasticities, meaning some are more responsive to tax schedule
+kinks than others. This heterogeneity is essential to explain why bunching
+occurs at specific thresholds while some density remains just above the kink.
+
+
+                                             10
+

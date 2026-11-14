@@ -1,0 +1,70 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2017",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2025-12-31": 0.06
+    }
+   },
+   "carried_from_fy": "2021-22",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "forward_on_modern_law",
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "heads": [
+    {
+     "base_sheet": "NICS",
+     "channel": "tax",
+     "obr_heads": [
+      "NICs"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_2",
+      "ni_class_4"
+     ]
+    },
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019",
+   "note": "The increase was withdrawn a week after the Budget, so modern law lacks it; the experiment adds its 2pp to the modern 6% main rate. The OBR's costing is net of incorporation responses, which a static run does not have.",
+   "reform": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2025-12-31": 0.08
+    }
+   },
+   "sources": [
+    "Spring Budget 2017 para 3.18 (https://www.gov.uk/government/publications/spring-budget-2017-documents)",
+    "pe-uk 2.132.6 parameters gov/hmrc/national_insurance/class_4/rates/main.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2017.",
+ "obr_forecast_vintage": "March 2017",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

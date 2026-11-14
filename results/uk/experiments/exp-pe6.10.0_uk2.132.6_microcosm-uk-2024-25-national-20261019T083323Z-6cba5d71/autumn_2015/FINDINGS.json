@@ -1,0 +1,169 @@
+{
+ "event": "autumn_2015",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2015.",
+ "obr_forecast_vintage": "November 2015",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_2015",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15% from 2016) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6's additional-dwellings scale lacks Autumn Budget 2024's further 2pp, so the counterfactual (2/4/7/12/14%, the scale without the 2015 surcharge but with the 2024 rise) removes 1pp, not the 3pp the OBR costed. It acts on 2.132.6's overstated purchase base (policyengine-uk#2238), so its \u00a30.94bn (2025-26) measures neither the surcharge nor a 1pp change on the true base.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 937138301.6105042,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 978902731.15511,
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": 937138301.6105042
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    },
+    {
+     "assumed": 0.1,
+     "modern_processed": 0.08,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate"
+    },
+    {
+     "assumed": 0.15,
+     "modern_processed": 0.13,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate"
+    },
+    {
+     "assumed": 0.17,
+     "modern_processed": 0.15,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    }
+   ],
+   "obr_mapped_gbp": 1075000000.0,
+   "obr_unmapped_gbp": -195000000.0,
+   "ratio_raw": 0.8717565596376783,
+   "ratio_scaled": 0.9573354652966147,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.9106071917721954,
+     "obr_event_forecast_gbp": 18567035155.171417,
+     "obr_newest_forecast_gbp": 16907275742.186272,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: higher rates on additional properties",
+   "year": 2025
+  },
+  {
+   "anomalies": [
+    {
+     "code": "modern_law_differs",
+     "diagnosis": {
+      "code": "modern_law_differs",
+      "event": "autumn_2015",
+      "evidence": "pe-uk stamp_duty/residential/purchase/additional/rate.yaml at 2.132.6 (3/5/8/13/15% from 2016) and 2.143.0 (5/7/10/15/17% from 31 October 2024); the artifacts' modern_processed readback",
+      "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+      "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+      "populations": [
+       "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+      ],
+      "status": "model_bug",
+      "summary": "pe-uk 2.132.6's additional-dwellings scale lacks Autumn Budget 2024's further 2pp, so the counterfactual (2/4/7/12/14%, the scale without the 2015 surcharge but with the 2024 rise) removes 1pp, not the 3pp the OBR costed. It acts on 2.132.6's overstated purchase base (policyengine-uk#2238), so its \u00a30.94bn (2025-26) measures neither the surcharge nor a 1pp change on the true base.",
+      "years": null
+     },
+     "severity": "investigate"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2020-21",
+   "effect_gbp": 968167826.899538,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1141168692.935486,
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "stamp_duty_land_tax": 968167826.899538
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+   "modern_assumption_failures": [
+    {
+     "assumed": 0.05,
+     "modern_processed": 0.03,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate"
+    },
+    {
+     "assumed": 0.07,
+     "modern_processed": 0.05,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate"
+    },
+    {
+     "assumed": 0.1,
+     "modern_processed": 0.08,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate"
+    },
+    {
+     "assumed": 0.15,
+     "modern_processed": 0.13,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate"
+    },
+    {
+     "assumed": 0.17,
+     "modern_processed": 0.15,
+     "path": "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate"
+    }
+   ],
+   "obr_mapped_gbp": 1075000000.0,
+   "obr_unmapped_gbp": -195000000.0,
+   "ratio_raw": 0.9006212343251516,
+   "ratio_scaled": 0.8484002697349424,
+   "scales": [
+    {
+     "base_sheet": "PTT",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0615522724981266,
+     "obr_event_forecast_gbp": 18567035155.171417,
+     "obr_newest_forecast_gbp": 19709878362.524822,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Stamp Duty Land Tax: higher rates on additional properties",
+   "year": 2026
+  }
+ ],
+ "schema_version": 1
+}

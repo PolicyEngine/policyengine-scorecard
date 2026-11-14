@@ -1,0 +1,69 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": -365321995.5063677,
+ "engine_version": "2.143.0",
+ "event": "spending_review_2020",
+ "event_name": "Spending Review 2020",
+ "experiment_id": "sr2020_pension_credit_smg_uprating",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 5959985765.490757,
+   "channel": "spending",
+   "effect_gbp": -365321995.5063677,
+   "literal_alternate_minus_modern_gbp": 365321995.5063677,
+   "modern_gbp": 6325307760.997125,
+   "obr_heads": [
+    "Welfare inside cap"
+   ],
+   "pe_variables": [
+    "pension_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Spending Review 2020.",
+ "measure_key": "spending_review_2020__pension_credit_uprating_of_the_standard_minimum_guarantee",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+   "alternate_intended": 340.06,
+   "alternate_processed": 340.06,
+   "changes_modern_law": true,
+   "modern_processed": 346.6,
+   "reached_simulation": true
+  },
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+   "alternate_intended": 222.8,
+   "alternate_processed": 222.8,
+   "changes_modern_law": true,
+   "modern_processed": 227.1,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.COUPLE": {
+   "2024-01-01.2024-12-31": 326.67,
+   "2025-01-01.2025-12-31": 340.06
+  },
+  "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.SINGLE": {
+   "2024-01-01.2024-12-31": 214.02,
+   "2025-01-01.2025-12-31": 222.8
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

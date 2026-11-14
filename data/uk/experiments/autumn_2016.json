@@ -1,0 +1,56 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "autumn_2016",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2025-12-31": 0.5295
+    }
+   },
+   "carried_from_fy": "2021-22",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "as2016_fuel_duty_freeze_2017",
+   "heads": [
+    {
+     "base_sheet": "Fuel",
+     "channel": "tax",
+     "obr_heads": [
+      "Fuel duty"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "fuel_duty"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2016__fuel_duty_freeze_in_2017_18",
+   "note": "Without the freeze the April 2017 uprating would have applied: the November 2016 forecast's RPI for 2017, 3.192% (RPI!K19), on 57.95p. Later freezes keep the higher level and the 2022 5p cut is in cash, so modern law's 52.95p becomes 54.800p in 2024-25 and 2025-26. pe-uk's fuel_duty covers household car fuel only, so business and haulage fuel in the OBR's base are outside it.",
+   "reform": {
+    "gov.hmrc.fuel_duty.petrol_and_diesel": {
+     "2024-01-01.2026-12-31": 0.547999
+    }
+   },
+   "sources": [
+    "OBR Historical official forecasts database, Spring 2026, sheet RPI",
+    "pe-uk 2.132.6 parameters gov/hmrc/fuel_duty/petrol_and_diesel.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2016.",
+ "obr_forecast_vintage": "November 2016",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

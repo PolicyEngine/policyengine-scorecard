@@ -405,12 +405,25 @@ def test_integration_committed_db(tmp_path):
     # 14 ASPE Indicator 4 claims at their latest period (TANF, SNAP, SSI) +
     # 88 Census STC State income tax collections (44 jurisdictions, FY2023
     # and FY2025) with CY2024 counterparts (#176).
+    # + 5 CA FTB fiscal notes on the YCTC bills AB 397 and AB 1690 with
+    # reform-minus-baseline counterparts (lane ca-fiscal-notes, #4).
     # The March 2026 PMD contributes only its 246 new cells; November's
     # historical/comprehensive claims and the existing main feed stay intact.
-    # Pre-publish comparables (docs/COMPARABLES.md) add every staged claim of
-    # each analysis record: 20 for the £100,000 childcare dashboard (12 CenTax,
-    # 8 Centre for British Progress), with or without a result.
-    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246 + 22, "BE": 9, "NZ": 12}
+    # + 13 UK rows from lane uk-benefit-uprating: the 11 Resolution
+    # Foundation uprating claims, now with parameter-tree results, and the
+    # ONS and OBR September 2026 CPI claims; + 36 from uk-childcare-100k:
+    # the £100,000 childcare limit costings (24 CenTax Table 4.2 cells, 12
+    # CBP abolition cells), all opted into display; + 123 from
+    # uk-two-child-limit-poverty: DWP's Budget 2025 two-child limit note
+    # (Tables 1-4, the FYE 2026 figure, children in gaining households).
+    # Pre-publish comparables add every staged claim of each analysis
+    # record, with or without a result (docs/COMPARABLES.md).
+    assert dist == {
+        "US": 540,
+        "UK": 29355,
+        "BE": 9,
+        "NZ": 12,
+    }
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -445,8 +458,9 @@ def test_integration_committed_db(tmp_path):
     assert committed["summary"] == payload["summary"]
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
-    # 5,719 + the 22 pre-publish comparables rows of the childcare record
-    assert len(payload["rows"]) == 5719 + 22
+    # + 123 DWP two-child limit claims (uk-two-child-limit-poverty)
+    # Includes the pre-publish comparables records.
+    assert len(payload["rows"]) == 5918
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()

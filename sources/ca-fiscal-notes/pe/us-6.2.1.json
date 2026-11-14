@@ -1,0 +1,95 @@
+{
+ "family": "ca_fiscal_notes",
+ "run_id": "ca-fiscal-notes-20261019",
+ "computed_at": "2026-10-19T22:50:17.506603+00:00",
+ "time_basis": "annual",
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "policyengine_variables": [
+  "ca_income_tax",
+  "ca_yctc",
+  "state_code_str"
+ ],
+ "pe_construction": "reform_delta:ca_income_tax \u2014 weighted total of ca_income_tax with gov.states.ca.tax.income.credits.young_child.ineligible_age set year by year, minus the baseline total, per tax year on the certified bundle (static, no behavioural response).",
+ "baseline": {
+  "2025": {
+   "ca_income_tax": 134116860926.2463,
+   "ca_yctc": 642860104.6498959,
+   "ca_yctc_units": 550177.4800444677
+  },
+  "2026": {
+   "ca_income_tax": 144374703051.9958,
+   "ca_yctc": 658078741.3822865,
+   "ca_yctc_units": 554106.3370525144
+  },
+  "2027": {
+   "ca_income_tax": 150435415682.91455,
+   "ca_yctc": 659453145.2273759,
+   "ca_yctc_units": 534259.5579986764
+  },
+  "2028": {
+   "ca_income_tax": 155309654326.74796,
+   "ca_yctc": 660905446.0073493,
+   "ca_yctc_units": 527400.3499925795
+  }
+ },
+ "bills": {
+  "ab397": {
+   "2025": {
+    "ineligible_age": 10.0,
+    "revenue_change": -325397044.6854553,
+    "yctc_change": 325397046.4265554,
+    "yctc_units_change": 305177.66818609356
+   },
+   "2026": {
+    "ineligible_age": 13.0,
+    "revenue_change": -611108797.7138672,
+    "yctc_change": 611108798.5579801,
+    "yctc_units_change": 545072.4175497921
+   },
+   "2027": {
+    "ineligible_age": 16.0,
+    "revenue_change": -840426142.3583679,
+    "yctc_change": 840426147.1095666,
+    "yctc_units_change": 699664.6378514426
+   },
+   "2028": {
+    "ineligible_age": 19.0,
+    "revenue_change": -1033980123.9139099,
+    "yctc_change": 1033980125.4659679,
+    "yctc_units_change": 839192.288884823
+   }
+  },
+  "ab1690": {
+   "2025": {
+    "ineligible_age": 6.0,
+    "revenue_change": 0.0,
+    "yctc_change": 0.0,
+    "yctc_units_change": 0.0
+   },
+   "2026": {
+    "ineligible_age": 6.0,
+    "revenue_change": 0.0,
+    "yctc_change": 0.0,
+    "yctc_units_change": 0.0
+   },
+   "2027": {
+    "ineligible_age": 7.0,
+    "revenue_change": -43005002.122528076,
+    "yctc_change": 43005003.17231774,
+    "yctc_units_change": 34343.98542685143
+   },
+   "2028": {
+    "ineligible_age": 8.0,
+    "revenue_change": -137673426.48529053,
+    "yctc_change": 137673425.37355816,
+    "yctc_units_change": 107947.67780031438
+   }
+  }
+ }
+}

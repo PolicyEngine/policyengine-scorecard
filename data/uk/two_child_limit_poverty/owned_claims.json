@@ -1,0 +1,144 @@
+{
+ "schema_version": 1,
+ "rule": "The uk_ab2025 claims lane uk-two-child-limit-poverty answers (the #56 / #140 rule, one claim, one computed answer): pipeline/stage_uk_ab2025.owned_elsewhere tallies these owned_elsewhere and never attaches to them. scorecard_db/ingest_uk_two_child_limit_poverty.py re-derives the set from the RF adapter rows and the HM Treasury costings and refuses to run if it differs. Claim ids are the claims' own hashes; nothing about the claims changes.",
+ "taken_over": "2026-10-23",
+ "history": "results/uk/two_child_limit_poverty/history_ab2025_campaign_20260925.jsonl: the campaign-20260925-uk-ab2025 answers these claims carried when the lane took them over, kept as each claim's earlier history",
+ "claims": {
+  "11319dc3eb7284c84685": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2031,
+   "value": -2850000000.0,
+   "scoring_method": "static"
+  },
+  "15393285e21d21a7b5b5": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2027,
+   "value": -2055000000.0,
+   "scoring_method": "static"
+  },
+  "2725463ccf364642efd6": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2026,
+   "value": 0.0,
+   "scoring_method": "static"
+  },
+  "2b5a9461fa80d6acecb5": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2028,
+   "value": -2250000000.0,
+   "scoring_method": "static"
+  },
+  "2e4683c2ff42da3d9f91": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2029,
+   "value": -2445000000.0,
+   "scoring_method": "static"
+  },
+  "4c40c133f036812404c7": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2031,
+   "value": -3235000000.0,
+   "scoring_method": "post_behavioural"
+  },
+  "4d4af236342ce2a11679": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2027,
+   "value": -2365000000.0,
+   "scoring_method": "post_behavioural"
+  },
+  "5cd40f11fde6cd6df668": {
+   "source": "resolution_foundation",
+   "measure_key": "ab2025_option__scrap_two_child_limit",
+   "metric": "poverty_count_change",
+   "period": 2030,
+   "value": 480000.0,
+   "item": "scrap_2029_30"
+  },
+  "627df5abf9ec51a88989": {
+   "source": "resolution_foundation",
+   "measure_key": "ab2025_option__scrap_two_child_limit",
+   "metric": "poverty_count_change",
+   "period": 2030,
+   "value": 150000.0,
+   "item": "scrap_further_by_2029_30"
+  },
+  "67f3e4d6a1070d902798": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2030,
+   "value": -2715000000.0,
+   "scoring_method": "static"
+  },
+  "7c6d4b47f5ecc63e3751": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2029,
+   "value": -2815000000.0,
+   "scoring_method": "post_behavioural"
+  },
+  "822312a32dd9aa439583": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2028,
+   "value": -2590000000.0,
+   "scoring_method": "post_behavioural"
+  },
+  "95723ad0ea666078a6c2": {
+   "source": "resolution_foundation",
+   "measure_key": "ab2025_option__three_child_limit",
+   "metric": "poverty_count_change",
+   "period": 2030,
+   "value": 350000.0,
+   "item": "three_child_limit"
+  },
+  "97d6c677b464338f8233": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2030,
+   "value": -3095000000.0,
+   "scoring_method": "post_behavioural"
+  },
+  "a05d61066f4bc096db86": {
+   "source": "resolution_foundation",
+   "measure_key": "ab2025_option__scrap_two_child_limit",
+   "metric": "benefit_cost_change",
+   "period": 2030,
+   "value": 3500000000.0,
+   "item": "scrap_cost_2029_30"
+  },
+  "a2e240dc4839b420364c": {
+   "source": "resolution_foundation",
+   "measure_key": "ab2025_option__scrap_two_child_limit",
+   "metric": "poverty_count_change",
+   "period": 2026,
+   "value": 330000.0,
+   "item": "scrap_today"
+  },
+  "dcbfb9b90b14a21b1a60": {
+   "source": "hm_treasury",
+   "measure_key": "ab2025__uc_child_element_remove_two_child_limit",
+   "metric": "revenue_change",
+   "period": 2026,
+   "value": 0.0,
+   "scoring_method": "post_behavioural"
+  }
+ }
+}

@@ -1,0 +1,97 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 968167826.899538,
+ "engine_version": "2.132.6",
+ "event": "autumn_2015",
+ "event_name": "Autumn 2015",
+ "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+ "fy": "2026-27",
+ "head_groups": [
+  {
+   "alternate_gbp": 14822802092.370134,
+   "channel": "tax",
+   "effect_gbp": 968167826.899538,
+   "literal_alternate_minus_modern_gbp": -968167826.899538,
+   "modern_gbp": 15790969919.269672,
+   "obr_heads": [
+    "Stamp duty"
+   ],
+   "pe_variables": [
+    "stamp_duty_land_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2015.",
+ "measure_key": "autumn_2015__stamp_duty_land_tax_higher_rates_on_additional_properties",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+   "alternate_intended": 0.02,
+   "alternate_processed": 0.02,
+   "changes_modern_law": true,
+   "modern_processed": 0.03,
+   "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+   "alternate_intended": 0.04,
+   "alternate_processed": 0.04,
+   "changes_modern_law": true,
+   "modern_processed": 0.05,
+   "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+   "alternate_intended": 0.07,
+   "alternate_processed": 0.07,
+   "changes_modern_law": true,
+   "modern_processed": 0.08,
+   "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+   "alternate_intended": 0.12,
+   "alternate_processed": 0.12,
+   "changes_modern_law": true,
+   "modern_processed": 0.13,
+   "reached_simulation": true
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+   "alternate_intended": 0.14,
+   "alternate_processed": 0.14,
+   "changes_modern_law": true,
+   "modern_processed": 0.15,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+   "2025-01-01.2035-12-31": 0.02
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+   "2025-01-01.2035-12-31": 0.04
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+   "2025-01-01.2035-12-31": 0.07
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+   "2025-01-01.2035-12-31": 0.12
+  },
+  "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+   "2025-01-01.2035-12-31": 0.14
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2026
+}

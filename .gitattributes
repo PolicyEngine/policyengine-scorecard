@@ -8,3 +8,7 @@
 # Methodology contracts, receipts and the decision record are bound by SHA-256.
 docs/uk_replay/contracts/** -text
 docs/uk_replay/HISTORICAL_DECISIONS.md -text
+# Page extracts vendored beside a source PDF are SHA-256 pinned too.
+sources/*/raw/*.txt -text
+# GOV.UK content-API captures vendored as raw sources are SHA-256 pinned.
+sources/dwp-two-child-limit-poverty/raw/*.json -text

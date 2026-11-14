@@ -1,0 +1,73 @@
+{
+ "construction": "forward_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 692600908.8609161,
+ "engine_version": "2.143.0",
+ "event": "budget_2017",
+ "event_name": "Budget 2017",
+ "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 214724976643.18207,
+   "channel": "tax",
+   "effect_gbp": 692600908.8609161,
+   "literal_alternate_minus_modern_gbp": 692600908.8609161,
+   "modern_gbp": 214032375734.32114,
+   "obr_heads": [
+    "NICs"
+   ],
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "alternate_gbp": 324396209183.8934,
+   "channel": "tax",
+   "effect_gbp": 0.0,
+   "literal_alternate_minus_modern_gbp": 0.0,
+   "modern_gbp": 324396209183.8934,
+   "obr_heads": [
+    "Income tax"
+   ],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2017.",
+ "measure_key": "budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.hmrc.national_insurance.class_4.rates.main": {
+   "alternate_intended": 0.08,
+   "alternate_processed": 0.08,
+   "changes_modern_law": true,
+   "modern_processed": 0.06,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.national_insurance.class_4.rates.main": {
+   "2024-01-01.2025-12-31": 0.08
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

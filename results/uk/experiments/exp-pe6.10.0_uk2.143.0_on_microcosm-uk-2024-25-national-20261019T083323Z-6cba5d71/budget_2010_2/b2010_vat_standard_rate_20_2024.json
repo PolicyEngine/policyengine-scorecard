@@ -1,0 +1,57 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 23229432040.23828,
+ "engine_version": "2.143.0",
+ "event": "budget_2010_2",
+ "event_name": "Budget 2010 #2",
+ "experiment_id": "b2010_vat_standard_rate_20",
+ "fy": "2024-25",
+ "head_groups": [
+  {
+   "alternate_gbp": 165494460971.60886,
+   "channel": "tax",
+   "effect_gbp": 23229432040.23828,
+   "literal_alternate_minus_modern_gbp": -23229432040.23828,
+   "modern_gbp": 188723893011.84714,
+   "obr_heads": [
+    "VAT"
+   ],
+   "pe_variables": [
+    "vat"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2010 #2.",
+ "measure_key": "budget_2010_2__vat_increase_main_rate_to_20_from_4_january_2011",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.hmrc.vat.standard_rate": {
+   "alternate_intended": 0.175,
+   "alternate_processed": 0.175,
+   "changes_modern_law": true,
+   "modern_processed": 0.2,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.vat.standard_rate": {
+   "2024-01-01.2025-12-31": 0.175
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2024
+}

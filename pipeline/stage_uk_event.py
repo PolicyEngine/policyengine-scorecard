@@ -107,15 +107,34 @@ LEGACY_POPULATION_NOTE = (
 )
 
 
-def population_note(record: dict | None) -> str:
+def population_note(record: dict | None, manifest: dict | None = None) -> str:
     """The first row annotation: which population PE used."""
     if record is None:
         return LEGACY_POPULATION_NOTE
     dataset = record["identity"]["dataset"]
+    projection = (
+        ", projected by the engine to each year."
+        if revisions.states_current_engine(manifest)
+        else " with later calibration and uprating targets."
+    )
     return (
         "OBR uses the forecast available at announcement; PE uses a single "
         f"certified population ({dataset['path']}, {dataset['repo_id']} "
-        f"{dataset['revision']}) with later calibration and uprating targets."
+        f"{dataset['revision']}){projection}"
+    )
+
+
+def behaviour_note(manifest: dict | None = None) -> str:
+    """The second row annotation: how PE's households respond."""
+    behaviour = (
+        "PE runs the engine's default capital gains and labour supply response "
+        "parameters"
+        if revisions.runs_behavioural_responses(manifest)
+        else "PE is static"
+    )
+    return (
+        f"PE calendar-year totals proxy fiscal-year totals; {behaviour} and its "
+        "certified policy world differs from the announcement baseline."
     )
 
 
@@ -405,6 +424,7 @@ def stage_event(
                     + source.get("divergence_axes", [])
                 )
             )
+            legs_label, missing_legs = revisions.stated_missing_legs(measure, manifest)
             row = {
                 "source_row_id": identity,
                 "source_row_number": source.get("source_row_number"),
@@ -421,7 +441,9 @@ def stage_event(
                     "value_gbp_decimal", str(source["value_gbp"])
                 ),
                 "computability": classification,
-                "construction": measure.get("construction"),
+                "construction": planned[key]["construction"]
+                if key in selected_revisions
+                else measure.get("construction"),
                 "head_variables": [],
                 "head_effects": {},
                 "measure_total_gbp": None,
@@ -431,32 +453,38 @@ def stage_event(
                 "reason": None,
                 "sign_convention": "positive_gain_to_exchequer",
                 "partial_missing": measure.get("partial_missing")
-                or measure.get("missing_legs")
-                or measure.get("pe_gap"),
+                or [legs_label + leg for leg in missing_legs]
+                or revisions.stated_reason(measure.get("pe_gap"), manifest),
                 "source_table": source.get("source_table"),
                 "source_column": source.get("source_column"),
                 "annotations": [
-                    population_note(record),
-                    "PE calendar-year totals proxy fiscal-year totals; PE is static and its certified policy world differs from the announcement baseline.",
+                    population_note(record, manifest),
+                    behaviour_note(manifest),
                 ],
             }
             artifact_key = (key, year)
             artifact = artifacts.get(artifact_key)
             if classification == "out_of_household_scope":
                 row["reason"] = (
-                    source.get("scope_reason")
-                    or source.get("classification_reason")
-                    or source.get("pe_gap")
-                    or measure.get("scope_reason")
-                    or measure.get("pe_gap")
+                    revisions.stated_reason(
+                        source.get("scope_reason")
+                        or source.get("classification_reason")
+                        or source.get("pe_gap")
+                        or measure.get("scope_reason")
+                        or measure.get("pe_gap"),
+                        manifest,
+                    )
                     or classification
                 )
             elif classification == "not_expressible":
                 row["reason"] = (
-                    source.get("pe_gap")
-                    or source.get("scope_reason")
-                    or measure.get("pe_gap")
-                    or measure.get("scope_reason")
+                    revisions.stated_reason(
+                        source.get("pe_gap")
+                        or source.get("scope_reason")
+                        or measure.get("pe_gap")
+                        or measure.get("scope_reason"),
+                        manifest,
+                    )
                     or classification
                 )
             elif year not in registry["calendar_years"]:

@@ -1,0 +1,79 @@
+{
+ "event": "budget_2015",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015.",
+ "obr_forecast_vintage": "March 2015",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2019-20",
+   "effect_gbp": -458226715.1383667,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1058547069.3290263,
+   "experiment_id": "b2015_personal_savings_allowance",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -458226715.1383667
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015__savings_tax_allowance_and_isa_flexibility",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -765000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.598989170115512,
+   "ratio_scaled": 0.4328827015966513,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.3837216592536292,
+     "obr_event_forecast_gbp": 216500000000.0,
+     "pe_base_gbp": 299575739228.4107
+    }
+   ],
+   "status": "computed",
+   "title": "Savings tax: allowance and ISA flexibility ",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2019-20",
+   "effect_gbp": -511511875.6801758,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1149228355.903712,
+   "experiment_id": "b2015_personal_savings_allowance",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -511511875.6801758
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015__savings_tax_allowance_and_isa_flexibility",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -765000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.6686429747453279,
+   "ratio_scaled": 0.445091589545701,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.5022592887630224,
+     "obr_event_forecast_gbp": 216500000000.0,
+     "pe_base_gbp": 325239136017.19434
+    }
+   ],
+   "status": "computed",
+   "title": "Savings tax: allowance and ISA flexibility ",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

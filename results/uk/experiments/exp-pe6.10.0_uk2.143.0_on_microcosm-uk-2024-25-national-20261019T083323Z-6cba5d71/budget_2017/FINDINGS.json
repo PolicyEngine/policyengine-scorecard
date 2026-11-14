@@ -1,0 +1,123 @@
+{
+ "event": "budget_2017",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2017.",
+ "obr_forecast_vintage": "March 2017",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_3x",
+     "diagnosis": {
+      "code": "magnitude_outside_3x",
+      "event": "budget_2017",
+      "evidence": "data/uk/events/inventory.jsonl rows for budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019; FINDINGS.json group effects",
+      "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+      "status": "expected",
+      "summary": "The OBR's costing is net of the self-employed incorporating in response: its NICs yield falls from \u00a3570m (2019-20) to \u00a3475m (2021-22) while income tax goes from -\u00a360m to -\u00a3420m and corporation tax rises to +\u00a3340m. A static run has no such response. PolicyEngine's NICs leg alone (+\u00a30.68bn in 2024-25) is 1.27 times the OBR's NICs row scaled to the modern base (\u00a30.475bn x 1.131).",
+      "years": null
+     },
+     "severity": "check"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2021-22",
+   "effect_gbp": 680428144.4662824,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 125070425.53234684,
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 680428144.4662824
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 185000000.0,
+   "obr_unmapped_gbp": 340000000.0,
+   "ratio_raw": 3.6779899700880128,
+   "ratio_scaled": 5.440360033717994,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1314246009811135,
+     "obr_event_forecast_gbp": 152407707844.61566,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.421918137702352,
+     "obr_event_forecast_gbp": 210166957523.8341,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Class 4 NICs: increase to 10% from April 2018 and 11% from April 2019",
+   "year": 2024
+  },
+  {
+   "anomalies": [
+    {
+     "code": "magnitude_outside_3x",
+     "diagnosis": {
+      "code": "magnitude_outside_3x",
+      "event": "budget_2017",
+      "evidence": "data/uk/events/inventory.jsonl rows for budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019; FINDINGS.json group effects",
+      "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+      "status": "expected",
+      "summary": "The OBR's costing is net of the self-employed incorporating in response: its NICs yield falls from \u00a3570m (2019-20) to \u00a3475m (2021-22) while income tax goes from -\u00a360m to -\u00a3420m and corporation tax rises to +\u00a3340m. A static run has no such response. PolicyEngine's NICs leg alone (+\u00a30.68bn in 2024-25) is 1.27 times the OBR's NICs row scaled to the modern base (\u00a30.475bn x 1.131).",
+      "years": null
+     },
+     "severity": "check"
+    }
+   ],
+   "carried_forward": true,
+   "comparison_fy": "2021-22",
+   "effect_gbp": 692600908.8609161,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 219442078.04933655,
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 0.0,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 692600908.8609161
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2017__class_4_nics_increase_to_10_from_april_2018_and_11_from_april_2019",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 185000000.0,
+   "obr_unmapped_gbp": 340000000.0,
+   "ratio_raw": 3.7437886965454927,
+   "ratio_scaled": 3.156190075383813,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.4043408877491532,
+     "obr_event_forecast_gbp": 152407707844.61566,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.5435167021776248,
+     "obr_event_forecast_gbp": 210166957523.8341,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Class 4 NICs: increase to 10% from April 2018 and 11% from April 2019",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

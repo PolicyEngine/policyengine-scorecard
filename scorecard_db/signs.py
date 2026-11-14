@@ -32,6 +32,8 @@ lists, which classify the same strings for that stager.
 
 from __future__ import annotations
 
+import re
+
 SAME = "same"
 OPPOSITE = "opposite"
 MAGNITUDE = "magnitude"
@@ -78,6 +80,12 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "than in the march 2025 forecast",
             "improvement in the fiscal outlook",
             "british racing",
+            # the OBR's prose on one behavioural part of a measure's yield
+            # (paragraph 3.16's banks moving profits abroad), as "reduction
+            # in yield" above
+            "behavioural erosion of yield",
+            # a transfer of business rates within the public sector
+            "flowing to local government",
         ),
         (
             "positive = cost",
@@ -86,6 +94,13 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "positive = higher spending",
             "positive = receipts lost",
             "positive = revenue forgone",
+            # the OBR's prose costings in the October 2026 EFO
+            "positive = net cost",
+            "positive = reduction in receipts",
+            "positive = spending cost",
+            "positive = additional spending",
+            "positive = ame increase",
+            "positive = pension spending increase",
         ),
         (
             "positive_gain_to_exchequer",
@@ -95,13 +110,26 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
             "(positive = yield",
             "(positive = increase in yield)",
             "reduction in borrowing",
+            "reduces borrowing",
             "higher government revenue",
             "here we present higher taxes as positive numbers",
             "reduction in public spending",
             "reduction in welfare spending",
             "positive = saving to the exchequer",
+            # a cost saving is a yield, though "positive = cost" also matches
+            # the same words: the reading conflicts, so it is unknown
+            "cost saving",
             "positive = saving against the current budget rule",
             "positive = fiscal tightening",
+            # the OBR's Table 1.1 workbook legend
+            "a negative sign implies a loss to the exchequer",
+            # IFS's chart of the Budget's tax change at the forecast horizon
+            "positive = increase in net tax",
+            # the OBR's prose savings in the October 2026 EFO
+            "positive = reduction in spending",
+            "positive = reduction in resource spending",
+            "positive = spending reduction",
+            "positive = welfare spending reduction",
         ),
     ),
     "spending": (
@@ -114,22 +142,48 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
         ),
     ),
     "borrowing": (
-        (),
-        ("reduction in borrowing",),
-        ("increase in borrowing",),
+        # a printed total that adds rows under two conventions, or an
+        # average of absolute values, which has no direction
+        ("mixed:", "no directional sign"),
+        (
+            "reduction in borrowing",
+            "reduces borrowing",
+            "borrowing reduction",
+            "positive = yield",
+            "a negative sign implies a loss to the exchequer",
+            "positive = increase in net tax",
+            "positive = additional investment income",
+            # HM Treasury's Table 6.2 cash effects, which the AB2026 ingest
+            # keeps on cash_requirement_change
+            "positive = cash inflow",
+            "improves the public sector's cash position",
+        ),
+        (
+            "increase in borrowing",
+            "borrowing increase",
+            "positive = increase in psnb",
+            "positive = cost",
+            # OBR paragraph 3.20's rise in the financing requirement, on
+            # cash_requirement_change
+            "increase in the financing requirement",
+        ),
     ),
     "household_gain": (
         ("reduction in benefit entitlement from the two-child limit",),
-        ("loss to households",),
+        ("loss to households", "positive = decrease in real"),
         (
             "positive = gain to",
             "higher mean household income",
             "positive = growth",
+            "positive = real income growth",
+            "positive = higher real",
         ),
     ),
     "tax_increase": (
         (),
-        (),
+        # the red book's per-person savings, which the AB2026 ingest keeps
+        # on average_tax_change
+        ("positive = saving or gain",),
         (
             "positive = increase in",
             "positive = tax increase",
@@ -140,7 +194,9 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
     "bill_increase": (
         (),
         ("positive = reduction in", "positive = saving", "positive = gain to"),
-        ("positive = higher", "positive = increase"),
+        # RF prints only the negative side: "negative = reduction in the
+        # typical household's annual bill"
+        ("positive = higher", "positive = increase", "negative = reduction in"),
     ),
     "more_poverty": (
         (
@@ -170,10 +226,11 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
     "higher_output": (
         ("claimants moved into work",),
         ("positive = reduction",),
-        ("higher gdp", "higher real gdp", "addition to gdp"),
+        ("higher gdp", "higher real gdp", "addition to gdp", "real gdp increase"),
     ),
     "higher_inflation": (
-        (),
+        # a bound on the effect's size with no direction (OBR paragraph 3.6)
+        ("no direction given",),
         ("reduction in cpi inflation",),
         ("increase in cpi inflation", "higher inflation"),
     ),
@@ -186,6 +243,10 @@ _PHRASES: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = 
 }
 
 _ORIENTED_TO_CLAIM = ("PE oriented to it", "PE's own orientation")
+# A phrase's negative leg ("...; negative = loss to households") states the
+# same direction from the other side, so a deciding fragment found only
+# there says nothing about what a positive value means (review A H-4).
+_NEGATIVE_LEG = re.compile(r"\bnegative\s*(?:=|implies|means)[^;]*")
 MAGNITUDE_CONVENTION = "magnitude_with_direction_in_label"
 
 
@@ -213,10 +274,32 @@ def classify(row: dict) -> tuple[str, str]:
         unanswerable, opposite, same = _PHRASES[family]
         if any(p in text for p in unanswerable):
             return UNKNOWN, f"stated:{family}:not_this_quantity"
-        if any(p in text for p in opposite):
+        positive = _NEGATIVE_LEG.sub(" ", text)
+
+        def spans(phrases):
+            # a phrase that names the negative side itself ("a negative sign
+            # implies a loss ...") is read where it stands
+            out = []
+            for p in phrases:
+                where = text if "negative" in p else positive
+                i = where.find(p)
+                while i >= 0:
+                    out.append((i, i + len(p), where is text))
+                    i = where.find(p, i + 1)
+            return out
+
+        opp, sam = spans(opposite), spans(same)
+        # one stretch of text read both ways ("positive = cost saving ...")
+        if any(
+            a0 < b1 and b0 < a1 and wa == wb for a0, a1, wa in opp for b0, b1, wb in sam
+        ):
+            return UNKNOWN, f"stated:{family}:conflicting"
+        if opp:
             return OPPOSITE, f"stated:{family}:opposite"
-        if any(p in text for p in same):
+        if sam:
             return SAME, f"stated:{family}:same"
+        if any(p in text for p in opposite + same):
+            return UNKNOWN, f"stated:{family}:negative_leg"
         return UNKNOWN, f"stated:{family}:unrecognised"
     # US producers publish signed changes, after minus before, which is
     # PolicyEngine's reform-minus-baseline orientation; no US adapter

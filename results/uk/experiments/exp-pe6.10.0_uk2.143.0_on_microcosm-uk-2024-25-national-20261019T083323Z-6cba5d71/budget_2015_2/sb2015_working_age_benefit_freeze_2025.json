@@ -1,0 +1,274 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 3831153960.9018946,
+ "engine_version": "2.143.0",
+ "event": "budget_2015_2",
+ "event_name": "Budget 2015 #2",
+ "experiment_id": "sb2015_working_age_benefit_freeze",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 102405371964.11185,
+   "channel": "spending",
+   "effect_gbp": 3912731272.6972437,
+   "literal_alternate_minus_modern_gbp": -3912731272.6972437,
+   "modern_gbp": 98492640691.41461,
+   "obr_heads": [
+    "Tax credits",
+    "Welfare inside cap",
+    "Welfare outside cap"
+   ],
+   "pe_variables": [
+    "universal_credit",
+    "child_tax_credit",
+    "working_tax_credit",
+    "child_benefit",
+    "housing_benefit"
+   ]
+  },
+  {
+   "alternate_gbp": 324477786495.6887,
+   "channel": "tax",
+   "effect_gbp": -81577311.79534912,
+   "literal_alternate_minus_modern_gbp": 81577311.79534912,
+   "modern_gbp": 324396209183.8934,
+   "obr_heads": [],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015 #2.",
+ "measure_key": "budget_2015_2__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.dwp.housing_benefit.allowances.couple.older": {
+   "alternate_intended": 154.09090048000002,
+   "alternate_processed": 154.09090048000002,
+   "changes_modern_law": true,
+   "modern_processed": 144.65,
+   "reached_simulation": true
+  },
+  "gov.dwp.housing_benefit.allowances.couple.younger": {
+   "alternate_intended": 117.33918208000001,
+   "alternate_processed": 117.33918208000001,
+   "changes_modern_law": true,
+   "modern_processed": 110.15,
+   "reached_simulation": true
+  },
+  "gov.dwp.housing_benefit.allowances.lone_parent.older": {
+   "alternate_intended": 98.05784576,
+   "alternate_processed": 98.05784576,
+   "changes_modern_law": true,
+   "modern_processed": 92.05,
+   "reached_simulation": true
+  },
+  "gov.dwp.housing_benefit.allowances.lone_parent.younger": {
+   "alternate_intended": 77.65797888000002,
+   "alternate_processed": 77.65797888000002,
+   "changes_modern_law": true,
+   "modern_processed": 72.9,
+   "reached_simulation": true
+  },
+  "gov.dwp.housing_benefit.allowances.single.older": {
+   "alternate_intended": 98.05784576,
+   "alternate_processed": 98.05784576,
+   "changes_modern_law": true,
+   "modern_processed": 92.05,
+   "reached_simulation": true
+  },
+  "gov.dwp.housing_benefit.allowances.single.younger": {
+   "alternate_intended": 77.65797888000002,
+   "alternate_processed": 77.65797888000002,
+   "changes_modern_law": true,
+   "modern_processed": 72.9,
+   "reached_simulation": true
+  },
+  "gov.dwp.tax_credits.child_tax_credit.elements.child_element": {
+   "alternate_intended": 3742.2836736000004,
+   "alternate_processed": 3742.2836736000004,
+   "changes_modern_law": true,
+   "modern_processed": 3513,
+   "reached_simulation": true
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.basic": {
+   "alternate_intended": 2637.6015872000003,
+   "alternate_processed": 2637.6015872000003,
+   "changes_modern_law": true,
+   "modern_processed": 2476,
+   "reached_simulation": true
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.couple": {
+   "alternate_intended": 2707.9092224,
+   "alternate_processed": 2707.9092224,
+   "changes_modern_law": true,
+   "modern_processed": 2542,
+   "reached_simulation": true
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.lone_parent": {
+   "alternate_intended": 2707.9092224,
+   "alternate_processed": 2707.9092224,
+   "changes_modern_law": true,
+   "modern_processed": 2542,
+   "reached_simulation": true
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.worker": {
+   "alternate_intended": 1108.276651685294,
+   "alternate_processed": 1108.276651685294,
+   "changes_modern_law": true,
+   "modern_processed": 1040.3743320786502,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.elements.child.amount": {
+   "alternate_intended": 311.920888832,
+   "alternate_processed": 311.920888832,
+   "changes_modern_law": true,
+   "modern_processed": 292.81,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": {
+   "alternate_intended": 361.1255808,
+   "alternate_processed": 361.1255808,
+   "changes_modern_law": true,
+   "modern_processed": 339,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+   "alternate_intended": 669.09432832,
+   "alternate_processed": 669.09432832,
+   "changes_modern_law": true,
+   "modern_processed": 628.1,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+   "alternate_intended": 530.02369536,
+   "alternate_processed": 530.02369536,
+   "changes_modern_law": true,
+   "modern_processed": 497.55,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+   "alternate_intended": 426.256017408,
+   "alternate_processed": 426.256017408,
+   "changes_modern_law": true,
+   "modern_processed": 400.14,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+   "alternate_intended": 337.66839705600006,
+   "alternate_processed": 337.66839705600006,
+   "changes_modern_law": true,
+   "modern_processed": 316.98,
+   "reached_simulation": true
+  },
+  "gov.hmrc.child_benefit.amount.additional": {
+   "alternate_intended": 18.3758592,
+   "alternate_processed": 18.3758592,
+   "changes_modern_law": true,
+   "modern_processed": 17.25,
+   "reached_simulation": true
+  },
+  "gov.hmrc.child_benefit.amount.eldest": {
+   "alternate_intended": 27.750210560000003,
+   "alternate_processed": 27.750210560000003,
+   "changes_modern_law": true,
+   "modern_processed": 26.05,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.housing_benefit.allowances.couple.older": {
+   "2025-01-01.2025-12-31": 154.09090048000002
+  },
+  "gov.dwp.housing_benefit.allowances.couple.younger": {
+   "2025-01-01.2025-12-31": 117.33918208000001
+  },
+  "gov.dwp.housing_benefit.allowances.lone_parent.older": {
+   "2025-01-01.2025-12-31": 98.05784576
+  },
+  "gov.dwp.housing_benefit.allowances.lone_parent.younger": {
+   "2025-01-01.2025-12-31": 77.65797888000002
+  },
+  "gov.dwp.housing_benefit.allowances.single.older": {
+   "2025-01-01.2025-12-31": 98.05784576
+  },
+  "gov.dwp.housing_benefit.allowances.single.younger": {
+   "2025-01-01.2025-12-31": 77.65797888000002
+  },
+  "gov.dwp.tax_credits.child_tax_credit.elements.child_element": {
+   "2025-01-01.2025-12-31": 3742.2836736000004
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.basic": {
+   "2025-01-01.2025-12-31": 2637.6015872000003
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.couple": {
+   "2025-01-01.2025-12-31": 2707.9092224
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.lone_parent": {
+   "2025-01-01.2025-12-31": 2707.9092224
+  },
+  "gov.dwp.tax_credits.working_tax_credit.elements.worker": {
+   "2025-01-01.2025-12-31": 1108.276651685294
+  },
+  "gov.dwp.universal_credit.elements.child.amount": {
+   "2025-01-01.2025-12-31": 311.920888832
+  },
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": {
+   "2025-01-01.2025-12-31": 361.1255808
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+   "2025-01-01.2025-12-31": 669.09432832
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+   "2025-01-01.2025-12-31": 530.02369536
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+   "2025-01-01.2025-12-31": 426.256017408
+  },
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+   "2025-01-01.2025-12-31": 337.66839705600006
+  },
+  "gov.hmrc.child_benefit.amount.additional": {
+   "2025-01-01.2025-12-31": 18.3758592
+  },
+  "gov.hmrc.child_benefit.amount.eldest": {
+   "2025-01-01.2025-12-31": 27.750210560000003
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": {
+  "gov.dwp.housing_benefit.allowances.couple.older": 1.0652672,
+  "gov.dwp.housing_benefit.allowances.couple.younger": 1.0652672,
+  "gov.dwp.housing_benefit.allowances.lone_parent.older": 1.0652672,
+  "gov.dwp.housing_benefit.allowances.lone_parent.younger": 1.0652672,
+  "gov.dwp.housing_benefit.allowances.single.older": 1.0652672,
+  "gov.dwp.housing_benefit.allowances.single.younger": 1.0652672,
+  "gov.dwp.tax_credits.child_tax_credit.elements.child_element": 1.0652672,
+  "gov.dwp.tax_credits.working_tax_credit.elements.basic": 1.0652672,
+  "gov.dwp.tax_credits.working_tax_credit.elements.couple": 1.0652672,
+  "gov.dwp.tax_credits.working_tax_credit.elements.lone_parent": 1.0652672,
+  "gov.dwp.tax_credits.working_tax_credit.elements.worker": 1.0652672,
+  "gov.dwp.universal_credit.elements.child.amount": 1.0652672,
+  "gov.dwp.universal_credit.elements.child.first.higher_amount": 1.0652672,
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 1.0652672,
+  "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 1.0652672,
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 1.0652672,
+  "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 1.0652672,
+  "gov.hmrc.child_benefit.amount.additional": 1.0652672,
+  "gov.hmrc.child_benefit.amount.eldest": 1.0652672
+ },
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

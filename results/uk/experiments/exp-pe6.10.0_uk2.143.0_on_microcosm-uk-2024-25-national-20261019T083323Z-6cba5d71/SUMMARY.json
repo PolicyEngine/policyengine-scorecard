@@ -1,0 +1,683 @@
+{
+ "anomaly_counts": {
+  "construction_noop:diagnosed": 7,
+  "inert:diagnosed": 2,
+  "magnitude_outside_10x:diagnosed": 2,
+  "magnitude_outside_3x:diagnosed": 4,
+  "sign_mismatch:diagnosed": 2
+ },
+ "baseline_coverage": [
+  {
+   "base_sheet": "CGT",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 13686000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 23146930734.90328,
+   "pe_over_obr": 1.691285308702563
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 21801546197.09165,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 27306093457.722675,
+   "pe_over_obr": 1.2524842601010262
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 20801165202.018173,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 29030468760.709827,
+   "pe_over_obr": 1.3956174319452657
+  },
+  {
+   "base_sheet": "CGT",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 25469965349.80383,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 30119730694.62251,
+   "pe_over_obr": 1.1825587620932705
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 305905000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 298840208848.8595,
+   "pe_over_obr": 0.9769052772882414
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 331437583074.4429,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 324396209183.8934,
+   "pe_over_obr": 0.9787550529869512
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 359618867481.6865,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 345143750735.9666,
+   "pe_over_obr": 0.9597487282936926
+  },
+  {
+   "base_sheet": "IT",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 384637784693.9719,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 361866685318.3335,
+   "pe_over_obr": 0.9407985895255826
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2024-25",
+   "obr_newest_forecast_gbp": 171402000000.0,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 172437830034.5404,
+   "pe_over_obr": 1.0060432785763318
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2025-26",
+   "obr_newest_forecast_gbp": 203986467473.7301,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 214032375734.32114,
+   "pe_over_obr": 1.0492479152416558
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2026-27",
+   "obr_newest_forecast_gbp": 211594391642.42764,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 223210938714.2597,
+   "pe_over_obr": 1.0549000707516993
+  },
+  {
+   "base_sheet": "NICS",
+   "fy": "2027-28",
+   "obr_newest_forecast_gbp": 218890531203.96008,
+   "obr_newest_vintage": "March 2026",
+   "pe_base_gbp": 230306650324.01807,
+   "pe_over_obr": 1.052154467611121
+  }
+ ],
+ "events": [
+  "autumn_2010",
+  "autumn_2012",
+  "autumn_2013",
+  "autumn_2015",
+  "autumn_2016",
+  "autumn_budget_2017",
+  "autumn_budget_2021",
+  "autumn_statement_2022",
+  "budget_2010_2",
+  "budget_2012",
+  "budget_2015",
+  "budget_2015_2",
+  "budget_2016",
+  "budget_2017",
+  "budget_2018",
+  "budget_2020",
+  "spending_review_2020",
+  "spring_budget_2021",
+  "spring_statement_2022"
+ ],
+ "experiment_years": 111,
+ "is_replay": false,
+ "kind": "uk_policy_experiment_summary",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiments on the modern population: not replays or costings of any past event.",
+ "mirrors": [
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -3198778067.177185,
+    3198778067.177185
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    19665940310.038162,
+    -19665940310.038162
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -3814213402.7076416,
+    3814213402.7076416
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    22255559888.927948,
+    -22255559888.927948
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    -4050499674.7957153,
+    4050499674.7957153
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2026
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    23326515104.92922,
+    -23326515104.92922
+   ],
+   "pair": [
+    "autumn_budget_2021:ab2021_hscl_nics_plus_1_25pp",
+    "autumn_statement_2022:as2022_reverse_nics_1_25pp"
+   ],
+   "pe_variables": "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4",
+   "year": 2026
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6342928739.544556,
+    -6342928739.544556
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2024
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    6738870848.276794,
+    -6738870848.276794
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2025
+  },
+  {
+   "agrees": true,
+   "effects_gbp": [
+    7031512581.012573,
+    -7031512581.012573
+   ],
+   "pair": [
+    "autumn_statement_2022:as2022_maintain_basic_rate_20",
+    "spring_statement_2022:ss2022_basic_rate_19"
+   ],
+   "pe_variables": "income_tax",
+   "year": 2026
+  }
+ ],
+ "model_changes": [
+  {
+   "certified_pair_gbp": 2281590662.074835,
+   "change_gbp": -133787944.68334198,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2010",
+    "evidence": "pe-uk variables/gov/hmrc/income_tax/adjusted_net_income.py at 2.132.6 and 2.143.0. docs/uk_replay/evidence/policy_experiments/swap_mechanisms.py and README.md: a parent on \u00a362,000 with \u00a34,000 of employee pension contributions and one child has adjusted net income of \u00a362,000 and a \u00a3135 charge on 2.132.6, \u00a358,000 and no charge on 2.143.0.",
+    "experiment_id": "as2010_high_income_child_benefit_charge",
+    "fixed_in": "policyengine-uk 2.134.8 (1dbc88172, 'fix: include relieved pension contributions in adjusted net income')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "ITA 2007 s. 58 deducts relieved pension contributions in adjusted net income, which sets the charge's taper. pe-uk 2.132.6 deducted only grossed-up Gift Aid, so savers' adjusted net income was too high and more of them paid the charge. 2.143.0 deducts the relief, and the charge raises \u00a30.13bn to 0.15bn less.",
+    "years": null
+   },
+   "event": "autumn_2010",
+   "experiment_id": "as2010_high_income_child_benefit_charge",
+   "groups_certified_pair": {
+    "child_benefit": 1157408716.8209286,
+    "income_tax": 1124181945.2539062
+   },
+   "groups_model_swap": {
+    "child_benefit": 1065162596.4528942,
+    "income_tax": 1082640120.9385986
+   },
+   "model_swap_gbp": 2147802717.391493,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 2523862189.4683266,
+   "change_gbp": -145116573.77617645,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2010",
+    "evidence": "pe-uk variables/gov/hmrc/income_tax/adjusted_net_income.py at 2.132.6 and 2.143.0. docs/uk_replay/evidence/policy_experiments/swap_mechanisms.py and README.md: a parent on \u00a362,000 with \u00a34,000 of employee pension contributions and one child has adjusted net income of \u00a362,000 and a \u00a3135 charge on 2.132.6, \u00a358,000 and no charge on 2.143.0.",
+    "experiment_id": "as2010_high_income_child_benefit_charge",
+    "fixed_in": "policyengine-uk 2.134.8 (1dbc88172, 'fix: include relieved pension contributions in adjusted net income')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "ITA 2007 s. 58 deducts relieved pension contributions in adjusted net income, which sets the charge's taper. pe-uk 2.132.6 deducted only grossed-up Gift Aid, so savers' adjusted net income was too high and more of them paid the charge. 2.143.0 deducts the relief, and the charge raises \u00a30.13bn to 0.15bn less.",
+    "years": null
+   },
+   "event": "autumn_2010",
+   "experiment_id": "as2010_high_income_child_benefit_charge",
+   "groups_certified_pair": {
+    "child_benefit": 1189441070.4097328,
+    "income_tax": 1334421119.0585938
+   },
+   "groups_model_swap": {
+    "child_benefit": 1132007252.5173454,
+    "income_tax": 1246738363.1748047
+   },
+   "model_swap_gbp": 2378745615.69215,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 937138301.6105042,
+   "change_gbp": -937138301.6105042,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2015",
+    "evidence": "pe-uk 52030637b; microcosm#1308",
+    "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+    "fixed_in": "policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), and its scale lacks Autumn Budget 2024's further 2pp, so its \u00a30.94bn is a 1pp removal on an overstated base. 2.143.0 has the full scale but takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
+    "years": null
+   },
+   "event": "autumn_2015",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 937138301.6105042
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "model_swap_gbp": 0.0,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 968167826.899538,
+   "change_gbp": -968167826.899538,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_2015",
+    "evidence": "pe-uk 52030637b; microcosm#1308",
+    "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+    "fixed_in": "policyengine-uk 2.134.1 (52030637b) with microcosm#1308's property_purchases stage",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "Both sides of this change come from one model fix. 2.132.6 charges every home buyer's whole stock of other residential property at the higher rates (policyengine-uk#2238), and its scale lacks Autumn Budget 2024's further 2pp, so its \u00a30.94bn is a 1pp removal on an overstated base. 2.143.0 has the full scale but takes the additional-dwelling purchase as a dataset input, which the interim cut does not supply, so it returns 0. Neither number is the surcharge's yield; the pre-Budget cut imputes the purchases (microcosm#1308).",
+    "years": null
+   },
+   "event": "autumn_2015",
+   "experiment_id": "as2015_sdlt_additional_dwellings_surcharge",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 968167826.899538
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "model_swap_gbp": 0.0,
+   "year": 2026
+  },
+  {
+   "certified_pair_gbp": -729647467.6059952,
+   "change_gbp": 164943458.45790768,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_budget_2017",
+    "evidence": "pe-uk stamp_duty/residential/purchase/main/first/* at 2.132.6 and 2.143.0; the artifacts' modern_processed readback (first.max 500,000 against 625,000 in 2024)",
+    "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+    "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "In 2024-25, 2.143.0 has the Growth Plan relief: first-time buyers pay nothing to \u00a3425,000 on prices to \u00a3625,000, against a main-scale nil band of \u00a3250,000. 2.132.6 has the 2017 limits (\u00a3300,000 and 500,000) against a \u00a3125,000 band. Zeroing the limit therefore removes a smaller relief on 2.143.0. In 2025-26 both engines have the same limits.",
+    "years": [
+     2024
+    ]
+   },
+   "event": "autumn_budget_2017",
+   "experiment_id": "ab2017_sdlt_first_time_buyers_relief",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": -729647467.6059952
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -564704009.1480875
+   },
+   "model_swap_gbp": -564704009.1480875,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 852598324.87323,
+   "change_gbp": 106357598.81256104,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_additional_rate_threshold_125140",
+    "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026 (and the higher-rate threshold at \u00a337,500), so its reversal misses the dividend band in 2024-25 and 2025-26; 2.143.0 has the statutory \u00a3125,140 and \u00a337,700. The difference is the dividend band's yield.",
+    "years": [
+     2024,
+     2025
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "groups_certified_pair": {
+    "income_tax": 852598324.87323
+   },
+   "groups_model_swap": {
+    "income_tax": 958955923.685791
+   },
+   "model_swap_gbp": 958955923.685791,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 949769167.1588135,
+   "change_gbp": 120764085.37615967,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk rates/dividends.yaml at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_additional_rate_threshold_125140",
+    "fixed_in": "policyengine-uk 2.139.4 (83de1ef1d, 'Correct historical dividend income tax band thresholds')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 keeps the dividend additional-rate threshold at \u00a3150,000 until April 2026 (and the higher-rate threshold at \u00a337,500), so its reversal misses the dividend band in 2024-25 and 2025-26; 2.143.0 has the statutory \u00a3125,140 and \u00a337,700. The difference is the dividend band's yield.",
+    "years": [
+     2024,
+     2025
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "groups_certified_pair": {
+    "income_tax": 949769167.1588135
+   },
+   "groups_model_swap": {
+    "income_tax": 1070533252.5349731
+   },
+   "model_swap_gbp": 1070533252.5349731,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 948638550.6198711,
+   "change_gbp": 391939606.93765163,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "Both populations' artifacts before and after the third review's correction: the certified pair +\u00a31.367bn (main scale only) to +\u00a30.949bn (all three legs) in 2025-26; the model swap +\u00a31.341bn to +\u00a31.341bn. docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py for the per-purchase legs.",
+    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "The difference is the additional-dwellings leg. On 2.132.6 it raises tax by about \u00a30.42bn: the construction merges the bands at current law's 5%, above that engine's 3% (no Autumn Budget 2024 +2pp, fixed in 2.141.8), on its overstated purchase base (policyengine-uk#2238). On 2.143.0 it is nil, because the interim cut carries no additional-dwelling purchases (model_swap_input_gaps; microcosm#1308). The main-scale and lease legs agree: +\u00a31.367bn on the pair against +\u00a31.341bn on the swap before the correction.",
+    "years": [
+     2025,
+     2026,
+     2027
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 948638550.6198711
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": 1340578157.5575228
+   },
+   "model_swap_gbp": 1340578157.5575228,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": 986257273.0271969,
+   "change_gbp": 396157984.13594246,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "Both populations' artifacts before and after the third review's correction: the certified pair +\u00a31.367bn (main scale only) to +\u00a30.949bn (all three legs) in 2025-26; the model swap +\u00a31.341bn to +\u00a31.341bn. docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py for the per-purchase legs.",
+    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "The difference is the additional-dwellings leg. On 2.132.6 it raises tax by about \u00a30.42bn: the construction merges the bands at current law's 5%, above that engine's 3% (no Autumn Budget 2024 +2pp, fixed in 2.141.8), on its overstated purchase base (policyengine-uk#2238). On 2.143.0 it is nil, because the interim cut carries no additional-dwelling purchases (model_swap_input_gaps; microcosm#1308). The main-scale and lease legs agree: +\u00a31.367bn on the pair against +\u00a31.341bn on the swap before the correction.",
+    "years": [
+     2025,
+     2026,
+     2027
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 986257273.0271969
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": 1382415257.1631393
+   },
+   "model_swap_gbp": 1382415257.1631393,
+   "year": 2026
+  },
+  {
+   "certified_pair_gbp": 1053340188.5476017,
+   "change_gbp": 373080236.07514095,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "Both populations' artifacts before and after the third review's correction: the certified pair +\u00a31.367bn (main scale only) to +\u00a30.949bn (all three legs) in 2025-26; the model swap +\u00a31.341bn to +\u00a31.341bn. docs/uk_replay/evidence/policy_experiments/sdlt_growth_plan_check.py for the per-purchase legs.",
+    "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "data_issue",
+    "summary": "The difference is the additional-dwellings leg. On 2.132.6 it raises tax by about \u00a30.42bn: the construction merges the bands at current law's 5%, above that engine's 3% (no Autumn Budget 2024 +2pp, fixed in 2.141.8), on its overstated purchase base (policyengine-uk#2238). On 2.143.0 it is nil, because the interim cut carries no additional-dwelling purchases (model_swap_input_gaps; microcosm#1308). The main-scale and lease legs agree: +\u00a31.367bn on the pair against +\u00a31.341bn on the swap before the correction.",
+    "years": [
+     2025,
+     2026,
+     2027
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": 1053340188.5476017
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": 1426420424.6227427
+   },
+   "model_swap_gbp": 1426420424.6227427,
+   "year": 2027
+  },
+  {
+   "certified_pair_gbp": 0.0,
+   "change_gbp": -1233508075.6331758,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "autumn_statement_2022",
+    "evidence": "pe-uk stamp_duty/residential/purchase/main/* at 2.132.6 and 2.143.0",
+    "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+    "fixed_in": "policyengine-uk 2.141.8 (4044d6ccf, 'Fix recent residential SDLT purchase schedules and inclusive first-buyer caps')",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 has no Growth Plan SDLT relief, so removing it moved nothing; 2.143.0 has the relief, and the experiment returns -\u00a31.234bn against the OBR's -\u00a31.048bn.",
+    "years": [
+     2024
+    ]
+   },
+   "event": "autumn_statement_2022",
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "groups_certified_pair": {
+    "stamp_duty_land_tax": -0.0
+   },
+   "groups_model_swap": {
+    "stamp_duty_land_tax": -1233508075.6331758
+   },
+   "model_swap_gbp": -1233508075.6331758,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 28670010215.582672,
+   "change_gbp": -5440578175.344391,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "budget_2010_2",
+    "evidence": "pe-uk parameters/gov/simulation/microdata_vat_coverage.yaml (0.38 at 2.132.6; 0.469 = 0.67 x 0.7 at 2.143.0) and utils/vat.py; policyengine-uk#1996 (98ab77093) and 691267f5c, both first in 2.135.7. The modern-law VAT aggregate falls by 0.810 in both years, which is 0.38 / 0.469.",
+    "experiment_id": "b2010_vat_standard_rate_20",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "expected",
+    "summary": "policyengine-uk 2.135.7 splits VAT grossing into the survey's consumption coverage and the household share of receipts (0.67 x 0.7 = 0.469, replacing the combined 0.38, with the derivation in docs/engineering/vat-coverage.md). VAT on recorded consumption is divided by that factor, so every VAT effect scales by 0.810. The rate rise's scaled ratio to the OBR moves from 1.31 to 1.06.",
+    "years": null
+   },
+   "event": "budget_2010_2",
+   "experiment_id": "b2010_vat_standard_rate_20",
+   "groups_certified_pair": {
+    "vat": 28670010215.582672
+   },
+   "groups_model_swap": {
+    "vat": 23229432040.23828
+   },
+   "model_swap_gbp": 23229432040.23828,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": 29858233033.50418,
+   "change_gbp": -5666062160.593903,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "budget_2010_2",
+    "evidence": "pe-uk parameters/gov/simulation/microdata_vat_coverage.yaml (0.38 at 2.132.6; 0.469 = 0.67 x 0.7 at 2.143.0) and utils/vat.py; policyengine-uk#1996 (98ab77093) and 691267f5c, both first in 2.135.7. The modern-law VAT aggregate falls by 0.810 in both years, which is 0.38 / 0.469.",
+    "experiment_id": "b2010_vat_standard_rate_20",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "expected",
+    "summary": "policyengine-uk 2.135.7 splits VAT grossing into the survey's consumption coverage and the household share of receipts (0.67 x 0.7 = 0.469, replacing the combined 0.38, with the derivation in docs/engineering/vat-coverage.md). VAT on recorded consumption is divided by that factor, so every VAT effect scales by 0.810. The rate rise's scaled ratio to the OBR moves from 1.31 to 1.06.",
+    "years": null
+   },
+   "event": "budget_2010_2",
+   "experiment_id": "b2010_vat_standard_rate_20",
+   "groups_certified_pair": {
+    "vat": 29858233033.50418
+   },
+   "groups_model_swap": {
+    "vat": 24192170872.91028
+   },
+   "model_swap_gbp": 24192170872.91028,
+   "year": 2025
+  },
+  {
+   "certified_pair_gbp": -458226715.1383667,
+   "change_gbp": -310023382.4765625,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "budget_2015",
+    "evidence": "pe-uk variables/gov/hmrc/income_tax/bracketized_savings_income/savings_starter_rate_income.py at 2.132.6 and 2.143.0. docs/uk_replay/evidence/policy_experiments/swap_mechanisms.py and README.md: a person with \u00a320,000 of earnings and \u00a33,000 of interest in 2025 keeps the whole starting-rate band on 2.132.6 (removing the allowance changes nothing) and has none on 2.143.0 (removing it costs \u00a3200).",
+    "experiment_id": "b2015_personal_savings_allowance",
+    "fixed_in": "policyengine-uk 2.139.2 (35f992c6a, 'Correct the savings starting-rate taper', fixing #1799)",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 started the starting-rate taper at the personal allowance plus the \u00a35,000 band, applied to income already net of the allowance, so it kept the whole 0% band for anyone with taxable non-savings income up to \u00a317,570; both versions' code comments read ITA 2007 s. 12 as removing it from the first pound. Those savers' interest sat in the 0% band, where the allowance does nothing. 2.143.0 tapers from the first pound, so more interest falls in the basic and higher bands, where the allowance relieves it: the reversal's scaled ratio moves from 0.43 to 0.73.",
+    "years": null
+   },
+   "event": "budget_2015",
+   "experiment_id": "b2015_personal_savings_allowance",
+   "groups_certified_pair": {
+    "income_tax": -458226715.1383667
+   },
+   "groups_model_swap": {
+    "income_tax": -768250097.6149292
+   },
+   "model_swap_gbp": -768250097.6149292,
+   "year": 2024
+  },
+  {
+   "certified_pair_gbp": -511511875.6801758,
+   "change_gbp": -331482788.69818115,
+   "diagnosis": {
+    "code": "model_change",
+    "event": "budget_2015",
+    "evidence": "pe-uk variables/gov/hmrc/income_tax/bracketized_savings_income/savings_starter_rate_income.py at 2.132.6 and 2.143.0. docs/uk_replay/evidence/policy_experiments/swap_mechanisms.py and README.md: a person with \u00a320,000 of earnings and \u00a33,000 of interest in 2025 keeps the whole starting-rate band on 2.132.6 (removing the allowance changes nothing) and has none on 2.143.0 (removing it costs \u00a3200).",
+    "experiment_id": "b2015_personal_savings_allowance",
+    "fixed_in": "policyengine-uk 2.139.2 (35f992c6a, 'Correct the savings starting-rate taper', fixing #1799)",
+    "populations": [
+     "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71"
+    ],
+    "status": "model_bug",
+    "summary": "pe-uk 2.132.6 started the starting-rate taper at the personal allowance plus the \u00a35,000 band, applied to income already net of the allowance, so it kept the whole 0% band for anyone with taxable non-savings income up to \u00a317,570; both versions' code comments read ITA 2007 s. 12 as removing it from the first pound. Those savers' interest sat in the 0% band, where the allowance does nothing. 2.143.0 tapers from the first pound, so more interest falls in the basic and higher bands, where the allowance relieves it: the reversal's scaled ratio moves from 0.43 to 0.73.",
+    "years": null
+   },
+   "event": "budget_2015",
+   "experiment_id": "b2015_personal_savings_allowance",
+   "groups_certified_pair": {
+    "income_tax": -511511875.6801758
+   },
+   "groups_model_swap": {
+    "income_tax": -842994664.3783569
+   },
+   "model_swap_gbp": -842994664.3783569,
+   "year": 2025
+  }
+ ],
+ "pairing": "model_swap",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "schema_version": 1
+}

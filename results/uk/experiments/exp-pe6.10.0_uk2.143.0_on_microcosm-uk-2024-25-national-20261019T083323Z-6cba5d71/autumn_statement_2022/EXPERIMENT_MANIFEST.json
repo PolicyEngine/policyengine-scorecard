@@ -1,0 +1,386 @@
+{
+ "event": "autumn_statement_2022",
+ "event_years_outside_population": [
+  2022,
+  2023
+ ],
+ "experiments": [
+  "as2022_additional_rate_threshold_125140",
+  "as2022_benefit_cap_cpi_uprating",
+  "as2022_cgt_annual_exempt_amount_3000",
+  "as2022_dividend_allowance_500",
+  "as2022_employer_secondary_threshold_freeze",
+  "as2022_maintain_basic_rate_20",
+  "as2022_reverse_nics_1_25pp",
+  "as2022_sdlt_end_growth_plan_relief",
+  "as2022_sdlt_nil_rate_bands_2024"
+ ],
+ "files": [
+  {
+   "path": "MODERN_LAW_2024.json",
+   "sha256": "8560fb9a135b0ca4f661044629576bf5a9b5d7ce583945e868e1a04dead2fb98"
+  },
+  {
+   "path": "MODERN_LAW_2025.json",
+   "sha256": "1640ad38a9038806941c86eaae6c1c88da603c8a6f9fe7062deedf71f346d93a"
+  },
+  {
+   "path": "MODERN_LAW_2026.json",
+   "sha256": "bda9d265d09ab60211e71c3d94d2f382e8eaafe0478e26010bb1a9f80d76492b"
+  },
+  {
+   "path": "MODERN_LAW_2027.json",
+   "sha256": "83f8192206f667da326bb679c70c809c66af6ae439aa62b0380690100a88ffd0"
+  },
+  {
+   "path": "as2022_additional_rate_threshold_125140_2024.json",
+   "sha256": "edc58186d9c2b5049342876c2140baf38130ddc0bf03cbea1398251c44f1bad4"
+  },
+  {
+   "path": "as2022_additional_rate_threshold_125140_2025.json",
+   "sha256": "90bce8affd0c334c31cf01d6aef10dd7eb384ce8e59c881753d6e6fb98daf6ad"
+  },
+  {
+   "path": "as2022_additional_rate_threshold_125140_2026.json",
+   "sha256": "85a97a84d3266109813cd866be8d2ef67f9d3ee1d7f3efea0e7146e4d486e58d"
+  },
+  {
+   "path": "as2022_additional_rate_threshold_125140_2027.json",
+   "sha256": "7cba892c076a800a53f91b8fccaf70bb2ccf9b9c5de3472b2b310f67a195969b"
+  },
+  {
+   "path": "as2022_benefit_cap_cpi_uprating_2024.json",
+   "sha256": "08516bc644b75cb44fa4748034e9896ddbdc6e3670e62801e0374eadc6040907"
+  },
+  {
+   "path": "as2022_benefit_cap_cpi_uprating_2025.json",
+   "sha256": "698fa65b530080bb5a64e6ef9a84549e4ffa91ee0beb59498be21a880c86b6b0"
+  },
+  {
+   "path": "as2022_benefit_cap_cpi_uprating_2026.json",
+   "sha256": "1ebd10dbe7908a9a33a1a5fd071b1174afbfc2858d34cd7f79ed53561b60ac69"
+  },
+  {
+   "path": "as2022_benefit_cap_cpi_uprating_2027.json",
+   "sha256": "a625508891d239035f2e68c4cf8c759a91cb4399ac72bef097679ed965a8ceef"
+  },
+  {
+   "path": "as2022_cgt_annual_exempt_amount_3000_2024.json",
+   "sha256": "485217d689da6f64161e33fb536d8497021cc5a64c33507a465c345f6bbbeec6"
+  },
+  {
+   "path": "as2022_cgt_annual_exempt_amount_3000_2025.json",
+   "sha256": "3067b57d26781a781d177f142b4f638cd65c45ddf8f428d106a47ac522ed3004"
+  },
+  {
+   "path": "as2022_cgt_annual_exempt_amount_3000_2026.json",
+   "sha256": "fd466b0d001e1ac728e1444be6abcb92ede3ace90339fe96b9fa196fa28fddd1"
+  },
+  {
+   "path": "as2022_cgt_annual_exempt_amount_3000_2027.json",
+   "sha256": "b1c3667c7044897364474a1a3d82b86e08cfaf00d7f1d7c4fb665e926eb2f7b8"
+  },
+  {
+   "path": "as2022_dividend_allowance_500_2024.json",
+   "sha256": "b45c73220ba3b071337dac853b4fe02f09b671b8db004a172df4120452d31340"
+  },
+  {
+   "path": "as2022_dividend_allowance_500_2025.json",
+   "sha256": "19594ba2c1ecc7d412eae92a9a19664892160f3c0afaf5a017e5a38a70f40e47"
+  },
+  {
+   "path": "as2022_dividend_allowance_500_2026.json",
+   "sha256": "8acc09a2fb5f1638244b3a1dd746d792d8f2d098667717c1b88405a84cd601ba"
+  },
+  {
+   "path": "as2022_dividend_allowance_500_2027.json",
+   "sha256": "173eba6809769908093a732eb927a2ff87bd035506493a27249664c7e8c1ac7d"
+  },
+  {
+   "path": "as2022_employer_secondary_threshold_freeze_2024.json",
+   "sha256": "364d4dff69dc19f985c44f7581c59f8c0aebc9a44bf3a99aae75aef914f5c3a5"
+  },
+  {
+   "path": "as2022_employer_secondary_threshold_freeze_2025.json",
+   "sha256": "b170184610882d80197fa58e91496e5266e9d8f18dc6c00afc84f1c77aa31767"
+  },
+  {
+   "path": "as2022_employer_secondary_threshold_freeze_2026.json",
+   "sha256": "c0359955adc17f9fc2a0182499c69ff45005d23dee31ac7a8672d4b3667da1a8"
+  },
+  {
+   "path": "as2022_employer_secondary_threshold_freeze_2027.json",
+   "sha256": "9fab382afdc9e5e8acee8041d7bdc0d0ad4f06f732af57b567c0daa7ca76c100"
+  },
+  {
+   "path": "as2022_maintain_basic_rate_20_2024.json",
+   "sha256": "6ea812c71a4a32128aed9b10f4b2b1cabce31d1e9b10bacad8e496924d741beb"
+  },
+  {
+   "path": "as2022_maintain_basic_rate_20_2025.json",
+   "sha256": "4976495fbc654dc206475eba54526bff2453e6d8c32c973eab49f11e0e0b9ce0"
+  },
+  {
+   "path": "as2022_maintain_basic_rate_20_2026.json",
+   "sha256": "cf17eea04101c9daa35295c6ee5b1fe1453bdd90624469273ec949df2697615b"
+  },
+  {
+   "path": "as2022_maintain_basic_rate_20_2027.json",
+   "sha256": "5d95a34d1e42b16420705ca805b1810b03e17ef8fc5b5483fce4ea9f2a01ed88"
+  },
+  {
+   "path": "as2022_reverse_nics_1_25pp_2024.json",
+   "sha256": "e765bd532392c6c76228a14521bf10af293d49bafc6d89e7aa4cdab49784b7e7"
+  },
+  {
+   "path": "as2022_reverse_nics_1_25pp_2025.json",
+   "sha256": "859d780d24d553ffb9f2094b919a1874a461fd43596c98e4e85ec8933b599273"
+  },
+  {
+   "path": "as2022_reverse_nics_1_25pp_2026.json",
+   "sha256": "8fe61c58a3cbd00721d547a24bdb0a0ab0e2e96af477b03d913a8f0d893d4bf6"
+  },
+  {
+   "path": "as2022_reverse_nics_1_25pp_2027.json",
+   "sha256": "3be4f3980c950a4bc121a75cb3e5854f5dde8b2d46a3810e70915d1d46ac2bf6"
+  },
+  {
+   "path": "as2022_sdlt_end_growth_plan_relief_2024.json",
+   "sha256": "60d867e27c6831c5e5383564be5db095fe8ddc207a1701dabafe9cab0277676d"
+  },
+  {
+   "path": "as2022_sdlt_end_growth_plan_relief_2025.json",
+   "sha256": "896703cb388581f3a3680b0236f72be410f43a97d82fe2c0a5b64c7d0939237d"
+  },
+  {
+   "path": "as2022_sdlt_end_growth_plan_relief_2026.json",
+   "sha256": "55c36115e3b331dbb8d929a2f47ec01f437c0a8a6c328c2bbc11b30d3b353320"
+  },
+  {
+   "path": "as2022_sdlt_end_growth_plan_relief_2027.json",
+   "sha256": "250f8f588f80a5f5c0a6fc7a49fc0acbbfbb9962ba45b9bd61b2b91bb53bbbf0"
+  },
+  {
+   "path": "as2022_sdlt_nil_rate_bands_2024_2024.json",
+   "sha256": "acac855e3775aff29fd97a7c128327dc01ee9be8661e3f5fffefcce3734a80db"
+  },
+  {
+   "path": "as2022_sdlt_nil_rate_bands_2024_2025.json",
+   "sha256": "81bf60b91e3ce82d708f88240f40ca3bd3d89d3da298561774e34ab4b6f7e6be"
+  },
+  {
+   "path": "as2022_sdlt_nil_rate_bands_2024_2026.json",
+   "sha256": "375cf3da26af38726533218fff014c11c5ba6f3f67ea4896564c928cffbf9fd7"
+  },
+  {
+   "path": "as2022_sdlt_nil_rate_bands_2024_2027.json",
+   "sha256": "9e4940bab76d05b7379f5e767decde3ae2c0a394d8869df52cdb8aa6c89f9afd"
+  }
+ ],
+ "grid": [
+  {
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_additional_rate_threshold_125140",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_benefit_cap_cpi_uprating",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_cgt_annual_exempt_amount_3000",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_dividend_allowance_500",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_dividend_allowance_500",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_dividend_allowance_500",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_dividend_allowance_500",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_employer_secondary_threshold_freeze",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_maintain_basic_rate_20",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_reverse_nics_1_25pp",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_sdlt_end_growth_plan_relief",
+   "year": 2027
+  },
+  {
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "year": 2024
+  },
+  {
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "year": 2025
+  },
+  {
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "year": 2026
+  },
+  {
+   "experiment_id": "as2022_sdlt_nil_rate_bands_2024",
+   "year": 2027
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_policy_experiment_manifest",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Statement 2022.",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "population_identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "size_bytes": 321798995
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "ff067baaf848f9053220c400f39120317f3b4903298212ad01340f7597312571",
+    "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+    "version": "6.10.0"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3"
+   },
+   "policyengine-uk": {
+    "record_sha256": "88ca6c8a11ff09b9da45ff28918eed9e33ef3a8358e17b6d42e884987f150451",
+    "version": "2.143.0"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.10.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "compatibility_basis": "unverified_data_release_manifest_unavailable",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.132.6",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "model_package": "policyengine-uk",
+   "model_version": "2.132.6",
+   "policyengine_version": "6.10.0"
+  },
+  "requirements_sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
+ },
+ "registry_sha256": "25c3d327d53e180934acd159fae54b5c3f4cf7e10383a4eb750d2ba6a6c629f1",
+ "spec_sha256": "5fe55beb9d42babff156f87b9b7008be512cb2e3841be9abbb9c981e6ad6cfa8",
+ "years": [
+  2024,
+  2025,
+  2026,
+  2027
+ ]
+}

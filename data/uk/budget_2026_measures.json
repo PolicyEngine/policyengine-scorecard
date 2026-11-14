@@ -127,18 +127,13 @@
    "reported_status": "unlikely",
    "source_note": "Reported as divisive with cabinet opposition; revenue estimates range from nil to £26bn, which is itself the finding — the spread is about behaviour and coverage, not arithmetic.",
    "program": "wealth_tax",
-   "computability": "expressible",
-   "pe_reform_delta": {
-    "gov.contrib.ubi_center.wealth_tax": "bracket: 0.02 above 10_000_000"
-   },
-   "delta_kind": "bracket_schedule",
-   "engine_baseline_2026": {
-    "gov.contrib.ubi_center.wealth_tax": "empty schedule"
-   },
-   "caveat": "Expressible does NOT mean credible: the engine applies the schedule to total_wealth from survey-imputed wealth, which is the weakest data in the certified world for exactly the population this measure targets. A PE number here should be published with that stated, or not published.",
-   "head_variables": [
-    "wealth_tax"
-   ]
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The measure taxes NET assets above £10m, and no parameter levies a tax on net wealth. gov.contrib.ubi_center.wealth_tax is applied by the wealth_tax variable to total_wealth, which is GROSS: property, corporate (which includes private pensions at the pin) and savings wealth, and on later engines private_pension_wealth too, with no mortgage, consumer or student loan debt deducted, although the variable's documentation says net wealth. At the pin (policyengine-uk 2.89.2) the engine has no net_wealth, mortgage_debt or consumer_debt at all; 2.143.0 adds net_wealth, but nothing levies a schedule on it. Scoring this measure through the parameter would tax the wrong base: a synthetic household with £15m of property and a £6m mortgage (net wealth £9m) pays £100,000 on 2.143.0. Found by the UK hub's Budget-relevance review (finding S4); filed upstream as policyengine-uk#2556. The verdict reverts to expressible once a schedule can be levied on net_wealth; the reform then has to set every band above £10m, since the schedule's third band (£1bn) has a 0 rate.",
+   "policyengine_uk_development_item": true,
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /wealth/, at the pin, policyengine-uk 2.89.2, and at 2.143.0. Parameters, identical at both: 11 nodes by name (gov.contrib.ubi_center.wealth_tax and its brackets [0]-[2], gov.contrib.cec.non_primary_residence_wealth_tax and its bracket [0], household.wealth, household.wealth.corporate_wealth, household.wealth.property_wealth, household.wealth.land.intensity.corporate_wealth and household.wealth.land.intensity.property_wealth_by_region), 41 by full path, the rest under the two schedules and household.wealth's land intensity, land value, financial assets and national balance sheet inputs. The only two tax schedules are wealth_tax (on total_wealth) and non_primary_residence_wealth_tax (on total_wealth less main_residence_value), neither net of debt. Variables: 8 at 2.89.2 (corporate_wealth, gross_financial_wealth, household_wealth_decile, net_financial_wealth, non_primary_residence_wealth_tax, property_wealth, total_wealth, wealth_tax), with no net_wealth; 11 at 2.143.0, adding net_wealth, corporate_sector_wealth and private_pension_wealth. Re-run on 22 October 2026.",
+   "action_link": "https://github.com/PolicyEngine/policyengine-uk/issues/2556",
+   "caveat": "Expressible does NOT mean credible: the engine applies the schedule to survey-imputed wealth, which is the weakest data in the certified world for exactly the population this measure targets. A PE number here should be published with that stated, or not published."
   },
   {
    "measure_key": "ab2026__council_tax_and_sdlt_to_land_value_tax",
@@ -260,9 +255,9 @@
  ],
  "provenance_rule_note": "The 'a re-published figure belongs to its originator' rule is cited as '#86' in places. To be precise (review): issue #86 is the IFS + Resolution Foundation ingest; the RULE was established in its PR (#91), where eight RF rows carrying an attribution to HM Treasury or a Parliament impact assessment were dropped rather than staged as RF claims. Cite #91 for the rule and #86 for the lane.",
  "triage": {
-  "expressible": 5,
+  "expressible": 4,
   "partial": 1,
-  "not_expressible": 8,
+  "not_expressible": 9,
   "already_in_baseline": 2,
   "note": "already_in_baseline measures are expressible AND already law AND already carried by the certified world, so they are not Budget-day scoring jobs. Both were false not_expressible entries in v1."
  },

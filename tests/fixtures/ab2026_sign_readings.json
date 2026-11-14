@@ -1,0 +1,382 @@
+[
+ {
+  "metric": "average_annual_gain",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
+  "metric": "average_annual_gain",
+  "sign_convention": "positive = gain to taxpayer",
+  "relation": "same"
+ },
+ {
+  "metric": "average_annual_gain",
+  "sign_convention": "positive = gain to the EV driver (saving, as printed)",
+  "relation": "same"
+ },
+ {
+  "metric": "average_annual_gain",
+  "sign_convention": "positive = gain to the pub (tax cut, as printed)",
+  "relation": "same"
+ },
+ {
+  "metric": "average_annual_gain",
+  "sign_convention": "positive = gain to the ratepayer (protection, as printed)",
+  "relation": "same"
+ },
+ {
+  "metric": "average_household_income_change",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
+  "metric": "benefit_cost_change",
+  "sign_convention": "positive = increase in state pension payments relative to earnings uprating",
+  "relation": "same"
+ },
+ {
+  "metric": "benefit_cost_change",
+  "sign_convention": "positive = saving (state pension payments lower than under the current triple lock)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "cash_requirement_change",
+  "sign_convention": "as worded: positive = increase in the financing requirement",
+  "relation": "same"
+ },
+ {
+  "metric": "cpi_inflation_effect",
+  "sign_convention": "absolute magnitude bound, no direction given",
+  "relation": "unknown"
+ },
+ {
+  "metric": "cpi_inflation_effect",
+  "sign_convention": "as worded: positive = increase in CPI inflation",
+  "relation": "same"
+ },
+ {
+  "metric": "cpi_inflation_effect",
+  "sign_convention": "as worded: positive = reduction in CPI inflation",
+  "relation": "opposite"
+ },
+ {
+  "metric": "cpi_inflation_effect",
+  "sign_convention": "positive = reduction in CPI inflation (as worded: reduce inflation by)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "Note (verbatim): A positive sign implies an increase in borrowing.",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "Note (verbatim): This table uses the convention that a negative sign implies a loss to the Exchequer (and is therefore an increase in PSNB).",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "absolute average, no directional sign",
+  "relation": "unknown"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = additional investment income",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = borrowing increase",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = borrowing reduction",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = increase in borrowing",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = reduction in underspends / borrowing increase",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "as worded: positive = yield / reduction in borrowing",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "mixed: row 551 (negative = loss to Exchequer) plus row 555 (positive = increase in PSNB)",
+  "relation": "unknown"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = cost to the Exchequer",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = increase in PSNB (matches EFO Table 3.1; contradicts the workbook legend)",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = increase in PSNB; negative = reduction in PSNB",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = increase in borrowing",
+  "relation": "same"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = raises revenue (reduces borrowing), as RF plots Figure 10 (the OBR's borrowing sign flipped: workbook F10 I15 'Signs flipped from source')",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = yield to the Exchequer",
+  "relation": "opposite"
+ },
+ {
+  "metric": "decisions_effect_on_borrowing",
+  "sign_convention": "positive = yield to the Exchequer (reduces borrowing); negative = cost to the Exchequer (the tables print no legend; convention observed from the rows themselves, e.g. the bank surcharge rise is + and the Household Energy Payment is -, as in the AB2025 Table 4.1 harvest)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "negative = reduction in the typical household's annual bill",
+  "relation": "same"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = reduction in the annual Ofgem price cap (as worded: 'take around £50 off')",
+  "relation": "opposite"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = saving (a reduction in the bill)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = saving (a reduction in the household's bills)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "energy_bill_change",
+  "sign_convention": "positive = saving to billpayers",
+  "relation": "opposite"
+ },
+ {
+  "metric": "gdp_level_effect",
+  "sign_convention": "as worded: positive = real GDP increase",
+  "relation": "same"
+ },
+ {
+  "metric": "gdp_level_effect",
+  "sign_convention": "positive = higher GDP (as worded: 'increasing UK GDP' / 'boost ... economy')",
+  "relation": "same"
+ },
+ {
+  "metric": "pct_change_after_tax_income",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
+  "metric": "poverty_rate_change",
+  "sign_convention": "positive = rise in the poverty rate",
+  "relation": "same"
+ },
+ {
+  "metric": "real_income_growth",
+  "sign_convention": "positive = decrease in real household disposable income per person",
+  "relation": "opposite"
+ },
+ {
+  "metric": "real_income_growth",
+  "sign_convention": "positive = gain to households",
+  "relation": "same"
+ },
+ {
+  "metric": "real_income_growth",
+  "sign_convention": "positive = growth",
+  "relation": "same"
+ },
+ {
+  "metric": "real_income_growth",
+  "sign_convention": "positive = higher real household disposable incomes",
+  "relation": "same"
+ },
+ {
+  "metric": "real_income_growth",
+  "sign_convention": "positive = real income growth",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "Note (verbatim): A positive sign implies an increase in borrowing.",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "Note (verbatim): This table uses the convention that a negative sign implies a loss to the Exchequer (and is therefore an increase in PSNB).",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = AME increase",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = additional spending",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = cost",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = increase in borrowing",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = increase in net business rates revenues flowing to local government",
+  "relation": "unknown"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = net cost",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = pension spending increase",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = reduction in receipts",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = reduction in receipts / behavioural erosion of yield",
+  "relation": "unknown"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = reduction in resource spending",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = reduction in spending",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = reduction in yield",
+  "relation": "unknown"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = spending cost",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = spending reduction",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = welfare spending reduction",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "as worded: positive = yield / reduction in borrowing",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = cost to the Exchequer",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = cost to the Exchequer (RF calls the figure a cost)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = cost to the Exchequer (as printed; not re-signed)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = cost to the Exchequer (higher RDEL spending)",
+  "relation": "opposite"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = increase in net tax as a share of GDP",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = raises revenue (reduces borrowing), as RF plots Figure 10 (the OBR's borrowing sign flipped: workbook F10 I15 'Signs flipped from source')",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = saving to the Exchequer (as printed; not re-signed)",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = saving to the Exchequer (counter-fraud benefits, as worded)",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = saving to the Exchequer (reduction in State Pension spending)",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = yield to the Exchequer",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = yield to the Exchequer (reduces borrowing)",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = yield to the Exchequer (reduces borrowing); negative = cost to the Exchequer",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = yield to the Exchequer (reduces borrowing); negative = cost to the Exchequer (no legend printed in the document; convention observed from the costings themselves: p.38 says its figures 'represent net income from developer fees' and prints +50m to +95m from 2027-28 after -15m in 2026-27, the Bank Surcharge rise prints +, the VAT cut on domestic electricity prints -, and Table 6.1 prints the same values with the same signs)",
+  "relation": "same"
+ },
+ {
+  "metric": "revenue_change",
+  "sign_convention": "positive = yield to the Exchequer (reduces borrowing); negative = cost to the Exchequer (the tables print no legend; convention observed from the rows themselves, e.g. the bank surcharge rise is + and the Household Energy Payment is -, as in the AB2025 Table 4.1 harvest)",
+  "relation": "same"
+ }
+]

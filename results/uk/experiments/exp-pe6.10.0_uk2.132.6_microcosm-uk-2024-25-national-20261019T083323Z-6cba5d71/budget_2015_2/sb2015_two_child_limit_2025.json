@@ -1,0 +1,69 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 1890854193.9122467,
+ "engine_version": "2.132.6",
+ "event": "budget_2015_2",
+ "event_name": "Budget 2015 #2",
+ "experiment_id": "sb2015_two_child_limit",
+ "fy": "2025-26",
+ "head_groups": [
+  {
+   "alternate_gbp": 79486226132.53835,
+   "channel": "spending",
+   "effect_gbp": 1890854193.9122467,
+   "literal_alternate_minus_modern_gbp": -1890854193.9122467,
+   "modern_gbp": 77595371938.6261,
+   "obr_heads": [
+    "Tax credits",
+    "Welfare inside cap"
+   ],
+   "pe_variables": [
+    "universal_credit",
+    "child_tax_credit"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015 #2.",
+ "measure_key": "budget_2015_2__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+   "alternate_intended": 100.0,
+   "alternate_processed": 100.0,
+   "changes_modern_law": true,
+   "modern_processed": 2,
+   "reached_simulation": true
+  },
+  "gov.dwp.universal_credit.elements.child.limit.child_count": {
+   "alternate_intended": 100.0,
+   "alternate_processed": 100.0,
+   "changes_modern_law": true,
+   "modern_processed": 2,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+   "2024-01-01.2025-12-31": 100.0
+  },
+  "gov.dwp.universal_credit.elements.child.limit.child_count": {
+   "2024-01-01.2025-12-31": 100.0
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2025
+}

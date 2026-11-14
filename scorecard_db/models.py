@@ -159,6 +159,11 @@ class Metric(str, Enum):
     SPENDING_SHARE = "spending_share"
     BENEFIT_UPRATING_RATE = "benefit_uprating_rate"
     REAL_INCOME_GROWTH = "real_income_growth"
+    # The CPI 12-month rate itself (lane uk-benefit-uprating): September's
+    # rate sets most April benefit upratings, so it is the price input a
+    # benefit_uprating_rate is judged against. NOT cpi_inflation_effect,
+    # which is what a policy does to the CPI.
+    CPI_INFLATION_RATE = "cpi_inflation_rate"
     # OBR published policy effects (#55): what policy does to the ECONOMY,
     # not to a household or the exchequer's take. gdp_level_effect and
     # supply_side_impact are both per cent of output and deliberately
@@ -523,6 +528,11 @@ STANDARD_CONDITIONS = frozenset(
         #                 publication's own words
         "horizon",
         "horizon_note",
+        # scenario        the source's named scenario where one costing is
+        #                 published under several assumption sets (CenTax's
+        #                 childcare cliff-edge Table 4.2: "central" |
+        #                 "high_cost" | "low_cost"); identity-bearing
+        "scenario",
     }
 )
 

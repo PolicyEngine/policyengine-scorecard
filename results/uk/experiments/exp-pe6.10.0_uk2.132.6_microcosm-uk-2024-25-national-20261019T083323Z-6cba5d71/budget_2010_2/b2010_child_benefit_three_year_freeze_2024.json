@@ -1,0 +1,80 @@
+{
+ "construction": "reversal_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 1303436139.3853302,
+ "engine_version": "2.132.6",
+ "event": "budget_2010_2",
+ "event_name": "Budget 2010 #2",
+ "experiment_id": "b2010_child_benefit_three_year_freeze",
+ "fy": "2024-25",
+ "head_groups": [
+  {
+   "alternate_gbp": 14476038068.317814,
+   "channel": "spending",
+   "effect_gbp": 1426314643.2309113,
+   "literal_alternate_minus_modern_gbp": -1426314643.2309113,
+   "modern_gbp": 13049723425.086903,
+   "obr_heads": [
+    "Social security benefits"
+   ],
+   "pe_variables": [
+    "child_benefit"
+   ]
+  },
+  {
+   "alternate_gbp": 299698617732.2563,
+   "channel": "tax",
+   "effect_gbp": -122878503.84558105,
+   "literal_alternate_minus_modern_gbp": 122878503.84558105,
+   "modern_gbp": 299575739228.4107,
+   "obr_heads": [],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2010 #2.",
+ "measure_key": "budget_2010_2__child_benefit_freeze_for_3_years_from_2011_12",
+ "pairing": "certified_pair",
+ "parameters": {
+  "gov.hmrc.child_benefit.amount.additional": {
+   "alternate_intended": 18.8,
+   "alternate_processed": 18.8,
+   "changes_modern_law": true,
+   "modern_processed": 16.95,
+   "reached_simulation": true
+  },
+  "gov.hmrc.child_benefit.amount.eldest": {
+   "alternate_intended": 28.4,
+   "alternate_processed": 28.4,
+   "changes_modern_law": true,
+   "modern_processed": 25.6,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.132.6_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.child_benefit.amount.additional": {
+   "2024-01-01.2024-12-31": 18.8,
+   "2025-01-01.2025-12-31": 19.1
+  },
+  "gov.hmrc.child_benefit.amount.eldest": {
+   "2024-01-01.2024-12-31": 28.4,
+   "2025-01-01.2025-12-31": 28.9
+  }
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2024
+}

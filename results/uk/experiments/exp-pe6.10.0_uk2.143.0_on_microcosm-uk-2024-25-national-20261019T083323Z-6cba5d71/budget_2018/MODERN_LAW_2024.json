@@ -1,0 +1,21 @@
+{
+ "aggregates_gbp": {
+  "fuel_duty": 12870809897.792395,
+  "income_tax": 298840208848.8595,
+  "ni_class_1_employee": 47481085433.93119,
+  "ni_class_1_employer": 122131728303.12006,
+  "ni_class_2": 0.0,
+  "ni_class_4": 2825016297.4891653,
+  "universal_credit": 73594847527.31573
+ },
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "engine_version": "2.143.0",
+ "event": "budget_2018",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_modern_law",
+ "label": "modern_population_sensitivity",
+ "pairing": "model_swap",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "year": 2024
+}

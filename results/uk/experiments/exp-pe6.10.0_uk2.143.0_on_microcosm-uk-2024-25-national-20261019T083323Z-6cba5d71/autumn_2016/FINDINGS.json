@@ -1,0 +1,81 @@
+{
+ "event": "autumn_2016",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn 2016.",
+ "obr_forecast_vintage": "November 2016",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2021-22",
+   "effect_gbp": -449664163.9127865,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -738787247.7151588,
+   "experiment_id": "as2016_fuel_duty_freeze_2017",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -449664163.9127865
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2016__fuel_duty_freeze_in_2017_18",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -910000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.49413644386020494,
+   "ratio_scaled": 0.6086517672082986,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8118541183683063,
+     "obr_event_forecast_gbp": 30004158935.545708,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze in 2017-18",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": true,
+   "comparison_fy": "2021-22",
+   "effect_gbp": -440712705.5769615,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -735234941.6903576,
+   "experiment_id": "as2016_fuel_duty_freeze_2017",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "fuel_duty": -440712705.5769615
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_2016__fuel_duty_freeze_in_2017_18",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -910000000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.4842996764581995,
+   "ratio_scaled": 0.5994175202877757,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8079504853740194,
+     "obr_event_forecast_gbp": 30004158935.545708,
+     "obr_newest_forecast_gbp": 24241874775.213375,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: freeze in 2017-18",
+   "year": 2025
+  }
+ ],
+ "schema_version": 1
+}

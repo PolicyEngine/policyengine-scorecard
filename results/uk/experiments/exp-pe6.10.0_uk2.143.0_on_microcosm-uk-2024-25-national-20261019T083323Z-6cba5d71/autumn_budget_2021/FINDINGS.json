@@ -1,0 +1,534 @@
+{
+ "event": "autumn_budget_2021",
+ "is_replay": false,
+ "kind": "uk_policy_experiment_findings",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "obr_forecast_vintage": "October 2021",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "registry_sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b",
+ "rows": [
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 1062596400.9037476,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 911972010.0312401,
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": 1062596400.9037476
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__increase_rates_of_dividend_tax_by_1_25_from_april_2022",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 772232699.120127,
+   "obr_unmapped_gbp": -142763660.05527797,
+   "ratio_raw": 1.376005447728978,
+   "ratio_scaled": 1.1651633923143625,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1809549259832308,
+     "obr_event_forecast_gbp": 253049631509.0547,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Increase rates of dividend tax by 1.25% from April 2022",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 1122914102.7905884,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1135815985.429626,
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": 1122914102.7905884
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__increase_rates_of_dividend_tax_by_1_25_from_april_2022",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 939638654.2764337,
+   "obr_unmapped_gbp": -154082488.27889055,
+   "ratio_raw": 1.195048860197525,
+   "ratio_scaled": 0.9886408689395603,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2087795454777859,
+     "obr_event_forecast_gbp": 268366726089.5547,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Increase rates of dividend tax by 1.25% from April 2022",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 1164009973.7904053,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 1258226823.5820696,
+   "experiment_id": "ab2021_dividend_rates_plus_1_25pp",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": 1164009973.7904053
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__increase_rates_of_dividend_tax_by_1_25_from_april_2022",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 1036458501.7011443,
+   "obr_unmapped_gbp": -167808612.8910957,
+   "ratio_raw": 1.1230647168988532,
+   "ratio_scaled": 0.9251193441231553,
+   "scales": [
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2139673913783677,
+     "obr_event_forecast_gbp": 284310561541.5931,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Increase rates of dividend tax by 1.25% from April 2022",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -699593555.7646713,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1265368233.469676,
+   "experiment_id": "ab2021_fuel_duty_freeze_2022",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "fuel_duty": -699593555.7646713
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__fuel_duty_one_year_freeze_in_2022_23",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1578176237.9978395,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.44329241495374044,
+   "ratio_scaled": 0.552877444889197,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.8017914621975245,
+     "obr_event_forecast_gbp": 30380717616.071426,
+     "obr_newest_forecast_gbp": 24359000000.0,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: one year freeze in 2022-23",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -685666962.7964916,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -1259052634.4279046,
+   "experiment_id": "ab2021_fuel_duty_freeze_2022",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "fuel_duty": -685666962.7964916
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__fuel_duty_one_year_freeze_in_2022_23",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -1593680156.9797728,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 0.4302412625227875,
+   "ratio_scaled": 0.5445895938322299,
+   "scales": [
+    {
+     "base_sheet": "Fuel",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 0.7900284313095608,
+     "obr_event_forecast_gbp": 30684813121.256596,
+     "obr_newest_forecast_gbp": 24241874775.213375,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Fuel Duty: one year freeze in 2022-23",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 16467162242.860977,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 16418826618.686758,
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "income_tax": -3198778067.177185,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 19665940310.038162
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__health_and_social_care_levy_introduced_from_april_2022_gross_yield",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 16607002282.592981,
+   "obr_unmapped_gbp": 536794257.09624034,
+   "ratio_raw": 0.991579453211819,
+   "ratio_scaled": 1.0029439146472994,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.0044787630172949,
+     "obr_event_forecast_gbp": 171668965420.99557,
+     "pe_base_gbp": 172437830034.5404
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.1809549259832308,
+     "obr_event_forecast_gbp": 253049631509.0547,
+     "pe_base_gbp": 298840208848.8595
+    }
+   ],
+   "status": "computed",
+   "title": "Health and Social Care Levy introduced from April 2022: gross yield",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 18441346486.220306,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 20476362798.712414,
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "income_tax": -3814213402.7076416,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 22255559888.927948
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__health_and_social_care_levy_introduced_from_april_2022_gross_yield",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 16877531043.405748,
+   "obr_unmapped_gbp": 692739399.3543191,
+   "ratio_raw": 1.0926566473966322,
+   "ratio_scaled": 0.9006163188014977,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2128154322917384,
+     "obr_event_forecast_gbp": 176475636799.80978,
+     "pe_base_gbp": 214032375734.32114
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2087795454777859,
+     "obr_event_forecast_gbp": 268366726089.5547,
+     "pe_base_gbp": 324396209183.8934
+    }
+   ],
+   "status": "computed",
+   "title": "Health and Social Care Levy introduced from April 2022: gross yield",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 19276015430.133503,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 21136588649.3154,
+   "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "income_tax": -4050499674.7957153,
+    "ni_class_1_employee+ni_class_1_employer+ni_class_2+ni_class_4": 23326515104.92922
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__health_and_social_care_levy_introduced_from_april_2022_gross_yield",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 17360029287.08631,
+   "obr_unmapped_gbp": 829783194.864895,
+   "ratio_raw": 1.1103676791877561,
+   "ratio_scaled": 0.9119738170595396,
+   "scales": [
+    {
+     "base_sheet": "NICS",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2171785179108723,
+     "obr_event_forecast_gbp": 183383895977.20807,
+     "pe_base_gbp": 223210938714.2597
+    },
+    {
+     "base_sheet": "IT",
+     "basis": "pe_base_over_obr_event_forecast",
+     "factor": 1.2139673913783677,
+     "obr_event_forecast_gbp": 284310561541.5931,
+     "pe_base_gbp": 345143750735.9666
+    }
+   ],
+   "status": "computed",
+   "title": "Health and Social Care Levy introduced from April 2022: gross yield",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": 7304169047.501795,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 6690091663.770134,
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "pension_credit": 472396488.9213505,
+    "state_pension": 6831772558.580444
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__state_pension_and_pension_credit_uprate_with_double_lock_in_2022_23",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6113875950.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.194687152182372,
+   "ratio_scaled": 1.091789083706755,
+   "scales": [
+    {
+     "base_sheet": "Welfare out",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0801696276306576,
+     "obr_event_forecast_gbp": 144297319682.9647,
+     "obr_newest_forecast_gbp": 155865582070.04993,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1839178753094979,
+     "obr_event_forecast_gbp": 134210099751.16942,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "State Pension and Pension Credit: uprate with Double Lock in 2022-23",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": 7638368445.855093,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 7075787437.565582,
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "pension_credit": 477292831.5802517,
+    "state_pension": 7161075614.274841
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__state_pension_and_pension_credit_uprate_with_double_lock_in_2022_23",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6452760600.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.18373653066489,
+   "ratio_scaled": 1.0795079011705115,
+   "scales": [
+    {
+     "base_sheet": "Welfare out",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.0767500200734632,
+     "obr_event_forecast_gbp": 152034345656.52887,
+     "obr_newest_forecast_gbp": 163702984737.52332,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2274148279592414,
+     "obr_event_forecast_gbp": 137823332830.7017,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "State Pension and Pension Credit: uprate with Double Lock in 2022-23",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": 7917766060.700361,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": 7574320451.810993,
+   "experiment_id": "ab2021_state_pension_double_lock",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "pension_credit": 497692289.0309887,
+    "state_pension": 7420073771.669373
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__state_pension_and_pension_credit_uprate_with_double_lock_in_2022_23",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": 6730772100.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.1763533132700128,
+   "ratio_scaled": 1.0453434220369235,
+   "scales": [
+    {
+     "base_sheet": "Welfare out",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1065861700299928,
+     "obr_event_forecast_gbp": 158208992169.43896,
+     "obr_newest_forecast_gbp": 175071882709.0846,
+     "obr_newest_vintage": "March 2026"
+    },
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.250583784087501,
+     "obr_event_forecast_gbp": 142112102166.89362,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "State Pension and Pension Credit: uprate with Double Lock in 2022-23",
+   "year": 2026
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2024-25",
+   "effect_gbp": -2893790777.5677032,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -2948073901.308181,
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "fy": "2024-25",
+   "group_effects_gbp": {
+    "universal_credit": -2893790777.5677032
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__universal_credit_reduce_taper_rate_from_63p_to_55p_and_500_p_a_increase",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -2490100000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.1621182994930739,
+   "ratio_scaled": 0.9815869189315811,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.1839178753094979,
+     "obr_event_forecast_gbp": 134210099751.16942,
+     "obr_newest_forecast_gbp": 158893736142.48026,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal Credit: reduce taper rate from 63p to 55p and \u00a3500 p.a. increase in work allowances from 1 December 2021",
+   "year": 2024
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2025-26",
+   "effect_gbp": -2991213545.7326965,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -3383614456.235241,
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "fy": "2025-26",
+   "group_effects_gbp": {
+    "universal_credit": -2991213545.7326965
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__universal_credit_reduce_taper_rate_from_63p_to_55p_and_500_p_a_increase",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -2756700000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.0850703905875492,
+   "ratio_scaled": 0.8840290714033812,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.2274148279592414,
+     "obr_event_forecast_gbp": 137823332830.7017,
+     "obr_newest_forecast_gbp": 169166402355.16498,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal Credit: reduce taper rate from 63p to 55p and \u00a3500 p.a. increase in work allowances from 1 December 2021",
+   "year": 2025
+  },
+  {
+   "anomalies": [],
+   "carried_forward": false,
+   "comparison_fy": "2026-27",
+   "effect_gbp": -3131929393.7229614,
+   "error_message": null,
+   "error_type": null,
+   "expected_gbp": -3729365902.5273366,
+   "experiment_id": "ab2021_uc_taper_55_work_allowance_500",
+   "fy": "2026-27",
+   "group_effects_gbp": {
+    "universal_credit": -3131929393.7229614
+   },
+   "magnitude_check": "scaled",
+   "measure_key": "autumn_budget_2021__universal_credit_reduce_taper_rate_from_63p_to_55p_and_500_p_a_increase",
+   "modern_assumption_failures": [],
+   "obr_mapped_gbp": -2982100000.0,
+   "obr_unmapped_gbp": 0.0,
+   "ratio_raw": 1.0502429139609541,
+   "ratio_scaled": 0.8398021206770027,
+   "scales": [
+    {
+     "base_sheet": "Welfare in",
+     "basis": "obr_newest_over_obr_event_forecast",
+     "factor": 1.250583784087501,
+     "obr_event_forecast_gbp": 142112102166.89362,
+     "obr_newest_forecast_gbp": 177723090492.50336,
+     "obr_newest_vintage": "March 2026"
+    }
+   ],
+   "status": "computed",
+   "title": "Universal Credit: reduce taper rate from 63p to 55p and \u00a3500 p.a. increase in work allowances from 1 December 2021",
+   "year": 2026
+  }
+ ],
+ "schema_version": 1
+}

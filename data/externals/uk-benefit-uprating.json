@@ -1,0 +1,27 @@
+[
+ {
+  "source": "ons_cpi",
+  "metric": "cpi_inflation_rate",
+  "geography": "UK",
+  "unit_concept": "percent",
+  "period": "2026-09",
+  "value": 3.5,
+  "status": "ok",
+  "source_column": "ons_d7g7_cpi_annual_rate.json months['2026 SEP']",
+  "series": "D7G7",
+  "release_date": "2026-10-21",
+  "publisher": "Office for National Statistics"
+ },
+ {
+  "source": "obr_efo_economy",
+  "metric": "cpi_inflation_rate",
+  "geography": "UK",
+  "unit_concept": "percent",
+  "period": "2026Q3",
+  "value": 2.0841055635834493,
+  "status": "ok",
+  "source_column": "obr_efo_march2026_detailed_forecast_tables_economy.xlsx sheet 1.7 row 2026Q3, CPI",
+  "calendar_year_value": 2.301053135157205,
+  "publisher": "Office for Budget Responsibility"
+ }
+]

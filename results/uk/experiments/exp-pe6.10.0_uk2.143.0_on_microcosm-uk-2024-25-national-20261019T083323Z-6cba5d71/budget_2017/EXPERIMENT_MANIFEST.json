@@ -1,0 +1,99 @@
+{
+ "event": "budget_2017",
+ "event_years_outside_population": [
+  2017,
+  2018,
+  2019,
+  2020,
+  2021
+ ],
+ "experiments": [
+  "b2017_class_4_main_rate_plus_2pp"
+ ],
+ "files": [
+  {
+   "path": "MODERN_LAW_2024.json",
+   "sha256": "80b5140e10aebc5bef9360d6f3e937e555c43fdc2bbeca47733afcac821050bc"
+  },
+  {
+   "path": "MODERN_LAW_2025.json",
+   "sha256": "8e5d0313f4b24619698d4b3c85b62c1a6738e296d97f36060998f7476d5bc620"
+  },
+  {
+   "path": "b2017_class_4_main_rate_plus_2pp_2024.json",
+   "sha256": "f7ef64904a7d4ea74b96346267ccc920bfffa2837efa02dfc447eba42dbe62db"
+  },
+  {
+   "path": "b2017_class_4_main_rate_plus_2pp_2025.json",
+   "sha256": "ead3bf16c7793366ba2e2f3306fba4b80706854e7952daef7659dc7943d1c744"
+  }
+ ],
+ "grid": [
+  {
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "year": 2024
+  },
+  {
+   "experiment_id": "b2017_class_4_main_rate_plus_2pp",
+   "year": 2025
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_policy_experiment_manifest",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2017.",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "population_identity": {
+  "dataset": {
+   "path": "microcosm_uk_2024_25.h5",
+   "repo_id": "policyengine/populace-uk-private",
+   "repo_type": "dataset",
+   "revision": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "size_bytes": 321798995
+  },
+  "materialization": "policyengine_data_dir",
+  "packaged_bundle_manifest_sha256": "c25457692c75d9fd569d3caf6bad0120d5a92ee6aaf3ec5535a114a02a538401",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "ff067baaf848f9053220c400f39120317f3b4903298212ad01340f7597312571",
+    "source": "git+https://github.com/PolicyEngine/policyengine.py@e125aa2800c2ff4ffaa0e8abbf8dd0ab4676835b",
+    "version": "6.10.0"
+   },
+   "policyengine-core": {
+    "record_sha256": "e68eb6a81f472df42aff4fbf56c8537d1185075078ffb2e0a6399f1df0b66bc2",
+    "version": "3.33.3"
+   },
+   "policyengine-uk": {
+    "record_sha256": "88ca6c8a11ff09b9da45ff28918eed9e33ef3a8358e17b6d42e884987f150451",
+    "version": "2.143.0"
+   }
+  },
+  "python": "3.12",
+  "release_bundle": {
+   "bundle_id": "uk-6.10.0",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+   "certified_data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "compatibility_basis": "unverified_data_release_manifest_unavailable",
+   "country_id": "uk",
+   "data_build_fingerprint": null,
+   "data_build_model_git_sha": null,
+   "data_build_model_version": "2.132.6",
+   "data_package": "microcosm-data",
+   "data_version": "0.1.0",
+   "default_dataset": "microcosm_uk_2024_25",
+   "default_dataset_uri": "hf://policyengine/populace-uk-private/microcosm_uk_2024_25.h5@microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+   "model_package": "policyengine-uk",
+   "model_version": "2.132.6",
+   "policyengine_version": "6.10.0"
+  },
+  "requirements_sha256": "a13910274c06e73ef9bdd35bd58d0955905ee96c318ff0fabfd5744b925f1422"
+ },
+ "registry_sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f",
+ "spec_sha256": "e2104b74d079683f216ca2f6bb61d157333d5a5404ef5542f7c84b4135b44bd3",
+ "years": [
+  2024,
+  2025
+ ]
+}

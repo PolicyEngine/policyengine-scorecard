@@ -1,0 +1,70 @@
+{
+  "id": "rf-no-half-measures",
+  "name": "Resolution Foundation — No half measures: Setting child poverty on a downward course at the Autumn Budget (30 October 2025)",
+  "organization": "Resolution Foundation",
+  "authors": [
+    "Alex Clegg",
+    "Lindsay Judge"
+  ],
+  "country": "UK",
+  "claim_class": "reform_score",
+  "url": "https://www.resolutionfoundation.org/publications/no-half-measures/",
+  "data_urls": [
+    "https://www.resolutionfoundation.org/app/uploads/2025/10/No-half-measures_v2.pdf",
+    "https://www.resolutionfoundation.org/app/uploads/2024/08/Living-Standards-Outlook-2024.pdf"
+  ],
+  "raw_sha256": {
+    "Living-Standards-Outlook-2024.pdf": "536c0a2fcd1450b31e64c6ec1c878ec61e04ec0051fa18359f48e8448ec94906",
+    "No-half-measures_v2.pdf": "06c9a9d1cda68a381d96768ab1af32dae9f8a07daa0835910eca9fab72c5426e",
+    "pages_layout.txt": "fe5801bf955dc04db63a2a502dc1ddf7e1c026818c0d087d534bd26426008ae0"
+  },
+  "pages_extracted": {
+    "tool": "pdftotext -layout (poppler 26.09.0), one PDF page at a time",
+    "pages": {
+      "No-half-measures_v2.pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "Living-Standards-Outlook-2024.pdf": [
+        34,
+        35,
+        36,
+        37
+      ]
+    },
+    "printed_page_rule": "printed page = PDF page in both files"
+  },
+  "citation": "Clegg, A. and Judge, L. (2025), No half measures: Setting child poverty on a downward course at the Autumn Budget, Resolution Foundation Spotlight, 30 October 2025.",
+  "published": "2025-10-30",
+  "fetched": "2026-10-23",
+  "pdf_metadata": "No-half-measures_v2.pdf: 9 pages, CreationDate 2025-10-30 (pdfinfo), 126,154 bytes; Living-Standards-Outlook-2024.pdf: 38 pages, CreationDate 2024-08-29, 835,360 bytes; both HTTP 200 from resolutionfoundation.org on 2026-10-23",
+  "model": {
+    "name": "RF projections including use of the IPPR Tax Benefit Model (source_model landman_ttm, the harvest's id for the IPPR model)",
+    "open_source": false,
+    "method": "Projections from the latest FRS/HBAI outturn with the IPPR Tax Benefit Model: earnings growth from the OBR's March 2025 EFO; inflation from the Bank of England's August 2025 CPI forecast with an AHC deflator that removes housing costs from CPI; private rents rising with average earnings after a 12-month lag (footnote 4). The cited LSO 2024 Annex: the population is reweighted to ONS projections, including the numbers of dependent children of each age; take-up of Universal Credit is held at 80 per cent and does not change between years or scenarios; modelled changes in incomes and poverty are applied to the outturn year rather than using projected levels. Modelled policy changes occur in April 2026; the Scottish Government's mitigation of the limit is excluded (figure notes).",
+    "method_basis": "raw/pages_layout.txt: No-half-measures_v2.pdf pages 1-3 (figures), 3-4 (Figure 2 notes), 8 (footnote 4), 9 (endnote 8); Living-Standards-Outlook-2024.pdf pages 34 (reweighting), 36 (take-up), 37 (projecting changes rather than levels)"
+  },
+  "concepts": {
+    "poverty_line": "Relative child poverty after housing costs (60% of median, HBAI definitions per the 'RF analysis of DWP, Households Below Average Income' source line). Neither the spotlight nor the LSO 2024 Annex states whether a policy scenario's line is re-derived from that scenario's median or held at the counterfactual's.",
+    "population": "Children; the cited annex reweights 'the numbers of dependent children of each age', the HBAI dependent-child concept.",
+    "geography": "UK",
+    "period": "Financial years; 2029-30 (period 2030) for the reform scores, 'today' = 2025-26 (period 2026).",
+    "counterfactual": "RF's current-policy projection at 30 October 2025: pre-Budget policy including the free school meals extension and the UC standard-allowance over-indexation, with the limit in place and Scotland's mitigation excluded.",
+    "cost": "£3.5 billion in 2029-30, nominal (unstated whether static; take-up does not change between scenarios per the annex)."
+  },
+  "reform": "Scrap the two-child limit in full from April 2026; endnote 8's partial repeals (three-child limit; two-thirds child element for third and later children; limit lifted for families in work) for 2029-30.",
+  "baseline_key": "rf_current_policy_projection_2025_10_30 (the harvest's baseline_policy for these claims)",
+  "metrics": [
+    "poverty_count_change (children)",
+    "benefit_cost_change (gbp)"
+  ],
+  "coverage_note": "Seven two-child limit figures; each is already a claim of the Autumn Budget 2025 harvest (uk_rf_ab2025, registry uk_ab2025), and the ingest attaches this lane's counterparts to those claims rather than minting duplicates. The spotlight's other figures (baseline rates and counts, FSM, the benefit-cap and LHA package, Figure 3 and Figure 5) stay with the harvest.",
+  "diagnosis_upstream": "RF's projections and the IPPR model are closed; a divergence classified as an external-model issue becomes a comparison memo."
+}

@@ -1,0 +1,62 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2015",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic": {
+     "2024-01-01.2025-12-31": 1000.0
+    },
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.higher": {
+     "2024-01-01.2025-12-31": 500.0
+    }
+   },
+   "carried_from_fy": "2019-20",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "b2015_personal_savings_allowance",
+   "heads": [
+    {
+     "base_sheet": "IT",
+     "channel": "tax",
+     "obr_heads": [
+      "Income tax"
+     ],
+     "pe_base_comparable": true,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015__savings_tax_allowance_and_isa_flexibility",
+   "note": "Removes the personal savings allowance (\u00a31,000 basic rate, \u00a3500 higher rate); the measure's ISA flexibility leg has no counterpart.",
+   "reform": {
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic": {
+     "2024-01-01.2025-12-31": 0.0
+    },
+    "gov.hmrc.income_tax.allowances.personal_savings_allowance.higher": {
+     "2024-01-01.2025-12-31": 0.0
+    }
+   },
+   "sources": [
+    "Finance (No. 2) Act 2015 s. 4 (Income Tax Act 2007 s. 12B)",
+    "pe-uk 2.132.6 parameters gov/hmrc/income_tax/allowances/personal_savings_allowance/*.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015.",
+ "obr_forecast_vintage": "March 2015",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}

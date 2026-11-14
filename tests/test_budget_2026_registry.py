@@ -249,14 +249,32 @@ def test_a_ruled_out_measure_is_kept_as_a_counterfactual():
     assert "model the hole, not the replacement" in m["missing"]
 
 
-def test_the_wealth_tax_entry_separates_expressible_from_credible():
-    """Expressible does not mean credible. The schedule applies to
-    survey-imputed wealth, the weakest data in the certified world for
-    exactly the population the measure targets."""
+def test_the_wealth_tax_is_not_scored_on_a_gross_base():
+    """The measure taxes net assets; the engine's wealth_tax schedule is
+    levied on total_wealth, which deducts no debt (UK hub finding S4,
+    policyengine-uk#2556). Scoring it through that parameter would tax the
+    wrong base, so it is not expressible until a net base exists. The
+    credibility caveat stays for when it is."""
     m = MEASURES["ab2026__wealth_tax_2pc_above_10m"]
-    assert m["computability"] == "expressible"
+    assert m["computability"] == "not_expressible"
+    assert m["pe_reform_delta"] is None
+    assert "total_wealth" in m["why"] and "net wealth" in m["why"]
+    assert m["action_link"].endswith("/policyengine-uk/issues/2556")
+    assert m["policyengine_uk_development_item"] is True
     assert "Expressible does NOT mean credible" in m["caveat"]
     assert "survey-imputed wealth" in m["caveat"]
+
+
+def test_the_triage_counts_match_the_entries():
+    """The triage block summarises the entries; a verdict that moves must
+    move the count with it."""
+    from collections import Counter
+
+    counts = Counter(m["computability"] for m in MEASURES.values())
+    for verdict in ("expressible", "partial", "not_expressible"):
+        assert REG["triage"][verdict] == counts[verdict], verdict
+    already = sum(bool(m.get("already_in_baseline")) for m in MEASURES.values())
+    assert REG["triage"]["already_in_baseline"] == already
 
 
 def test_gap_searches_cover_variables_not_only_parameters():

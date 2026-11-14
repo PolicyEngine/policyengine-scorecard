@@ -1,0 +1,115 @@
+{
+ "construction": "forward_on_modern_law",
+ "data_build_id": "microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "data_built_with_model_version": "2.132.6",
+ "dataset_sha256": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_after": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "dataset_sha256_before": "810ba980005a8b907cb51464279fa5e0125464b7af9a4871b7f6744c30951ece",
+ "effect_gbp": 16467162242.860977,
+ "engine_version": "2.143.0",
+ "event": "autumn_budget_2021",
+ "event_name": "Autumn Budget 2021",
+ "experiment_id": "ab2021_hscl_nics_plus_1_25pp",
+ "fy": "2024-25",
+ "head_groups": [
+  {
+   "alternate_gbp": 192103770344.57858,
+   "channel": "tax",
+   "effect_gbp": 19665940310.038162,
+   "literal_alternate_minus_modern_gbp": 19665940310.038162,
+   "modern_gbp": 172437830034.5404,
+   "obr_heads": [
+    "Health and social care levy",
+    "NICs"
+   ],
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "alternate_gbp": 295641430781.6823,
+   "channel": "tax",
+   "effect_gbp": -3198778067.177185,
+   "literal_alternate_minus_modern_gbp": -3198778067.177185,
+   "modern_gbp": 298840208848.8595,
+   "obr_heads": [
+    "Income tax"
+   ],
+   "pe_variables": [
+    "income_tax"
+   ]
+  }
+ ],
+ "is_replay": false,
+ "kind": "uk_modern_population_policy_experiment_result",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Autumn Budget 2021.",
+ "measure_key": "autumn_budget_2021__health_and_social_care_levy_introduced_from_april_2022_gross_yield",
+ "pairing": "model_swap",
+ "parameters": {
+  "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+   "alternate_intended": 0.0325,
+   "alternate_processed": 0.0325,
+   "changes_modern_law": true,
+   "modern_processed": 0.02,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+   "alternate_intended": 0.0925,
+   "alternate_processed": 0.0925,
+   "changes_modern_law": true,
+   "modern_processed": 0.08,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_1.rates.employer": {
+   "alternate_intended": 0.1505,
+   "alternate_processed": 0.1505,
+   "changes_modern_law": true,
+   "modern_processed": 0.138,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_4.rates.additional": {
+   "alternate_intended": 0.0325,
+   "alternate_processed": 0.0325,
+   "changes_modern_law": true,
+   "modern_processed": 0.02,
+   "reached_simulation": true
+  },
+  "gov.hmrc.national_insurance.class_4.rates.main": {
+   "alternate_intended": 0.0725,
+   "alternate_processed": 0.0725,
+   "changes_modern_law": true,
+   "modern_processed": 0.06,
+   "reached_simulation": true
+  }
+ },
+ "policyengine_version": "6.10.0",
+ "population_id": "exp-pe6.10.0_uk2.143.0_on_microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71",
+ "reform": {
+  "gov.hmrc.national_insurance.class_1.rates.employee.additional": {
+   "2024-01-01.2035-12-31": 0.0325
+  },
+  "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+   "2024-01-01.2035-12-31": 0.0925
+  },
+  "gov.hmrc.national_insurance.class_1.rates.employer": {
+   "2024-01-01.2024-12-31": 0.1505,
+   "2025-01-01.2035-12-31": 0.1625
+  },
+  "gov.hmrc.national_insurance.class_4.rates.additional": {
+   "2024-01-01.2035-12-31": 0.0325
+  },
+  "gov.hmrc.national_insurance.class_4.rates.main": {
+   "2024-01-01.2035-12-31": 0.0725
+  }
+ },
+ "registry_sha256": "5585b2b91b31493103c07b22aa2b77af6f8d484749b90dfe99a21bab7777888b",
+ "scale": null,
+ "schema_version": 1,
+ "sign_convention": "positive_gain_to_exchequer",
+ "status": "computed",
+ "year": 2024
+}

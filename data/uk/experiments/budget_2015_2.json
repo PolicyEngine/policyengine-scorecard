@@ -1,0 +1,177 @@
+{
+ "built_by": "pipeline/uk_experiment_specs.py",
+ "event_slug": "budget_2015_2",
+ "experiments": [
+  {
+   "assumes_modern": {
+    "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+     "2024-01-01.2025-12-31": 2.0
+    },
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2024-01-01.2025-12-31": 2.0
+    }
+   },
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_two_child_limit",
+   "heads": [
+    {
+     "base_sheet": "Welfare in",
+     "channel": "spending",
+     "obr_heads": [
+      "Tax credits",
+      "Welfare inside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "child_tax_credit"
+     ]
+    }
+   ],
+   "magnitude_check": "sign_only",
+   "magnitude_reason": "The limit applies to children born from 6 April 2017, so its yield grows each year until every child is covered; the 2020-21 costing is not steady state.",
+   "measure_key": "budget_2015_2__limit_child_element_of_tax_credits_and_uc_to_2_children_for_new_claims",
+   "note": "Removes the two-child limit in 2024-25 and 2025-26 (a child count of 100 stands for none). Modern law abolishes it from April 2026 (Autumn Budget 2025), so later years have nothing to move.",
+   "reform": {
+    "gov.dwp.tax_credits.child_tax_credit.limit.child_count": {
+     "2024-01-01.2025-12-31": 100.0
+    },
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+     "2024-01-01.2025-12-31": 100.0
+    }
+   },
+   "sources": [
+    "Welfare Reform and Work Act 2016 s. 13-14",
+    "pe-uk parameters gov/dwp/universal_credit/elements/child/limit/child_count.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_working_age_benefit_freeze",
+   "heads": [
+    {
+     "base_sheet": "Total welfare",
+     "channel": "spending",
+     "obr_heads": [
+      "Tax credits",
+      "Welfare inside cap",
+      "Welfare outside cap"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "universal_credit",
+      "child_tax_credit",
+      "working_tax_credit",
+      "child_benefit",
+      "housing_benefit"
+     ]
+    },
+    {
+     "channel": "tax",
+     "note": "The charge is income tax in PolicyEngine; the OBR books the measure as reduced benefit spending.",
+     "obr_heads": [],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "income_tax"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__uprating_freeze_working_age_benefits_tax_credits_and_local_housing_allow",
+   "note": "Restores the CPI upratings the four-year freeze forwent (April 2017-2019: 1.0%, 3.0%, 2.4%; April 2016's was nil): the Universal Credit standard allowances and child elements, child benefit, working-age housing benefit allowances and tax credit elements, each at its modern value times 1.065267. Disability and carer elements were outside the freeze. Missing legs: local housing allowance rates and legacy JSA, ESA and income support.",
+   "reform": {},
+   "scale": {
+    "gov.dwp.housing_benefit.allowances.couple.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.couple.younger": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.lone_parent.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.lone_parent.younger": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.single.older": 1.0652672,
+    "gov.dwp.housing_benefit.allowances.single.younger": 1.0652672,
+    "gov.dwp.tax_credits.child_tax_credit.elements.child_element": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.basic": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.couple": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.lone_parent": 1.0652672,
+    "gov.dwp.tax_credits.working_tax_credit.elements.worker": 1.0652672,
+    "gov.dwp.universal_credit.elements.child.amount": 1.0652672,
+    "gov.dwp.universal_credit.elements.child.first.higher_amount": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": 1.0652672,
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": 1.0652672,
+    "gov.hmrc.child_benefit.amount.additional": 1.0652672,
+    "gov.hmrc.child_benefit.amount.eldest": 1.0652672
+   },
+   "sources": [
+    "Welfare Reform and Work Act 2016 s. 11 and Sch. 1",
+    "ONS CPI annual rate, September 2015-2018: -0.1%, 1.0%, 3.0%, 2.4%"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  },
+  {
+   "assumes_modern": {
+    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+     "2024-01-01.2025-12-31": 30.0
+    },
+    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {
+     "2024-01-01.2025-12-31": 30.0
+    }
+   },
+   "carried_from_fy": "2020-21",
+   "carry_reason": "The event's costings end before the population's first year. The measure is a permanent change of level whose last costing year is steady state, so later years compare with that year, scaled to the run year's base.",
+   "construction": "reversal_on_modern_law",
+   "experiment_id": "sb2015_extended_childcare_30_hours",
+   "heads": [
+    {
+     "channel": "spending",
+     "obr_heads": [
+      "PSCE in RDEL"
+     ],
+     "pe_base_comparable": false,
+     "pe_variables": [
+      "extended_childcare_entitlement"
+     ]
+    }
+   ],
+   "magnitude_check": "scaled",
+   "measure_key": "budget_2015_2__childcare_30_hour_entitlement_for_working_parents_of_3_and_4_year_olds",
+   "note": "Removes the extended entitlement for three- and four-year-olds of working parents (pe-uk's age-3 and age-4 brackets of extended hours), keeping the 2024-25 expansions to younger children. pe-uk values the hours at the funding rate; the OBR's tax credit and welfare rows (free hours replacing paid childcare) have no counterpart.",
+   "reform": {
+    "gov.dfe.extended_childcare_entitlement.hours[3].amount": {
+     "2024-01-01.2025-12-31": 0.0
+    },
+    "gov.dfe.extended_childcare_entitlement.hours[4].amount": {
+     "2024-01-01.2025-12-31": 0.0
+    }
+   },
+   "sources": [
+    "Childcare Act 2016 s. 1",
+    "pe-uk 2.132.6 parameters gov/dfe/extended_childcare_entitlement/hours.yaml"
+   ],
+   "years": [
+    2024,
+    2025
+   ]
+  }
+ ],
+ "kind": "uk_modern_population_policy_experiments",
+ "label": "modern_population_sensitivity",
+ "label_text": "Policy experiment on the modern population: not a replay or a costing of Budget 2015 #2.",
+ "obr_forecast_vintage": "July 2015",
+ "registry": {
+  "kind": "inventory",
+  "path": "data/uk/events/inventory.jsonl",
+  "sha256": "fbf007ccc433e73d9b8ef354e358d715571a38ee15c67eb076b7c41a4feab41f"
+ },
+ "schema_version": 1
+}
