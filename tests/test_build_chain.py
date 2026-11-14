@@ -62,6 +62,7 @@ STEPS = (
     "uk_childcare_100k",
     "uk_two_child_limit_poverty",
     "nz_budget_scores",
+    "analysis_comparables",
     "be_pit_reform",
     "be_jrc",
 )

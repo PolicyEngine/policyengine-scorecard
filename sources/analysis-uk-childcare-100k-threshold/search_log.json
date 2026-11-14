@@ -1,0 +1,255 @@
+{
+ "schema": "comparables/search/1",
+ "searches": [
+  {
+   "date": "2026-10-21",
+   "kind": "backfill",
+   "by": "session:local_4b58a325-2146-422b-80fa-69a117a812aa",
+   "results_pins": [
+    "PolicyEngine/uk-childcare-100k-threshold@f25f0dbd46c31d336bde06898d801a1887a8cf89:4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a"
+   ],
+   "producers": [
+    {
+     "producer": "obr",
+     "result": "none_found",
+     "queries": [
+      "site:obr.uk childcare £100,000 adjusted net income limit cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "No OBR costing: no government has announced the measure."
+    },
+    {
+     "producer": "hm_treasury",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"100,000\" childcare free hours tax-free childcare income limit impact assessment cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "uk_hmrc",
+     "result": "none_found",
+     "queries": [
+      "HMRC tax-free childcare £100,000 income limit tax information and impact note removal cost",
+      "site:gov.uk \"100,000\" childcare free hours tax-free childcare income limit impact assessment cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "dwp",
+     "result": "none_found",
+     "queries": [
+      "site:gov.uk \"100,000\" childcare free hours tax-free childcare income limit impact assessment cost"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "DWP administers neither scheme."
+    },
+    {
+     "producer": "dfe",
+     "result": "found_not_staged",
+     "queries": [
+      "Department for Education estimate cost of removing £100,000 income limit working parents childcare entitlement parliamentary question",
+      "site:gov.uk \"100,000\" childcare free hours tax-free childcare income limit impact assessment cost"
+     ],
+     "checked": [
+      "https://media.quilter.com/search/2026/up-to-99000-children-now-miss-out-on-childcare-support-as-frozen-100000-earnings-threshold-locks-families-out/"
+     ],
+     "claims": [],
+     "note": "DfE estimates released to Quilter under FOI (Quilter, 5 August 2026): 50,500 to 99,000 children affected by the limit in 2025/26, with support worth £446m to £874m, assuming full take-up and maximum use. The FOI response is not published, so the figure has no primary to stage (harvest rule 8); it is also for 2025-26, a year the dashboard does not estimate."
+    },
+    {
+     "producer": "scottish_fiscal_commission",
+     "result": "not_applicable",
+     "queries": [],
+     "checked": [],
+     "claims": [],
+     "note": "A UK-wide analysis of a reserved scheme and an England-only one."
+    },
+    {
+     "producer": "ifs",
+     "result": "none_found",
+     "queries": [
+      "IFS £100,000 childcare cliff edge free hours tax-free childcare cost",
+      "site:ifs.org.uk childcare cliff edge 100,000 free hours"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "Coverage cites IFS household examples of the cliff; no IFS costing of removing the limit was found."
+    },
+    {
+     "producer": "resolution_foundation",
+     "result": "none_found",
+     "queries": [
+      "Resolution Foundation childcare £100,000 income limit cost of removing",
+      "site:resolutionfoundation.org childcare 100,000 cliff edge 2026"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "centax",
+     "result": "found",
+     "queries": [
+      "cost of removing £100,000 childcare cliff edge 30 hours estimate 2026"
+     ],
+     "checked": [
+      "https://centax.org.uk/wp-content/uploads/2026/09/AdvaniFlewPepin-HallSummers2026_Removing-the-childcare-cliff-edge.pdf",
+      "https://warwick.ac.uk/fac/soc/economics/news/2026/9/new_centax_report_explores_impact_of_100k_childcare_cliff_edge/"
+     ],
+     "claims": [
+      "centax_static_central_fy2027",
+      "centax_net_central_fy2027",
+      "centax_static_central_fy2029",
+      "centax_net_central_fy2029",
+      "centax_static_high_cost_fy2027",
+      "centax_net_high_cost_fy2027",
+      "centax_static_high_cost_fy2029",
+      "centax_net_high_cost_fy2029",
+      "centax_static_low_cost_fy2027",
+      "centax_net_low_cost_fy2027",
+      "centax_static_low_cost_fy2029",
+      "centax_net_low_cost_fy2029",
+      "centax_static_central_fy2028",
+      "centax_net_central_fy2028"
+     ],
+     "note": "Table 4.2 (three scenarios x 2028 and 2030) and Table B.1's 2029 row, static and net. The behavioural margins and bunching counts are in sources/centax-childcare-100k. Table B.1's 2028 and 2030 rows repeat Table 4.2's central rows; its 2031 row is outside the dashboard's years. Table B.2 (expected ANI) prints the same abolition figures."
+    },
+    {
+     "producer": "centre_for_british_progress",
+     "result": "found",
+     "queries": [
+      "Centre for British Progress \"Rates and Wrongs\" childcare cliff technical appendix"
+     ],
+     "checked": [
+      "https://britishprogress.org/api/media/file/rates_and_wrongs_technical_appendix.pdf",
+      "https://www.ajbell.co.uk/group/news/scrapping-ps100000-childcare-cliff-edge-could-raise-over-ps130m"
+     ],
+     "claims": [
+      "cbp_net_table2_fy2026",
+      "cbp_net_table2_fy2027",
+      "cbp_net_table2_fy2028",
+      "cbp_net_table2_fy2029",
+      "cbp_net_table3_fy2026",
+      "cbp_net_table3_fy2027",
+      "cbp_net_table3_fy2028",
+      "cbp_net_table3_fy2029"
+     ],
+     "note": ""
+    },
+    {
+     "producer": "ippr",
+     "result": "none_found",
+     "queries": [
+      "site:ippr.org childcare 100,000 free hours higher earners"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "fabian_society",
+     "result": "none_found",
+     "queries": [
+      "site:fabians.org.uk childcare £100,000 cliff edge"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "niesr",
+     "result": "none_found",
+     "queries": [
+      "site:niesr.ac.uk childcare 100,000 income limit"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "ukmod",
+     "result": "none_found",
+     "queries": [
+      "UKMOD CeMPA childcare entitlement £100,000 threshold simulation"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "lse_case",
+     "result": "none_found",
+     "queries": [
+      "LSE CASE childcare entitlement working parents high income threshold analysis"
+     ],
+     "checked": [
+      "https://www.lse.ac.uk/research-shows-how-childcare-support-could-be-improved-without-substantial-government-cost"
+     ],
+     "claims": [],
+     "note": "CASE and the Early Education and Childcare Coalition (Paull, 19 October 2026) model a redesign of the subsidies; the release gives no cost of removing the £100,000 limit."
+    },
+    {
+     "producer": "jrf",
+     "result": "none_found",
+     "queries": [
+      "site:jrf.org.uk childcare free hours higher earners £100,000"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "landman_economics",
+     "result": "none_found",
+     "queries": [
+      "Landman Economics childcare free hours income threshold"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "tax_policy_associates",
+     "result": "none_found",
+     "queries": [
+      "site:taxpolicy.org.uk childcare 100,000 cliff"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": ""
+    },
+    {
+     "producer": "academic",
+     "result": "none_found",
+     "queries": [
+      "working paper bunching £100,000 childcare entitlement threshold UK cost of removing"
+     ],
+     "checked": [],
+     "claims": [],
+     "note": "CenTax's report (authors at Warwick and LSE) is logged under centax."
+    },
+    {
+     "producer": "open_search",
+     "result": "found_not_staged",
+     "queries": [
+      "cost of removing £100,000 childcare cliff edge 30 hours estimate 2026"
+     ],
+     "checked": [
+      "https://www.itv.com/news/2026-10-03/tories-pledge-to-end-100000-childcare-cliff-edge-on-eve-of-conference",
+      "https://www.cityam.com/badenoch-vows-to-end-100k-childcare-cliff-edge-introduced-under-last-tory-government/",
+      "https://www.conservatives.com/news/conservatives-pledge-to-abolish-absurd-childcare-cliff-edge"
+     ],
+     "claims": [],
+     "note": "The Conservative Party put the cost of its pledge at about £700m a year (ITV, 3 October 2026; City AM says the costing is based on CenTax's report). The party's own announcement (conservatives.com, 4 October 2026) gives no figure or method, so there is no primary to stage."
+    }
+   ]
+  }
+ ]
+}

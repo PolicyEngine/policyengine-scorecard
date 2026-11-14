@@ -1,0 +1,1224 @@
+{
+  "schema": "comparables/analysis/1",
+  "id": "uk/childcare-100k-threshold",
+  "country": "UK",
+  "registry": {
+    "kind": "app",
+    "slug": "childcare-100k-threshold",
+    "country_id": "uk"
+  },
+  "title": "Scrapping the childcare cliff edge",
+  "url": "https://policyengine.org/uk/childcare-100k-threshold",
+  "deployments": [
+    "https://uk-childcare-100k-threshold.vercel.app/uk/childcare-100k-threshold"
+  ],
+  "published": "2026-10-12",
+  "owner": {
+    "author": "vahid-ahmadi"
+  },
+  "scope": "uk_wide",
+  "subject": "The cost of removing the £100,000 adjusted-net-income limit on the 30 funded hours for working parents (England) and on Tax-Free Childcare (UK-wide), static and net of the labour-supply response, who gains, and the cliff it removes.",
+  "search_terms": [
+    "£100,000 childcare cliff edge",
+    "100k childcare limit cost",
+    "30 funded hours income limit",
+    "tax-free childcare £100,000 limit",
+    "abolish childcare cliff edge cost"
+  ],
+  "worlds": {
+    "both_limits_removed": {
+      "policy": "uk_free_childcare_hours_and_tfc_100k_limit_removed",
+      "description": "The dashboard's reform: the £100,000 limit removed from both the 30 funded hours for working parents and Tax-Free Childcare."
+    },
+    "free_hours_limit_removed": {
+      "policy": "uk_free_childcare_hours_100k_limit_removed",
+      "description": "The £100,000 limit removed from the free hours for working parents only; Tax-Free Childcare keeps its limit (CenTax section 4.2.1)."
+    }
+  },
+  "pe_estimates": [
+    {
+      "key": "thirty_hours_static_fy2026",
+      "label": "Static cost of the 30 funded hours, both limits removed, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -410000000,
+      "value_raw": "0.41",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.thirty_hours.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "thirty_hours_static_fy2027",
+      "label": "Static cost of the 30 funded hours, both limits removed, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -434000000,
+      "value_raw": "0.434",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.thirty_hours.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "thirty_hours_static_fy2028",
+      "label": "Static cost of the 30 funded hours, both limits removed, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -484000000,
+      "value_raw": "0.484",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.thirty_hours.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "thirty_hours_static_fy2029",
+      "label": "Static cost of the 30 funded hours, both limits removed, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -505000000,
+      "value_raw": "0.505",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.thirty_hours.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_fy2026",
+      "label": "Static cost of both schemes, both limits removed, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -558000000,
+      "value_raw": "0.558",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.total.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_fy2027",
+      "label": "Static cost of both schemes, both limits removed, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -593000000,
+      "value_raw": "0.593",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.total.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_fy2028",
+      "label": "Static cost of both schemes, both limits removed, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -652000000,
+      "value_raw": "0.652",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.total.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_fy2029",
+      "label": "Static cost of both schemes, both limits removed, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -678000000,
+      "value_raw": "0.678",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.gross_bn.total.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_low_fy2026",
+      "label": "Low end of the static cost range, both schemes, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -543000000,
+      "value_raw": "0.543",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.low.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_high_fy2026",
+      "label": "High end of the static cost range, both schemes, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -1160000000,
+      "value_raw": "1.16",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.high.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_low_fy2027",
+      "label": "Low end of the static cost range, both schemes, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -578000000,
+      "value_raw": "0.578",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.low.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_high_fy2027",
+      "label": "High end of the static cost range, both schemes, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -1240000000,
+      "value_raw": "1.24",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.high.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_low_fy2028",
+      "label": "Low end of the static cost range, both schemes, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -635000000,
+      "value_raw": "0.635",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.low.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_high_fy2028",
+      "label": "High end of the static cost range, both schemes, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -1371000000,
+      "value_raw": "1.371",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.high.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_low_fy2029",
+      "label": "Low end of the static cost range, both schemes, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -652000000,
+      "value_raw": "0.652",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.low.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_static_range_high_fy2029",
+      "label": "High end of the static cost range, both schemes, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -1433000000,
+      "value_raw": "1.433",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "scenario": "range_high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "budget.range_bn.high.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_central_fy2026",
+      "label": "Cost of both schemes net of the labour-supply response (central elasticities), 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -451000000,
+      "value_raw": "0.451",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "central"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.central.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_central_fy2027",
+      "label": "Cost of both schemes net of the labour-supply response (central elasticities), 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -479000000,
+      "value_raw": "0.479",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "central"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.central.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_central_fy2028",
+      "label": "Cost of both schemes net of the labour-supply response (central elasticities), 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -533000000,
+      "value_raw": "0.533",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "central"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.central.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_central_fy2029",
+      "label": "Cost of both schemes net of the labour-supply response (central elasticities), 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -556000000,
+      "value_raw": "0.556",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "central"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.central.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_low_fy2026",
+      "label": "Cost of both schemes net of the labour-supply response (low elasticities), 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -523000000,
+      "value_raw": "0.523",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.low.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_low_fy2027",
+      "label": "Cost of both schemes net of the labour-supply response (low elasticities), 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -555000000,
+      "value_raw": "0.555",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.low.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_low_fy2028",
+      "label": "Cost of both schemes net of the labour-supply response (low elasticities), 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -613000000,
+      "value_raw": "0.613",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.low.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_low_fy2029",
+      "label": "Cost of both schemes net of the labour-supply response (low elasticities), 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -637000000,
+      "value_raw": "0.637",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "low"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.low.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_high_fy2026",
+      "label": "Cost of both schemes net of the labour-supply response (high elasticities), 2026-27",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": -344000000,
+      "value_raw": "0.344",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.high.2026",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_high_fy2027",
+      "label": "Cost of both schemes net of the labour-supply response (high elasticities), 2027-28",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": -365000000,
+      "value_raw": "0.365",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.high.2027",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_high_fy2028",
+      "label": "Cost of both schemes net of the labour-supply response (high elasticities), 2028-29",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": -415000000,
+      "value_raw": "0.415",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.high.2028",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "both_schemes_dynamic_high_fy2029",
+      "label": "Cost of both schemes net of the labour-supply response (high elasticities), 2029-30",
+      "world": "both_limits_removed",
+      "metric": "revenue_change",
+      "unit_concept": "gbp",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": -432000000,
+      "value_raw": "0.432",
+      "normalization": "GBP bn x 1e9 -> GBP",
+      "sign": -1,
+      "sign_basis": "results.json prints each cost as a positive number of pounds billion; revenue_change is stated positive = yield to the Exchequer, so a cost is negative",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "post_behavioural",
+        "program": "free_childcare_hours_and_tax_free_childcare",
+        "sign_convention": "positive = yield to the Exchequer",
+        "elasticity": "high"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "labour_supply.dynamic_cost_bn.high.2029",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_fy2026",
+      "label": "Families gaining, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": 270000,
+      "value_raw": "270000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2026.families_gaining",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_thirty_hours_fy2026",
+      "label": "Families gaining through the 30 funded hours, 2026-27",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2027,
+      "time_basis": "fiscal_year",
+      "value": 87000,
+      "value_raw": "87000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2026-27",
+        "basis": "static",
+        "program": "free_childcare_hours"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2026.by_scheme.thirty_hours",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_fy2027",
+      "label": "Families gaining, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 278000,
+      "value_raw": "278000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2027.families_gaining",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_thirty_hours_fy2027",
+      "label": "Families gaining through the 30 funded hours, 2027-28",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2028,
+      "time_basis": "fiscal_year",
+      "value": 90000,
+      "value_raw": "90000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2027-28",
+        "basis": "static",
+        "program": "free_childcare_hours"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2027.by_scheme.thirty_hours",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_fy2028",
+      "label": "Families gaining, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": 297000,
+      "value_raw": "297000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2028.families_gaining",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_thirty_hours_fy2028",
+      "label": "Families gaining through the 30 funded hours, 2028-29",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2029,
+      "time_basis": "fiscal_year",
+      "value": 98000,
+      "value_raw": "98000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2028-29",
+        "basis": "static",
+        "program": "free_childcare_hours"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2028.by_scheme.thirty_hours",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_fy2029",
+      "label": "Families gaining, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": 304000,
+      "value_raw": "304000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours_and_tax_free_childcare"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2029.families_gaining",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    },
+    {
+      "key": "families_gaining_thirty_hours_fy2029",
+      "label": "Families gaining through the 30 funded hours, 2029-30",
+      "world": "both_limits_removed",
+      "metric": "gainer_count",
+      "unit_concept": "families",
+      "period": 2030,
+      "time_basis": "fiscal_year",
+      "value": 101000,
+      "value_raw": "101000",
+      "normalization": "as printed",
+      "conditions": {
+        "fy": "2029-30",
+        "basis": "static",
+        "program": "free_childcare_hours"
+      },
+      "provenance": {
+        "repo": "PolicyEngine/uk-childcare-100k-threshold",
+        "commit": "f25f0dbd46c31d336bde06898d801a1887a8cf89",
+        "path": "data/results.json",
+        "sha256": "4193f13b2a1f40a809d5738a96f6558a3633978bd3bd5efd4da5db211b72f50a",
+        "field": "recipients.2029.by_scheme.thirty_hours",
+        "computed_at": "2026-10-09T11:50:21+00:00",
+        "engine": {
+          "policyengine": "6.2.1",
+          "policyengine_uk": "2.102.3"
+        },
+        "dataset": "microcosm-uk-2024-25-national-20261002T230158Z-5c6b3f68"
+      }
+    }
+  ]
+}

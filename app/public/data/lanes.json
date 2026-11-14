@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-30",
+ "updated": "2026-11-14",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -621,6 +621,28 @@
    "running": false,
    "updated": "2026-10-23",
    "note": "123 DWP claims (Tables 1-4, FYE 2026, gainers) plus 5 Resolution Foundation and 12 HM Treasury AB2025 claims computed on the certified Microcosm pair (microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71, policyengine-uk 2.132.6); statuses {'comparable': 59, 'concept_mismatch': 6, 'constructed': 87, 'pe_gap': 1}"
+  },
+  {
+   "id": "analysis-comparables-uk",
+   "source": "Pre-publish comparables",
+   "area": "every external estimate of each PolicyEngine analysis, found before it is published",
+   "mode": 2,
+   "country": "UK",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-21",
+   "note": "1 analysis searched, 22 claims, 22 PolicyEngine results beside them"
+  },
+  {
+   "id": "analysis-comparables-us",
+   "source": "Pre-publish comparables",
+   "area": "every external estimate of each PolicyEngine analysis, found before it is published",
+   "mode": 2,
+   "country": "US",
+   "stage": "registered",
+   "running": false,
+   "updated": "2026-10-21",
+   "note": "0 analyses searched, 0 claims, 0 PolicyEngine results beside them"
   }
  ]
 }

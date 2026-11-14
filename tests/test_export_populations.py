@@ -416,9 +416,11 @@ def test_integration_committed_db(tmp_path):
     # CBP abolition cells), all opted into display; + 123 from
     # uk-two-child-limit-poverty: DWP's Budget 2025 two-child limit note
     # (Tables 1-4, the FYE 2026 figure, children in gaining households).
+    # Pre-publish comparables add every staged claim of each analysis
+    # record, with or without a result (docs/COMPARABLES.md).
     assert dist == {
         "US": 540,
-        "UK": 5163 + 23_752 + 246 + 13 + 36 + 123,
+        "UK": 29355,
         "BE": 9,
         "NZ": 12,
     }
@@ -457,7 +459,8 @@ def test_integration_committed_db(tmp_path):
     assert committed["event_archives"] == payload["event_archives"]
     # Every event is reachable in the deployed copy, with bounded requests.
     # + 123 DWP two-child limit claims (uk-two-child-limit-poverty)
-    assert len(payload["rows"]) == 5737 + 36 + 123
+    # Includes the pre-publish comparables records.
+    assert len(payload["rows"]) == 5918
     for archive in payload["event_archives"]:
         relative = archive["path"].removeprefix("data/")
         freshly_exported = (tmp_path / relative).read_bytes()
