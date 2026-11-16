@@ -1,0 +1,57 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "376b0198e04fd912ef2ef29cd68216756c9c5be22077cbb0efb4205d9329aff6",
+  "COMPARISON.json": "69cb85412632d84eed38dcd33d58a863213eae2052268e09524bb84be2b8db02",
+  "COMPARISON.md": "0929820a695fb463deb96e3e00a7d756082123f8a91777c085cc5eab4a6b7d6c"
+ },
+ "registry_path": "data/uk/events/spring_budget_2024_measures.json",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "replay_grid": {
+  "computed_measure_years": 15,
+  "full_event_complete": false,
+  "full_event_grid_size": 18,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 15,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "0de95454977c34df6818898393c222251915a73cdcef9b25885e265893a5b25f",
+ "source_rows": 816,
+ "staged_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/STAGED.jsonl",
+ "staged_sha256": "3d2d0d7d730640c6a179d7d9da0c13e1385632f927511336505a985814476dbc",
+ "staging_manifest_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/spring_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "36d93853ac0370b307b535d8a8544047166acbf0341a092fee43b098bf6c0208"
+}

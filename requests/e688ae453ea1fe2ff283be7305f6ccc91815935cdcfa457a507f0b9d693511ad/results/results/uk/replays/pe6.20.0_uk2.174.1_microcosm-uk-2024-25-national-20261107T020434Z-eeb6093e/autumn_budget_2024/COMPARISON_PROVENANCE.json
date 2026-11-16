@@ -1,0 +1,71 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "a89c782fb00732b3992b872dd4b0bd916f0afdffa4a82866c80f609af78383ef",
+  "COMPARISON.json": "0cc5dd4cb14dbb6de3f19dd6153a4c63e522c1f1602e2c7346bc415cd69d190d",
+  "COMPARISON.md": "c42fd75d742064d9e7b82ff923ff6375efca361cabc44fe62bb08d104cfd7a3d"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "replay_grid": {
+  "computed_measure_years": 30,
+  "full_event_complete": false,
+  "full_event_grid_size": 30,
+  "full_supported_grid_complete": false,
+  "inert_measure_years": [
+   {
+    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+    "year": 2025
+   },
+   {
+    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+    "year": 2026
+   },
+   {
+    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+    "year": 2027
+   },
+   {
+    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+    "year": 2028
+   },
+   {
+    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+    "year": 2029
+   },
+   {
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2025
+   },
+   {
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2026
+   },
+   {
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2027
+   },
+   {
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2028
+   },
+   {
+    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+    "year": 2029
+   }
+  ],
+  "missing_measure_years": [],
+  "supported_grid_size": 30,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "8474f3d5dc37276ec12e1feeee04085332e9407f6eefbaf66d89ba64a67cd400",
+ "source_rows": 1134,
+ "staged_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/STAGED.jsonl",
+ "staged_sha256": "118748fea27bc647a65b6221a90c84e278c469573571fed90e1aa09341731f71",
+ "staging_manifest_path": "results/uk/replays/pe6.20.0_uk2.174.1_microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e/autumn_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "46af12cbfeab9b8f073dac01bdd0c38ec9657259660a4bf0b77469f88fa3edca"
+}
