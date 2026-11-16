@@ -1,0 +1,26 @@
+{
+ "corpus": null,
+ "diff": null,
+ "execution": null,
+ "integrity": {
+  "failures": [
+   {
+    "code": "qualification_step_failed",
+    "detail": "probe: exit 1"
+   }
+  ],
+  "status": "failed"
+ },
+ "receipt_sha256": "42b500eff701cb9455564018b3aabbc47a069aee0cf539d796d1e8ff2ddf3f24",
+ "rejection": null,
+ "request_id": "f1fd6c06dbb308bda5cc07dca718d72a2d50d3706d4fd93d5a745f87b92f0b0b",
+ "results": {
+  "path": "requests/f1fd6c06dbb308bda5cc07dca718d72a2d50d3706d4fd93d5a745f87b92f0b0b/results/",
+  "ref": "replay-state",
+  "repository": "PolicyEngine/policyengine-scorecard"
+ },
+ "schema": "policyengine.uk-replay-receipt/v1",
+ "status": "failed",
+ "variant_id": null,
+ "variant_identity_sha256": null
+}
