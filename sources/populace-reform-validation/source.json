@@ -10,7 +10,7 @@
     "name": "external scorekeepers + admin actuals (mixed)",
     "open_source": true,
     "method": "Registry of external checks scored against each release: JCT conventional scores (OBBBA suite, ARPA), CBO budget options, JCT/Treasury tax expenditures, IRS SOI and EITC Central actuals, Census state SPM rates, state fiscal notes (KS/CT/ID/CO/GA/IA/MD/MI/ND/OK/CA), state agency program actuals, and one mechanical UBI check vs Census PEP. The PE value is computed at the release's own engine pins, so results form a per-release regression history.",
-    "method_basis": "populace packages/populace-build/src/populace/build/us/state_reforms.json + reform_validation_payload; curation in populace #513/#519"
+    "method_basis": "microcosm packages/populace-build/src/populace/build/us/state_reforms.json + reform_validation_payload; curation in microcosm #513/#519"
   },
   "period": "2024-2026 (per row)",
   "releases": [
