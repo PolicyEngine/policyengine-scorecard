@@ -429,7 +429,7 @@ def export(
     payload = {
         "built": built or date.today().isoformat(),
         "note": (
-            "Non-Urban populations exported from scorecard.db: the populace"
+            "Non-Urban populations exported from scorecard.db: the Microcosm"
             " reform-validation registry (issue #20) plus the compute"
             " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
             " UK: the HMRC ready-reckoner family and the complete OBR Policy"
@@ -466,7 +466,7 @@ def export(
             payload["built"],
             lanes={
                 "populace-reform-validation": {
-                    "source": "Populace releases",
+                    "source": "Microcosm releases",
                     "area": "reform-validation registry (per-release)",
                     "mode": 2,
                     "country": "US",
@@ -477,7 +477,7 @@ def export(
                 # listed the US lane, so both the tracked-feed count and
                 # the UK page silently lost it.
                 "populace-uk-reform-validation": {
-                    "source": "Populace releases",
+                    "source": "Microcosm releases",
                     "area": "reform-validation registry (per-release)",
                     "mode": 2,
                     "country": "UK",

@@ -1,4 +1,4 @@
-"""SotSN counterpart metrics on the certified populace US artifact.
+"""SotSN counterpart metrics on the certified Microcosm US artifact.
 
 Three sequential runs via policyengine.py managed_microsimulation() (Build P):
   1. baseline        — as-served artifact (seeded + calibrated take-up)

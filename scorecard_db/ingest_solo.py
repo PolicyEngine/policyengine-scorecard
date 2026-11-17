@@ -50,7 +50,7 @@ NOTE = (
     "Non-additive with the joint counterfactual (overlapping near-poor "
     "households). Housing is likely an underestimate (HAP dollars known "
     "low) on a broader eligible pool (80% AMI). Caveat: Early Head Start "
-    "distortion of baseline resources (populace#593) until fixed."
+    "distortion of baseline resources (microcosm#593) until fixed."
 )
 
 

@@ -42,7 +42,7 @@
   {
    "id": "diagnosis-batch-2",
    "country": "US",
-   "source": "Populace releases",
+   "source": "Microcosm releases",
    "area": "reform-validation divergence diagnosis (46 claims)",
    "mode": 2,
    "stage": "computed",
@@ -136,7 +136,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-10-15",
-   "note": "104 of 104 claims computed \u2014 Census State SPM poverty rates (all people and children under 18; 50 States, DC and US; 2022-2024 three-year averages), carried by the populace reform-validation registry with PE results on 2 releases (us-6.2.1 included); 15 diagnosed pe_gap in batch 2; permanent holdout \u2014 comparison only, never a target; deviations expected by construction (#2, doctrine 2026-08-02)"
+   "note": "104 of 104 claims computed \u2014 Census State SPM poverty rates (all people and children under 18; 50 States, DC and US; 2022-2024 three-year averages), carried by the Microcosm reform-validation registry with PE results on 2 releases (us-6.2.1 included); 15 diagnosed pe_gap in batch 2; permanent holdout \u2014 comparison only, never a target; deviations expected by construction (#2, doctrine 2026-08-02)"
   },
   {
    "id": "kff-medicaid",
@@ -350,7 +350,7 @@
   {
    "id": "populace-reform-validation",
    "country": "US",
-   "source": "Populace releases",
+   "source": "Microcosm releases",
    "area": "reform-validation registry (per-release)",
    "mode": 2,
    "stage": "ingested",
@@ -437,14 +437,14 @@
   },
   {
    "id": "populace-uk-reform-validation",
-   "source": "Populace releases",
+   "source": "Microcosm releases",
    "area": "reform-validation registry (per-release)",
    "mode": 2,
    "country": "UK",
    "stage": "registered",
    "running": false,
    "updated": "2026-08-17",
-   "note": "0 claims \u2014 no populace-uk reform_validation.json exists yet (issue #79 produces the first one); the lane is declared empty rather than absent"
+   "note": "0 claims \u2014 no Microcosm UK reform_validation.json exists yet (issue #79 produces the first one); the lane is declared empty rather than absent"
   },
   {
    "id": "obr-divergence-decomposition",

@@ -52,14 +52,14 @@
       "applies_to": {"program": "snap", "metrics": null},
       "severity": "construction",
       "text": "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units.",
-      "basis": "diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Populace source_stages.json:1806); the ingest appends the measured counts from baseline_participants in sources/fns-snap-rates/pe/us-6.2.1.json and FNS Table A.1"
+      "basis": "diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Microcosm source_stages.json:1806); the ingest appends the measured counts from baseline_participants in sources/fns-snap-rates/pe/us-6.2.1.json and FNS Table A.1"
     },
     {
       "id": "fns-saturation",
       "applies_to": {"program": "snap", "metrics": ["participation_rate"], "saturated": true},
       "severity": "caution",
-      "text": "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
-      "basis": "takeup_flag_share in sources/fns-snap-rates/pe/us-6.2.1.json (measured); PolicyEngine/microcosm#647; diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Populace snap_state_take_up.py:186-211)"
+      "text": "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "basis": "takeup_flag_share in sources/fns-snap-rates/pe/us-6.2.1.json (measured); PolicyEngine/microcosm#647; diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Microcosm snap_state_take_up.py:186-211)"
     }
   ]
 }

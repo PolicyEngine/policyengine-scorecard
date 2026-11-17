@@ -2,7 +2,7 @@
 
 One file (`scorecard.db`), five tables:
 
-- external_scores — the claims (populace-targets shape; see models.py)
+- external_scores — the claims (Microcosm-targets shape; see models.py)
 - pe_results     — PolicyEngine computations, full history per claim
 - baselines      — registry of baseline worlds (issue #13): every claim and
                    every PE run carries a baseline_key FK; the comparisons

@@ -28,7 +28,7 @@ Boundary note: STC collections are administrative outturns, which the
 2026-08-02 boundary ruling (issue #6) routes to Chronicle rather than to
 claims. They are claims here by decision on #176 (2026-10-15), so that
 App v3 can show a baseline check for every State income tax reform; the
-populace registry's ``<st>_admin`` and ``irs_soi`` rows are the precedent.
+Microcosm registry's ``<st>_admin`` and ``irs_soi`` rows are the precedent.
 
 Deliberate drops, tallied (all still in data/externals):
     - the national total (the issue asks for one claim per State; a

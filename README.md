@@ -1,6 +1,6 @@
 # PolicyEngine scorecard
 
-A template for comparing PolicyEngine/Populace estimates against every
+A template for comparing PolicyEngine/Microcosm estimates against every
 external score or analysis the model can plausibly run — as a filterable,
 honest scorecard. Every external number appears alongside its PolicyEngine
 counterpart with the delta and any concept-mismatch annotation; the misses
@@ -22,7 +22,7 @@ sources/<source-id>/
   annotations.json  concept-mismatch annotations; every one traces to
                     docs/, engine metadata, or a measured diagnostic
 pipeline/
-  compute_counterparts.py  PE metrics on the certified Populace artifact
+  compute_counterparts.py  PE metrics on the certified Microcosm artifact
                            (policyengine.py managed_microsimulation, Build P)
   build_comparison.py      join + derive rates/deltas → data/comparison.json
 app/                       the scorecard UI (bun + vite + react + ui-kit)
@@ -89,7 +89,7 @@ python pipeline/build_comparison.py
 
 UK side (#40; adapters are stdlib-only except ukmod-stats, which needs
 pypdf; the compute stage needs the managed policyengine-uk environment
-and the certified populace-uk bundle):
+and the certified Microcosm UK 2023 bundle):
 
 ```bash
 python sources/dwp-takeup/adapter.py          # + hbai-poverty, hmrc-personal-tax,

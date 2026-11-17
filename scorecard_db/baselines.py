@@ -129,7 +129,7 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "US current law before OBBBA's enactment — the baseline of CBO's "
         "December-2024 revenue-option scores.",
         "policy_ref",
-        "populace reform-validation registry: federal.cbo_rates_plus_1pt "
+        "Microcosm reform-validation registry: federal.cbo_rates_plus_1pt "
         "is scored against pre-OBBBA current law "
         "(scorecard_db/ingest_reform_validation.py; CBO Options for "
         "Reducing the Deficit, Dec 2024).",

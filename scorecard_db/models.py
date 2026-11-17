@@ -727,7 +727,7 @@ BASELINE = ReformRef()
 
 @dataclass
 class ExternalScore:
-    """One claim by an external model, populace-target-style."""
+    """One claim by an external model, Microcosm-target-style."""
 
     source: str  # publisher slug: urban_sotsn, cbo, jct, tpc, cpsp, ca_lao…
     metric: Metric

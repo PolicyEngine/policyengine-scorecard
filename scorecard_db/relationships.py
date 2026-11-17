@@ -3,7 +3,7 @@
 The doctrine (issue #1 point 2) exists to label tautologies: a comparison
 whose PE side was disciplined toward the same administrative quantity class
 the external number embodies is not a validation win. Urban's own numbers are
-never literally consumed by populace targets, but the FNS/SSA/SOI series
+never literally consumed by Microcosm targets, but the FNS/SSA/SOI series
 underlying several of its columns are — so relationship is assigned at the
 (program, metric) level from the certified build's documented target surface
 and seeds (docs/replication-assessment.md §3-§4), not defaulted.
@@ -94,7 +94,7 @@ _MAP = {
 # targets (ACS population/structure/income margins); survey tax-benefit
 # quantities (total SNAP from the CPS) and their derivatives (SPM/OPM
 # poverty above all; other models' survey-based estimates) = NEVER.
-# Populace replaces the survey's tax-benefit measurement with imputed,
+# Microcosm replaces the survey's tax-benefit measurement with imputed,
 # computed, admin-calibrated values; fitting the survey-derived version
 # launders its error back in and destroys the validation signal. Release
 # gates may fail on held-out regressions (issue #1 point 3); fitting the
@@ -633,7 +633,7 @@ _AB2026_HELD: dict[str, tuple] = {
 }
 
 # Centre for British Progress, "Rates and wrongs" technical appendix (lane
-# uk-childcare-100k), read 2026-10-21: the certified populace-uk build's 149
+# uk-childcare-100k), read 2026-10-21: the certified Microcosm UK 2023 build's 149
 # calibration targets (microcosm fixture packages/microcosm-data/tests/
 # fixtures/uk_june_2023/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/
 # calibration_diagnostics.json) include no childcare entitlement, Tax-Free
@@ -642,7 +642,7 @@ _AB2026_HELD: dict[str, tuple] = {
 _CBP_HELD = (
     CR.HELD_OUT,
     "CBP's synthetic-microsimulation reform estimates are scored, never "
-    "consumed: none of the certified populace-uk build's 149 targets is a "
+    "consumed: none of the certified Microcosm UK 2023 build's 149 targets is a "
     "childcare or CBP quantity, and policyengine-uk 2.89.2 reads nothing "
     "from CBP (read 2026-10-21)",
 )

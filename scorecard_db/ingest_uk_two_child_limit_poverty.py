@@ -981,7 +981,7 @@ def history_results() -> list[PEResult]:
                 computed_at=row["computed_at"],
                 annotations=[
                     *row["annotations"],
-                    f"History: the {HISTORY_RUN} answer (Populace UK 2023, policyengine-uk "
+                    f"History: the {HISTORY_RUN} answer (Microcosm UK 2023, policyengine-uk "
                     f"{row['engine_version']}) this claim carried when lane {LANE_ID} took it over "
                     "on 2026-10-23; the certified Microcosm pair's answer is the later entry.",
                 ],

@@ -49,7 +49,7 @@ The PolicyEngine side is `pipeline/compute_uk_childcare_100k.py`, which wrote
 The latest result comes from the pair policyengine.py 6.11.0 certifies:
 national cut `microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71` with
 policyengine-uk 2.132.6 (`data/uk/certified_pairs.json`). The history keeps
-the 19 June run on the default replay variant: populace-uk build
+the 19 June run on the default replay variant: Microcosm UK 2023 build
 `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z` with policyengine-uk
 2.89.2 (`data/uk/certified_bundle.json`). Statuses:
 

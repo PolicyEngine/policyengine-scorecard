@@ -1,9 +1,9 @@
-"""Ingest the populace reform-validation registry (per-release artifacts).
+"""Ingest the Microcosm reform-validation registry (per-release artifacts).
 
 Third population: the external-checks registry that previously rendered as
 calibration-diagnostics' "External checks" tab, now consolidated into the
 scorecard. Each ``sources/populace-reform-validation/raw/<release_id>.json``
-is one certified populace-us release's ``reform_validation.json``, produced
+is one certified Microcosm US release's ``reform_validation.json``, produced
 at the release's exact engine pins — so ingesting all of them yields a
 per-release **regression history** in ``pe_results`` (same claim, one result
 per release), which the interchange and platform grids don't have.
@@ -45,7 +45,7 @@ Engine pins are per release from each release_manifest.json, with per-row
 overrides where an artifact documents them: the l0-refit backfill note
 covers 33 rows scored offline at policyengine-us 1.729.0 (8 State-reform
 rows, the 18-row federal-EITC-by-state suite, and 7 program levels from
-the populace#345 expansion) while the release was built at 1.752.2. OBBBA
+the microcosm#345 expansion) while the release was built at 1.752.2. OBBBA
 scoring mode also differs by release (f0af251 chained a stack of its own;
 l0-refit scored provisions in isolation against pre-OBBBA law; buildi
 onward stack per JCX) and is recorded in the pe_construction so
@@ -59,9 +59,9 @@ expenditures, state agency actuals, and IRS EITC Central (TY2024 — a
 different vintage/product than the TY2022 SOI targets) -> held_out.
 
 Reform identity: rows don't carry executable reform dicts yet (the param
-dicts live in populace's state_reforms.json), so scored rows key off
+dicts live in Microcosm's state_reforms.json), so scored rows key off
 ``policy_ref`` descriptors ``{"policy": <row id>}`` — stable across
-releases. Upgrading these to framework="policyengine_us" awaits the populace
+releases. Upgrading these to framework="policyengine_us" awaits the Microcosm
 payload extension (see the integration issue). The CBO rate-option claim is
 scored against a pre-OBBBA baseline and says so in ReformRef.baseline +
 conditions["baseline_policy"].
@@ -73,7 +73,7 @@ name, engine-pin map, claim currency) lives in the ``COUNTRIES`` map;
 it always has, plus ``publication["country"]`` (claim ids are unchanged —
 publication is not part of the claim-id hash). The UK entry declares the
 structure with an EMPTY release map: the first ``reform_validation.json``
-from a managed populace-uk run adds its release_manifest.json pin there,
+from a managed Microcosm UK run adds its release_manifest.json pin there,
 and nothing UK is invented before that. The country-generalised artifact
 contract: same JSON shape (``release_id`` + ``reforms`` rows); non-US
 artifacts use the country-neutral categories ``Reform`` (a scored reform
@@ -164,7 +164,7 @@ def _obbba_baseline_key(mode: str, provision_id: str) -> str:
 # another's results. engine_versions holds the exact pins per release
 # (from each release_manifest.json on HF; the artifact's PE values were
 # computed at these versions). The UK map is deliberately EMPTY — it is
-# populated by the first reform_validation.json a managed populace-uk run
+# populated by the first reform_validation.json a managed Microcosm UK run
 # produces, never invented here; until then a UK ingest fails loudly at
 # "no artifacts".
 # This lane's own transition date, and the UK family's SHARED top-level
@@ -173,7 +173,7 @@ def _obbba_baseline_key(mode: str, provision_id: str) -> str:
 LANE_UPDATED = "2026-08-17"
 FEED_UPDATED = "2026-08-19"
 LANE_FEED_META = {
-    "source": "Populace releases",
+    "source": "Microcosm releases",
     "area": "reform-validation registry (per-release)",
     "mode": 2,
     "country": "UK",
@@ -295,7 +295,7 @@ ENGINE_VERSIONS = COUNTRIES["US"]["engine_versions"]
 # per row id. The l0-refit backfill note names three offline batches scored
 # at 1.729.0 on the released H5 (the release itself was built at 1.752.2):
 # "State reform rows appended offline … at policyengine-us 1.729.0", the
-# populace#345 expansion's "7 new program levels (VA/OH/MO/SC EITC-family,
+# microcosm#345 expansion's "7 new program levels (VA/OH/MO/SC EITC-family,
 # CO FAC, ID/UT CTC) + 18-row federal EITC by state suite … scored locally
 # at pe-us 1.729 on the release H5".
 _L0 = "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701"
@@ -1045,7 +1045,7 @@ def ingest_uk(db_path: Path, raw_dir: Path | None = None) -> dict:
             (
                 cfg["lane"],
                 "registered",
-                "0 claims — no populace-uk reform_validation.json exists "
+                "0 claims — no Microcosm UK reform_validation.json exists "
                 "yet (issue #79 produces the first one); the lane is "
                 "declared empty rather than absent",
                 LANE_UPDATED,

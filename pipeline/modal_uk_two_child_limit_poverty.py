@@ -75,7 +75,7 @@ DATASETS = {
             (ROOT / "data" / "uk" / "certified_bundle.json").read_text()
         )["sha256"],
         "remote": f"{REMOTE}/input/populace_uk_2023.h5",
-        # docs/uk_replay/RELEASE_REPLAY.md: the 1.3 GB populace dataset
+        # docs/uk_replay/RELEASE_REPLAY.md: the 1.3 GB Microcosm UK 2023 dataset
         # needs Modal's 32 GiB (at 16 GiB the container is lost mid-run);
         # policyengine-uk 2.132.6 and 2.148.3 ran out of memory at 32 GiB
         # here on 2026-10-26 (Modal: "killed after running out of memory")

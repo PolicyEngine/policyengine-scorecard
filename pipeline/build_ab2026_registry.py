@@ -9,7 +9,7 @@ over the full parameter tree and variable list of the pinned engine, and every
 The pin is policyengine-uk 2.151.0, the engine the UK Autumn Budget dashboard
 ran on Budget day (policyengine.py 6.11.1, whose certificate records
 certified_for_model_version 2.151.0 on every published receipt). It is not
-the certified populace pair the AB2025 registry follows: AB2026's
+the certified Microcosm UK 2023 pair the AB2025 registry follows: AB2026's
 PolicyEngine counterparts are the dashboard's own published runs, so a
 computability verdict has to be true of the engine those runs used.
 

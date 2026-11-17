@@ -29,7 +29,7 @@ import {
  * The reform-validation registry (issue #20): every non-Urban claim with a PE
  * result, plus claims explicitly opted into pre-result display. Available
  * results are shown with their full per-release history — one result per
- * certified populace release, engine pins and OBBBA scoring mode in the
+ * certified Microcosm release, engine pins and OBBBA scoring mode in the
  * construction, so cross-release drift is visible. Descriptive only: statuses
  * and calibration relationships label, never grade.
  */
@@ -41,7 +41,7 @@ export const BE_REFORM_DESCRIPTION =
   "seven Belgian PIT-reform claims plus two JRC EUROMOD-BE claims — EUROMOD J1.0+ totals simulated on uprated EU-SILC 2022 survey input (income year 2021, private households), not administrative statistics — with demo-grade Axiom worker concept-mismatch attachments. Five of the reform claims are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
 
 const SCOPE_COPY: Record<Country, string> = {
-  US: "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons",
+  US: "the Microcosm reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons",
   UK: "the complete OBR Policy measures database from Budget 1970 to Autumn Budget 2025, including historical HM Treasury costings before the OBR existed, plus the HMRC ready-reckoner comparisons and Autumn Budget 2025 scores from 27 producers. Historical PMD scores load when a fiscal event is selected. Scores without a PolicyEngine result retain their external value and are labeled Not yet computed; a recorded gap finding does not count as a PolicyEngine value",
   BE: BE_REFORM_DESCRIPTION,
   NZ: "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches",

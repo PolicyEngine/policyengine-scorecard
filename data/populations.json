@@ -1,6 +1,6 @@
 {
  "built": "2026-10-30",
- "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
+ "note": "Non-Urban populations exported from scorecard.db: the Microcosm reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
   "claims": 29894,
   "multi_release_claims": 305,
@@ -56564,7 +56564,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -56596,7 +56596,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -56859,7 +56859,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -56891,7 +56891,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -56960,7 +56960,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -56992,7 +56992,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -57346,7 +57346,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 122.3% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -57379,7 +57379,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 122.3% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -57445,7 +57445,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -57477,7 +57477,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -57546,7 +57546,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -57578,7 +57578,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -57643,7 +57643,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -57675,7 +57675,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -57744,7 +57744,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -57776,7 +57776,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -57845,7 +57845,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 123.1% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -57878,7 +57878,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 123.1% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -57944,7 +57944,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -57976,7 +57976,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -58334,7 +58334,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -58366,7 +58366,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -58621,7 +58621,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 122.9% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -58654,7 +58654,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 122.9% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -58912,7 +58912,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -58944,7 +58944,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -59013,7 +59013,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -59045,7 +59045,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -59300,7 +59300,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -59332,7 +59332,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -59587,7 +59587,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 122.9% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -59620,7 +59620,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 122.9% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -59686,7 +59686,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -59718,7 +59718,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -59878,7 +59878,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -59910,7 +59910,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -59979,7 +59979,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60011,7 +60011,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60076,7 +60076,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60108,7 +60108,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60173,7 +60173,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 116.8% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -60206,7 +60206,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 116.8% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -60272,7 +60272,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 109.3% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -60305,7 +60305,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 109.3% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -60371,7 +60371,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
      "This State is capped: FNS's implied FY 2022 rate before the cap was 101.2% (Exhibit A.3)."
     ],
     "baseline": "current_law",
@@ -60404,7 +60404,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
       "This State is capped: FNS's implied FY 2022 rate before the cap was 101.2% (Exhibit A.3)."
      ],
      "baseline": "current_law",
@@ -60470,7 +60470,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60502,7 +60502,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60670,7 +60670,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60702,7 +60702,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60771,7 +60771,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60803,7 +60803,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60872,7 +60872,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -60904,7 +60904,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -60973,7 +60973,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -61005,7 +61005,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -61262,7 +61262,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -61294,7 +61294,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -61460,7 +61460,7 @@
      "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
      "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
      "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+     "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -61492,7 +61492,7 @@
       "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
       "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
       "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units. Measured: as served, PolicyEngine has 60.6 million people in participating SPM units in an average 2024 month; FNS counts 41.1 million participants in FY 2022 (Table A.1).",
-      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
+      "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Microcosm's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -77410,7 +77410,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -79647,7 +79647,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -88091,7 +88091,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -92730,7 +92730,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -98948,7 +98948,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -102008,7 +102008,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -111160,7 +111160,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -113286,7 +113286,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -118398,7 +118398,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -120275,7 +120275,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
       "claim sign: positive = yield to the Exchequer, PE's own orientation",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -429974,7 +429974,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against rf_current_policy_projection_2025_10_30",
       "children in poverty, relative_60_median_moving_ahc (housing basis AHC as the claim states)",
       "claim sign: positive = fewer in poverty; PE oriented to it",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -430107,7 +430107,7 @@
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against rf_current_policy_projection_2025_10_30",
       "children in poverty, relative_60_median_moving_ahc (housing basis AHC as the claim states)",
       "claim sign: positive = fewer in poverty; PE oriented to it",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "pre_ab2025",
      "status_effective": "constructed"
@@ -430337,7 +430337,7 @@
       "executed baseline: certified world as served (current law); the claim is scored against rf_current_policy_projection_2025_10_30",
       "children in poverty, relative_60_median_moving_ahc (housing basis AHC as the claim states)",
       "claim sign: positive = fewer in poverty; PE oriented to it",
-      "History: the campaign-20260925-uk-ab2025 answer (Populace UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
+      "History: the campaign-20260925-uk-ab2025 answer (Microcosm UK 2023, policyengine-uk 2.89.2) this claim carried when lane uk-two-child-limit-poverty took it over on 2026-10-23; the certified Microcosm pair's answer is the later entry."
      ],
      "baseline": "current_law",
      "status_effective": "constructed"
