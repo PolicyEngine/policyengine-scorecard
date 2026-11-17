@@ -1,11 +1,11 @@
 {
   "id": "populace-reform-validation",
-  "name": "Populace reform-validation registry (per-release external checks)",
+  "name": "Microcosm reform-validation registry (per-release external checks)",
   "organization": "PolicyEngine (aggregating JCT, CBO, Census, IRS SOI, Treasury, state fiscal offices, state agencies)",
-  "url": "https://github.com/PolicyEngine/populace",
+  "url": "https://github.com/PolicyEngine/microcosm",
   "data_url": "vendored from calibration-diagnostics frontend/lib/populace/reform-overrides/ (the retired External checks tab)",
   "fetched": "2026-08-03",
-  "fetch_notes": "Each raw/<release_id>.json is the reform_validation.json artifact for one certified populace-us release, produced by populace's reform_validation_payload at the release's exact policyengine-us/-core pins (provenance in each file's _backfill_note). New releases arrive from the Modal-backed backfill (cal-diag #112 machinery, being re-homed here).",
+  "fetch_notes": "Each raw/<release_id>.json is the reform_validation.json artifact for one certified Microcosm US release, produced by Microcosm's reform_validation_payload at the release's exact policyengine-us/-core pins (provenance in each file's _backfill_note). New releases arrive from the Modal-backed backfill (cal-diag #112 machinery, being re-homed here).",
   "model": {
     "name": "external scorekeepers + admin actuals (mixed)",
     "open_source": true,
@@ -21,5 +21,5 @@
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z"
   ],
   "geographies": "US + states (per row)",
-  "diagnosis_upstream": "Registry specs live in PolicyEngine/populace — spec errors become populace PRs; benchmark errors become annotation updates here."
+  "diagnosis_upstream": "Registry specs live in PolicyEngine/microcosm — spec errors become Microcosm PRs; benchmark errors become annotation updates here."
 }

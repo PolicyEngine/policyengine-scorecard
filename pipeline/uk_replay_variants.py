@@ -232,7 +232,7 @@ def get_variant(
 
 
 def is_legacy(record: dict) -> bool:
-    """The populace-2023 world whose results keep their original layout. A
+    """The Microcosm UK 2023 world whose results keep their original layout. A
     lane's certified pair (pipeline/uk_certified_pairs.py) has no layout."""
     return record.get("layout") == "legacy_events"
 

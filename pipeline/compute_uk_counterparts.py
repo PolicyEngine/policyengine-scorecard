@@ -1,10 +1,10 @@
-"""UK counterpart metrics on the certified populace UK artifact (#40).
+"""UK counterpart metrics on the certified Microcosm UK 2023 artifact (#40).
 
 The UK sibling of compute_counterparts.py, under the same binding
 contract:
 
   - policyengine.py managed_microsimulation() on the certified
-    populace-uk bundle; run under the machine-wide sim lock:
+    Microcosm UK 2023 bundle; run under the machine-wide sim lock:
     ``simlock -- .venv-pe/bin/python pipeline/compute_uk_counterparts.py [YEAR]``
     (the optional single positional argument is the policy year,
     default 2025; there are no run-selection arguments — both runs
@@ -93,7 +93,7 @@ exporter only surfaces claims that already have a DB result, so an
 uncited gap would vanish rather than stay on the page.
 
 Not executed in CI or on unmanaged machines: requires the
-policyengine.py-managed environment and the certified populace-uk
+policyengine.py-managed environment and the certified Microcosm UK 2023
 bundle. Still unverified until that first real run, and knowingly so:
 (a) the engine entry point — ``pe.uk.managed_microsimulation()`` mirrors
 the documented US surface but has not been called against an installed
@@ -617,7 +617,9 @@ def restricted_mask(masks, entity, geo):
 CERTIFIED_BUNDLE = (
     Path(__file__).resolve().parent.parent / "data" / "uk" / "certified_bundle.json"
 )
-UK_ARTIFACT_ENV = "UK_POPULACE_H5"
+UK_ARTIFACT_ENV = "UK_MICROCOSM_H5"
+# compat: populace alias, remove after the next release
+UK_ARTIFACT_ENV_OLD = "UK_POPULACE_H5"
 
 
 def certified_bundle():
@@ -634,7 +636,7 @@ def _sha256(path, chunk=1 << 22):
 
 
 def verified_artifact_path():
-    """Resolve UK_POPULACE_H5, refusing anything that is not the
+    """Resolve UK_MICROCOSM_H5, refusing anything that is not the
     certified artifact.
 
     This is the second of two ways to reach a certified world. The
@@ -651,7 +653,8 @@ def verified_artifact_path():
     declares is not that. So the check is not optional and not
     skippable: no digest, no run.
     """
-    raw = os.environ.get(UK_ARTIFACT_ENV)
+    # compat: populace alias, remove after the next release
+    raw = os.environ.get(UK_ARTIFACT_ENV, os.environ.get(UK_ARTIFACT_ENV_OLD))
     if not raw:
         return None
     path = Path(raw)
@@ -689,7 +692,7 @@ def verified_artifact_path():
 
 
 def build_sim(fullpart):
-    """Managed sim on the certified populace-uk bundle.
+    """Managed sim on the certified Microcosm UK 2023 bundle.
 
     For the fullpart run, every override is set BEFORE any calculate on
     this sim (a calculate first would cache baseline take-up and the

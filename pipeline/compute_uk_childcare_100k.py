@@ -11,7 +11,7 @@ the working-parent childcare offers in England:
                                     the free hours and Tax-Free Childcare
 
 This script runs the managed policyengine-uk simulation on a certified
-pair: by default the certified populace-uk bundle (the default replay
+pair: by default the certified Microcosm UK 2023 bundle (the default replay
 variant, data/uk/certified_bundle.json), or with --variant another replay
 variant or a certified pair in data/uk/certified_pairs.json
 (pipeline/uk_certified_pairs.py), through the same preflight as a variant's

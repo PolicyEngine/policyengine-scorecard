@@ -27,7 +27,7 @@ Read in code at `61c13e38`:
   read `data/uk/certified_bundle.json`, whose only compatible model is
   `policyengine-uk ==2.89.2`, and require the installed engine to equal it.
 * `modal_uk_event.py` hardcodes `ENGINE_PINS` (`policyengine 5.0.2`,
-  core `3.27.1`, UK `2.89.2`), the populace Hugging Face cache layout and
+  core `3.27.1`, UK `2.89.2`), the Microcosm UK 2023 Hugging Face cache layout and
   the audited HF commit.
 * `compute_uk_event.validate_years` allows CY2023–2030 for every run.
 * `compare_uk_event.review_diagnosis` attaches ten 2.89.2 findings to every
@@ -101,7 +101,7 @@ A variant record:
 | `certification` | Where the pairing is certified: `source` (e.g. `policyengine.py 6.2.6 packaged manifest`), `compatibility_basis`, `certified_for_model_version`, `data_build_id`. |
 | `status` | `certified` (a released policyengine.py bundle), `candidate` (a W4 qualification request), or `retired`. Only a certified variant runs, and the default must be certified; a qualification run, which replays its own candidate record, passes `--allow-uncertified`. |
 | `qualification_request_sha256` | For candidates, the request the variant was built from. |
-| `executor` | `local` (GitHub runner or workstation) and/or `modal`. The populace 1.3GB dataset needs Modal's 32GiB; the 128MB enhanced FRS runs on a 16GB runner, and the 322MB Microcosm UK 2024-25 runs there with one year worker (see "Memory and year workers"). |
+| `executor` | `local` (GitHub runner or workstation) and/or `modal`. The 1.3GB Microcosm UK 2023 dataset needs Modal's 32GiB; the 128MB enhanced FRS runs on a 16GB runner, and the 322MB Microcosm UK 2024-25 runs there with one year worker (see "Memory and year workers"). |
 
 ### What "validated exactly" means
 

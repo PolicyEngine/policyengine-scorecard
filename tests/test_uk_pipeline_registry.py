@@ -1,7 +1,7 @@
 """Registry-consistency tests for the UK compute pipeline (#40).
 
 The pipeline itself needs the policyengine.py-managed environment and
-the certified populace-uk bundle; these tests pin what is checkable
+the certified Microcosm UK 2023 bundle; these tests pin what is checkable
 anywhere — the declarative registries are internally consistent, the
 candidate lists hold no cross-concept fallbacks, argv parsing takes the
 year from index 1, the population denominator never emits an unweighted

@@ -5,11 +5,11 @@ illustrative tax changes* (June 2025 edition) are one-parameter reform
 deltas against HMRC's indexed baseline, already ingested as external
 claims by sources/hmrc-personal-tax/adapter.py. This pipeline computes
 the PolicyEngine-UK static delta for each expressible measure in
-data/uk/hmrc_reckoner_reforms.json on the certified populace-uk bundle.
+data/uk/hmrc_reckoner_reforms.json on the certified Microcosm UK 2023 bundle.
 
 Binding contract (same as pipeline/compute_uk_counterparts.py):
   - policyengine.py managed_microsimulation() on the certified
-    populace-uk bundle, under the machine-wide sim lock:
+    Microcosm UK 2023 bundle, under the machine-wide sim lock:
     ``simlock -- .venv-pe/bin/python pipeline/compute_uk_reckoner.py``
   - One baseline sim per policy year, reused across measures; one reform
     sim per (measure, year). Reform parameter values are BASELINE VALUE
@@ -78,7 +78,7 @@ installed (2.75.3) while the registry prose referenced 2.89.2, so
 resolving every path proved nothing about the engine the run would use.
 
 HONESTY: this script has never been executed against a managed
-policyengine.py environment — no certified populace-uk bundle exists on
+policyengine.py environment — no certified Microcosm UK 2023 bundle exists on
 the authoring machine. Everything below the engine boundary (registry
 schema, join, delta arithmetic, slug rule, staged-row shape) is covered
 by tests/test_reckoner_registry.py; the engine boundary itself is

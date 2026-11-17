@@ -342,7 +342,7 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     assert lanes["other-lane"]["note"] == "untouched"
     rv = lanes["populace-reform-validation"]
     assert rv["stage"] == "ingested"
-    assert rv["source"] == "Populace releases"
+    assert rv["source"] == "Microcosm releases"
     assert out["updated"] == "2026-08-05"
     # The UK lane reaches mission control too, filed under UK — the feed
     # used to list only the US lane, so both the tracked-feed count and

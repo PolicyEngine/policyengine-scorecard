@@ -410,7 +410,7 @@ event registry, rather than regenerating those preserved input receipts.
 ## Running on another certified variant
 
 `data/uk/replay_variants.json` lists the certified replay variants; the
-default is the populace-2023 world above. `--variant <id>` selects another
+default is the Microcosm UK 2023 world above. `--variant <id>` selects another
 one, validated exactly (see [RELEASE_REPLAY.md](RELEASE_REPLAY.md)): build an
 environment from the variant's requirements file, then
 

@@ -370,7 +370,7 @@ How flags arise, so a gate built on them sees the intended events:
   request ([RELEASE_REPLAY.md](RELEASE_REPLAY.md#the-results-pull-request)),
   so the base moves when that pull request merges, not when the receipt is
   recorded.
-  The first certified-variant run diffs against the legacy populace variant,
+  The first certified-variant run diffs against the legacy Microcosm UK 2023 variant,
   where the data family itself changes.
 
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means

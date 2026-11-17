@@ -85,7 +85,7 @@ GRID_FIELDS = (
     "full_supported_grid_complete",
 )
 # The review diagnoses and construction notes below were established on the
-# legacy execution (engine and populace-2023 bundle), not on every run of it.
+# legacy execution (engine and Microcosm UK 2023 bundle), not on every run of it.
 LEGACY_ENGINE = "2.89.2"
 REVIEW_DIAGNOSES_ESTABLISHED_ON = (LEGACY_ENGINE,)
 

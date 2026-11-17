@@ -120,7 +120,7 @@ claim. Counterfactual worlds use the `policyengine_us_inputs` framework —
 input-override descriptors (forced take-up flags), not parametric reform
 paths, because no such parameters exist in the engine.
 
-## 2026-08-03 population: populace reform-validation registry
+## 2026-08-03 population: Microcosm reform-validation registry
 
 Third population: the per-release external-checks registry previously
 rendered as calibration-diagnostics' "External checks" tab (being retired
@@ -154,8 +154,8 @@ any point, leaves the DB untouched. First rows on the reserved TAX_EXPENDITURE m
 (JCX-48-24 / Treasury / the jct.tax_expenditures.* calibration targets,
 the latter consumed_as_target). Census state SPM rows land as held_out
 POVERTY_RATE claims per the poverty-holdout doctrine. Scored rows key off
-policy_ref descriptors ({"policy": <registry row id>}) until populace's
-payload embeds the executable reform dicts (populace #606). Every claim
+policy_ref descriptors ({"policy": <registry row id>}) until Microcosm's
+payload embeds the executable reform dicts (microcosm #606). Every claim
 this ingest mints is marked publication.registry =
 "populace_reform_validation" — that marker is the idempotency contract
 (re-ingest deletes and recreates exactly these claims, never the harvest
@@ -167,7 +167,7 @@ Country dimension (#62): the ingest is parameterised, not forked —
 claim-id hash). The `COUNTRIES` map declares the UK lane (raw_uk/ dir,
 `populace-uk-rv-` run prefix, `populace_uk_reform_validation` registry
 mark, GBP claims) with a deliberately **empty** release map: the first
-`reform_validation.json` a managed populace-uk run produces adds its
+`reform_validation.json` a managed Microcosm UK run produces adds its
 release_manifest.json pin there. Non-US artifacts use the country-neutral
 categories `Reform` / `Program actual` with an explicit `jct.publisher`
 (the US category→publisher inference never runs for them). Replacement
@@ -581,7 +581,7 @@ PolicyEngine/policyengine-uk#1724) into the scorecard.
   - 12 go to HM Treasury's static and post-behavioural costings,
     2025-26 to 2030-31.
 
-  The other 13 are the September 2026 Populace answers that the
+  The other 13 are the September 2026 Microcosm UK 2023 answers that the
   `uk_ab2025` campaign staged for the Resolution Foundation and HM Treasury
   claims this lane took over
   (`results/uk/two_child_limit_poverty/history_ab2025_campaign_20260925.jsonl`).

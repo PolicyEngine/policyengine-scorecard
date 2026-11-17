@@ -93,7 +93,7 @@ Two standing rulings (Max, 2026-08-02), enforced in
    margins; admin preferred for the same cell — CD income binds from SOI);
    survey tax-benefit quantities (total SNAP from the CPS) and their
    derivatives (SPM/OPM poverty above all; other models' survey-based
-   estimates) = never. Populace replaces the survey's tax-benefit
+   estimates) = never. Microcosm replaces the survey's tax-benefit
    measurement — fitting the survey-derived version launders its error
    back in and destroys the validation signal. Release gates may fail a
    certification on a held-out regression (doctrine point 3); fitting the
@@ -238,7 +238,7 @@ Operating rules for the agent stage:
   appendix (net of behaviour, 2026-27 to 2031-32). PDF adapters read a
   vendored page extract that a test re-extracts from the PDF. Counterparts
   come from `pipeline/compute_uk_childcare_100k.py` on the certified
-  populace-uk pair: static, the three free-hours entitlements (plus
+  Microcosm UK 2023 pair: static, the three free-hours entitlements (plus
   Tax-Free Childcare for CBP) summed for people in English households.
   Each certified variant's or certified pair's
   (`data/uk/certified_pairs.json`) artifact keeps its run in the history, and a

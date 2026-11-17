@@ -12,7 +12,7 @@ so consumers can fetch instead of rebuilding.
 Chain order is dependency order and is part of the contract:
     urban        Urban SotSN claims + platform-era results (tidy CSV)
     harvest      seven 2026-08-02 US source adapters + registry + lanes
-    reform_validation  populace RV registry (committed raw artifacts)
+    reform_validation  Microcosm RV registry (committed raw artifacts)
     platform     full comparison grid results (data/comparison.json)
     solo         solo-counterfactual results + exhibits
     diagnoses    curated diagnosis rows

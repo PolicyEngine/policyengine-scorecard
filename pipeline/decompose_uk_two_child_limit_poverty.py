@@ -3,7 +3,7 @@
 PolicyEngine published two figures for the children lifted from relative
 poverty after housing costs in 2029-30 by removing the two-child limit:
 about 253,000 (scorecard's 25 September 2026 run, results/uk/ab2025/
-ab2025__uc_child_element_remove_two_child_limit_2029.json: Populace UK 2023
+ab2025__uc_child_element_remove_two_child_limit_2029.json: Microcosm UK 2023
 on policyengine-uk 2.89.2, under-18s, the line held at the with-limit
 world's median) and about 548,000 (the 23 October 2026 docs page,
 PolicyEngine/policyengine-uk#1724: Microcosm UK 2024-25 on policyengine-uk
@@ -13,7 +13,7 @@ measures what moves the number between them.
 Inputs, all from pipeline/compute_uk_two_child_limit_poverty.py:
     diagnostics/<data>_uk<engine>.json  a bare Microsimulation of the
         with-limit and current-law worlds in 2029 for every data x engine
-        cell that runs (Populace UK 2023, Microcosm UK 2024-25; 2.89.2,
+        cell that runs (Microcosm UK 2023, Microcosm UK 2024-25; 2.89.2,
         2.132.6, 2.148.3)
     <pair_id>.json  the certified-pair run (managed route), whose 2029
         children count is the value attached to the benchmarks

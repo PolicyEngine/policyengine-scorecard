@@ -696,7 +696,7 @@ class TestDescriptiveRegister:
             s.claim_id(),
             "pe_gap",
             "EHS at engine-default take-up",
-            action_link="https://github.com/PolicyEngine/populace/issues/593",
+            action_link="https://github.com/PolicyEngine/microcosm/issues/593",
         )
         db.close()
 
@@ -707,7 +707,7 @@ class TestDescriptiveRegister:
         db.diagnose(
             s.claim_id(),
             "methodological_difference",
-            "Populace calculates benefits and recalibrates where ASEC "
+            "Microcosm calculates benefits and recalibrates where ASEC "
             "carries reported attributes.",
         )
         assert db.comparisons()[0]["diagnosis_class"] == "methodological_difference"

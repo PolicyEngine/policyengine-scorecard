@@ -26,7 +26,7 @@ export function AboutView({ data }: { data: Comparison }) {
               pooled 2022+2023 ACS data and divides actual administrative
               caseloads by those simulated eligible counts; estimates refer to
               the average month of 2023. <b>PolicyEngine</b> simulates both sides
-              on the certified Populace artifact: statute-encoded eligibility
+              on the certified Microcosm artifact: statute-encoded eligibility
               rules plus seeded take-up flags, with calibration to thousands of
               administrative targets. For count-targeted programs (SNAP, SSI,
               Medicaid) the participation numerator is disciplined by the same

@@ -1,4 +1,4 @@
-"""The populace reform-validation ingest: exact row accounting, claim
+"""The Microcosm reform-validation ingest: exact row accounting, claim
 periods keyed to what the claim describes, per-row engine pins, one result
 per claim per release, OBBBA attachment to the canonical harvest claims,
 and the doctrine assignments."""
@@ -127,7 +127,7 @@ def test_census_averages_carry_ranges(conn):
 def test_l0_offline_rows_keep_their_own_engine_pin(conn):
     # The l0-refit backfill note documents 33 rows scored offline at
     # policyengine-us 1.729.0 — 8 State-reform rows, the 18-row
-    # federal-EITC-by-state suite, and the populace#345 expansion's 7
+    # federal-EITC-by-state suite, and the microcosm#345 expansion's 7
     # program levels; everything else in that release at 1.752.2.
     by_engine = {
         r[0]: r[1]
@@ -686,7 +686,7 @@ def test_uk_release_map_declared_empty():
     assert COUNTRIES["UK"]["registry_mark"] != COUNTRIES["US"]["registry_mark"]
 
 
-# Synthetic UK artifact: TEST FIXTURE ONLY — no real populace-uk release
+# Synthetic UK artifact: TEST FIXTURE ONLY — no real Microcosm UK release
 # has produced a reform_validation.json yet, so this release id exists
 # nowhere but here, and its engine pin is injected via monkeypatch rather
 # than the module's (deliberately empty) UK release map.
