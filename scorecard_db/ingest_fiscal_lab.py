@@ -57,7 +57,7 @@ PE_STATUS_PATH = SOURCE_DIR / "pe_status.json"
 EXTRACT_PATH = REPO / "data" / "externals" / "fiscal-lab-memo-scores.json"
 
 EXTRACT_SHA256 = "3a68893d09c82ceb26c1edf7b7c96088588d3c6b337f124f23955d1185b75d7b"
-PE_STATUS_SHA256 = "f4c49dbbe26bf0ca5882322b68122e142e464a84b3a8540bc3e6b2d5f837be45"
+PE_STATUS_SHA256 = "86a1640e922f4478deee18ab0681da4ad56aafb2103ed4f64acf97e9b21dca8d"
 
 SOURCE = "fiscal_lab"
 REGISTRY_MARK = "fiscal_lab_memo_scores"
@@ -563,23 +563,47 @@ def gap_rows(db: ScorecardDB, scores: list[ExternalScore], status: dict) -> list
 _PROTECTED_STAGES = {"diagnosing", "published", "regressed"}
 
 
+def _refuse_ties(db: ScorecardDB) -> None:
+    """Fail when two results on one of this registry's claims share a
+    computed_at. The feed and the lane would then order them by insert id,
+    and a rerun reinserts this module's rows with new ids, so which row
+    shows would flip. build_db refuses the same ties across all claims;
+    this check makes a standalone rerun refuse them too, inside the
+    transaction, so nothing is written."""
+    tie = db.conn.execute(
+        "SELECT r.claim_id, r.computed_at FROM pe_results r "
+        "JOIN external_scores s ON s.claim_id = r.claim_id "
+        "WHERE json_extract(s.publication, '$.registry') = ? "
+        "GROUP BY r.claim_id, r.computed_at HAVING COUNT(*) > 1 "
+        "ORDER BY r.claim_id LIMIT 1",
+        (REGISTRY_MARK,),
+    ).fetchone()
+    if tie is not None:
+        raise ValueError(
+            f"Fiscal Lab claim {tie['claim_id']} has two results at "
+            f"{tie['computed_at']}; the feed would order them by insert id. "
+            f"Date a counterpart after {STATUS_COMPUTED_AT}."
+        )
+
+
 def _write_lane(db: ScorecardDB, status: dict, n_claims: int) -> tuple[str, int]:
     """Set the lane from each claim's latest result, ordered as the feed
-    orders them (computed_at, then id), following the NZ Treasury ingest:
-    a later stage (diagnosing, published, regressed) is never rolled back; a
-    claim whose latest result comes from another run and is not
-    not_computed counts as computed; losing every one after computed is a
-    regression. This module's own pe_gap rows never count, and where one is
-    the latest row the feed shows it, so the lane does not count that claim
-    either."""
+    orders them (computed_at, then id), with the NZ Treasury ingest's stage
+    rules: a later stage (diagnosing, published, regressed) is never rolled
+    back, and losing every computed claim after computed is a regression. A
+    claim counts as computed when its latest result carries a PolicyEngine
+    value, the rule the populations feed and the app use for "with a
+    PolicyEngine value". This module's own pe_gap rows carry none, and
+    neither does a valueless gap or mismatch from another run, so where one
+    is the latest row the lane does not count that claim."""
     state = db.conn.execute(
         "SELECT COUNT(*) AS n, MAX(substr(r.computed_at, 1, 10)) AS latest "
         "FROM external_scores s JOIN pe_results r ON r.id = ("
         "SELECT id FROM pe_results WHERE claim_id = s.claim_id "
         "ORDER BY computed_at DESC, id DESC LIMIT 1) "
         "WHERE json_extract(s.publication, '$.registry') = ? "
-        "AND r.run_id IS NOT ? AND r.status != 'not_computed'",
-        (REGISTRY_MARK, STATUS_RUN_ID),
+        "AND r.computed_value IS NOT NULL",
+        (REGISTRY_MARK,),
     ).fetchone()
     computed = state["n"]
     gaps = sum(1 for e in status["bills"].values() if e["status"] == "pe_gap")
@@ -600,7 +624,9 @@ def _write_lane(db: ScorecardDB, status: dict, n_claims: int) -> tuple[str, int]
         )
         return "computed", computed
     if current is not None and current["stage"] == "computed":
-        detail = f"0 of {n_claims} claims retain results — {base}; {outside}"
+        detail = (
+            f"0 of {n_claims} claims retain a PolicyEngine value — {base}; {outside}"
+        )
         db.conn.execute(LANE_SQL, (LANE_ID, "regressed", detail, UPDATED))
         return "regressed", computed
     detail = f"{base}; none computed: {N_BILLS - gaps} bills not computed, {outside}"
@@ -614,7 +640,14 @@ def ingest(db_path: Path) -> dict:
     Claims that left the census go with their results and diagnoses. On the
     claims that remain, only this module's own pe_gap rows (STATUS_RUN_ID)
     are replaced, so a counterpart attached later by another step survives a
-    rerun."""
+    rerun. The feed shows a claim's latest row by (computed_at, id), so a
+    counterpart replaces the pe_gap status only when dated after
+    STATUS_COMPUTED_AT; one dated on the stamp itself would be ordered by
+    insert id alone, which a rerun changes, so the ingest refuses it.
+
+    The write lock is taken before the registry is read, so two overlapping
+    ingests run one after the other instead of both reading an empty
+    registry and each writing every gap row."""
     source = load_source()
     payload = load_extract(source=source)
     status = load_pe_status({r["slug"] for r in payload["bills"]})
@@ -623,6 +656,7 @@ def ingest(db_path: Path) -> dict:
     db = ScorecardDB(db_path)
     try:
         with db.conn:
+            db.conn.execute("BEGIN IMMEDIATE")
             old = {
                 r[0]
                 for r in db.conn.execute(
@@ -650,6 +684,7 @@ def ingest(db_path: Path) -> dict:
             register_baselines_txn(db)
             results = gap_rows(db, scores, status)
             db.conn.executemany(RESULTS_SQL, results)
+            _refuse_ties(db)
             lane_stage, computed_claims = _write_lane(db, status, len(scores))
         lanes_synced = sync_lane_feed(
             db,

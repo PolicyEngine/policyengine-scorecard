@@ -6,11 +6,14 @@ import copy
 import functools
 import hashlib
 import importlib.util
+import io
 import json
 import os
 import sqlite3
 import subprocess
+import threading
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
@@ -92,6 +95,11 @@ def test_pinned_hashes_and_census(payload, status):
         "reduces deficits": 11,
     }
     assert set(status["bills"]) == {r["slug"] for r in bills}
+    assert Counter((e["status"], e["scope"]) for e in status["bills"].values()) == {
+        ("not_computed", "partial"): 9,
+        ("pe_gap", "none"): 92,
+        ("pe_gap", "partial"): 9,
+    }
 
 
 def test_no_raw_fiscal_lab_file_is_tracked():
@@ -432,10 +440,17 @@ def test_pe_paths_exist_in_the_judged_source(status):
 # leaves other registries alone and sets the lane the way the NZ ingest does.
 
 
-def _result(score, *, run_id="counterpart-run", status=None, when="2026-12-01"):
+_DEFAULT = object()
+
+
+def _result(
+    score, *, run_id="counterpart-run", status=None, when="2026-12-01", value=_DEFAULT
+):
+    if value is _DEFAULT:
+        value = 1.0 if status is None else None
     return PEResult(
         claim_id=score.claim_id(),
-        computed_value=1.0 if status is None else None,
+        computed_value=value,
         status=status or ComparisonStatus.CONSTRUCTED,
         engine_version="test-engine",
         data_bundle="test-bundle",
@@ -558,7 +573,7 @@ def test_lane_keeps_later_stages_and_regresses_when_results_go(
     assert (summary["lane_stage"], summary["computed_claims"]) == ("regressed", 0)
     db = ScorecardDB(path)
     try:
-        assert "0 of 248 claims retain results" in _lane(db)["detail"]
+        assert "0 of 248 claims retain a PolicyEngine value" in _lane(db)["detail"]
         db.conn.execute(
             "UPDATE lanes SET stage = 'published' WHERE lane = ?", (mod.LANE_ID,)
         )
@@ -580,6 +595,23 @@ def test_a_refresh_never_rolls_back_a_later_lane_stage(tmp_path, monkeypatch, st
     assert mod.ingest(path)["lane_stage"] == stage
 
 
+def _feed_latest(path, tmp_path, claim_ids):
+    from scorecard_db.export_populations import export
+
+    out = tmp_path / "populations.json"
+    export(path, out_path=out, built="2026-11-26")
+    return {
+        r["claim_id"]: (r["latest"]["status"], r["latest"]["value"])
+        for r in json.loads(out.read_text())["rows"]
+        if r["claim_id"] in claim_ids
+    }
+
+
+def _gap_score(scores, status, n=0):
+    slugs = sorted(s for s, e in status["bills"].items() if e["status"] == "pe_gap")
+    return next(s for s in scores if s.publication["url"].endswith("#" + slugs[n]))
+
+
 @pytest.mark.parametrize(
     "when, counted",
     [("2026-11-25", False), ("2026-11-26", False), ("2026-12-01", True)],
@@ -588,29 +620,173 @@ def test_lane_counts_a_counterpart_only_where_the_feed_shows_it(
     tmp_path, monkeypatch, scores, status, when, counted
 ):
     """On a pe_gap claim the feed shows the latest row by (computed_at, id).
-    This module's own row is dated 2026-11-26T00:00 and re-inserted on each
-    run, so an earlier or same-day counterpart sits behind it; the lane must
-    not count what the feed does not show."""
-    from scorecard_db.export_populations import export
-
+    This module's own row is dated 2026-11-26T00:00:00+00:00, so an earlier
+    counterpart, or one dated by day alone on the 26th, sits behind it; the
+    lane must not count what the feed does not show as a value."""
     monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
     path = tmp_path / "scorecard.db"
     mod.ingest(path)
-    slug = next(s for s, e in status["bills"].items() if e["status"] == "pe_gap")
-    score = next(s for s in scores if s.publication["url"].endswith("#" + slug))
+    score = _gap_score(scores, status)
     db = ScorecardDB(path)
     db.add_results([_result(score, when=when)])
     db.close()
     summary = mod.ingest(path)
     assert summary["computed_claims"] == int(counted)
-    out = tmp_path / "populations.json"
-    export(path, out_path=out, built="2026-11-26")
-    row = next(
-        r
-        for r in json.loads(out.read_text())["rows"]
-        if r["claim_id"] == score.claim_id()
+    latest = _feed_latest(path, tmp_path, {score.claim_id()})[score.claim_id()]
+    assert (latest[1] is not None) is counted
+
+
+@pytest.mark.parametrize(
+    "status_, value, counted",
+    [
+        (ComparisonStatus.PE_GAP, None, False),
+        (ComparisonStatus.CONCEPT_MISMATCH, None, False),
+        (ComparisonStatus.CONCEPT_MISMATCH, 2.0, True),
+        (ComparisonStatus.CONSTRUCTED, 1.0, True),
+    ],
+)
+def test_lane_counts_only_a_latest_result_with_a_value(
+    tmp_path, monkeypatch, scores, status, status_, value, counted
+):
+    """A later result from another run counts only when it carries a
+    PolicyEngine value, the feed's and the app's "with a value" rule; a
+    valueless gap or mismatch from another run does not make the lane
+    computed."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    score = _gap_score(scores, status)
+    db = ScorecardDB(path)
+    db.add_results([_result(score, run_id="later-run", status=status_, value=value)])
+    db.close()
+    summary = mod.ingest(path)
+    assert summary["computed_claims"] == int(counted)
+    assert summary["lane_stage"] == ("computed" if counted else "ingested")
+    latest = _feed_latest(path, tmp_path, {score.claim_id()})[score.claim_id()]
+    assert latest == (status_.value, value)
+
+
+def test_a_counterpart_dated_on_the_status_stamp_is_refused(
+    tmp_path, monkeypatch, scores, status
+):
+    """A result tied with this module's row on computed_at would be ordered
+    by insert id, which a rerun changes; the rerun refuses it and writes
+    nothing."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    score = _gap_score(scores, status)
+    db = ScorecardDB(path)
+    db.add_results([_result(score, when=mod.STATUS_COMPUTED_AT)])
+    snapshot = db.conn.execute(
+        "SELECT id, claim_id, run_id, computed_at FROM pe_results ORDER BY id"
+    ).fetchall()
+    db.close()
+    with pytest.raises(ValueError, match="two results at"):
+        mod.ingest(path)
+    db = ScorecardDB(path)
+    try:
+        after = db.conn.execute(
+            "SELECT id, claim_id, run_id, computed_at FROM pe_results ORDER BY id"
+        ).fetchall()
+    finally:
+        db.close()
+    assert [tuple(r) for r in after] == [tuple(r) for r in snapshot]
+
+
+def test_a_rerun_keeps_what_the_feed_shows(tmp_path, monkeypatch, scores, status):
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    picked = [_gap_score(scores, status, n) for n in range(3)]
+    db = ScorecardDB(path)
+    db.add_results(
+        [
+            _result(s, when=when)
+            for s, when in zip(picked, ["2026-11-25", "2026-11-26", "2026-12-01"])
+        ]
     )
-    assert (row["latest"]["status"] != "pe_gap") is counted
+    db.close()
+    ids = {s.claim_id() for s in picked}
+    before = _feed_latest(path, tmp_path, ids)
+    mod.ingest(path)
+    mod.ingest(path)
+    assert _feed_latest(path, tmp_path, ids) == before
+    assert sorted(v[0] for v in before.values()) == ["constructed", "pe_gap", "pe_gap"]
+
+
+_REGISTRY_READ = (
+    "SELECT claim_id FROM external_scores "
+    "WHERE json_extract(publication, '$.registry') = ?"
+)
+
+
+def test_overlapping_ingests_write_one_gap_row_per_claim(tmp_path, monkeypatch, status):
+    """Two first ingests whose registry reads would both land before either
+    writes must still leave one pe_gap row per claim. Each waits up to a
+    second for the other's read, so an ingest that holds the write lock
+    before reading cannot deadlock here."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    ScorecardDB(path).close()
+    read = [threading.Event(), threading.Event()]
+    local = threading.local()
+
+    class PausingConn:
+        def __init__(self, conn):
+            self._conn = conn
+
+        def __getattr__(self, name):
+            return getattr(self._conn, name)
+
+        def __enter__(self):
+            return self._conn.__enter__()
+
+        def __exit__(self, *exc):
+            return self._conn.__exit__(*exc)
+
+        def execute(self, sql, *args):
+            cursor = self._conn.execute(sql, *args)
+            if sql == _REGISTRY_READ:
+                rows = cursor.fetchall()
+                read[local.i].set()
+                read[1 - local.i].wait(timeout=1)
+                return iter(rows)
+            return cursor
+
+    class PausingDB(ScorecardDB):
+        def __init__(self, p):
+            super().__init__(p)
+            self.conn = PausingConn(self.conn)
+
+    monkeypatch.setattr(mod, "ScorecardDB", PausingDB)
+
+    def run(i):
+        local.i = i
+        return mod.ingest(path)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(run, i) for i in (0, 1)]
+        for future in futures:
+            future.result()
+    db = ScorecardDB(path)
+    try:
+        rows = Counter(
+            r[0]
+            for r in db.conn.execute(
+                "SELECT claim_id FROM pe_results WHERE run_id = ?",
+                (mod.STATUS_RUN_ID,),
+            )
+        )
+    finally:
+        db.close()
+    gaps = {s for s, e in status["bills"].items() if e["status"] == "pe_gap"}
+    assert set(rows.values()) == {1}
+    assert len(rows) == sum(
+        1
+        for s in mod.stage_scores(mod.load_extract(), status, mod.load_source())
+        if s.publication["url"].rsplit("#", 1)[1] in gaps
+    )
 
 
 def test_lane_mirror_failure_is_recoverable_by_idempotent_retry(tmp_path, monkeypatch):
@@ -904,3 +1080,71 @@ def test_policy_slug_is_stable_and_namespaced(slug):
     assert out.startswith("federal.")
     assert out == out.lower()
     assert mod.policy_slug(slug) == out
+
+
+# Fetch: the live URL serves only Fiscal Lab's latest build, so a fetch must
+# never overwrite the pinned copy with a page that differs from it.
+
+
+class _Resp(io.BytesIO):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+
+
+def _serve(adapter, monkeypatch, body, pinned):
+    """The live URL serves ``body``; the pin is the sha256 of ``pinned``."""
+    source = copy.deepcopy(adapter.load_source())
+    page = adapter.pin(source, "dashboard_20261125")
+    page["sha256"] = hashlib.sha256(pinned).hexdigest()
+    monkeypatch.setattr(adapter, "load_source", lambda: source)
+    seen = []
+
+    def fake_urlopen(req, timeout=None):
+        seen.append(req.full_url)
+        return _Resp(body)
+
+    monkeypatch.setattr(adapter.urllib.request, "urlopen", fake_urlopen)
+    return page["url"], seen
+
+
+def test_fetch_of_a_changed_page_keeps_the_pinned_copy(tmp_path, monkeypatch, capsys):
+    adapter = _adapter()
+    pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
+    url, seen = _serve(adapter, monkeypatch, newer, pinned)
+    dest = tmp_path / "raw" / "dashboard.html"
+    dest.parent.mkdir()
+    dest.write_bytes(pinned)
+    assert adapter.main(["fetch", "--dashboard", str(dest)]) == 1
+    assert seen == [url]
+    assert dest.read_bytes() == pinned
+    digest = hashlib.sha256(newer).hexdigest()
+    beside = dest.with_name(f"dashboard.{digest[:12]}.html")
+    assert sorted(dest.parent.iterdir()) == sorted([dest, beside])
+    assert beside.read_bytes() == newer
+    assert "differs from the pinned build" in capsys.readouterr().err
+
+
+def test_fetch_of_a_changed_page_with_no_copy_writes_nothing_at_dest(
+    tmp_path, monkeypatch
+):
+    adapter = _adapter()
+    _serve(adapter, monkeypatch, b"<html>newer</html>", b"<html>pinned</html>")
+    dest = tmp_path / "raw" / "dashboard.html"
+    assert adapter.main(["fetch", "--dashboard", str(dest)]) == 1
+    assert not dest.exists()
+    assert len(list(dest.parent.iterdir())) == 1
+
+
+def test_fetch_of_the_pinned_page_replaces_dest(tmp_path, monkeypatch):
+    adapter = _adapter()
+    pinned = b"<html>pinned build</html>"
+    _serve(adapter, monkeypatch, pinned, pinned)
+    dest = tmp_path / "raw" / "dashboard.html"
+    dest.parent.mkdir()
+    dest.write_bytes(b"stale or truncated")
+    assert adapter.main(["fetch", "--dashboard", str(dest)]) == 0
+    assert dest.read_bytes() == pinned
+    assert list(dest.parent.iterdir()) == [dest]

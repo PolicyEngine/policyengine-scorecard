@@ -12,7 +12,8 @@ Terms. Fiscal Lab's Terms of Use (effective 2026-11-16, section 5) say its
 publications are its own, allow links and short excerpts with attribution,
 and ask anyone republishing to contact it first. So this repository commits
 no Fiscal Lab file: not the page and not the CSV. ``fetch`` saves the live
-page to raw/ (git-ignored). ``build`` checks the page against the sha256
+page to raw/ (git-ignored), replacing the pinned copy only when the page
+matches its pinned hash. ``build`` checks the page against the sha256
 pinned in source.json, rebuilds the CSV byte for byte as the page's own
 ``summaryCsv()`` does and checks that hash too, runs the QC, and writes
 data/externals/fiscal-lab-memo-scores.json. The CSV's closing source line
@@ -56,6 +57,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import urllib.request
@@ -494,14 +496,27 @@ def render(extract: dict) -> str:
     return json.dumps(extract, indent=1, ensure_ascii=False) + "\n"
 
 
-def fetch(dest: Path = DEFAULT_DASHBOARD) -> str:
-    url = pin(load_source(), "dashboard_20261125")["url"]
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
+    """Fetch the live page. ``dest`` is replaced only when the body matches
+    the pinned sha256; a body that differs is kept beside it as
+    ``<stem>.<sha256[:12]><suffix>`` for inspection, so a new Fiscal Lab
+    build never overwrites the pinned copy (the URL serves only the latest
+    build). Returns the body's sha256 and the path it was saved to."""
+    page = pin(load_source(), "dashboard_20261125")
+    req = urllib.request.Request(page["url"], headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=60) as resp:
         body = resp.read()
+    digest = hashlib.sha256(body).hexdigest()
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(body)
-    return hashlib.sha256(body).hexdigest()
+    part = dest.with_name(dest.name + ".part")
+    part.write_bytes(body)
+    saved = (
+        dest
+        if digest == page["sha256"]
+        else dest.with_name(f"{dest.stem}.{digest[:12]}{dest.suffix}")
+    )
+    os.replace(part, saved)
+    return digest, saved
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -516,11 +531,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = ap.parse_args(argv)
     if args.command == "fetch":
-        digest = fetch(args.dashboard)
+        digest, saved = fetch(args.dashboard)
         want = pin(load_source(), "dashboard_20261125")["sha256"]
-        print(f"saved {args.dashboard} sha256 {digest}")
+        print(f"saved {saved} sha256 {digest}")
         if digest != want:
-            print(f"differs from the pinned build ({want})", file=sys.stderr)
+            print(
+                f"differs from the pinned build ({want}); {args.dashboard} "
+                "was left as it was",
+                file=sys.stderr,
+            )
             return 1
         return 0
     text = render(build(args.dashboard, args.release))

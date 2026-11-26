@@ -44,7 +44,10 @@ changelog check reads the entry's structured figures, not its sentences.
 
 - `source.json` records each raw file's URL, fetch date and SHA-256 with
   `stored_in_repo: false`, following `sources/cbo-pl119-21`.
-- `adapter.py fetch` saves the page to the git-ignored `raw/`.
+- `adapter.py fetch` saves the page to the git-ignored `raw/` only when it
+  matches the pinned hash. The URL serves only Fiscal Lab's latest build, so
+  a page that differs is saved beside the pinned copy, named by its hash,
+  and the pinned copy is left as it was.
 - `adapter.py build` checks the page against its pinned hash and rebuilds the
   page's own CSV byte for byte. The rebuilt CSV is checked against the hash
   of the copy captured from the page, but it is not written.
@@ -142,8 +145,34 @@ SPM unit) have no rate parameter or enrollment model to choose them, so a
 run would rest on an assignment PolicyEngine does not make. H.R. 3947,
 H.R. 3907, H.R. 4641 and H.R. 10045 therefore stay `pe_gap` none.
 
-The result is 9 bills `not_computed`, all partial, and 101 `pe_gap` (91 none,
-10 partial). A partial `not_computed` bill is one where PolicyEngine's levers
+The independent review of PR #261 found reasons that misstated how 2.2.2
+works, and a sweep of all 110 reasons found more of the same kind. 32 were
+reworded against the source:
+
+- Medicaid has two match rates in each state, not one: ACA expansion adults
+  get one national expansion rate, and every other enrollee gets the state's
+  regular rate. Cost per enrollee is not a state average either. 2.2.2 splits
+  each state's spending total across enrollees by a benchmark-premium cost
+  index (age, rating area and, where it applies, family tier).
+- Each enrollee's Part B premium is computed: the standard premium plus the
+  income-related adjustment, less Medicare Savings Program coverage. Only the
+  standard premium is a parameter, and it does not follow Part B spending.
+- Medicare spending per enrollee is the per-capita parameter
+  (`medicare_gross_cost`). The reasons now cite that, not `medicare_cost`,
+  which nets out each person's premiums and feeds no aggregate.
+- H.R. 3257's match lever applies to every enrollee in PolicyEngine's adult
+  expansion category, which also holds Wisconsin's waiver adults and some
+  parents that States match at the regular rate. H.R. 6455's lever needs
+  Fiscal Lab's stated Part D and Medigap averages, because 2.2.2 has no
+  input for those premiums alone.
+- H.R. 9833 moved from `pe_gap` partial to none. Its score is one
+  dental-wraparound line, and the only lever would price it as full CHIP
+  coverage.
+
+No other bill's status or scope changed.
+
+The result is 9 bills `not_computed`, all partial, and 101 `pe_gap` (92 none,
+9 partial). A partial `not_computed` bill is one where PolicyEngine's levers
 carry most of the score but not all of it, so a run would leave a named
 remainder out.
 
