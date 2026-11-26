@@ -1,0 +1,2019 @@
+{
+ "schema_version": 1,
+ "registry": "fiscal_lab_memo_scores",
+ "source_pin": "dashboard_20261125",
+ "source_sha256": "48a918b8be88f974dd136e47402194a66162b3b81b9111c54009b610f9096b72",
+ "build": "November 25, 2026",
+ "unit": "billions of dollars, as the page's CSV prints them",
+ "bills": [
+  {
+   "slug": "H_R_4849",
+   "bill": "H.R. 4849",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Protecting Health Care and Lowering Costs Act of 2025",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate",
+    "FLIP'T (Medicaid financing)",
+    "FLUME (Medicaid spending)"
+   ],
+   "window": "FY2027-2036",
+   "central": "2159.918",
+   "low": "1533.900",
+   "high": "2648.625",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4849",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4849",
+   "superseded": {
+    "build": "November 21, 2026",
+    "central": "2008.089",
+    "low": "1551.100",
+    "high": "2225.425",
+    "changelog_id": "2026-11-25-hr4849-sections"
+   }
+  },
+  {
+   "slug": "H_R_12",
+   "bill": "H.R. 12",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Women’s Health Protection Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_12",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/12"
+  },
+  {
+   "slug": "H_R_4611",
+   "bill": "H.R. 4611",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "EACH Act of 2025",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1.220",
+   "low": "0.532",
+   "high": "2.521",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4611",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4611"
+  },
+  {
+   "slug": "H_R_4827",
+   "bill": "H.R. 4827",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medical Debt Relief Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4827",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4827"
+  },
+  {
+   "slug": "H_R_3701",
+   "bill": "H.R. 3701",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Family Vaccine Protection Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3701",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3701"
+  },
+  {
+   "slug": "H_R_4007",
+   "bill": "H.R. 4007",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "PHARA Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4007",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4007"
+  },
+  {
+   "slug": "H_R_7173",
+   "bill": "H.R. 7173",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Follow the Science Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7173",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7173"
+  },
+  {
+   "slug": "H_R_2855",
+   "bill": "H.R. 2855",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Protecting Medical Research Funding Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2855",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/2855"
+  },
+  {
+   "slug": "H_R_5448",
+   "bill": "H.R. 5448",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Protecting Free Vaccines Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1.799",
+   "low": "0.372",
+   "high": "8.030",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5448",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5448"
+  },
+  {
+   "slug": "H_R_7917",
+   "bill": "H.R. 7917",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Fair Wages for Home Care Workers Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.600",
+   "low": "0.190",
+   "high": "1.526",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7917",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7917"
+  },
+  {
+   "slug": "H_J_Res_189",
+   "bill": "H.J.Res. 189",
+   "kind": "resolution",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Providing for congressional disapproval under chapter 8 of title 5, United States Code, of the rule submitted by the Department of Education relating to “Reimagining and Improving Student Education-Federal Student Loan Program Final Regulations”.",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": "-0.500",
+   "high": "0.500",
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_J_Res_189",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-joint-resolution/189",
+   "range_rounded": true
+  },
+  {
+   "slug": "H_R_7961",
+   "bill": "H.R. 7961",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "H-1Bs for Physicians and the Healthcare Workforce Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.011",
+   "low": "0.000",
+   "high": "0.100",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7961",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7961",
+   "range_rounded": true
+  },
+  {
+   "slug": "H_R_1589",
+   "bill": "H.R. 1589",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "American Dream and Promise Act of 2025",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "13.865",
+   "low": "3.300",
+   "high": "31.400",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_1589",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/1589"
+  },
+  {
+   "slug": "Concept_Prevent_the_340B_Rebate_Model",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Prevent the 340B Rebate Model",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Prevent_the_340B_Rebate_Model",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_5940",
+   "bill": "H.R. 5940",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Seniors Deserve SMARTER Care Act of 2025",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "3.304",
+   "low": "0.600",
+   "high": "10.800",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5940",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5940"
+  },
+  {
+   "slug": "Concept_Affordable_Premiums_for_Seniors_Act",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Affordable Premiums for Seniors Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "15.163",
+   "low": "7.700",
+   "high": "29.700",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Affordable_Premiums_for_Seniors_Act",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_1061",
+   "bill": "H.R. 1061",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Protecting Sensitive Locations Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_1061",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/1061"
+  },
+  {
+   "slug": "H_R_10045",
+   "bill": "H.R. 10045",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Protect American Values Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "104.580",
+   "low": "9.500",
+   "high": "287.700",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_10045",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/10045"
+  },
+  {
+   "slug": "S_4886",
+   "bill": "S. 4886",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare Cost Cap Act of 2026",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "877.719",
+   "low": "403.900",
+   "high": "1160.300",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#S_4886",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/senate-bill/4886"
+  },
+  {
+   "slug": "H_R_2045",
+   "bill": "H.R. 2045",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare Dental, Vision, and Hearing Benefit Act of 2025",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "589.962",
+   "low": "365.700",
+   "high": "884.800",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2045",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/2045"
+  },
+  {
+   "slug": "S_1105",
+   "bill": "S. 1105",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "No UPCODE Act",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "-226.925",
+   "low": "-365.700",
+   "high": "-78.800",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#S_1105",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/senate-bill/1105"
+  },
+  {
+   "slug": "Concept_Risk_Adjustment_Data_Validation",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Risk Adjustment Data Validation (RADV) Audit Act",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "-39.491",
+   "low": "-87.200",
+   "high": "-1.400",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Risk_Adjustment_Data_Validation",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_8375",
+   "bill": "H.R. 8375",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare Advantage Improvement Act of 2026",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "3.328",
+   "low": "0.000",
+   "high": "16.600",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8375",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8375"
+  },
+  {
+   "slug": "H_R_4206",
+   "bill": "H.R. 4206",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "CONNECT for Health Act of 2025",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "23.096",
+   "low": "13.600",
+   "high": "37.600",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4206",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4206"
+  },
+  {
+   "slug": "H_R_9544",
+   "bill": "H.R. 9544",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Save MEDICARE Act of 2026",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "-967.268",
+   "low": "-1297.400",
+   "high": "-613.000",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9544",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9544"
+  },
+  {
+   "slug": "Concept_Medicare_for_Kids",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Medicare for Kids",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1769.900",
+   "low": "1071.550",
+   "high": "2721.775",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Medicare_for_Kids",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_4641",
+   "bill": "H.R. 4641",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Keep Kids Covered Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "21.525",
+   "low": "11.600",
+   "high": "36.325",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4641",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4641"
+  },
+  {
+   "slug": "H_R_10020",
+   "bill": "H.R. 10020",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare at Home Act",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "519.811",
+   "low": "219.100",
+   "high": "1122.600",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_10020",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/10020"
+  },
+  {
+   "slug": "H_R_6166",
+   "bill": "H.R. 6166",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Lowering Drug Costs for American Families Act",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-101.991",
+   "low": "-149.575",
+   "high": "-60.975",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6166",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6166"
+  },
+  {
+   "slug": "H_R_6609",
+   "bill": "H.R. 6609",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Pharmacists Fight Back in Medicare and Medicaid Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "316.015",
+   "low": "175.400",
+   "high": "477.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6609",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6609"
+  },
+  {
+   "slug": "H_R_9257",
+   "bill": "H.R. 9257",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Primary and Behavioral Health Care Access Act of 2026",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "52.125",
+   "low": "23.154",
+   "high": "109.284",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9257",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9257"
+  },
+  {
+   "slug": "Concept_Break_Up_Big_Medicine_Act",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Break Up Big Medicine Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Break_Up_Big_Medicine_Act",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_8779",
+   "bill": "H.R. 8779",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Patients Before Monopolies (PBM) Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8779",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8779"
+  },
+  {
+   "slug": "H_R_7920",
+   "bill": "H.R. 7920",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Take Back Our Hospitals Act of 2026",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": "-4.700",
+   "high": "4.700",
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7920",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7920",
+   "range_rounded": true
+  },
+  {
+   "slug": "Concept_Stop_Corporate_Takeovers_of_Physicians_Act",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Stop Corporate Takeovers of Physicians Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Stop_Corporate_Takeovers_of_Physicians_Act",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_3257",
+   "bill": "H.R. 3257",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Bridge to Medicaid Act of 2025",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "44.305",
+   "low": "42.100",
+   "high": "45.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3257",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3257"
+  },
+  {
+   "slug": "H_R_9693",
+   "bill": "H.R. 9693",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Patients First Act of 2026",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "78.307",
+   "low": "51.000",
+   "high": "137.200",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9693",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9693"
+  },
+  {
+   "slug": "H_R_711",
+   "bill": "H.R. 711",
+   "kind": "bill",
+   "congress": "118",
+   "version": "introduced",
+   "title": "Throw Away Junk Plans Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "-1.925",
+   "low": "-7.150",
+   "high": "-0.825",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_711",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_8261",
+   "bill": "H.R. 8261",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Chronic Care Management Improvement Act of 2026",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "3.776",
+   "low": "1.600",
+   "high": "9.200",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8261",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8261"
+  },
+  {
+   "slug": "H_R_5269",
+   "bill": "H.R. 5269",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "RESULTS Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "6.103",
+   "low": "3.000",
+   "high": "9.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5269",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5269"
+  },
+  {
+   "slug": "H_R_4752",
+   "bill": "H.R. 4752",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Reducing Hereditary Cancer Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "2.647",
+   "low": "0.600",
+   "high": "8.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4752",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4752"
+  },
+  {
+   "slug": "H_R_3947",
+   "bill": "H.R. 3947",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Easy Enrollment in Health Care Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "116.775",
+   "low": "58.675",
+   "high": "200.125",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3947",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3947"
+  },
+  {
+   "slug": "H_R_1428",
+   "bill": "H.R. 1428",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Poverty Line Act of 2025",
+   "models": [
+    "FLASH (health coverage)",
+    "FLAME (Medicare)",
+    "FLITT (transfer programs)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1187.772",
+   "low": "684.625",
+   "high": "1913.425",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_1428",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/1428"
+  },
+  {
+   "slug": "H_R_5557",
+   "bill": "H.R. 5557",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Mental Health Services for Students Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5557",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5557"
+  },
+  {
+   "slug": "H_R_9847",
+   "bill": "H.R. 9847",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Improving CARE for Youth Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.500",
+   "low": "0.080",
+   "high": "1.859",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9847",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9847"
+  },
+  {
+   "slug": "H_R_7118",
+   "bill": "H.R. 7118",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Genomic Answers for Children’s Health Act of 2026",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "2.030",
+   "low": "0.750",
+   "high": "6.306",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7118",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7118"
+  },
+  {
+   "slug": "H_R_8867",
+   "bill": "H.R. 8867",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "PLAN Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8867",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8867"
+  },
+  {
+   "slug": "H_R_9432",
+   "bill": "H.R. 9432",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "LIFT the BAR Act",
+   "models": [
+    "FLASH (health coverage)",
+    "FLITT (transfer programs)",
+    "Component estimate",
+    "FLUME (Medicaid spending)"
+   ],
+   "window": "FY2027-2036",
+   "central": "216.944",
+   "low": "188.500",
+   "high": "246.700",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9432",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9432"
+  },
+  {
+   "slug": "H_R_1096",
+   "bill": "H.R. 1096",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "HOPE and Mental Wellbeing Act of 2025",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "49.959",
+   "low": "23.100",
+   "high": "65.800",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_1096",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/1096"
+  },
+  {
+   "slug": "H_R_5509",
+   "bill": "H.R. 5509",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Safe Step Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1.450",
+   "low": "0.223",
+   "high": "5.689",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5509",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5509"
+  },
+  {
+   "slug": "H_R_3907",
+   "bill": "H.R. 3907",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "ENROLL Act of 2025",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "4.800",
+   "low": "1.600",
+   "high": "12.600",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3907",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3907"
+  },
+  {
+   "slug": "H_R_6455",
+   "bill": "H.R. 6455",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Health Insurance Premium Fairness Act of 2025",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "28.736",
+   "low": "14.521",
+   "high": "51.735",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6455",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6455"
+  },
+  {
+   "slug": "H_R_9831",
+   "bill": "H.R. 9831",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicaid Dental Benefit Act of 2026",
+   "models": [
+    "FLUME (Medicaid spending)"
+   ],
+   "window": "FY2027-2036",
+   "central": "26.866",
+   "low": "16.100",
+   "high": "43.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9831",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9831"
+  },
+  {
+   "slug": "H_R_9833",
+   "bill": "H.R. 9833",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Ensuring Kids Have Access to Medically Necessary Dental Care Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1.030",
+   "low": "0.283",
+   "high": "3.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9833",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9833"
+  },
+  {
+   "slug": "H_R_8201",
+   "bill": "H.R. 8201",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "To amend Public Health Service Act to require community health centers to provide behavioral and mental health and substance use disorder services, and for other purposes.",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "3.500",
+   "low": null,
+   "high": null,
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8201",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8201"
+  },
+  {
+   "slug": "H_R_2082",
+   "bill": "H.R. 2082",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "WISH Act",
+   "models": [
+    "FLOAT (Social Security)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "85.664",
+   "low": "66.600",
+   "high": "180.900",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2082",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/2082"
+  },
+  {
+   "slug": "H_R_999",
+   "bill": "H.R. 999",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Right to Contraception Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_999",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/999"
+  },
+  {
+   "slug": "H_R_7973",
+   "bill": "H.R. 7973",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Momnibus Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7973",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7973"
+  },
+  {
+   "slug": "H_R_6303",
+   "bill": "H.R. 6303",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "CARE for Moms Act",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-83.485",
+   "low": "-117.072",
+   "high": "-51.962",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6303",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6303"
+  },
+  {
+   "slug": "H_R_3762",
+   "bill": "H.R. 3762",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Supporting Healthy Moms and Babies Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "29.650",
+   "low": "20.166",
+   "high": "40.006",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3762",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3762"
+  },
+  {
+   "slug": "H_R_7227",
+   "bill": "H.R. 7227",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Mental Health and MAMA Act of 2026",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.823",
+   "low": "0.310",
+   "high": "1.955",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7227",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7227"
+  },
+  {
+   "slug": "H_R_3942",
+   "bill": "H.R. 3942",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Keeping Obstetrics Local Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "27.640",
+   "low": "7.449",
+   "high": "62.426",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3942",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3942"
+  },
+  {
+   "slug": "H_R_2762",
+   "bill": "H.R. 2762",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Expanding Access to Family Planning Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "5.507",
+   "low": "4.900",
+   "high": "5.600",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2762",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/2762"
+  },
+  {
+   "slug": "H_R_7417",
+   "bill": "H.R. 7417",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Women’s Heart Health Expansion Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7417",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7417"
+  },
+  {
+   "slug": "H_R_8729",
+   "bill": "H.R. 8729",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "No-Cost Breast Examinations in Medicaid Act of 2026",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.240",
+   "low": "0.112",
+   "high": "0.588",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8729",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8729"
+  },
+  {
+   "slug": "H_R_9090",
+   "bill": "H.R. 9090",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Advancing Menopause Care and Mid-Life Women’s Health Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9090",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9090"
+  },
+  {
+   "slug": "H_R_9941",
+   "bill": "H.R. 9941",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Right to IVF Act of 2026",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "23.939",
+   "low": "11.723",
+   "high": "50.706",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9941",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9941"
+  },
+  {
+   "slug": "H_R_4731",
+   "bill": "H.R. 4731",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Resident Physician Shortage Reduction Act of 2025",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "15.807",
+   "low": "11.000",
+   "high": "19.200",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4731",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4731"
+  },
+  {
+   "slug": "H_R_3415",
+   "bill": "H.R. 3415",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Nurse Staffing Standards for Hospital Patient Safety and Quality Care Act of 2025",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "183.646",
+   "low": "99.078",
+   "high": "313.669",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3415",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3415"
+  },
+  {
+   "slug": "H_R_3885",
+   "bill": "H.R. 3885",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Community TEAMS Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3885",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3885"
+  },
+  {
+   "slug": "H_R_6137",
+   "bill": "H.R. 6137",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Recognizing the Role of Direct Support Professionals Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6137",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6137"
+  },
+  {
+   "slug": "H_R_8109",
+   "bill": "H.R. 8109",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Save Struggling Hospitals Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8109",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8109"
+  },
+  {
+   "slug": "H_R_8540",
+   "bill": "H.R. 8540",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "HCBS Access Act",
+   "models": [
+    "FLAME (Medicare)",
+    "FLUME (Medicaid spending)"
+   ],
+   "window": "FY2027-2036",
+   "central": "1471.010",
+   "low": "1082.700",
+   "high": "2156.100",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8540",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8540"
+  },
+  {
+   "slug": "Concept_Workforce_Mobility_Act_of_2026",
+   "bill": null,
+   "kind": "proposal",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Workforce Mobility Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#Concept_Workforce_Mobility_Act_of_2026",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_8100",
+   "bill": "H.R. 8100",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Safe Staffing Saves Lives Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "42.155",
+   "low": "26.100",
+   "high": "71.400",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8100",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8100"
+  },
+  {
+   "slug": "H_R_9140",
+   "bill": "H.R. 9140",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "MEDIC Careers Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9140",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9140"
+  },
+  {
+   "slug": "H_R_6672",
+   "bill": "H.R. 6672",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Mental Health Professionals Workforce Shortage Loan Repayment Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6672",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6672"
+  },
+  {
+   "slug": "H_R_5052",
+   "bill": "H.R. 5052",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Train More Nurses Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5052",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5052"
+  },
+  {
+   "slug": "H_R_8541",
+   "bill": "H.R. 8541",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Long-Term Care Workforce Support Act",
+   "models": [
+    "FLUME (Medicaid spending)"
+   ],
+   "window": "FY2027-2036",
+   "central": "193.038",
+   "low": "135.100",
+   "high": "251.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8541",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8541"
+  },
+  {
+   "slug": "H_R_8629",
+   "bill": "H.R. 8629",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Developing the Community Health Workforce Act of 2026",
+   "models": [
+    "FLAME (Medicare)"
+   ],
+   "window": "FY2027-2036",
+   "central": "2.742",
+   "low": "1.100",
+   "high": "6.100",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8629",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8629"
+  },
+  {
+   "slug": "H_R_7601",
+   "bill": "H.R. 7601",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "No Immunity for Glyphosate Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7601",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7601"
+  },
+  {
+   "slug": "H_R_7867",
+   "bill": "H.R. 7867",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Infant Formula Safety Modernization Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7867",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7867"
+  },
+  {
+   "slug": "H_R_8429",
+   "bill": "H.R. 8429",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Baby Food Safety Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8429",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8429"
+  },
+  {
+   "slug": "H_R_4958",
+   "bill": "H.R. 4958",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "GRAS Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_4958",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/4958"
+  },
+  {
+   "slug": "H_R_7906",
+   "bill": "H.R. 7906",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "FOOD for Health Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7906",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7906"
+  },
+  {
+   "slug": "H_R_8390",
+   "bill": "H.R. 8390",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "National Food as Medicine Program Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8390",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8390"
+  },
+  {
+   "slug": "H_R_5439",
+   "bill": "H.R. 5439",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medically Tailored Home-Delivered Meals Program Pilot Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5439",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5439"
+  },
+  {
+   "slug": "H_R_7267",
+   "bill": "H.R. 7267",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Produce Prescriptions for Veterans Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7267",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7267"
+  },
+  {
+   "slug": "H_R_9474",
+   "bill": "H.R. 9474",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Local Foods for Healthy Schools Act of 2026",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "1.770",
+   "low": "1.700",
+   "high": "2.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9474",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9474"
+  },
+  {
+   "slug": "H_R_8928",
+   "bill": "H.R. 8928",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Scratch Cooked Meals for Students Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8928",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8928"
+  },
+  {
+   "slug": "H_R_8370",
+   "bill": "H.R. 8370",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Dietary Supplement Listing Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8370",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8370"
+  },
+  {
+   "slug": "H_R_2339",
+   "bill": "H.R. 2339",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Children’s Health Protection Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2339",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/2339"
+  },
+  {
+   "slug": "H_R_5085",
+   "bill": "H.R. 5085",
+   "kind": "bill",
+   "congress": null,
+   "version": "memo_description",
+   "title": "Protect America’s Children from Toxic Pesticides Act",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5085",
+   "bill_url": null
+  },
+  {
+   "slug": "H_R_9231",
+   "bill": "H.R. 9231",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "No Toxic Chemicals in Food Packaging Act of 2026",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9231",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9231"
+  },
+  {
+   "slug": "H_R_6294",
+   "bill": "H.R. 6294",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Childhood Diabetes Reduction Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6294",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6294"
+  },
+  {
+   "slug": "H_R_3521",
+   "bill": "H.R. 3521",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Clinical Trial Modernization Act",
+   "models": [
+    "FLITT (transfer programs)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.677",
+   "low": "0.200",
+   "high": "4.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3521",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3521",
+   "range_rounded": true
+  },
+  {
+   "slug": "H_R_1750",
+   "bill": "H.R. 1750",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "HEARD Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_1750",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/1750"
+  },
+  {
+   "slug": "S_2665",
+   "bill": "S. 2665",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Drug Shortage Prevention Act of 2025",
+   "models": [
+    "No budget model (bill text)"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.000",
+   "low": null,
+   "high": null,
+   "effect": "no significant effect",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#S_2665",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/senate-bill/2665"
+  },
+  {
+   "slug": "H_R_3164",
+   "bill": "H.R. 3164",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Ensuring Community Access to Pharmacist Services Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "2.649",
+   "low": "1.600",
+   "high": "4.000",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3164",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3164"
+  },
+  {
+   "slug": "H_R_6423",
+   "bill": "H.R. 6423",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "HELP Copays Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "19.775",
+   "low": "7.888",
+   "high": "42.684",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6423",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6423"
+  },
+  {
+   "slug": "H_R_6214",
+   "bill": "H.R. 6214",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Kidney Care Access Protection Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "14.220",
+   "low": "7.100",
+   "high": "31.100",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_6214",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/6214"
+  },
+  {
+   "slug": "H_R_8908",
+   "bill": "H.R. 8908",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "STOP GAMES Act of 2026",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-0.033",
+   "low": "-0.800",
+   "high": "0.000",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_8908",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/8908"
+  },
+  {
+   "slug": "H_R_3269",
+   "bill": "H.R. 3269",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "ETHIC Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-1.586",
+   "low": "-6.800",
+   "high": "-0.100",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3269",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3269"
+  },
+  {
+   "slug": "S_1096",
+   "bill": "S. 1096",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Preserve Access to Affordable Generics and Biosimilars Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-0.732",
+   "low": "-14.800",
+   "high": "0.000",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#S_1096",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/senate-bill/1096",
+   "range_rounded": true
+  },
+  {
+   "slug": "S_1040",
+   "bill": "S. 1040",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Drug Competition Enhancement Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "-0.412",
+   "low": "-5.800",
+   "high": "0.000",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#S_1040",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/senate-bill/1040"
+  },
+  {
+   "slug": "H_R_5343",
+   "bill": "H.R. 5343",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Ensuring Patient Access to Critical Breakthrough Products Act",
+   "models": [
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "0.906",
+   "low": "0.500",
+   "high": "1.400",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_5343",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/5343",
+   "range_rounded": true
+  },
+  {
+   "slug": "H_R_3069",
+   "bill": "H.R. 3069",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare for All Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "28034.666",
+   "low": "20689.900",
+   "high": "38234.700",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_3069",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/3069"
+  },
+  {
+   "slug": "H_R_7023",
+   "bill": "H.R. 7023",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Affordable CHOICE Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "-130.225",
+   "low": "-263.200",
+   "high": "-64.675",
+   "effect": "reduces deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_7023",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/7023"
+  },
+  {
+   "slug": "H_R_9702",
+   "bill": "H.R. 9702",
+   "kind": "bill",
+   "congress": "119",
+   "version": "introduced",
+   "title": "Medicare-X Choice Act of 2026",
+   "models": [
+    "FLASH (health coverage)",
+    "Component estimate"
+   ],
+   "window": "FY2027-2036",
+   "central": "140.375",
+   "low": "8.925",
+   "high": "254.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_9702",
+   "bill_url": "https://www.congress.gov/bill/119th-congress/house-bill/9702"
+  },
+  {
+   "slug": "H_R_2881",
+   "bill": "H.R. 2881",
+   "kind": "bill",
+   "congress": "117",
+   "version": "introduced",
+   "title": "Medicare Buy-In and Health Care Stabilization Act",
+   "models": [
+    "FLASH (health coverage)"
+   ],
+   "window": "FY2027-2036",
+   "central": "239.250",
+   "low": "186.850",
+   "high": "275.500",
+   "effect": "adds to deficits",
+   "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#H_R_2881",
+   "bill_url": "https://www.congress.gov/117/bills/hr2881/BILLS-117hr2881ih.htm"
+  }
+ ]
+}

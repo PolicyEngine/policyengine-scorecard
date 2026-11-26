@@ -43,6 +43,8 @@ Chain order is dependency order and is part of the contract:
                 read-backs (also on the HMT and RF uprating claims)
     uk_childcare_100k  CenTax + CBP costings of removing the £100,000
                   childcare limit, certified-pair counterparts
+    fiscal_lab  Fiscal Lab Memo Bill Scores (110 health bills, FY2027-2036;
+                pe_gap verdicts, no PolicyEngine values)
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
     be_pit_reform Belgian PIT-reform claims + Axiom result attachments
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
@@ -70,6 +72,7 @@ from . import (
     ingest_campaign,
     ingest_census_stc,
     ingest_diagnoses,
+    ingest_fiscal_lab,
     ingest_fns_snap_rates,
     ingest_harvest,
     ingest_hmt_distributional,
@@ -312,6 +315,7 @@ def build(db_path: Path) -> dict:
             "uk_two_child_limit_poverty",
             lambda: ingest_uk_two_child_limit_poverty.ingest(db_path),
         ),
+        ("fiscal_lab", lambda: ingest_fiscal_lab.ingest(db_path)),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),

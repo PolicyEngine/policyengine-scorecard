@@ -30,6 +30,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   spf_finances: "SPF Finances",
   cour_des_comptes: "Cour des comptes",
   nz_treasury: "New Zealand Treasury",
+  fiscal_lab: "Fiscal Lab",
   policyengine: "PolicyEngine",
   obr_policy_effects: "OBR policy effects",
   // Autumn Budget 2025 port (#136): every producer that scored the Budget

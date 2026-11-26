@@ -1,0 +1,1125 @@
+{
+ "schema_version": 1,
+ "registry": "fiscal_lab_memo_scores",
+ "engine": "policyengine-us 2.2.2",
+ "judged": "2026-11-26",
+ "method": "One agent classified each bill against the policyengine-us 2.2.2 source. A second agent, told to refute the call, checked it, and disagreements were settled by hand. pe_paths are the parameter and variable files in that source a reform would set or read. Each reason states PolicyEngine's side in our own words. A Fiscal Lab assumption counts as a lever only when a reform can impose it through policyengine-us, such as a stated premium rise on the benchmark premium the credit reads (slcsp). In 2.2.2 the benchmark parameter (state_rating_area_cost) and slcsp_age_0 also feed the Medicaid cost index (medicaid_slcsp_cost_index), so a reform must apply the change where the credit reads the benchmark, or hold Medicaid cost at baseline. The test is whether a reform can apply the assumption as Fiscal Lab states it to an amount PolicyEngine computes, as with a uniform percentage on slcsp. A take-up response fails it: it means choosing which eligible people or units newly enroll, and 2.2.2's take-up flags (on a person, tax unit or SPM unit) have no rate parameter or enrollment model to choose them, so a run would rest on an assignment PolicyEngine does not make. No PolicyEngine number is recorded.",
+ "statuses": {
+  "not_computed": "PolicyEngine's levers carry all (full) or most (partial) of the score. A run could be built; none has been.",
+  "pe_gap": "The household model has no lever for the provisions that carry the score: for none of them (none), or for only a minority (partial)."
+ },
+ "bills": {
+  "Concept_Affordable_Premiums_for_Seniors_Act": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine prices Medicare as one national per-capita cost and carries Part D only as the income-related premium surcharge; it has no Part D plan bids, base premiums, demonstration payments or risk corridors.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/variables/gov/hhs/medicare/eligibility/part_d/income_adjusted_part_d_premium_surcharge.py"
+   ]
+  },
+  "Concept_Break_Up_Big_Medicine_Act": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of health-industry ownership, antitrust or market structure, and nothing in the file indicates a change to any tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "Concept_Medicare_for_Kids": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "single_payer_national_health_spending",
+   "reason": "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py"
+   ]
+  },
+  "Concept_Prevent_the_340B_Rebate_Model": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "PolicyEngine has no 340B program, drug purchasing, or manufacturer discount mechanics, and the proposal changes no tax or benefit rule the model represents.",
+   "pe_paths": []
+  },
+  "Concept_Risk_Adjustment_Data_Validation": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine prices Medicare as one flat national per-enrollee amount; it has no Medicare Advantage plans, payments, risk scores or audits, so neither the recoveries nor the induced Part B premium change can be computed.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml"
+   ]
+  },
+  "Concept_Stop_Corporate_Takeovers_of_Physicians_Act": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of health care ownership or corporate practice of medicine rules, and nothing in the file points to a change in a tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "Concept_Workforce_Mobility_Act_of_2026": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of employment contract or noncompete rules, and nothing in the file points to a change in a tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_J_Res_189": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_federal_student_loans",
+   "reason": "PolicyEngine has no federal student loan program, repayment plans or loan subsidy costs; its education parameters cover Pell grants and federal work-study status, and loans appear only as the interest deduction.",
+   "pe_paths": []
+  },
+  "H_R_10020": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare covered-service list, home care use, daily-activity limitation inputs or Medicare Advantage; Medicare spending is one national per-capita parameter, so the benefit and its premium and dual-eligible offsets cannot be computed.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/qmb_cost_sharing.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_10045": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_public_charge_takeup_response",
+   "reason": "PolicyEngine has no public charge rule; take-up is a fixed input flag (default true), so the rule's chilling effect on enrollment exists only as an assumption a user imposes, not a rule a reform changes.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/takes_up_medicaid_if_eligible.py",
+    "policyengine_us/variables/gov/usda/snap/takes_up_snap_if_eligible.py",
+    "policyengine_us/variables/gov/ssa/ssi/takes_up_ssi_if_eligible.py",
+    "policyengine_us/variables/household/demographic/person/immigration_status.py"
+   ]
+  },
+  "H_R_1061": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_immigration_enforcement",
+   "reason": "PolicyEngine has no immigration enforcement or removal-proceeding representation; immigration status is a fixed input for benefit eligibility, and the bill changes no tax or benefit rule.",
+   "pe_paths": []
+  },
+  "H_R_1096": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare service spending, Medicare Advantage benchmarks, or Medicaid cost sharing; Medicare cost is one national per-capita parameter, so visit-level cost-sharing changes cannot be represented.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_12": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of abortion access or rules on health care providers, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_1428": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "other_esi_coverage_transitions",
+   "reason": "Held at not_computed by instruction while PolicyEngine/fiscal-lab-comparison computes its named provisions. The poverty guideline is a parameter, set only for the contiguous states, Alaska and Hawaii, so a county-based guideline needs an override. Missing: moves from employer coverage to Medicaid and the exclusion revenue they change, the Part D low-income subsidy, CSR cost, Medicare's added use by new QMBs, school meals in community eligibility schools, Summer EBT and CACFP.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/fpg.yaml",
+    "policyengine_us/variables/gov/hhs/tax_unit_fpg.py",
+    "policyengine_us/variables/gov/hhs/spm_unit_fpg.py",
+    "policyengine_us/variables/gov/usda/snap/income/snap_fpg.py",
+    "policyengine_us/parameters/gov/usda/snap/income/deductions/standard.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/income/medicaid_income_level.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/income/msp_fpg.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py",
+    "policyengine_us/variables/gov/usda/school_meals/school_meal_fpg_ratio.py",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program.py"
+   ],
+   "counterpart": "PolicyEngine/fiscal-lab-comparison (https://github.com/PolicyEngine/fiscal-lab-comparison) is computing H.R. 1428's poverty guideline at 1.97 times the current guideline from 2030 and its SNAP deduction from FY2031. Its results attach here only once they pass review, and they cover those provisions, not the whole bill."
+  },
+  "H_R_1589": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "other_immigration_status_qualifying_test",
+   "reason": "Immigration status, the five-year bar and the Medicaid, CHIP and credit immigrant rules are variables and parameters. 2.2.2 has one clock, years_since_us_entry (default 5), which counts from entry or a qualifying status grant and also runs the five-year bar; it has no arrival-age input and no TPS or DED grant date, so a reform must choose who qualifies and override immigration_status itself.",
+   "pe_paths": [
+    "policyengine_us/variables/household/demographic/person/immigration_status.py",
+    "policyengine_us/variables/household/demographic/person/years_since_us_entry.py",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/eligible_immigration_statuses.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/five_year_bar_years.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/is_medicaid_immigration_status_eligible.py",
+    "policyengine_us/variables/gov/hhs/chip/is_chip_eligible_child.py",
+    "policyengine_us/parameters/gov/aca/ineligible_immigration_statuses.yaml",
+    "policyengine_us/variables/gov/aca/eligibility/is_aca_ptc_immigration_status_eligible.py",
+    "policyengine_us/parameters/gov/aca/below_fpl_immigration_exception_in_effect.yaml",
+    "policyengine_us/parameters/gov/hhs/basic_health_program/eligibility/ineligible_immigration_statuses.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py"
+   ]
+  },
+  "H_R_1750": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no representation of HHS research grants or public health programs; their funding depends on appropriations, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_2045": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare covered-service list, dental, vision or hearing use, or Medicare Advantage plans; Medicare spending is one national per-capita parameter, so the benefit, its Part B premium offset and Medicaid secondary-payer savings cannot be priced.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py"
+   ]
+  },
+  "H_R_2082": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "social_security_benefits",
+   "reason": "PolicyEngine computes one year's quarters of coverage but has no multi-year earnings record since 2026, functional-disability or care-need status, long-term care benefit, or Medicaid long-term care spending to offset.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/ssa/social_security/ss_quarters_of_coverage.py",
+    "policyengine_us/variables/gov/ssa/ss/social_security_retirement.py",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/receives_medicaid_long_term_care_services.py"
+   ]
+  },
+  "H_R_2339": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_agency_administration",
+   "reason": "PolicyEngine has no representation of federal agency organization or EPA programs; any staffing cost would be discretionary, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_2762": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no Title X or clinic grant spending; the cost is a fixed direct appropriation and its outlay timing, not a household tax or benefit rule.",
+   "pe_paths": []
+  },
+  "H_R_2855": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of NIH funding or of executive handling of appropriations; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_2881": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "other_medicare_buy_in",
+   "reason": "2.2.2 sets the enhanced credit schedule and the 400 percent cap as parameters, and they carry the score; it has no Medicare buy-in or moves off employer plans, which offset part of it.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/initial.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/final.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/threshold.yaml",
+    "policyengine_us/parameters/gov/aca/ptc_income_eligibility.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/aca/eligibility/is_aca_ptc_eligible.py"
+   ]
+  },
+  "H_R_3069": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "single_payer_national_health_spending",
+   "reason": "PolicyEngine could zero Medicaid, CHIP and premium tax credits and end the self-employed and medical deductions, but has no national health spending, provider payment rates, utilization response, long-term care or Medicare cost-sharing model for the program's gross cost.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/irs/income/taxable_income/adjusted_gross_income/above_the_line_deductions/self_employed_health_insurance_ald.py",
+    "policyengine_us/variables/gov/irs/income/taxable_income/deductions/itemizing/medical_expense_deduction.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml"
+   ]
+  },
+  "H_R_3164": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare covered-service or provider fee schedule model; Medicare cost is one national per-capita parameter, so adding a Part B service cannot be represented.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py"
+   ]
+  },
+  "H_R_3257": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "other_cost_sharing_reduction_cost",
+   "reason": "The below-poverty credit (through the income-eligibility bracket) and the 93 percent expansion match are parameters and carry most of the score; PolicyEngine has no cost-sharing reduction cost or coverage-choice response.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/ptc_income_eligibility.yaml",
+    "policyengine_us/variables/gov/aca/eligibility/is_aca_ptc_eligible.py",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/initial.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/parameters/gov/hhs/medicaid/cost_share/expansion_fmap.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py"
+   ]
+  },
+  "H_R_3269": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "PolicyEngine has no drug prices, generic entry, or Medicare Part B, Part D or Medicaid drug spending; the small credit and wage effects run through private premium changes it cannot derive.",
+   "pe_paths": []
+  },
+  "H_R_3415": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_3521": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_clinical_trial_income",
+   "reason": "PolicyEngine's income tax rules could exclude an income source, but it has no clinical trial payment variable; such payments would sit, if at all, inside miscellaneous income, so the exclusion cannot be applied.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/irs/gross_income/sources.yaml",
+    "policyengine_us/variables/household/income/person/misc/miscellaneous_income.py"
+   ]
+  },
+  "H_R_3701": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of federal vaccine advisory bodies or immunization schedules, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_3762": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_3885": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "Fiscal Lab scores zero from the bill text; the bill changes no tax or benefit rule that policyengine-us 2.2.2 represents, and 2.2.2 has no medical training or workforce programs.",
+   "pe_paths": []
+  },
+  "H_R_3907": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_enrollment_takeup_response",
+   "reason": "The score comes from added enrollment among eligible uninsured people; PolicyEngine treats Medicaid, CHIP and marketplace take-up as fixed flags with no response to outreach and no uninsured indicator, so a run could only impose assumed take-up.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/takes_up_medicaid_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/chip/takes_up_chip_if_eligible.py",
+    "policyengine_us/variables/gov/aca/takes_up_aca_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py"
+   ]
+  },
+  "H_R_3942": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine spreads state total Medicaid spending across enrollees with one match rate per eligibility group; it has no hospital or service-level payment rates, births by hospital, or service-specific federal match.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
+    "policyengine_us/parameters/gov/hhs/medicaid/cost_share/fmap.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/categories/pregnant/postpartum_coverage.yaml"
+   ]
+  },
+  "H_R_3947": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_enrollment_takeup_response",
+   "reason": "PolicyEngine treats Medicaid, CHIP and marketplace enrollment as fixed take-up flags with no response to enrollment processes and no uninsured status variable; a run could only impose assumed take-up shares, not model auto-enrollment itself.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/takes_up_medicaid_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/chip/takes_up_chip_if_eligible.py",
+    "policyengine_us/variables/gov/aca/takes_up_aca_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py"
+   ]
+  },
+  "H_R_4007": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine models household taxes and benefits and has nothing on NIH grant administration; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_4206": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules; only beneficiary premiums and Medicare Savings Program premium coverage are modeled.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_part_b_premium_coverage.py"
+   ]
+  },
+  "H_R_4611": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine values Medicaid as each enrollee's share of a state spending total, with no covered-service detail, so adding abortion as a covered service, and its federal match, cannot be represented.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py"
+   ]
+  },
+  "H_R_4641": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_enrollment_churn",
+   "reason": "PolicyEngine tests eligibility once a year and treats enrollment as a fixed take-up flag; it has no renewal, churn or continuous-eligibility rule, so a run could only impose assumed take-up shares, not model the provision.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/takes_up_medicaid_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/chip/takes_up_chip_if_eligible.py",
+    "policyengine_us/variables/gov/hhs/medicaid/medicaid_enrolled.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py"
+   ]
+  },
+  "H_R_4731": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no Medicare graduate medical education or hospital payments; Medicare cost is a per-capita parameter, so the Part B premium and Medicaid dual-premium offsets cannot follow either.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml"
+   ]
+  },
+  "H_R_4752": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine prices Medicare as one national per-capita amount with no covered-service list, service use or cancer-risk status, and its Part B premium is a set parameter, so added benefits cannot be priced.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_4827": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine models household taxes and benefits and has nothing on credit reporting or consumer debt rules; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_4849": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "medicaid_financing",
+   "reason": "Held at not_computed by instruction while PolicyEngine/fiscal-lab-comparison computes its coverage provisions. The credit schedule, work requirement, immigrant limits and home-equity cap are parameters; PolicyEngine has no provider taxes, directed payments, emergency-Medicaid match, renewals, retroactive coverage, CSR cost, repayment caps, employer-coverage offset or Medicare sections.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/ptc_income_eligibility.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/initial.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/final.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/threshold.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/parameters/gov/aca/ineligible_immigration_statuses.yaml",
+    "policyengine_us/parameters/gov/aca/below_fpl_immigration_exception_in_effect.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/work_requirements/applies.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/eligible_immigration_statuses.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/long_term_care/home_equity/limit.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py"
+   ],
+   "counterpart": "PolicyEngine/fiscal-lab-comparison (https://github.com/PolicyEngine/fiscal-lab-comparison) is computing H.R. 4849's coverage provisions over 2027-2036. Its results attach here only once they pass review, and they cover those provisions, not the whole bill."
+  },
+  "H_R_4958": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine does not model FDA food-safety regulation or user fees; the bill changes no tax or benefit rule the model represents.",
+   "pe_paths": []
+  },
+  "H_R_5052": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of workforce grant programs or agency studies; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_5085": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no environmental or pesticide regulation representation; the described bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_5269": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "2.2.2 has no Medicare fee schedules or provider payment rates; Medicare spending is one per-capita calibration value, so a laboratory payment rate change has nothing to set.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml"
+   ]
+  },
+  "H_R_5343": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare coverage decisions, device or service spending, or Medicare Advantage payments; Medicare is one national per-capita cost, so added device coverage cannot be priced.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  },
+  "H_R_5439": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare service-level benefits, hospital pilots or readmission spending; Medicare is one flat national per-enrollee amount, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  },
+  "H_R_5448": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits; Medicaid and Medicare costs are per-enrollee averages without service detail.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py"
+   ]
+  },
+  "H_R_5509": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "insurance_market_regulation",
+   "reason": "2.2.2 has no plan benefit-design rules and no employer-coverage tax exclusion mechanism: employer premiums are an input outside taxable income, with no shift between wages and premiums, so the revenue loss cannot be produced.",
+   "pe_paths": [
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py"
+   ]
+  },
+  "H_R_5557": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no public health or school mental health grant programs, and authorized discretionary grants have no counterpart in its tax-benefit rules.",
+   "pe_paths": []
+  },
+  "H_R_5940": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare service use, prior authorization, Innovation Center models or claims; Medicare spending is one national per-capita parameter, so foregone model savings and their Part B premium and dual-eligible effects cannot be computed.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_6137": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no occupational classification system or statistical agency rules, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_6166": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "PolicyEngine has no drug-level Medicare Part D or Part B spending, negotiation, or rebate model; Part D parameters cover only IRMAA surcharges, and private premiums do not respond to cost-sharing caps.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicare/part_d/irmaa"
+   ]
+  },
+  "H_R_6214": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no Medicare provider payment systems, dialysis bundle, drug add-ons, end-stage renal disease spending or Medicare Advantage payments; Medicare is one national per-capita cost and the Part B premium a set parameter.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_6294": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "Food labeling and advertising regulation touches no tax or benefit rule; 2.2.2 has no labeling or advertising parameters, and Fiscal Lab scores zero.",
+   "pe_paths": []
+  },
+  "H_R_6303": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_excise_tax",
+   "reason": "PolicyEngine has no federal tobacco excise tax rules or tobacco consumption; cbo_excise_tax is an optional input defaulting to zero. Pregnancy dental benefits are service-level. Only the postpartum mandate, worth about nothing, maps to a parameter.",
+   "pe_paths": [
+    "policyengine_us/variables/household/income/household/cbo_excise_tax.py",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/categories/pregnant/postpartum_coverage.yaml"
+   ]
+  },
+  "H_R_6423": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_6455": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "other_cost_sharing_reduction_cost",
+   "reason": "A structural reform can override aca_ptc to subtract members' Medicare Part A and B premiums (computed) and other reported premiums from the expected contribution. PolicyEngine lacks the small CSR cost and holds ACA take-up fixed.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/aca/ptc/aca_required_contribution_percentage.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py",
+    "policyengine_us/variables/gov/hhs/medicare/eligibility/part_b/medicare_part_b_premium.py",
+    "policyengine_us/variables/gov/hhs/medicare/eligibility/part_a/medicare_part_a_premium.py",
+    "policyengine_us/variables/household/expense/health/health_insurance_premiums_without_medicare_part_b.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml"
+   ]
+  },
+  "H_R_6609": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates; Medicare cost is one national per-capita parameter and Medicaid cost a state total spread by an age index.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_d/irmaa"
+   ]
+  },
+  "H_R_6672": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no HRSA workforce or loan repayment programs; its student loan items are tax rules, and a program funded through later appropriations lies outside the model.",
+   "pe_paths": []
+  },
+  "H_R_7023": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "Fiscal Lab imposes a public-plan premium discount, which a reform can apply where the credit (slcsp) and the Basic Health Program amounts read the benchmark, carrying the credit and Basic Health Program savings. Applying it to state_rating_area_cost instead would also cut PolicyEngine's Medicaid cost index. The plan itself, the employer-exclusion shift and coverage responses are absent.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/aca/slspc/slcsp_age_0.py",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program.py",
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program_age_curve_amount_person.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program_family_tier_amount.py"
+   ]
+  },
+  "H_R_711": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "insurance_market_regulation",
+   "reason": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no plan types or premium responses, and Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+   "pe_paths": []
+  },
+  "H_R_7118": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine spreads state total Medicaid spending across enrollees and has no covered-service list, service use, test prices or diagnosis status, so adding a benefit for eligible children cannot be priced.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicaid/totals/spending.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py"
+   ]
+  },
+  "H_R_7173": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine models household taxes and benefits and has nothing on NIH research administration or grant rules; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_7227": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "insurance_market_regulation",
+   "reason": "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+   "pe_paths": [
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py"
+   ]
+  },
+  "H_R_7267": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no VA health care or produce prescription programs; the authority would run on appropriations, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_7417": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no WISEWOMAN or other public health screening grant programs; discretionary authorizations have no counterpart in its tax-benefit rules.",
+   "pe_paths": []
+  },
+  "H_R_7601": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has nothing on pesticide regulation, liability or defense production, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_7867": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of FDA food-safety testing or inspection rules; the bill leaves WIC and every other tax or benefit rule the model carries unchanged.",
+   "pe_paths": []
+  },
+  "H_R_7906": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "Fiscal Lab scores zero; the pilot grants change no SNAP, WIC or other benefit rule, and 2.2.2 has no Food is Medicine, produce-prescription or medically tailored meal program.",
+   "pe_paths": []
+  },
+  "H_R_7917": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine has no Medicaid home care spending or provider payment rates, and wages are inputs with no employer cost response. The federal minimum wage parameter feeds only eligibility tests (the Medicaid work requirement, two States' child care activity tests and New Mexico's child care credit income limit), never wages.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/dol/minimum_wage.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py"
+   ]
+  },
+  "H_R_7920": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no provider participation, ownership, or facility payment rules; Medicare enters only as a national per-capita cost per enrollee.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py"
+   ]
+  },
+  "H_R_7961": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_immigration_fee_receipts",
+   "reason": "PolicyEngine has no visa petitions, employer immigration fees or H-1B worker counts; immigration status is only an input that gates benefit eligibility, so it cannot compute these receipts.",
+   "pe_paths": []
+  },
+  "H_R_7973": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine does not represent maternal health grants, programs or workforce initiatives, and Fiscal Lab found nothing in the text that changes a tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8100": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "2.2.2 has no nursing facility payment rates, staffing rules or long-term care service spending; Medicaid cost is a state total spread over enrollees, so passing staffing costs into Medicaid rates cannot be modeled.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicaid/totals/spending.yaml"
+   ]
+  },
+  "H_R_8109": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no Medicare hospital payment system or hospital wage index; Medicare spending is one flat national per-enrollee parameter, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml"
+   ]
+  },
+  "H_R_8201": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "The score is a fixed mandatory grant transfer to health centers; 2.2.2 models household taxes and benefits and has no health center grant program or federal grant outlays.",
+   "pe_paths": []
+  },
+  "H_R_8261": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare service-level spending or beneficiary cost sharing; Medicare cost is a single national per-capita parameter, so waiving coinsurance on one service cannot be represented. Part B premium exists only as a parameter.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_8370": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has nothing on FDA product listing or dietary supplement regulation, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8375": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare Advantage enrollment, bids, benchmarks or rebates, and no prior authorization or inpatient-stay rules; Medicare spending is one national per-capita parameter, so higher payments to plans bidding above benchmark cannot be computed.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py"
+   ]
+  },
+  "H_R_8390": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no Food as Medicine program, and the bill changes no SNAP, WIC or other benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8429": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no food safety or FDA regulatory representation; WIC appears only as a benefit, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8540": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "medicaid_financing",
+   "reason": "The Medicaid match is one rate per state, with no HCBS benefit or service spending, so the full match and induced use cannot run. The new eligibility group, a minority of the score, could be approximated through the optional aged and disabled pathway.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicaid/cost_share/fmap.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/categories/is_optional_senior_or_disabled_for_medicaid.py",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/categories/medicaid_optional_senior_or_disabled_income_limit.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_8541": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_financing",
+   "reason": "PolicyEngine applies one state FMAP to each enrollee's share of a state Medicaid spending total; it has no long-term care or service-level spending, so a match increase limited to direct care services cannot be represented.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicaid/cost_share/fmap.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/is_medicaid_long_term_care_eligible.py"
+   ]
+  },
+  "H_R_8629": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "2.2.2 has no health center payment systems, Medicare or Medicaid service-level spending, or graduate medical education; both programs' costs are per-enrollee averages, so newly billable visits and slots cannot be produced.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  },
+  "H_R_8729": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "2.2.2 models no Medicaid cost sharing, benefit categories or service use; Medicaid cost is a state total spread over enrollees, so removing exam charges and adding imaging coverage has no rule to change.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicaid/totals/spending.yaml"
+   ]
+  },
+  "H_R_8779": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of pharmacy benefit managers, pharmacies or drug supply-chain ownership; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8867": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "public_health_program",
+   "reason": "PolicyEngine has no representation of HHS information campaigns or long-term care planning programs; any cost would be discretionary, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_8908": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "PolicyEngine has no drug approvals, generic entry, drug prices or Part D plan spending; prescription spending is only a household input, so the Part D and premium effects cannot be computed.",
+   "pe_paths": [
+    "policyengine_us/variables/household/expense/health/prescription_expense.py"
+   ]
+  },
+  "H_R_8928": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "2.2.2 models school meal eligibility and per-meal subsidies, but the pilot changes neither; there is no scratch-cooking program, and Fiscal Lab scores zero.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/usda/school_meals/school_meal_daily_subsidy.py"
+   ]
+  },
+  "H_R_9090": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has nothing on menopause care or women's health programs, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_9140": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has military status and pay only as household inputs and nothing on military transition or workforce programs; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "H_R_9231": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine does not model FDA food packaging regulation; the bill changes no tax or benefit rule the model represents.",
+   "pe_paths": []
+  },
+  "H_R_9257": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+   "pe_paths": [
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_9432": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "medicaid_financing",
+   "reason": "The status lists, the five-year bar, SSI's 40-quarter rule and the below-poverty credit exception are parameters. Missing: the emergency Medicaid match, CSR cost and moves off employer coverage; Microcosm codes most lawfully present noncitizens as LPRs.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/five_year_bar_years.yaml",
+    "policyengine_us/parameters/gov/hhs/medicaid/eligibility/eligible_immigration_statuses.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/eligibility/is_medicaid_immigration_status_eligible.py",
+    "policyengine_us/parameters/gov/aca/ineligible_immigration_statuses.yaml",
+    "policyengine_us/parameters/gov/aca/below_fpl_immigration_exception_in_effect.yaml",
+    "policyengine_us/parameters/gov/ssa/ssi/eligibility/status/qualified_noncitizen_status.yaml",
+    "policyengine_us/parameters/gov/ssa/ssi/income/sources/qualifying_quarters_threshold.yaml",
+    "policyengine_us/variables/gov/ssa/ssi/eligibility/status/is_ssi_qualified_noncitizen.py",
+    "policyengine_us/parameters/gov/usda/snap/eligibility/eligible_immigration_statuses.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
+    "policyengine_us/variables/gov/hhs/medicaid/emergency_medicaid/is_emergency_medicaid_eligible.py"
+   ]
+  },
+  "H_R_9474": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "other_ccc_food_purchase_grants",
+   "reason": "PolicyEngine models household school meal eligibility and subsidies, not USDA commodity purchases or state cooperative agreements funded by the Commodity Credit Corporation.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/usda/school_meals/school_meal_daily_subsidy.py"
+   ]
+  },
+  "H_R_9544": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare Advantage plans, benchmarks, risk scores or audits; Medicare cost is one national per-capita parameter. The Part B premium and dual-eligible offsets follow from spending it cannot compute.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "H_R_9693": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "provider_payment",
+   "reason": "PolicyEngine has no Medicare fee schedules, payment updates or Medicare Advantage benchmarks; Medicare spending is one flat national per-enrollee parameter, so the fee-schedule cost, benchmark spillover and premium offset cannot be computed.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  },
+  "H_R_9702": {
+   "status": "not_computed",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "Enhanced credits are parametric, and a public-option discount can be imposed on the credit's benchmark (slcsp), not on state_rating_area_cost, which also drives PolicyEngine's Medicaid cost index; PolicyEngine cannot price the plan itself, compute cost-sharing reduction cost, model the small-group wage shift, or model coverage take-up responses.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/aca/ptc_income_eligibility.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/initial.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/final.yaml",
+    "policyengine_us/parameters/gov/aca/required_contribution_percentage/threshold.yaml",
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp_age_0.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_9831": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "PolicyEngine has no Medicaid benefit package or service-level spending; per-enrollee cost is a state average and the match is one rate per state, with no service-specific rate. The benefit adds no enrollees.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/gov/hhs/medicaid/cost_share/fmap.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py"
+   ]
+  },
+  "H_R_9833": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "medicaid_service_spending",
+   "reason": "A reform can drop other coverage from CHIP's disqualifying list, but PolicyEngine has no dental-only CHIP benefit; it would cost new enrollees at full separate-CHIP per-capita spending rather than a dental wraparound.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/chip/disqualifying_health_coverage.yaml",
+    "policyengine_us/variables/gov/hhs/chip/is_chip_eligible_child.py",
+    "policyengine_us/variables/gov/hhs/chip/per_capita_chip.py"
+   ]
+  },
+  "H_R_9847": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicaid_service_spending",
+   "reason": "Medicaid cost in 2.2.2 is a state spending total spread over enrollees by a cost index; it has no service-level payment, billing or visit rules for a same-day billing change to act on.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicaid/totals/spending.yaml"
+   ]
+  },
+  "H_R_9941": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "insurance_market_regulation",
+   "reason": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+   "pe_paths": [
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/aca/slspc/slcsp.py",
+    "policyengine_us/parameters/gov/aca/benchmark_premium_uprating.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_cost_if_enrolled.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/parameters/gov/aca/state_rating_area_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py"
+   ]
+  },
+  "H_R_999": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no representation of contraception access or provider rights, and the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "S_1040": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "2.2.2 has no drug prices or Part B, Part D or Medicaid drug spending; the small credit and wage effects ride on an unstated private premium change PolicyEngine cannot derive.",
+   "pe_paths": [
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  },
+  "S_1096": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "drug_pricing",
+   "reason": "PolicyEngine has no drug-level spending, generic entry, or Part D model, and private premiums do not respond to drug prices, so neither the federal drug savings nor the premium knock-ons can be produced.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicare/part_d/irmaa"
+   ]
+  },
+  "S_1105": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "PolicyEngine has no Medicare Advantage enrollment, plan payments, risk scores or coding adjustment; Medicare spending is one national per-capita amount and the Part B premium is a fixed parameter, not derived from spending.",
+   "pe_paths": [
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py",
+    "policyengine_us/parameters/gov/hhs/medicare/part_b/base_premium.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py"
+   ]
+  },
+  "S_2665": {
+   "status": "pe_gap",
+   "scope": "none",
+   "gap_class": "no_budget_effect_regulation",
+   "reason": "PolicyEngine has no drug supply or FDA reporting representation; the bill changes no tax or benefit rule the model carries.",
+   "pe_paths": []
+  },
+  "S_4886": {
+   "status": "pe_gap",
+   "scope": "partial",
+   "gap_class": "medicare_benefit_spending",
+   "reason": "The QMB income limit and asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run; 2.2.2 has no beneficiary cost sharing, out-of-pocket cap, Medicare Advantage, Part D subsidy or MSP take-up.",
+   "pe_paths": [
+    "policyengine_us/parameters/gov/hhs/medicare/savings_programs/eligibility/income/qmb/fpl_limit.yaml",
+    "policyengine_us/parameters/gov/hhs/medicare/savings_programs/eligibility/asset/applies.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/category/is_qmb_eligible.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_benefit_value.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/qmb_cost_sharing.py",
+    "policyengine_us/variables/gov/hhs/medicare/savings_programs/msp_federal_cost.py",
+    "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
+    "policyengine_us/variables/gov/hhs/medicare/costs/medicare_gross_cost.py"
+   ]
+  }
+ }
+}

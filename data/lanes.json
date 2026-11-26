@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-30",
+ "updated": "2026-11-26",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -621,6 +621,17 @@
    "running": false,
    "updated": "2026-10-23",
    "note": "123 DWP claims (Tables 1-4, FYE 2026, gainers) plus 5 Resolution Foundation and 12 HM Treasury AB2025 claims computed on the certified Microcosm pair (microcosm-uk-2024-25-national-20261019T083323Z-6cba5d71, policyengine-uk 2.132.6); statuses {'comparable': 59, 'concept_mismatch': 6, 'constructed': 87, 'pe_gap': 1}"
+  },
+  {
+   "id": "fiscal-lab-memo-scores",
+   "source": "Fiscal Lab",
+   "area": "health bill scores (Healthcare Working Group memo)",
+   "mode": 2,
+   "country": "US",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-11-26",
+   "note": "248 claims on 110 bills (FY2027-2036 totals, 69 with low-high ranges); none computed: 9 bills not computed, 101 mostly or wholly outside the household model (pe_gap)"
   }
  ]
 }
