@@ -64,8 +64,9 @@ holds 251 figures: 248 current and 3 superseded.
 The extract carries no annual paths, components, coverage tables, State
 tables or CBO comparison runs.
 
-Publishing even these 251 figures is a judgment call against the terms. It
-waits on Max's go before anything is pushed.
+Publishing even these 251 figures is a judgment call against the terms.
+Max made it on 2026-11-26 (decision d3450): publish them in this public
+repository.
 
 ## Rounded ranges
 
