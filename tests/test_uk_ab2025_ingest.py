@@ -393,3 +393,30 @@ def test_a_release_the_ledger_lacks_raises():
         _source_model("cpag", {"source_model": "ifs_taxben"})
     with pytest.raises(ValueError, match="no source_model"):
         _source_model("fraser_of_allander", {"source_model": ""})
+
+
+def test_stage_hashes_each_score_a_fixed_number_of_times(monkeypatch):
+    """Tallying merged republications once rescanned the kept claims for
+    every row and rehashed each, about 1.9 million claim ids for 8,881
+    rows, which dominated a full build. Each staged score is now hashed a
+    fixed few times however many claims its source has: once to merge its
+    twins, once to tally them, once more if kept, and once in the
+    uniqueness gate."""
+    from collections import Counter
+
+    from scorecard_db.models import ExternalScore
+
+    calls: Counter = Counter()
+    alive = []  # holds each score so no id is reused while counting
+    claim_id = ExternalScore.claim_id
+
+    def counting(self):
+        calls[id(self)] += 1
+        alive.append(self)
+        return claim_id(self)
+
+    monkeypatch.setattr(ExternalScore, "claim_id", counting)
+    _, acct = stage()
+    assert acct["drops"]["republished_twin_merged"]["rows"] > 0
+    assert max(calls.values()) <= 4
+    assert sum(calls.values()) <= 3 * acct["read"]

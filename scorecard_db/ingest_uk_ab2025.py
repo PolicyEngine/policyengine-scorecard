@@ -1035,13 +1035,17 @@ def stage() -> tuple[list[ExternalScore], dict]:
         )
         twins = len(mine) - len(kept)
         if twins:
-            fam_of = {s.claim_id(): s.publication["family"] for s in mine}
-            kept_ids = {s.claim_id() for s in kept}
-            for s in mine:
-                if s.claim_id() in kept_ids and s is not next(
-                    k for k in kept if k.claim_id() == s.claim_id()
-                ):
-                    fam = acct["by_family"][fam_of[s.claim_id()]]
+            # Hash each score once. A row is a merged twin when another row
+            # with its claim id is the one kept; the tally goes to the family
+            # of the last row with that id, as it always has.
+            ids = [s.claim_id() for s in mine]
+            fam_of = {cid: s.publication["family"] for s, cid in zip(mine, ids)}
+            kept_by_id: dict[str, ExternalScore] = {}
+            for k in kept:
+                kept_by_id.setdefault(k.claim_id(), k)
+            for s, cid in zip(mine, ids):
+                if cid in kept_by_id and s is not kept_by_id[cid]:
+                    fam = acct["by_family"][fam_of[cid]]
                     _drop(acct, fam, "republished_twin_merged")
                     acct["ingested"] -= 1
                     fam["ingested"] -= 1
