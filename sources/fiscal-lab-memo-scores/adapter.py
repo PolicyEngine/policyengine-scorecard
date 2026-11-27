@@ -60,6 +60,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import urllib.request
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
@@ -508,14 +509,21 @@ def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
         body = resp.read()
     digest = hashlib.sha256(body).hexdigest()
     dest.parent.mkdir(parents=True, exist_ok=True)
-    part = dest.with_name(dest.name + ".part")
-    part.write_bytes(body)
-    saved = (
-        dest
-        if digest == page["sha256"]
-        else dest.with_name(f"{dest.stem}.{digest[:12]}{dest.suffix}")
-    )
-    os.replace(part, saved)
+    # Each fetch stages its own body, so overlapping fetches cannot rename
+    # one another's bytes into place.
+    fd, part = tempfile.mkstemp(dir=dest.parent, prefix=dest.name + ".", suffix=".part")
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(body)
+        saved = (
+            dest
+            if digest == page["sha256"]
+            else dest.with_name(f"{dest.stem}.{digest[:12]}{dest.suffix}")
+        )
+        os.replace(part, saved)
+    except BaseException:
+        Path(part).unlink(missing_ok=True)
+        raise
     return digest, saved
 
 

@@ -47,7 +47,8 @@ changelog check reads the entry's structured figures, not its sentences.
 - `adapter.py fetch` saves the page to the git-ignored `raw/` only when it
   matches the pinned hash. The URL serves only Fiscal Lab's latest build, so
   a page that differs is saved beside the pinned copy, named by its hash,
-  and the pinned copy is left as it was.
+  and the pinned copy is left as it was. Each fetch stages its page in a file
+  of its own, so overlapping fetches cannot swap pages.
 - `adapter.py build` checks the page against its pinned hash and rebuilds the
   page's own CSV byte for byte. The rebuilt CSV is checked against the hash
   of the copy captured from the page, but it is not written.
@@ -102,11 +103,12 @@ No PolicyEngine number is recorded for any bill. There are two statuses:
 - `not_computed`: the household model has levers for the bill's main
   provisions, so a run could be built. The bill gets no result row, and the
   feed shows the synthetic not_computed status.
-- `pe_gap`: the household model has no lever for the provisions that carry
-  the bill's score. For most of these bills (`none`) it has no lever at all,
-  for example for provider payment rules, drug pricing, Medicare program
-  design and regulatory or reporting changes. For 10 (`partial`) it has
-  levers for only a minority of the score. The bill gets a valueless `pe_gap` result
+- `pe_gap`: the household model and its default dataset offer no lever for
+  the provisions that carry the bill's score. For most of these bills
+  (`none`) there is no lever at all, for example for provider payment rules,
+  drug pricing, Medicare program design and regulatory or reporting changes.
+  For 9 (`partial`) there are levers for only a minority of the score. The
+  bill gets a valueless `pe_gap` result
   row with the reason. It gets no diagnosis, because a gated `pe_gap`
   diagnosis needs a citable issue, and none is filed.
 
@@ -146,8 +148,9 @@ run would rest on an assignment PolicyEngine does not make. H.R. 3947,
 H.R. 3907, H.R. 4641 and H.R. 10045 therefore stay `pe_gap` none.
 
 The independent review of PR #261 found reasons that misstated how 2.2.2
-works, and a sweep of all 110 reasons found more of the same kind. 32 were
-reworded against the source:
+works, and a sweep of all 110 reasons found more of the same kind. After its
+first round, 30 reasons were reworded against the source, and 2 more,
+H.R. 3415's and H.R. 8375's, only had their files corrected:
 
 - Medicaid has two match rates in each state, not one: ACA expansion adults
   get one national expansion rate, and every other enrollee gets the state's
@@ -170,6 +173,33 @@ reworded against the source:
   coverage.
 
 No other bill's status or scope changed.
+
+The review's second round found four more misstatements. A sweep of every
+reason on a bill with an employer exclusion or Basic Health Program line found
+the first two elsewhere too. 16 reasons were reworded, and no status or scope
+changed:
+
+- A structural reform can move pay from taxable wages into employer-paid
+  premiums, which never enter taxable income, so the employer exclusion is
+  not missing from the rules. It has no base: 2.2.2's certified default
+  dataset, a Microcosm build, carries no employer-paid or pre-tax premium
+  amounts. A lever needs its amount in that data, so a stated employer
+  premium rise is not one. The reasons for H.R. 5509, H.R. 5448, H.R. 3415,
+  H.R. 9257, H.R. 7227, H.R. 9941, H.R. 3762, H.R. 6423, H.R. 3069,
+  H.R. 7023 and H.R. 9702 now place that gap in the data.
+- The Basic Health Program has a lever of its own: its premium adjustment
+  factor, a parameter, scales the program's reference premium without moving
+  the Medicaid cost index. H.R. 3415 and H.R. 9257 now name it.
+- The federal Medicare Savings Program cost (`msp_federal_cost`) leaves out
+  anyone enrolled in full Medicaid, so a run of S. 4886 would not count every
+  newly eligible person.
+- The premium tax credit's income bracket is national, so H.R. 3257's
+  below-poverty credit needs a structural override limited to states that
+  have not expanded Medicaid.
+- H.R. 4206 now names Parts A and B, since for Part D 2.2.2 computes only
+  the income-related surcharge. H.R. 711 gives the selected-plan ratio on the
+  benchmark silver premium, and H.R. 6609 adds the family tier to the cost
+  index.
 
 The result is 9 bills `not_computed`, all partial, and 101 `pe_gap` (92 none,
 9 partial). A partial `not_computed` bill is one where PolicyEngine's levers

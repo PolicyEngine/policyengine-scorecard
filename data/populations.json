@@ -51990,7 +51990,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
+    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -52011,7 +52011,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -52030,7 +52030,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -56019,7 +56019,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels."
+    "pe_missing": "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -56040,7 +56040,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+     "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -56059,7 +56059,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+      "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -56319,7 +56319,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced."
+    "pe_missing": "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -56340,7 +56340,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+     "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -56359,7 +56359,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+      "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -56469,7 +56469,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail."
+    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -56490,7 +56490,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -56509,7 +56509,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -57231,7 +57231,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -57252,7 +57252,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -57271,7 +57271,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -57306,7 +57306,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -57327,7 +57327,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -57346,7 +57346,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -57939,7 +57939,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
+    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -57960,7 +57960,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -57979,7 +57979,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -58014,7 +58014,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -58035,7 +58035,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -58054,7 +58054,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -58347,7 +58347,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -58368,7 +58368,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -58387,7 +58387,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -58422,7 +58422,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -58443,7 +58443,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -58462,7 +58462,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -58797,7 +58797,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area)."
+    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier)."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -58818,7 +58818,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -58837,7 +58837,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -59301,7 +59301,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -59322,7 +59322,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -59341,7 +59341,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -59676,7 +59676,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
+    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -59697,7 +59697,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -59716,7 +59716,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -59826,7 +59826,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
+    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -59847,7 +59847,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -59866,7 +59866,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -61005,7 +61005,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels."
+    "pe_missing": "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -61026,7 +61026,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+     "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -61045,7 +61045,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+      "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -61155,7 +61155,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -61176,7 +61176,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -61195,7 +61195,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -61305,7 +61305,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
+    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -61326,7 +61326,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -61345,7 +61345,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -62829,7 +62829,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -62850,7 +62850,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -62869,7 +62869,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -62979,7 +62979,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
+    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63000,7 +63000,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63019,7 +63019,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63054,7 +63054,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63075,7 +63075,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63094,7 +63094,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63354,7 +63354,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63375,7 +63375,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63394,7 +63394,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63429,7 +63429,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63450,7 +63450,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63469,7 +63469,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63633,7 +63633,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area)."
+    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier)."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63654,7 +63654,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63673,7 +63673,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63783,7 +63783,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced."
+    "pe_missing": "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63804,7 +63804,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+     "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63823,7 +63823,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+      "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63858,7 +63858,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63879,7 +63879,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63898,7 +63898,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -64362,7 +64362,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail."
+    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -64383,7 +64383,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -64402,7 +64402,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -65541,7 +65541,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
+    "pe_missing": "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -65562,7 +65562,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+     "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -65581,7 +65581,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: its marketplace plans are the benchmark silver and lowest-cost bronze plans, priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
+      "The bill only regulates short-term plans, and its score is a risk-pool premium response. PolicyEngine has no short-term plan coverage and no premium response: a marketplace enrollee pays the lowest-cost bronze premium or the benchmark silver premium (slcsp) times a selected-plan ratio that defaults to one, both priced from set rating-area premiums. Fiscal Lab does not publish the benchmark change it assumed, so a run would have to invent it.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -66141,7 +66141,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced."
+    "pe_missing": "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -66162,7 +66162,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+     "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -66181,7 +66181,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "2.2.2 has no plan benefit-design rules and no link between premiums and wages. It does carry the exclusion: premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages, and employer-paid premiums are an input that never enters taxable income. But premiums and wages are both survey inputs, so a reform cannot impose the premium rise that moves pay from taxable wages into excluded premiums, and the revenue loss cannot be produced.",
+      "2.2.2 has no plan benefit-design rules, and no formula ties premiums to wages. It does carry the exclusion: employer-paid premiums never enter taxable income, and premiums workers pay through pre-tax payroll deductions come out of income-tax and payroll-tax wages. A structural reform could impose Fiscal Lab's stated employer premium rise and take it out of taxable wages, but the default dataset holds neither employer-paid nor pre-tax premium amounts, so both inputs are zero for every record and the shift has no base. The gap is in the data, not the rules.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -66291,7 +66291,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels."
+    "pe_missing": "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -66312,7 +66312,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+     "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -66331,7 +66331,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates or premium pricing, no wage-to-premium shift for employer coverage, and no federal employee health plan costs; nearly all of the score runs through those channels.",
+      "PolicyEngine has no plan benefit mandates, premium pricing or federal employee health plan costs. Fiscal Lab states the premium rise behind its employer exclusion line, nearly all of the score, and a structural reform could move that rise out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -66366,7 +66366,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail."
+    "pe_missing": "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -66387,7 +66387,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+     "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -66406,7 +66406,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail.",
+      "PolicyEngine has no vaccine coverage, Vaccines for Children program, Part D benefit spending, or premium response to covered benefits. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index; neither has service detail. The employer exclusion line, a minority of the score, rests on a stated employer premium rise that a structural reform could move out of taxable wages, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -67491,7 +67491,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -67512,7 +67512,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -67531,7 +67531,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, no wage-to-premium shift for employer coverage, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no benefit mandates or premium pricing from plan benefits, and no service-level Medicaid or Medicare spending. Fiscal Lab states the individual-market premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. Its employer premium rise could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -67566,7 +67566,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
+    "pe_missing": "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -67587,7 +67587,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+     "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -67606,7 +67606,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's premiums and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
+      "policyengine-us 2.2.2 carries Medicare spending as one national per-capita calibration value with no service, telehealth or provider-payment rules. It computes each enrollee's Part A and Part B premiums (for Part D, only the income-related surcharge) and the Medicare Savings Program's premium and cost-sharing help, but the standard Part B premium is a set parameter that does not follow Part B spending, so neither the telehealth cost nor its premium and dual-eligible offsets can be computed.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -67899,7 +67899,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area)."
+    "pe_missing": "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier)."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -67920,7 +67920,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+     "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -67939,7 +67939,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age and rating area).",
+      "PolicyEngine has no pharmacy reimbursement, Part D plan bids or drug spending, or Medicaid managed care payment rates. Medicare spending per enrollee is one national per-capita parameter, and Medicaid cost is each state's spending total split across enrollees by a benchmark-premium cost index (age, rating area and, where it applies, family tier).",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -68082,7 +68082,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -68103,7 +68103,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -68122,7 +68122,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the cost-sharing mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no cost-sharing mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -68157,7 +68157,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -68178,7 +68178,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -68197,7 +68197,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program, the self-employed and medical expense deductions and the exclusion for premiums workers pay before tax, and a structural reform could add employer-paid premiums, an input, to taxable wages. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -68382,7 +68382,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -68403,7 +68403,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -68422,7 +68422,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no plan benefit mandates, no premium pricing and no wage-to-premium shift for employer coverage, which carry most of the score; its credit rules could take only an assumed benchmark premium rise, a minority of it. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "PolicyEngine has no plan benefit mandates or premium pricing, but Fiscal Lab states the premium rises the bill causes. The individual-market rise, behind the smaller premium tax credit and Basic Health Program lines, could be imposed on the credit's benchmark (slcsp) and the Basic Health Program's premium adjustment factor; raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -68811,7 +68811,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
+    "pe_missing": "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -68832,7 +68832,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+     "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -68851,7 +68851,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
+      "The QMB income limit and the Medicare Savings Program asset test are parameters, so the new Medicare Savings Program premium and cost-sharing payments, a minority of the score, could run. PolicyEngine values QMB cost sharing as a flat share of average Medicare spending and has no take-up step for these programs, so a run would count every newly eligible person, except that the federal cost (msp_federal_cost) leaves out anyone enrolled in full Medicaid. 2.2.2 has no Medicare cost sharing by beneficiary, so the out-of-pocket cap cannot run, and it has no Medicare Advantage or Part D low-income subsidy.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -69444,7 +69444,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
+    "pe_missing": "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -69465,7 +69465,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+     "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -69484,7 +69484,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "Neither the copay-assistance mandate nor the employer-exclusion channel, which carries most of the score, is in 2.2.2. Its credit rules could take Fiscal Lab's assumed benchmark premium rise, a minority of the score. That rise belongs on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
+      "2.2.2 has no copay-assistance mandate, but Fiscal Lab states the premium rises it causes. The employer rise, behind the exclusion line that carries most of the score, could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The individual-market rise, a minority of the score, could be imposed on the credit's benchmark (slcsp): state_rating_area_cost also drives PolicyEngine's Medicaid cost index, so raising it would raise Medicaid cost too.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -69648,7 +69648,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index."
+    "pe_missing": "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -69669,7 +69669,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+     "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -69688,7 +69688,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks, and employer premium changes do not shift taxable wages. Fiscal Lab states the private premium rise behind its smaller premium tax credit line, which a reform could impose on the credit's benchmark (slcsp); the rest of the score has no lever. Raising state_rating_area_cost instead would also raise PolicyEngine's Medicaid cost index.",
+      "PolicyEngine has no hospital payment or staffing cost model and no Medicare Advantage benchmarks. Fiscal Lab states the private premium rise behind its premium tax credit and Basic Health Program lines, a minority of the score, which a reform could impose on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor; raising state_rating_area_cost or slcsp_age_0 instead would also raise PolicyEngine's Medicaid cost index. The same rise behind the employer exclusion line could be moved out of taxable wages by a structural reform, but the default dataset has no employer-paid premiums for it to act on. The rest of the score has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",

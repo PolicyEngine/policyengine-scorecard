@@ -57,7 +57,7 @@ PE_STATUS_PATH = SOURCE_DIR / "pe_status.json"
 EXTRACT_PATH = REPO / "data" / "externals" / "fiscal-lab-memo-scores.json"
 
 EXTRACT_SHA256 = "3a68893d09c82ceb26c1edf7b7c96088588d3c6b337f124f23955d1185b75d7b"
-PE_STATUS_SHA256 = "86a1640e922f4478deee18ab0681da4ad56aafb2103ed4f64acf97e9b21dca8d"
+PE_STATUS_SHA256 = "3fc7a57a0107ba07e5ca5fdb4b00ce586dbae550399e0df1a292d47614fd48b2"
 
 SOURCE = "fiscal_lab"
 REGISTRY_MARK = "fiscal_lab_memo_scores"
@@ -69,7 +69,11 @@ WINDOW = "FY2027-2036"
 PERIOD_START, PERIOD_END = 2027, 2036
 
 ENGINE_PIN = "2.2.2"  # policyengine-us source the statuses were judged against
-STATUS_RUN_ID = "fiscal-lab-pe-status-2026-11-26"
+# Every classifier run this module writes is "fiscal-lab-pe-status-<judged>".
+# A rerun replaces all of them, so a later dated reclassification leaves
+# no gap row from an earlier one behind.
+STATUS_RUN_PREFIX = "fiscal-lab-pe-status-"
+STATUS_RUN_ID = STATUS_RUN_PREFIX + "2026-11-26"
 STATUS_COMPUTED_AT = "2026-11-26T00:00:00+00:00"
 # The feed labels a result's release from its bundle id; "no run" reads as
 # what it is (the annotations say the status is judged against the source).
@@ -638,9 +642,10 @@ def ingest(db_path: Path) -> dict:
     """Validate, replace this registry, then mirror the lane.
 
     Claims that left the census go with their results and diagnoses. On the
-    claims that remain, only this module's own pe_gap rows (STATUS_RUN_ID)
-    are replaced, so a counterpart attached later by another step survives a
-    rerun. The feed shows a claim's latest row by (computed_at, id), so a
+    claims that remain, only this module's own pe_gap rows are replaced:
+    those of any classifier run (STATUS_RUN_PREFIX), so a reclassification
+    under a new date leaves no stale gap, while a counterpart attached later
+    by another step survives a rerun. The feed shows a claim's latest row by (computed_at, id), so a
     counterpart replaces the pe_gap status only when dated after
     STATUS_COMPUTED_AT; one dated on the stamp itself would be ordered by
     insert id alone, which a rerun changes, so the ingest refuses it.
@@ -676,9 +681,9 @@ def ingest(db_path: Path) -> dict:
             if kept:
                 marks = ",".join("?" for _ in kept)
                 db.conn.execute(
-                    f"DELETE FROM pe_results WHERE run_id = ? "
+                    "DELETE FROM pe_results WHERE substr(run_id, 1, ?) = ? "
                     f"AND claim_id IN ({marks})",
-                    [STATUS_RUN_ID, *kept],
+                    [len(STATUS_RUN_PREFIX), STATUS_RUN_PREFIX, *kept],
                 )
             db.conn.executemany(SCORES_SQL, [ScorecardDB.score_row(s) for s in scores])
             register_baselines_txn(db)

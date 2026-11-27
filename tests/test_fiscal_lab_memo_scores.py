@@ -545,6 +545,47 @@ def test_a_status_flip_removes_that_bills_gap_rows(tmp_path, monkeypatch, status
         db.close()
 
 
+def test_a_later_dated_reclassification_leaves_no_stale_gap(
+    tmp_path, monkeypatch, status
+):
+    """A reclassification judged on a later date writes under a new run id.
+    The rerun must replace the earlier run's gap rows too, so a bill moved
+    to not_computed keeps no pe_gap row and the database matches a fresh
+    ingest of the same classification."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    gap = next(s for s, e in status["bills"].items() if e["status"] == "pe_gap")
+    revised = copy.deepcopy(status)
+    revised["bills"][gap].update(status="not_computed", scope="partial")
+    revised["judged"] = "2026-12-05"
+    monkeypatch.setattr(mod, "load_pe_status", lambda slugs, **k: revised)
+    monkeypatch.setattr(mod, "STATUS_RUN_ID", mod.STATUS_RUN_PREFIX + "2026-12-05")
+    monkeypatch.setattr(mod, "STATUS_COMPUTED_AT", "2026-12-05T00:00:00+00:00")
+    rerun = mod.ingest(path)
+    fresh_path = tmp_path / "fresh.db"
+    fresh = mod.ingest(fresh_path)
+
+    def results(p):
+        db = ScorecardDB(p)
+        try:
+            return sorted(
+                tuple(r)
+                for r in db.conn.execute(
+                    "SELECT claim_id, run_id, computed_at, status, pe_construction "
+                    "FROM pe_results"
+                )
+            )
+        finally:
+            db.close()
+
+    after = results(path)
+    assert after == results(fresh_path)
+    assert not [r for r in after if r[4].endswith(":" + gap)]
+    assert {r[1] for r in after} == {mod.STATUS_RUN_PREFIX + "2026-12-05"}
+    assert rerun["pe_gap_results"] == fresh["pe_gap_results"] == len(after)
+
+
 def test_lane_keeps_later_stages_and_regresses_when_results_go(
     tmp_path, monkeypatch, scores
 ):
@@ -725,7 +766,8 @@ def test_overlapping_ingests_write_one_gap_row_per_claim(tmp_path, monkeypatch, 
     """Two first ingests whose registry reads would both land before either
     writes must still leave one pe_gap row per claim. Each waits up to a
     second for the other's read, so an ingest that holds the write lock
-    before reading cannot deadlock here."""
+    before reading cannot deadlock here. The lane mirror is stubbed, so
+    this covers the database rows, not the shared lanes.json write (#262)."""
     monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
     path = tmp_path / "scorecard.db"
     ScorecardDB(path).close()
@@ -1148,3 +1190,37 @@ def test_fetch_of_the_pinned_page_replaces_dest(tmp_path, monkeypatch):
     assert adapter.main(["fetch", "--dashboard", str(dest)]) == 0
     assert dest.read_bytes() == pinned
     assert list(dest.parent.iterdir()) == [dest]
+
+
+def test_overlapping_fetches_keep_their_own_bodies(tmp_path, monkeypatch):
+    """A second fetch that lands between the first's staging and rename must
+    not swap its bytes into the first's place: the pinned body goes to dest
+    and the newer one beside it."""
+    adapter = _adapter()
+    pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
+    _serve(adapter, monkeypatch, pinned, pinned)
+    bodies = iter([pinned, newer])
+    monkeypatch.setattr(
+        adapter.urllib.request,
+        "urlopen",
+        lambda req, timeout=None: _Resp(next(bodies)),
+    )
+    dest = tmp_path / "raw" / "dashboard.html"
+    real_replace = os.replace
+    nested = []
+
+    def staged_replace(src, dst):
+        if not nested:
+            nested.append(None)
+            nested[0] = adapter.fetch(dest)
+        return real_replace(src, dst)
+
+    monkeypatch.setattr(adapter.os, "replace", staged_replace)
+    outer = adapter.fetch(dest)
+    newer_digest = hashlib.sha256(newer).hexdigest()
+    beside = dest.with_name(f"dashboard.{newer_digest[:12]}.html")
+    assert outer == (hashlib.sha256(pinned).hexdigest(), dest)
+    assert nested == [(newer_digest, beside)]
+    assert dest.read_bytes() == pinned
+    assert beside.read_bytes() == newer
+    assert sorted(dest.parent.iterdir()) == sorted([dest, beside])
