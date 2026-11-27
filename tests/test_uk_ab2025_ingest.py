@@ -12,6 +12,8 @@ import gzip
 import json
 import shutil
 import sqlite3
+import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -26,6 +28,7 @@ from scorecard_db.ingest_uk_ab2025 import (
     REGISTRY,
     REGISTRY_MARK,
     _DROP_BY_NAME,
+    _merged_twins,
     check_accounting,
     expected,
     ingest,
@@ -395,43 +398,105 @@ def test_a_release_the_ledger_lacks_raises():
         _source_model("fraser_of_allander", {"source_model": ""})
 
 
-def test_stage_work_on_claim_ids_grows_linearly(monkeypatch):
+def test_stage_hashes_each_score_a_bounded_number_of_times(monkeypatch):
     """Tallying merged republications once rescanned the kept claims for
     every row and rehashed each: about 1.9 million claim-id hashes for 8,881
-    rows, which dominated a full build. Hashing each id once is not enough
-    on its own: a scan over cached ids is still quadratic. So the test
-    counts both the hashes and the comparisons between claim ids. A linear
-    tally hashes each score a few times (merge, tally, kept, uniqueness
-    gate) and compares ids about once per lookup. The bounds leave room for
-    another linear pass, and sit far below what a per-row scan costs."""
+    rows, with one score hashed 1,147 times, which dominated a full build.
+    Through the whole of stage() each score is now hashed a few times (merge,
+    tally, kept, uniqueness gate). The bound leaves room for another linear
+    pass. The tally's growth itself is tested on _merged_twins below."""
     from collections import Counter
 
     from scorecard_db.models import ExternalScore
 
     hashes: Counter = Counter()
-    compared = [0]
     alive = []  # holds each score so no id is reused while counting
     claim_id = ExternalScore.claim_id
-
-    class CountedId(str):
-        __hash__ = str.__hash__
-
-        def __eq__(self, other):
-            compared[0] += 1
-            return str.__eq__(self, other)
-
-        def __ne__(self, other):
-            compared[0] += 1
-            return str.__ne__(self, other)
 
     def counting(self):
         hashes[id(self)] += 1
         alive.append(self)
-        return CountedId(claim_id(self))
+        return claim_id(self)
 
     monkeypatch.setattr(ExternalScore, "claim_id", counting)
     _, acct = stage()
     assert acct["drops"]["republished_twin_merged"]["rows"] > 0
     assert max(hashes.values()) <= 8
     assert sum(hashes.values()) <= 4 * acct["read"]
-    assert compared[0] <= acct["read"]
+
+
+class _CountedId(str):
+    """A claim id whose comparisons run in Python, so a tracer sees them."""
+
+    __hash__ = str.__hash__
+
+    def __eq__(self, other):
+        return str.__eq__(self, other)
+
+    def __ne__(self, other):
+        return str.__ne__(self, other)
+
+
+@dataclass
+class _Row:
+    """Stands in for an ExternalScore: a claim id, a family, and the
+    dataclass __eq__ that ExternalScore also has."""
+
+    cid: str
+    publication: dict
+
+    def claim_id(self):
+        return _CountedId(self.cid)
+
+
+def _printed_twice(n: int) -> tuple[list, list]:
+    """n claims, each printed in two families, as merge_republications
+    leaves them: the second printing kept, kept rows in first-seen order."""
+    mine, kept = [], []
+    for i in range(n):
+        first = _Row(f"c{i}", {"family": "figure"})
+        second = _Row(f"c{i}", {"family": "table"})
+        mine += [first, second]
+        kept.append(second)
+    return mine, kept
+
+
+def _traced_steps(fn, *args) -> int:
+    """Python-level work: every call, line and return the tracer sees."""
+    steps = [0]
+
+    def tracer(frame, event, arg):
+        steps[0] += 1
+        return tracer
+
+    previous = sys.gettrace()
+    sys.settrace(tracer)
+    try:
+        fn(*args)
+    finally:
+        sys.settrace(previous)
+    return steps[0]
+
+
+def test_merged_twins_charge_the_last_row_s_family():
+    """A merged twin is tallied once, the kept row never; the tally goes to
+    the family of the last row with that claim id, as before the rewrite.
+    #264 asks whether it should be the twin's own family."""
+    a_fig = _Row("a", {"family": "figure"})
+    b = _Row("b", {"family": "figure"})
+    a_tab = _Row("a", {"family": "table"})
+    assert _merged_twins([a_fig, b, a_tab], [a_tab, b]) == ["table"]
+    assert _merged_twins([a_tab, b, a_fig], [a_tab, b]) == ["figure"]
+    assert _merged_twins([a_fig, b], [a_fig, b]) == []
+
+
+def test_the_twin_tally_grows_linearly():
+    """Quadrupling the rows must roughly quadruple the tally's work, not
+    multiply it by sixteen. The tracer sees every Python step, including the
+    id comparisons and the rows' dataclass __eq__. So a scan of kept rows per
+    row is caught however it is written: rehashing, cached ids, identity
+    tests, or `in`. A scan done wholly in C over plain ints (say ids from
+    id()) would slip past."""
+    small = _traced_steps(_merged_twins, *_printed_twice(250))
+    large = _traced_steps(_merged_twins, *_printed_twice(1000))
+    assert large <= 6 * small, (small, large)
