@@ -488,9 +488,10 @@ def ingest(db_path: Path) -> dict:
     result, ordered as the feed orders them (computed_at, then id), carries a
     PolicyEngine value: the rule the populations feed and the app use for
     "with a value". A valueless pe_gap or mismatch that is a claim's latest
-    row does not count that claim as computed. The committed JSON lane mirror is deliberately post-transaction, matching
-    the repository-wide convention. A mirror failure is recoverable by safely
-    rerunning this idempotent ingest.
+    row does not count that claim as computed. The committed JSON lane mirror
+    is deliberately post-transaction, matching the repository-wide
+    convention. A mirror failure is recoverable by safely rerunning this
+    idempotent ingest.
     """
     scores = stage_scores()
     score_rows = [ScorecardDB.score_row(score) for score in scores]

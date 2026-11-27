@@ -221,7 +221,9 @@ def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict
         f" WHERE s.source IN {_HARVEST_SOURCES_SQL}"
         " AND r.computed_value IS NOT NULL"
     ):
-        lane = lane_of[row["claim_id"]]
+        lane = lane_of.get(row["claim_id"])
+        if lane is None:
+            continue  # a claim added after the first read
         computed[lane] += 1
         latest[lane] = max(latest.get(lane, ""), row["d"] or "")
 

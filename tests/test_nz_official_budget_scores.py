@@ -453,6 +453,57 @@ def test_a_newer_valueless_gap_regresses_a_computed_lane(tmp_path, monkeypatch):
     assert "0 of 12 claims retain a PolicyEngine value" in lane["detail"]
 
 
+def test_a_mixed_lane_counts_and_dates_only_valued_latest_rows(tmp_path, monkeypatch):
+    """Three claims with results: one valued; one whose latest row is a
+    newer valueless gap; and one whose newer-dated gap was inserted before
+    an older value, so date, not insert order, picks its latest row. Only
+    the first counts, the lane is dated by it, and the populations feed
+    agrees."""
+    from scorecard_db.export_populations import export
+
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    valued, gap, reordered = mod.stage_scores()[:3]
+    db = ScorecardDB(path)
+    db.add_results(
+        [
+            _result(
+                valued,
+                status=ComparisonStatus.CONSTRUCTED,
+                value=1.0,
+                when="2026-08-28",
+            ),
+            _result(gap, status=ComparisonStatus.PE_GAP, value=None, when="2026-08-30"),
+            _result(
+                reordered, status=ComparisonStatus.PE_GAP, value=None, when="2026-08-31"
+            ),
+            _result(
+                reordered,
+                status=ComparisonStatus.CONSTRUCTED,
+                value=2.0,
+                when="2026-08-29",
+            ),
+        ]
+    )
+    db.close()
+
+    summary = mod.ingest(path)
+    assert summary["results"] == 3
+    assert (summary["computed_claims"], summary["lane_stage"]) == (1, "computed")
+    db = ScorecardDB(path)
+    lane = db.conn.execute(
+        "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?", (mod.LANE_ID,)
+    ).fetchone()
+    db.close()
+    assert lane["detail"].startswith("1 of 12 claims computed — ")
+    assert lane["updated_at"] == "2026-08-28"
+    out_path = tmp_path / "populations.json"
+    export(path, out_path=out_path, built="2026-08-29")
+    rows = json.loads(out_path.read_text())["rows"]
+    assert sum(row["latest"]["value"] is not None for row in rows) == 1
+
+
 def test_lane_mirror_failure_is_recoverable_by_idempotent_retry(tmp_path, monkeypatch):
     path = tmp_path / "scorecard.db"
 

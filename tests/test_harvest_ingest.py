@@ -799,6 +799,16 @@ class TestAdvanceComputedLanes:
                 "2026-08-09",
                 id="newer-value-supersedes-a-gap",
             ),
+            pytest.param(
+                [("pe_gap", None, "2026-08-09"), ("constructed", 1.0, "2026-08-08")],
+                None,
+                id="date-not-insert-order-picks-the-gap",
+            ),
+            pytest.param(
+                [("constructed", 1.0, "2026-08-09"), ("pe_gap", None, "2026-08-08")],
+                "2026-08-09",
+                id="date-not-insert-order-picks-the-value",
+            ),
         ],
     )
     def test_counts_a_claim_only_when_its_latest_result_has_a_value(
@@ -849,6 +859,52 @@ class TestAdvanceComputedLanes:
             )
         else:
             assert tuple(lane) == ("ingested", "adapter note", "2026-08-02")
+
+    def test_a_mixed_lane_counts_and_dates_only_its_valued_claims(self, prepared):
+        """In a lane holding a claim with a value and a claim whose latest
+        row is a newer valueless gap, N counts only the valued claim and
+        updated_at is that claim's date, not the gap's."""
+        from scorecard_db import PEResult
+        from scorecard_db.ingest_harvest import advance_computed_lanes
+
+        db_path, feed = prepared
+        valued = self._claim(
+            "cbo", reform=ReformRef(framework="policy_ref", reform={"policy": "x"})
+        )
+        gap = self._claim(
+            "cbo", reform=ReformRef(framework="policy_ref", reform={"policy": "y"})
+        )
+        db = ScorecardDB(db_path)
+        db.upsert_scores([gap])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=claim.claim_id(),
+                    computed_value=value,
+                    status=status,
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at=f"{when}T00:00:00Z",
+                )
+                for claim, status, value, when in (
+                    (valued, "constructed", 1.0, "2026-08-08"),
+                    (gap, "pe_gap", None, "2026-08-10"),
+                )
+            ]
+        )
+        db.close()
+        advance_computed_lanes(db_path, feed_path=feed)
+        db = ScorecardDB(db_path)
+        lane = db.conn.execute(
+            "SELECT stage, detail, updated_at FROM lanes"
+            " WHERE lane = 'cbo-cost-estimates'"
+        ).fetchone()
+        db.close()
+        assert tuple(lane) == (
+            "computed",
+            "1 of 2 claims computed — adapter note",
+            "2026-08-08",
+        )
 
 
 def test_every_committed_lane_carries_a_country():
