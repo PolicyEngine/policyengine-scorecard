@@ -777,6 +777,79 @@ class TestAdvanceComputedLanes:
         db.close()
         assert (row["stage"], row["detail"]) == ("diagnosing", "batch open")
 
+    @pytest.mark.parametrize(
+        "rows, updated",
+        [
+            pytest.param([("pe_gap", None, "2026-08-09")], None, id="gap-only"),
+            pytest.param(
+                [("constructed", 1.0, "2026-08-08"), ("pe_gap", None, "2026-08-09")],
+                None,
+                id="newer-gap-supersedes-a-value",
+            ),
+            pytest.param(
+                [("constructed", 1.0, "2026-08-09"), ("pe_gap", None, "2026-08-09")],
+                None,
+                id="tie-goes-to-the-later-id",
+            ),
+            pytest.param(
+                [
+                    ("concept_mismatch", None, "2026-08-08"),
+                    ("comparable", 2.0, "2026-08-09"),
+                ],
+                "2026-08-09",
+                id="newer-value-supersedes-a-gap",
+            ),
+        ],
+    )
+    def test_counts_a_claim_only_when_its_latest_result_has_a_value(
+        self, prepared, rows, updated
+    ):
+        """A claim counts as computed only when its latest result, ordered
+        as the feed orders them (computed_at, then id), carries a
+        PolicyEngine value; a valueless pe_gap or mismatch as the latest
+        row leaves its lane where the adapter put it."""
+        from scorecard_db import PEResult
+        from scorecard_db.ingest_harvest import advance_computed_lanes
+
+        db_path, feed = prepared
+        policy = ReformRef(framework="policy_ref", reform={"policy": "x"})
+        claim_id = self._claim("cbo", reform=policy).claim_id()
+        db = ScorecardDB(db_path)
+        for status, value, when in rows:
+            db.add_results(
+                [
+                    PEResult(
+                        claim_id=claim_id,
+                        computed_value=value,
+                        status=status,
+                        engine_version="1",
+                        data_bundle="b",
+                        computed_at=f"{when}T00:00:00Z",
+                    )
+                ]
+            )
+        db.close()
+        stats = advance_computed_lanes(db_path, feed_path=feed)
+        assert ("cbo-cost-estimates" in stats["lanes_advanced"]) is bool(updated)
+        assert set(stats["lanes_advanced"]) - {"cbo-cost-estimates"} == {
+            "jct-reform-scores",
+            "cbo-baseline",
+        }
+        db = ScorecardDB(db_path)
+        lane = db.conn.execute(
+            "SELECT stage, detail, updated_at FROM lanes"
+            " WHERE lane = 'cbo-cost-estimates'"
+        ).fetchone()
+        db.close()
+        if updated:
+            assert tuple(lane) == (
+                "computed",
+                "1 of 1 claims computed — adapter note",
+                updated,
+            )
+        else:
+            assert tuple(lane) == ("ingested", "adapter note", "2026-08-02")
+
 
 def test_every_committed_lane_carries_a_country():
     """The app's countryOf() defaults a missing key to US, so a committed

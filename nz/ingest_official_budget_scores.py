@@ -484,8 +484,11 @@ def ingest(db_path: Path) -> dict:
     source census; unchanged parents are updated in place and attachments are
     pruned only for claims that disappeared. Existing diagnosing/published/
     regressed lane states are never rolled back by a source refresh, while an
-    early-stage lane advances to computed when surviving results exist.
-    The committed JSON lane mirror is deliberately post-transaction, matching
+    early-stage lane advances to computed when a surviving claim's latest
+    result, ordered as the feed orders them (computed_at, then id), carries a
+    PolicyEngine value: the rule the populations feed and the app use for
+    "with a value". A valueless pe_gap or mismatch that is a claim's latest
+    row does not count that claim as computed. The committed JSON lane mirror is deliberately post-transaction, matching
     the repository-wide convention. A mirror failure is recoverable by safely
     rerunning this idempotent ingest.
     """
@@ -523,9 +526,9 @@ def ingest(db_path: Path) -> dict:
 
             result_state = db.conn.execute(
                 "SELECT COUNT(r.id) AS latest_results, "
-                "COALESCE(SUM(CASE WHEN r.status != 'not_computed' "
+                "COALESCE(SUM(CASE WHEN r.computed_value IS NOT NULL "
                 "THEN 1 ELSE 0 END), 0) AS computed_claims, "
-                "MAX(CASE WHEN r.status != 'not_computed' "
+                "MAX(CASE WHEN r.computed_value IS NOT NULL "
                 "THEN substr(r.computed_at, 1, 10) END) AS latest_result "
                 "FROM external_scores s "
                 "LEFT JOIN pe_results r ON r.id = ("
@@ -557,7 +560,10 @@ def ingest(db_path: Path) -> dict:
                 )
             elif current_lane is not None and current_lane["stage"] == "computed":
                 lane_stage = "regressed"
-                detail = f"0 of {len(scores)} claims retain results — {base_detail}"
+                detail = (
+                    f"0 of {len(scores)} claims retain a PolicyEngine value — "
+                    f"{base_detail}"
+                )
                 db.conn.execute(
                     LANE_SQL,
                     (LANE_ID, lane_stage, detail, UPDATED),
