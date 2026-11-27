@@ -49,7 +49,8 @@ changelog check reads the entry's structured figures, not its sentences.
   a page that differs is saved beside the pinned copy, named by its hash,
   and the pinned copy is left as it was. Each fetch stages its page in a file
   of its own, so overlapping fetches cannot swap pages. The staging file has
-  a short fixed name, so it fits wherever the page's own name does.
+  a short fixed name, and the copy kept beside the pinned one cuts the page's
+  name short when it must, so both fit wherever the page's own name does.
 - `adapter.py build` checks the page against its pinned hash and rebuilds the
   page's own CSV byte for byte. The rebuilt CSV is checked against the hash
   of the copy captured from the page, but it is not written.

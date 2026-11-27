@@ -586,27 +586,62 @@ def test_a_later_dated_reclassification_leaves_no_stale_gap(
     assert rerun["pe_gap_results"] == fresh["pe_gap_results"] == len(after)
 
 
+_SHAPED = mod.STATUS_RUN_PREFIX + "2026-12-01"
+
+
 @pytest.mark.parametrize(
-    "run_id, result_status",
+    "run_id, result_status, value, bundle",
     [
-        (mod.STATUS_RUN_PREFIX + "counterpart-2026-12-01", None),
-        (mod.STATUS_RUN_PREFIX + "2026-12-01-counterpart", None),
-        (mod.STATUS_RUN_PREFIX + "2026-12-01", None),
-        (mod.STATUS_RUN_PREFIX + "2026-12-01", ComparisonStatus.PE_GAP),
+        pytest.param(
+            mod.STATUS_RUN_PREFIX + "counterpart-2026-12-01",
+            ComparisonStatus.CONSTRUCTED,
+            1.0,
+            "test-bundle",
+            id="run-id-word-then-date",
+        ),
+        pytest.param(
+            mod.STATUS_RUN_PREFIX + "2026-12-01-counterpart",
+            ComparisonStatus.CONSTRUCTED,
+            1.0,
+            "test-bundle",
+            id="run-id-date-then-word",
+        ),
+        pytest.param(
+            _SHAPED, ComparisonStatus.CONSTRUCTED, 1.0, "test-bundle", id="constructed"
+        ),
+        # Each case below differs from a classifier row in one column only,
+        # so it pins that column's clause in the delete.
+        pytest.param(
+            _SHAPED, ComparisonStatus.PE_GAP, None, "test-bundle", id="other-bundle"
+        ),
+        pytest.param(
+            _SHAPED,
+            ComparisonStatus.NOT_COMPUTED,
+            None,
+            mod.NO_RUN_BUNDLE,
+            id="other-status",
+        ),
+        pytest.param(
+            _SHAPED, ComparisonStatus.PE_GAP, 1.0, mod.NO_RUN_BUNDLE, id="has-value"
+        ),
     ],
 )
 def test_a_rerun_keeps_a_counterpart_whose_run_id_shares_the_prefix(
-    tmp_path, monkeypatch, scores, status, run_id, result_status
+    tmp_path, monkeypatch, scores, status, run_id, result_status, value, bundle
 ):
     """A rerun deletes only rows of the classifier's own shape: a valueless
     pe_gap under the "no run" bundle and a run id of the prefix and an ISO
     date. Another step's result survives whatever its run id, the
-    classifier's exact shape and a valueless pe_gap of its own included."""
+    classifier's exact run-id shape included, when any one of the other
+    columns differs."""
     monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
     path = tmp_path / "scorecard.db"
     mod.ingest(path)
     score = _gap_score(scores, status)
-    other = _result(score, run_id=run_id, status=result_status)
+    other = replace(
+        _result(score, run_id=run_id, status=result_status, value=value),
+        data_bundle=bundle,
+    )
     db = ScorecardDB(path)
     try:
         db.add_results([other])
@@ -622,11 +657,12 @@ def test_a_rerun_keeps_a_counterpart_whose_run_id_shares_the_prefix(
         ).fetchall()
     finally:
         db.close()
-    assert sorted(map(tuple, rows)) == sorted(
+    assert sorted(map(tuple, rows), key=repr) == sorted(
         [
             (mod.STATUS_RUN_ID, "pe_gap", None, mod.NO_RUN_BUNDLE),
-            (run_id, other.status.value, other.computed_value, "test-bundle"),
-        ]
+            (run_id, result_status.value, value, bundle),
+        ],
+        key=repr,
     )
 
 
@@ -1269,6 +1305,46 @@ def test_fetch_stages_under_a_short_name_whatever_dest_is_called(tmp_path, monke
     assert adapter.fetch(dest) == (hashlib.sha256(pinned).hexdigest(), dest)
     assert dest.read_bytes() == pinned
     assert list(dest.parent.iterdir()) == [dest]
+
+
+@pytest.mark.parametrize(
+    "stem", ["dashboard", "d" * 250, "\u00e9" * 125], ids=["short", "ascii", "utf8"]
+)
+def test_beside_fits_the_name_limit_and_keeps_short_names(stem):
+    """The kept copy of a changed page is <stem>.<sha256[:12]><suffix>, with
+    the stem cut on a character boundary only when the name would pass 255
+    bytes. Each dest name here is itself at most 255 bytes."""
+    adapter = _adapter()
+    dest = Path("raw") / (stem + ".html")
+    assert len(dest.name.encode()) <= 255
+    digest = hashlib.sha256(b"newer build").hexdigest()
+    tail = f".{digest[:12]}.html"
+    got = adapter.beside(dest, digest)
+    assert got.parent == dest.parent
+    assert got.name.endswith(tail)
+    assert len(got.name.encode()) <= 255
+    assert stem.startswith(got.name[: -len(tail)])
+    if len((stem + tail).encode()) <= 255:
+        assert got.name == stem + tail
+    else:
+        assert len(got.name.encode()) > 255 - 4
+
+
+def test_fetch_of_a_changed_page_to_a_long_name_keeps_it_beside(tmp_path, monkeypatch):
+    """A changed page fetched to a 255-byte dest name is kept beside it under
+    a name that fits, and the pinned copy is left as it was."""
+    adapter = _adapter()
+    pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
+    _serve(adapter, monkeypatch, newer, pinned)
+    dest = tmp_path / "raw" / ("d" * 250 + ".html")
+    dest.parent.mkdir()
+    dest.write_bytes(pinned)
+    digest, saved = adapter.fetch(dest)
+    assert digest == hashlib.sha256(newer).hexdigest()
+    assert saved == adapter.beside(dest, digest) != dest
+    assert saved.read_bytes() == newer
+    assert dest.read_bytes() == pinned
+    assert sorted(dest.parent.iterdir()) == sorted([dest, saved])
 
 
 def test_overlapping_fetches_keep_their_own_bodies(tmp_path, monkeypatch):

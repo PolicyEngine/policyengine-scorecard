@@ -497,12 +497,27 @@ def render(extract: dict) -> str:
     return json.dumps(extract, indent=1, ensure_ascii=False) + "\n"
 
 
+NAME_MAX = 255  # bytes in one file name, on APFS and ext4 alike
+
+
+def beside(dest: Path, digest: str) -> Path:
+    """Where a page that differs from the pin is kept:
+    ``<stem>.<sha256[:12]><suffix>`` next to ``dest``. The stem is cut short,
+    on a character boundary, when the whole name would pass NAME_MAX bytes,
+    so the copy fits wherever ``dest`` itself does."""
+    tail = f".{digest[:12]}{dest.suffix}"
+    room = max(0, NAME_MAX - len(tail.encode()))
+    stem = dest.stem.encode()[:room].decode(errors="ignore")
+    return dest.with_name(stem + tail)
+
+
 def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
     """Fetch the live page. ``dest`` is replaced only when the body matches
     the pinned sha256; a body that differs is kept beside it as
-    ``<stem>.<sha256[:12]><suffix>`` for inspection, so a new Fiscal Lab
-    build never overwrites the pinned copy (the URL serves only the latest
-    build). Returns the body's sha256 and the path it was saved to."""
+    ``<stem>.<sha256[:12]><suffix>`` (see ``beside``) for inspection, so a
+    new Fiscal Lab build never overwrites the pinned copy (the URL serves
+    only the latest build). Returns the body's sha256 and the path it was
+    saved to."""
     page = pin(load_source(), "dashboard_20261125")
     req = urllib.request.Request(page["url"], headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=60) as resp:
@@ -516,11 +531,7 @@ def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(body)
-        saved = (
-            dest
-            if digest == page["sha256"]
-            else dest.with_name(f"{dest.stem}.{digest[:12]}{dest.suffix}")
-        )
+        saved = dest if digest == page["sha256"] else beside(dest, digest)
         os.replace(part, saved)
     except BaseException:
         Path(part).unlink(missing_ok=True)
