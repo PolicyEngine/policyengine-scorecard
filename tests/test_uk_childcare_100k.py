@@ -2834,3 +2834,95 @@ def test_exported_feed_rows_state_the_lane_signs_and_history():
     assert len(unscored) == 12
     assert {r["source"] for r in unscored} == {lane.CENTAX}
     assert all(r["conditions"].get("pe_missing") for r in unscored)
+
+
+_REGISTRY_READ = (
+    "SELECT claim_id FROM external_scores "
+    "WHERE json_extract(publication, '$.registry') = ?"
+)
+
+
+def _rows_per_claim(path) -> dict:
+    conn = sqlite3.connect(path)
+    try:
+        return {
+            "external_scores": Counter(
+                r[0] for r in conn.execute("SELECT claim_id FROM external_scores")
+            ),
+            "pe_results": Counter(
+                tuple(r)
+                for r in conn.execute("SELECT claim_id, run_id FROM pe_results")
+            ),
+            "diagnoses": Counter(
+                r[0] for r in conn.execute("SELECT claim_id FROM diagnoses")
+            ),
+        }
+    finally:
+        conn.close()
+
+
+def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch):
+    """Two first ingests that open the database together must leave the
+    rows one ingest leaves: one row per claim in external_scores and
+    diagnoses, and each claim's result once per run. Each waits up to a
+    second for the other's registry read, so an ingest that holds the write
+    lock before reading cannot deadlock here. The lane mirror is stubbed, so
+    this covers the database rows, not the shared lanes.json write (#262)."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    from scorecard_db import ingest_harvest
+
+    monkeypatch.setattr(ingest_harvest, "sync_lane_feed", lambda *a, **k: 1)
+    once = tmp_path / "once.db"
+    lane.ingest(once)
+    want = _rows_per_claim(once)
+    assert set(want["external_scores"].values()) == {1}
+    assert set(want["pe_results"].values()) == {1}
+
+    path = tmp_path / "overlap.db"
+    lane.ScorecardDB(path).close()
+    opened = threading.Barrier(2, timeout=30)
+    read = [threading.Event(), threading.Event()]
+    local = threading.local()
+
+    class PausingConn:
+        def __init__(self, conn):
+            self._conn = conn
+
+        def __getattr__(self, name):
+            return getattr(self._conn, name)
+
+        def __enter__(self):
+            return self._conn.__enter__()
+
+        def __exit__(self, *exc):
+            return self._conn.__exit__(*exc)
+
+        def execute(self, sql, *args):
+            cursor = self._conn.execute(sql, *args)
+            if sql == _REGISTRY_READ:
+                rows = cursor.fetchall()
+                read[local.i].set()
+                read[1 - local.i].wait(timeout=1)
+                return iter(rows)
+            return cursor
+
+    class PausingDB(lane.ScorecardDB):
+        def __init__(self, p):
+            super().__init__(p)
+            self.conn = PausingConn(self.conn)
+            opened.wait()
+
+    monkeypatch.setattr(lane, "ScorecardDB", PausingDB)
+
+    def run(i):
+        local.i = i
+        return lane.ingest(path)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(run, i) for i in (0, 1)]
+        for future in futures:
+            future.result()
+    assert all(read[i].is_set() for i in (0, 1))
+    assert _rows_per_claim(path) == want
