@@ -510,8 +510,9 @@ def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
     digest = hashlib.sha256(body).hexdigest()
     dest.parent.mkdir(parents=True, exist_ok=True)
     # Each fetch stages its own body, so overlapping fetches cannot rename
-    # one another's bytes into place.
-    fd, part = tempfile.mkstemp(dir=dest.parent, prefix=dest.name + ".", suffix=".part")
+    # one another's bytes into place. The staging name is fixed-length, not
+    # built from dest's, so any dest name the filesystem accepts can be staged.
+    fd, part = tempfile.mkstemp(dir=dest.parent, prefix=".fetch-", suffix=".part")
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(body)

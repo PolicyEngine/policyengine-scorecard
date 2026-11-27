@@ -57156,7 +57156,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
+    "pe_missing": "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -57177,7 +57177,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+     "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -57196,7 +57196,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+      "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -58347,7 +58347,7 @@
     "scenario": "central",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -58368,7 +58368,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -58387,7 +58387,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -62346,7 +62346,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
+    "pe_missing": "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -62367,7 +62367,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+     "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -62386,7 +62386,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+      "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -63054,7 +63054,7 @@
     "scenario": "high",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -63075,7 +63075,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -63094,7 +63094,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -67191,7 +67191,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
+    "pe_missing": "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -67212,7 +67212,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+     "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -67231,7 +67231,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+      "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",
@@ -68157,7 +68157,7 @@
     "scenario": "low",
     "sign_convention": "positive = cost (adds to federal deficits)",
     "window_kind": "total",
-    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
+    "pe_missing": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever."
    },
    "measure": null,
    "reform_framework": "policy_ref",
@@ -68178,7 +68178,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-11-26T00:00:00+00:00",
     "annotations": [
-     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+     "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
      "no run executed: the status is judged against the policyengine-us 2.2.2 source"
     ],
     "baseline": "current_law",
@@ -68197,7 +68197,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-11-26T00:00:00+00:00",
      "annotations": [
-      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+      "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
       "no run executed: the status is judged against the policyengine-us 2.2.2 source"
      ],
      "baseline": "current_law",

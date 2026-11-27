@@ -31,12 +31,14 @@
    "status": "pe_gap",
    "scope": "partial",
    "gap_class": "single_payer_national_health_spending",
-   "reason": "A reform could end Medicaid, CHIP and premium tax credits for people under 27, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
+   "reason": "A reform could end Medicaid, CHIP, premium tax credits and the Basic Health Program for people under 27, the last by raising that program's minimum age, but PolicyEngine has no health spending model to price the new program's gross cost, provider rates, use response or moves off employer coverage.",
    "pe_paths": [
     "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
     "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
     "policyengine_us/variables/gov/aca/ptc/used_aca_ptc.py",
-    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py"
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program.py",
+    "policyengine_us/parameters/gov/hhs/basic_health_program/eligibility/min_age.yaml"
    ]
   },
   "Concept_Prevent_the_340B_Rebate_Model": {
@@ -157,7 +159,7 @@
    "status": "not_computed",
    "scope": "partial",
    "gap_class": "other_immigration_status_qualifying_test",
-   "reason": "Immigration status, the five-year bar and the Medicaid, CHIP and credit immigrant rules are variables and parameters. 2.2.2 has one clock, years_since_us_entry (default 5), which counts from entry or a qualifying status grant and also runs the five-year bar; it has no arrival-age input and no TPS or DED grant date, so a reform must choose who qualifies and override immigration_status itself.",
+   "reason": "Immigration status, the five-year bar and the Medicaid, CHIP, credit and Basic Health Program immigrant rules are variables and parameters. 2.2.2 has one clock, years_since_us_entry (default 5), which counts from entry or a qualifying status grant and also runs the five-year bar; it has no arrival-age input and no TPS or DED grant date, so a reform must choose who qualifies and override immigration_status itself.",
    "pe_paths": [
     "policyengine_us/variables/household/demographic/person/immigration_status.py",
     "policyengine_us/variables/household/demographic/person/years_since_us_entry.py",
@@ -171,7 +173,8 @@
     "policyengine_us/parameters/gov/hhs/basic_health_program/eligibility/ineligible_immigration_statuses.yaml",
     "policyengine_us/variables/gov/aca/ptc/aca_ptc.py",
     "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
-    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py"
+    "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/is_basic_health_program_immigration_status_eligible.py"
    ]
   },
   "H_R_1750": {
@@ -246,7 +249,7 @@
    "status": "pe_gap",
    "scope": "partial",
    "gap_class": "single_payer_national_health_spending",
-   "reason": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion has rules to act through, the pre-tax payroll deduction list and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
+   "reason": "PolicyEngine could end Medicaid, CHIP, premium tax credits, the Basic Health Program and the self-employed and medical expense deductions. Ending the employment-based exclusion from income and payroll tax has rules to act through, a pre-tax payroll deduction list for each tax and a structural reform adding employer-paid premiums to taxable wages, but the default dataset has no employer-paid or pre-tax premium amounts, so it would raise nothing. It has no national health spending, provider payment rates, utilization response, long-term services spending or Medicare cost-sharing model beyond a flat QMB share, so the program's gross cost, which carries most of the score, has no lever.",
    "pe_paths": [
     "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_cost.py",
     "policyengine_us/variables/gov/hhs/chip/chip_federal_cost.py",
@@ -256,7 +259,9 @@
     "policyengine_us/variables/gov/irs/income/taxable_income/deductions/itemizing/medical_expense_deduction.py",
     "policyengine_us/parameters/calibration/gov/hhs/medicare/per_capita_cost.yaml",
     "policyengine_us/parameters/gov/irs/gross_income/pre_tax_contributions.yaml",
-    "policyengine_us/variables/household/expense/health/pre_tax_health_insurance_premiums.py"
+    "policyengine_us/variables/household/expense/health/pre_tax_health_insurance_premiums.py",
+    "policyengine_us/parameters/gov/irs/gross_income/fica_pre_tax_contributions.yaml",
+    "policyengine_us/variables/gov/irs/tax/payroll/payroll_tax_gross_wages.py"
    ]
   },
   "H_R_3164": {
@@ -1001,7 +1006,7 @@
    "status": "not_computed",
    "scope": "partial",
    "gap_class": "medicaid_financing",
-   "reason": "The status lists, Medicaid's five-year bar, SSI's 40-quarter rule and the below-poverty credit exception are parameters. 2.2.2 applies no five-year bar to SNAP, so its baseline already counts recent permanent residents as eligible and cannot show that part of the SNAP change. Missing: the emergency Medicaid match, CSR cost and moves off employer coverage; Microcosm codes most lawfully present noncitizens as LPRs.",
+   "reason": "The status lists, the Basic Health Program's among them, Medicaid's five-year bar, SSI's 40-quarter rule and the below-poverty credit exception are parameters. 2.2.2 applies no five-year bar to SNAP, so its baseline already counts recent permanent residents as eligible and cannot show that part of the SNAP change. Missing: the emergency Medicaid match, CSR cost and moves off employer coverage; Microcosm codes most lawfully present noncitizens as LPRs.",
    "pe_paths": [
     "policyengine_us/parameters/gov/hhs/medicaid/eligibility/five_year_bar_years.yaml",
     "policyengine_us/parameters/gov/hhs/medicaid/eligibility/eligible_immigration_statuses.yaml",
@@ -1014,7 +1019,9 @@
     "policyengine_us/parameters/gov/usda/snap/eligibility/eligible_immigration_statuses.yaml",
     "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_federal_share.py",
     "policyengine_us/variables/gov/hhs/medicaid/emergency_medicaid/is_emergency_medicaid_eligible.py",
-    "policyengine_us/variables/gov/usda/snap/eligibility/is_snap_immigration_status_eligible.py"
+    "policyengine_us/variables/gov/usda/snap/eligibility/is_snap_immigration_status_eligible.py",
+    "policyengine_us/parameters/gov/hhs/basic_health_program/eligibility/ineligible_immigration_statuses.yaml",
+    "policyengine_us/variables/gov/hhs/basic_health_program/is_basic_health_program_immigration_status_eligible.py"
    ]
   },
   "H_R_9474": {
@@ -1052,7 +1059,7 @@
    "status": "not_computed",
    "scope": "partial",
    "gap_class": "insurance_market_regulation",
-   "reason": "Enhanced credits are parametric, and a public-option discount can be imposed on the credit's benchmark (slcsp), not on state_rating_area_cost, which also drives PolicyEngine's Medicaid cost index; PolicyEngine cannot price the plan itself, compute cost-sharing reduction cost or model coverage take-up responses, and the small-group wage shift turns on which employer groups move and on employer-paid premiums, which the default dataset does not carry.",
+   "reason": "Enhanced credits are parametric, and the Basic Health Program payment follows the credit's contribution schedule. A public-option discount can be imposed on the credit's benchmark (slcsp) and on the Basic Health Program's premium adjustment factor, since that program's reference premium reads slcsp_age_0 directly rather than slcsp; imposing it on state_rating_area_cost instead would also cut PolicyEngine's Medicaid cost index. PolicyEngine cannot price the plan itself, compute cost-sharing reduction cost or model coverage take-up responses, and the small-group wage shift turns on which employer groups move and on employer-paid premiums, which the default dataset does not carry.",
    "pe_paths": [
     "policyengine_us/parameters/gov/aca/ptc_income_eligibility.yaml",
     "policyengine_us/parameters/gov/aca/required_contribution_percentage/initial.yaml",
@@ -1064,7 +1071,11 @@
     "policyengine_us/variables/gov/aca/slspc/slcsp_age_0.py",
     "policyengine_us/variables/gov/aca/slspc/slcsp.py",
     "policyengine_us/variables/gov/hhs/medicaid/costs/medicaid_slcsp_cost_index.py",
-    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py"
+    "policyengine_us/variables/input/employer_sponsored_insurance_premiums.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program_adjusted_reference_premium.py",
+    "policyengine_us/variables/gov/hhs/basic_health_program/basic_health_program_age_curve_amount_person.py",
+    "policyengine_us/parameters/gov/hhs/basic_health_program/payment/premium_adjustment_factor.yaml"
    ]
   },
   "H_R_9831": {

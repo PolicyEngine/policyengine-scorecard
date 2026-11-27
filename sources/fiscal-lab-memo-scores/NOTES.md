@@ -48,7 +48,8 @@ changelog check reads the entry's structured figures, not its sentences.
   matches the pinned hash. The URL serves only Fiscal Lab's latest build, so
   a page that differs is saved beside the pinned copy, named by its hash,
   and the pinned copy is left as it was. Each fetch stages its page in a file
-  of its own, so overlapping fetches cannot swap pages.
+  of its own, so overlapping fetches cannot swap pages. The staging file has
+  a short fixed name, so it fits wherever the page's own name does.
 - `adapter.py build` checks the page against its pinned hash and rebuilds the
   page's own CSV byte for byte. The rebuilt CSV is checked against the hash
   of the copy captured from the page, but it is not written.
@@ -200,6 +201,21 @@ changed:
   the income-related surcharge. H.R. 711 gives the selected-plan ratio on the
   benchmark silver premium, and H.R. 6609 adds the family tier to the cost
   index.
+
+The third round found two more omissions, and a sweep of every bill with a
+Basic Health Program line found three of the same kind. 5 reasons were
+reworded, and no status or scope changed:
+
+- 2.2.2's Basic Health Program payment uses the credit's contribution
+  percentage and income bracket, so credit parameters reach it. Its reference
+  premium reads `slcsp_age_0` directly, though, so a discount placed on
+  `slcsp` does not reach it, and the premium adjustment factor carries one
+  there. H.R. 9702 now names that factor.
+- Medicare for Kids now names the program's minimum age as its lever, and
+  H.R. 1589 and H.R. 9432 name its immigrant status list.
+- H.R. 3069's exclusion line covers payroll tax too, which has a pre-tax
+  deduction list of its own (`fica_pre_tax_contributions`). The reason now
+  names both lists.
 
 The result is 9 bills `not_computed`, all partial, and 101 `pe_gap` (92 none,
 9 partial). A partial `not_computed` bill is one where PolicyEngine's levers

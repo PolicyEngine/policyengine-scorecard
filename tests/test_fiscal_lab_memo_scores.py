@@ -586,6 +586,71 @@ def test_a_later_dated_reclassification_leaves_no_stale_gap(
     assert rerun["pe_gap_results"] == fresh["pe_gap_results"] == len(after)
 
 
+@pytest.mark.parametrize(
+    "run_id, result_status",
+    [
+        (mod.STATUS_RUN_PREFIX + "counterpart-2026-12-01", None),
+        (mod.STATUS_RUN_PREFIX + "2026-12-01-counterpart", None),
+        (mod.STATUS_RUN_PREFIX + "2026-12-01", None),
+        (mod.STATUS_RUN_PREFIX + "2026-12-01", ComparisonStatus.PE_GAP),
+    ],
+)
+def test_a_rerun_keeps_a_counterpart_whose_run_id_shares_the_prefix(
+    tmp_path, monkeypatch, scores, status, run_id, result_status
+):
+    """A rerun deletes only rows of the classifier's own shape: a valueless
+    pe_gap under the "no run" bundle and a run id of the prefix and an ISO
+    date. Another step's result survives whatever its run id, the
+    classifier's exact shape and a valueless pe_gap of its own included."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    score = _gap_score(scores, status)
+    other = _result(score, run_id=run_id, status=result_status)
+    db = ScorecardDB(path)
+    try:
+        db.add_results([other])
+    finally:
+        db.close()
+    mod.ingest(path)
+    db = ScorecardDB(path)
+    try:
+        rows = db.conn.execute(
+            "SELECT run_id, status, computed_value, data_bundle FROM pe_results "
+            "WHERE claim_id = ?",
+            (score.claim_id(),),
+        ).fetchall()
+    finally:
+        db.close()
+    assert sorted(map(tuple, rows)) == sorted(
+        [
+            (mod.STATUS_RUN_ID, "pe_gap", None, mod.NO_RUN_BUNDLE),
+            (run_id, other.status.value, other.computed_value, "test-bundle"),
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "run_id",
+    [
+        mod.STATUS_RUN_PREFIX + "rerun",
+        mod.STATUS_RUN_PREFIX + "2026-11-27",
+        "fiscal-lab-pe-status-2026-11-26-b",
+    ],
+)
+def test_a_status_run_id_off_the_rerun_pattern_is_refused(
+    tmp_path, monkeypatch, run_id
+):
+    """A run id the rerun delete would not find, or one off the stamp's
+    date, is refused before anything is written."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
+    monkeypatch.setattr(mod, "STATUS_RUN_ID", run_id)
+    path = tmp_path / "scorecard.db"
+    with pytest.raises(ValueError, match="status run id"):
+        mod.ingest(path)
+    assert not path.exists()
+
+
 def test_lane_keeps_later_stages_and_regresses_when_results_go(
     tmp_path, monkeypatch, scores
 ):
@@ -1188,6 +1253,20 @@ def test_fetch_of_the_pinned_page_replaces_dest(tmp_path, monkeypatch):
     dest.parent.mkdir()
     dest.write_bytes(b"stale or truncated")
     assert adapter.main(["fetch", "--dashboard", str(dest)]) == 0
+    assert dest.read_bytes() == pinned
+    assert list(dest.parent.iterdir()) == [dest]
+
+
+def test_fetch_stages_under_a_short_name_whatever_dest_is_called(tmp_path, monkeypatch):
+    """The staging file's name does not grow with dest's, so a pinned page
+    can be fetched to any name the filesystem accepts, the 255-byte limit
+    included, and the fetch leaves nothing else behind."""
+    adapter = _adapter()
+    pinned = b"<html>pinned build</html>"
+    _serve(adapter, monkeypatch, pinned, pinned)
+    dest = tmp_path / "raw" / ("d" * 250 + ".html")
+    assert len(dest.name.encode()) == 255
+    assert adapter.fetch(dest) == (hashlib.sha256(pinned).hexdigest(), dest)
     assert dest.read_bytes() == pinned
     assert list(dest.parent.iterdir()) == [dest]
 

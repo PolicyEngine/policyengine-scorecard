@@ -30,6 +30,7 @@ Usage:
 
 from __future__ import annotations
 
+import fnmatch
 import hashlib
 import json
 import re
@@ -57,7 +58,7 @@ PE_STATUS_PATH = SOURCE_DIR / "pe_status.json"
 EXTRACT_PATH = REPO / "data" / "externals" / "fiscal-lab-memo-scores.json"
 
 EXTRACT_SHA256 = "3a68893d09c82ceb26c1edf7b7c96088588d3c6b337f124f23955d1185b75d7b"
-PE_STATUS_SHA256 = "3fc7a57a0107ba07e5ca5fdb4b00ce586dbae550399e0df1a292d47614fd48b2"
+PE_STATUS_SHA256 = "2299e34b107a00cda385676498634f828b4baf5185788cb99bfbd70d131f9ec3"
 
 SOURCE = "fiscal_lab"
 REGISTRY_MARK = "fiscal_lab_memo_scores"
@@ -69,10 +70,13 @@ WINDOW = "FY2027-2036"
 PERIOD_START, PERIOD_END = 2027, 2036
 
 ENGINE_PIN = "2.2.2"  # policyengine-us source the statuses were judged against
-# Every classifier run this module writes is "fiscal-lab-pe-status-<judged>".
-# A rerun replaces all of them, so a later dated reclassification leaves
-# no gap row from an earlier one behind.
+# Every classifier run this module writes is "fiscal-lab-pe-status-<judged>",
+# with <judged> an ISO date, and each of its rows is a valueless pe_gap under
+# NO_RUN_BUNDLE. A rerun deletes exactly the rows of that shape, so a later
+# dated reclassification leaves no gap row from an earlier one behind, while
+# a result of any other shape survives whatever its run id.
 STATUS_RUN_PREFIX = "fiscal-lab-pe-status-"
+STATUS_RUN_GLOB = STATUS_RUN_PREFIX + "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"
 STATUS_RUN_ID = STATUS_RUN_PREFIX + "2026-11-26"
 STATUS_COMPUTED_AT = "2026-11-26T00:00:00+00:00"
 # The feed labels a result's release from its bundle id; "no run" reads as
@@ -638,21 +642,37 @@ def _write_lane(db: ScorecardDB, status: dict, n_claims: int) -> tuple[str, int]
     return "ingested", computed
 
 
+def _check_run_id() -> None:
+    """The rerun delete finds the classifier's rows by STATUS_RUN_GLOB, so
+    this run's id must take that shape and carry the stamp's date, or a
+    rerun would leave its own earlier rows behind."""
+    if STATUS_RUN_ID != STATUS_RUN_PREFIX + STATUS_COMPUTED_AT[:10] or not (
+        fnmatch.fnmatchcase(STATUS_RUN_ID, STATUS_RUN_GLOB)
+    ):
+        raise ValueError(
+            f"Fiscal Lab status run id {STATUS_RUN_ID!r} is not "
+            f"{STATUS_RUN_PREFIX}<the stamp's ISO date>"
+        )
+
+
 def ingest(db_path: Path) -> dict:
     """Validate, replace this registry, then mirror the lane.
 
     Claims that left the census go with their results and diagnoses. On the
     claims that remain, only this module's own pe_gap rows are replaced:
-    those of any classifier run (STATUS_RUN_PREFIX), so a reclassification
+    valueless pe_gap rows under NO_RUN_BUNDLE from any classifier run
+    (STATUS_RUN_GLOB, the prefix and an ISO date), so a reclassification
     under a new date leaves no stale gap, while a counterpart attached later
-    by another step survives a rerun. The feed shows a claim's latest row by (computed_at, id), so a
-    counterpart replaces the pe_gap status only when dated after
-    STATUS_COMPUTED_AT; one dated on the stamp itself would be ordered by
-    insert id alone, which a rerun changes, so the ingest refuses it.
+    by another step survives a rerun whatever its run id. The feed shows a
+    claim's latest row by (computed_at, id), so a counterpart replaces the
+    pe_gap status only when dated after STATUS_COMPUTED_AT; one dated on the
+    stamp itself would be ordered by insert id alone, which a rerun changes,
+    so the ingest refuses it.
 
     The write lock is taken before the registry is read, so two overlapping
     ingests run one after the other instead of both reading an empty
     registry and each writing every gap row."""
+    _check_run_id()
     source = load_source()
     payload = load_extract(source=source)
     status = load_pe_status({r["slug"] for r in payload["bills"]})
@@ -681,9 +701,15 @@ def ingest(db_path: Path) -> dict:
             if kept:
                 marks = ",".join("?" for _ in kept)
                 db.conn.execute(
-                    "DELETE FROM pe_results WHERE substr(run_id, 1, ?) = ? "
+                    "DELETE FROM pe_results WHERE run_id GLOB ? AND status = ? "
+                    "AND computed_value IS NULL AND data_bundle = ? "
                     f"AND claim_id IN ({marks})",
-                    [len(STATUS_RUN_PREFIX), STATUS_RUN_PREFIX, *kept],
+                    [
+                        STATUS_RUN_GLOB,
+                        ComparisonStatus.PE_GAP.value,
+                        NO_RUN_BUNDLE,
+                        *kept,
+                    ],
                 )
             db.conn.executemany(SCORES_SQL, [ScorecardDB.score_row(s) for s in scores])
             register_baselines_txn(db)
