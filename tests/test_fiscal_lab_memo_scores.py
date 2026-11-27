@@ -624,6 +624,13 @@ _SHAPED = mod.STATUS_RUN_PREFIX + "2026-12-01"
         pytest.param(
             _SHAPED, ComparisonStatus.PE_GAP, 1.0, mod.NO_RUN_BUNDLE, id="has-value"
         ),
+        pytest.param(
+            mod.STATUS_RUN_PREFIX + "2026-12-1",
+            ComparisonStatus.PE_GAP,
+            None,
+            mod.NO_RUN_BUNDLE,
+            id="other-run-id-shape",
+        ),
     ],
 )
 def test_a_rerun_keeps_a_counterpart_whose_run_id_shares_the_prefix(
@@ -633,7 +640,8 @@ def test_a_rerun_keeps_a_counterpart_whose_run_id_shares_the_prefix(
     pe_gap under the "no run" bundle and a run id of the prefix and an ISO
     date. Another step's result survives whatever its run id, the
     classifier's exact run-id shape included, when any one of the other
-    columns differs."""
+    columns differs, and a row matching on every other column survives when
+    its run id is off that shape."""
     monkeypatch.setattr(mod, "sync_lane_feed", lambda *a, **k: 1)
     path = tmp_path / "scorecard.db"
     mod.ingest(path)
@@ -1307,44 +1315,82 @@ def test_fetch_stages_under_a_short_name_whatever_dest_is_called(tmp_path, monke
     assert list(dest.parent.iterdir()) == [dest]
 
 
-@pytest.mark.parametrize(
-    "stem", ["dashboard", "d" * 250, "\u00e9" * 125], ids=["short", "ascii", "utf8"]
+@settings(max_examples=300, deadline=None)
+@given(
+    name=st.text("dx.0123456789abcdef", min_size=1, max_size=40).filter(
+        lambda n: n not in (".", "..")
+    ),
+    pad=st.integers(0, 240),
+    digest=st.text("0123456789abcdef", min_size=64, max_size=64),
 )
-def test_beside_fits_the_name_limit_and_keeps_short_names(stem):
-    """The kept copy of a changed page is <stem>.<sha256[:12]><suffix>, with
-    the stem cut on a character boundary only when the name would pass 255
-    bytes. Each dest name here is itself at most 255 bytes."""
+def test_the_kept_copy_is_never_dest(name, pad, digest):
+    """The kept copy's name is dest's with ".<sha256[:12]>" before the
+    suffix, so it is exactly 13 bytes longer and never dest itself, even
+    when dest's own name already carries the digest prefix. Dest names run
+    up to the 255-byte limit, where no shorter form would fit."""
     adapter = _adapter()
-    dest = Path("raw") / (stem + ".html")
-    assert len(dest.name.encode()) <= 255
-    digest = hashlib.sha256(b"newer build").hexdigest()
-    tail = f".{digest[:12]}.html"
-    got = adapter.beside(dest, digest)
-    assert got.parent == dest.parent
-    assert got.name.endswith(tail)
-    assert len(got.name.encode()) <= 255
-    assert stem.startswith(got.name[: -len(tail)])
-    if len((stem + tail).encode()) <= 255:
-        assert got.name == stem + tail
-    else:
-        assert len(got.name.encode()) > 255 - 4
+    for base in (name, name + "." + digest[:12] + ".html"):
+        dest_name = "d" * pad + base
+        if len(dest_name.encode()) > 255:
+            continue
+        dest = Path("raw") / dest_name
+        got = adapter.beside(dest, digest)
+        assert got.parent == dest.parent
+        assert got != dest
+        assert len(got.name.encode()) == len(dest.name.encode()) + 13
 
 
-def test_fetch_of_a_changed_page_to_a_long_name_keeps_it_beside(tmp_path, monkeypatch):
-    """A changed page fetched to a 255-byte dest name is kept beside it under
-    a name that fits, and the pinned copy is left as it was."""
+def test_a_changed_page_never_overwrites_dest_whatever_it_is_called(
+    tmp_path, monkeypatch
+):
+    """Round 4's case: a 255-byte dest whose stem ends in the new page's own
+    digest prefix. The kept copy would need 268 bytes, so the fetch raises
+    and the pinned copy is left as it was, with nothing else written."""
     adapter = _adapter()
     pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
     _serve(adapter, monkeypatch, newer, pinned)
-    dest = tmp_path / "raw" / ("d" * 250 + ".html")
+    tail = f".{hashlib.sha256(newer).hexdigest()[:12]}.html"
+    dest = tmp_path / "raw" / ("d" * (255 - len(tail)) + tail)
+    assert len(dest.name.encode()) == 255
     dest.parent.mkdir()
     dest.write_bytes(pinned)
-    digest, saved = adapter.fetch(dest)
-    assert digest == hashlib.sha256(newer).hexdigest()
-    assert saved == adapter.beside(dest, digest) != dest
-    assert saved.read_bytes() == newer
+    with pytest.raises(ValueError, match="differs from the pinned build"):
+        adapter.fetch(dest)
     assert dest.read_bytes() == pinned
-    assert sorted(dest.parent.iterdir()) == sorted([dest, saved])
+    assert list(dest.parent.iterdir()) == [dest]
+
+
+@pytest.mark.parametrize(
+    "name, fits",
+    [
+        pytest.param("d" * 237 + ".html", True, id="242-bytes"),
+        pytest.param("d" * 238 + ".html", False, id="243-bytes"),
+        pytest.param("d." + "x" * 242, False, id="long-suffix"),
+    ],
+)
+def test_a_changed_page_is_kept_beside_only_where_its_name_fits(
+    tmp_path, monkeypatch, name, fits
+):
+    """A changed page is kept beside dest when the 13-byte-longer name fits
+    in 255 bytes, and refused otherwise; either way dest keeps the pinned
+    copy and the fetch leaves no staging file."""
+    adapter = _adapter()
+    pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
+    _serve(adapter, monkeypatch, newer, pinned)
+    dest = tmp_path / "raw" / name
+    dest.parent.mkdir()
+    dest.write_bytes(pinned)
+    if fits:
+        digest, saved = adapter.fetch(dest)
+        assert saved == adapter.beside(dest, digest)
+        assert len(saved.name.encode()) == 255
+        assert saved.read_bytes() == newer
+        assert sorted(dest.parent.iterdir()) == sorted([dest, saved])
+    else:
+        with pytest.raises(ValueError, match="differs from the pinned build"):
+            adapter.fetch(dest)
+        assert list(dest.parent.iterdir()) == [dest]
+    assert dest.read_bytes() == pinned
 
 
 def test_overlapping_fetches_keep_their_own_bodies(tmp_path, monkeypatch):

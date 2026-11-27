@@ -502,13 +502,10 @@ NAME_MAX = 255  # bytes in one file name, on APFS and ext4 alike
 
 def beside(dest: Path, digest: str) -> Path:
     """Where a page that differs from the pin is kept:
-    ``<stem>.<sha256[:12]><suffix>`` next to ``dest``. The stem is cut short,
-    on a character boundary, when the whole name would pass NAME_MAX bytes,
-    so the copy fits wherever ``dest`` itself does."""
-    tail = f".{digest[:12]}{dest.suffix}"
-    room = max(0, NAME_MAX - len(tail.encode()))
-    stem = dest.stem.encode()[:room].decode(errors="ignore")
-    return dest.with_name(stem + tail)
+    ``<stem>.<sha256[:12]><suffix>`` next to ``dest``. Its name is always 13
+    bytes longer than dest's, so it is never dest itself; ``fetch`` refuses a
+    dest whose kept copy would pass NAME_MAX bytes rather than shorten it."""
+    return dest.with_name(f"{dest.stem}.{digest[:12]}{dest.suffix}")
 
 
 def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
@@ -516,13 +513,21 @@ def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
     the pinned sha256; a body that differs is kept beside it as
     ``<stem>.<sha256[:12]><suffix>`` (see ``beside``) for inspection, so a
     new Fiscal Lab build never overwrites the pinned copy (the URL serves
-    only the latest build). Returns the body's sha256 and the path it was
-    saved to."""
+    only the latest build). A dest name over NAME_MAX - 13 bytes leaves no
+    room for that copy, so a changed page there raises ValueError and writes
+    nothing. Returns the body's sha256 and the path it was saved to."""
     page = pin(load_source(), "dashboard_20261125")
     req = urllib.request.Request(page["url"], headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=60) as resp:
         body = resp.read()
     digest = hashlib.sha256(body).hexdigest()
+    saved = dest if digest == page["sha256"] else beside(dest, digest)
+    if len(saved.name.encode()) > NAME_MAX:
+        raise ValueError(
+            f"the page differs from the pinned build, and its copy beside "
+            f"{dest.name!r} would need a {len(saved.name.encode())}-byte name; "
+            f"fetch to a --dashboard name of at most {NAME_MAX - 13} bytes"
+        )
     dest.parent.mkdir(parents=True, exist_ok=True)
     # Each fetch stages its own body, so overlapping fetches cannot rename
     # one another's bytes into place. The staging name is fixed-length, not
@@ -531,7 +536,6 @@ def fetch(dest: Path = DEFAULT_DASHBOARD) -> tuple[str, Path]:
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(body)
-        saved = dest if digest == page["sha256"] else beside(dest, digest)
         os.replace(part, saved)
     except BaseException:
         Path(part).unlink(missing_ok=True)
