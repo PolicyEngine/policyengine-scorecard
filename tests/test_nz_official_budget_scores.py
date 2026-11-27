@@ -351,8 +351,157 @@ def test_refresh_uses_latest_result_and_marks_a_computed_lane_regressed(
         "SELECT stage, detail FROM lanes WHERE lane = ?", (mod.LANE_ID,)
     ).fetchone()
     assert lane["stage"] == "regressed"
-    assert "0 of 12 claims retain results" in lane["detail"]
+    assert "0 of 12 claims retain a PolicyEngine value" in lane["detail"]
     db.close()
+
+
+def _result(score, *, status, value, run_id="test-run", when="2026-08-29"):
+    return PEResult(
+        claim_id=score.claim_id(),
+        computed_value=value,
+        status=status,
+        engine_version="test-engine",
+        data_bundle="test-bundle",
+        run_id=run_id,
+        computed_at=when,
+        baseline_key=score.reform.baseline_key(),
+    )
+
+
+@pytest.mark.parametrize(
+    "status, value, counted",
+    [
+        (ComparisonStatus.PE_GAP, None, False),
+        (ComparisonStatus.CONCEPT_MISMATCH, None, False),
+        (ComparisonStatus.CONCEPT_MISMATCH, 2.0, True),
+        (ComparisonStatus.CONSTRUCTED, 1.0, True),
+    ],
+)
+def test_lane_counts_only_a_latest_result_with_a_value(
+    tmp_path, monkeypatch, status, value, counted
+):
+    """A claim counts as computed only when its latest result carries a
+    PolicyEngine value, the populations feed's and the app's "with a value"
+    rule; a valueless gap or mismatch does not make the lane computed, and
+    the lane's count matches the feed's."""
+    from scorecard_db.export_populations import export
+
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    score = mod.stage_scores()[0]
+    db = ScorecardDB(path)
+    db.add_results([_result(score, status=status, value=value)])
+    db.close()
+
+    summary = mod.ingest(path)
+    assert summary["results"] == 1
+    assert summary["computed_claims"] == int(counted)
+    assert summary["lane_stage"] == ("computed" if counted else "ingested")
+    out_path = tmp_path / "populations.json"
+    export(path, out_path=out_path, built="2026-08-29")
+    rows = json.loads(out_path.read_text())["rows"]
+    assert sum(row["latest"]["value"] is not None for row in rows) == int(counted)
+
+
+def test_a_newer_valueless_gap_regresses_a_computed_lane(tmp_path, monkeypatch):
+    """A pe_gap row with no value that is newer than a claim's valued result
+    is the row the feed shows, so the claim no longer counts and the lane
+    that was computed regresses."""
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    score = mod.stage_scores()[0]
+    db = ScorecardDB(path)
+    db.add_results(
+        [
+            _result(
+                score,
+                status=ComparisonStatus.CONSTRUCTED,
+                value=1.0,
+                run_id="older-run",
+                when="2026-08-28",
+            )
+        ]
+    )
+    db.close()
+    first = mod.ingest(path)
+    assert (first["computed_claims"], first["lane_stage"]) == (1, "computed")
+
+    db = ScorecardDB(path)
+    db.add_results(
+        [
+            _result(
+                score,
+                status=ComparisonStatus.PE_GAP,
+                value=None,
+                run_id="newer-run",
+                when="2026-08-29",
+            )
+        ]
+    )
+    db.close()
+    second = mod.ingest(path)
+    assert second["results"] == 1
+    assert (second["computed_claims"], second["lane_stage"]) == (0, "regressed")
+    db = ScorecardDB(path)
+    lane = db.conn.execute(
+        "SELECT stage, detail FROM lanes WHERE lane = ?", (mod.LANE_ID,)
+    ).fetchone()
+    db.close()
+    assert lane["stage"] == "regressed"
+    assert "0 of 12 claims retain a PolicyEngine value" in lane["detail"]
+
+
+def test_a_mixed_lane_counts_and_dates_only_valued_latest_rows(tmp_path, monkeypatch):
+    """Three claims with results: one valued; one whose latest row is a
+    newer valueless gap; and one whose newer-dated gap was inserted before
+    an older value, so date, not insert order, picks its latest row. Only
+    the first counts, the lane is dated by it, and the populations feed
+    agrees."""
+    from scorecard_db.export_populations import export
+
+    monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: 1)
+    path = tmp_path / "scorecard.db"
+    mod.ingest(path)
+    valued, gap, reordered = mod.stage_scores()[:3]
+    db = ScorecardDB(path)
+    db.add_results(
+        [
+            _result(
+                valued,
+                status=ComparisonStatus.CONSTRUCTED,
+                value=1.0,
+                when="2026-08-28",
+            ),
+            _result(gap, status=ComparisonStatus.PE_GAP, value=None, when="2026-08-30"),
+            _result(
+                reordered, status=ComparisonStatus.PE_GAP, value=None, when="2026-08-31"
+            ),
+            _result(
+                reordered,
+                status=ComparisonStatus.CONSTRUCTED,
+                value=2.0,
+                when="2026-08-29",
+            ),
+        ]
+    )
+    db.close()
+
+    summary = mod.ingest(path)
+    assert summary["results"] == 3
+    assert (summary["computed_claims"], summary["lane_stage"]) == (1, "computed")
+    db = ScorecardDB(path)
+    lane = db.conn.execute(
+        "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?", (mod.LANE_ID,)
+    ).fetchone()
+    db.close()
+    assert lane["detail"].startswith("1 of 12 claims computed — ")
+    assert lane["updated_at"] == "2026-08-28"
+    out_path = tmp_path / "populations.json"
+    export(path, out_path=out_path, built="2026-08-29")
+    rows = json.loads(out_path.read_text())["rows"]
+    assert sum(row["latest"]["value"] is not None for row in rows) == 1
 
 
 def test_lane_mirror_failure_is_recoverable_by_idempotent_retry(tmp_path, monkeypatch):

@@ -1033,23 +1033,38 @@ def stage() -> tuple[list[ExternalScore], dict]:
             precision=lambda s: len(s.conditions.get("value_verbatim", "")),
             tolerance=lambda s: max(abs(s.value) * 0.005, 1e-9),
         )
-        twins = len(mine) - len(kept)
-        if twins:
-            fam_of = {s.claim_id(): s.publication["family"] for s in mine}
-            kept_ids = {s.claim_id() for s in kept}
-            for s in mine:
-                if s.claim_id() in kept_ids and s is not next(
-                    k for k in kept if k.claim_id() == s.claim_id()
-                ):
-                    fam = acct["by_family"][fam_of[s.claim_id()]]
-                    _drop(acct, fam, "republished_twin_merged")
-                    acct["ingested"] -= 1
-                    fam["ingested"] -= 1
+        if len(kept) != len(mine):
+            for family in _merged_twins(mine, kept):
+                fam = acct["by_family"][family]
+                _drop(acct, fam, "republished_twin_merged")
+                acct["ingested"] -= 1
+                fam["ingested"] -= 1
         merged.extend(kept)
     acct["dropped"] = acct["read"] - acct["ingested"]
     if acct["ingested"] + acct["dropped"] != acct["read"]:  # pragma: no cover
         raise ValueError("accounting does not close")
     return finish(merged, REGISTRY_MARK), acct
+
+
+def _merged_twins(mine: list[ExternalScore], kept: list[ExternalScore]) -> list[str]:
+    """The family each merged twin is tallied against, in row order.
+
+    A row is a merged twin when another row with its claim id is the one
+    merge_republications kept. The tally goes to the family of the last row
+    with that id, as it always has (#264 asks whether it should be the
+    twin's own). Each score is hashed once and kept rows are looked up by
+    id, so the work grows linearly with the rows: a scan of `kept` per row
+    once dominated a full build."""
+    ids = [s.claim_id() for s in mine]
+    fam_of = {cid: s.publication["family"] for s, cid in zip(mine, ids)}
+    kept_by_id: dict[str, ExternalScore] = {}
+    for k in kept:
+        kept_by_id.setdefault(k.claim_id(), k)
+    return [
+        fam_of[cid]
+        for s, cid in zip(mine, ids)
+        if cid in kept_by_id and s is not kept_by_id[cid]
+    ]
 
 
 def _drop(acct: dict, fam: dict, reason_key: str) -> None:

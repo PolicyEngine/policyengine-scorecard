@@ -1362,6 +1362,12 @@ def accounting(scores, pe, diag, drops, artifacts) -> dict:
 
 
 def ingest(db_path: Path) -> dict:
+    """Stage and check the accounting, then replace this registry in one
+    transaction and mirror the lane.
+
+    The write lock is taken before the registry is read, so two overlapping
+    ingests run one after the other instead of both reading an empty
+    registry and each writing every row."""
     notes = load_notes()
     scores, drops, artifacts = stage(notes)
     art = artifacts[-1][0]
@@ -1371,51 +1377,54 @@ def ingest(db_path: Path) -> dict:
     want = expected(scores, artifacts, notes)
     if counts != want:
         raise ValueError(f"claim accounting drifted: {counts} != {want}")
-    db = ScorecardDB(db_path)
 
     from .baselines import register_baselines_txn
     from .ingest_harvest import sync_lane_feed
 
-    with db.conn:
-        old = [
-            r[0]
-            for r in db.conn.execute(
-                "SELECT claim_id FROM external_scores "
-                "WHERE json_extract(publication, '$.registry') = ?",
-                (REGISTRY_MARK,),
+    db = ScorecardDB(db_path)
+    try:
+        with db.conn:
+            db.conn.execute("BEGIN IMMEDIATE")
+            old = [
+                r[0]
+                for r in db.conn.execute(
+                    "SELECT claim_id FROM external_scores "
+                    "WHERE json_extract(publication, '$.registry') = ?",
+                    (REGISTRY_MARK,),
+                )
+            ]
+            for table in ("diagnoses", "pe_results", "external_scores"):
+                db.conn.executemany(
+                    f"DELETE FROM {table} WHERE claim_id = ?", [(c,) for c in old]
+                )
+            db.conn.executemany(SCORES_SQL, [ScorecardDB.score_row(s) for s in scores])
+            db.conn.executemany(RESULTS_SQL, [ScorecardDB.result_row(r) for r in pe])
+            db.conn.executemany(DIAGNOSES_SQL, diag)
+            register_baselines_txn(db)
+            runs = {a["run_id"] for a, _ in artifacts}
+            computed = {r.claim_id for r in pe if r.run_id in runs}
+            pairs = (
+                "the certified pair"
+                if len(artifacts) == 1
+                else f"{len(artifacts)} certified pairs, the newest"
             )
-        ]
-        for table in ("diagnoses", "pe_results", "external_scores"):
-            db.conn.executemany(
-                f"DELETE FROM {table} WHERE claim_id = ?", [(c,) for c in old]
+            detail = (
+                f"{len(computed)} of {len(scores)} claims computed on {pairs} "
+                f"({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
+                "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
+                "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
+                "dashboard figure kept as history"
+                + ("; pe_gap on the central static rows" if diag else "")
             )
-        db.conn.executemany(SCORES_SQL, [ScorecardDB.score_row(s) for s in scores])
-        db.conn.executemany(RESULTS_SQL, [ScorecardDB.result_row(r) for r in pe])
-        db.conn.executemany(DIAGNOSES_SQL, diag)
-        register_baselines_txn(db)
-        runs = {a["run_id"] for a, _ in artifacts}
-        computed = {r.claim_id for r in pe if r.run_id in runs}
-        pairs = (
-            "the certified pair"
-            if len(artifacts) == 1
-            else f"{len(artifacts)} certified pairs, the newest"
+            db.conn.execute(LANE_SQL, (LANE_ID, "computed", detail, LANE_UPDATED))
+        sync_lane_feed(
+            db,
+            REPO / "data" / "lanes.json",
+            FEED_UPDATED,
+            lanes={LANE_ID: LANE_FEED_META},
         )
-        detail = (
-            f"{len(computed)} of {len(scores)} claims computed on {pairs} "
-            f"({art['data_bundle']}, policyengine-uk {art['engine_version']}) — "
-            "CenTax Table 4.2 (24 cells: static cost comparable, net cost concept_mismatch) and CBP's "
-            "technical appendix (12 abolition cells, concept_mismatch); PolicyEngine's published "
-            "dashboard figure kept as history"
-            + ("; pe_gap on the central static rows" if diag else "")
-        )
-        db.conn.execute(LANE_SQL, (LANE_ID, "computed", detail, LANE_UPDATED))
-    sync_lane_feed(
-        db,
-        REPO / "data" / "lanes.json",
-        FEED_UPDATED,
-        lanes={LANE_ID: LANE_FEED_META},
-    )
-    db.close()
+    finally:
+        db.close()
     return counts
 
 

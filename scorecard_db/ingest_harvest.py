@@ -174,6 +174,7 @@ _SOURCE_LANES = {
 }
 
 _COMPUTED_PREFIX = re.compile(r"^\d+ of \d+ claims computed — ")
+_HARVEST_SOURCES_SQL = "('jct','tpc','cpsp','pwbm','tax_foundation','budget_lab','cbo')"
 
 
 def _harvest_lane(source: str, reform_json: str) -> str:
@@ -184,15 +185,19 @@ def _harvest_lane(source: str, reform_json: str) -> str:
 
 
 def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict:
-    """Advance harvest lanes ingested -> computed once PE results exist
+    """Advance harvest lanes ingested -> computed once PE values exist
     for their claims.
 
     The adapters run early in the build chain and only know staging;
     results attach later (reform_validation, campaign_us), so this runs
-    after campaign_us and derives each lane's stage from the DB itself:
-    any lane whose claims carry pe_results moves to computed, its note
-    gains a "N of M claims computed" prefix, and updated_at becomes the
-    latest computed_at date so the feed shows when compute actually
+    after campaign_us and derives each lane's stage from the DB itself.
+    A claim counts as computed when its latest result, ordered as the feed
+    orders them (computed_at, then id), carries a PolicyEngine value: the
+    rule the populations feed and the app use for "with a value". A
+    valueless pe_gap or mismatch that is a claim's latest row does not
+    count. Any lane with a counted claim moves to computed, its note gains
+    a "N of M claims computed" prefix, and updated_at becomes the latest
+    counted computed_at date so the feed shows when compute actually
     landed. Lanes already past computed are never regressed. Deterministic
     and idempotent (the prefix is replaced, not stacked)."""
     db = ScorecardDB(db_path)
@@ -200,8 +205,7 @@ def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict
     claim_totals: Counter = Counter()
     for row in db.conn.execute(
         "SELECT claim_id, source, reform_json FROM external_scores"
-        " WHERE source IN ('jct','tpc','cpsp','pwbm','tax_foundation',"
-        "'budget_lab','cbo')"
+        f" WHERE source IN {_HARVEST_SOURCES_SQL}"
     ):
         lane = _harvest_lane(row["source"], row["reform_json"])
         lane_of[row["claim_id"]] = lane
@@ -210,12 +214,16 @@ def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict
     computed: Counter = Counter()
     latest: dict[str, str] = {}
     for row in db.conn.execute(
-        "SELECT claim_id, MAX(substr(computed_at, 1, 10)) AS d"
-        " FROM pe_results GROUP BY claim_id"
+        "SELECT s.claim_id, substr(r.computed_at, 1, 10) AS d"
+        " FROM external_scores s JOIN pe_results r ON r.id = ("
+        "SELECT id FROM pe_results WHERE claim_id = s.claim_id"
+        " ORDER BY computed_at DESC, id DESC LIMIT 1)"
+        f" WHERE s.source IN {_HARVEST_SOURCES_SQL}"
+        " AND r.computed_value IS NOT NULL"
     ):
         lane = lane_of.get(row["claim_id"])
         if lane is None:
-            continue
+            continue  # a claim added after the first read
         computed[lane] += 1
         latest[lane] = max(latest.get(lane, ""), row["d"] or "")
 
