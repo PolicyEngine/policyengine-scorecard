@@ -395,28 +395,43 @@ def test_a_release_the_ledger_lacks_raises():
         _source_model("fraser_of_allander", {"source_model": ""})
 
 
-def test_stage_hashes_each_score_a_fixed_number_of_times(monkeypatch):
+def test_stage_work_on_claim_ids_grows_linearly(monkeypatch):
     """Tallying merged republications once rescanned the kept claims for
-    every row and rehashed each, about 1.9 million claim ids for 8,881
-    rows, which dominated a full build. Each staged score is now hashed a
-    fixed few times however many claims its source has: once to merge its
-    twins, once to tally them, once more if kept, and once in the
-    uniqueness gate."""
+    every row and rehashed each: about 1.9 million claim-id hashes for 8,881
+    rows, which dominated a full build. Hashing each id once is not enough
+    on its own: a scan over cached ids is still quadratic. So the test
+    counts both the hashes and the comparisons between claim ids. A linear
+    tally hashes each score a few times (merge, tally, kept, uniqueness
+    gate) and compares ids about once per lookup. The bounds leave room for
+    another linear pass, and sit far below what a per-row scan costs."""
     from collections import Counter
 
     from scorecard_db.models import ExternalScore
 
-    calls: Counter = Counter()
+    hashes: Counter = Counter()
+    compared = [0]
     alive = []  # holds each score so no id is reused while counting
     claim_id = ExternalScore.claim_id
 
+    class CountedId(str):
+        __hash__ = str.__hash__
+
+        def __eq__(self, other):
+            compared[0] += 1
+            return str.__eq__(self, other)
+
+        def __ne__(self, other):
+            compared[0] += 1
+            return str.__ne__(self, other)
+
     def counting(self):
-        calls[id(self)] += 1
+        hashes[id(self)] += 1
         alive.append(self)
-        return claim_id(self)
+        return CountedId(claim_id(self))
 
     monkeypatch.setattr(ExternalScore, "claim_id", counting)
     _, acct = stage()
     assert acct["drops"]["republished_twin_merged"]["rows"] > 0
-    assert max(calls.values()) <= 4
-    assert sum(calls.values()) <= 3 * acct["read"]
+    assert max(hashes.values()) <= 8
+    assert sum(hashes.values()) <= 4 * acct["read"]
+    assert compared[0] <= acct["read"]

@@ -2861,14 +2861,22 @@ def _rows_per_claim(path) -> dict:
         conn.close()
 
 
-def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch):
+@pytest.mark.parametrize("late", [None, 0, 1])
+def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch, late):
     """Two first ingests that open the database together must leave the
     rows one ingest leaves: one row per claim in external_scores and
-    diagnoses, and each claim's result once per run. Each waits up to a
-    second for the other's registry read, so an ingest that holds the write
-    lock before reading cannot deadlock here. The lane mirror is stubbed, so
-    this covers the database rows, not the shared lanes.json write (#262)."""
+    diagnoses, and each claim's result once per run.
+
+    Each ingest holds at its registry read until the other has either read
+    or started BEGIN IMMEDIATE. Without the lock the two reads always meet,
+    however late either ingest starts, so both read an empty registry. With
+    the lock, the second ingest is waiting on the first's transaction, so
+    neither deadlocks. A wait that times out fails the test rather than
+    letting the reads miss each other. `late` starts one ingest half a
+    second after the other. The lane mirror is stubbed, so this covers the
+    database rows, not the shared lanes.json write (#262)."""
     import threading
+    import time
     from concurrent.futures import ThreadPoolExecutor
 
     from scorecard_db import ingest_harvest
@@ -2883,8 +2891,16 @@ def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch)
     path = tmp_path / "overlap.db"
     lane.ScorecardDB(path).close()
     opened = threading.Barrier(2, timeout=30)
-    read = [threading.Event(), threading.Event()]
+    state = threading.Condition()
+    read = [False, False]
+    locking = [False, False]
+    met = []
     local = threading.local()
+
+    def mark(flags):
+        with state:
+            flags[local.i] = True
+            state.notify_all()
 
     class PausingConn:
         def __init__(self, conn):
@@ -2900,11 +2916,19 @@ def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch)
             return self._conn.__exit__(*exc)
 
         def execute(self, sql, *args):
+            if sql == "BEGIN IMMEDIATE":
+                mark(locking)
             cursor = self._conn.execute(sql, *args)
             if sql == _REGISTRY_READ:
                 rows = cursor.fetchall()
-                read[local.i].set()
-                read[1 - local.i].wait(timeout=1)
+                mark(read)
+                other = 1 - local.i
+                with state:
+                    met.append(
+                        state.wait_for(
+                            lambda: read[other] or locking[other], timeout=30
+                        )
+                    )
                 return iter(rows)
             return cursor
 
@@ -2913,6 +2937,8 @@ def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch)
             super().__init__(p)
             self.conn = PausingConn(self.conn)
             opened.wait()
+            if local.i == late:
+                time.sleep(0.5)
 
     monkeypatch.setattr(lane, "ScorecardDB", PausingDB)
 
@@ -2924,5 +2950,6 @@ def test_overlapping_ingests_leave_what_one_ingest_leaves(tmp_path, monkeypatch)
         futures = [pool.submit(run, i) for i in (0, 1)]
         for future in futures:
             future.result()
-    assert all(read[i].is_set() for i in (0, 1))
+    assert read == [True, True]
+    assert met == [True, True]
     assert _rows_per_claim(path) == want
