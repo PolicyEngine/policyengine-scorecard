@@ -1,0 +1,92 @@
+{
+  "id": "fiscal-lab-memo-scores",
+  "name": "Fiscal Lab — Memo Bill Scores: what the Cost-of-Living Healthcare Working Group memo's health proposals would cost",
+  "organization": "Fiscal Lab on Capitol Hill",
+  "country": "US",
+  "url": "https://fiscallab.org/in-the-news/announcing-a-suite-of-fiscal-lab-models-open-fast-scores-for-every-office/",
+  "dashboard_url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/",
+  "per_bill_link": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html#<slug>; the page reads the slug from the URL and opens that bill (checked in a browser on 2026-11-26 with #H_R_4849). The outer page frames dashboard.html and does not pass a fragment through.",
+  "published": "2026-11-24",
+  "build": "November 25, 2026",
+  "fetched": "2026-11-26",
+  "raw": [
+    {
+      "id": "dashboard_20261125",
+      "document": "Memo Bill Scores dashboard page (embeds the data as const DATA)",
+      "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html",
+      "build": "November 25, 2026",
+      "fetched": "2026-11-26T09:40:20Z",
+      "last_modified": "Wed, 25 Nov 2026 19:37:51 GMT",
+      "bytes": 2053740,
+      "sha256": "48a918b8be88f974dd136e47402194a66162b3b81b9111c54009b610f9096b72",
+      "stored_in_repo": false,
+      "role": "Primary: every staged value comes from this page's data. Fetched and checked against this hash; not committed."
+    },
+    {
+      "id": "csv_20261125",
+      "document": "Download table (CSV), Fiscal_Lab_Memo_Scores_all_bills.csv",
+      "url": null,
+      "build": "November 25, 2026",
+      "fetched": "2026-11-26T09:45Z",
+      "bytes": 29405,
+      "sha256": "a5503e69c3ed6c53059a4c7310b9e9f2748b36429acf32035b69d54f12fcfcfe",
+      "stored_in_repo": false,
+      "role": "Check: the page builds this file in the browser from its data, so it has no URL. Captured by calling the page's own summaryCsv() in a browser with its download step intercepted (all 110 bills shown, default memo sort). adapter.py rebuilds these exact bytes from the page and checks the hash. Not committed."
+    },
+    {
+      "id": "dashboard_20261121",
+      "document": "Memo Bill Scores dashboard page as released on 2026-11-24",
+      "url": "https://fiscallab.org/score/healthcare-working-group-memo-scores/dashboard.html",
+      "build": "November 21, 2026",
+      "fetched": "2026-11-24",
+      "bytes": 2033824,
+      "sha256": "455ab33ee3f4d2bfa7aa2ea4d72ff2f2fcd30b54c782dceabe8ab398c9cbfd29",
+      "stored_in_repo": false,
+      "role": "The release as announced. Against the November 25 build, only H.R. 4849's score differs (recorded as superseded on its rows), and five bills' CBO comparison tables changed (S. 1105, H.R. 9544, H.R. 1428, H.R. 2082, H.R. 3069), which are not staged. Fetched on 2026-11-24 by the Fiscal Lab comparison session; not committed. The CSV for this build was not captured from the page."
+    },
+    {
+      "id": "announcement",
+      "document": "Announcing a Suite of Fiscal Lab Models: Open, Fast Scores for Every Office",
+      "url": "https://fiscallab.org/in-the-news/announcing-a-suite-of-fiscal-lab-models-open-fast-scores-for-every-office/",
+      "date": "2026-11-24",
+      "fetched": "2026-11-26T09:40:08Z",
+      "sha256": "1a7b1fe5147a547fcd3e098c452133b01ab8c0b8d784bb4a2b1340a36871eb2c",
+      "stored_in_repo": false,
+      "role": "The release; links the dashboard. Not committed."
+    },
+    {
+      "id": "terms",
+      "document": "Fiscal Lab Terms of Use",
+      "url": "https://fiscallab.org/terms/",
+      "date": "2026-11-16",
+      "fetched": "2026-11-26",
+      "sha256": "7ca1e50fe5b520974135182cff5e945a5ee1003ff1a4abb9a5782366bb4461b4",
+      "stored_in_repo": false,
+      "role": "The reuse terms below. Identical bytes to the copy fetched on 2026-11-24. Not committed."
+    }
+  ],
+  "wayback": "No Wayback Machine capture of dashboard.html existed on 2026-11-26 (availability and CDX queries returned none). None was requested.",
+  "terms": {
+    "quote": "share links to public pages and quote short excerpts with attribution",
+    "section": "Terms of Use, section 5 (Intellectual Property), effective November 16, 2026. It limits that use to non-commercial commentary, teaching and news. The section also says Fiscal Lab-authored publications are owned by Fiscal Lab or its licensors and asks anyone republishing to use its contact form.",
+    "handling": "No Fiscal Lab file is committed: not the page and not the CSV. None of its notes or narrative is committed beyond a few short phrases the adapter matches to read each bill's version and Congress, and none of its annual paths, components or State tables. The adapter reads the CSV's closing source line from the fetched page at build time, so that line is not in the repository either. The committed extract (data/externals/fiscal-lab-memo-scores.json) carries, per bill, identifiers and the bill's title, Fiscal Lab's model labels and effect label, the FY2027-2036 total and, where the bill has one, the low and high cases, each with a link to the bill's page: 248 current values across 110 bills, plus H.R. 4849's 3 superseded values from the November 21 build, 251 figures in all. This follows sources/cbo-pl119-21 ('Fetched and checked against the manifest hash; not committed'). Committing even these values is a judgment call against the terms. Max made it on 2026-11-26 (decision d3450): publish the 251 figures in this public repository."
+  },
+  "counterfactual": "Current law. Fiscal Lab scores every bill alone, relative to CBO's February 2026 current-law baseline, as the CSV's source line states (each bill's table note names the same CBO baseline), so the claims carry the null current-law baseline. The changelog states H.R. 4849's added sections against current law as of November 2026.",
+  "model": {
+    "name": "Fiscal Lab's model suite: FLASH (health coverage), FLAME (Medicare), FLUME (Medicaid spending), FLIP'T (Medicaid financing), FLITT (transfer programs), FLOAT (Social Security), plus component estimates",
+    "open_source": false,
+    "method": "Each bill gets a ten-year estimate of its effect on federal deficits by federal fiscal year, FY2027-2036, with interest shown separately. A positive figure adds to deficits. Spending subject to appropriation is reported separately and is not part of the figure (12 bills carry it in the page's data; 11 of their table notes say so). 69 bills have a low and a high case. On 68 of them the two cases move the assumptions jointly; on H.R. 2082 they move one assumption at a time. Fiscal Lab names, per bill, the models it used; 40 bills carry 'No budget model (bill text)' and score zero, and 2 more score zero on component estimates.",
+    "method_basis": "The page's data: each bill's table note (glance.notes) and Table 2 note, the CSV's source note, and the model list per bill. The arithmetic is checked by adapter.py QC 4-7 and 9. Score documents are 'available on request'; the page's document links are empty for all 110 bills."
+  },
+  "periods": "One window: federal fiscal years 2027-2036, the ten-year total (period 2036, period_start 2027, window_kind total).",
+  "staged": "110 central estimates and 69 low-high ranges: 248 claims, metric primary_deficit_change in USD (the CSV's billions x 1e9), scenario central | low | high. On 6 bills the CSV's low and high round the score table's total to $0.1 billion; the extract flags them range_rounded and their low and high claims say so (adapter.py QC 9). Statuses in pe_status.json: none has a PolicyEngine counterpart yet.",
+  "not_staged": {
+    "annual path": "The ten FY columns per bill. A total per bill is the claim; the annual path would multiply the committed Fiscal Lab values tenfold.",
+    "interest and debt": "Interest is shown separately on each bill's page and is not part of the figure; not staged.",
+    "spending subject to appropriation": "A separate ten-year total on 12 bills, stated as not part of the figure; not staged.",
+    "components, coverage tables, State tables, CBO comparisons": "Provision lines (Table 1), coverage changes (Table 3), CBO comparison runs (Table 4) and State tables (6 bills). PolicyEngine/fiscal-lab-comparison matches its own results to Table 1 lines for H.R. 4849 and H.R. 1428; provision claims can be added when those results pass review.",
+    "prose": "Memo section names, summaries, narratives, notes and method text. Bill titles are committed, as identifiers."
+  },
+  "pe_status": "pe_status.json: the status of each bill's future PolicyEngine counterpart, judged against the policyengine-us 2.2.2 source on 2026-11-26. not_computed claims get no result row; pe_gap claims get a result row with no value. No PolicyEngine number is recorded for any bill.",
+  "diagnosis_upstream": "Fiscal Lab's models are closed-source; a divergence classified as an external-model issue becomes a comparison memo, not an upstream PR."
+}
