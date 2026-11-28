@@ -44,15 +44,16 @@ changelog check reads the entry's structured figures, not its sentences.
 
 - `source.json` records each raw file's URL, fetch date and SHA-256 with
   `stored_in_repo: false`, following `sources/cbo-pl119-21`.
-- `adapter.py fetch` saves the page to the git-ignored `raw/` only when it
-  matches the pinned hash. The URL serves only Fiscal Lab's latest build, so
+- `adapter.py fetch` replaces the page in the git-ignored `raw/` only when
+  it matches the pinned hash. The URL serves only Fiscal Lab's latest build, so
   a page that differs is saved beside the pinned copy, named by its hash,
   and the pinned copy is left as it was. Each fetch stages its page in a file
   of its own, so overlapping fetches cannot swap pages. The staging file has
   a short fixed name, so it fits wherever the page's own name does. The copy
-  kept beside the pinned one needs 13 more bytes than the page's name; where
-  that would pass the 255-byte limit, the fetch stops with an error and
-  writes nothing.
+  kept beside the pinned one is 13 bytes longer than the page's name and is
+  never cut short. Where the filesystem refuses that name as too long, the
+  fetch stops with an error, removes its staging file and leaves the pinned
+  copy as it was.
 - `adapter.py build` checks the page against its pinned hash and rebuilds the
   page's own CSV byte for byte. The rebuilt CSV is checked against the hash
   of the copy captured from the page, but it is not written.

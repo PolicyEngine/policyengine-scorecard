@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import errno
 import functools
 import hashlib
 import importlib.util
@@ -11,6 +12,7 @@ import json
 import os
 import sqlite3
 import subprocess
+import sys
 import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -630,6 +632,13 @@ _SHAPED = mod.STATUS_RUN_PREFIX + "2026-12-01"
             None,
             mod.NO_RUN_BUNDLE,
             id="other-run-id-shape",
+        ),
+        pytest.param(
+            mod.STATUS_RUN_PREFIX + "2026-12-0x",
+            ComparisonStatus.PE_GAP,
+            None,
+            mod.NO_RUN_BUNDLE,
+            id="run-id-date-not-digits",
         ),
     ],
 )
@@ -1322,30 +1331,33 @@ def test_fetch_stages_under_a_short_name_whatever_dest_is_called(tmp_path, monke
     ),
     pad=st.integers(0, 240),
     digest=st.text("0123456789abcdef", min_size=64, max_size=64),
+    odd=st.sampled_from(["", "\u00e9", os.fsdecode(b"\xff")]),
 )
-def test_the_kept_copy_is_never_dest(name, pad, digest):
+def test_the_kept_copy_is_never_dest(name, pad, digest, odd):
     """The kept copy's name is dest's with ".<sha256[:12]>" before the
-    suffix, so it is exactly 13 bytes longer and never dest itself, even
-    when dest's own name already carries the digest prefix. Dest names run
-    up to the 255-byte limit, where no shorter form would fit."""
+    suffix, so it is exactly 13 bytes longer, as the filesystem counts
+    them, and never dest itself, even when dest's own name already carries
+    the digest prefix. Dest names run up to 255 bytes, and some carry a
+    two-byte character or a byte that is not UTF-8."""
     adapter = _adapter()
-    for base in (name, name + "." + digest[:12] + ".html"):
+    for base in (odd + name, odd + name + "." + digest[:12] + ".html"):
         dest_name = "d" * pad + base
-        if len(dest_name.encode()) > 255:
+        if len(os.fsencode(dest_name)) > 255:
             continue
         dest = Path("raw") / dest_name
         got = adapter.beside(dest, digest)
         assert got.parent == dest.parent
         assert got != dest
-        assert len(got.name.encode()) == len(dest.name.encode()) + 13
+        assert len(os.fsencode(got.name)) == len(os.fsencode(dest.name)) + 13
 
 
 def test_a_changed_page_never_overwrites_dest_whatever_it_is_called(
     tmp_path, monkeypatch
 ):
     """Round 4's case: a 255-byte dest whose stem ends in the new page's own
-    digest prefix. The kept copy would need 268 bytes, so the fetch raises
-    and the pinned copy is left as it was, with nothing else written."""
+    digest prefix. The kept copy's name is 268 bytes, never dest's, so the
+    filesystem refuses it; the fetch raises, and the pinned copy is left as
+    it was, with nothing else written."""
     adapter = _adapter()
     pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
     _serve(adapter, monkeypatch, newer, pinned)
@@ -1361,36 +1373,86 @@ def test_a_changed_page_never_overwrites_dest_whatever_it_is_called(
 
 
 @pytest.mark.parametrize(
-    "name, fits",
+    "name",
     [
-        pytest.param("d" * 237 + ".html", True, id="242-bytes"),
-        pytest.param("d" * 238 + ".html", False, id="243-bytes"),
-        pytest.param("d." + "x" * 242, False, id="long-suffix"),
+        pytest.param("d" * 237 + ".html", id="242-bytes"),
+        pytest.param("d" * 238 + ".html", id="243-bytes"),
+        pytest.param("d." + "x" * 242, id="long-suffix"),
+        pytest.param("\u00e9" * 118 + "d.html", id="242-bytes-utf8"),
+        pytest.param("\u00e9" * 119 + ".html", id="243-bytes-utf8"),
     ],
 )
-def test_a_changed_page_is_kept_beside_only_where_its_name_fits(
-    tmp_path, monkeypatch, name, fits
+def test_a_changed_page_is_kept_beside_wherever_the_filesystem_takes_the_name(
+    tmp_path, monkeypatch, name
 ):
-    """A changed page is kept beside dest when the 13-byte-longer name fits
-    in 255 bytes, and refused otherwise; either way dest keeps the pinned
-    copy and the fetch leaves no staging file."""
+    """A changed page is kept beside dest whenever the filesystem takes the
+    13-byte-longer name, and refused otherwise. Fetch predicts nothing: ext4
+    allows 255 bytes and APFS 255 UTF-16 units, so the two-byte 243-byte
+    name, whose copy is 256 bytes, fits on APFS alone. Either way dest keeps
+    the pinned copy and the fetch leaves no staging file."""
     adapter = _adapter()
     pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
     _serve(adapter, monkeypatch, newer, pinned)
+    digest = hashlib.sha256(newer).hexdigest()
     dest = tmp_path / "raw" / name
     dest.parent.mkdir()
     dest.write_bytes(pinned)
+    kept = adapter.beside(dest, digest)
+    if len(os.fsencode(kept.name)) <= 255:
+        fits = True
+    else:
+        fits = sys.platform == "darwin" and not name.isascii()
     if fits:
-        digest, saved = adapter.fetch(dest)
-        assert saved == adapter.beside(dest, digest)
-        assert len(saved.name.encode()) == 255
-        assert saved.read_bytes() == newer
-        assert sorted(dest.parent.iterdir()) == sorted([dest, saved])
+        assert adapter.fetch(dest) == (digest, kept)
+        assert kept.read_bytes() == newer
+        assert sorted(dest.parent.iterdir()) == sorted([dest, kept])
     else:
         with pytest.raises(ValueError, match="differs from the pinned build"):
             adapter.fetch(dest)
         assert list(dest.parent.iterdir()) == [dest]
     assert dest.read_bytes() == pinned
+
+
+@pytest.mark.parametrize("changed", [False, True], ids=["pinned", "changed"])
+def test_fetch_takes_a_name_whose_bytes_are_not_utf8(tmp_path, monkeypatch, changed):
+    """Linux filesystems take file names whose bytes are not UTF-8, which
+    Python decodes with surrogateescape, and fetch saves the page, or its
+    kept copy, under such a name. APFS refuses those names with EILSEQ,
+    which fetch raises as it is, leaving nothing behind."""
+    adapter = _adapter()
+    pinned, newer = b"<html>pinned build</html>", b"<html>newer build</html>"
+    body = newer if changed else pinned
+    _serve(adapter, monkeypatch, body, pinned)
+    dest = tmp_path / "raw" / os.fsdecode(b"dashboard-\xff.html")
+    digest = hashlib.sha256(body).hexdigest()
+    want = adapter.beside(dest, digest) if changed else dest
+    try:
+        got = adapter.fetch(dest)
+    except OSError as exc:
+        assert sys.platform == "darwin" and exc.errno == errno.EILSEQ
+        assert list(dest.parent.iterdir()) == []
+    else:
+        assert sys.platform != "darwin"
+        assert got == (digest, want)
+        assert want.read_bytes() == body
+        assert list(dest.parent.iterdir()) == [want]
+
+
+def test_a_pinned_fetch_to_an_overlong_name_is_not_called_changed(
+    tmp_path, monkeypatch
+):
+    """A 256-byte ASCII name is too long for ext4 and APFS alike. For a page
+    that matches the pin, the filesystem's own ENAMETOOLONG stops the fetch;
+    only the kept copy's refusal is put as the page differing."""
+    adapter = _adapter()
+    pinned = b"<html>pinned build</html>"
+    _serve(adapter, monkeypatch, pinned, pinned)
+    dest = tmp_path / "raw" / ("d" * 251 + ".html")
+    assert len(dest.name.encode()) == 256
+    with pytest.raises(OSError) as info:
+        adapter.fetch(dest)
+    assert info.value.errno == errno.ENAMETOOLONG
+    assert list(dest.parent.iterdir()) == []
 
 
 def test_overlapping_fetches_keep_their_own_bodies(tmp_path, monkeypatch):
